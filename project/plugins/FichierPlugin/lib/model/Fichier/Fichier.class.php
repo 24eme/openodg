@@ -23,6 +23,17 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     }
 
     public function constructId() {
+        if ($this->isNew()) {
+            if ($this->categorie == FichierClient::CATEGORIE_DR) {
+                return $this->set('_id', 'DR-' . $this->identifiant . '-' . $this->fichier_id);
+            }
+            if ($this->categorie == FichierClient::CATEGORIE_SV11) {
+                return $this->set('_id', 'SV11-' . $this->identifiant . '-' . $this->fichier_id);
+            }
+            if ($this->categorie == FichierClient::CATEGORIE_SV12) {
+                return $this->set('_id', 'SV12-' . $this->identifiant . '-' . $this->fichier_id);
+            }
+        }
         $this->set('_id', 'FICHIER-' . $this->identifiant . '-' . $this->fichier_id);
     }
 

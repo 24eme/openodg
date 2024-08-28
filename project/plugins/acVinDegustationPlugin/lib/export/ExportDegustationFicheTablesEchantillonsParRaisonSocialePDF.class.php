@@ -30,22 +30,29 @@ class ExportDegustationFicheTablesEchantillonsParRaisonSocialePDF extends Export
         ));
     }
 
-
-
     protected function getHeaderTitle() {
-       return $this->degustation->getNomOrganisme();
+        sfApplicationConfiguration::getActive()->loadHelpers(array('Partial'));
+        try {
+            return get_partial('degustation/ficheTablesEchantillonsParDossierPdfHeader', ['degustation' => $this->degustation]);
+        } catch (Exception $e) {
+            return "Fiche des lots ventilés anonymisés par raison sociale";
+        }
     }
 
     protected function getHeaderSubtitle()
     {
-        $header_subtitle = sprintf("%s\n\n%s", $this->degustation->lieu, "Fiche des lots ventilés anonymisés par raison sociale");
-
-        return $header_subtitle;
+        sfApplicationConfiguration::getActive()->loadHelpers(array('Partial'));
+        try {
+            return get_partial('degustation/ficheTablesEchantillonsParDossierPdfHeaderSubtitle', ['degustation' => $this->degustation]);
+        } catch (Exception $e) {
+            $header_subtitle = sprintf("\nDégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
+            $header_subtitle .= sprintf("\n%s", $this->degustation->lieu);
+            return $header_subtitle;
+        }
     }
 
-
     public function getFileName($with_rev = false) {
-        $filename = sprintf("fiche_echantillons_table_par_dossier_%s", $this->degustation->_id);
+        $filename = sprintf("fiche_echantillons_table_par_raison_sociale_%s", $this->degustation->_id);
         if ($with_rev) {
             $filename .= '_' . $this->degustation->_rev;
         }

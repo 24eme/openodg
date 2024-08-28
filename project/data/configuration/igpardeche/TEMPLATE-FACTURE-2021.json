@@ -28,9 +28,9 @@
                        "DRev"
                    ],
                    "callback": "getVolumeVininifieFromDocumentDouanier",
-                   "callback_parameters": [
-                       "NOT certifications/VSIG"
-                   ]
+                   "callback_parameters": {
+                       "appellations": "NOT certifications/VSIG"
+                   }
                }
            }
        },

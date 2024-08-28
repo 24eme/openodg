@@ -6,7 +6,14 @@
 
 class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclaration {
 
-    public function getParcellesByCommune($onlyAffectee = false) {
+    public function getGroupedParcelles($onlyAffectee = false) {
+        if ($this->getDocument()->hasDgc()) {
+            return $this->getParcellesByDgc($onlyAffectee);
+        }
+        return $this->getParcellesByCommune($onlyAffectee);
+    }
+
+    public function getParcellesByCommune($onlyAffectee = true) {
         $parcelles = array();
 
         foreach($this->getParcelles() as $hash => $parcelle) {
@@ -28,8 +35,10 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
 
         foreach($this as $keyProduit => $produit) {
           foreach ($produit->detail as $parcelle) {
-            $key = str_replace(" ", "-", $parcelle->getDgcLibelle());
-
+            if(!$parcelle->getDgc()) {
+                continue;
+            }
+            $key = $parcelle->getDgcLibelle();
             if ($onlyAffectee && !$parcelle->affectee) {
                 continue;
             }
@@ -37,10 +46,13 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
             if(!isset($parcelles[$key])) {
                 $parcelles[$key] = array();
             }
-            $parcelles[$key][$parcelle->commune.$parcelle->section.sprintf('%06d', $parcelle->numero_parcelle).$parcelle->getHash()] = $parcelle;
+            $parcelles[$key][$parcelle->getParcelleId()] = $parcelle;
           }
         }
         ksort($parcelles);
+        foreach(array_keys($parcelles) as $k) {
+            ksort($parcelles[$k]);
+        }
         return $parcelles;
     }
 

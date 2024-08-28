@@ -88,7 +88,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                 if (!$parcelle->affectation && $parcelle->idu == $idu && $parcelle->cepage == $cepage && round($parcelle->superficie,4) == $surface) {
                     $parcelle->affectation = 1;
                     $parcelle->date_affectation = $arguments['date'];
-                    $parcelle->superficie_affectation = $surface;
+                    $parcelle->superficie = $surface;
                     $find = true;
                     echo sprintf("SUCCESS;IDU+CEP+SUPERFICIE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, $parcelle->getHash());
                     break;
@@ -99,7 +99,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                     if (!$parcelle->affectation && $parcelle->idu == $idu && $parcelle->cepage == $cepage && round($parcelle->superficie/$surface*100,1) >= 99.0 && round($parcelle->superficie/$surface*100,1) <= 101.0) {
                         $parcelle->affectation = 1;
                         $parcelle->date_affectation = $arguments['date'];
-                        $parcelle->superficie_affectation = $parcelle->superficie;
+                        $parcelle->superficie = $parcelle->getSuperficieParcellaire();
                         $find = true;
                         echo sprintf("SUCCESS;IDU+CEP+SUPERFICIE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, $parcelle->getHash());
                         break;
@@ -114,7 +114,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                 if (!$parcelle->affectation && $parcelle->idu == $idu && round($parcelle->superficie,4) == $surface) {
                     $parcelle->affectation = 1;
                     $parcelle->date_affectation = $arguments['date'];
-                    $parcelle->superficie_affectation = $surface;
+                    $parcelle->superficie = $surface;
                     $find = true;
                     echo sprintf("SUCCESS;IDU+SUPERFICIE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, $parcelle->getHash());
                     break;
@@ -126,7 +126,6 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                     if (!$parcelle->affectation && $parcelle->idu == $idu && round($parcelle->superficie/$surface*100,1) >= 99.0 && round($parcelle->superficie/$surface*100,1) <= 101.0) {
                         $parcelle->affectation = 1;
                         $parcelle->date_affectation = $arguments['date'];
-                        $parcelle->superficie_affectation = $parcelle->superficie;
                         $find = true;
                         echo sprintf("SUCCESS;IDU+SUPERFICIE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, $parcelle->getHash());
                         break;
@@ -150,7 +149,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                 $parcelle = current($foundIduCep);
                 $parcelle->affectation = 1;
                 $parcelle->date_affectation = $arguments['date'];
-                $parcelle->superficie_affectation = ($surface >= round($parcelle->superficie,4))? round($parcelle->superficie,4) : $surface ;
+                $parcelle->superficie = ($surface >= round($parcelle->superficie,4))? round($parcelle->superficie,4) : $surface ;
                 $find = true;
                 echo sprintf("SUCCESS;IDU + CEPAGE UNE PARCELLE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, $parcelle->getHash());
             }
@@ -159,7 +158,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                 $parcelle = current($foundIdu);
                 $parcelle->affectation = 1;
                 $parcelle->date_affectation = $arguments['date'];
-                $parcelle->superficie_affectation = ($surface >= round($parcelle->superficie,4))? round($parcelle->superficie,4) : $surface ;
+                $parcelle->superficie = ($surface >= round($parcelle->superficie,4))? round($parcelle->superficie,4) : $surface ;
                 $find = true;
                 echo sprintf("SUCCESS;IDU UNE PARCELLE;%s;%s;%s\n", implode(';', $data), $intentionDpap->_id, $parcelle->getHash());
             }
@@ -210,7 +209,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                             $tmp = round($superficie+$parcelle->superficie,4);
                             $parcelle->affectation = 1;
                             $parcelle->date_affectation = $date;
-                            $parcelle->superficie_affectation = ($tmp > $surface)? round($surface - $superficie,4) : round($parcelle->superficie,4);
+                            $parcelle->superficie = ($tmp > $surface)? round($surface - $superficie,4) : round($parcelle->superficie,4);
                             $parcellesHash[] = $parcelle->getHash();
                             if (($tmp > $surface)) {
                                 break;
@@ -280,7 +279,6 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
         foreach ($parcelles as $parcelle) {
             $parcelle->affectation = 1;
             $parcelle->date_affectation = $date;
-            $parcelle->superficie_affectation = round($parcelle->superficie,4);
             $parcellesHash[] = $parcelle->getHash();
         }
         return $parcellesHash;

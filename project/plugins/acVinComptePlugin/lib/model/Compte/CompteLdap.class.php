@@ -53,7 +53,7 @@ class CompteLdap extends acVinLdap {
       $info['uidNumber']        = (int)self::getIdentifiant($compte);
       $info['gidNumber']        = '1000';
       $info['homeDirectory']    = '/home/'.self::getIdentifiant($compte);
-      $info['o']                = $compte->getSociete()->raison_sociale;
+      $info['o']                = ($compte->getSociete()) ? $compte->getSociete()->raison_sociale : '';
       $info['description']      = ($compte->societe_informations->type)? $compte->societe_informations->type : '';
 
       if (!is_null($compte->getNom())){

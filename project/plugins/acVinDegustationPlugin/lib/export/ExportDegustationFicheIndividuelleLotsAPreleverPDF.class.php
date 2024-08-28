@@ -3,138 +3,133 @@
 class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
 
     protected $degustation = null;
+    protected $secteur = null;
+    protected $etablissements = [];
+    protected $lots = [];
     protected $lotid = null;
 
-    public function __construct($degustation, $lotid = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
+    public function __construct($degustation, $lotid = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null, $secteur = null) {
         $this->degustation = $degustation;
         $this->lotid = $lotid;
-
+        if($secteur == DegustationClient::DEGUSTATION_SANS_SECTEUR) {
+            $secteur = null;
+        }
+        $this->secteur = $secteur;
         if (!$filename) {
             $filename = $this->getFileName(true);
         }
-
+        $this->engine();
         parent::__construct($type, $use_cache, $file_dir, $filename);
     }
 
-    public function create() {
-      $adresseFilter = null;
-      $adresses = array();
-      $lots = $etablissements = array();
+    public function engine() {
       foreach ($this->degustation->getLotsPrelevables() as $lot) {
-          $adresses[$lot->adresse_logement.$lot->declarant_identifiant][$lot->unique_id] = $lot;
-          if ($this->lotid == $lot->unique_id) {
-              $adresseFilter = $lot->adresse_logement.$lot->declarant_identifiant;
+          if ($this->secteur && $this->secteur != $lot->secteur) {
+              continue;
           }
+          if ($this->lotid && $this->lotid != $lot->unique_id) {
+              continue;
+          }
+          if(!isset($this->etablissements[$lot->declarant_identifiant])) {
+              $this->etablissements[$lot->adresse_logement.$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
+          }
+          $this->lots[$lot->adresse_logement.$lot->declarant_identifiant][$lot->unique_id] = $lot;
       }
-      if ($adresseFilter) {
-          $adresses = [$adresseFilter => $adresses[$adresseFilter]];
-      } else {
-          ksort($adresses);
-      }
-
-      foreach ($adresses as $lotsArchive) {
-        $volumeLotTotal = 0;
-        foreach ($lotsArchive as $archive => $lot) {
-          $volumeLotTotal += $lot->volume;
-        }
-
-        $etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsArchive[array_key_first($lotsArchive)]->declarant_identifiant);
-        $adresseLogement = $lot->adresse_logement;
-        if(boolval($adresseLogement) === false){
-            $adresseLogement = sprintf("%s — %s — %s — %s",$etablissement->nom, $etablissement->getAdresse(), $etablissement->code_postal, $etablissement->commune);
-        }
-        if (! DegustationConfiguration::getInstance()->isAnonymisationManuelle() ) {
-            @$this->printable_document->addPage(
-              $this->getPartial('degustation/ficheIndividuelleLotsAPreleverPdf',
-              array(
-                'degustation' => $this->degustation,
-                'etablissement' => $etablissement,
-                'volumeLotTotal' => $volumeLotTotal,
-                'lots' => $lotsArchive,
-                'adresseLogement' => $adresseLogement
-              )
-            ));
-        } else {
-            $lots[$adresseLogement] = $lotsArchive;
-            $etablissements[$adresseLogement] = $etablissement;
-        }
-      }
-
-        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle() ) {
-            @$this->printable_document->addPage(
-            $this->getPartial('degustation/ficheIndividuelleLotsSynthetiqueAPreleverPdf',
-              array(
-                'degustation' => $this->degustation,
-                'etablissements' => $etablissements,
-                "date_edition" => date("d/m/Y"),
-                "nbLotTotal" => count($this->degustation->getLotsPrelevables()),
-                'lots' => $lots
-              )
-            ));
-        }
+      ksort($this->lots);
     }
 
+    public function create() {
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            @$this->printable_document->addPage(
+                $this->getPartial('degustation/ficheIndividuelleLotsSynthetiqueAPreleverPdf',
+                    array(
+                      'degustation' => $this->degustation,
+                      'etablissements' => $this->etablissements,
+                      'lots' => $this->lots
+                    )
+            ));
+        } else {
+            foreach ($this->lots as $lotsArchive) {
+              $volumeLotTotal = 0;
+              foreach ($lotsArchive as $archive => $lot) {
+                $volumeLotTotal += $lot->volume;
+              }
+              $etablissement = $this->etablissements[$lot->adresse_logement.$lot->declarant_identifiant];
+              $adresseLogement = $lot->adresse_logement;
+              if(boolval($adresseLogement) === false){
+                  $adresseLogement = sprintf("%s — %s — %s %s",$etablissement->nom, $etablissement->getAdresse(), $etablissement->code_postal, $etablissement->commune);
+              }
+              @$this->printable_document->addPage(
+                $this->getPartial('degustation/ficheIndividuelleLotsAPreleverPdf',
+                array(
+                  'degustation' => $this->degustation,
+                  'etablissement' => $etablissement,
+                  'volumeLotTotal' => $volumeLotTotal,
+                  'lots' => $lotsArchive,
+                  'adresseLogement' => $adresseLogement
+                )
+              ));
+            }
+        }
+    }
 
     public function output() {
         if($this->printable_document instanceof PageableHTML) {
             return parent::output();
         }
-
         return file_get_contents($this->getFile());
     }
 
     public function getFile() {
-
         if($this->printable_document instanceof PageableHTML) {
             return parent::getFile();
         }
-
         return sfConfig::get('sf_cache_dir').'/pdf/'.$this->getFileName(true);
     }
 
     protected function getHeaderTitle() {
-        $titre = Organisme::getInstance(null, 'degustation')->getNom();
-        return $titre;
-    }
-
-    protected function getHeaderSubtitle() {
-        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle() ) {
-            $header_subtitle = "Fiche de prélevement";
-        } else {
-            $header_subtitle = sprintf("Fiche de prélevement\n\nDate de commission : %s\nLieu de dégustation : %s\n",
-                                        $this->degustation->getDateFormat('d/m/Y'),
-                                        $this->degustation->lieu
-                                      );
+        sfApplicationConfiguration::getActive()->loadHelpers(array('Partial'));
+        try {
+            return get_partial('degustation/ficheIndividuelleLotsAPreleverPdfHeader', ['degustation' => $this->degustation]);
+        } catch (Exception $e) {
+            $title = "Fiche de prélevement";
+            if ($this->secteur) {
+                $title .= " – $this->secteur";
+            }
+            return $title;
         }
-        return $header_subtitle;
     }
 
-
-    protected function getFooterText() {
-        return sprintf("\n%s     %s - %s - %s   %s    %s\n", Organisme::getInstance(null, 'degustation')->getNom(), Organisme::getInstance(null, 'degustation')->getAdresse(), Organisme::getInstance(null, 'degustation')->getCodePostal(), Organisme::getInstance(null, 'degustation')->getCommune(), Organisme::getInstance(null, 'degustation')->getTelephone(), Organisme::getInstance(null, 'degustation')->getEmail());
-        return $footer;
+    protected function getHeaderSubtitle()
+    {
+        sfApplicationConfiguration::getActive()->loadHelpers(array('Partial'));
+        try {
+            return get_partial('degustation/ficheIndividuelleLotsAPreleverPdfHeaderSubtitle', ['degustation' => $this->degustation]);
+        } catch (Exception $e) {
+            if($this->degustation->type == TourneeClient::TYPE_MODEL) {
+                return sprintf("\nTournée du %s\n\n", $this->degustation->getDateFormat('d/m/Y'));
+            } else {
+                $header_subtitle = sprintf("\nDégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
+                $header_subtitle .= sprintf("\n%s", $this->degustation->lieu);
+                return $header_subtitle;
+            }
+        }
     }
 
     protected function getConfig() {
-
         return new ExportDegustationFicheIndividuelleLotsAPreleverPDFConfig();
     }
 
     public function getFileName($with_rev = false) {
-
-        return self::buildFileName($this->degustation, true);
+        $filename = sprintf("fiche_individuelle_prelevements_%s", $this->degustation->_id);
+        if ($with_rev) {
+            $filename .= '_' . $this->degustation->_rev;
+        }
+        return $filename . '.pdf';
     }
 
-    public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("fiche_individuelle_prelevements_%s", $degustation->_id);
-
-
-        if ($with_rev) {
-            $filename .= '_' . $degustation->_rev;
-        }
-
-
-        return $filename . '.pdf';
+    protected function getFooterText() {
+        return sprintf("<br/>%s     %s - %s - %s<br/>%s    %s", Organisme::getInstance($this->degustation->region, 'degustation')->getNom(), Organisme::getInstance($this->degustation->region, 'degustation')->getAdresse(), Organisme::getInstance($this->degustation->region, 'degustation')->getCodePostal(), Organisme::getInstance($this->degustation->region, 'degustation')->getCommune(), Organisme::getInstance($this->degustation->region, 'degustation')->getTelephone(), Organisme::getInstance($this->degustation->region, 'degustation')->getEmail());
     }
 
 }

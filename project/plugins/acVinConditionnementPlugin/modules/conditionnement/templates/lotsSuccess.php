@@ -14,38 +14,6 @@
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
-    <?php foreach($conditionnement->lots as $lot): ?>
-      <?php if(!$lot->hasBeenEdited()){ continue; } ?>
-      <div class="panel panel-default" style="border-color:rgba(130, 147, 69, 0.4);">
-          <div class="panel-body panel-body-success">
-            <div class="row">
-              <div class="col-md-2"><?php echo Date::francizeDate($lot->date); ?></div>
-              <div class="col-md-6"><strong><?php echo $lot->produit_libelle; ?></strong>
-                <?php if(count($lot->cepages)): ?>
-                  &nbsp;<small>
-                    <?php echo $lot->getCepagesLibelle(); ?>
-                  </small>
-                <?php endif; ?>
-              </div>
-              <div class="col-md-3"><?php echo $lot->millesime; ?></div>
-              <div class="col-md-1 text-right">
-                <?php if($isAdmin): ?>
-                  <a href="<?php echo url_for("conditionnement_lots_delete", array('id' => $conditionnement->_id, 'numArchive' => $lot->numero_archive)) ?>" onclick='return confirm("Étes vous sûr de vouloir supprimer ce lot ?");' class="close" title="Supprimer ce lot" aria-hidden="true">×</a>
-                <?php endif; ?>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-2"></div>
-              <div class="col-md-3">Numéro lot : <?php echo $lot->numero_archive; ?></div>
-              <div class="col-md-3"><strong>Volume : <?php echo $lot->volume; ?><small class="text-muted">&nbsp;hl</small></strong></div>
-              <div class="col-md-3"><?php echo ($lot->destination_type)? ConditionnementClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date)? " (".Date::francizeDate($lot->destination_date).")" : ""; ?></div>
-              <div class="col-md-1" >
-              </div>
-            </div>
-          </div>
-          <div class="row"></div>
-      </div>
-    <?php endforeach; ?>
     <?php foreach($form['lots'] as $key => $lot): ?>
         <?php $lotItem = $conditionnement->lots->get($key); ?>
         <?php if($key == count($form['lots']) - 1): ?>
@@ -92,14 +60,14 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-6">
-                      <div class="form-group">
-                          <?php echo $lot['millesime']->renderLabel("Millesime", array('class' => "col-sm-4 control-label")); ?>
-                          <div class="col-sm-2">
-                              <div class="input-group">
-                                  <?php echo $lot['millesime']->render(); ?>
-                              </div>
-                          </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <?php echo $lot['millesime']->renderLabel("Millesime", array('class' => "col-sm-4 control-label")); ?>
+                            <div class="col-sm-3">
+                                <div class="input-group">
+                                    <?php echo $lot['millesime']->render(array('class' => "form-control text-right", 'maxlength' => "4")); ?>
+                                </div>
+                            </div>
                           <div class="col-sm-6 text-danger">
                               <?php echo $lot['millesime']->renderError(); ?>
                           </div>
@@ -134,7 +102,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <?php if(DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+                    <?php if(isset($lot['specificite'])): ?>
                       <div class="col-md-6">
                           <div class="form-group">
                               <?php echo $lot['specificite']->renderLabel("Spécificité", array('class' => "col-sm-3 control-label")); ?>
@@ -204,7 +172,7 @@
                                                 <div class="input-group-addon">%</div>
                                             </div>
                                             <div class="input-group input-group-hl" >
-                                                <?php echo $lot['repartition_'.$i]->render(); ?>
+                                                <?php echo $lot['repartition_hl_'.$i]->render(); ?>
                                                 <div class="input-group-addon">hl</div>
                                             </div>
                                         </div>

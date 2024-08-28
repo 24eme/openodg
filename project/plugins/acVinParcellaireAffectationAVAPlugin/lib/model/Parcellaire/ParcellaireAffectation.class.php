@@ -1,15 +1,14 @@
 <?php
 
-/**
- * Model for Parcellaire
- *
- */
-class ParcellaireAffectation extends BaseParcellaireAffectation implements InterfaceDeclaration, InterfacePieceDocument {
+/*** AVA ***/
+
+class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation implements InterfaceDeclaration, InterfacePieceDocument {
 
     protected $declarant_document = null;
     protected $piece_document = null;
     protected $repartition_par_parcelle = [];
     protected $parcelles_idu = null;
+    protected $etablissement = null;
 
     public function __construct() {
         parent::__construct();
@@ -31,8 +30,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getEtablissementObject() {
-
-        return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+        if(!$this->etablissement) {
+            $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+        }
+        return $this->etablissement;
     }
 
     public function initDoc($identifiant, $campagne, $type = ParcellaireAffectationClient::TYPE_COUCHDB) {
@@ -157,7 +158,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $parcellaire = $this->getParcellaire();
         foreach ($parcellaire->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
-                if (!$CVIParcelle->hasTroisiemeFeuille()) {
+                if (!$CVIParcelle->hasJeunesVignes()) {
                     continue;
                 }
                 foreach($CVIParcelle->getIsInAires() as $nom => $statut) {
@@ -218,7 +219,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
-                if (!$CVIParcelle->hasTroisiemeFeuille()) {
+                if (!$CVIParcelle->hasJeunesVignes()) {
                     continue;
                 }
                 $c = false;
@@ -307,31 +308,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 $parcelle->vtsgn = $prevParcelle->vtsgn;
             }
         }
-    }
-
-    public function getParcelles() {
-
-        return $this->declaration->getProduitsCepageDetails();
-    }
-
-    public function findParcelle($parcelle) {
-
-        return ParcellaireClient::findParcelle($this, $parcelle, 0.5);
-    }
-
-    public function getParcellesByIdu() {
-        if(is_array($this->parcelles_idu)) {
-
-            return $this->parcelles_idu;
-        }
-
-        $this->parcelles_idu = [];
-
-        foreach($this->getParcelles() as $parcelle) {
-            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
-        }
-
-        return $this->parcelles_idu;
     }
 
     public function getAffectationLastCampagne($type = null) {
@@ -751,11 +727,23 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return ParcellaireClient::getInstance()->getLast($this->identifiant);
     }
 
+    public function getRegions() {
+        $regions = array();
+        foreach($this->getProduits() as $produit) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($produit->getProduitHash());
+        }
+        return array_filter(array_unique($regions));
+    }
+
     protected function doSave() {
     	$this->piece_document->generatePieces();
     }
 
     public function save() {
+        $regions = $this->getRegions();
+        if (count($regions)) {
+            $this->add('region', implode('|', $regions));
+        }
         $this->getDateDepot();
 
         return parent::save();

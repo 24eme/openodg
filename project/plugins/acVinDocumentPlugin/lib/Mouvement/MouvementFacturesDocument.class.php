@@ -19,7 +19,17 @@ class MouvementFacturesDocument
 
     public function generateMouvementsFactures() {
         $this->document->clearMouvementsFactures();
-        $this->document->set($this->hash, $this->document->getMouvementsFacturesCalcule());
+        $mouvements = [];
+
+        if (class_exists('RegionConfiguration') && RegionConfiguration::getInstance()->hasOdgProduits()) {
+            foreach ($this->document->getRegions() as $r) {
+                $mouvements = array_merge_recursive($mouvements, $this->document->getMouvementsFacturesCalcule($r));
+            }
+        } else {
+            $mouvements = $this->document->getMouvementsFacturesCalcule();
+        }
+
+        $this->document->set($this->hash, $mouvements);
     }
 
     public function facturerMouvements() {

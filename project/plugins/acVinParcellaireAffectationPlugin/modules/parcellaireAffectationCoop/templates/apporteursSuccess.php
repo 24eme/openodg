@@ -9,6 +9,8 @@
 <p>Vous pouvez mettre à jour la liste compléte de tous vos adhérents. <br /><br />
 Ceux qui ne vous ont rien apportés cette année mais qui reste adhérent doivent resté cochés.</p>
 
+<a class="btn btn-secondary" href="<?php echo url_for("parcellaireaffectationcoop_ajout_apporteurs", $parcellaireAffectationCoop); ?>">Ajouter un apporteur</a>
+
 <form action="" method="post" class="form-horizontal">
     <table class="table table-condensed table-striped table-bordered">
         <tr>
@@ -37,7 +39,7 @@ Ceux qui ne vous ont rien apportés cette année mais qui reste adhérent doiven
                 <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->cvi; ?>
             </td>
             <td class="">
-                <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->nom; ?>
+                <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->nom; ?> <span class="text-muted"><?php echo $idApporteur; ?></span>
             </td>
 
         </tr>

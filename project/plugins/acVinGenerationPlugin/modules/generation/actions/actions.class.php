@@ -46,7 +46,7 @@ class generationActions extends sfActions {
             throw new sfException("Vous n'avez pas les droits d'accéder à cette page");
         }
 
-        $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_SHELL, 100);
+        $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_SHELL, 100, $this->getUser()->getRegion());
 
         $this->tasks = [];
         foreach(glob(sfConfig::get('sf_root_dir').'/bin/tasks/*.sh') as $script) {

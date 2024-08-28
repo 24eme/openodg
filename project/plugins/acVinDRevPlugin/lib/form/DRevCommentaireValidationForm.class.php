@@ -3,7 +3,7 @@
 class DRevCommentaireValidationForm extends acCouchdbForm
 {
     public function configure() {
-        if(sfContext::getInstance()->getUser()->isAdmin()) {
+        if(sfContext::getInstance()->getUser()->isAdminODG()) {
             $this->setWidget('commentaire', new sfWidgetFormTextarea(array('default' => $this->getDocument()->commentaire)));
             $this->validatorSchema['commentaire'] = new sfValidatorPass();
         }

@@ -1,6 +1,10 @@
 #!/bin/bash
 . bin/config.inc
 
+if ! test "$SYMFONYTASKOPTIONS"; then
+    exit
+fi
+
 mkdir $EXPORTDIR 2> /dev/null
 
 DREVPATH=$1

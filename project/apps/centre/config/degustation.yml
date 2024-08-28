@@ -1,7 +1,9 @@
 all:
   configuration:
     degustation:
+      nb_etiquettes: 4
       anonymisation_manuelle: true
+      typicite_cepage: false
       conformite:
         - CONFORME
         - NONCONFORME_ANALYTIQUE

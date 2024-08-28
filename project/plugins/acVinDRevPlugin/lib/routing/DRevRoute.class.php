@@ -4,6 +4,9 @@ class DRevRoute extends EtablissementRoute implements InterfaceDeclarationRoute 
     protected $drev = null;
 
     protected function getObjectForParameters($parameters = null) {
+        if ($this->drev) {
+            return $this->drev;
+        }
         $this->drev = DRevClient::getInstance()->find($parameters['id']);
         if (!$this->drev) {
 
@@ -18,7 +21,8 @@ class DRevRoute extends EtablissementRoute implements InterfaceDeclarationRoute 
         return $parameters;
     }
 
-    public function getDRev() {
+    public function getDRev($parameters = null) {
+        $this->getEtablissement($parameters);
         if (!$this->drev) {
             $this->getObject();
         }

@@ -1,7 +1,26 @@
 all:
   configuration:
     societe:
+      visualisation_teledeclaration: true
       droits:
-          "degustateur:porteur_de_memoire": "Dégustateur : Porteur de memoire"
-          "degustateur:technicien": "Dégustateur : Technicien"
-          "degustateur:usager_du_produit": "Dégustateur : Usager du produit"
+        "degustateur:porteur_de_memoire:POUILLY": "Dégustateur POUILLY : Porteur de mémoire"
+        "degustateur:technicien:POUILLY": "Dégustateur POUILLY : Technicien"
+        "degustateur:usager_du_produit:POUILLY": "Dégustateur POUILLY : Usager du produit"
+        "degustateur:porteur_de_memoire:MENETOUSALON": "Dégustateur MENETOUSALON : Porteur de mémoire"
+        "degustateur:technicien:MENETOUSALON": "Dégustateur MENETOUSALON : Technicien"
+        "degustateur:usager_du_produit:MENETOUSALON": "Dégustateur MENETOUSALON : Usager du produit"
+        "degustateur:porteur_de_memoire:QUINCY": "Dégustateur QUINCY : Porteur de mémoire"
+        "degustateur:technicien:QUINCY": "Dégustateur QUINCY : Technicien"
+        "degustateur:usager_du_produit:QUINCY": "Dégustateur QUINCY : Usager du produit"
+        "degustateur:porteur_de_memoire:REUILLY": "Dégustateur REUILLY : Porteur de mémoire"
+        "degustateur:technicien:REUILLY": "Dégustateur REUILLY : Technicien"
+        "degustateur:usager_du_produit:REUILLY": "Dégustateur REUILLY : Usager du produit"
+        "degustateur:porteur_de_memoire:CHATEAUMEILLANT": "Dégustateur CHATEAUMEILLANT : Porteur de mémoire"
+        "degustateur:technicien:CHATEAUMEILLANT": "Dégustateur CHATEAUMEILLANT : Technicien"
+        "degustateur:usager_du_produit:CHATEAUMEILLANT": "Dégustateur CHATEAUMEILLANT : Usager du produit"
+        "degustateur:porteur_de_memoire:GIENNOIS": "Dégustateur GIENNOIS : Porteur de mémoire"
+        "degustateur:technicien:GIENNOIS": "Dégustateur GIENNOIS : Technicien"
+        "degustateur:usager_du_produit:GIENNOIS": "Dégustateur GIENNOIS : Usager du produit"
+        "degustateur:porteur_de_memoire:SANCERRE": "Dégustateur SANCERRE : Porteur de mémoire"
+        "degustateur:technicien:SANCERRE": "Dégustateur SANCERRE : Technicien"
+        "degustateur:usager_du_produit:SANCERRE": "Dégustateur SANCERRE : Usager du produit"

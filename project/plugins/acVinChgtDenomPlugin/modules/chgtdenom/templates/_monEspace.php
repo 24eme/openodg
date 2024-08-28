@@ -1,3 +1,4 @@
+<?php if (!ChgtDenomConfiguration::getInstance()->isDematEnabled()) return false; ?>
 <?php use_helper('Date'); ?>
 
 <div class="col-sm-6 col-md-4 col-xs-12">

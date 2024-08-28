@@ -145,4 +145,49 @@
         input.value = ''
       }
     });
+
+    const tableFiltre = document.querySelector('#table_filtre')
+    const lines = document.querySelectorAll('.table_filterable tbody tr.searchable');
+    const clear = document.querySelector('.table_filterable tbody tr:not(.searchable)')
+    const annulerFiltre = document.getElementById('btn_annuler_filtre')
+
+    tableFiltre?.addEventListener('keyup', function() {
+        const terms = this.value.split(' ');
+        lines.forEach(function(line, index) {
+            const words = line.innerText;
+
+            for(keyTerm in terms) {
+                var termRegexp = new RegExp(terms[keyTerm], 'i');
+                if(words.search(termRegexp) < 0) {
+                    line.classList.add("hidden");
+                    return;
+                }
+            }
+
+            line.classList.remove("hidden");
+        });
+
+        if(document.querySelectorAll(".table_filterable tbody tr.searchable.hidden").length == document.querySelectorAll(".table_filterable tbody tr.searchable").length) {
+            clear.classList.remove('hidden');
+        } else {
+            clear.classList.add('hidden');
+        }
+
+        if(this.value) {
+            annulerFiltre.classList.remove('hidden');
+        } else {
+            annulerFiltre.classList.add('hidden');
+        }
+    });
+
+    document.getElementById('btn_annuler_filtre_table')?.addEventListener('click', function(e) {
+        annulerFiltre.click();
+        return false;
+    });
+
+    document.getElementById('btn_annuler_filtre')?.addEventListener('click', function(e) {
+        document.querySelector('#table_filtre').value = "";
+        document.querySelector('#table_filtre').dispatchEvent(new Event("keyup"))
+        return false;
+    });
   });

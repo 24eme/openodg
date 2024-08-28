@@ -6,7 +6,7 @@ class acCouchdbJsonDefinition {
     private $_hash = null;
     private $_model = null;
     private $_inheritance = null;
-
+    private $_required_fields = null;
 
     public function __construct($model, $hash) {
         $this->_fields = array();

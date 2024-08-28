@@ -108,7 +108,7 @@ class fichierActions extends sfActions
     }
 
     public function executeUpload(sfWebRequest $request) {
-    	$this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(['allow_habilitation' => true]);
 
 		if($request->getParameter('fichier_id') && !$this->getUser()->isAdmin()) {
 
@@ -117,7 +117,10 @@ class fichierActions extends sfActions
 
     	$this->fichier_id = $request->getParameter('fichier_id');
 
-    	$this->fichier = ($this->fichier_id) ? FichierClient::getInstance()->find($this->fichier_id) : FichierClient::getInstance()->createDoc($this->etablissement->identifiant, true);
+    	$this->fichier = ($this->fichier_id) ? FichierClient::getInstance()->find($this->fichier_id) : null;
+        if (!$this->fichier) {
+            $this->fichier = FichierClient::getInstance()->createDoc($this->etablissement->identifiant, true);
+        }
 
 		$categories = null;
 
@@ -140,7 +143,10 @@ class fichierActions extends sfActions
     	}
 
     	$this->form->save();
-    	return ($request->hasParameter('keep_page'))? $this->redirect('upload_fichier', array('fichier_id' => $this->fichier->_id, 'sf_subject' => $this->etablissement)) : $this->redirect('pieces_historique', $this->etablissement);
+        if ($request->hasParameter('keep_page')) {
+            return $this->redirect('upload_fichier', array('fichier_id' => $this->fichier->_id, 'identifiant' => $this->etablissement->identifiant));
+        }
+        return $this->redirect('pieces_historique', array('identifiant' => $this->etablissement->identifiant));
     }
 
 	protected function getCategoriesLimitation() {
@@ -149,7 +155,7 @@ class fichierActions extends sfActions
 	}
 
 	public function executePiecesHistorique(sfWebRequest $request) {
-		$this->etablissement = $this->getRoute()->getEtablissement();
+		$this->etablissement = $this->getRoute()->getEtablissement(['allow_stalker' => true, 'allow_habilitation' => true]);
 		$this->societe = $this->etablissement->getSociete();
 		$this->secureEtablissement($this->etablissement);
 
@@ -294,7 +300,7 @@ class fichierActions extends sfActions
 	}
 
 	protected function secureEtablissement($etablissement) {
-        if (class_exists("AppUser") && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION) && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_STALKER) && !EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
+        if (class_exists("AppUser") && !$this->getUser()->hasHabilitation() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_STALKER) && !EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
 
             return $this->forwardSecure();
         }

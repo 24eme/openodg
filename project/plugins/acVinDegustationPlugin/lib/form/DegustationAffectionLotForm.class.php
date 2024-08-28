@@ -29,13 +29,13 @@ class DegustationAffectionLotForm extends BaseForm
     public function getDegustationChoices() {
         $degustations = array();
         if ($this->en_cours) {
-            $listeDegustations = DegustationClient::getInstance()->getHistoryEncours();
+            $listeDegustations = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON, Organisme::getCurrentRegion());
         }else{
             $listeDegustations = DegustationClient::getInstance()->getHistory(100);
         }
 
         foreach ($listeDegustations as $degustation_id => $degustation) {
-          $degustations[$degustation_id] = "Degustation du ".$degustation->date." au ".$degustation->lieu;
+          $degustations[$degustation->_id] = "Degustation du ".$degustation->date." au ".$degustation->lieu;
         }
         return $degustations;
     }

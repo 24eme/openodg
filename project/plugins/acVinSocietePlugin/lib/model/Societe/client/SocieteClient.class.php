@@ -48,15 +48,15 @@ class SocieteClient extends acCouchdbClient {
     }
 
     private function findByField($field, $siret) {
-        $index = acElasticaManager::getType('SOCIETE');
-        $elasticaQueryString = new acElasticaQueryQueryString();
-        $elasticaQueryString->setDefaultOperator('AND');
-        $elasticaQueryString->setQuery(sprintf("doc.$field:%s", $siret));
-        $q = new acElasticaQuery();
-        $q->setQuery($elasticaQueryString);
-        $q->setLimit(1);
-
         try {
+            $index = acElasticaManager::getType('SOCIETE');
+            $elasticaQueryString = new acElasticaQueryQueryString();
+            $elasticaQueryString->setDefaultOperator('AND');
+            $elasticaQueryString->setQuery(sprintf("doc.$field:%s", $siret));
+            $q = new acElasticaQuery();
+            $q->setQuery($elasticaQueryString);
+            $q->setLimit(1);
+
             $res = $index->search($q);
 
             foreach ($res->getResults() as $er) {

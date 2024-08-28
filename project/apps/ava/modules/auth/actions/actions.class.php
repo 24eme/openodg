@@ -35,6 +35,7 @@ class authActions extends sfActions
         $urlBack = $this->generateUrl('accueil', array(), true);
 
         if(sfConfig::get("app_auth_mode") == 'CAS') {
+            unset($_SESSION['app_cas_origin']);
             acCas::processLogout($urlBack);
         }
 

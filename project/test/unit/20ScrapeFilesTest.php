@@ -23,7 +23,7 @@ if ($dr) {
 	$t->comment('Création société '.$societeviti->_id);
 
 	$etablissementviti = $societeviti->createEtablissement(EtablissementFamilles::FAMILLE_PRODUCTEUR);
-	$etablissementviti->region = EtablissementClient::REGION_CVO;
+	$etablissementviti->region = EtablissementClient::REGION_IS_REGION;
 	$etablissementviti->nom = "Etablissement viti test";
 	$etablissementviti->cvi = $etab->cvi;
 	$etablissementviti->siege->commune = "NEUILLY";

@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Model for Tournee
+ * Classe tournée de l'AVA
  *
  */
-class Tournee extends BaseTournee {
+class Tournee/***AVA***/ extends BaseTournee {
 
     protected $degustations_object = array();
 

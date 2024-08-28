@@ -40,13 +40,22 @@ th {
           </tr>
         </thead>
         <tbody>
-          <?php for( $i = 0; $i<5; $i++): ?>
+        <?php foreach ($degustation->getDegustateursConfirmesTableOrFreeTable($numTab) as $id_compte => $degustateur): ?>
+            <?php $compte = CompteClient::getInstance()->find($id_compte); ?>
               <tr>
-                <td style="width:35%; text-align:left; margin-left: 1em;">&nbsp;<br/>&nbsp;</td>
-                <td style="width:35%; text-align:left; margin-left: 1em;"><br/></td>
+                <td class="text-center" style="width:35%; margin-left: 1em;"><?php echo $compte->getNom() ?>&nbsp;<br/>&nbsp;</td>
+                <td class="text-center" style="width:35%; margin-left: 1em;"><?php echo $compte->getPrenom() ?><br/></td>
                 <td style="width:30%"><br/></td>
               </tr>
-          <?php endfor; ?>
+          <?php endforeach; ?>
+        <?php $t = count($degustation->getDegustateursConfirmesTableOrFreeTable($numTab)); ?>
+        <?php for ($i = $t; $i<5; $i++): ?>
+        <tr>
+            <td class="text-center" style="width:35%; margin-left: 1em;">&nbsp;<br/>&nbsp;</td>
+            <td class="text-center" style="width:35%; margin-left: 1em;"><br/></td>
+            <td style="width:30%"><br/></td>
+        </tr>
+        <?php endfor; ?>
         </tbody>
       </table>
       <div></div>
@@ -98,10 +107,15 @@ th {
          <tr style="line-height:15px;">
            <td><?php echo tdStart() ?><strong><small><?php echo $lotInfo->getNumeroAnonymat() ?></small></strong></td>
            <td><?php echo tdStart() ?><small><?php echo substrUtf8(strip_tags(showOnlyProduit($lotInfo, false)), 0, 35);; ?></small><br/><small><?php echo showOnlyCepages($lotInfo, 45);?></small></td>
+           <?php if (DegustationConfiguration::getInstance()->hasTypiciteCepage()) : ?>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
+           <?php else : ?>
+           <td><?php echo tdStart() ?><span class="zap">o</span></td>
+           <td><?php echo tdStart() ?><span class="zap">o</span></td>
+           <?php endif ?>
            <td><?php echo tdStart() ?>&nbsp;</td>
            <td><?php echo tdStart() ?>&nbsp;</td>
          </tr>

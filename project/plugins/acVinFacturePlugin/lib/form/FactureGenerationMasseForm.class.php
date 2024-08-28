@@ -37,6 +37,11 @@ class FactureGenerationMasseForm extends FactureGenerationForm {
         $this->widgetSchema->setNameFormat('facture_generation[%s]');
     }
 
+    public function getRegions() {
+        $r = Organisme::getCurrentOrganisme();
+        return array($r => $r);
+    }
+
     public function getModeleChoices() {
         return array(
             GenerationClient::TYPE_DOCUMENT_FACTURES => 'Facturation',

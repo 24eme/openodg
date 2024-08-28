@@ -4,6 +4,7 @@ DR:
   definition:
     fields:
       campagne: { }
+      has_metayers: { required: false }
       donnees:
         required: false
         type: array_collection
@@ -14,6 +15,9 @@ DR:
               type: collection
               definition:
                 fields:
+                  declarant_identifiant: { required: false }
+                  declarant_cvi: { required: false }
+                  declarant_raison_sociale: { required: false }
                   produit: { }
                   produit_libelle: { }
                   complement: { }
@@ -47,6 +51,7 @@ DR:
             fax: { }
             email: { }
             famille: { }
+      region: { required: false }
       mouvements:
         type: collection
         definition:

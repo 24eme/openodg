@@ -7,6 +7,11 @@ class DRevDeclarationCepage extends BaseDRevDeclarationCepage
 		return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
 	}
 
+    public function getRegion() {
+
+        return RegionConfiguration::getInstance()->getOdgRegion($this->getHash());
+    }
+
     protected function getProduitsByRegion($region) {
 		$produits = array();
 		$regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($region);

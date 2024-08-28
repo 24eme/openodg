@@ -38,6 +38,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
         public function getDateFormat($format = 'Y-m-d') {
+            if ($this->validation) {
+                return explode('T', $this->validation)[0];
+            }
             if (!$this->date) {
                 return date($format);
             }
@@ -255,6 +258,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return null;
     }
 
+    public function getOrigineProduitLibelleAndCepages() {
+        $l = $this->getOrigineProduitLibelle();
+        if (count($this->origine_cepages)) {
+            $l .= ' (';
+            $l .= implode(', ', array_keys($this->origine_cepages->toArray()));
+            $l .= ')';
+        }
+        return $l;
+    }
+
     public function getCampagne() {
         if(is_null($this->_get('campagne'))) {
             $firstOrigineLot = $this->getFirstOrigineLot();
@@ -385,8 +398,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $this->fillDocToSaveFromLots();
         }
         $saved = parent::save($saveDependants);
-
-        $this->saveDocumentsDependants();
+        if ($saveDependants) {
+            $this->saveDocumentsDependants();
+        }
 
         return $saved;
     }
@@ -728,8 +742,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     /**** MOUVEMENTS ****/
 
-    public function getTemplateFacture() {
-        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagneByDate());
+    public function getTemplateFacture($region = null) {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagneByDate(), $region);
     }
 
     public function getMouvementsFactures() {
@@ -737,8 +751,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $this->_get('mouvements');
     }
 
-    public function getMouvementsFacturesCalcule() {
-      $templateFacture = $this->getTemplateFacture();
+    public function getMouvementsFacturesCalcule($region = null) {
+      $templateFacture = $this->getTemplateFacture($region);
       if(!$templateFacture) {
           return array();
       }
@@ -810,7 +824,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     /**** FIN DES MOUVEMENTS ****/
 
-    public function getFirstChgtDenomFacturable($produitFilter = null)
+    public function getFirstChgtDenomFacturable(TemplateFactureCotisationCallbackParameters $produitFilter)
     {
         if ($this->isDeclassement()) {
           return;
@@ -819,7 +833,17 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $this->getFirstChgtDenomOrDeclassementFacturable($produitFilter);
     }
 
-    public function getFirstChgtDenomOrDeclassementFacturable($produitFilter = null)
+    public function getNbLots(TemplateFactureCotisationCallbackParameters $produitFilter) {
+        if ($this->validation_odg) {
+            return 0;
+        }
+        if (!$this->matchFilter($produitFilter)) {
+            return 0;
+        }
+        return 1;
+    }
+
+    public function getFirstChgtDenomOrDeclassementFacturable(TemplateFactureCotisationCallbackParameters $produitFilter)
     {
 
       $chgtdenoms = ChgtDenomClient::getInstance()->getHistoryCampagne(
@@ -839,34 +863,37 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return $first !== false && $first == $this->_id;
     }
 
-    public function getSecondChgtDenomOrDeclassementFacturable($produitFilter = null)
+    public function getSecondChgtDenomOrDeclassementFacturable(TemplateFactureCotisationCallbackParameters $produitFilter)
     {
         return !$this->getFirstChgtDenomOrDeclassementFacturable($produitFilter);
     }
 
-    public function matchFilter($produitFilter = null, $chgtdenom = null)
+    public function matchFilter(TemplateFactureCotisationCallbackParameters $produitFilter = null, $chgtdenom = null)
     {
         if ($chgtdenom === null) {
             $chgtdenom = $this;
         }
 
-        $match = true;
-        $filters = ($produitFilter)? explode(" AND ", $produitFilter) : [];
+        if ($produitFilter === null) {
+            $produitFilter = [];
+        }
 
-        foreach ($filters as $filter) {
-            if (strpos($filter, 'appellations') !== false) {
+        $match = true;
+
+        foreach ($produitFilter->getParameters() as $type => $filter) {
+            if ($type === 'appellations') {
                 // filtre sur produit
                 $match = $match && $this->produitFilter($filter, $chgtdenom);
-            } elseif (strpos($filter, '/millesime/courant') !== false) {
+            } elseif ($type === 'millesime') {
                 // filtre sur millesime
                 $isMillesimeCourant = ($this->changement_millesime == substr($this->getCampagneByDate(),0, 4));
                 if(strpos($filter, 'NOT') !== false) {
                     $isMillesimeCourant = !$isMillesimeCourant;
                 }
                 $match = $match && $isMillesimeCourant;
-            } elseif (strpos($filter, 'origine') !== false) {
+            } elseif ($type === 'origine') {
                 $match = $match && $this->origineFilter($filter);
-            } else {
+            } elseif ($type === 'famille') {
                 // filtre sur famille
                 $match = $match && $this->isDeclarantFamille($filter);
             }
@@ -890,7 +917,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return true;
     }
 
-    public function getVolumeFacturable($filter = null)
+    public function getVolumeFacturable(TemplateFactureCotisationCallbackParameters $filter)
     {
         if ($this->matchFilter($filter) === false) {
             return;

@@ -119,6 +119,11 @@ class DeclarationClient
             return 'ExportParcellaireIntentionAffectationCSV';
         }
 
+        if(class_exists("ParcellaireManquantClient") && $type == ParcellaireManquantClient::TYPE_MODEL) {
+
+            return 'ExportParcellaireManquantCSV';
+        }
+
         if(class_exists("DegustationClient") && $type == DegustationClient::TYPE_MODEL) {
 
             return 'ExportDegustationCSV';
@@ -126,6 +131,11 @@ class DeclarationClient
 
         if(class_exists("AdelpheClient") && $type == AdelpheClient::TYPE_MODEL) {
           return 'ExportAdelpheCSV';
+        }
+
+        if (class_exists('CourrierClient') && $type = CourrierClient::TYPE_MODEL) {
+
+            return 'ExportCourrierCSV';
         }
 
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));

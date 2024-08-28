@@ -9,6 +9,7 @@ class DegustationTriTableForm extends BaseForm
         DegustationClient::DEGUSTATION_TRI_COULEUR => 'Couleur',
         DegustationClient::DEGUSTATION_TRI_CEPAGE => 'Cépage',
         DegustationClient::DEGUSTATION_TRI_MILLESIME => 'Millesime',
+        DegustationClient::DEGUSTATION_TRI_OPERATEUR => 'Opérateur',
         DegustationClient::DEGUSTATION_TRI_MANUEL => 'Manuel'
     );
 

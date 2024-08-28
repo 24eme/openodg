@@ -2,7 +2,7 @@
   <li class="active"><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
 </ol>
 
-<?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm")): ?>
+<?php if (($sf_user->hasFactureAdmin()) && class_exists("EtablissementChoiceForm")): ?>
     <?php include_partial('etablissement/formChoice', array('form' => $formSociete, 'action' => url_for('facturation'), 'noautofocus' => true)); ?>
 <?php else: ?>
 <div class="row row-margin">
@@ -29,7 +29,13 @@
 </div>
 <?php endif; ?>
 
+<small class="pull-right"><a href="<?php echo url_for("facturation_historique") ?>"><i class="glyphicon glyphicon-list"></i> Voir toutes les factures</a></small>
+<h3>Historique des 10 dernières factures</h3>
+<?php include_partial('facturation/lastFactures', array('factures' => $factures)); ?>
+<div class="text-right"><small><a href="<?php echo url_for("facturation_historique") ?>"><i class="glyphicon glyphicon-list"></i> Voir toutes les factures</a></small></div>
+
 <?php include_partial('facturation/generationForm', array('form' => $formFacturationMassive, 'massive' => true)); ?>
+
 
 <h3>Historique des générations</h3>
 <?php include_partial('generation/list', array('generations' => $generations)); ?>

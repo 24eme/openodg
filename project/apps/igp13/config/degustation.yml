@@ -2,6 +2,7 @@ all:
   configuration:
     degustation:
       specificite_lot_pdf: true
+      always_identifiant_table: true
       conformite:
         - CONFORME
         - NONCONFORME_MINEUR
@@ -9,3 +10,4 @@ all:
         - NONCONFORME_GRAVE
         - NONTYPICITE_CEPAGE
         - NONCONFORME_ANALYTIQUE
+      has_notification: true

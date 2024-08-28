@@ -101,16 +101,16 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           return $couleurs;
       }
 
-      public function addLot($imported = false) {
+      public function addLot($imported = false, $auto_millesime = true) {
           $lot = $this->add('lots')->add();
           $lot->id_document = $this->_id;
           $lot->campagne = $this->getCampagne();
-          $lot->millesime = preg_replace('/-.*/', '', $this->campagne);
+          if ($auto_millesime) {
+              $lot->millesime = preg_replace('/-.*/', '', $this->campagne);
+          }
           $lot->declarant_identifiant = $this->identifiant;
           $lot->declarant_nom = $this->declarant->raison_sociale;
           $lot->affectable = true;
-          $lot->adresse_logement = $this->constructAdresseLogement();
-
           $lot->initDefault();
           return $lot;
       }
@@ -195,9 +195,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
         if(is_null($date)) {
             $date = date('Y-m-d');
         }
-        if(!$region && RegionConfiguration::getInstance()->hasOdgProduits() && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
-            throw new sfException("La validation nécessite une région");
-        }
+
         if(RegionConfiguration::getInstance()->hasOdgProduits() && $region){
             return $this->validateOdgByRegion($date, $region);
         }
@@ -225,6 +223,16 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
         }
     }
 
+    public function getRegions() {
+        $regions = [];
+        foreach ($this->getLots() as $lot) {
+            if ($lot->produit_hash) {
+                $regions[] = $lot->getRegion();
+            }
+        }
+        return array_values(array_unique($regions));
+    }
+
       public function devalidate() {
           $this->validation = null;
           $this->validation_odg = null;
@@ -239,7 +247,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
                   $produit->validateOdg($date);
               }
           } else {
-              foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+              foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
                   $this->validateOdg($date, $region);
               }
           }
@@ -297,6 +305,9 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
       }
 
       public function isAdresseLogementDifferente() {
+          if (!$this->exist('chais')) {
+              return false;
+          }
           if(!$this->chais->nom && !$this->chais->adresse && !$this->chais->commune && !$this->chais->code_postal) {
               return false;
           }
@@ -305,10 +316,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
 
       public function constructAdresseLogement(){
-          $completeAdresse = sprintf("%s — %s — %s — %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
+          $completeAdresse = sprintf("%s — %s — %s %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
 
           if($this->isAdresseLogementDifferente()){
-              $completeAdresse = sprintf("%s — %s — %s — %s",$this->chais->nom,$this->chais->adresse,$this->chais->code_postal,$this->chais->commune);
+              $completeAdresse = sprintf("%s — %s — %s %s",$this->chais->nom,$this->chais->adresse,$this->chais->code_postal,$this->chais->commune);
           }
 
           return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
@@ -335,12 +346,18 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
     	protected function doSave() {
             $this->piece_document->generatePieces();
+            $this->updateAdresseLogementLots();
     	}
 
         public function saveDeclaration($saveDependants = true) {
             $this->archiver();
             if ($this->isValideeOdg()) {
                 $this->generateMouvementsLots();
+            }
+
+            $regions = $this->getRegions();
+            if (count($regions)) {
+                $this->add('region', implode('|', $regions));
             }
 
             $saved = parent::save();
@@ -487,10 +504,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           return $this->exist('lecture_seule') && $this->get('lecture_seule');
       }
 
-      public function getVolumeRevendiqueLots($produitFilter = null){
+      public function getVolumeRevendiqueLots(TemplateFactureCotisationCallbackParameters $produitFilter){
         $total = 0;
         foreach($this->lots as $lot) {
-            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+            if (DRevClient::getInstance()->matchFilterLot($lot, $produitFilter) === false) {
                 continue;
             }
 
@@ -550,7 +567,17 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
               $lot->updateDocumentDependances();
               $lot->updateStatut();
 
-              $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
+              if($lot->id_document_provenance) {
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changé pour : ".$lot->getLibelle().", ".$lot->volume." hl"));
+              }
+
+              if ($lot->document_ordre == "01") {
+                  if ($lot->getDocument()->type == DRevClient::TYPE_MODEL) {
+                      $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
+                  }else{
+                      $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_DECLARE));
+                  }
+              }
 
               if ($lot->elevage === true) {
                   $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVAGE_EN_ATTENTE));
@@ -566,8 +593,12 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
                   $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
               }
 
-              if($lot->isAffecte()) {
-                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, '1er passage'));
+              if($lot->isAffecte() && !preg_match('/^(TOURNEE)/', $lot->id_document_affectation)) {
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC,  Lot::generateTextePassageMouvement($lot->getNombrePassage() + 1)));
+
+                  continue;
+              }
+              if($lot->isAffecte() && preg_match('/^(TOURNEE)/', $lot->id_document_affectation)) {
                   continue;
               }
               if ($lot->isAffectable()) {
@@ -582,8 +613,12 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
     /** MOUVEMENTS FACTURES **/
 
-    public function getTemplateFacture() {
-        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
+    public function getTemplateFacture($region = null) {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getPeriode(), $region);
+    }
+
+    public function getPeriode() {
+        return substr($this->getCampagne(), 0, 4);
     }
 
     public function getMouvementsFactures() {
@@ -591,9 +626,8 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
         return $this->_get('mouvements');
     }
 
-    public function getMouvementsFacturesCalcule() {
-
-      $templateFacture = $this->getTemplateFacture();
+    public function getMouvementsFacturesCalcule($region = null) {
+      $templateFacture = $this->getTemplateFacture($region);
       if(!$templateFacture) {
           return array();
       }
@@ -605,6 +639,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
       $mouvements = array();
 
       $rienAFacturer = true;
+
+      if(!$cotisations) {
+          $cotisations = [];
+      }
 
       foreach($cotisations as $cotisation) {
           $mouvement = ConditionnementMouvementFactures::freeInstance($this);
@@ -674,5 +712,18 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
     public function hasDocumentDouanier() {
         return false;
+    }
+
+    public function updateAdresseLogementLots() {
+        foreach($this->lots as $lot) {
+            $lot->adresse_logement = $this->constructAdresseLogement();
+            if ($lot->exist('secteur')) {
+                $lot->secteur = $this->getSecteur();
+            }
+        }
+    }
+
+    public function getSecteur() {
+        return ($this->chais->exist('secteur'))? $this->chais->secteur : null;
     }
 }

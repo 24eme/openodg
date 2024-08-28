@@ -76,11 +76,11 @@
                  <th colspan="6" class="bg-white" style="width:56%;"><?php echo tdStart() ?><strong>Liste des lots</strong> <small>(Trié par table et n° anonymat)</small></th>
               </tr>
               <tr style="line-height:13px;">
-                <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N° Lot ODG</small></strong></th>
                 <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N° Dos</small></strong></th>
-                <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>Cuve</small></strong></th>
+                <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N° Lot</small></strong></th>
+                <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>Id Lot Opérateur</small></strong></th>
                 <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>Volume</small></strong></th>
-                <th class="bg-white" style="width:30%;"><?php echo tdStart() ?><strong><small>Produit millesime cépage</small></strong></th>
+                <th class="bg-white" style="width:30%;"><?php echo tdStart() ?><strong><small>Produit millésime cépage</small></strong></th>
               </tr>
           <?php endif; ?>
           <tr class="<?php echo $class; ?>" >
@@ -88,8 +88,8 @@
             <td><small><?php echo DegustationClient::getNumeroTableStr($table) ?></small></td>
             <td style="text-align: left;"><small><?php echo substrUtf8($lot->declarant_nom, 0, 33) ?><br /><span style="color:grey;"><?php echo $lot->declarant_identifiant;?></span></small></td>
 
-            <td><small><?php echo $lot->numero_archive ?></small></td>
             <td><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?></small></td>
+            <td><small><?php echo $lot->numero_archive ?></small></td>
             <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
             <td style="text-align: right;"><small><?php echo number_format($lot->volume, 2) ?>&nbsp;hl &nbsp;</small></td>
             <td style="text-align: left;"><small><?php echo showOnlyProduit($lot, false) ?><br/><?php echo showOnlyCepages($lot, 70) ?></small></td>

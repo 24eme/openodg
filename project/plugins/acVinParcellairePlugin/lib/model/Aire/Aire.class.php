@@ -85,11 +85,16 @@ class Aire extends BaseAire {
         return $this->geoparcelle;
     }
 
-    public function isInAire(Geometry $geoparcelle) {
+    public function getPcInAire(Geometry $geoparcelle) {
         $pc = 0;
         if ($geoparcelle->area()) {
             $pc = $this->getGeoParcelle()->intersection($geoparcelle)->area() / $geoparcelle->area();
         }
+        return $pc;
+    }
+
+    public function isInAire(Geometry $geoparcelle) {
+        $pc = $this->getPcInAire($geoparcelle);
         if ($pc > 0.99) {
             return AireClient::PARCELLAIRE_AIRE_TOTALEMENT;
         }

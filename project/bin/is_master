@@ -16,6 +16,10 @@ else
     . $(echo $0 | sed 's/[^\/]*$//')config_"$1".inc
 fi
 
+if ! test $PROJETURL ; then
+    exit 0;
+fi
+
 if test $(hostname) = "$(torsocks curl -s $PROJETURL"/master.php" 2> /dev/null)" ; then
 	exit 0;
 else

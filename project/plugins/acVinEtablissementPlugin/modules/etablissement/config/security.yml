@@ -1,6 +1,6 @@
 all:
   is_secure: true
-  credentials: contacts
+  credentials: [[contacts, ADMIN_ODG, AMDIN]]
 
 visualisation:
   is_secure: true

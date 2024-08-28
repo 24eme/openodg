@@ -21,7 +21,7 @@ class ExportDeclarationLotsPDFConfig extends acTCPDFConfig
         $this->margin_footer = 15;
 
         $this->path_images = sfConfig::get('sf_web_dir').'/images/pdf/';
-        $this->header_logo = 'logo_'.strtolower(sfConfig::get('sf_app')).'.jpg';
+        $this->header_logo = 'logo_'.strtolower(Organisme::getCurrentOrganisme()).'.jpg';
         $this->header_logo_width = 40;
 
     }
