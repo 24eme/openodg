@@ -15,7 +15,14 @@ if(isset($coop)):
 
 <h2>Affectation de vos parcelles</h2>
 
-<p>Les parcelles listées ci-dessous sont reprises depuis le parcellaire douanier, elles sont affecectables par destination.</p>
+<?php $parcellaire2reference = $parcellaireAffectation->getParcellaire2Reference(); ?>
+<p>Les parcelles listées ci-dessous sont reprises
+<?php if (strpos($parcellaire2reference->_id, 'PARCELLAIRE-') !== false) : ?>
+    <a href="<?php echo url_for('parcellaire_visualisation', $parcellaire2reference); ?>">parcellaire douanier</a></p>
+<?php else: ?>
+    l'identification du <?php echo preg_replace('/([0-9]*)-([0-9]*)-([0-9]*)/', '\3/\2/\1', $parcellaire2reference->date);?>
+<?php endif; ?>
+, elles sont affecectables par destination.</p>
 
 <?php if(!$parcellaireAffectation->isAllPreviousParcellesExists()): ?>
     <div class="alert alert-warning">
