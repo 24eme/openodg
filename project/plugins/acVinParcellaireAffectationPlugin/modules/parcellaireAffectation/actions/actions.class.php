@@ -120,11 +120,10 @@ class parcellaireAffectationActions extends sfActions {
             }
         }
 
+        $this->parcellaireAffectation->updateParcellesAffectation();
     	if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_AFFECTATIONS))) {
     		$this->parcellaireAffectation->save();
     	}
-
-        $this->parcellaireAffectation->updateParcellesAffectation();
 
     	$this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
 
