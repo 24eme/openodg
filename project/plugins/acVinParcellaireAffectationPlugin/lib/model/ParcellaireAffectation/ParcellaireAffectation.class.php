@@ -350,16 +350,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getGroupedParcelles($onlyAffectee = false) {
-        if ($onlyAffectee) {
-            if ($this->getDocument()->hasDgc()) {
-                return $this->declaration->getParcellesByDgc($onlyAffectee);
-            }
-            return $this->declaration->getParcellesByCommune($onlyAffectee);
-        }
         if ($this->getDocument()->hasDgc()) {
-            return $this->getParcellesByDgc($onlyAffectee);
+            return $this->declaration->getParcellesByDgc($onlyAffectee);
         }
-        return $this->getParcellesByCommune($onlyAffectee);
+        return $this->declaration->getParcellesByCommune($onlyAffectee);
     }
 
     public function getParcellesByDgc() {

@@ -342,7 +342,9 @@ class ParcellaireClient extends acCouchdbClient {
         $p1->commune = $p2->commune;
         $p1->code_commune = $p2->code_commune;
         $p1->cepage = $p2->cepage;
-        $p1->superficie = $p2->superficie;
+        if ($p1->getDocument()->getType() == 'Parcellaire' || $p2->getDocument()->getType() != 'Parcellaire') {
+            $p1->superficie = $p2->superficie;
+        }
         if ($p1->exist('produit_hash')) {
             $p1->produit_hash = $p2->produit_hash;
         }
