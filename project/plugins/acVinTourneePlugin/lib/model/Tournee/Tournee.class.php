@@ -4,7 +4,7 @@
  * Classe tournée de l'AVA
  *
  */
-class /***AVA***/Tournee extends BaseTournee {
+class Tournee/***AVA***/ extends BaseTournee {
 
     protected $degustations_object = array();
 
