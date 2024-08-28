@@ -95,4 +95,13 @@ abstract class DeclarationParcellaireParcelle extends ParcellaireParcelle {
         return true;
     }
 
+    public function getSuperficie() {
+        $s = $this->_get('superficie');
+        $p = $this->getSuperficieParcellaire();
+        if($s > $p) {
+            return $p;
+        }
+        return $s;
+    }
+
 }

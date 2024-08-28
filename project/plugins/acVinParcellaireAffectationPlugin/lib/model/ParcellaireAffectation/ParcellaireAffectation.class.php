@@ -198,6 +198,20 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $this->piece_document->generatePieces();
     }
 
+
+    public function cleanNonAffectee() {
+        $todelete = [];
+        foreach($this->declaration->getParcelles() as $id => $p) {
+            if ($p->affectee) {
+                continue;
+            }
+            $todelete[] = $p;
+        }
+        foreach($todelete as $p) {
+            $this->remove($p->getHash());
+        }
+    }
+
 	public function isValidee(){
 		return $this->validation;
 	}
@@ -336,7 +350,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function getParcellesByDgc() {
         $parcelles = array();
-        foreach($this->getParcellesFromReference() as $p) {
+        foreach($this->getParcelles() as $p) {
             if (!$p->produit_hash) {
                 continue;
             }
@@ -349,10 +363,17 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                     $parcelles[$d] = array();
                 }
                 $p->produit_hash = $h;
-                $parcelles[$d][] = $p;
+                $parcelles[$d][$p->getParcelleId()] = $p;
             }
         }
+        foreach(array_keys($parcelles) as $k) {
+            ksort($parcelles[$k]);
+        }
         return $parcelles;
+    }
+
+    public function hasDgc() {
+        return (count($this->declaration) >= 1) && !preg_match('/lieux\/DEFAU/', array_keys($this->declaration->toArray())[0]);
     }
 
     public function hasParcellaire() {

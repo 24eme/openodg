@@ -39,7 +39,7 @@ Ceux qui ne vous ont rien apportés cette année mais qui reste adhérent doiven
                 <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->cvi; ?>
             </td>
             <td class="">
-                <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->nom; ?>
+                <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->nom; ?> <span class="text-muted"><?php echo $idApporteur; ?></span>
             </td>
 
         </tr>
