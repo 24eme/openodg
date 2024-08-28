@@ -116,11 +116,12 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return;
     }
     $intention->updateParcelles();
+    $allready_selected = [];
 	foreach ($intention->getParcelles() as $parcelle) {
         if (!$parcelle->affectation) {
             continue;
         }
-        if($this->findParcelle($parcelle, true)) {
+        if($this->findParcelle($parcelle, true, $allready_selected)) {
             continue;
         }
         $this->addParcelle($parcelle);

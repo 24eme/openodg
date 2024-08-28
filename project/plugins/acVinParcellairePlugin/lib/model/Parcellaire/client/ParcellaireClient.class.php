@@ -256,7 +256,7 @@ class ParcellaireClient extends acCouchdbClient {
 
     }
 
-    public static function findParcelle($parcellaire, $parcelle, $scoreMin = 1, $with_cepage_match = false) {
+    public static function findParcelle($parcellaire, $parcelle, $scoreMin = 1, $with_cepage_match = false, &$allready_selected = null) {
         $parcelles = $parcellaire->getParcellesByIdu();
 
         $parcellesMatch = [];
@@ -284,21 +284,32 @@ class ParcellaireClient extends acCouchdbClient {
             if(KeyInflector::slugify($parcelle->lieu) == KeyInflector::slugify($p->lieu)) {
                 $score += 0.25;
             }
-            if($parcelle->_get('parcelle_id') && abs($parcelle->getSuperficieParcellaire() - $p->getSuperficieParcellaire()) < 0.0001) {
-                $score += 0.25;
+            if($parcelle->exist('superficie_parcellaire') && $p->exist('superficie_parcellaire') && abs($parcelle->_get('superficie_parcellaire') - $p->_get('superficie_parcellaire')) < 0.0001) {
+                $score += 0.10;
+            }
+            if(abs($parcelle->_get('superficie') - $p->_get('superficie')) < 0.0001) {
+                $score += 0.10;
+            }
+            if($parcelle->exist('superficie_parcellaire') && abs($parcelle->_get('superficie_parcellaire') - $p->_get('superficie')) < 0.0001) {
+                $score += 0.05;
             }
             if (($parcelle->idu == $p->idu) || !$parcelle->getIDU(false) && ( ($parcelle->section == $p->section) && ($parcelle->numero_parcelle == $p->numero_parcelle) && (intval($parcelle->getPrefix()) == intval($p->prefix))) ) {
                 $score += 0.25;
+            }
+            if ($allready_selected && isset($allready_selected[$p->getParcelleId()])) {
+                continue;
             }
             if($score < $scoreMin) {
                 continue;
             }
 
             $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = $p;
+            if ($allready_selected !== null) {
+                $allready_selected[$p->getParcelleId()] = $p->getParcelleId();
+            }
         }
 
         krsort($parcellesMatch);
-
         foreach($parcellesMatch as $key => $pMatch) {
             if ($with_cepage_match) {
                 if ($pMatch->cepage != $parcelle->cepage) {
