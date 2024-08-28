@@ -35,7 +35,7 @@ foreach($destinataires as $id => $d):
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     <?php $has_parcelles = false; ?>
-    <?php foreach ($parcellaireAffectation->declaration->getGroupedParcelles(false) as $group => $parcelles): ?>
+    <?php foreach ($parcellaireAffectation->getGroupedParcelles(false) as $group => $parcelles):?>
     <?php if ($group): ?>
         <div style="margin-bottom: 1em;" class="row">
             <div class="col-xs-6">

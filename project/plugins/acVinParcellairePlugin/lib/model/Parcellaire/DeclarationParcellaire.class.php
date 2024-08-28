@@ -23,7 +23,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
 
     public function getParcellesByCommunes() {
         $parcelles = [];
-        foreach ($this->declaration->getParcelles() as $p) {
+        foreach ($this->getParcelles() as $p) {
             $c = $p->commune;
             if (!isset($parcelles[$c])) {
                 $parcelles[$c]= [];

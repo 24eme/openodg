@@ -6,13 +6,6 @@
 
 class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclaration {
 
-    public function getGroupedParcelles($onlyAffectee = false) {
-        if ($this->getDocument()->hasDgc()) {
-            return $this->getParcellesByDgc($onlyAffectee);
-        }
-        return $this->getParcellesByCommune($onlyAffectee);
-    }
-
     public function getParcellesByCommune($onlyAffectee = true) {
         $parcelles = array();
 
@@ -60,7 +53,7 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
         $parcelles = array();
         foreach($this as $produit) {
             foreach ($produit->detail as $parcelle) {
-                $parcelles[$parcelle->getHash()] = $parcelle;
+                $parcelles[$parcelle->getParcelleId()] = $parcelle;
             }
         }
 
