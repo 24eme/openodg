@@ -55,4 +55,11 @@ class RegionConfiguration/*** AVA ***/ {
 
         return array_key_first($regions);
     }
+
+    public function getOdgRegions(){
+      if(!$this->hasOdgProduits()){
+        return array();
+      }
+      return array_keys($this->configuration['odg']);
+    }
 }
