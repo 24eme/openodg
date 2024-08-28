@@ -150,4 +150,8 @@ class myUser extends sfBasicSecurityUser
 
         return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasHabilitation() && !$this->hasDrevAdmin() && !$this->isStalker();
     }
+
+    public function hasHabilitation() {
+        return $this->hasCredential(self::CREDENTIAL_HABILITATION)  || $this->isAdminODG();
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-class /***AVA***/drevActions extends sfActions {
+class drevActions/***AVA***/ extends sfActions {
 
     public function executePushDR(sfWebRequest $request) {
         $this->url = $request->getParameter('url');

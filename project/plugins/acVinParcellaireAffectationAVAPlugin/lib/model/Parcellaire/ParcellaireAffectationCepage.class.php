@@ -16,6 +16,11 @@ class ParcellaireAffectationCepage extends BaseParcellaireAffectationCepage {
         return $this->getCouleur()->getLieu();
     }
 
+    public function getProduitHash() {
+
+        return $this->getHash();
+    }
+
     public function getCouleur() {
 
         return $this->getParent();

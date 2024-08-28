@@ -37,6 +37,21 @@ abstract class _ParcellaireAffectationDeclarationNoeud extends acCouchdbDocument
         }
     }
 
+    public function getParcellesByIdu() {
+        if(is_array($this->parcelles_idu)) {
+
+            return $this->parcelles_idu;
+        }
+
+        $this->parcelles_idu = [];
+
+        foreach($this->getParcelles() as $parcelle) {
+            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
+        }
+
+        return $this->parcelles_idu;
+    }
+
     public function getChildrenNodeDeep($level = 1) {
         if ($this->getConfig()->hasManyNoeuds()) {
 

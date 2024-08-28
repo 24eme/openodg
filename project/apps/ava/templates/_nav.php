@@ -46,6 +46,7 @@
                 <ul class="dropdown-menu">
                 <li><a href="/exports">Export</a></li>
                 <li class="<?php if($route instanceof InterfaceExportRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('export'); ?>">Génération</a></li>
+                <li><a href="<?php echo url_for('facturation_template_last') ?>">Template de facturation</a></li>
                 </ul>
             </li>
         </ul>
