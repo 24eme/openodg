@@ -125,8 +125,13 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             continue;
         }
         $this->addParcelle($parcelle);
-	}
+    }
   }
+
+    public function getParcelleById($id) {
+        $p = $this->getParcelles();
+        return $p[$id];
+    }
 
     public function recoverPreviousParcelles() {
         $previous = $this->getPreviousDocument();
