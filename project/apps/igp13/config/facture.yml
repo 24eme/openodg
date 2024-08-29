@@ -1,8 +1,6 @@
 all:
   configuration:
     facture:
-      ligneUnique: false
-      ligneDetailWithTitle: false
       echeances: false
       modalite_paiement: "Par chèque ou virement à réception de facture."
       uniq_template_prefix: "TEMPLATE-FACTURE"

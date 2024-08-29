@@ -8,6 +8,7 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
     protected $piece_document = null;
     protected $repartition_par_parcelle = [];
     protected $parcelles_idu = null;
+    protected $etablissement = null;
 
     public function __construct() {
         parent::__construct();
@@ -29,8 +30,10 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
     }
 
     public function getEtablissementObject() {
-
-        return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+        if(!$this->etablissement) {
+            $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+        }
+        return $this->etablissement;
     }
 
     public function initDoc($identifiant, $campagne, $type = ParcellaireAffectationClient::TYPE_COUCHDB) {

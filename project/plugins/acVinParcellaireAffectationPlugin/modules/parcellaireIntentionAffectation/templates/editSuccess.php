@@ -52,7 +52,7 @@
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
                 <td><?php echo $parcelle->cepage; ?></td>
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
-                <td style="text-align: right;"><?php echo number_format($parcelle->superficie,4); ?></td>
+                <td style="text-align: right;"><?php echo number_format($parcelle->superficie_parcellaire,4); ?></td>
 
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" id = "affectation" class="form-group <?php if($form[$formkey]['affectation']->hasError()): ?>has-error<?php endif; ?>">
@@ -65,7 +65,7 @@
             	<td class="text-center"><?php echo ($parcelle->exist('date_affectation')) ? $parcelle->getDateAffectationFr() : '' ?></td>
                 <td class="text-center <?php if($form[$formkey]['superficie']->renderError()): ?>has-error<?php endif; ?>">
                     <div style="margin-bottom: 0;" id = "surface" class="form-group">
-                        <div class="col-xs-12">
+                        <div class="col-xs-12<?php if ($parcelle->superficie_parcellaire != $parcelle->superficie) { echo " has-warning"; } ?>">
                             <?php echo $form[$formkey]['superficie']->render(array('class' => 'form-control text-right bsswitch-input affecte_superficie' , 'placeholder' => $parcelle->superficie, 'value' => $parcelle->superficie)); ?>
                         </div>
                     </div>

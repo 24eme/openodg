@@ -47,7 +47,7 @@
 
 <?php foreach($parcellesByCommune as $group => $parcelles): ?>
 <br />
-<div><span class="h3">&nbsp;<?php if ($parcellaireAffectation->declaration->isDgcGroup): ?>Dénomination complémentaire <?php endif; ?><?php echo str_replace("-", " ", $group); ?>&nbsp;</span></div>
+<div><span class="h3">&nbsp;<?php if ($parcellaireAffectation->hasDgc()): ?>Dénomination <?php endif; ?><?php echo $group; ?>&nbsp;</span></div>
 
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>

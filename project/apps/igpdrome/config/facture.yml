@@ -1,8 +1,6 @@
 all:
   configuration:
     facture:
-      ligneUnique: false
-      ligneDetailWithTitle: false
       echeances: false
       modalite_paiement: "- Par virement à l'IBAN : %iban% (Code BIC/SWIFT : %bic%) \\ - Par chèque à l'ordre : « Fédération Drômoise des IGP Viticoles - ODG » \\"
       uniq_template_prefix: "TEMPLATE-FACTURE"

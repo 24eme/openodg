@@ -22,7 +22,7 @@
 <?php if ($dgc): ?>
     <div class="row">
         <div class="col-xs-12">
-            <h3>Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?></h3>
+            <h3>Dénomination <?php echo $dgc; ?></h3>
         </div>
     </div>
 <?php endif; ?>
@@ -54,7 +54,7 @@
             $coop_id = explode('-', $coop)[1];
         }
         foreach ($parcelles as $parcelle):
-            if ($coop_id && !$parcelle->destinations->exist($coop_id)) {
+            if ($coop_id && $parcelle->exist('destinations') && !$parcelle->destinations->exist($coop_id)) {
                 continue;
             }
     ?><?php if($parcelle->affectee): $nbParcelles++; $totalSurface += round($parcelle->superficie,4); ?>
@@ -70,7 +70,7 @@
         <tr class="vertical-center<?php if ($parcelle->hasProblemProduitCVI()) echo ' warning' ?>">
             <td><?php echo $parcelle->commune; ?></td>
             <td><?php echo $parcelle->lieu; ?></td>
-            <td class="text-center<?php if (!$parcelle->existsInParcellaire()) echo ' warning text-danger'; ?>">
+            <td class="text-center<?php if ($parcelle->hasProblemParcellaire()) echo ' warning text-danger'; ?>">
                 <?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?>
             </td>
             <td<?php if ($parcelle->hasProblemCepageAutorise()) echo ' class="warning text-danger"'; ?>>

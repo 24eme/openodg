@@ -206,7 +206,7 @@ class acCouchdbJson extends acCouchdbJsonFields implements IteratorAggregate, Ar
                         array($this, $verb), array_merge(array($name), $arguments)
                 );
             } else {
-                throw new acCouchdbException(sprintf('Method undefined : %s', $method));
+                throw new acCouchdbException(sprintf('Method undefined : %s%s->%s', $this->getDocument()->_id, $this->getHash(), $method));
             }
         } else {
             throw new acCouchdbException(sprintf('Method undefined : %s', $method));
