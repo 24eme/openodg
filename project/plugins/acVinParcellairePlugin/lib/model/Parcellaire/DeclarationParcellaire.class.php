@@ -23,7 +23,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
 
     public function getParcellesByCommunes() {
         $parcelles = [];
-        foreach ($this->declaration->getParcelles() as $p) {
+        foreach ($this->getParcelles() as $p) {
             $c = $p->commune;
             if (!isset($parcelles[$c])) {
                 $parcelles[$c]= [];
@@ -150,9 +150,9 @@ class DeclarationParcellaire extends acCouchdbDocument {
         }
     }
 
-    public function findParcelle($parcelle) {
+    public function findParcelle($parcelle, $scoreMin = 1, &$allready_selected = null) {
 
-        return ParcellaireClient::findParcelle($this, $parcelle, 1);
+        return ParcellaireClient::findParcelle($this, $parcelle, 1, false, $allready_selected);
     }
 
     private $idunumbers = null;
