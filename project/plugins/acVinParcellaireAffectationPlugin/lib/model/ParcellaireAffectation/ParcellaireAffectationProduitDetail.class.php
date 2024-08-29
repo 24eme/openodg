@@ -57,7 +57,13 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
                 $this->set('superficie', $superficie);
             }
         }
+
+        if (! $this->getParcelleFromParcellaire()) {
+            return $superficie;
+        }
+
         $parcellaire_superficie_real = $this->getParcelleFromParcellaire()->superficie;
+
         if ($this->getSuperficieParcellaire() != $parcellaire_superficie_real) {
             if ($superficie == $this->getSuperficieParcellaire()) {
                 $this->set('superficie', $parcellaire_superficie_real);
