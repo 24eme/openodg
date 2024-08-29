@@ -227,4 +227,10 @@ class FactureConfiguration {
         return $this->configuration['suggestions_facturation_libre'];
     }
 
+    public function hasFacturationParRegion() {
+        if(!isset($this->configuration['facturation_region'])) return false;
+        return ($this->configuration['facturation_region']);
+
+    }
+
 }
