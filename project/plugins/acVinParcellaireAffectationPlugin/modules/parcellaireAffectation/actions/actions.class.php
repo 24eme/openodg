@@ -120,11 +120,10 @@ class parcellaireAffectationActions extends sfActions {
             }
         }
 
+        $this->parcellaireAffectation->updateParcellesAffectation();
     	if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_AFFECTATIONS))) {
     		$this->parcellaireAffectation->save();
     	}
-
-        $this->parcellaireAffectation->updateParcellesAffectation();
 
     	$this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
 
@@ -215,6 +214,7 @@ class parcellaireAffectationActions extends sfActions {
     public function executePDF(sfWebRequest $request) {
     	set_time_limit(180);
     	$this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        $this->parcellaireAffectation->cleanNonAffectee();
     	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireAffectation);
 
 
@@ -235,6 +235,7 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executeVisualisation(sfWebRequest $request) {
     	$this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        $this->parcellaireAffectation->cleanNonAffectee();
         $this->coop = $request->getParameter('coop');
     	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireAffectation);
     }

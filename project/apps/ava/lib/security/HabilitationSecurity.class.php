@@ -1,6 +1,6 @@
 <?php
 
-class HabilitationSecurity extends DocumentSecurity implements SecurityInterface {
+class HabilitationSecurity/*** AVA ***/ extends DocumentSecurity implements SecurityInterface {
 
     protected $doc;
     protected $user;

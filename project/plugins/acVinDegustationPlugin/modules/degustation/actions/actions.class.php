@@ -930,8 +930,11 @@ class degustationActions extends sfActions {
         if (!$this->form->isValid()) {
             return sfView::SUCCESS;
         }
-
-        $this->form->save();
+        try {
+            $this->form->save();
+        }catch(sfException $e) {
+            $this->getUser()->setFlash('error', "Le lot n'est pas modifiable : ".$e->getMessage());
+        }
 
         return $this->redirect('degustation_lot_historique', array('identifiant' => $this->etablissement->identifiant, 'unique_id' => $this->lot->unique_id));
     }

@@ -9,7 +9,7 @@ class ParcellaireIntentionAffectationProduitsForm extends acCouchdbObjectForm {
                 if (!$parcelle) {
                     $parcelle = $value;
                 }
-                $this->embedForm($value->produit_hash.'/'.$value->parcelle_id, new ParcellaireIntentionAffectationProduitAffecteForm($parcelle));
+                $this->embedForm($parcelle->produit_hash.'/'.$parcelle->parcelle_id, new ParcellaireIntentionAffectationProduitAffecteForm($parcelle));
             }
 		}
 
@@ -19,8 +19,6 @@ class ParcellaireIntentionAffectationProduitsForm extends acCouchdbObjectForm {
     protected function doUpdateObject($values) {
 		parent::doUpdateObject($values);
         $obj = $this->getObject();
-        $obj->remove('declaration');
-        $obj->add('declaration');
         foreach ($obj->getParcellesByDgc() as $dgc_key => $parcelles) {
             foreach($parcelles as $parcelle)  {
                 $key = $parcelle->produit_hash.'/'.$parcelle->parcelle_id;
@@ -28,11 +26,14 @@ class ParcellaireIntentionAffectationProduitsForm extends acCouchdbObjectForm {
                 if (!isset($values[$key])) {
                     continue;
                 }
+                $node = $obj->declaration->add(str_replace('/declaration/', '', $parcelle->produit_hash));
+                $node = $node->detail->add($parcelle->parcelle_id);
                 if (!$value['affectation']) {
+                    $node->affectation = 0;
+                    $node->date_affectation = null;
+                    $node->superficie = null;
                     continue;
                 }
-    			$node = $obj->declaration->add(str_replace('/declaration/', '', $parcelle->produit_hash));
-    			$node = $node->detail->add($parcelle->parcelle_id);
                 ParcellaireClient::CopyParcelle($node, $parcelle);
                 $node->affectation = 1;
                 if (!$node->date_affectation) {

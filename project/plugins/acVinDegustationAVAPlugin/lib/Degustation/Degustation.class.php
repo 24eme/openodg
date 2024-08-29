@@ -5,7 +5,7 @@
  *
  */
 
-class /***AVA***/Degustation extends BaseDegustation implements InterfacePieceDocument {
+class Degustation /***AVA***/ extends BaseDegustation implements InterfacePieceDocument {
 
 	protected $piece_document = null;
 

@@ -44,29 +44,26 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       return "AOC Sainte-Victoire";
   }
 
-  public function updateIntentionFromParcellaireAndLieux(array $lieux) {
+  public function updateIntentionFromParcellaireAndLieux() {
       $parcellaire = $this->getParcellaire();
       $parcellesFromParcellaire = $this->getParcellaire()->getParcelles();
       if (!$parcellesFromParcellaire || !count($parcellesFromParcellaire)) {
           return;
       }
-      $communesDenominations = sfConfig::get('app_communes_denominations');
-      $denominations = array();
-      $libelleProduits = array();
-      foreach ($lieux as $lieu) {
-          if (isset($communesDenominations[$lieu])) {
-              foreach ($communesDenominations[$lieu] as $cp) {
-                  if (isset($denominations[$cp])) {
-                      $denominations[$cp][] = $lieu;
-                  } else {
-                      $denominations[$cp] = array($lieu);
-                  }
+      $denominationscommunes = sfConfig::get('app_communes_denominations');
+      $denominations = [];
+      foreach($denominationscommunes as $hash => $code_communes) {
+          $hash = str_replace('/declaration/', '', $hash);
+          foreach($code_communes as $code) {
+              if (!isset($denominations[$code])) {
+                  $denominations[$code] = [];
               }
+              $denominations[$code][] = $hash;
           }
       }
+      $libelleProduits = array();
       $affectees = array();
-      $parcelles = $this->getParcelles();
-      foreach ($parcelles as $parcelle) {
+      foreach ($this->getParcelles() as $parcelle) {
           if (!$parcelle->affectation) {
               continue;
           }
@@ -83,26 +80,24 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       $this->add('declaration');
 
       foreach ($parcellesFromParcellaire as $parcelle) {
-          $hash = str_replace('/declaration/', '', $parcelle->getProduit()->getHash());
           if (isset($denominations[$parcelle->code_commune])) {
-            foreach ($denominations[$parcelle->code_commune] as $lieu) {
-              $hashWithLieu = preg_replace('/lieux\/[a-zA-Z0-9]+\/couleurs\/[a-zA-Z0-9]+\/cepages\/[a-zA-Z0-9]+$/', 'lieux/'.$lieu, $hash);
-              if (!$this->getConfiguration()->declaration->exist($hashWithLieu)) {
+            foreach ($denominations[$parcelle->code_commune] as $lieu_hash) {
+              if (!$this->getConfiguration()->declaration->exist($lieu_hash)) {
                   continue;
               }
-              if (!isset($libelleProduits[$hashWithLieu])) {
-                  $libelleProduits[$hashWithLieu] = $this->getConfiguration()->declaration->get($hashWithLieu)->getLibelleFormat();
+              if (!isset($libelleProduits[$lieu_hash])) {
+                  $libelleProduits[$lieu_hash] = $this->getConfiguration()->declaration->get($lieu_hash)->getLibelleFormat();
               }
-              if ($this->declaration->exist($hashWithLieu)) {
-                  $item = $this->declaration->get($hashWithLieu);
+              if ($this->declaration->exist($lieu_hash)) {
+                  $item = $this->declaration->get($lieu_hash);
               } else {
-                  $item = $this->declaration->add($hashWithLieu);
-                  $item->libelle = $libelleProduits[$hashWithLieu];
+                  $item = $this->declaration->add($lieu_hash);
+                  $item->libelle = $libelleProduits[$lieu_hash];
               }
-              if ($item->detail->exist($parcelle->getKey())) {
+              if ($item->detail->exist($parcelle->getParcelleId())) {
                   continue;
               }
-              $subitem = $item->detail->add($parcelle->getKey());
+              $subitem = $item->detail->add($parcelle->getParcelleId());
               ParcellaireClient::CopyParcelle($subitem, $parcelle);
               $subitem->active = 1;
               $subitem->remove('vtsgn');
@@ -149,6 +144,24 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
 
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
+    }
+
+    public function save() {
+        $this->cleanNonAffectee();
+        return parent::save();
+    }
+
+    public function cleanNonAffectee() {
+        $todelete = [];
+        foreach($this->declaration->getParcelles() as $id => $p) {
+            if ($p->affectation) {
+                continue;
+            }
+            $todelete[] = $p;
+        }
+        foreach($todelete as $p) {
+            $this->remove($p->getHash());
+        }
     }
 
     protected function doSave() {
