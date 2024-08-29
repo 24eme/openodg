@@ -1,8 +1,6 @@
 all:
   configuration:
     facture:
-      ligneUnique: false
-      ligneDetailWithTitle: false
       echeances: false
       modalite_paiement: "30 jours à reception, par virement \\"
       uniq_template_prefix: "TEMPLATE-FACTURE"

@@ -1,7 +1,7 @@
 all:
   configuration:
     facture:
-      ligneUnique: true
+      ligne_unique: true
       echeances:
         1ertiers:
           libelle_date: "A réception"
