@@ -38,6 +38,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
         public function getDateFormat($format = 'Y-m-d') {
+            if ($this->validation) {
+                return explode('T', $this->validation)[0];
+            }
             if (!$this->date) {
                 return date($format);
             }
@@ -834,7 +837,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         if ($this->validation_odg) {
             return 0;
         }
-        if (!$this->matchFilter($produitFilter->getParameters())) {
+        if (!$this->matchFilter($produitFilter)) {
             return 0;
         }
         return 1;
@@ -850,7 +853,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
       $today = [];
       foreach ($chgtdenoms as $chgt) {
-          if ($chgt->validation_odg && substr($chgt->validation, 0, 10) === substr($this->validation, 0, 10) && $this->matchFilter($produitFilter->getParameters(), $chgt)) {
+          if ($chgt->validation_odg && substr($chgt->validation, 0, 10) === substr($this->validation, 0, 10) && $this->matchFilter($produitFilter, $chgt)) {
               $today[$chgt->_id] = $chgt->_id;
           }
       }
@@ -865,7 +868,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return !$this->getFirstChgtDenomOrDeclassementFacturable($produitFilter);
     }
 
-    public function matchFilter($produitFilter = null, $chgtdenom = null)
+    public function matchFilter(TemplateFactureCotisationCallbackParameters $produitFilter = null, $chgtdenom = null)
     {
         if ($chgtdenom === null) {
             $chgtdenom = $this;
@@ -877,7 +880,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
         $match = true;
 
-        foreach ($produitFilter as $type => $filter) {
+        foreach ($produitFilter->getParameters() as $type => $filter) {
             if ($type === 'appellations') {
                 // filtre sur produit
                 $match = $match && $this->produitFilter($filter, $chgtdenom);
@@ -916,7 +919,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getVolumeFacturable(TemplateFactureCotisationCallbackParameters $filter)
     {
-        if ($this->matchFilter($filter->getParameters()) === false) {
+        if ($this->matchFilter($filter) === false) {
             return;
         }
 

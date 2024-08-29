@@ -1218,7 +1218,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
             $regions = array_unique(array_merge([$this->region], $this->getRegionsFromProduits()));
             foreach($regions as $region) {
-                $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college.'_'.strtolower($region));
+                $region_postfix = ($region)  ? '_'.strtolower($region) : '';
+                $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college.$region_postfix );
             }
             if (count($comptes_degustateurs) > 0) {
                 foreach ($comptes_degustateurs as $compte) {
@@ -1809,9 +1810,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 if(!$lot->isSecondPassage()){
                     continue;
                 }
-				if ($filters && DRevClient::getInstance()->matchFilterLot($lot, $filters->getParameters()) === false) {
-					continue;
-				}
+                if ($filters && DRevClient::getInstance()->matchFilterLot($lot, $filters) === false) {
+                    continue;
+                }
                 $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);
                 $mvtFacture->detail_identifiant = $lot->getNumeroDossier();
                 $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey().':'.$detailKey] = $mvtFacture;
@@ -1820,7 +1821,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
-		public function getFacturationVolumeRedeguste($cotisation,$filters = null){
+		public function getFacturationVolumeRedeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters = null){
             return $this->buildMouvementsFacturesVolumeRedeguste($cotisation, $filters);
         }
         public function buildMouvementsFacturesVolumeRedeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters){
@@ -1831,7 +1832,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $this->buildMouvementsFacturesVolume($cotisation, $filters);
         }
 
-        private function buildMouvementsFacturesVolume($cotisation, $filters = null, $redegustation = false) {
+        private function buildMouvementsFacturesVolume($cotisation, TemplateFactureCotisationCallbackParameters $filters = null, $redegustation = false) {
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             $volumes_operateurs = [];
@@ -1908,7 +1909,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function getForfaitConditionnement($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesForfaitConditionnement($cotisation, $filters);
         }
-		public function buildMouvementsFacturesForfaitConditionnement($cotisation, $filters = null){
+		public function buildMouvementsFacturesForfaitConditionnement($cotisation, TemplateFactureCotisationCallbackParameters $filters = null){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             foreach ($this->getLotsDegustables() as $lot) {
@@ -1926,10 +1927,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
-        public function getFacturationNonConforme($cotisation,$filters = null) {
+        public function getFacturationNonConforme($cotisation, TemplateFactureCotisationCallbackParameters $filters = null) {
             return $this->buildMouvementsFacturesNonConforme($cotisation,$filters);
         }
-        public function buildMouvementsFacturesNonConforme($cotisation,$filters = null) {
+        public function buildMouvementsFacturesNonConforme($cotisation, TemplateFactureCotisationCallbackParameters $filters = null) {
             $mouvements = array();
             $keyCumul = $cotisation->getDetailKey();
             foreach ($this->getLots() as $lot) {

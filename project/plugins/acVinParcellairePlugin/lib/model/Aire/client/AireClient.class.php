@@ -5,6 +5,9 @@ class AireClient extends acCouchdbClient {
     const PARCELLAIRE_AIRE_TOTALEMENT = 'OUI';
     const PARCELLAIRE_AIRE_PARTIELLEMENT = 'PARTIEL';
     const PARCELLAIRE_AIRE_EN_ERREUR = 'ERREUR';
+
+    const PARCELLAIRE_AIRE_GENERIC_AIRE = 'aire';
+
     const PARCELLAIRE_AIRE_HORSDELAIRE = false;
 
     private $cache_find = array();
@@ -154,6 +157,9 @@ class AireClient extends acCouchdbClient {
           $geoparcelle = $parcelle->getGeoParcelle();
           foreach($this->getAiresForInseeCommunes(array($commune_insee)) as $a) {
             try {
+                if (!count($geoparcelle->getComponents())) {
+                    $is_in_aires[AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE] = AireClient::PARCELLAIRE_AIRE_EN_ERREUR;
+                }
                 $iia = $a->isInAire($geoparcelle);
                 if ($iia == AireClient::PARCELLAIRE_AIRE_HORSDELAIRE) {
                     continue;
@@ -166,7 +172,7 @@ class AireClient extends acCouchdbClient {
                 if ($a->exist('denomination_libelle')) {
                     $is_in_aires[$a->denomination_libelle] = AireClient::PARCELLAIRE_AIRE_EN_ERREUR;
                 }else{
-                    $is_in_aires['aire'] = AireClient::PARCELLAIRE_AIRE_EN_ERREUR;
+                    $is_in_aires[AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE] = AireClient::PARCELLAIRE_AIRE_EN_ERREUR;
                 }
             }
           }

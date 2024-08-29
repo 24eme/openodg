@@ -88,7 +88,7 @@ EOF;
 
     private function importSocieteEtablissement($data)
     {
-        $raison_sociale = implode(' ', array_map('trim', [$data[self::CSV_INTITULE], $data[self::CSV_NOM], $data[self::CSV_PRENOM]]));
+        $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_INTITULE], $data[self::CSV_NOM], $data[self::CSV_PRENOM]])));
         $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_ENREGISTREMENT]);
 
         $societe = SocieteClient::getInstance()->find($newSociete->_id);
@@ -112,7 +112,6 @@ EOF;
 
         try {
             $societe->save();
-            echo "Societe saved : ".$societe->_id.PHP_EOL;
         } catch (Exception $e) {
             echo "$societe->_id save error :".$e->getMessage()."\n";
             return false;
@@ -140,12 +139,12 @@ EOF;
             $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
         }
 
-        if(preg_match('/CP/', $data[self::CSV_CODE_LEGENDE])) {
-            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
-        }
-
         if(preg_match('/PREST/', $data[self::CSV_CODE_LEGENDE])) {
             $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+        }
+
+        if(preg_match('/CP/', $data[self::CSV_CODE_LEGENDE])) {
+            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
         }
 
         $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
@@ -153,13 +152,7 @@ EOF;
 
         $cvi = null;
         if (isset($data[self::CSV_CVI])){
-            $cvi = preg_replace('/[^A-Z0-9]+/', "", $data[self::CSV_CVI]);
-            for($i = strlen($cvi) ; $i < 10 ;  $i++) {
-                $cvi = $cvi."0";
-            }
-            if(!intval($cvi)) {
-                $cvi = '';
-            }
+            $cvi = EtablissementClient::repairCVI($data[self::CSV_CVI]);
         }
 
         $etablissement->cvi = $cvi;
@@ -167,8 +160,6 @@ EOF;
         $societe->pushAdresseTo($etablissement);
         $societe->pushContactTo($etablissement);
         $etablissement->save();
-
-        echo "Etablissement saved : ".$etablissement->_id.PHP_EOL;
 
         return $etablissement;
     }
@@ -191,13 +182,6 @@ EOF;
         ] as $key => $activite) {
             if (strtoupper($activite) === "X") {
                 $activites[] = self::activites[$key];
-                /*if ($date_demande) {
-                    $activites->add(self::activites[$key])->updateHabilitation(HabilitationClient::STATUT_DEMANDE_HABILITATION, null, $date_demande);
-                }
-
-                $statut = self::status[trim(strtolower($data[self::CSV_ETAT_HABILITATION]))];
-                $activites->add(self::activites[$key])
-                          ->updateHabilitation($statut, null, $date_decision);*/
             }
         }
 
@@ -206,7 +190,5 @@ EOF;
         }
 
         HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_decision, $activites, [], $statut);
-
-        echo "Habilitation mise à jour : ".$identifiant.PHP_EOL;
     }
 }

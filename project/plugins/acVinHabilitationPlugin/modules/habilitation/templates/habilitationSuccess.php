@@ -47,7 +47,7 @@ if($etablissement->cvi && count($e) > 1):
 <?php endif; ?>
 <?php endif; ?>
 
-<?php include_partial('habilitation/habilitation', array('habilitation' => $habilitation, 'editForm' => isset($editForm) ? $editForm : null, 'public' => !$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION))); ?>
+<?php include_partial('habilitation/habilitation', array('habilitation' => $habilitation, 'editForm' => isset($editForm) ? $editForm : null, 'public' => !$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION), 'has_ajoutForm' => isset($ajoutForm))); ?>
 
     <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
         <div class="text-right">
@@ -55,7 +55,7 @@ if($etablissement->cvi && count($e) > 1):
         </div>
     <?php endif; ?>
 
-    <?php if ($sf_user->isAdmin() && isset($ajoutForm) && $ajoutForm->hasProduits()): ?>
+    <?php if ($sf_user->isAdmin() && ($habilitation->getProduits()->getRawValue())): ?>
         <div class="row">
             <div class="col-xs-12">
                 <button class="btn btn-sm btn-default pull-right" id="editHabilitation" type="button"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Éditer l'habilitation</button>
@@ -109,7 +109,6 @@ if($etablissement->cvi && count($e) > 1):
           <th class="col-xs-1">&nbsp;</th>
         </tr>
       </thead>
-      </div>
       <tbody>
         <?php $cpt = 0;
         foreach ($habilitation->getFullHistoriqueReverse() as $historiqueDoc): ?>

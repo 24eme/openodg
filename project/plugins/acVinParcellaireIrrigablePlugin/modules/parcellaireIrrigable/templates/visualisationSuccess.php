@@ -1,6 +1,10 @@
 <?php use_helper('Date') ?>
 
-<?php include_partial('parcellaireIrrigable/breadcrumb', array('parcellaireIrrigable' => $parcellaireIrrigable)); ?>
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigable]); ?>
+<?php else: ?>
+    <?php include_partial('parcellaireIrrigable/breadcrumb', array('parcellaireIrrigable' => $parcellaireIrrigable)); ?>
+<?php endif; ?>
 
 <?php include_component('declaration', 'parcellairesLies', array('obj' => $parcellaireIrrigable)); ?>
 
@@ -49,7 +53,7 @@
 
 <div class="row row-margin row-button">
     <div class="col-xs-5">
-        <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireIrrigable->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+        <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireIrrigable->identifiant, 'campagne' => $parcellaireIrrigable->campagne)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
     <div class="col-xs-2 text-center">
             <a href="<?php echo url_for('parcellaireirrigable_export_pdf', $parcellaireIrrigable) ?>" class="btn btn-success">
@@ -70,3 +74,8 @@
         <?php endif; ?>
     </div>
 </div>
+
+
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigable]); ?>
+<?php endif; ?>

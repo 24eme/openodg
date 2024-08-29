@@ -20,16 +20,12 @@ class ParcellaireConfiguration {
         $this->configuration = sfConfig::get('parcellaire_configuration_parcellaire', array());
     }
 
-    /*
-     * On limite les produits du parcellaire aux seuls produits du catalogue produit.
-     * les autres sont ignorés
-     */
-    public function getLimitProduitsConfiguration() {
-        if(!isset($this->configuration['limit_produits_configuration'])) {
-            return false;
+    public function hasShowFilterProduitsConfiguration() {
+        if(!isset($this->configuration['show_filter_produits_configuration'])) {
+            return true;
         }
 
-        return $this->configuration['limit_produits_configuration'];
+        return $this->configuration['show_filter_produits_configuration'];
     }
 
     /*

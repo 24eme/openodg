@@ -83,21 +83,14 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
   }
 
   public function storeParcelles() {
+    //throw new sfException('storeParcelles');
   	if ($parcellaireIrrigable = $this->getParcellaireIrrigue()) {
   		foreach ($parcellaireIrrigable->declaration as $key => $parcelle) {
   			$item = $this->declaration->add($key);
   			$item->libelle = $parcelle->libelle;
   			foreach ($parcelle->detail as $subkey => $detail) {
   				$subitem = $item->detail->add($subkey);
-  				$subitem->superficie = $detail->superficie;
-  				$subitem->commune = $detail->commune;
-  				$subitem->code_commune = $detail->code_commune;
-  				$subitem->prefix = $detail->prefix;
-  				$subitem->section = $detail->section;
-  				$subitem->numero_parcelle = $detail->numero_parcelle;
-  				$subitem->idu = $detail->idu;
-  				$subitem->lieu = $detail->lieu;
-  				$subitem->cepage = $detail->cepage;
+  				ParcellaireClient::CopyParcelle($subitem, $detail);
   				$subitem->active = $detail->active;
 		  		if($detail->exist('vtsgn')) {
 		  			$subitem->add('vtsgn', (int)$detail->vtsgn);
@@ -112,7 +105,7 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
   	}
   }
 
-  public function updateParcelles() {
+  public function updateParcelles( & $error_parcelles = null) {
   	$irrigations = array();
   	foreach ($this->getParcelles() as $key => $parcelle) {
 		if (!$parcelle->date_irrigation) {
@@ -135,9 +128,8 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
 
         unset($irrigations[$hash]);
   	}
-
-    if(count($irrigations) > 0) {
-        throw new Exception("Des parcelles déja irrigués disparaissent : ".$this->_id." ".implode(", ", array_keys($irrigations)));
+    if(count($irrigations) > 0 && $error_parcelles !== null) {
+        $error_parcelles["Des parcelles déja irrigués n'existent plus dans le parcellaire"] =  implode(", ", array_keys($irrigations));
     }
   }
 

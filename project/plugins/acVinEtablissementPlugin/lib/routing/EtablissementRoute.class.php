@@ -58,6 +58,14 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
         return array("identifiant" => $object->getIdentifiant());
     }
 
+    public function generate($params, $context = array(), $absolute = false)
+    {
+        if(sfContext::getInstance()->getRequest()->getParameter('coop') && !$this instanceof ParcellaireAffectationCoopRoute) {
+            $params['coop'] = sfContext::getInstance()->getRequest()->getParameter('coop');
+        }
+        return parent::generate($params, $context, $absolute);
+    }
+
     public function getEtablissement($parameters = null) {
         if (is_array($parameters)) foreach($parameters as $k => $v) {
             if (strpos($k, 'allow') === false) {

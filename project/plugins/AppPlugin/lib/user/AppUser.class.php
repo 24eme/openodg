@@ -93,9 +93,12 @@ class AppUser extends sfBasicSecurityUser {
         $this->getAttributeHolder()->removeNamespace(self::NAMESPACE_COMPTE_ORIGIN);
     }
 
+    private $cache_compte = null;
     public function getCompte() {
-
-        return $this->getCompteByNamespace(self::NAMESPACE_COMPTE);
+        if (is_null($this->cache_compte)) {
+            $this->cache_compte = $this->getCompteByNamespace(self::NAMESPACE_COMPTE);
+        }
+        return $this->cache_compte;
     }
 
     public function getEtablissement() {
@@ -223,7 +226,7 @@ class AppUser extends sfBasicSecurityUser {
 
 
     public function getRegion() {
-      if($this->hasDrevAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && RegionConfiguration::getInstance()->getOdgRegions()){
+      if(RegionConfiguration::getInstance()->getOdgRegions() && $this->hasDrevAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion())){
         if(in_array($region, RegionConfiguration::getInstance()->getOdgRegions())){
                     return $region;
         }

@@ -40,13 +40,20 @@ class ParcellaireIrrigueProduitsForm extends acCouchdbObjectForm {
     		$this->getObject()->validate();
     	}
         $parcelles = $this->getObject()->getParcelles();
+        $object = $this->getObject();
         foreach ($values as $pid => $items) {
             if (!isset($parcelles[$pid])) {
                 continue;
             }
             $parcelle = $parcelles[$pid];
-            $node = $this->getObject()->get($parcelle->getProduitHash());
-            $node = $node->detail->get($pid);
+            $node = $parcelle;
+            if (!$parcelle->isExistingParcelle($object->_id)) {
+                $node = $object->declaration->add(str_replace('/declaration/', '', $parcelle->getProduit()->getHash()));
+                $node = $node->detail->add($parcelle->getKey());
+                ParcellaireClient::CopyParcelle($node, $parcelle);
+                $node->materiel = $parcelle->materiel;
+                $node->ressource = $parcelle->ressource;
+            }
             if ($items['irrigation'] && !$node->date_irrigation) {
                 $node->add('irrigation', $items['irrigation']);
                 $node->date_irrigation = date('Y-m-d');

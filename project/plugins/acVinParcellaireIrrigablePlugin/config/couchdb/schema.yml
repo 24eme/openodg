@@ -51,6 +51,7 @@ ParcellaireIrrigable:
                           definition:
                             fields:
                               superficie: { type: float }
+                              superficie_parcellaire: { type: float }
                               commune: { }
                               code_commune: { }
                               prefix: { }
@@ -68,6 +69,7 @@ ParcellaireIrrigable:
                               ressource: {  }
                               produit_hash: { }
                               parcelle_id: { }
+                              source_produit_libelle: { }
       region: { required: false }
       observations: {  }
       pieces:

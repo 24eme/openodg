@@ -59,7 +59,7 @@
 
  */
 
-abstract class BaseParcellaireAffectationProduitDetail extends ParcellaireParcelle {
+abstract class BaseParcellaireAffectationProduitDetail extends DeclarationParcellaireParcelle {
 
     public function configureTree() {
        $this->_root_class_name = 'ParcellaireAffectation';

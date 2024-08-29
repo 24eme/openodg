@@ -1,6 +1,10 @@
 <?php use_helper('Date') ?>
 
-<?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireAffectation]); ?>
+<?php else: ?>
+    <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
+<?php endif; ?>
 
 <?php include_partial('parcellaireAffectation/step', array('step' => 'validation', 'parcellaireAffectation' => $parcellaireAffectation)) ?>
 
@@ -36,7 +40,7 @@
         <h2>Validation de votre déclaration</h2>
     </div>
 
-    <?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
+    <?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation, 'coop' => $coop)); ?>
 
     <div class="panel panel-default">
         <div class="panel-body">
@@ -70,6 +74,11 @@
 	<?php include_partial('parcellaireAffectation/popupConfirmationValidation', array('form' => $form)); ?>
 	<?php endif; ?>
 </form>
+
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireAffectation]); ?>
+<?php endif; ?>
+
 <?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
 <script type="text/javascript">
 $('#parcellaireaffectation-confirmation-validation').modal('show')

@@ -18,7 +18,9 @@ class ParcellaireIntentionAuto extends ParcellaireIntentionAffectation {
         $this->remove('declaration');
         $this->add('declaration');
         foreach($parcelles as $pid => $parcelle) {
-            if (!in_array($this->getDenominationAire(), array_keys($parcelle->getIsInAires()))) {
+            if ( !in_array($this->getDenominationAire(),  array_keys($parcelle->getIsInAires())) &&
+                 !in_array(AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE,  array_keys($parcelle->getIsInAires())) )
+            {
                 continue;
             }
             $node = $this->declaration->add($this->getDenominationAireHash());

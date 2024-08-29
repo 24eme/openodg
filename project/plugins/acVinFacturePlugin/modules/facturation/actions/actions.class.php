@@ -48,7 +48,7 @@ class facturationActions extends sfActions
           if($this->formFacturationMassive->isValid()) {
 
               $generation = $this->formFacturationMassive->save();
-              $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getAnnee(), $this->getCurrentRegion()));
+              $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getPeriode(), $this->getCurrentRegion()));
               $generation->save();
 
               return $this->redirect('generation_view', ['id' => $generation->_id]);
@@ -61,7 +61,7 @@ class facturationActions extends sfActions
             return sfView::SUCCESS;
         }
 
-        return $this->redirect('facturation_declarant', $this->form->getValue('etablissement')->getCompte());
+        return $this->redirect('facturation_declarant', ['identifiant' => $this->form->getValue('etablissement')->getCompte()->identifiant]);
     }
 
     public function executeAttente(sfWebRequest $request)
@@ -157,7 +157,7 @@ class facturationActions extends sfActions
             $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT, $this->campagne, null, sfConfig::get('app_region', null));
 
             $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->societe);
-            if (class_exists('RegionConfiguration')) {
+            if (class_exists('RegionConfiguration') && $this->getCurrentRegion()) {
                 $this->mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($this->mouvements, $this->getCurrentRegion());
             }
 
@@ -180,7 +180,7 @@ class facturationActions extends sfActions
             }
 
             $generation = $this->form->save();
-            $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getAnnee(), strtoupper(sfConfig::get('app_region', sfConfig::get('sf_app')))));
+            $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getPeriode(), strtoupper(sfConfig::get('app_region', sfConfig::get('sf_app')))));
 
             $mouvementsBySoc = array($this->societe->identifiant => $this->mouvements);
             $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,$generation->arguments->toArray(0,1));

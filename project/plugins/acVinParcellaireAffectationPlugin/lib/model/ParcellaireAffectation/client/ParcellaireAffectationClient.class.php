@@ -4,6 +4,7 @@ class ParcellaireAffectationClient extends acCouchdbClient {
 
       const TYPE_MODEL = "ParcellaireAffectation";
       const TYPE_COUCHDB = "PARCELLAIREAFFECTATION";
+      const TYPE_LIBELLE = "Déclaration d'affection parcellaire";
 
       public static function getInstance() {
           return acCouchdbManager::getClient("ParcellaireAffectation");
@@ -80,22 +81,32 @@ class ParcellaireAffectationClient extends acCouchdbClient {
           }
           return $dates;
       }
-      
-      
+
+
       public function getDateOuvertureDebut($type = self::TYPE_COUCHDB) {
           $dates = $this->getDateOuverture($type);
           return $dates['debut'];
       }
-      
+
       public function getDateOuvertureFin($type = self::TYPE_COUCHDB) {
           $dates = $this->getDateOuverture($type);
           return $dates['fin'];
       }
-      
+
       public function isOpen($type = self::TYPE_COUCHDB, $date = null) {
           if (is_null($date)) {
               $date = date('Y-m-d');
           }
           return $date >= $this->getDateOuvertureDebut($type) && $date <= $this->getDateOuvertureFin($type);
+      }
+
+      public function needAffectation($identifiant, $periode) {
+          if(!ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire()) {
+              return false;
+          }
+
+          $affectation = ParcellaireAffectationClient::getInstance()->find(ParcellaireAffectationClient::getInstance()->buildId($identifiant, $periode), acCouchdbClient::HYDRATE_JSON);
+
+          return !$affectation || !$affectation->validation_odg;
       }
 }

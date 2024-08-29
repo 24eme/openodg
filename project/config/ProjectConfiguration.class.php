@@ -27,7 +27,6 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acVinFacturePlugin');
         $this->enablePlugins('acVinHabilitationPlugin');
         $this->enablePlugins('MandatSepaPlugin');
-        $this->enablePlugins('AppPlugin');
 
         if(getenv("APPLICATION") == "ava") {
             $this->enablePlugins('CompteAVAPlugin');
@@ -47,6 +46,7 @@ class ProjectConfiguration extends sfProjectConfiguration
             return;
         }
 
+        $this->enablePlugins('AppPlugin');
         $this->enablePlugins('acVinParcellairePlugin');
         $this->enablePlugins('acVinParcellaireManquantPlugin');
         $this->enablePlugins('acVinParcellaireIrrigablePlugin');

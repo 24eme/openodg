@@ -108,10 +108,9 @@ abstract class DeclarationLotsValidation extends DocumentValidation
         }
 
         $activites = HabilitationClient::getInstance()->getActivites();
-        if ($activite == HabilitationClient::ACTIVITE_VRAC && !in_array(HabilitationClient::ACTIVITE_VRAC, $activites)) {
+        if ($activite == HabilitationClient::ACTIVITE_VRAC && !in_array(HabilitationClient::ACTIVITE_VRAC, array_keys($activites))) {
             return HabilitationClient::ACTIVITE_VINIFICATEUR;
         }
-
         return $activite;
     }
 }

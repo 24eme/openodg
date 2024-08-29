@@ -17,7 +17,6 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
     protected $mouvement_document = null;
     protected $declarant_document = null;
     protected $enhanced_donnees = null;
-    protected static $cvi2tiers = null;
 
 
     public function getPeriode() {
@@ -216,6 +215,17 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         return false;
     }
 
+    private $bailleuretablissements = null;
+    public function getBailleurEtablissement($id){
+        if (is_null($this->bailleuretablissements)) {
+            $this->bailleuretablissements = array();
+        }
+        if (!isset($this->bailleuretablissements[$id])) {
+            $this->bailleuretablissements[$id] = EtablissementClient::getInstance()->find($id);
+        }
+        return $this->bailleuretablissements[$id];
+    }
+
     public function getEnhancedDonnees($drev_produit_filter = null) {
         if (isset($this->enhanced_donnees)) {
             return $this->enhanced_donnees;
@@ -229,7 +239,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             $d = (object) $donnee->toArray();
             $d->produit_conf = $this->configuration->declaration->get($donnee->produit);
             $p = array();
-            if ($donnee->bailleur && $d->bailleur_etablissement = EtablissementClient::getInstance()->find($donnee->bailleur)) {
+            if ($donnee->bailleur && $d->bailleur_etablissement = $this->getBailleurEtablissement($donnee->bailleur)) {
                 $p[] = $d->bailleur_etablissement->raison_sociale.' ('.$donnee->bailleur.')';
                 $p[] = $d->bailleur_etablissement->ppm;
             } else {
@@ -351,6 +361,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
 
     public function addDonnee($data) {
+
         if (!$data || !isset($data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION]) || empty($data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION])) {
             return null;
         }
@@ -391,6 +402,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         return $item;
     }
 
+    protected static $cvi2tiers = null;
     public static function fillItemWithTiersData(&$item, $tiers_cvi, $tiers_libelle) {
         if (!self::$cvi2tiers) {
             self::$cvi2tiers = array();
@@ -439,8 +451,10 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
         if ($produitFilter === null) {
             $produitFilter = [];
+        }else{
+            $produitFilter = $produitFilter->getParameters();
         }
-        foreach ($produitFilter->getParameters() as $type => $filter) {
+        foreach ($produitFilter as $type => $filter) {
             if ($type === 'appellations') {
                 $match = $match && $this->matchFilterProduit($produit, $filter);
             } elseif ($type === 'millesime') {
@@ -579,7 +593,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             if (array_key_exists($hash_produit, $synthese) === false) {
                 $synthese[$hash_produit] = [];
                 $synthese[$hash_produit]['lignes'] = [];
-                $synthese[$hash_produit]['libelle'] = ConfigurationClient::getCurrent()->declaration->get($hash)->getCouleur()->getLibelleComplet();
+                $synthese[$hash_produit]['libelle'] = $this->getConfiguration()->declaration->get($hash)->getCouleur()->getLibelleComplet();
             }
 
             foreach ($produit['lignes'] as $ligne => $value) {
@@ -630,7 +644,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
             if (array_key_exists($produit, $donnees['produits']) === false) {
                 $donnees['produits'][$produit]['lignes'] = [];
-                $donnees['produits'][$produit]['libelle'] = ConfigurationClient::getCurrent()->declaration->get($entry->produit)->getCepage()->getLibelleComplet();
+                $donnees['produits'][$produit]['libelle'] = $this->getConfiguration()->declaration->get($entry->produit)->getCepage()->getLibelleComplet();
                 if (DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $entry->complement) {
                     $donnees['produits'][$produit]['libelle'] .= ' - '.$entry->complement;
                 }
@@ -905,7 +919,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                         (! ($data[DouaneCsvFile::CSV_LIGNE_CODE] === "09"))) {
                 continue;
             }
-            $etablissement = EtablissementClient::getInstance()->findByCvi($cvi, true, acCouchdbClient::HYDRATE_JSON);
+            $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
             if(!$etablissement) {
                 $cvis[$cvi] = $data[DouaneCsvFile::CSV_TIERS_LIBELLE];
                 continue;

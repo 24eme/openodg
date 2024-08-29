@@ -2,17 +2,14 @@
 
 require_once(dirname(__FILE__).'/../../vendor/geoPHP/geoPHP.inc');
 
-/**
- * Model for ParcellaireCepageDetail
- *
- */
 class ParcellaireParcelle extends BaseParcellaireParcelle {
     private static $_AIRES = [];
     private $geoparcelle = null;
 
     public function getProduit() {
         if ($this->getParcelleAffectee()) {
-            return $this->getParcelleAffectee()->getParent()->getParent();
+
+            return $this->getDocument()->get(preg_replace('#/detail$#', '', $this->getParcelleAffectee()->getParentHash()));
         }
         return null;
     }
@@ -91,7 +88,11 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
 
     public function getProduitLibelle() {
         if (!$this->isRealProduit()) {
-            return 'PRODUIT NON GÉRÉ ('.$this->source_produit_libelle.')';
+            $lib = 'PRODUIT NON GÉRÉ';
+            if ($this->source_produit_libelle) {
+                $lib .= ' ('.$this->source_produit_libelle.')';
+            }
+            return $lib;
         }
         return $this->getProduit()->getLibelle();
     }
@@ -109,14 +110,6 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     public function getLieuNode() {
 
         return $this->getProduit()->getConfig()->getLieu();
-    }
-
-    public function getIdentificationParcelleLibelle() {
-    	return $this->section.'-'.$this->numero_parcelle.'<br />'.$this->commune.' '.$this->getLieuLibelle().' '.sprintf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $this->superficie);
-    }
-
-    public function getIdentificationCepageLibelle() {
-    	return $this->getProduitLibelle().'<br />'.$this->getCepageLibelle().' '.$this->campagne_plantation;
     }
 
     public function cleanNode() {
@@ -182,18 +175,58 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
       return false;
     }
 
+    public function getParcelleParcellaire() {
+        $p = $this->getDocument()->getParcellaire()->getDeclarationParcelles();
+        if (!isset($p[$this->getParcelleId()])) {
+            return null;
+        }
+        return $p[$this->getParcelleId()];
+    }
+
+    public function existsInParcellaire() {
+        return ($this->getParcelleParcellaire() != null);
+    }
+
     public function isRealProduit() {
-        if (!$this->produit_hash) {
+        if (!$this->getDocument()->_exist('parcelles')) {
+            return true;
+        }
+        $p = $this->getParcelleParcellaire();
+        if (!$p) {
             return false;
         }
-        if (!$this->getConfig()) {
+        if (!$p->produit_hash) {
+            return false;
+        }
+        if (!$p->getConfig()) {
             return false;
         }
         return true;
     }
 
+    public function hasProblemParcellaire() {
+        if ($this->existsInParcellaire()){
+            return false;
+        }
+        return true;
+    }
+
+    public function hasProblemProduitCVI() {
+        if (ParcellaireConfiguration::getInstance()->affectationNeedsIntention()) {
+            return false;
+        }
+        $a = $this->getIsInAires();
+        if (! count($a)) {
+            return true;
+        }
+        if (isset($a[AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE]) && $a[AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE]) {
+            return true;
+        }
+        return false;
+    }
+
     public function hasProblemCepageAutorise() {
-      if (!$this->isRealProduit()) {
+      if (!$this->getConfig()) {
           return false;
       }
       return (count($this->getConfig()->getCepagesAutorises())) && !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
@@ -277,7 +310,8 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             if (strlen($this->getKey()) == 17){
                 $this->_set('parcelle_id', $this->getKey());
             }else{
-                return $this->idu.'-00';
+                $parcelle_id = sprintf('%s-%02d', $this->idu, $this->getDocument()->getNbUDIAlreadySeen($this->idu));
+                $this->_set('parcelle_id', $parcelle_id);
             }
         }
         return $this->_get('parcelle_id');
@@ -302,5 +336,14 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             return round(10000 / (($this->ecart_pieds / 100) * ($this->ecart_rang / 100)), 0);
         }
         return 0;
+    }
+
+    public function getProduitHash() {
+        if ($h = $this->_get('produit_hash')) {
+            return $h;
+        }
+        $h = preg_replace('/\/detail\/.*/', '', $this->getHash());
+        $this->_set('produit_hash', $h);
+        return $h;
     }
 }

@@ -5,6 +5,8 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   protected $declarant_document = null;
   protected $piece_document = null;
   protected $parcelles_idu = null;
+  protected $previous_document = null;
+  protected $etablissement = null;
 
   public function isAdresseLogementDifferente() {
       return false;
@@ -39,8 +41,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
   public function getEtablissementObject() {
-
-      return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+      if(!$this->etablissement) {
+          $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+      }
+      return $this->etablissement;
   }
 
   public function constructId() {
@@ -56,6 +60,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       $this->constructId();
       $this->storeDeclarant();
       $this->updateParcellesAffectation();
+      $this->recoverPreviousParcelles();
   }
 
   public function getPeriode() {
@@ -63,9 +68,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   }
 
   public function getParcellaire2Reference() {
-      $intention = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant, $this->periode);
+      $intention = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant, $this->periode + 1);
       if (!$intention) {
-          $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode);
+          $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
           if (!count($intention->declaration)) {
               $intention = null;
           }
@@ -73,46 +78,83 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       return $intention;
   }
 
+  public function getPreviousDocument() {
+      if($this->previous_document) {
+         return $this->previous_document;
+      }
+
+      $this->previous_document = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
+
+      return $this->previous_document;
+  }
+
+  public function isAllPreviousParcellesExists() {
+      if(!$this->getPreviousDocument()) {
+
+          return true;
+      }
+      $parcellaire2reference = $this->getParcellaire2Reference();
+      foreach($this->getPreviousDocument()->getParcelles() as $previousParcelle) {
+          if(!$previousParcelle->affectee) {
+              continue;
+          }
+          if(!$parcellaire2reference->findParcelle($previousParcelle)) {
+              return false;
+          }
+      }
+
+      return true;
+  }
+
   public function updateParcellesAffectation() {
     if($this->validation){
         return;
     }
     $intention = $this->getParcellaire2Reference();
-    $previous = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
+
     if(!$intention) {
         return;
     }
     $intention->updateParcelles();
+    $allready_selected = [];
 	foreach ($intention->getParcelles() as $parcelle) {
-	    $produit = $parcelle->getProduit();
-        $hash = str_replace('/declaration/', '', $produit->getHash());
         if (!$parcelle->affectation) {
             continue;
         }
-        if($this->findParcelle($parcelle, true)) {
+        if($this->findParcelle($parcelle, true, $allready_selected)) {
             continue;
         }
-        $item = $this->declaration->add($hash);
-        $item->libelle = $produit->libelle;
-        $parcelle->origine_doc = $intention->_id;
-        unset($parcelle['origine_hash']);
-        $detail = $item->detail->add($parcelle->getParcelleId());
-        ParcellaireClient::CopyParcelle($detail, $parcelle);
-        $detail->origine_doc = $intention->_id;
-	}
-    if($previous) {
+        $this->addParcelle($parcelle);
+    }
+  }
+
+    public function getParcelleById($id) {
+        $p = $this->getParcelles();
+        return $p[$id];
+    }
+
+    public function recoverPreviousParcelles() {
+        $previous = $this->getPreviousDocument();
+        if(!$previous) {
+            return;
+        }
         foreach($previous->getParcelles() as $previousParcelle) {
-            if(!$previousParcelle->affectee) {
+            if(!$previousParcelle->isAffectee()) {
                 continue;
             }
-            $pMatch = $this->findParcelle($previousParcelle);
 
+            $pMatch = $this->findParcelle($previousParcelle);
             if($pMatch) {
                 $pMatch->affectee = 1;
+                $pMatch->superficie = $previousParcelle->superficie;
+                if($previousParcelle->exist('destinations')) {
+                    $pMatch->remove('destinations');
+                    $pMatch->add('destinations', $previousParcelle->destinations);
+                    $pMatch->updateAffectations();
+                }
             }
         }
-	}
-  }
+    }
 
   public function getConfiguration() {
 
@@ -162,6 +204,20 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $this->piece_document->generatePieces();
     }
 
+
+    public function cleanNonAffectee() {
+        $todelete = [];
+        foreach($this->declaration->getParcelles() as $id => $p) {
+            if ($p->affectee) {
+                continue;
+            }
+            $todelete[] = $p;
+        }
+        foreach($todelete as $p) {
+            $this->remove($p->getHash());
+        }
+    }
+
 	public function isValidee(){
 		return $this->validation;
 	}
@@ -205,12 +261,18 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $find;
     }
 
-    public function isMultiApporteur(){
-        return count($this->getCaveCooperatives()) > 1;
-    }
+    public function getDestinataires() {
+        $destinataires = [$this->getEtablissementObject()->_id => ['libelle_etablissement' => "Cave particulière"]];
 
-    public function getCaveCooperatives(){
-        return $this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATIVE);
+        foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATIVE) as $liaison) {
+            $destinataires[$liaison->id_etablissement] = $liaison;
+        }
+
+        foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_APPORTEUR_RAISIN) as $liaison) {
+            $destinataires[$liaison->id_etablissement] = $liaison;
+        }
+
+        return $destinataires;
     }
 
   /*** DECLARATION DOCUMENT ***/
@@ -292,9 +354,16 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return false;
     }
 
+    public function getGroupedParcelles($onlyAffectee = false) {
+        if ($this->getDocument()->hasDgc()) {
+            return $this->declaration->getParcellesByDgc($onlyAffectee);
+        }
+        return $this->declaration->getParcellesByCommune($onlyAffectee);
+    }
+
     public function getParcellesByDgc() {
         $parcelles = array();
-        foreach($this->getParcellesFromReference() as $p) {
+        foreach($this->getParcellaire2Reference()->getParcelles() as $p) {
             if (!$p->produit_hash) {
                 continue;
             }
@@ -307,25 +376,21 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                     $parcelles[$d] = array();
                 }
                 $p->produit_hash = $h;
-                $parcelles[$d][] = $p;
+                $parcelles[$d][$p->getParcelleId()] = $p;
             }
+        }
+        foreach(array_keys($parcelles) as $k) {
+            ksort($parcelles[$k]);
         }
         return $parcelles;
     }
 
-    public function hasParcellaire() {
-        return ($this->getParcellaire())? true : false;
+    public function hasDgc() {
+        return (count($this->declaration) >= 1) && !preg_match('/lieux\/DEFAU/', array_keys($this->declaration->toArray())[0]);
     }
 
-    public function getParcelleFromParcellaire($id) {
-        $parcellaire = $this->getParcellaire();
-
-        if(!$parcellaire) {
-
-            return null;
-        }
-
-        return $parcellaire->getParcelleFromParcellaireId($id);
+    public function hasParcellaire() {
+        return ($this->getParcellaire())? true : false;
     }
 
     public function getGeoJson() {
@@ -337,6 +402,57 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
 
         return $parcellaire->getGeoJson();
+    }
+
+    public function hasProblemCepageAutorise() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemCepageAutorise()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasProblemEcartPieds() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemEcartPieds()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasProblemParcellaire() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemParcellaire()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasProblemProduitCVI() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemProduitCVI()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function addParcelle($parcelle) {
+        $this->parcelles_idu = null;
+        $produit = $this->declaration->add(str_replace('/declaration/', '', preg_replace('|/couleurs/.*$|', '', $parcelle->produit_hash)));
+        $produit->libelle = $produit->getConfig()->getLibelleComplet();
+        if(get_class($parcelle) == "ParcellaireAffectationProduitDetail") {
+
+            return $produit->detail->add($parcelle->getParcelleId(), $parcelle);
+        }
+        $detail = $produit->detail->add($parcelle->getParcelleId());
+        ParcellaireClient::CopyParcelle($detail, $parcelle);
+        $detail->origine_doc = $parcelle->getDocument()->_id;
+        $detail->superficie = null;
+        return $detail;
     }
 
 }

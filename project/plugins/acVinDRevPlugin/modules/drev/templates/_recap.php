@@ -60,9 +60,9 @@
                 <table class="table table-bordered table-striped">
                   <thead>
                     <tr>
-                      <th class="col-xs-6">Produit</td>
-                        <th class="col-xs-3 text-center">Volume mis en réserve</td>
-                          <th class="col-xs-3 text-center">Volume revendiqué commercialisable</td>
+                      <th class="col-xs-6">Produit</th>
+                        <th class="col-xs-3 text-center">Volume mis en réserve</th>
+                          <th class="col-xs-3 text-center">Volume revendiqué commercialisable</th>
                           </thead>
                           <tbody>
                             <?php foreach($drev->getProduitsWithReserveInterpro() as $p): ?>
