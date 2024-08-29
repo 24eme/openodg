@@ -1,7 +1,5 @@
 all:
   configuration:
     facture:
-      ligneUnique: false
-      ligneDetailWithTitle: false
       echeances: false
       uniq_template_prefix: false

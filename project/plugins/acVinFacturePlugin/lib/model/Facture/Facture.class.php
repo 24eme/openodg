@@ -465,7 +465,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
         $this->updateVersementComptablePaiement();
 
-        if ($this->region && !$this->exist('type_archive')) {
+        if (FactureConfiguration::getInstance()->hasFacturationParRegion() && $this->region && !$this->exist('type_archive')) {
             $this->add('type_archive', $this->type.'_'.$this->region);
         }
 
