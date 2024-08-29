@@ -123,7 +123,7 @@
             <div class="panel-body">
                 <p class="explications">Accéder à l'espace de mise à disposition de vos factures en téléchargement</p>
                 <div class="actions">
-                    <a class="btn btn-block btn-default" href="<?php echo (is_string($etablissement->getCompte()))? url_for('facturation_declarant', $etablissement->getMasterCompte()) : url_for('facturation_declarant', ['identifiant' => $etablissement->getCompte()->_id]); ?>">Voir les factures</a>
+                    <a class="btn btn-block btn-default" href="<?php echo (is_string($etablissement->getCompte()))? url_for('facturation_declarant', ['identifiant' => $etablissement->getMasterCompte()->_id]) : url_for('facturation_declarant', ['identifiant' => $etablissement->getCompte()->_id]); ?>">Voir les factures</a>
                 </div>
             </div>
         </div>

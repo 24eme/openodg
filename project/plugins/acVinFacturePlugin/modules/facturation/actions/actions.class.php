@@ -61,7 +61,7 @@ class facturationActions extends sfActions
             return sfView::SUCCESS;
         }
 
-        return $this->redirect('facturation_declarant', $this->form->getValue('etablissement')->getCompte());
+        return $this->redirect('facturation_declarant', ['identifiant' => $this->form->getValue('etablissement')->getCompte()->identifiant]);
     }
 
     public function executeAttente(sfWebRequest $request)
