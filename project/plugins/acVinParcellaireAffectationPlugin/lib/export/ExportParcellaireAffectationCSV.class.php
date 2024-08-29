@@ -42,9 +42,7 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
             throw new sfException("Problème avec la société (ou l'établissement) concernant ".$this->doc->id);
         }
         $ligne_base = sprintf("%s;\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", $this->doc->campagne, $this->doc->getEtablissementObject()->getSociete()->identifiant, $this->doc->identifiant, $this->doc->declarant->cvi, $this->doc->declarant->siret, $this->protectStr($this->doc->declarant->raison_sociale), $this->protectStr($this->doc->declarant->adresse), $this->doc->declarant->code_postal, $this->protectStr($this->doc->declarant->commune), $this->doc->declarant->email);
-        foreach ($this->doc->declaration->getParcellesByDgc() as $dgc => $parcelles) {
-          ksort($parcelles);
-        	foreach ($parcelles as $parcelle) {
+        foreach ($this->doc->declaration->getParcelles() as $parcelle) {
                 if (!$parcelle->affectee) {
                     continue;
                 }
@@ -68,7 +66,7 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
             	$this->protectStr($parcelle->cepage),
             	$this->protectStr($parcelle->campagne_plantation),
             	$this->formatFloat($parcelle->getSuperficieParcellaire()),
-                $this->protectStr(strtoupper(str_replace("-", " ", $dgc))),
+                $this->protectStr(strtoupper($parcelle->getDgc())),
             	$this->formatFloat($parcelle->superficie),
                 $this->doc->exist('signataire') ? $this->protectStr($this->doc->signataire) : null,
             	$this->doc->validation,
@@ -76,7 +74,6 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
                 str_replace(explode('-', $this->doc->_id)[0].'-', '', $this->doc->_id),
                 $this->doc->_id
                 );
-        	}
         }
 
         return $csv;
