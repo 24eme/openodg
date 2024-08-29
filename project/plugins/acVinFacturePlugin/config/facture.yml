@@ -1,8 +1,6 @@
 all:
   configuration:
     facture:
-      aggregateMouvements: false
-      ligneUnique: false
       ligneMsg: false
       echeances: false
       uniq_template_prefix: false
