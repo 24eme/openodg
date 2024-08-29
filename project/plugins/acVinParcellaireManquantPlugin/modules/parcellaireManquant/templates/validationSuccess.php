@@ -20,7 +20,8 @@
     <?php if ($form->hasErrors()): ?>
         <div class="alert alert-danger">
             <ul>
-            <?php foreach ($form->getErrorSchema() as $error): ?>
+            <?php foreach ($form->getErrorSchema() as $key => $error): ?>
+                <?php if (strpos($key, 'engagement_') === 0) { continue; } ?>
                 <li><?php echo $error ?></li>
             <?php endforeach ?>
             </ul>
