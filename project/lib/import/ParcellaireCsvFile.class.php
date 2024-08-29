@@ -289,10 +289,13 @@ class ParcellaireCsvFile
                 $new_parcelle = $this->parcellaire->affecteParcelleToHashProduit($hash, $new_parcelle);
             }
 
-            if (! $this->check($new_parcelle)) {
+            if (!$new_parcelle) {
+                $this->contextInstance->getLogger()->info("La parcelle non créée ".$parcelle[self::CSV_FORMAT_IDU - $is_old_format]);
+            } elseif (! $this->check($new_parcelle)) {
                 $this->contextInstance->getLogger()->info("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");
+            }else{
+                $this->contextInstance->getLogger()->info("Parcelle de ".$new_parcelle->getKey()." ajouté");
             }
-            $this->contextInstance->getLogger()->info("Parcelle de ".$new_parcelle->getKey()." ajouté");
         }
     }
 

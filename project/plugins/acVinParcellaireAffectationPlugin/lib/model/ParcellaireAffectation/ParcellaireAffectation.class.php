@@ -68,9 +68,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   }
 
   public function getParcellaire2Reference() {
-      $intention = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant, $this->periode);
+      $intention = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant, $this->periode + 1);
       if (!$intention) {
-          $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode);
+          $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
           if (!count($intention->declaration)) {
               $intention = null;
           }
@@ -116,16 +116,22 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return;
     }
     $intention->updateParcelles();
+    $allready_selected = [];
 	foreach ($intention->getParcelles() as $parcelle) {
         if (!$parcelle->affectation) {
             continue;
         }
-        if($this->findParcelle($parcelle, true)) {
+        if($this->findParcelle($parcelle, true, $allready_selected)) {
             continue;
         }
         $this->addParcelle($parcelle);
-	}
+    }
   }
+
+    public function getParcelleById($id) {
+        $p = $this->getParcelles();
+        return $p[$id];
+    }
 
     public function recoverPreviousParcelles() {
         $previous = $this->getPreviousDocument();
@@ -196,6 +202,20 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     protected function doSave() {
         $this->piece_document->generatePieces();
+    }
+
+
+    public function cleanNonAffectee() {
+        $todelete = [];
+        foreach($this->declaration->getParcelles() as $id => $p) {
+            if ($p->affectee) {
+                continue;
+            }
+            $todelete[] = $p;
+        }
+        foreach($todelete as $p) {
+            $this->remove($p->getHash());
+        }
     }
 
 	public function isValidee(){
@@ -334,9 +354,16 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return false;
     }
 
+    public function getGroupedParcelles($onlyAffectee = false) {
+        if ($this->getDocument()->hasDgc()) {
+            return $this->declaration->getParcellesByDgc($onlyAffectee);
+        }
+        return $this->declaration->getParcellesByCommune($onlyAffectee);
+    }
+
     public function getParcellesByDgc() {
         $parcelles = array();
-        foreach($this->getParcellesFromReference() as $p) {
+        foreach($this->getParcellaire2Reference()->getParcelles() as $p) {
             if (!$p->produit_hash) {
                 continue;
             }
@@ -349,10 +376,17 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                     $parcelles[$d] = array();
                 }
                 $p->produit_hash = $h;
-                $parcelles[$d][] = $p;
+                $parcelles[$d][$p->getParcelleId()] = $p;
             }
         }
+        foreach(array_keys($parcelles) as $k) {
+            ksort($parcelles[$k]);
+        }
         return $parcelles;
+    }
+
+    public function hasDgc() {
+        return (count($this->declaration) >= 1) && !preg_match('/lieux\/DEFAU/', array_keys($this->declaration->toArray())[0]);
     }
 
     public function hasParcellaire() {

@@ -8,30 +8,26 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
 
 
     public function getDgc() {
+        if ($this->getParent()->getKey() == 'DEFAUT') {
+            return '';
+        }
         $communesDenominations = sfConfig::get('app_communes_denominations');
-        $dgcFinal = null;
         foreach ($communesDenominations as $dgc => $communes) {
-            if (!in_array($this->code_commune, $communes)) {
+            if (strpos($dgc, $this->getLieuNode()->getHash()) === false) {
                 continue;
             }
-            if (strpos($dgc, $this->getLieuNode()->getKey()) !== false) {
-
+            if (in_array($this->code_commune, $communes)) {
                 return $dgc;
             }
-
-            $dgcFinal = $dgc;
         }
-        return $dgcFinal;
+        return null;
     }
 
     public function getDgcLibelle() {
-        $dgc = $this->getDgc();
-
-        if(!$dgc) {
+        if (!$this->getDgc()) {
             return null;
         }
-
-        return $this->getDocument()->getDgcLibelle($dgc);
+        return $this->getDocument()->getConfiguration()->get($this->getLieuNode()->getHash())->getLibelle();
     }
 
 
@@ -46,23 +42,31 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
 
     public function getSuperficie($destinataireIdentifiant = null) {
         $superficie = $this->_get('superficie');
-        if($destinataireIdentifiant && $this->exist('destinations/'.$destinataireIdentifiant)) {
-            $superficie = $this->get('destinations/'.$destinataireIdentifiant.'/superficie');
-        } elseif($destinataireIdentifiant && $this->exist('destinations')) {
-
-            return null;
-        } elseif($destinataireIdentifiant && $destinataireIdentifiant != $this->getDocument()->identifiant) {
-            return null;
-        }else{
+        if($destinataireIdentifiant) {
+            if ($this->exist('destinations/'.$destinataireIdentifiant)) {
+                $superficie = $this->get('destinations/'.$destinataireIdentifiant.'/superficie');
+            } elseif ($this->exist('destinations')) {
+                return null;
+            } elseif($destinataireIdentifiant != $this->getDocument()->identifiant) {
+                return null;
+            }
+        }else {
+            //Gestion de la transition
             if ($this->exist('superficie_affectation') && $this->_get('superficie_affectation')) {
                 $superficie = $this->_get('superficie_affectation');
-                $this->_set('superficie', $superficie);
+                $this->set('superficie', $superficie);
             }
         }
-
+        $parcellaire_superficie_real = $this->getParcelleFromParcellaire()->superficie;
+        if ($this->getSuperficieParcellaire() != $parcellaire_superficie_real) {
+            if ($superficie == $this->getSuperficieParcellaire()) {
+                $this->set('superficie', $parcellaire_superficie_real);
+            }
+            $this->_set('superficie_parcellaire', $parcellaire_superficie_real);
+        }
         if ($superficie > $this->getSuperficieParcellaire()) {
             $superficie = $this->getSuperficieParcellaire();
-            $this->_set('superficie', $superficie);
+            $this->set('superficie', $superficie);
         }
 
         return $superficie;

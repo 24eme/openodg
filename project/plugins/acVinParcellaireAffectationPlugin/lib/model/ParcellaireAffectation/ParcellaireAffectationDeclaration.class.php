@@ -6,17 +6,6 @@
 
 class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclaration {
 
-    public $isDgcGroup = false;
-
-    public function getGroupedParcelles($onlyAffectee = false) {
-        $parcelles = $this->getParcellesByDgc($onlyAffectee);
-        if (count(array_keys($parcelles)) > 1) {
-            $this->isDgcGroup = true;
-            return $parcelles;
-        }
-        return $this->getParcellesByCommune($onlyAffectee);
-    }
-
     public function getParcellesByCommune($onlyAffectee = true) {
         $parcelles = array();
 
@@ -39,8 +28,10 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
 
         foreach($this as $keyProduit => $produit) {
           foreach ($produit->detail as $parcelle) {
-            $key = str_replace(" ", "-", $parcelle->getDgcLibelle());
-
+            if(!$parcelle->getDgc()) {
+                continue;
+            }
+            $key = $parcelle->getDgcLibelle();
             if ($onlyAffectee && !$parcelle->affectee) {
                 continue;
             }
@@ -48,10 +39,13 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
             if(!isset($parcelles[$key])) {
                 $parcelles[$key] = array();
             }
-            $parcelles[$key][$parcelle->commune.$parcelle->section.sprintf('%06d', $parcelle->numero_parcelle).$parcelle->getHash()] = $parcelle;
+            $parcelles[$key][$parcelle->getParcelleId()] = $parcelle;
           }
         }
         ksort($parcelles);
+        foreach(array_keys($parcelles) as $k) {
+            ksort($parcelles[$k]);
+        }
         return $parcelles;
     }
 
@@ -59,7 +53,7 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
         $parcelles = array();
         foreach($this as $produit) {
             foreach ($produit->detail as $parcelle) {
-                $parcelles[$parcelle->getHash()] = $parcelle;
+                $parcelles[$parcelle->getParcelleId()] = $parcelle;
             }
         }
 

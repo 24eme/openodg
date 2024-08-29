@@ -272,6 +272,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
         if ($produitFilter === null) {
             $produitFilter = [];
+        }else{
+            $produitFilter = $produitFilter->getParameters();
         }
 
         foreach ($produitFilter as $type => $filter) {

@@ -1,8 +1,6 @@
 all:
   configuration:
     facture:
-      ligneUnique: false
-      ligneDetailWithTitle: false
       echeances: false
       modalite_paiement: "Par chèque à l'ordre de «ODG 13» et à adresser au Syndicat des Vignerons d'Arles"
       uniq_template_prefix: "TEMPLATE-FACTURE"

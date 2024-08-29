@@ -41,7 +41,6 @@ th {
         </thead>
         <tbody>
         <?php foreach ($degustation->getDegustateursConfirmesTableOrFreeTable($numTab) as $id_compte => $degustateur): ?>
-            <?php if (! $degustateur->exist("numero_table") || $degustateur->numero_table == null): continue; endif; ?>
             <?php $compte = CompteClient::getInstance()->find($id_compte); ?>
               <tr>
                 <td class="text-center" style="width:35%; margin-left: 1em;"><?php echo $compte->getNom() ?>&nbsp;<br/>&nbsp;</td>

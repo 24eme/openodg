@@ -66,20 +66,24 @@ abstract class DeclarationParcellaireParcelle extends ParcellaireParcelle {
         return $this->_get('numero_ordre');
     }
 
+    public function getParcelleFromParcellaire() {
+        return $this->getDocument()->getParcelleFromParcellaire($this->getParcelleId());
+    }
+
     public function getSuperficieParcellaire() {
 
-        $p = $this->getDocument()->getParcelleFromParcellaire($this->getParcelleId());
+        $p = $this->getParcelleFromParcellaire();
         if (!$p) {
             if (!$this->_get('superficie_parcellaire')) {
                 if ($this->exist('superficie')) {
-                    $this->_set('superficie_parcellaire', $this->_get('superficie'));
+                    $this->set('superficie_parcellaire', $this->_get('superficie'));
                 }elseif ($this->exist('superficie_affectation')) {
-                    $this->_set('superficie_parcellaire', $this->superficie_affectation);
+                    $this->set('superficie_parcellaire', $this->superficie_affectation);
                 }
             }
         } else {
             if ($this->_get('superficie_parcellaire') != $p->getSuperficieParcellaire()) {
-                $this->_set('superficie_parcellaire', $p->getSuperficieParcellaire());
+                $this->set('superficie_parcellaire', $p->getSuperficieParcellaire());
             }
         }
         return $this->_get('superficie_parcellaire');
@@ -93,6 +97,15 @@ abstract class DeclarationParcellaireParcelle extends ParcellaireParcelle {
             return false;
         }
         return true;
+    }
+
+    public function getSuperficie() {
+        $s = $this->_get('superficie');
+        $p = $this->getSuperficieParcellaire();
+        if($s > $p) {
+            $this->set('superficie', $p);
+        }
+        return $this->_get('superficie');
     }
 
 }
