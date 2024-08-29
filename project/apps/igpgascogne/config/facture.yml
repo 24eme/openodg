@@ -1,8 +1,6 @@
 all:
   configuration:
     facture:
-      ligneUnique: false
-      ligneDetailWithTitle: false
       echeances: false
       modalite_paiement: "- comptant par virement ou chèque \\"
       uniq_template_prefix: "TEMPLATE-FACTURE"

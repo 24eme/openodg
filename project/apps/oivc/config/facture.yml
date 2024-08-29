@@ -1,7 +1,7 @@
 all:
   configuration:
     facture:
-      ligneUnique: true
+      ligne_unique: true
       suggestions_facturation_libre: ["Frais de déplacement|0.631", "Temps passé|31.00"]
       uniq_template_prefix: "TEMPLATE-FACTURE-%region%"
       export_type: "custom"

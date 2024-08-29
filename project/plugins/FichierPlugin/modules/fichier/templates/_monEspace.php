@@ -1,5 +1,9 @@
 <?php use_helper('Date'); ?>
 
+<?php if (!class_exists('DRConfiguration')): ?>
+    <?php return; ?>
+<?php endif; ?>
+
 <?php if (!$sf_user->isAdminODG() && DRConfiguration::getInstance()->hasVisuTeledeclaration() === false): ?>
     <?php return; ?>
 <?php endif; ?>
