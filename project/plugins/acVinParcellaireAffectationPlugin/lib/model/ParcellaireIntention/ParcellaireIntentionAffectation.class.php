@@ -29,6 +29,30 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       return preg_replace('/-.*/', '', $this->campagne);
   }
 
+  public function getParcellesByDgc() {
+      $parcelles = array();
+      foreach($this->getParcellaire2Reference()->getParcelles() as $p) {
+          if (!$p->produit_hash) {
+              continue;
+          }
+          $lieu_hash = preg_replace('/\/lieux\/.*/', '', $p->produit_hash);
+          foreach($p->getTheoriticalDgs() as $h => $d) {
+              if (strpos($h, $lieu_hash) === false) {
+                  continue;
+              }
+              if (!isset($parcelles[$d])) {
+                  $parcelles[$d] = array();
+              }
+              $p->produit_hash = $h;
+              $parcelles[$d][$p->getParcelleId()] = $p;
+          }
+      }
+      foreach(array_keys($parcelles) as $k) {
+          ksort($parcelles[$k]);
+      }
+      return $parcelles;
+  }
+
   public function updateValidationDoc() {
       $this->validation = $this->date;
       $this->validation_odg = $this->date;

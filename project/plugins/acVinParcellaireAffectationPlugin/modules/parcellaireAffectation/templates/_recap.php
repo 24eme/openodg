@@ -17,8 +17,7 @@
     </p>
 <?php endif; ?>
 
-
-<?php foreach ($parcellaireAffectation->declaration->getParcellesByDgc() as $dgc => $parcelles): ?>
+<?php foreach ($parcellaireAffectation->getGroupedParcelles() as $dgc => $parcelles): ?>
 <?php if ($dgc): ?>
     <div class="row">
         <div class="col-xs-12">
