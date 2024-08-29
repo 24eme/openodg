@@ -17,6 +17,16 @@
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
+    <?php if ($form->hasErrors()): ?>
+        <div class="alert alert-danger">
+            <ul>
+            <?php foreach ($form->getErrorSchema() as $error): ?>
+                <li><?php echo $error ?></li>
+            <?php endforeach ?>
+            </ul>
+        </div>
+    <?php endif ?>
+
     <?php if(isset($form["date"])): ?>
     <div class="row">
         <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
