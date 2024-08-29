@@ -68,9 +68,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   }
 
   public function getParcellaire2Reference() {
-      $intention = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant, $this->periode);
+      $intention = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant, $this->periode + 1);
       if (!$intention) {
-          $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode);
+          $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
           if (!count($intention->declaration)) {
               $intention = null;
           }
@@ -116,16 +116,22 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return;
     }
     $intention->updateParcelles();
+    $allready_selected = [];
 	foreach ($intention->getParcelles() as $parcelle) {
         if (!$parcelle->affectation) {
             continue;
         }
-        if($this->findParcelle($parcelle, true)) {
+        if($this->findParcelle($parcelle, true, $allready_selected)) {
             continue;
         }
         $this->addParcelle($parcelle);
-	}
+    }
   }
+
+    public function getParcelleById($id) {
+        $p = $this->getParcelles();
+        return $p[$id];
+    }
 
     public function recoverPreviousParcelles() {
         $previous = $this->getPreviousDocument();
@@ -348,9 +354,16 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return false;
     }
 
+    public function getGroupedParcelles($onlyAffectee = false) {
+        if ($this->getDocument()->hasDgc()) {
+            return $this->declaration->getParcellesByDgc($onlyAffectee);
+        }
+        return $this->declaration->getParcellesByCommune($onlyAffectee);
+    }
+
     public function getParcellesByDgc() {
         $parcelles = array();
-        foreach($this->getParcelles() as $p) {
+        foreach($this->getParcellaire2Reference()->getParcelles() as $p) {
             if (!$p->produit_hash) {
                 continue;
             }
