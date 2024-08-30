@@ -18,9 +18,8 @@ class ParcellaireAffectationValidation extends DocumentValidation {
     public function controle() {
         $appellationGeree = false;
         $appellations = ConfigurationClient::getCurrent()->getProduits();
-
         foreach ($this->document->getParcelles() as $parcelle) {
-            if ($appellationGeree === false && array_key_exists($parcelle->getProduitHash(), $appellations) === true) {
+            if ($parcelle->getConfig() && $parcelle->getConfig()->getAppellation()->getKey() != Configuration::DEFAULT_KEY) {
                 $appellationGeree = true;
             }
 
