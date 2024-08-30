@@ -13,6 +13,15 @@ class ParcellaireIntentionAffectationProduitDetail extends ParcellaireAffectatio
 
     public function updateFromParcellaire() {
         $p = $this->getDocument()->getParcelleFromParcellaire($this->getParcelleId());
+        if ($this->exist('superficie_affectation')) {
+            $this->superficie = $this->superficie_affectation;
+            $this->remove('superficie_affectation');
+        }
+        ParcellaireClient::CopyParcelle($this, $p);
+    }
+
+    public function getProduitHash() {
+        return $this->getParent()->getParent()->getHash();
     }
 
 }
