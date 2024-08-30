@@ -2,7 +2,7 @@
 
 /**** AVA ****/
 
-class /**AVA**/TourneeClient extends acCouchdbClient {
+class TourneeClient/**AVA**/ extends acCouchdbClient {
 
     const TYPE_MODEL = "Tournee";
     const TYPE_COUCHDB = "TOURNEE";

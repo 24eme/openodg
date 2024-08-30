@@ -1821,7 +1821,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
-		public function getFacturationVolumeRedeguste($cotisation,$filters = null){
+		public function getFacturationVolumeRedeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters = null){
             return $this->buildMouvementsFacturesVolumeRedeguste($cotisation, $filters);
         }
         public function buildMouvementsFacturesVolumeRedeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters){
@@ -1832,7 +1832,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $this->buildMouvementsFacturesVolume($cotisation, $filters);
         }
 
-        private function buildMouvementsFacturesVolume($cotisation, $filters = null, $redegustation = false) {
+        private function buildMouvementsFacturesVolume($cotisation, TemplateFactureCotisationCallbackParameters $filters = null, $redegustation = false) {
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             $volumes_operateurs = [];
@@ -1909,7 +1909,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function getForfaitConditionnement($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesForfaitConditionnement($cotisation, $filters);
         }
-		public function buildMouvementsFacturesForfaitConditionnement($cotisation, $filters = null){
+		public function buildMouvementsFacturesForfaitConditionnement($cotisation, TemplateFactureCotisationCallbackParameters $filters = null){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             foreach ($this->getLotsDegustables() as $lot) {
@@ -1927,10 +1927,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
-        public function getFacturationNonConforme($cotisation,$filters = null) {
+        public function getFacturationNonConforme($cotisation, TemplateFactureCotisationCallbackParameters $filters = null) {
             return $this->buildMouvementsFacturesNonConforme($cotisation,$filters);
         }
-        public function buildMouvementsFacturesNonConforme($cotisation,$filters = null) {
+        public function buildMouvementsFacturesNonConforme($cotisation, TemplateFactureCotisationCallbackParameters $filters = null) {
             $mouvements = array();
             $keyCumul = $cotisation->getDetailKey();
             foreach ($this->getLots() as $lot) {

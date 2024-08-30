@@ -285,14 +285,17 @@ class ParcellaireCsvFile
             $new_parcelle->superficie = (float) str_replace(',', '.', $parcelle[self::CSV_FORMAT_SUPERFICIE - $is_old_format]);
             $new_parcelle->superficie_cadastrale = (float) str_replace(',', '.', $parcelle[self::CSV_FORMAT_SUPERFICIE_CADASTRALE - $is_old_format]);
             $new_parcelle->set('mode_savoirfaire',$parcelle[self::CSV_FORMAT_FAIRE_VALOIR - $is_old_format]);
-            if ($new_parcelle->produit_hash && strpos($new_parcelle->produit_hash, ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH) === false) {
+            if ($hash && $new_parcelle->produit_hash && strpos($new_parcelle->produit_hash, ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH) === false) {
                 $new_parcelle = $this->parcellaire->affecteParcelleToHashProduit($hash, $new_parcelle);
             }
 
-            if (! $this->check($new_parcelle)) {
+            if (!$new_parcelle) {
+                $this->contextInstance->getLogger()->info("La parcelle non créée ".$parcelle[self::CSV_FORMAT_IDU - $is_old_format]);
+            } elseif (! $this->check($new_parcelle)) {
                 $this->contextInstance->getLogger()->info("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");
+            }else{
+                $this->contextInstance->getLogger()->info("Parcelle de ".$new_parcelle->getKey()." ajouté");
             }
-            $this->contextInstance->getLogger()->info("Parcelle de ".$new_parcelle->getKey()." ajouté");
         }
     }
 

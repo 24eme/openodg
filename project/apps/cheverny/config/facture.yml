@@ -1,8 +1,7 @@
 all:
   configuration:
     facture:
-      ligneUnique: false
-      ligneDetailWithTitle: true
+      ligne_detail_with_title: true
       echeances: false
       uniq_template_prefix: false
       export_sage_width_txt: true

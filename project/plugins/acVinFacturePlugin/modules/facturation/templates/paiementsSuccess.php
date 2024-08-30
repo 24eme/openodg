@@ -3,7 +3,7 @@
 
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
-  <li><a href="<?php echo url_for('facturation_declarant', $facture->getCompte()); ?>"><?php echo $facture->getCompte()->getNomAAfficher() ?> (<?php echo $facture->getCompte()->getIdentifiantAAfficher() ?>)</a></li>
+  <li><a href="<?php echo url_for('facturation_declarant', ['identifiant' => $facture->identifiant]); ?>"><?php echo $facture->getCompte()->getNomAAfficher() ?> (<?php echo $facture->getCompte()->getIdentifiantAAfficher() ?>)</a></li>
   <li class="active"><a href="">Paiement de la facture n°<?php echo $facture->numero_odg ?></a></li>
 </ol>
 

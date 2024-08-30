@@ -1,7 +1,11 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Date') ?>
 
-<?php if(isset($coop)): ?>
+<?php
+$coop_id = null;
+if(isset($coop)):
+    $coop_id = explode('-', $coop)[1];
+    ?>
     <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireAffectation]); ?>
 <?php else: ?>
     <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
@@ -11,7 +15,14 @@
 
 <h2>Affectation de vos parcelles</h2>
 
-<p>Les parcelles listées ci-dessous sont reprises depuis le parcellaire douanier, elles sont affecectables par destination.</p>
+<?php $parcellaire2reference = $parcellaireAffectation->getParcellaire2Reference(); ?>
+<p>Les parcelles listées ci-dessous sont reprises
+<?php if (strpos($parcellaire2reference->_id, 'PARCELLAIRE-') !== false) : ?>
+    <a href="<?php echo url_for('parcellaire_visualisation', $parcellaire2reference); ?>">parcellaire douanier</a></p>
+<?php else: ?>
+    l'identification du <?php echo preg_replace('/([0-9]*)-([0-9]*)-([0-9]*)/', '\3/\2/\1', $parcellaire2reference->date);?>
+<?php endif; ?>
+, elles sont affecectables par destination.</p>
 
 <?php if(!$parcellaireAffectation->isAllPreviousParcellesExists()): ?>
     <div class="alert alert-warning">
@@ -20,23 +31,25 @@
 <?php endif; ?>
 
 <ul class="nav nav-tabs mt-4">
-<?php foreach($destinataires as $id => $d): ?>
-    <li role="presentation" <?php if($id == $destinataire): ?>class="active"<?php endif; ?>><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'] ?></a></li>
+<?php
+foreach($destinataires as $id => $d):
+?>
+    <li role="presentation" class="<?php if($id == $destinataire): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>"><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'] ?></a></li>
 <?php endforeach; ?>
 </ul>
 
 <form id="validation-form" action="" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
-
-    <?php foreach ($parcellaireAffectation->declaration->getGroupedParcelles() as $group => $parcelles): ?>
+    <?php $has_parcelles = false; ?>
+    <?php foreach ($parcellaireAffectation->getGroupedParcelles(false) as $group => $parcelles):?>
     <?php if ($group): ?>
         <div style="margin-bottom: 1em;" class="row">
             <div class="col-xs-6">
-                <h3><?php if ($parcellaireAffectation->declaration->isDgcGroup): ?>Dénomination complémentaire <?php endif; ?><?php echo str_replace("-", " ", $group); ?></h3>
+                <h3><?php if ($parcellaireAffectation->hasDgc()): ?>Dénomination <?php endif; ?><?php echo $group; ?></h3>
             </div>
             <div class="col-xs-6">
-               <p class="text-right" style="margin-top: 30px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->declaration->isDgcGroup): ?>dénomination<?php else: ?>commune<?php endif; ?></a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette  <?php if ($parcellaireAffectation->declaration->isDgcGroup): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
+               <p class="text-right" style="margin-top: 30px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette  <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
            </div>
         </div>
     <?php endif; ?>
@@ -57,6 +70,7 @@
     	</thead>
     	<tbody>
     	<?php
+      $has_parcelles = true;
       $parcelles = $parcelles->getRawValue();
       ksort($parcelles);
     		foreach ($parcelles as $parcelle):
@@ -94,7 +108,9 @@
         </tbody>
     </table>
     <?php endforeach; ?>
-
+    <?php if (!$has_parcelles): ?>
+        <p class="m-5"><i>Pas de parcelles affectables trouvées</i></p>
+    <?php endif; ?>
     <script>
         document.addEventListener('DOMContentLoaded', function (e) {
             updateTotal = function (table) {
@@ -113,6 +129,12 @@
 
             (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
                 el.addEventListener('change', function (event) {
+                    superficie = this.value;
+                    if (this.parentNode.parentNode.childNodes[11].innerText == superficie) {
+                        this.parentNode.parentNode.childNodes[17].innerText = 'Totale';
+                    }else{
+                        this.parentNode.parentNode.childNodes[17].innerText = 'Partielle';
+                    }
                     const table = event.target.closest('table')
                     updateTotal(table)
                 })

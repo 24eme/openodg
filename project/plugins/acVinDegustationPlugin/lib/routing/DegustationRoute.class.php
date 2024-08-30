@@ -4,9 +4,17 @@ class DegustationRoute extends sfObjectRoute implements InterfaceDegustationGene
 {
     protected $degustation = null;
 
+    /** @var $parameters['id'] De forme DEGUSTATION-20XXXXXXXXXX, TOURNEE-20XXXXXXXXXX, 20XXXXXXXXXX */
     protected function getObjectForParameters($parameters) {
+        $id = $parameters['id'];
 
-        $this->degustation = DegustationClient::getInstance()->find($parameters['id']);
+        // Si pas de tiret dans l'id, alors cela vient d'un lien raccourci d'un mail de dégustation
+        // On rajoute alors DEGUSTATION-
+        // Sinon, c'est un lien normal soit d'une Dégustation, soit d'une Tournée
+        if (strpos($id, '-') === false) {
+            $id = "DEGUSTATION-$id";
+        }
+        $this->degustation = DegustationClient::getInstance()->find($id);
 
         if (!$this->degustation) {
 

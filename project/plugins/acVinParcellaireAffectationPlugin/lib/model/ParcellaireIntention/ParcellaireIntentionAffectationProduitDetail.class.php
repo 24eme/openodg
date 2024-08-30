@@ -13,19 +13,27 @@ class ParcellaireIntentionAffectationProduitDetail extends ParcellaireAffectatio
 
     public function updateFromParcellaire() {
         $p = $this->getDocument()->getParcelleFromParcellaire($this->getParcelleId());
+        if (!$p) {
+            $this->delete();
+            return;
+        }
+        if ($this->exist('superficie_affectation')) {
+            $this->superficie = $this->superficie_affectation;
+            $this->remove('superficie_affectation');
+        }
+        ParcellaireClient::CopyParcelle($this, $p);
     }
 
-    public function getParcelleId() {
-        if (!$this->_get('parcelle_id')) {
-            $p = null;
-            if ($this->getDocument()->getParcellaire()) {
-                $p = ParcellaireClient::getInstance()->findParcelle($this->getDocument()->getParcellaire(), $this, 0);
-            }
-            if (!$p) {
-                throw new sfException('no parcelle id found for '.$this->getHash());
-            }
-            $this->_set('parcelle_id', $p->getParcelleId());
-        }
-        return $this->_get('parcelle_id');
+    public function getProduitHash() {
+        return $this->getParent()->getParent()->getHash();
     }
+
+    public function getSuperficie($destinataireIdentifiant = null) {
+        $s = $this->_get('superficie');
+        if (!$s && $this->affectation) {
+            $s = $this->superficie_parcellaire;
+        }
+        return $s;
+    }
+
 }

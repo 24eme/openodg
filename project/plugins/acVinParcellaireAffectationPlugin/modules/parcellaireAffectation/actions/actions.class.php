@@ -113,11 +113,17 @@ class parcellaireAffectationActions extends sfActions {
         $this->destinataire = $request->getParameter('destinataire', $this->parcellaireAffectation->getEtablissementObject()->_id);
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
 
+        if ($this->coop) {
+            $coop_id = explode('-', $this->coop)[1];
+            if (strpos($this->destinataire, $coop_id) === false) {
+                return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => 'ETABLISSEMENT-'.$coop_id]);
+            }
+        }
+
+        $this->parcellaireAffectation->updateParcellesAffectation();
     	if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_AFFECTATIONS))) {
     		$this->parcellaireAffectation->save();
     	}
-
-        $this->parcellaireAffectation->updateParcellesAffectation();
 
     	$this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
 
@@ -146,7 +152,7 @@ class parcellaireAffectationActions extends sfActions {
 
         $finded = false;
         $previous = null;
-        foreach($this->destinataires as $dId => $d) {
+        if (!$this->coop) foreach($this->destinataires as $dId => $d) {
             if($dId == $this->destinataire && $request->getParameter('previous')) {
                 break;
             }
@@ -208,6 +214,7 @@ class parcellaireAffectationActions extends sfActions {
     public function executePDF(sfWebRequest $request) {
     	set_time_limit(180);
     	$this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        $this->parcellaireAffectation->cleanNonAffectee();
     	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireAffectation);
 
 
@@ -228,6 +235,7 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executeVisualisation(sfWebRequest $request) {
     	$this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        $this->parcellaireAffectation->cleanNonAffectee();
         $this->coop = $request->getParameter('coop');
     	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireAffectation);
     }

@@ -53,7 +53,7 @@ $list_idu = [];
     </div>
 <?php endif; ?>
 
-<?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
+<?php if ($parcellaire && count($parcellaire->getParcelles()) > 0): ?>
     <?php $parcellesByCommune = $parcellaire->getParcellesByCommune(false);
     $import = $parcellaire->getGeoJson(); ?>
 
@@ -156,7 +156,7 @@ $list_idu = [];
                                 <td><?php echo $lieu; ?></td>
                                 <td class="" style="text-align: center;">
                                     <?php echo $section; ?> <?php echo $num_parcelle; ?><br/>
-                                    <span class="text-muted"><?php echo $detail->idu; ?></span>
+                                    <span class="text-muted"><?php echo $detail->getParcelleId(); ?></span>
                                 </td>
                                 <td class="<?php echo $classcepage; ?>">
                                     <span class="text-muted"><?php echo $detail->getProduitLibelle(); ?></span> <?php echo $cepage; ?><br/>

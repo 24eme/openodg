@@ -2,24 +2,25 @@
 
 require_once(dirname(__FILE__).'/../../vendor/geoPHP/geoPHP.inc');
 
-/**
- * Model for ParcellaireCepageDetail
- *
- */
 class ParcellaireParcelle extends BaseParcellaireParcelle {
     private static $_AIRES = [];
     private $geoparcelle = null;
 
     public function getProduit() {
         if ($this->getParcelleAffectee()) {
-            return $this->getParcelleAffectee()->getParent()->getParent();
+
+            return $this->getDocument()->get(preg_replace('#/detail$#', '', $this->getParcelleAffectee()->getParentHash()));
         }
         return null;
     }
 
     public function getConfig() {
         try {
-            return $this->getDocument()->getConfiguration()->get(preg_replace('/\/detail\/.*/', '', $this->produit_hash));
+            if (strpos($this->produit_hash, 'declaration/') !== false) {
+                return $this->getDocument()->getConfiguration()->get(preg_replace('/\/detail\/.*/', '', $this->produit_hash));
+            }else {
+                return $this->getDocument()->getConfiguration()->declaration->get(preg_replace('/\/detail\/.*/', '', $this->produit_hash));
+            }
         }catch(sfException $e) {
             return null;
         }
@@ -215,6 +216,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function hasProblemProduitCVI() {
+        if (ParcellaireConfiguration::getInstance()->affectationNeedsIntention()) {
+            return false;
+        }
         $a = $this->getIsInAires();
         if (! count($a)) {
             return true;

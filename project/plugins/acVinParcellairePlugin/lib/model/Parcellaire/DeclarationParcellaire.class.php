@@ -2,6 +2,17 @@
 
 class DeclarationParcellaire extends acCouchdbDocument {
 
+    public function getParcelleFromParcellaire($id) {
+        $parcellaire = $this->getParcellaire();
+
+        if(!$parcellaire) {
+
+            return null;
+        }
+
+        return $parcellaire->getParcelleFromParcellaireId($id);
+    }
+
     public function getParcelles() {
         $parcelles = [];
         if ($this->declaration && count($this->declaration)) foreach ($this->declaration->getParcelles() as $p) {
@@ -12,7 +23,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
 
     public function getParcellesByCommunes() {
         $parcelles = [];
-        foreach ($this->declaration->getParcelles() as $p) {
+        foreach ($this->getParcelles() as $p) {
             $c = $p->commune;
             if (!isset($parcelles[$c])) {
                 $parcelles[$c]= [];
@@ -139,9 +150,20 @@ class DeclarationParcellaire extends acCouchdbDocument {
         }
     }
 
-    public function findParcelle($parcelle) {
+    public function findParcelle($parcelle, $scoreMin = 1, &$allready_selected = null) {
 
-        return ParcellaireClient::findParcelle($this, $parcelle, 1);
+        return ParcellaireClient::findParcelle($this, $parcelle, 1, false, $allready_selected);
+    }
+
+    private $idunumbers = null;
+    public function getNbUDIAlreadySeen($idu) {
+        if (!$this->idunumbers) {
+            $this->idunumbers = [];
+        }
+        if (!isset($this->idunumbers[$idu])) {
+            $this->idunumbers[$idu] = 0;
+        }
+        return $this->idunumbers[$idu]++;
     }
 
 }

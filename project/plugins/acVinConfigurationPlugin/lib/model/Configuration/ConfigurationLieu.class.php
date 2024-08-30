@@ -91,4 +91,14 @@ class ConfigurationLieu extends BaseConfigurationLieu {
 
 		return $this->_get('couleurs');
 	}
+
+    public function isCepageAutorise($cepage) {
+        foreach($this->getCouleurs() as $c) {
+            if ($c->isCepageAutorise($cepage)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

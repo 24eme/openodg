@@ -60,6 +60,9 @@ class Parcellaire extends BaseParcellaire {
 
     public function affecteParcelleToHashProduit($hash, $parcelle) {
         $p = $this->addProduit($hash);
+        if (!$p) {
+            return null;
+        }
         return $p->affecteParcelle($parcelle);
     }
 
@@ -233,9 +236,9 @@ class Parcellaire extends BaseParcellaire {
         return $this->parcelles_idu;
     }
 
-    public function findParcelle($parcelle, $scoreMin = 1) {
+    public function findParcelle($parcelle, $scoreMin = 1, &$allready_selected = null) {
 
-        return ParcellaireClient::findParcelle($this, $parcelle, $scoreMin);
+        return ParcellaireClient::findParcelle($this, $parcelle, $scoreMin, $allready_selected);
     }
 
     public function getDateFr() {

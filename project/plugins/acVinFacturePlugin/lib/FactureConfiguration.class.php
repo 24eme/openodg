@@ -31,11 +31,11 @@ class FactureConfiguration {
     }
 
     public function isLigneUnique() {
-      return isset($this->configuration['ligneUnique']) && boolval($this->configuration['ligneUnique']);
+      return isset($this->configuration['ligne_unique']) && boolval($this->configuration['ligne_unique']);
     }
 
     public function isLigneDetailWithTitle() {
-      return isset($this->configuration['ligneDetailWithTitle']) && boolval($this->configuration['ligneDetailWithTitle']);
+      return isset($this->configuration['ligne_detail_with_title']) && boolval($this->configuration['ligne_detail_with_title']);
     }
 
     public function hasEcheances() {
@@ -225,6 +225,12 @@ class FactureConfiguration {
     public function getSuggestionsFacturationLibre() {
         if(!isset($this->configuration['suggestions_facturation_libre'])) return [];
         return $this->configuration['suggestions_facturation_libre'];
+    }
+
+    public function hasFacturationParRegion() {
+        if(!isset($this->configuration['facturation_region'])) return false;
+        return ($this->configuration['facturation_region']);
+
     }
 
 }
