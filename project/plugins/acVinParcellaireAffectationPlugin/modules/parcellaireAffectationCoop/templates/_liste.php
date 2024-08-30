@@ -28,7 +28,7 @@
     <?php $nb = 0; foreach ($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur_id => $apporteur): if (isset($partial) && $partial && $nb++ > 10) {continue;}?>
         <tr class="hamzastyle-item <?php if($apporteur->getDeclarationStatut("ParcellaireAffectation") == ParcellaireAffectationCoopApporteur::STATUT_NON_IDENTIFIEE): ?>text-muted<?php endif; ?>" data-words='<?php echo json_encode(array($apporteur->nom, $apporteur->cvi), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>' >
             <td><?php echo $apporteur->cvi; ?></td>
-            <td><a href=""><?php echo $apporteur->nom; ?></a> <span class="text-muted"><?php echo $apporteur_id; ?></span></td>
+            <td><span class="text-primary"><?php echo $apporteur->nom; ?></span> <span class="text-muted"><?php echo $apporteur_id; ?></span></td>
             <?php foreach(["ParcellaireAffectation" => "parcellaireaffectation", "ParcellaireManquant" => "parcellairemanquant", "ParcellaireIrrigable" => "parcellaireirrigable"] as $type => $baseurl): ?>
             <td class="text-center <?php if($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>success text-success<?php endif; ?>">
                 <?php if($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>
