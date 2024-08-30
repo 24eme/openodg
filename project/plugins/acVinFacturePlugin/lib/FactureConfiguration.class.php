@@ -6,7 +6,6 @@ class FactureConfiguration {
 
     private static $_instance = null;
     protected $configuration;
-    protected $app_coordonnees_bancaire;
 
     public static function getInstance() {
         if (is_null(self::$_instance)) {
