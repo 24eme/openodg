@@ -29,30 +29,6 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       return preg_replace('/-.*/', '', $this->campagne);
   }
 
-  public function getParcellesByDgc() {
-      $parcelles = array();
-      foreach($this->getParcellaire2Reference()->getParcelles() as $p) {
-          if (!$p->produit_hash) {
-              continue;
-          }
-          $lieu_hash = preg_replace('/\/lieux\/.*/', '', $p->produit_hash);
-          foreach($p->getTheoriticalDgs() as $h => $d) {
-              if (strpos($h, $lieu_hash) === false) {
-                  continue;
-              }
-              if (!isset($parcelles[$d])) {
-                  $parcelles[$d] = array();
-              }
-              $p->produit_hash = $h;
-              $parcelles[$d][$p->getParcelleId()] = $p;
-          }
-      }
-      foreach(array_keys($parcelles) as $k) {
-          ksort($parcelles[$k]);
-      }
-      return $parcelles;
-  }
-
   public function updateValidationDoc() {
       $this->validation = $this->date;
       $this->validation_odg = $this->date;
@@ -70,7 +46,9 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
 
   public function updateIntentionFromParcellaireAndLieux() {
       $parcellaire = $this->getParcellaire();
-      $parcellesFromParcellaire = $this->getParcellaire()->getParcelles();
+      if ($parcellaire) {
+          $parcellesFromParcellaire = $parcellaire->getParcelles();
+      }
       if (!$parcellesFromParcellaire || !count($parcellesFromParcellaire)) {
           return;
       }
@@ -87,17 +65,19 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       }
       $libelleProduits = array();
       $affectees = array();
-      foreach ($this->getParcelles() as $parcelle) {
+      $already_seen = array();
+      foreach ($this->declaration->getParcelles() as $parcelle) {
           if (!$parcelle->affectation) {
+              $parcelle->remove('superficie_affectation');
+              $parcelle->superficie = null;
               continue;
           }
 
-          $pMatch = $parcellesFromParcellaire->getDocument()->findParcelle($parcelle);
+          $pMatch = $parcellaire->findParcelle($parcelle, 1, $already_seen);
 
           if(!$pMatch) {
               continue;
           }
-
           $affectees[$parcelle->getProduit()->getHash()][$pMatch->getHash()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie);
       }
       $this->remove('declaration');
