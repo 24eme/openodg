@@ -70,8 +70,8 @@ ParcellaireAffectation:
                               vtsgn: { type: integer, required: false }
                               campagne_plantation: {  }
                               numero_ordre: { }
-                              affectation: { type: integer }
-                              date_affectation: {  }
+                              affectation: { type: integer, required: false } # déprécié à supprimer
+                              date_affectation: { type: integer, required: false } # déprécié à supprimer
                               affectee: { type: integer }
                               produit_hash: { }
                               source_produit_libelle: { }

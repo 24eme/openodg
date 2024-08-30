@@ -214,8 +214,12 @@ class chgtdenomActions extends sfActions
         if($chgtDenom->hasLotsUtilises()) {
             throw new Exception("Dévalidation impossible car des lots dans cette déclaration sont utilisés");
         }
-
-        $chgtDenom->devalidate();
+        try {
+            $chgtDenom->devalidate();
+        }catch(sfException $e) {
+            $this->getUser()->setFlash("error", $e->getMessage());
+            return $this->redirect($this->generateUrl('chgtdenom_visualisation', $chgtDenom));
+        }
         $chgtDenom->save();
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
