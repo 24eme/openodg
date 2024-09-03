@@ -229,7 +229,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
           if ($onlyAffectes) {
               $hasParcelle = false;
               foreach ($produit->detail as $detail) {
-                  if ($detail->affectation) {
+                  if ($detail->isAffectee()) {
                       $hasParcelle = true;
                       break;
                   }
