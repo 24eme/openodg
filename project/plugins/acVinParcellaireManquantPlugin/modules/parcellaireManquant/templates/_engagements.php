@@ -2,7 +2,12 @@
 
 <div class="alert" role="alert" id="engagements">
     <div class="form-group">
-        <div class="alert alert-danger <?php if(!$form->hasErrors()): ?>hidden<?php endif; ?>" role="alert">
+        <?php $hasErrors = false;
+            foreach ($form->getErrorSchema() as $key => $e):
+                $hasErrors = strpos($key, 'engagement_') === 0 || $hasErrors;
+            endforeach;
+        ?>
+        <div class="alert alert-danger <?php if(!$hasErrors): ?>hidden<?php endif; ?>" role="alert">
     	    <ul class="error_list">
                 <li class="text-left" style="list-style-type: none;">Merci de sélectionner vos engagements.</li>
     		</ul>

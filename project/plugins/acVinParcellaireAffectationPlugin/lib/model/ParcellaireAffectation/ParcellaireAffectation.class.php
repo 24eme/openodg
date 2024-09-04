@@ -229,7 +229,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
           if ($onlyAffectes) {
               $hasParcelle = false;
               foreach ($produit->detail as $detail) {
-                  if ($detail->affectation) {
+                  if ($detail->isAffectee()) {
                       $hasParcelle = true;
                       break;
                   }
@@ -359,30 +359,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             return $this->declaration->getParcellesByDgc($onlyAffectee);
         }
         return $this->declaration->getParcellesByCommune($onlyAffectee);
-    }
-
-    public function getParcellesByDgc() {
-        $parcelles = array();
-        foreach($this->getParcellaire2Reference()->getParcelles() as $p) {
-            if (!$p->produit_hash) {
-                continue;
-            }
-            $lieu_hash = preg_replace('/\/lieux\/.*/', '', $p->produit_hash);
-            foreach($p->getTheoriticalDgs() as $h => $d) {
-                if (strpos($h, $lieu_hash) === false) {
-                    continue;
-                }
-                if (!isset($parcelles[$d])) {
-                    $parcelles[$d] = array();
-                }
-                $p->produit_hash = $h;
-                $parcelles[$d][$p->getParcelleId()] = $p;
-            }
-        }
-        foreach(array_keys($parcelles) as $k) {
-            ksort($parcelles[$k]);
-        }
-        return $parcelles;
     }
 
     public function hasDgc() {

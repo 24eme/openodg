@@ -236,7 +236,7 @@ class Parcellaire extends BaseParcellaire {
         return $this->parcelles_idu;
     }
 
-    public function findParcelle($parcelle, $scoreMin = 1, &$allready_selected) {
+    public function findParcelle($parcelle, $scoreMin = 1, &$allready_selected = null) {
 
         return ParcellaireClient::findParcelle($this, $parcelle, $scoreMin, $allready_selected);
     }

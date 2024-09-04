@@ -46,7 +46,9 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
 
   public function updateIntentionFromParcellaireAndLieux() {
       $parcellaire = $this->getParcellaire();
-      $parcellesFromParcellaire = $this->getParcellaire()->getParcelles();
+      if ($parcellaire) {
+          $parcellesFromParcellaire = $parcellaire->getParcelles();
+      }
       if (!$parcellesFromParcellaire || !count($parcellesFromParcellaire)) {
           return;
       }
@@ -63,17 +65,19 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       }
       $libelleProduits = array();
       $affectees = array();
-      foreach ($this->getParcelles() as $parcelle) {
+      $already_seen = array();
+      foreach ($this->declaration->getParcelles() as $parcelle) {
           if (!$parcelle->affectation) {
+              $parcelle->remove('superficie_affectation');
+              $parcelle->superficie = null;
               continue;
           }
 
-          $pMatch = $parcellesFromParcellaire->getDocument()->findParcelle($parcelle);
+          $pMatch = $parcellaire->findParcelle($parcelle, 1, $already_seen);
 
           if(!$pMatch) {
               continue;
           }
-
           $affectees[$parcelle->getProduit()->getHash()][$pMatch->getHash()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie);
       }
       $this->remove('declaration');
