@@ -30,7 +30,12 @@ do
   if [ ! -f "$EXPORTFORAPPGLOBALSUBDIR/$FILENAME" ]; then
     head -n 1 $file > $EXPORTFORAPPGLOBALSUBDIR/$FILENAME
   fi
-  cat $file | grep -E $HASHPRODUIT --binary-files=text >> $EXPORTFORAPPGLOBALSUBDIR/$FILENAME
+  FILETYPE=$(echo $FILENAME | sed 's/\..*//')
+  FILTER=$(eval echo '$'"HASHPRODUIT_"$FILETYPE)
+  if ! test "$FILTER" ; then
+      FILTER=$(echo $HASHPRODUIT);
+  fi
+  cat $file | grep -E "$FILTER" --binary-files=text >> $EXPORTFORAPPGLOBALSUBDIR/$FILENAME
 done
 
 head -n 1 $GLOBALDIR/production.csv > $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
