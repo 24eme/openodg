@@ -26,6 +26,7 @@ class ImportParcellaireAffectationVentouxTask extends sfBaseTask
     protected $periode = null;
     protected $materiels;
     protected $ressources;
+    protected $cepages;
 
     protected function configure()
     {
@@ -55,6 +56,8 @@ EOF;
         $this->periode = $arguments['periode'];
         $this->materiels = sfConfig::get('app_parcellaire_irrigable_materiels');
         $this->ressources = sfConfig::get('app_parcellaire_irrigable_ressources');
+
+        $this->cepages = ConfigurationClient::getCurrent()->getCepagesAutorises();
 
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ';');
@@ -93,10 +96,20 @@ EOF;
             $data[self::CSV_ANNEE_PLANTATION] = $data[self::CSV_ANNEE_PLANTATION].'-'.($data[self::CSV_ANNEE_PLANTATION]+1);
         }
         $data[self::CSV_SECTION] = trim($data[self::CSV_SECTION]);
-        $data[self::CSV_NUM_PARCELLE] = trim($data[self::CSV_NUM_PARCELLE]);
+        $data[self::CSV_NUM_PARCELLE] = preg_split("|[\ /]+|", trim($data[self::CSV_NUM_PARCELLE]))[0];
+        $cepage = null;
+        foreach($this->cepages as $c) {
+            if(preg_replace('/ (b|n|blanc|rouge|noir|rge|blanche)$/', '', str_replace(["é", "è", "."], ["e", "e", ""], trim(strtolower(preg_replace("/[ ]+/", " ", $data[self::CSV_CEPAGE]))))) == preg_replace('/ (b|n|blanc|rouge|noir|rge|blanche)$/', '', str_replace(["é", "è"], ["e", "e"], trim(strtolower($c))))) {
+                $cepage = $c;
+            }
+        }
+        if(!$cepage) {
+            echo "Cepage non trouvé ".$data[self::CSV_CEPAGE].";".implode(";", $data)."\n";
+            $cepage = $data[self::CSV_CEPAGE];
+        }
 
         $produitHash = '/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs';
-        if(preg_match('/ B$/', $data[self::CSV_CEPAGE])) {
+        if(preg_match('/ B$/', $cepage)) {
             $produitHash .= '/blanc/cepages/DEFAUT';
         } else {
             $produitHash .= '/rouge/cepages/DEFAUT';
@@ -107,7 +120,6 @@ EOF;
         $prefix = null;
         $section = $data[self::CSV_SECTION];
         $numero_parcelle = $data[self::CSV_NUM_PARCELLE];
-        $cepage = $data[self::CSV_CEPAGE];
         $lieu = $data[self::CSV_LIEUDIT];
         $campagne_plantation = $data[self::CSV_ANNEE_PLANTATION];
         try {
@@ -192,7 +204,7 @@ EOF;
 
         $manquantParcelle->densite = (int)$data[self::CSV_DENSITE];
         $manquantParcelle->superficie = (float)($data[self::CSV_SURFACE]);
-        $manquantParcelle->pourcentage = round((float)($data[self::CSV_POURCENTAGE_MANQUANT])*100, 2);
+        $manquantParcelle->pourcentage = round((float)($data[self::CSV_POURCENTAGE_MANQUANT]), 2);
 
         try {
             $manquant->save();
@@ -222,7 +234,7 @@ EOF;
         if(!$irrigableParcelle) {
             return;
         }
-
+        $irrigableParcelle->superficie = (float)($data[self::CSV_SURFACE]);
         $irrigableParcelle->materiel = $this->parseRessource($data[self::CSV_MATERIEL]);
         $irrigableParcelle->ressource = $this->parseRessource($data[self::CSV_MATERIEL]);
         try {
