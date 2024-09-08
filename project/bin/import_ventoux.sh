@@ -41,7 +41,7 @@ php symfony import:operateur-habilitation-ventoux $DATA_DIR/ventoux-operateurs-h
 
 echo "Import des opérateurs archivés"
 
-php symfony import:operateur-habilitation-ventoux $DATA_DIR/ventoux-operateurs-habilites.csv  --application="$ODG" --trace --suspendu=1
+php symfony import:operateur-habilitation-ventoux $DATA_DIR/ventoux-operateurs-habilites_archives.csv  --application="$ODG" --trace --suspendu=1
 
 echo "Import des chais"
 

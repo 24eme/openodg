@@ -152,7 +152,7 @@ EOF;
     }
 
     public function createAffectation($etablissement, $parcelle, $data) {
-        $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $this->periode);
+        $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $this->periode, true);
         if($affectation->isNew()) {
             $affectation->remove('declaration');
             $affectation->add('declaration');
@@ -202,9 +202,22 @@ EOF;
             return;
         }
 
+        $data[self::CSV_POURCENTAGE_MANQUANT] = trim(str_replace([" %", "<"], "", $data[self::CSV_POURCENTAGE_MANQUANT]));
+
+        if(!preg_match("/^[0-9\.]+$/", $data[self::CSV_POURCENTAGE_MANQUANT])) {
+            return;
+        }
+
+        $pourcentageManquant = (float) $data[self::CSV_POURCENTAGE_MANQUANT];
+        if($pourcentageManquant < 1) {
+            $pourcentageManquant = $pourcentageManquant * 100;
+        }
+        $pourcentageManquant = round($pourcentageManquant, 2);
+
+
         $manquantParcelle->densite = (int)$data[self::CSV_DENSITE];
         $manquantParcelle->superficie = (float)($data[self::CSV_SURFACE]);
-        $manquantParcelle->pourcentage = round((float)($data[self::CSV_POURCENTAGE_MANQUANT]), 2);
+        $manquantParcelle->pourcentage = $pourcentageManquant;
 
         try {
             $manquant->save();
