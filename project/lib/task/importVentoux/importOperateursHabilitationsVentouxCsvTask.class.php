@@ -51,6 +51,7 @@ class importOperateursHabilitationsVentouxCsvTask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('suspendu', null, sfCommandOption::PARAMETER_REQUIRED, "L'opérateur est suspendu", false),
         ));
 
         $this->namespace = 'import';
@@ -77,16 +78,16 @@ EOF;
                 continue;
             }
 
-            $etablissement = $this->importSocieteEtablissement($data);
+            $etablissement = $this->importSocieteEtablissement($data, (bool)$options['suspendu']);
             if ($etablissement === false) {
                 continue;
             }
 
-            $this->importHabilitation($etablissement, $data);
+            $this->importHabilitation($etablissement, $data, (bool)$options['suspendu']);
         }
     }
 
-    private function importSocieteEtablissement($data)
+    private function importSocieteEtablissement($data, $suspendu = false)
     {
         $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_INTITULE], $data[self::CSV_NOM], $data[self::CSV_PRENOM]])));
         $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_ENREGISTREMENT]);
@@ -161,10 +162,15 @@ EOF;
         $societe->pushContactTo($etablissement);
         $etablissement->save();
 
+        if($suspendu) {
+            $societe->switchStatusAndSave();
+            $etablissement = EtablissementClient::getInstance()->find($etablissement->_id);
+        }
+
         return $etablissement;
     }
 
-    private function importHabilitation($etablissement, $data)
+    private function importHabilitation($etablissement, $data, $suspendu = false)
     {
         $identifiant = $etablissement->identifiant;
         $date_demande  = ($data[self::CSV_DATE_SAISIE_IDENTIFICATION]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_SAISIE_IDENTIFICATION])[0])->format('Y-m-d') : null;
@@ -190,5 +196,9 @@ EOF;
         }
 
         HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_decision, $activites, [], $statut);
+
+        if($suspendu) {
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, date('Y-m-d'), $activites, [], HabilitationClient::STATUT_RETRAIT, $data[self::CSV_OBSERVATION]);
+        }
     }
 }
