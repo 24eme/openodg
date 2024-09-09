@@ -463,6 +463,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->cache_document_douanier;
     }
 
+    public function getDocumentDouanierFile($ext) {
+        return DouaneClient::getInstance()->getDocumentDouanierEtablissement($ext, $this->periode, $this->getEtablissementObject());
+    }
+
     public function hasDocumentDouanierForFacturation() {
         return ($this->getDocumentDouanierOlderThanMe());
     }
