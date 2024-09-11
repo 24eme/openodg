@@ -287,3 +287,7 @@ Licence : MIT
         width: 1140px;
     }
 }
+
+tbody.collapse.in {
+    display: table-row-group;
+}
