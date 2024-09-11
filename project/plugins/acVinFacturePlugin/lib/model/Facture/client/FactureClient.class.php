@@ -469,6 +469,7 @@ class FactureClient extends acCouchdbClient {
       $avoir->remove('paiements');
       $avoir->add('paiements');
       $avoir->remove('montant_paiement');
+      $avoir->add('montant_paiement');
 
       return $avoir;
     }
