@@ -9,7 +9,12 @@
         </td>
       </tr>
       <tr>
-          <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28px; line-height: 14px; overflow: hidden;" ><?php if ($i != 2 || !$anonymat4labo): ?><strong><?php echo ($lotInfo->lot->declarant_nom)? truncate_text(html_entity_decode($lotInfo->lot->declarant_nom, ENT_QUOTES | ENT_SUBSTITUTE), 47, '… ', 'middle') : "Leurre";  ?></strong> <?php if($lotInfo->etablissement->cvi):echo ($lotInfo->etablissement->cvi); elseif ($lotInfo->etablissement->siret):echo substr($lotInfo->etablissement->siret,0,9)." "; endif; ?><?php if($lotInfo->etablissement->num_interne): ?>&nbsp;/&nbsp;<?php echo substr($lotInfo->etablissement->num_interne,0,6) ?><?php endif; ?><?php else: ?><br /><i>Destiné au laboratoire</i><?php endif; ?></td>
+          <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28px; line-height: 14px; overflow: hidden;" >
+              <?php if (($i % 3) != 2 || !$anonymat4labo): ?>
+                  <strong><?php echo ($lotInfo->lot->declarant_nom)? truncate_text(html_entity_decode($lotInfo->lot->declarant_nom, ENT_QUOTES | ENT_SUBSTITUTE), 47, '… ', 'middle') : "Leurre";  ?></strong>
+                  <?php if($lotInfo->etablissement->cvi):echo ($lotInfo->etablissement->cvi); elseif ($lotInfo->etablissement->siret):echo substr($lotInfo->etablissement->siret,0,9)." "; endif; ?>
+                  <?php if($lotInfo->etablissement->num_interne): ?>&nbsp;/&nbsp;<?php echo substr($lotInfo->etablissement->num_interne,0,6) ?><?php endif; ?>
+        <?php else: ?><br /><i>Destiné au laboratoire</i><?php endif; ?></td>
       </tr>
       <tr>
             <td style="overflow-wrap:break-word;text-align: left; height: 4px; line-height: 1px; overflow: hidden;" colspan="2">&nbsp;</td>
