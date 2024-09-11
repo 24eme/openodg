@@ -118,10 +118,10 @@ EOF;
 
             $superficieTotal = round(str_replace(',','.',trim($data[self::CSV_SUPERFICIE])) * 1, 4);
             if($data[self::CSV_SUPERFICIE_BIO]) {
-                $superficies[DRevClient::DENOMINATION_BIO] = round(str_replace(',','.',trim($data[self::CSV_SUPERFICIE_BIO])) * 1, 2);
+                $superficies[DRevClient::DENOMINATION_BIO] = round(str_replace(',','.',trim($data[self::CSV_SUPERFICIE_BIO])) * 1, 4);
             }
             if($data[self::CSV_SUPERFICIE_CONVERSION]) {
-                $superficies[DRevClient::DENOMINATION_CONVERSION_BIO] = round(str_replace(',','.',trim($data[self::CSV_SUPERFICIE_CONVERSION])) * 1, 2);
+                $superficies[DRevClient::DENOMINATION_CONVERSION_BIO] = round(str_replace(',','.',trim($data[self::CSV_SUPERFICIE_CONVERSION])) * 1, 4);
             }
             $superficies[DRevClient::DENOMINATION_CONVENTIONNEL] = $superficieTotal - $superficies[DRevClient::DENOMINATION_BIO] - $superficies[DRevClient::DENOMINATION_CONVERSION_BIO];
 

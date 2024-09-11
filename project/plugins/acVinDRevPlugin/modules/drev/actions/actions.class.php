@@ -1009,16 +1009,16 @@ class drevActions extends sfActions {
     public function executeDocumentDouanier(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
 
-        $fileContent = file_get_contents($drev->getDocumentDouanier('pdf'));
+        $fileContent = file_get_contents($drev->getDocumentDouanierFile('pdf'));
         $extension = 'pdf';
 
         if(!$fileContent) {
-            $fileContent = file_get_contents($drev->getDocumentDouanier('xls'));
+            $fileContent = file_get_contents($drev->getDocumentDouanierFile('xls'));
             $extension = 'xls';
         }
 
         if(!$fileContent) {
-            $fileContent = file_get_contents($drev->getDocumentDouanier('csv'));
+            $fileContent = file_get_contents($drev->getDocumentDouanierFile('csv'));
             $extension = 'csv';
         }
 

@@ -16,6 +16,7 @@ if(isset($coop)):
 <h2>Affectation de vos parcelles</h2>
 
 <?php $parcellaire2reference = $parcellaireAffectation->getParcellaire2Reference(); ?>
+<?php if (parcellaire2reference): ?>
 <p>Les parcelles listées ci-dessous sont reprises
 <?php if (strpos($parcellaire2reference->_id, 'PARCELLAIRE-') !== false) : ?>
     <a href="<?php echo url_for('parcellaire_visualisation', $parcellaire2reference); ?>">parcellaire douanier</a></p>
@@ -23,7 +24,7 @@ if(isset($coop)):
     l'identification du <?php echo preg_replace('/([0-9]*)-([0-9]*)-([0-9]*)/', '\3/\2/\1', $parcellaire2reference->date);?>
 <?php endif; ?>
 , elles sont affecectables par destination.</p>
-
+<?php endif; ?>
 <?php if(!$parcellaireAffectation->isAllPreviousParcellesExists()): ?>
     <div class="alert alert-warning">
         Toutes les parcelles affectées issues de <a href="<?php echo url_for('parcellaireaffectation_visualisation', $parcellaireAffectation->getPreviousDocument()) ?>">la déclaration de la précédente campagne</a> n'ont pas pu être reprises, il est conseillé de vérifier l'ensemble des parcelles affectées.
