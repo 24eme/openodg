@@ -55,7 +55,7 @@ class CompteSendmailTask extends sfBaseTask
         return;
     }
 
-    echo "SUCCESS;$compte->_id ($email);Mail envoyé à ".date('Y-m-d H:i:s')."\n";
+    echo "SUCCESS;$compte->_id : " . $compte->nom_a_afficher . " ($email);Mail envoyé à ".date('Y-m-d H:i:s')."\n";
   }
 
     protected function parseTemplate($body, $compte){
