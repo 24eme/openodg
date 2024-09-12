@@ -26,8 +26,6 @@ EOF;
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
     $context = sfContext::createInstance($this->configuration);
 
-    $appName = $this->configuration->getApplication();
-
     $lots = array();
     foreach(MouvementLotView::getInstance()->getByStatut(Lot::STATUT_DEGUSTE)->rows as $lot) {
         $lots[$lot->value->declarant_identifiant.$lot->value->unique_id] = $lot->value;
@@ -75,7 +73,7 @@ EOF;
         $ligne .= $suivi['ISSUE']['STATUT'].";";
         $ligne .= VarManipulator::protectStrForCsv($suivi['ISSUE']['STATUT_LIBELLE']).";";
         $ligne .= VarManipulator::protectStrForCsv($suivi['ISSUE']['DETAIL']).";";
-        $ligne .= $appName.";";
+        $ligne .= Organisme::getCurrentOrganisme().";";
         $ligne .= $lot->id_document.";";
         $ligne .= $lot->unique_id.";";
         $ligne .= $lot->declarant_identifiant.'-'.$lot->unique_id.";";
