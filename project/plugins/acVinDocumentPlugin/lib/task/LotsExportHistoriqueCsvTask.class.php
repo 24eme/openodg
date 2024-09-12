@@ -26,8 +26,6 @@ EOF;
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
     $context = sfContext::createInstance($this->configuration);
 
-    $appName = $this->configuration->getApplication();
-
     echo "Origine;Id Opérateur;Nom Opérateur;Campagne;Date commission;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Libellé du lot;Volume;Statut;Details;Organisme;Doc Id;Lot unique Id;Declarant Lot unique Id\n";
 
     foreach(MouvementLotHistoryView::getInstance()->getAllLotsWithHistorique()->rows as $lot) {
@@ -49,7 +47,7 @@ EOF;
           VarManipulator::floatizeForCsv($values['volume']),
           VarManipulator::protectStrForCsv($statut),
           VarManipulator::protectStrForCsv($values['detail']),
-          $appName,
+          Organisme::getCurrentOrganisme(),
           $values['document_id'],
           $values['lot_unique_id'],
           $values['declarant_identifiant'].'-'.$values['lot_unique_id']

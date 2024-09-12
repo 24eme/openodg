@@ -334,6 +334,9 @@ class parcellaireActions extends sfActions {
             if ($k == 'Total') {
                 continue;
             }
+            if (!isset($superficies['superficie_max'])) {
+                continue;
+            }
             $cepages_a_max[$k] = $superficies['superficie_max'];
             $encepagement += $superficies['superficie_max'];
         }
@@ -412,7 +415,9 @@ class parcellaireActions extends sfActions {
         $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_varietedinteret, $cepages_a_max, - 0.05), Simplex\Restriction::TYPE_LOE, 0));
 
         foreach(array_keys($cepages_a_max) as $c) {
-            $task->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $cepages_a_max[$c]], $cepages_a_max), Simplex\Restriction::TYPE_LOE, $cepages_a_max[$c]));
+            if ($cepages_a_max[$c]) {
+                $task->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $cepages_a_max[$c]], $cepages_a_max), Simplex\Restriction::TYPE_LOE, $cepages_a_max[$c]));
+            }
         }
 
         $this->potentiel_de_production = [];
