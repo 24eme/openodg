@@ -278,7 +278,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
         foreach ($produitFilter as $type => $filter) {
             if ($type === 'appellations') {
-                $match = $match && $this->matchFilterProduit($lot, $filter);
+                $match = $match && $this->matchFilterLotOnProduit($lot, $filter);
             } elseif ($type === 'millesime') {
                 $match = $match && $this->matchFilterMillesime($lot, $filter);
             } elseif ($type === 'deja') {
@@ -321,7 +321,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return false;
     }
 
-    private function matchFilterProduit($lot, $produitFilter)
+    private function matchFilterLotOnProduit($lot, $produitFilter)
     {
         $produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
         $isExcludeMode = (bool) $produitExclude;
