@@ -26,7 +26,7 @@ EOF;
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
     $context = sfContext::createInstance($this->configuration);
 
-    $e = new ExportLotsCSV(true, $this->configuration->getApplication());
+    $e = new ExportLotsCSV(true);
     print $e->exportAll();
   }
 }
