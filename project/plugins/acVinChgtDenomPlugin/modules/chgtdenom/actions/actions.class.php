@@ -244,11 +244,13 @@ class chgtdenomActions extends sfActions
 
     public function executeChgtDenomPDF(sfWebRequest $request)
     {
-        $chgtDenom = $this->getRoute()->getChgtDenom();
+        $chgtDenom = $this->getRoute()->getChgtDenom(['allow_habilitation' => true]);
         if (!$chgtDenom->isApprouve()) {
             $chgtDenom->generateLots();
         }
-        $this->secureEtablissement(null, $chgtDenom->getEtablissementObject());
+        if (!$this->getUser()->isStalker()) {
+            $this->secureEtablissement('habilitation', $chgtDenom->getEtablissementObject());
+        }
 
         $this->document = new ExportChgtDenomPDF($chgtDenom, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));

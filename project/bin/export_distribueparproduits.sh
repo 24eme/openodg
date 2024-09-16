@@ -30,7 +30,7 @@ do
   if [ ! -f "$EXPORTFORAPPGLOBALSUBDIR/$FILENAME" ]; then
     head -n 1 $file > $EXPORTFORAPPGLOBALSUBDIR/$FILENAME
   fi
-  FILETYPE=$(echo $FILENAME | sed 's/\..*//')
+  FILETYPE=$(echo $FILENAME | sed 's/[\.-].*//')
   FILTER=$(eval echo '$'"HASHPRODUIT_"$FILETYPE)
   if ! test "$FILTER" ; then
       FILTER=$(echo $HASHPRODUIT);
