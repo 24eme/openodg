@@ -4,7 +4,7 @@
 
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
-  <li><a href="<?php echo url_for('facturation_declarant', ['identifiant', $facture->identifiant]); ?>"><?php echo $facture->getCompte()->getNomAAfficher() ?> (<?php echo $facture->getCompte()->getIdentifiantAAfficher() ?>)</a></li>
+  <li><a href="<?php echo url_for('facturation_declarant', ['identifiant' => $facture->identifiant]); ?>"><?php echo $facture->getCompte()->getNomAAfficher() ?> (<?php echo $facture->getCompte()->getIdentifiantAAfficher() ?>)</a></li>
   <li class="active"><a href=""><?php if($facture->numero_odg): ?>Modification la facture n°<?php echo $facture->numero_odg ?><?php else: ?>Création d'un avoir<?php endif; ?></a></li>
 </ol>
 
@@ -170,7 +170,7 @@
             <a class="btn btn-danger btn-lg btn-upper" href="<?php echo url_for('facturation_declarant', ['identifiant' => $facture->identifiant]) ?>">Annuler</a>
         </div>
         <div class="col-xs-6 text-right">
-                <button type="submit" class="btn btn-default btn-lg btn-upper">Valider</a>
+                <button type="submit" class="btn btn-default btn-lg btn-upper">Valider</button>
         </div>
     </div>
 

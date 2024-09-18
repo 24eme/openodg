@@ -325,7 +325,10 @@ $list_idu = [];
 <?php endif; ?>
 
 <?php if ($parcellaire): ?>
-<?php include_partial('downloadLinks', array('parcellaire' => $parcellaire)); ?>
+<?php
+    //Permet aux différentes régions d'avoir des liens personnalisables
+    include_partial('downloadLinks', array('parcellaire' => $parcellaire));
+?>
 <?php endif; ?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>

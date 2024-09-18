@@ -427,6 +427,10 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
 
+        if (!DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            return $this->redirect('degustation_prelevements_etape', array('sf_subject' => $this->degustation));
+        }
+
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TOURNEES))) {
             $this->degustation->save(false);
         }

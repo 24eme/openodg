@@ -2,6 +2,7 @@ all:
   configuration:
     parcellaire:
       show_filter_produits_configuration: true
+      troisieme_feuille: true
       unit: "hectares"
       aires:
     manquant:
