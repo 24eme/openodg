@@ -165,4 +165,8 @@ class DRevConfiguration extends DeclarationConfiguration {
         return $this->isRevendicationParLots();
     }
 
+    public function isSendAsInnovagro() {
+        return isset($this->configuration['send_as_innovagro']) && boolval($this->configuration['send_as_innovagro']);
+    }
+
 }
