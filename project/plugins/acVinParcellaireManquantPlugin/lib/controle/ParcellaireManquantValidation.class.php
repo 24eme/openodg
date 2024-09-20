@@ -11,7 +11,7 @@ class ParcellaireManquantValidation extends DocumentValidation {
     {
         $this->addControle(self::TYPE_WARNING, 'pourcentage_inf_min', "Le pourcentage de pied manquant est inférieur à ".ParcellaireConfiguration::getInstance()->getManquantPCMin()."%");
         $this->addControle(self::TYPE_ERROR, 'pourcentage_nul', "Le pourcentage de pied manquant ne peut pas être nul ou à zéro");
-        $this->addControle(self::TYPE_ENGAGEMENT, 'engagement_rendement_maximal', "Ne pas produit pas produire le rendement maximal sur les parcelles déclarés ayant des pieds manquants");
+        $this->addControle(self::TYPE_ENGAGEMENT, 'engagement_rendement_maximal', "Ne pas produire le rendement maximal sur les parcelles déclarés ayant des pieds manquants");
         $this->addControle(self::TYPE_ENGAGEMENT, 'engagement_vci', "Ne pas faire de VCI sur les parcelles déclarés ayant des pieds manquants");
         $this->addControle(self::TYPE_ENGAGEMENT, 'engagement_transmission', "À envoyer ce document à mes unités de vinification pour les coopérateurs et les vendeurs de vendange fraîche");
     }
