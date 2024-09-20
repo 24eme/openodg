@@ -2517,8 +2517,31 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getProduitsHashWithVolumeSeuil() {
         $p = array();
+        $parLot = $this->declaration->getConfig()->isRevendicationParLots();
         foreach(VIP2C::getProduitsHashWithVolumeSeuil($this->declarant->cvi, $this->getDefaultMillesime()) as $hash_produit) {
-            if ($this->declaration->exist($hash_produit)) {
+            if (! $this->declaration->exist($hash_produit)) {
+                continue;
+            }
+
+            if (! $parLot) {
+                $p[] = $hash_produit;
+                continue;
+            }
+
+            $toadd = false;
+            foreach ($this->getLots() as $l) {
+                if ($l->produit_hash != "/declaration/".$hash_produit) {
+                    continue;
+                }
+
+                if ($l->millesime != $this->getDefaultMillesime()) {
+                    continue;
+                }
+
+                $toadd = true;
+            }
+
+            if ($toadd) {
                 $p[] = $hash_produit;
             }
         }
