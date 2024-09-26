@@ -118,7 +118,7 @@ class ExportLotsCSV {
               (isset($lot['preleve']))? $lot['preleve'] : '',
               VarManipulator::protectStrForCsv($conformite),
               (isset($lot['conforme_appel']))? $lot['conforme_appel'] : '',
-              Organisme::getCurrentOrganisme().";",
+              Organisme::getCurrentOrganisme(),
               $lot['id_document'],
               $lot['unique_id'],
               $lot['declarant_identifiant'].'-'.$lot['unique_id'],
