@@ -23,6 +23,9 @@
         <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28.5px; line-height: 14px; overflow: hidden; vertical-align: middle;"><strong>&nbsp;&nbsp;<?php echo truncate_text(strtoupper(
             KeyInflector::unaccent(($lotInfo->lot->getConfig() ? null : $lotInfo->lot->details)." ".$lotInfo->lot->produit_libelle)
         ), 50, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
+          <?php if (! DegustationConfiguration::getInstance()->hasTypiciteCepage()): ?>
+            <br /><?php echo truncate_text($lotInfo->lot->specificite, 50, '…', 'middle') ?>
+          <?php endif; ?>
         </td>
       </tr>
       <?php if(DegustationConfiguration::getInstance()->hasTypiciteCepage()): ?>
