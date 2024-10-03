@@ -104,7 +104,7 @@
                             <div class="row">
                                 <label class="col-xs-6">Téléphone bureau</label>
                                 <div class="col-xs-6">
-                                    <a href="tel:<?php echo $compte->telephone_bureau ?>"><?php echo $compte->telephone_bureau; ?></a>
+                                    <a class="btn-link" href="tel:<?php echo $compte->telephone_bureau ?>"><?php echo $compte->telephone_bureau; ?></a>
                                 </div>
                             </div>
                         </div>
@@ -114,7 +114,7 @@
                             <div class="row">
                                 <label class="col-xs-6">Téléphone mobile</label>
                                 <div class="col-xs-6">
-                                    <a href="tel:<?php echo $compte->telephone_mobile ?>"><?php echo $compte->telephone_mobile; ?></a>
+                                    <a class="btn-link" href="tel:<?php echo $compte->telephone_mobile ?>"><?php echo $compte->telephone_mobile; ?></a>
                                 </div>
                             </div>
                         </div>
@@ -124,7 +124,7 @@
                             <div class="row">
                                 <label class="col-xs-6">Téléphone privé</label>
                                 <div class="col-xs-6">
-                                    <?php echo $compte->telephone_prive; ?>
+                                    <a class="btn-link" href="tel:<?php echo $compte->telephone_prive ?>"><?php echo $compte->telephone_prive; ?></a>
                                 </div>
                             </div>
                         </div>
