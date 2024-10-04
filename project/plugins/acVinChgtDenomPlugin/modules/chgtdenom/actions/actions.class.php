@@ -203,7 +203,8 @@ class chgtdenomActions extends sfActions
 
         $this->form = null;
         if ($this->isAdmin && !$this->chgtDenom->isApprouve()) {
-          $this->form = new ChgtDenomValidationForm($this->chgtDenom, array(), array('isAdmin' => $this->isAdmin));
+          $this->validation = new ChgtDenomValidation($this->chgtDenom);
+          $this->form = new ChgtDenomValidationForm($this->chgtDenom, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
