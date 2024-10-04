@@ -98,7 +98,7 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
     {
         $chgtdenom = new ChgtDenom();
         $chgtdenom->identifiant = $doc->identifiant;
-        $chgtdenom->campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate(''.$doc->campagne.'-08-01');
+        $chgtdenom->campagne = $doc->getCampagneReelle();
         $chgtdenom->changement_origine_id_document = $doc->_id;
         $chgtdenom->date = (new DateTime())->format('Y-m-d H:i:s');
         $chgtdenom->add('papier', 1);
