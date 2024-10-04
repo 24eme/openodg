@@ -108,9 +108,9 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         $chgtdenom->origine_numero_logement_operateur = "Déclassé depuis le document douanier";
         $chgtdenom->origine_millesime = $doc->campagne;
         $chgtdenom->origine_produit_hash = "/declaration/".$hash;
-        $chgtdenom->origine_produit_libelle = ConfigurationClient::getInstance()->getCurrent()->get(
+        $chgtdenom->origine_produit_libelle = $chgtdenom->getDocument()->getConfigProduits()[
             $chgtdenom->origine_produit_hash
-        )->getLibelle();
+        ]->getLibelleComplet();
 
         $lastDrev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($doc->identifiant, $doc->campagne);
         $synthese = $lastDrev->summerizeProduitsLotsByCouleur();
