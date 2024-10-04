@@ -103,6 +103,11 @@ class ChgtDenomValidation extends DocumentValidation
       }
 
     $doc_origine = acCouchdbManager::getClient()->find($this->document->changement_origine_id_document);
+
+      if (method_exists($doc_origine, 'getLot') === false) {
+        return null;
+      }
+
     foreach ($doc_origine->lots as $key => $lot_origine) {
       if($this->document->changement_origine_lot_unique_id == $lot_origine->unique_id)
         return $lot_origine;

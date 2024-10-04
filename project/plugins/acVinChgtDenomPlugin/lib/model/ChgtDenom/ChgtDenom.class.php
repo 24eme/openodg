@@ -300,7 +300,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return null;
         }
 
-        if (!$doc->getLot($this->changement_origine_lot_unique_id)) {
+        if (method_exists($doc, 'getLot') === false || !$doc->getLot($this->changement_origine_lot_unique_id)) {
            $lot = ChgtDenomLot::freeInstance($this);
            $lot->id_document = $this->changement_origine_id_document;
            $lot->unique_id = $this->changement_origine_lot_unique_id;

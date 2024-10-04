@@ -94,6 +94,34 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         return $chgtdenom;
     }
 
+    public function createDocFromProduction($doc, $hash)
+    {
+        $chgtdenom = new ChgtDenom();
+        $chgtdenom->identifiant = $doc->identifiant;
+        $chgtdenom->campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate(''.$doc->campagne.'-08-01');
+        $chgtdenom->changement_origine_id_document = $doc->_id;
+        $chgtdenom->date = (new DateTime())->format('Y-m-d H:i:s');
+        $chgtdenom->add('papier', 1);
+
+        $chgtdenom->changement_type = self::CHANGEMENT_TYPE_DECLASSEMENT;
+        $chgtdenom->changement_numero_logement_operateur = "Déclassé depuis le document douanier";
+        $chgtdenom->origine_numero_logement_operateur = "Déclassé depuis le document douanier";
+        $chgtdenom->origine_millesime = $doc->campagne;
+        $chgtdenom->origine_produit_hash = "/declaration/".$hash;
+        $chgtdenom->origine_produit_libelle = ConfigurationClient::getInstance()->getCurrent()->get(
+            $chgtdenom->origine_produit_hash
+        )->getLibelle();
+
+        $lastDrev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($doc->identifiant, $doc->campagne);
+        $synthese = $lastDrev->summerizeProduitsLotsByCouleur();
+        $chgtdenom->origine_volume = $synthese[$chgtdenom->origine_produit_libelle." ".$doc->campagne]["volume_restant_max"];
+
+        $chgtdenom->storeDeclarant();
+        $chgtdenom->constructId();
+
+        return $chgtdenom;
+    }
+
     public function findFacturable($identifiant, $campagne) {
 
       // TODO : A retirer : aujourd'hui on bypass les Chgts Denom facturables pour optimiser la page de facturation

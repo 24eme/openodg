@@ -36,6 +36,32 @@ class chgtdenomActions extends sfActions
         return $this->redirect('chgtdenom_edition', array('id' => $this->chgtDenom->_id));
     }
 
+    public function executeCreateFromProduction(sfWebRequest $request)
+    {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->campagne = $request->getParameter('campagne');
+        $this->hash = $request->getParameter('hash_produit');
+
+        if (! $this->hash) {
+            return $this->forward404("Il manque la hash produit");
+        }
+
+        $docProduction = DouaneClient::getInstance()->getDocumentDouanierEtablissement(null, $this->campagne, $this->etablissement);
+
+        if (! $docProduction) {
+            return $this->forward404("Le document douanier n'a pas été trouvé");
+        }
+
+        if (array_key_exists($this->hash, $docProduction->getProduits()) === false) {
+            return $this->forward404("Le produit n'a pas été trouvé dans le document douanier");
+        }
+
+        $this->chgtDenom = ChgtDenomClient::getInstance()->createDocFromProduction($docProduction, $this->hash);
+        $this->chgtDenom->save();
+
+        return $this->redirect('chgtdenom_edition', ['id' => $this->chgtDenom->_id]);
+    }
+
     public function executeCreateFromLot(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $lot = $request->getParameter('lot');
