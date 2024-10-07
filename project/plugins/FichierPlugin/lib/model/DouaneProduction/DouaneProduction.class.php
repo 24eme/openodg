@@ -24,6 +24,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         return $this->campagne;
     }
 
+    public function getCampagneReelle()
+    {
+        return sprintf("%s-%s", $this->campagne, $this->campagne + 1);
+    }
+
     public function __clone() {
 		parent::__clone();
 	}
