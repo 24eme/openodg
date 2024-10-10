@@ -59,6 +59,10 @@ class ChgtDenomValidation extends DocumentValidation
           if($lot->volume > $origine_volume){
             $this->addPoint(self::TYPE_ERROR, 'lot_volume', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('chgtdenom_edition', array("id" => $this->document->_id, "appellation" => $key)));
           }
+
+          if ($lot->volume < 0) {
+              $this->addPoint(self::TYPE_ERROR, 'lot_volume', $lot->getProduitLibelle()." $lot->millesime ( ".($origine_volume - $volume)." hl )", $this->generateUrl('chgtdenom_edition', array("id" => $this->document->_id, "appellation" => $key)));
+          }
       }
 
         if ($this->document->isChgtDenomination() && ! $this->document->changement_produit_hash) {
