@@ -98,7 +98,7 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
     {
         $chgtdenom = new ChgtDenom();
         $chgtdenom->identifiant = $doc->identifiant;
-        $chgtdenom->campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate(''.$doc->campagne.'-08-01');
+        $chgtdenom->campagne = $doc->getCampagneReelle();
         $chgtdenom->changement_origine_id_document = $doc->_id;
         $chgtdenom->date = (new DateTime())->format('Y-m-d H:i:s');
         $chgtdenom->add('papier', 1);
@@ -108,9 +108,9 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         $chgtdenom->origine_numero_logement_operateur = "Déclassé depuis le document douanier";
         $chgtdenom->origine_millesime = $doc->campagne;
         $chgtdenom->origine_produit_hash = "/declaration/".$hash;
-        $chgtdenom->origine_produit_libelle = ConfigurationClient::getInstance()->getCurrent()->get(
+        $chgtdenom->origine_produit_libelle = $chgtdenom->getDocument()->getConfigProduits()[
             $chgtdenom->origine_produit_hash
-        )->getLibelle();
+        ]->getLibelleComplet();
 
         $lastDrev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($doc->identifiant, $doc->campagne);
         $synthese = $lastDrev->summerizeProduitsLotsByCouleur();

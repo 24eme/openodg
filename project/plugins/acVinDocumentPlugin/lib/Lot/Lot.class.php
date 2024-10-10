@@ -1054,9 +1054,19 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getDocumentOrdreCalcule() {
         $i = 0;
-        foreach(LotsClient::getInstance()->getDocumentsIdsByDate($this->declarant_identifiant, $this->unique_id) as $id) {
+        $ids = LotsClient::getInstance()->getDocumentsIdsByDate($this->declarant_identifiant, $this->unique_id);
+
+        $filteredIDs = [];
+
+        foreach($ids as $id) {
+            $id = preg_replace("/-M[0-9]+$/", "", $id);
+            if (in_array($id, $filteredIDs)) {
+                continue;
+            }
+            $filteredIDs[] = $id;
+
             $i++;
-            if(preg_replace("/-M[0-9]+$/", "", $id) != preg_replace("/-M[0-9]+$/", "", $this->getDocument()->_id)) {
+            if($id != preg_replace("/-M[0-9]+$/", "", $this->getDocument()->_id)) {
                 continue;
             }
 

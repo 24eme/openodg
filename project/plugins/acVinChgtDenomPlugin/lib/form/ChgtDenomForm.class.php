@@ -62,7 +62,7 @@ class ChgtDenomForm extends acCouchdbObjectForm
       parent::updateDefaultsFromObject();
       $defaults = $this->getDefaults();
       $defaults['changement_type'] = $this->getObject()->changement_type;
-      $defaults['changement_volume'] = ($this->getObject()->changement_volume)? $this->getObject()->changement_volume : $this->getObject()->getLotOrigine()->volume;
+      $defaults['changement_volume'] = ($this->getObject()->exist('changement_volume'))? $this->getObject()->changement_volume : $this->getObject()->getLotOrigine()->volume;
       if (ChgtDenomConfiguration::getInstance()->hasSpecificiteLot()) {
         $defaults['changement_specificite'] = $this->getObject()->changement_specificite;
       }
