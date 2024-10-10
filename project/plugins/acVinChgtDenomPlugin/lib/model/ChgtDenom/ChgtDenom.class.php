@@ -288,6 +288,19 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return LotsClient::getInstance()->findByUniqueId($this->identifiant, $this->changement_origine_lot_unique_id, "01");
     }
 
+    public function isFromProduction()
+    {
+        if (strpos($this->changement_origine_id_document, 'DR-') === 0) {
+            return true;
+        }
+
+        if (strpos($this->changement_origine_id_document, 'SV1') === 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function getLotOrigine() {
         if(!$this->changement_origine_id_document) {
             return false;

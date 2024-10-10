@@ -112,10 +112,6 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
             $chgtdenom->origine_produit_hash
         ]->getLibelleComplet();
 
-        $lastDrev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($doc->identifiant, $doc->campagne);
-        $synthese = $lastDrev->summerizeProduitsLotsByCouleur();
-        $chgtdenom->origine_volume = $synthese[$chgtdenom->origine_produit_libelle." ".$doc->campagne]["volume_restant_max"];
-
         $chgtdenom->storeDeclarant();
         $chgtdenom->constructId();
 
