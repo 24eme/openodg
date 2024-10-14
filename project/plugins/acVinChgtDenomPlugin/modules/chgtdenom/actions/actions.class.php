@@ -271,7 +271,7 @@ class chgtdenomActions extends sfActions
 
     public function executeChgtDenomPDF(sfWebRequest $request)
     {
-        $chgtDenom = $this->getRoute()->getChgtDenom(['allow_habilitation' => true]);
+        $chgtDenom = $this->getRoute()->getChgtDenom(['allow_habilitation' => true, 'allow_stalker' => true]);
         if (!$chgtDenom->isApprouve()) {
             $chgtDenom->generateLots();
         }
