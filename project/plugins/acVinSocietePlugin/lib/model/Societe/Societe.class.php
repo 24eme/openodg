@@ -552,9 +552,13 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
     public function createEtablissement($famille) {
       $etablissement = new Etablissement();
       $etablissement->id_societe = $this->_id;
-      $societeSingleton = SocieteClient::getInstance()->findSingleton($this->_id);
-      if(!$societeSingleton) {
-          throw new sfException("La société doit être créé avant de créer l'établissement");
+      if (isset($_ENV['DRY_RUN'])) {
+          $societeSingleton = $this;
+      }else {
+          $societeSingleton = SocieteClient::getInstance()->findSingleton($this->_id);
+          if(!$societeSingleton) {
+              throw new sfException("La société doit être créé avant de créer l'établissement");
+          }
       }
       $etablissement->setSociete($societeSingleton);
       $etablissement->identifiant = EtablissementClient::getInstance()->getNextIdentifiantForSociete($societeSingleton);
