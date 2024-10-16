@@ -317,9 +317,12 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
 
     public function setIdSociete($id) {
-        $soc = SocieteClient::getInstance()->findSingleton($id);
-        if (!$soc)
-            throw new sfException("$id n'est pas une société connue");
+        if (!isset($_ENV['DRY_RUN'])) {
+            $soc = SocieteClient::getInstance()->findSingleton($id);
+            if (!$soc) {
+                throw new sfException("$id n'est pas une société connue");
+            }
+        }
         $this->_set("id_societe", $id);
     }
 
