@@ -376,7 +376,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $this->piece_document->generatePieces();
     	}
 
-    public function saveDocumentsDependants() {
+    public function saveDocumentsDependants()
+    {
+        if ($this->isFromProduction()) {
+            return false;
+        }
+
         foreach($this->docToSave as $docId) {
             DeclarationClient::getInstance()->findCache($docId)->save(false);
         }

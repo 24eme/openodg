@@ -193,6 +193,17 @@
                 </p>
             <?php endif; ?>
 
+    <?php if (count($chgtsProd)): ?>
+        <p style="margin-top: -10px; margin-bottom: 20px;">
+            Ce document à <?php echo count($chgtsProd) ?> déclassements sans revendication :
+            <ul>
+                <?php foreach ($chgtsProd as $c): ?>
+                    <li><a href="#"><?php echo $c->_id ?></a></li>
+                <?php endforeach ?>
+            </ul>
+        </p>
+    <?php endif ?>
+
             <div class="row row-margin row-button">
                 <div class="col-xs-4">
                     <a href="<?= (isset($service) && $service) ?: url_for('declaration_etablissement', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne]) ?>"

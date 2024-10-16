@@ -118,6 +118,25 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         return $chgtdenom;
     }
 
+    public function getChgtDenomProduction($identifiant, $campagne)
+    {
+        $chgts = [];
+
+        foreach ($this->getHistory($identifiant) as $chgt) {
+            if (in_array(strtok($chgt->changement_origine_id_document, '-'), ['DR', 'SV11', 'SV12']) === false) {
+                continue;
+            }
+
+            if (strpos($chgt->changement_origine_id_document, '-'.$campagne) === false) {
+                continue;
+            }
+
+            $chgts[] = $chgt;
+        }
+
+        return $chgts;
+    }
+
     public function findFacturable($identifiant, $campagne) {
 
       // TODO : A retirer : aujourd'hui on bypass les Chgts Denom facturables pour optimiser la page de facturation
