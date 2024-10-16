@@ -88,10 +88,11 @@ EOF;
             }
             $suspendu = !($data[self::CSV_AIX_OPERATEUR_CVI]) && !($data[self::CSV_AIX_OPERATEUR_SIRET]);
             $etablissement = $this->importSocieteEtablissement($data, $suspendu);
-            if ($etablissement === false) {
+            if (!$etablissement) {
                 continue;
             }
             $this->importHabilitation($etablissement, $data, $suspendu);
+            echo($etablissement->num_interne." importé\n");
         }
     }
 
@@ -108,7 +109,7 @@ EOF;
         if ($e) {
             echo("Etablissement existe " . $e->_id . ", ". $data[0]." ".$data[1]."\n");
             $this->numintern2etablissement[$data[self::CSV_AIX_OPERATEUR_NUMERO_ENREGISTREMENT]] = $e;
-            return;
+            return $e;
         }
 
         if ($data[self::CSV_AIX_OPERATEUR_ACTIVITE_PRODUCTEUR_DE_RAISINS] == "Oui" || $data[self::CSV_AIX_OPERATEUR_ACTIVITE_TRANSFORMATEUR_VINIFICATEUR] == "Oui") {
@@ -128,7 +129,7 @@ EOF;
                 if ($e) {
                     $this->numintern2etablissement[$data[self::CSV_AIX_OPERATEUR_NUMERO_ENREGISTREMENT]] = $e;
                 }
-                return;
+                return $e;
             }
         }
 
@@ -227,14 +228,11 @@ EOF;
             $interlocuteurs[] = $inter;
             $i++;
         }
-        echo($etablissement->num_interne."\n");
-        //print_r([$societe, $etablissement, $interlocuteurs]);
         return $etablissement;
     }
 
     function importHabilitation($etablissement, $data, $suspendu = false) {
         if (!$etablissement) {
-            print_r([$data]);
             throw new sfException("etablissement empty");
         }
         $dates = [];
