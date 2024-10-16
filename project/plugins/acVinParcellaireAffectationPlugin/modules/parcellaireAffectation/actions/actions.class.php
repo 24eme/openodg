@@ -213,7 +213,7 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executePDF(sfWebRequest $request) {
     	set_time_limit(180);
-    	$this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        $this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation(['allow_habilitation' => true, 'allow_stalker' => true]);
         $this->parcellaireAffectation->cleanNonAffectee();
     	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireAffectation);
 

@@ -30,16 +30,17 @@ do
   if [ ! -f "$EXPORTFORAPPGLOBALSUBDIR/$FILENAME" ]; then
     head -n 1 $file > $EXPORTFORAPPGLOBALSUBDIR/$FILENAME
   fi
-  FILETYPE=$(echo $FILENAME | sed 's/\..*//')
+  FILETYPE=$(echo $FILENAME | sed 's/[\.-].*//')
   FILTER=$(eval echo '$'"HASHPRODUIT_"$FILETYPE)
   if ! test "$FILTER" ; then
       FILTER=$(echo $HASHPRODUIT);
   fi
-  cat $file | grep -E "$FILTER" --binary-files=text >> $EXPORTFORAPPGLOBALSUBDIR/$FILENAME
+  cat $file | grep -i -E "$FILTER" --binary-files=text >> $EXPORTFORAPPGLOBALSUBDIR/$FILENAME
 done
 
 head -n 1 $GLOBALDIR/production.csv > $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
-tail -n +2 $EXPORTFORAPPGLOBALSUBDIR/production.ligneavecdrev.csv $EXPORTFORAPPGLOBALSUBDIR/production.lignesansdrev.csv | grep -va ^== | grep -a ';' | iconv -f ISO88591 -t UTF8 | awk -F ';' '{uniq = $1"-"$2"-"$4 ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0  ; unicite[uniq] = $3 } }' | awk -F ';' '{print $1";"$2";"$3";"}' | sort -u > /tmp/productionid.$$.grep
+tail -n +2 $EXPORTFORAPPGLOBALSUBDIR/production.ligneavecdrev.csv | grep -i -a -E "$HASHPRODUIT" | grep -a ';FILTERED:DREV-' > $EXPORTFORAPPGLOBALSUBDIR/production.ligneavecdrev.avecprod.csv
+tail -n +2 $EXPORTFORAPPGLOBALSUBDIR/production.ligneavecdrev.avecprod.csv $EXPORTFORAPPGLOBALSUBDIR/production.ligneavecdrev.csv $EXPORTFORAPPGLOBALSUBDIR/production.lignesansdrev.csv | grep -va ^== | grep -a ';' | iconv -f ISO88591 -t UTF8 | awk -F ';' '{uniq = $1"-"$2"-"$4 ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0  ; unicite[uniq] = $3 } }' | awk -F ';' '{print $1";"$2";"$3";"}' | sort -u > /tmp/productionid.$$.grep
 grep -a -f /tmp/productionid.$$.grep $GLOBALDIR/production.csv >> $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
 mv $EXPORTFORAPPGLOBALSUBDIR/production.csv.part $EXPORTFORAPPGLOBALSUBDIR/production.csv
 rm /tmp/productionid.$$.grep

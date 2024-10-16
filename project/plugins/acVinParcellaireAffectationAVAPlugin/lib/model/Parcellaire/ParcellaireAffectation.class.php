@@ -249,7 +249,7 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
             $hash2delete = array();
             foreach ($affectation->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleCremant) {
                 foreach ($this->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleAActiver) {
-                    if ($parcelleAActiver->section == $parcelleCremant->section && $parcelleAActiver->numero_parcelle == $parcelleCremant->numero_parcelle) {
+                    if ($parcelleAActiver->section == $parcelleCremant->section && $parcelleAActiver->numero_parcelle == $parcelleCremant->numero_parcelle && round($parcelleAActiver->superficie, 4) == round($parcelleCremant->superficie, 4) && $parcelleAActiver->getCepageLibelle() == $parcelleCremant->getCepageLibelle()) {
                         $hash2delete[$parcelleAActiver->getHash()] = $parcelleAActiver->getHash();
                         $parcelleAActiver->active = 1;
                     }

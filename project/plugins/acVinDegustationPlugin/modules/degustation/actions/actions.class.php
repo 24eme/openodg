@@ -72,23 +72,6 @@ class degustationActions extends sfActions {
         $this->degustations = DegustationClient::getInstance()->getHistory(9999, $this->annee, acCouchdbClient::HYDRATE_JSON, $this->getUser()->getRegion());
     }
 
-    public function executeListeDeclarant(sfWebRequest $request)
-    {
-        $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
-        $this->etablissement = $request->getRoute()->getEtablissement();
-        $this->degustations = [];
-
-        $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($this->etablissement, $this->campagne)->rows;
-
-        foreach ($mouvements as $lot) {
-            if (in_array($lot->value->document_id, $this->degustations)) {
-                continue;
-            }
-
-            $this->degustations[$lot->value->document_id] = DegustationClient::getInstance()->find($lot->value->document_id, acCouchdbClient::HYDRATE_JSON);
-        }
-    }
-
     public function executeAttente(sfWebRequest $request)
     {
         $this->active = $request->getParameter('active', "degustation");
@@ -426,6 +409,10 @@ class degustationActions extends sfActions {
     {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
+
+        if (!DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            return $this->redirect('degustation_prelevements_etape', array('sf_subject' => $this->degustation));
+        }
 
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TOURNEES))) {
             $this->degustation->save(false);
@@ -882,7 +869,7 @@ class degustationActions extends sfActions {
     }
 
     public function executeLotHistorique(sfWebRequest $request){
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(['allow_stalker' => true]);
         $identifiant = $request->getParameter('identifiant');
         $uniqueId = $request->getParameter('unique_id');
 
@@ -953,7 +940,7 @@ class degustationActions extends sfActions {
     }
 
     public function executeLotsListe(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(['allow_stalker' => true]);
         $this->forward404Unless($this->etablissement);
         $identifiant = $this->etablissement->identifiant;
 

@@ -210,7 +210,7 @@ class parcellaireManquantActions extends sfActions {
 
     public function executePDF(sfWebRequest $request) {
     	set_time_limit(180);
-    	$this->parcellaireManquant = $this->getRoute()->getParcellaireManquant();
+        $this->parcellaireManquant = $this->getRoute()->getParcellaireManquant(['allow_habilitation' => true, 'allow_stalker' => true]);
     	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireManquant);
 
 

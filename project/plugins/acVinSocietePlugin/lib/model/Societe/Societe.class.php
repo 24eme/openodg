@@ -528,6 +528,12 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
         return $this->_set('commentaire', $s);
     }
 
+    public function activateLinks($str) {
+        $find = array('`((?:https?|ftp)://\S+[[:alnum:]]/?)`si', '`((?<!//)(www\.\S+[[:alnum:]]/?))`si');
+        $replace = array('<a href="$1" target="_blank">$1</a>', '<a href="http://$1" target="_blank">$1</a>');
+        return preg_replace($find,$replace,$str);
+    }
+
     public function hasLegalSignature() {
         if ($this->exist('legal_signature'))
             return ($this->add('legal_signature')->add('v1'));

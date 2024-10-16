@@ -36,6 +36,32 @@ class chgtdenomActions extends sfActions
         return $this->redirect('chgtdenom_edition', array('id' => $this->chgtDenom->_id));
     }
 
+    public function executeCreateFromProduction(sfWebRequest $request)
+    {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->campagne = $request->getParameter('campagne');
+        $this->hash = $request->getParameter('hash_produit');
+
+        if (! $this->hash) {
+            return $this->forward404("Il manque la hash produit");
+        }
+
+        $docProduction = DouaneClient::getInstance()->getDocumentDouanierEtablissement(null, $this->campagne, $this->etablissement);
+
+        if (! $docProduction) {
+            return $this->forward404("Le document douanier n'a pas été trouvé");
+        }
+
+        if (array_key_exists($this->hash, $docProduction->getProduits()) === false) {
+            return $this->forward404("Le produit n'a pas été trouvé dans le document douanier");
+        }
+
+        $this->chgtDenom = ChgtDenomClient::getInstance()->createDocFromProduction($docProduction, $this->hash);
+        $this->chgtDenom->save();
+
+        return $this->redirect('chgtdenom_edition', ['id' => $this->chgtDenom->_id]);
+    }
+
     public function executeCreateFromLot(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $lot = $request->getParameter('lot');
@@ -177,7 +203,8 @@ class chgtdenomActions extends sfActions
 
         $this->form = null;
         if ($this->isAdmin && !$this->chgtDenom->isApprouve()) {
-          $this->form = new ChgtDenomValidationForm($this->chgtDenom, array(), array('isAdmin' => $this->isAdmin));
+          $this->validation = new ChgtDenomValidation($this->chgtDenom);
+          $this->form = new ChgtDenomValidationForm($this->chgtDenom, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -244,11 +271,13 @@ class chgtdenomActions extends sfActions
 
     public function executeChgtDenomPDF(sfWebRequest $request)
     {
-        $chgtDenom = $this->getRoute()->getChgtDenom();
+        $chgtDenom = $this->getRoute()->getChgtDenom(['allow_habilitation' => true, 'allow_stalker' => true]);
         if (!$chgtDenom->isApprouve()) {
             $chgtDenom->generateLots();
         }
-        $this->secureEtablissement(null, $chgtDenom->getEtablissementObject());
+        if (!$this->getUser()->isStalker()) {
+            $this->secureEtablissement('habilitation', $chgtDenom->getEtablissementObject());
+        }
 
         $this->document = new ExportChgtDenomPDF($chgtDenom, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));

@@ -18,7 +18,8 @@ class ChgtDenomRoute extends EtablissementRoute implements InterfaceDeclarationR
         return $parameters;
     }
 
-    public function getChgtDenom() {
+    public function getChgtDenom($parameters = null) {
+        $this->getEtablissement($parameters);
         if (!$this->obj) {
             $this->getObject();
         }

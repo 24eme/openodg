@@ -56,13 +56,17 @@ class ChgtDenomForm extends acCouchdbObjectForm
               $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
           }
         }
+
+        if ($this->getObject()->isFromProduction()) {
+            $this->getObject()->origine_volume = $this->getObject()->changement_volume;
+        }
     }
 
     protected function updateDefaultsFromObject() {
       parent::updateDefaultsFromObject();
       $defaults = $this->getDefaults();
       $defaults['changement_type'] = $this->getObject()->changement_type;
-      $defaults['changement_volume'] = ($this->getObject()->changement_volume)? $this->getObject()->changement_volume : $this->getObject()->getLotOrigine()->volume;
+      $defaults['changement_volume'] = ($this->getObject()->exist('changement_volume'))? $this->getObject()->changement_volume : $this->getObject()->getLotOrigine()->volume;
       if (ChgtDenomConfiguration::getInstance()->hasSpecificiteLot()) {
         $defaults['changement_specificite'] = $this->getObject()->changement_specificite;
       }
