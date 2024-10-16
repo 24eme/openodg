@@ -162,7 +162,9 @@ EOF;
         if (!$societe->email && $emails) {
             $societe->email = KeyInflector::unaccent($emails[0]);
         }
-
+        if (!isset($_ENV['DRY_RUN'])) {
+            $societe->save();
+        }
         $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
         if ($data[self::CSV_AIX_OPERATEUR_ACTIVITE_NEGOCIANT] == 'Oui') {
             $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
@@ -185,6 +187,10 @@ EOF;
             $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
         }
 
+        if ($suspendu) {
+            $societe->switchStatusAndSave();
+        }
+
         $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
         $etablissement->nom = $data[self::CSV_AIX_OPERATEUR_RAISON_SOCIALE];
         $etablissement->num_interne = $data[self::CSV_AIX_OPERATEUR_NUMERO_ENREGISTREMENT];
@@ -196,6 +202,10 @@ EOF;
         $etablissement->cvi = $cvi;
         $societe->pushAdresseTo($etablissement);
         $societe->pushContactTo($etablissement);
+
+        if (!isset($_ENV['DRY_RUN'])) {
+            $etablissement->save();
+        }
 
         $interlocuteurs = [];
         $i = 0;
@@ -224,6 +234,9 @@ EOF;
             }
             if (count($telephones) == count($responsables) && $telephones[$i]) {
                 $inter->telephone_perso = Phone::format($telephones[$i]);
+            }
+            if (!isset($_ENV['DRY_RUN'])) {
+                $inter->save();
             }
             $interlocuteurs[] = $inter;
             $i++;

@@ -581,7 +581,9 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
 
     public function switchStatusAndSave() {
       $newStatus = "";
-      $this->save();
+      if (!isset($_ENV['DRY_RUN'])) {
+          $this->save();
+      }
 
       if($this->isActif() || !$this->statut){
          $newStatus = SocieteClient::STATUT_SUSPENDU;
@@ -597,7 +599,9 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
               continue;
           }
           $contact->setStatut($newStatus);
-          $contact->save();
+          if (!isset($_ENV['DRY_RUN'])) {
+            $contact->save();
+          }
       }
       foreach($toberemoved as $keyCompte) {
           $this->removeContact($keyCompte);
@@ -614,9 +618,11 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
           $etablissementtobesaved[] = $etablissement;
       }
       $this->setStatut($newStatus);
-      $this->save();
-      foreach($etablissementtobesaved as $etablissement) {
-          $etablissement->save();
+      if (!isset($_ENV['DRY_RUN'])) {
+          $this->save();
+          foreach($etablissementtobesaved as $etablissement) {
+              $etablissement->save();
+          }
       }
     }
 
