@@ -333,10 +333,9 @@ class HabilitationClient extends acCouchdbClient {
 
             $habilitation = $this->createOrGetDocFromIdentifiantAndDate($etablissementIdentifiant, $date);
             $habilitation->updateHabilitation($hash_produit, $activites, $sites, $statut, $commentaire, $date);
-            if (isset($_ENV['DRY_RUN'])) {
+            if (!isset($_ENV['DRY_RUN'])) {
                 $habilitation->save();
             }
-
             $dateCourante = $date;
             while($habilitationSuivante = $this->findNextByIdentifiantAndDate($etablissementIdentifiant, $dateCourante)) {
                 if(!$habilitationSuivante) {
@@ -344,7 +343,7 @@ class HabilitationClient extends acCouchdbClient {
                 }
 
                 $habilitationSuivante->updateHabilitation($hash_produit, $activites, $sites, $statut, $commentaire, $date);
-                if (isset($_ENV['DRY_RUN'])) {
+                if (!isset($_ENV['DRY_RUN'])) {
                     $habilitationSuivante->save();
                 }
                 $dateCourante = $habilitationSuivante->date;
