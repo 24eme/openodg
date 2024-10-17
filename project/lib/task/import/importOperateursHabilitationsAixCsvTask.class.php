@@ -108,6 +108,14 @@ EOF;
         }
         if ($e) {
             echo("Etablissement existe " . $e->_id . ", ". $data[0]." ".$data[1]."\n");
+            if ($e->commentaire) {
+                $e->commentaire = " - ".$e->commentaire."\n";
+                $e->commentaire = preg_replace('/ - * -/', ' - ', $e->commentaire);
+            }
+            $e->commentaire .= " - Etablissement partagé CDP - CAP (Numéro interne CAP ".$data[self::CSV_AIX_OPERATEUR_NUMERO_ENREGISTREMENT].")\n";
+            if (!isset($_ENV['DRY_RUN'])) {
+                $e->save();
+            }
             $this->numintern2etablissement[$data[self::CSV_AIX_OPERATEUR_NUMERO_ENREGISTREMENT]] = $e;
             return $e;
         }
