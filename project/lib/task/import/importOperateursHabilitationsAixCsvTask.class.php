@@ -195,10 +195,6 @@ EOF;
             $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
         }
 
-        if ($suspendu) {
-            $societe->switchStatusAndSave();
-        }
-
         $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
         $etablissement->nom = $data[self::CSV_AIX_OPERATEUR_RAISON_SOCIALE];
         $etablissement->num_interne = $data[self::CSV_AIX_OPERATEUR_NUMERO_ENREGISTREMENT];
@@ -249,6 +245,11 @@ EOF;
             $interlocuteurs[] = $inter;
             $i++;
         }
+
+        if ($suspendu) {
+            $societe->switchStatusAndSave();
+        }
+
         return $etablissement;
     }
 
