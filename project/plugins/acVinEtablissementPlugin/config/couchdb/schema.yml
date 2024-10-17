@@ -60,7 +60,7 @@ Etablissement:
        no_accises: {  }
        carte_pro: {  }
        famille: {  }
-       sous_famille: {  }
+       sous_famille: { required: false  } # Non utilisé mais existant dans les documents
 
        #adresse copié du compte
        adresse: { }
