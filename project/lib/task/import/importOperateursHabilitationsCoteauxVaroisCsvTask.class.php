@@ -1,6 +1,6 @@
 <?php
 
-class importOperateursHabilitationsVentouxCsvTask extends sfBaseTask
+class importOperateursHabilitationsCoteauxVaroisCsvTask extends sfBaseTask
 {
 
     const CSV_NUMERO_ENREGISTREMENT = 0;
@@ -18,25 +18,23 @@ class importOperateursHabilitationsVentouxCsvTask extends sfBaseTask
     const CSV_PORTABLE = 13;
     const CSV_EMAIL = 14;
     const CSV_ACTIVITE = 15;
+    const CSV_DATE_RECEPTION_ODG = 16;
+    const CSV_DATE_COMPLET_ODG = 17;
+    const CSV_DATE_AR = 18;
+    const CSV_DATE_TRANSMISSION_AVPI = 19;
+    const CSV_DATE_HABILITATION = 20;
+    const CSV_DATE_ARCHIVAGE = 21;
     const CSV_OBSERVATION = 22;
+    const CSV_ETAT_HABILITATION = 23;
 
-    const CSV_DATE_SAISIE_IDENTIFICATION = 12;
-    const CSV_PRODUCTION_RAISINS = 15;
-    const CSV_VINIFICATION = 16;
-    const CSV_ACHAT_VENTE_VRAC = 17;
-    const CSV_CONDITIONNEMENT = 18;
-    const CSV_TIREUSE = 19;
-    const CSV_ETAT_HABILITATION = 20;
-    const CSV_DATE_HABILITATION = 21;
-
-    const hash_produit = 'certifications/AOC/genres/TRANQ/appellations/VTX';
+    const hash_produit = 'certifications/AOP/genres/TRANQ/appellations/CVP';
 
     const activites = [
-        self::CSV_PRODUCTION_RAISINS => HabilitationClient::ACTIVITE_PRODUCTEUR,
-        self::CSV_VINIFICATION => HabilitationClient::ACTIVITE_VINIFICATEUR,
-        self::CSV_ACHAT_VENTE_VRAC => HabilitationClient::ACTIVITE_VRAC,
-        self::CSV_CONDITIONNEMENT => HabilitationClient::ACTIVITE_CONDITIONNEUR,
-        self::CSV_TIREUSE => HabilitationClient::ACTIVITE_VENTE_A_LA_TIREUSE,
+        'Producteur de raisins' => HabilitationClient::ACTIVITE_PRODUCTEUR,
+        'Détenteur de vin en vrac' => HabilitationClient::ACTIVITE_VRAC,
+        'Vinificateur' => HabilitationClient::ACTIVITE_VINIFICATEUR,
+        'Producteur de moût' => HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS,
+        'Conditionneur' => HabilitationClient::ACTIVITE_CONDITIONNEUR,
     ];
 
     const status = [
@@ -112,7 +110,6 @@ EOF;
                 print_r($etablissement);
             }
 
-            continue;
             $this->importHabilitation($etablissement, $data, (bool)$options['suspendu']);
         }
     }
@@ -211,33 +208,68 @@ EOF;
 
     private function importHabilitation($etablissement, $data, $suspendu = false)
     {
-        $identifiant = $etablissement->identifiant;
-        $date_demande  = ($data[self::CSV_DATE_SAISIE_IDENTIFICATION]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_SAISIE_IDENTIFICATION])[0])->format('Y-m-d') : null;
-        $date_decision = ($data[self::CSV_DATE_HABILITATION]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_HABILITATION])[0])->format('Y-m-d') : null;
+        //$identifiant = $etablissement->identifiant;
+        //$date_demande  = ($data[self::CSV_DATE_SAISIE_IDENTIFICATION]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_SAISIE_IDENTIFICATION])[0])->format('Y-m-d') : null;
+        //$date_decision = ($data[self::CSV_DATE_HABILITATION]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_HABILITATION])[0])->format('Y-m-d') : null;
 
-        $statut = self::status[trim(strtolower($data[self::CSV_ETAT_HABILITATION]))];
+        //$statut = self::status[trim(strtolower($data[self::CSV_ETAT_HABILITATION]))];
+        $data = array_map('trim', $data);
+        $dateReceptionODG = ($data[self::CSV_DATE_RECEPTION_ODG]) ? DateTime::createFromFormat('m-d-y', $data[self::CSV_DATE_RECEPTION_ODG])->format('Y-m-d') : null;
+        $dateCompletODG = ($data[self::CSV_DATE_COMPLET_ODG]) ? DateTime::createFromFormat('m-d-y', $data[self::CSV_DATE_COMPLET_ODG])->format('Y-m-d') : null;
+        $dateAR = ($data[self::CSV_DATE_AR]) ? DateTime::createFromFormat('m-d-y', $data[self::CSV_DATE_AR])->format('Y-m-d') : null;
+        $dateTransmissionAVPI = ($data[self::CSV_DATE_TRANSMISSION_AVPI]) ? DateTime::createFromFormat('m-d-y', $data[self::CSV_DATE_TRANSMISSION_AVPI])->format('Y-m-d') : null;
+        $dateHabilitation = ($data[self::CSV_DATE_HABILITATION]) ? DateTime::createFromFormat('m-d-y', $data[self::CSV_DATE_HABILITATION])->format('Y-m-d') : null;
+        $dateArchivage = ($data[self::CSV_DATE_ARCHIVAGE]) ? DateTime::createFromFormat('m-d-y', $data[self::CSV_DATE_ARCHIVAGE])->format('Y-m-d') : null;
+
+        $activitesData = explode(';', $data[self::CSV_ACTIVITE]);
+        $activitesData = array_map('trim', $activitesData);
         $activites = [];
+        foreach ($activitesData as $activiteTerm) {
+            if(!array_key_exists($activiteTerm, self::activites)) {
+                echo "Activite \"".$activiteTerm."\" non trouvé;".implode(";", $data)."\n";
+                continue;
+            }
+            $activites[] = self::activites[$activiteTerm];
+        }
 
-        foreach ([
-            self::CSV_PRODUCTION_RAISINS => $data[self::CSV_PRODUCTION_RAISINS],
-            self::CSV_VINIFICATION => $data[self::CSV_VINIFICATION],
-            self::CSV_ACHAT_VENTE_VRAC => $data[self::CSV_ACHAT_VENTE_VRAC],
-            self::CSV_CONDITIONNEMENT => $data[self::CSV_CONDITIONNEMENT],
-            self::CSV_TIREUSE => $data[self::CSV_TIREUSE]
-        ] as $key => $activite) {
-            if (strtoupper($activite) === "X") {
-                $activites[] = self::activites[$key];
+        $datesCommentaire = [];
+
+        if($dateReceptionODG) {
+            $datesCommentaire[$dateReceptionODG][HabilitationClient::STATUT_DEMANDE_HABILITATION][] = "Réception ODG";
+        }
+        if($dateCompletODG) {
+            $datesCommentaire[$dateCompletODG][HabilitationClient::STATUT_DEMANDE_HABILITATION][] = "Complet ODG";
+        }
+        if($dateTransmissionAVPI) {
+            $datesCommentaire[$dateTransmissionAVPI][HabilitationClient::STATUT_ATTENTE_HABILITATION][] = "Transmission à l'AVPI";
+        }
+        if($dateAR) {
+            $datesCommentaire[$dateAR][HabilitationClient::STATUT_ATTENTE_HABILITATION][] = "Accusé réception de AVPI";
+        }
+        if($dateHabilitation && !in_array($data[self::CSV_ETAT_HABILITATION], ["Refus d'habilitation", "Habilité en attente"])) {
+            $datesCommentaire[$dateHabilitation][HabilitationClient::STATUT_HABILITE] = [];
+        }
+        if($dateHabilitation && $data[self::CSV_ETAT_HABILITATION] == "Habilité en attente") {
+            $datesCommentaire[$dateHabilitation][HabilitationClient::STATUT_HABILITE][] = "Habilité en attente";
+        }
+        if($dateArchivage && $data[self::CSV_ETAT_HABILITATION] == "Suspension d'habilitation") {
+            $datesCommentaire[$dateArchivage][HabilitationClient::STATUT_SUSPENDU] = [];
+        }
+        if($dateArchivage && $data[self::CSV_ETAT_HABILITATION] == "Refus d'habilitation") {
+            $datesCommentaire[$dateArchivage][HabilitationClient::STATUT_REFUS] = [];
+        }
+        if($dateArchivage && $data[self::CSV_ETAT_HABILITATION] == "Retrait d'habilitation") {
+            $datesCommentaire[$dateArchivage][HabilitationClient::STATUT_RETRAIT] = [];
+        }
+
+        foreach($datesCommentaire as $date => $statuts) {
+            foreach($statuts as $statut => $commentaires) {
+                HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, $date, $activites, [], $statut, implode("\n", $commentaires));
             }
         }
 
-        if($date_demande && $date_demande < $date_decision) {
-            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_demande, $activites, [], HabilitationClient::STATUT_DEMANDE_HABILITATION);
-        }
-
-        HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_decision, $activites, [], $statut);
-
         if($suspendu) {
-            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, date('Y-m-d'), $activites, [], HabilitationClient::STATUT_RETRAIT, $data[self::CSV_OBSERVATION]);
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, date('Y-m-d'), $activites, [], HabilitationClient::STATUT_RETRAIT, $data[self::CSV_OBSERVATION]);
         }
     }
 }
