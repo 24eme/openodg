@@ -236,6 +236,15 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             return $this->enhanced_donnees;
         }
         $this->generateDonnees();
+
+        foreach (ChgtDenomClient::getInstance()->getChgtDenomProduction($this->identifiant, $this->campagne) as $chgt) {
+            if ($chgt->isValideeOdg() === false) {
+                continue;
+            }
+
+            $chgt->addDonneesForProduction($this);
+        }
+
         $this->enhanced_donnees = array();
         $colonnesid = array();
         $colonneid = 0;
