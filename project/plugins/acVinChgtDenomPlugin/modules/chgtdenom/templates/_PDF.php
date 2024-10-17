@@ -71,17 +71,18 @@
 
 <br/>
 
-<?php
-$lots = $chgtdenom->getLotsWithPseudoDeclassement();
-$lot = $lots[0]; ?>
+<?php $lots = $chgtdenom->getLotsWithPseudoDeclassement(); ?>
 
-<?php if (! ($lot->isAffecte() && $lot->isAffectable()) && $chgtdenom->isApprouve()): ?>
-    <p style="text-align:center">qui devient</p>
+
+<?php if ($total > 1? !$lots[1]->isAffecte() && !$lots[1]->isAffectable() && $chgtdenom->isApprouve() : !$lots[0]->isAffecte() && !$lots[0]->isAffectable() && $chgtdenom->isApprouve()): ?>
+        <p style="text-align:center">qui devient</p>
 <?php else: ?>
-    <p style="text-align:left">en attente de contrôle organoleptique conformément au cahier des charges et au plan de contrôle</p>
+        <p style="text-align:left">en attente de contrôle organoleptique conformément au cahier des charges et au plan de contrôle</p>
 <?php endif;?>
+
 <br/>
 
+<?php $lot = $lots[0]; ?>
 <table border="1">
     <tr>
         <th style="font-size: 14px">Lot n°: <?php echo $lot->numero_dossier.' / '.$lot->numero_archive ?></th>
