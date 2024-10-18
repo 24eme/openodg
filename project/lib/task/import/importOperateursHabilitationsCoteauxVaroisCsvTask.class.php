@@ -27,6 +27,14 @@ class importOperateursHabilitationsCoteauxVaroisCsvTask extends sfBaseTask
     const CSV_OBSERVATION = 22;
     const CSV_ETAT_HABILITATION = 23;
 
+    const CSV_CHAIS_NUMERO_OPERATEUR = 1;
+    const CSV_CHAIS_ACTIVITES = 3;
+    const CSV_CHAIS_ADRESSE_1 = 4;
+    const CSV_CHAIS_ADRESSE_2 = 5;
+    const CSV_CHAIS_ADRESSE_3 = 6;
+    const CSV_CHAIS_CODE_POSTAL = 7;
+    const CSV_CHAIS_VILLE = 8;
+
     const hash_produit = 'certifications/AOP/genres/TRANQ/appellations/CVP';
 
     const activites = [
@@ -35,6 +43,12 @@ class importOperateursHabilitationsCoteauxVaroisCsvTask extends sfBaseTask
         'Vinificateur' => HabilitationClient::ACTIVITE_VINIFICATEUR,
         'Producteur de moût' => HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS,
         'Conditionneur' => HabilitationClient::ACTIVITE_CONDITIONNEUR,
+    ];
+
+    const activitesChais = [
+        "Vinification" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
+        "VC Stockage" => EtablissementClient::CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE,
+        "VV Stockage" => EtablissementClient::CHAI_ATTRIBUT_STOCKAGE_VRAC,
     ];
 
     const status = [
@@ -46,6 +60,7 @@ class importOperateursHabilitationsCoteauxVaroisCsvTask extends sfBaseTask
     {
         $this->addArguments(array(
             new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('csv_chais', sfCommandArgument::REQUIRED, "Fichier csv pour l'import des chais"),
         ));
 
         $this->addOptions(array(
@@ -63,6 +78,7 @@ EOF;
 
         // Conversion du fichier original en csv
         // xlsx2csv -l '\r\n' -d ";" $xlsxfilepath | tr -d "\n" | tr "\r" "\n" > $csvfilepath
+        // xlsx2csv -l '\r\n' -d ";" -n Chais $xlsxfilepath | tr -d "\n" | tr "\r" "\n" > $csvfilepath
 
     }
 
@@ -78,6 +94,19 @@ EOF;
 
         if (! $csvfile) {
             throw new sfException("Impossible d'ouvrir le fichier " . $arguments['csv']);
+        }
+
+        $csvfilechais = fopen($arguments['csv_chais'], 'r');
+
+        if (! $csvfilechais) {
+            throw new sfException("Impossible d'ouvrir le fichier " . $arguments['csv_chais']);
+        }
+
+        $chais = [];
+
+        while(($data = fgetcsv($csvfilechais, 1000, ";")) !== false) {
+            $data = array_map('trim', $data);
+            $chais[$data[self::CSV_CHAIS_NUMERO_OPERATEUR]][] = $data;
         }
 
         while(($data = fgetcsv($csvfile, 1000, ";")) !== false) {
@@ -104,11 +133,39 @@ EOF;
                 $etablissement->addCommentaire(trim($data[self::CSV_OBSERVATION]));
             }
 
+            if(isset($chais[$data[self::CSV_NUMERO_ENREGISTREMENT]])) {
+                foreach($chais[$data[self::CSV_NUMERO_ENREGISTREMENT]] as $chaiData) {
+                    foreach($etablissement->add('chais') as $c) {
+                        if(strpos(KeyInflector::slugify($c->adresse), KeyInflector::slugify($chaiData[self::CSV_CHAIS_ADRESSE_1])) !== false) {
+                            continue 2;
+                        }
+                    }
+                    $chai = $etablissement->add('chais')->add();
+                    $chai->nom = $chaiData[self::CSV_CHAIS_VILLE];
+                    $chai->adresse = implode(" - ", array_filter([$chaiData[self::CSV_CHAIS_ADRESSE_1], $chaiData[self::CSV_CHAIS_ADRESSE_2], $chaiData[self::CSV_CHAIS_ADRESSE_3]], 'strlen'));
+                    $chai->code_postal = $chaiData[self::CSV_CHAIS_CODE_POSTAL];
+                    $chai->commune = $chaiData[self::CSV_CHAIS_VILLE];
+                    $activitesData = explode(';', $chaiData[self::CSV_CHAIS_ACTIVITES]);
+                    $activitesData = array_map('trim', $activitesData);
+                    $activites = [];
+                    foreach ($activitesData as $activiteTerm) {
+                        if(!array_key_exists($activiteTerm, self::activitesChais)) {
+                            echo "Activite \"".$activiteTerm."\" non trouvé;".implode(";", $data)."\n";
+                            continue;
+                        }
+                        $activites[] = self::activitesChais[$activiteTerm];
+                    }
+                    $chai->add('attributs', $activites);
+                }
+            }
+
             if(!isset($_ENV['DRY_RUN'])) {
                 $etablissement->save();
             } else {
-                print_r($etablissement);
+                //print_r($etablissement);
             }
+
+            $numInterneEtablissement[$data[self::CSV_NUMERO_ENREGISTREMENT]] = $etablissement;
 
             $this->importHabilitation($etablissement, $data, (bool)$options['suspendu']);
         }
@@ -154,10 +211,10 @@ EOF;
         $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
 
         try {
-            if(isset($_ENV['DRY_RUN'])) {
-                print_r($societe);
-            } else {
+            if(!isset($_ENV['DRY_RUN'])) {
                 $societe->save();
+            } else {
+                //print_r($societe);
             }
         } catch (Exception $e) {
             echo "$societe->_id save error :".$e->getMessage()."\n";
