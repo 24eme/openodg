@@ -71,7 +71,9 @@
 
 <br/>
 
-<?php if (!$chgtdenom->lots[1]->isAffecte() && !$chgtdenom->lots[1]->isAffectable() && $chgtdenom->isApprouve()): ?>
+<?php if ($chgtdenom->isDeclassement()): ?>
+        <p style="text-align:center">qui devient</p>
+<?php elseif (!$chgtdenom->lots[1]->isAffecte() && !$chgtdenom->lots[1]->isAffectable() && $chgtdenom->isApprouve()): ?>
         <p style="text-align:center">qui devient</p>
 <?php else: ?>
         <p style="text-align:left">en attente de contrôle organoleptique conformément au cahier des charges et au plan de contrôle</p>
