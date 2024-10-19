@@ -115,6 +115,7 @@ EOF;
             if (!preg_match('/[0-9]+/', $data[self::CSV_NUMERO_ENREGISTREMENT])) {
                 continue;
             }
+            $data = array_map('trim', $data);
 
             $etablissement = $this->findEtablissement($data);
 
@@ -131,7 +132,7 @@ EOF;
                 $etablissement->addCommentaire("Opérateur Coteaux du Varois (ex n°".$data[self::CSV_NUMERO_ENREGISTREMENT].")");
             }
 
-            if(trim($data[self::CSV_OBSERVATION])) {
+            if($data[self::CSV_OBSERVATION]) {
                 $data[self::CSV_OBSERVATION] = preg_replace("/([0-9]{4} ?[0-9]{2} [0-9]{2})/", "\n".'\1', $data[self::CSV_OBSERVATION]);
                 foreach(explode("\n", $data[self::CSV_OBSERVATION]) as $commentaire) {
                     if(!trim($commentaire)) {
@@ -176,8 +177,6 @@ EOF;
     {
         $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_INTITULE], $data[self::CSV_NOM]])));
         $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR);
-
-        $data = array_map('trim', $data);
 
         $societe = $newSociete;
         $societe->statut = SocieteClient::STATUT_ACTIF;
@@ -310,7 +309,6 @@ EOF;
 
     private function importHabilitation($etablissement, $data, $suspendu = false)
     {
-        $data = array_map('trim', $data);
         $dateReceptionODG = ($data[self::CSV_DATE_RECEPTION_ODG]) ? DateTime::createFromFormat('m-d-y', $data[self::CSV_DATE_RECEPTION_ODG])->format('Y-m-d') : null;
         $dateCompletODG = ($data[self::CSV_DATE_COMPLET_ODG]) ? DateTime::createFromFormat('m-d-y', $data[self::CSV_DATE_COMPLET_ODG])->format('Y-m-d') : null;
         $dateAR = ($data[self::CSV_DATE_AR]) ? DateTime::createFromFormat('m-d-y', $data[self::CSV_DATE_AR])->format('Y-m-d') : null;
