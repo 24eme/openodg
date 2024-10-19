@@ -196,10 +196,11 @@
     <?php if (count($chgtsProd)): ?>
         <p style="margin-top: -10px; margin-bottom: 20px;">
             Ce document à <?php echo count($chgtsProd) ?> <?php if (count($chgtsProd) > 1): ?> déclassements <?php else: ?> déclassement <?php endif ?>sans revendication :
-            <span><?php echo implode(', ', array_map(function ($c) {
-                return '<a href="'.url_for('chgtdenom_visualisation', ['id' => $c->_id]).'">'.$c->_id.'</a>';
-            }, $chgtsProd->getRawValue())); ?>
-            </span>
+            <ul>
+                <?php foreach ($chgtsProd as $c): ?>
+                <li><a href="<?php echo url_for('chgtdenom_visualisation', ['id' => $c->_id]) ?>"><?php echo $c->origine_produit_libelle ?></a> (- <?php echo $c->origine_volume ?> hl)</li>
+                <?php endforeach ?>
+            </ul>
         </p>
     <?php endif ?>
 

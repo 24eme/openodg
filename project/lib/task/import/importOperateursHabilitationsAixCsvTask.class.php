@@ -88,10 +88,11 @@ EOF;
             }
             $suspendu = !($data[self::CSV_AIX_OPERATEUR_CVI]) && !($data[self::CSV_AIX_OPERATEUR_SIRET]);
             $etablissement = $this->importSocieteEtablissement($data, $suspendu);
-            if ($etablissement === false) {
+            if (!$etablissement) {
                 continue;
             }
             $this->importHabilitation($etablissement, $data, $suspendu);
+            echo($etablissement->num_interne." importé\n");
         }
     }
 
@@ -107,8 +108,16 @@ EOF;
         }
         if ($e) {
             echo("Etablissement existe " . $e->_id . ", ". $data[0]." ".$data[1]."\n");
+            if ($e->commentaire) {
+                $e->commentaire = " - ".$e->commentaire."\n";
+                $e->commentaire = preg_replace('/ - * -/', ' - ', $e->commentaire);
+            }
+            $e->commentaire .= " - Etablissement partagé CDP - CAP (Numéro interne CAP ".$data[self::CSV_AIX_OPERATEUR_NUMERO_ENREGISTREMENT].")\n";
+            if (!isset($_ENV['DRY_RUN'])) {
+                $e->save();
+            }
             $this->numintern2etablissement[$data[self::CSV_AIX_OPERATEUR_NUMERO_ENREGISTREMENT]] = $e;
-            return;
+            return $e;
         }
 
         if ($data[self::CSV_AIX_OPERATEUR_ACTIVITE_PRODUCTEUR_DE_RAISINS] == "Oui" || $data[self::CSV_AIX_OPERATEUR_ACTIVITE_TRANSFORMATEUR_VINIFICATEUR] == "Oui") {
@@ -128,7 +137,7 @@ EOF;
                 if ($e) {
                     $this->numintern2etablissement[$data[self::CSV_AIX_OPERATEUR_NUMERO_ENREGISTREMENT]] = $e;
                 }
-                return;
+                return $e;
             }
         }
 
@@ -161,7 +170,9 @@ EOF;
         if (!$societe->email && $emails) {
             $societe->email = KeyInflector::unaccent($emails[0]);
         }
-
+        if (!isset($_ENV['DRY_RUN'])) {
+            $societe->save();
+        }
         $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
         if ($data[self::CSV_AIX_OPERATEUR_ACTIVITE_NEGOCIANT] == 'Oui') {
             $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
@@ -196,6 +207,10 @@ EOF;
         $societe->pushAdresseTo($etablissement);
         $societe->pushContactTo($etablissement);
 
+        if (!isset($_ENV['DRY_RUN'])) {
+            $etablissement->save();
+        }
+
         $interlocuteurs = [];
         $i = 0;
         $responsables = explode('|', $data[self::CSV_AIX_OPERATEUR_NOM_RESPONSABLE]);
@@ -224,17 +239,22 @@ EOF;
             if (count($telephones) == count($responsables) && $telephones[$i]) {
                 $inter->telephone_perso = Phone::format($telephones[$i]);
             }
+            if (!isset($_ENV['DRY_RUN'])) {
+                $inter->save();
+            }
             $interlocuteurs[] = $inter;
             $i++;
         }
-        echo($etablissement->num_interne."\n");
-        //print_r([$societe, $etablissement, $interlocuteurs]);
+
+        if ($suspendu) {
+            $societe->switchStatusAndSave();
+        }
+
         return $etablissement;
     }
 
     function importHabilitation($etablissement, $data, $suspendu = false) {
         if (!$etablissement) {
-            print_r([$data]);
             throw new sfException("etablissement empty");
         }
         $dates = [];

@@ -8,6 +8,7 @@ all:
         ELEVEUR_DGC: "Éleveur de DGC"
         VINIFICATEUR: "Vinificateur"
         VRAC: "Détenteur de vin en vrac"
+        PRESTATAIRE_DE_SERVICE: "Prestataire de service"
       demande:
         statuts:
           DEPOT: "Dépôt"
