@@ -35,7 +35,7 @@ class importOperateursHabilitationsCoteauxVaroisCsvTask extends sfBaseTask
     const CSV_CHAIS_CODE_POSTAL = 7;
     const CSV_CHAIS_VILLE = 8;
 
-    const hash_produit = 'certifications/AOP/genres/TRANQ/appellations/CVP';
+    const hash_produit = '/declaration/certifications/AOP/genres/TRANQ/appellations/CVP';
 
     const activites = [
         'Producteur de raisins' => HabilitationClient::ACTIVITE_PRODUCTEUR,
@@ -292,41 +292,47 @@ EOF;
         $datesCommentaire = [];
 
         if($dateReceptionODG) {
-            $datesCommentaire[$dateReceptionODG][HabilitationClient::STATUT_DEMANDE_HABILITATION][] = "Réception ODG";
+            $datesCommentaire[$dateReceptionODG]["DEPOT"] = null;
         }
         if($dateCompletODG) {
-            $datesCommentaire[$dateCompletODG][HabilitationClient::STATUT_DEMANDE_HABILITATION][] = "Complet ODG";
+            $datesCommentaire[$dateCompletODG]["COMPLET"] = null;
         }
         if($dateTransmissionAVPI) {
-            $datesCommentaire[$dateTransmissionAVPI][HabilitationClient::STATUT_ATTENTE_HABILITATION][] = "Transmission à l'AVPI";
+            $datesCommentaire[$dateTransmissionAVPI]["TRANSMIS_OC"] = null;
         }
         if($dateAR) {
-            $datesCommentaire[$dateAR][HabilitationClient::STATUT_ATTENTE_HABILITATION][] = "Accusé réception de AVPI";
+            $datesCommentaire[$dateAR]["RECUS_OC"] = null;
         }
         if($dateHabilitation && !in_array($data[self::CSV_ETAT_HABILITATION], ["Refus d'habilitation", "Habilité en attente"])) {
-            $datesCommentaire[$dateHabilitation][HabilitationClient::STATUT_HABILITE] = [];
+            $datesCommentaire[$dateHabilitation]["VALIDE"] = null;
         }
         if($dateHabilitation && $data[self::CSV_ETAT_HABILITATION] == "Habilité en attente") {
-            $datesCommentaire[$dateHabilitation][HabilitationClient::STATUT_HABILITE][] = "Habilité en attente";
+            $datesCommentaire[$dateHabilitation]["VALIDE"] = "Habilité en attente";
         }
-        if($dateArchivage && $data[self::CSV_ETAT_HABILITATION] == "Suspension d'habilitation") {
-            $datesCommentaire[$dateArchivage][HabilitationClient::STATUT_SUSPENDU] = [];
-        }
-        if($dateArchivage && $data[self::CSV_ETAT_HABILITATION] == "Refus d'habilitation") {
-            $datesCommentaire[$dateArchivage][HabilitationClient::STATUT_REFUS] = [];
-        }
-        if($dateArchivage && $data[self::CSV_ETAT_HABILITATION] == "Retrait d'habilitation") {
-            $datesCommentaire[$dateArchivage][HabilitationClient::STATUT_RETRAIT] = [];
+        if($dateHabilitation && $data[self::CSV_ETAT_HABILITATION] == "Refus d'habilitation") {
+            $datesCommentaire[$dateHabilitation]["REFUSE"] = null;
         }
 
+        $demande = null;
         foreach($datesCommentaire as $date => $statuts) {
-            foreach($statuts as $statut => $commentaires) {
-                HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, $date, $activites, [], $statut, implode("\n", $commentaires));
+            foreach($statuts as $statut => $commentaire) {
+                if(!$demande) {
+                    $demande = HabilitationClient::getInstance()->createDemandeAndSave($etablissement->identifiant, HabilitationClient::DEMANDE_HABILITATION, self::hash_produit, $activites, [], $statut, $date, $commentaire, "Import");
+                } else {
+                    $demande = HabilitationClient::getInstance()->updateDemandeAndSave($etablissement->identifiant, $demande->getKey(), $date, $statut, $commentaire, "Import");
+                }
+                if(isset($_ENV['DRY_RUN'])) {
+                    print_r($demande);
+                    $demande = null;
+                }
             }
         }
 
-        if($suspendu) {
-            HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, date('Y-m-d'), $activites, [], HabilitationClient::STATUT_RETRAIT, $data[self::CSV_OBSERVATION]);
+        if($dateArchivage && $data[self::CSV_ETAT_HABILITATION] == "Suspension d'habilitation") {
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, $dateArchivage, $activites, [], HabilitationClient::STATUT_SUSPENDU);
+        }
+        if($dateArchivage && $data[self::CSV_ETAT_HABILITATION] == "Retrait d'habilitation") {
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, $dateArchivage, $activites, [], HabilitationClient::STATUT_RETRAIT);
         }
     }
 }

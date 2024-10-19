@@ -394,9 +394,10 @@ class HabilitationClient extends acCouchdbClient {
             $demande->getLibelle();
             $this->updateDemandeStatut($demande, $date, $statut, $commentaire, $auteur, true);
 
-            $habilitation->save();
-
-            $this->postSaveDemande($demande, $commentaire, $auteur, $trigger);
+            if (!isset($_ENV['DRY_RUN'])) {
+                $habilitation->save();
+                $this->postSaveDemande($demande, $commentaire, $auteur, $trigger);
+            }
 
             return $demande;
         }
