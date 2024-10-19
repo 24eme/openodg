@@ -128,11 +128,17 @@ EOF;
             }
 
             if(!preg_match('/Opérateur Coteaux du Varois/', $etablissement->commentaire)) {
-                $etablissement->addCommentaire("Opérateur Coteaux du Varois (n°".$data[self::CSV_NUMERO_ENREGISTREMENT].")");
+                $etablissement->addCommentaire("Opérateur Coteaux du Varois (ex n°".$data[self::CSV_NUMERO_ENREGISTREMENT].")");
             }
 
             if(trim($data[self::CSV_OBSERVATION])) {
-                $etablissement->addCommentaire(trim($data[self::CSV_OBSERVATION]));
+                $data[self::CSV_OBSERVATION] = preg_replace("/([0-9]{4} ?[0-9]{2} [0-9]{2})/", "\n".'\1', $data[self::CSV_OBSERVATION]);
+                foreach(explode("\n", $data[self::CSV_OBSERVATION]) as $commentaire) {
+                    if(!trim($commentaire)) {
+                        continue;
+                    }
+                    $etablissement->addCommentaire(trim($commentaire). " (CVP)");
+                }
             }
 
             $this->importChais($etablissement, $data, $chais);
