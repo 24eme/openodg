@@ -34,6 +34,8 @@ class importOperateursHabilitationsCoteauxVaroisCsvTask extends sfBaseTask
     const CSV_CHAIS_ADRESSE_3 = 6;
     const CSV_CHAIS_CODE_POSTAL = 7;
     const CSV_CHAIS_VILLE = 8;
+    const CSV_CHAIS_CONTACT = 9;
+    const CSV_CHAIS_CONTACT_TELEPHONE = 10;
 
     const hash_produit = '/declaration/certifications/AOP/genres/TRANQ/appellations/CVP';
 
@@ -265,15 +267,43 @@ EOF;
                 $chai->add('attributs', $activites);
             }
         }
+
+        $chaisImported = [];
+        if(isset($chais[$data[self::CSV_NUMERO_ENREGISTREMENT]])) {
+            foreach($chais[$data[self::CSV_NUMERO_ENREGISTREMENT]] as $chaiData) {
+                if(!$chaiData[self::CSV_CHAIS_CONTACT]) {
+                    continue;
+                }
+                if(isset($chaisImported[$etablissement->_id][$chaiData[self::CSV_CHAIS_CONTACT]])) {
+                    continue;
+                }
+                $inter = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($etablissement->getSociete());
+                $inter->nom_a_afficher = $chaiData[self::CSV_CHAIS_CONTACT];
+                if (preg_match('/^(M. |Mme |MR |)([a-zA-Zéèêîïâ].*) ([a-zA-ZéèêîïâA]+)$/', $chaiData[self::CSV_CHAIS_CONTACT], $m)) {
+                    $inter->nom = $m[3];
+                    $inter->prenom = $m[2];
+                    $inter->civilite = str_replace([".", " ", "MR"], ["", "", "M"], $m[1]);
+                }else{
+                    $inter->nom = $chaiData[self::CSV_CHAIS_CONTACT];
+                }
+                $inter->telephone_perso = Phone::format($chaiData[self::CSV_CHAIS_CONTACT_TELEPHONE]);
+                $inter->fonction = "Responsable de chai";
+                $inter->commentaire = "Import CVP";
+
+                if(!isset($_ENV['DRY_RUN'])) {
+                    $inter->save();
+                } else {
+                    print_r($inter);
+                }
+
+                $chaisImported[$etablissement->_id][$chaiData[self::CSV_CHAIS_CONTACT]] = true;
+            }
+        }
+
     }
 
     private function importHabilitation($etablissement, $data, $suspendu = false)
     {
-        //$identifiant = $etablissement->identifiant;
-        //$date_demande  = ($data[self::CSV_DATE_SAISIE_IDENTIFICATION]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_SAISIE_IDENTIFICATION])[0])->format('Y-m-d') : null;
-        //$date_decision = ($data[self::CSV_DATE_HABILITATION]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_HABILITATION])[0])->format('Y-m-d') : null;
-
-        //$statut = self::status[trim(strtolower($data[self::CSV_ETAT_HABILITATION]))];
         $data = array_map('trim', $data);
         $dateReceptionODG = ($data[self::CSV_DATE_RECEPTION_ODG]) ? DateTime::createFromFormat('m-d-y', $data[self::CSV_DATE_RECEPTION_ODG])->format('Y-m-d') : null;
         $dateCompletODG = ($data[self::CSV_DATE_COMPLET_ODG]) ? DateTime::createFromFormat('m-d-y', $data[self::CSV_DATE_COMPLET_ODG])->format('Y-m-d') : null;
@@ -326,7 +356,6 @@ EOF;
                     $demande = HabilitationClient::getInstance()->updateDemandeAndSave($etablissement->identifiant, $demande->getKey(), $date, $statut, $commentaire, "Import");
                 }
                 if(isset($_ENV['DRY_RUN'])) {
-                    print_r($demande);
                     $demande = null;
                 }
             }
