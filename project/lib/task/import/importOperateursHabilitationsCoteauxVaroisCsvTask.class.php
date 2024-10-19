@@ -133,31 +133,7 @@ EOF;
                 $etablissement->addCommentaire(trim($data[self::CSV_OBSERVATION]));
             }
 
-            if(isset($chais[$data[self::CSV_NUMERO_ENREGISTREMENT]])) {
-                foreach($chais[$data[self::CSV_NUMERO_ENREGISTREMENT]] as $chaiData) {
-                    foreach($etablissement->add('chais') as $c) {
-                        if(strpos(KeyInflector::slugify($c->adresse), KeyInflector::slugify($chaiData[self::CSV_CHAIS_ADRESSE_1])) !== false) {
-                            continue 2;
-                        }
-                    }
-                    $chai = $etablissement->add('chais')->add();
-                    $chai->nom = $chaiData[self::CSV_CHAIS_VILLE];
-                    $chai->adresse = implode(" - ", array_filter([$chaiData[self::CSV_CHAIS_ADRESSE_1], $chaiData[self::CSV_CHAIS_ADRESSE_2], $chaiData[self::CSV_CHAIS_ADRESSE_3]], 'strlen'));
-                    $chai->code_postal = $chaiData[self::CSV_CHAIS_CODE_POSTAL];
-                    $chai->commune = $chaiData[self::CSV_CHAIS_VILLE];
-                    $activitesData = explode(';', $chaiData[self::CSV_CHAIS_ACTIVITES]);
-                    $activitesData = array_map('trim', $activitesData);
-                    $activites = [];
-                    foreach ($activitesData as $activiteTerm) {
-                        if(!array_key_exists($activiteTerm, self::activitesChais)) {
-                            echo "Activite \"".$activiteTerm."\" non trouvé;".implode(";", $data)."\n";
-                            continue;
-                        }
-                        $activites[] = self::activitesChais[$activiteTerm];
-                    }
-                    $chai->add('attributs', $activites);
-                }
-            }
+            $this->importChais($etablissement, $data, $chais);
 
             if(!isset($_ENV['DRY_RUN'])) {
                 $etablissement->save();
@@ -261,6 +237,34 @@ EOF;
         }
 
         return $etablissement;
+    }
+
+    private function importChais($etablissement, $data, $chais) {
+        if(isset($chais[$data[self::CSV_NUMERO_ENREGISTREMENT]])) {
+            foreach($chais[$data[self::CSV_NUMERO_ENREGISTREMENT]] as $chaiData) {
+                foreach($etablissement->add('chais') as $c) {
+                    if(strpos(KeyInflector::slugify($c->adresse), KeyInflector::slugify($chaiData[self::CSV_CHAIS_ADRESSE_1])) !== false) {
+                        continue 2;
+                    }
+                }
+                $chai = $etablissement->add('chais')->add();
+                $chai->nom = $chaiData[self::CSV_CHAIS_VILLE];
+                $chai->adresse = implode(" - ", array_filter([$chaiData[self::CSV_CHAIS_ADRESSE_1], $chaiData[self::CSV_CHAIS_ADRESSE_2], $chaiData[self::CSV_CHAIS_ADRESSE_3]], 'strlen'));
+                $chai->code_postal = $chaiData[self::CSV_CHAIS_CODE_POSTAL];
+                $chai->commune = $chaiData[self::CSV_CHAIS_VILLE];
+                $activitesData = explode(';', $chaiData[self::CSV_CHAIS_ACTIVITES]);
+                $activitesData = array_map('trim', $activitesData);
+                $activites = [];
+                foreach ($activitesData as $activiteTerm) {
+                    if(!array_key_exists($activiteTerm, self::activitesChais)) {
+                        echo "Activite \"".$activiteTerm."\" non trouvé;".implode(";", $data)."\n";
+                        continue;
+                    }
+                    $activites[] = self::activitesChais[$activiteTerm];
+                }
+                $chai->add('attributs', $activites);
+            }
+        }
     }
 
     private function importHabilitation($etablissement, $data, $suspendu = false)
