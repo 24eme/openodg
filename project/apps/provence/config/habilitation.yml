@@ -8,3 +8,29 @@ all:
         ELEVEUR_DGC: "Éleveur de DGC"
         VINIFICATEUR: "Vinificateur"
         VRAC: "Détenteur de vin en vrac"
+      demande:
+        statuts:
+          DEPOT: "Dépôt"
+          COMPLET: "Complet"
+          TRANSMIS_OC: "Transmis à l'OC"
+          RECUS_OC: "Reçu par l'OC"
+          VALIDE: "Validé"
+          REFUSE: "Refusé"
+          ANNULE: "Annulé"
+        automatique:
+        habilitations:
+          HABILITATION:
+            COMPLET: DEMANDE_HABILITATION
+            VALIDE: HABILITE
+            REFUSE: REFUS
+            ANNULE: ANNULÉ
+          RETRAIT:
+            COMPLET: DEMANDE_RETRAIT
+            VALIDE: RETRAIT
+            REFUSE: HABILITE
+            ANNULE: HABILITE
+          RESILIATION:
+            COMPLET: DEMANDE_RESILIATION
+            VALIDE: RESILIE
+            REFUSE: HABILITE
+            ANNULE: HABILITE
