@@ -90,7 +90,7 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        $_ENV['DRY_RUN'] = true;
+        //$_ENV['DRY_RUN'] = true;
 
         $csvfile = fopen($arguments['csv'], 'r');
 
@@ -143,6 +143,8 @@ EOF;
             }
 
             $this->importChais($etablissement, $data, $chais);
+
+            echo "Etablissement ".($etablissement->isNew() ? "créé" : "repris")." ".$etablissement->_id." pour n°".$data[self::CSV_NUMERO_ENREGISTREMENT]."\n";
 
             if(!isset($_ENV['DRY_RUN'])) {
                 $etablissement->save();
@@ -234,15 +236,6 @@ EOF;
         $societe->pushAdresseTo($etablissement);
         $societe->pushContactTo($etablissement);
 
-        if(!isset($_ENV['DRY_RUN'])) {
-            $etablissement->save();
-        }
-
-        if($suspendu && !isset($_ENV['DRY_RUN'])) {
-            $societe->switchStatusAndSave();
-            $etablissement = EtablissementClient::getInstance()->find($etablissement->_id);
-        }
-
         return $etablissement;
     }
 
@@ -298,7 +291,7 @@ EOF;
                 if(!isset($_ENV['DRY_RUN'])) {
                     $inter->save();
                 } else {
-                    print_r($inter);
+                    //print_r($inter);
                 }
 
                 $chaisImported[$etablissement->_id][$chaiData[self::CSV_CHAIS_CONTACT]] = true;
@@ -315,6 +308,14 @@ EOF;
         $dateTransmissionAVPI = ($data[self::CSV_DATE_TRANSMISSION_AVPI]) ? DateTime::createFromFormat('m-d-y', $data[self::CSV_DATE_TRANSMISSION_AVPI])->format('Y-m-d') : null;
         $dateHabilitation = ($data[self::CSV_DATE_HABILITATION]) ? DateTime::createFromFormat('m-d-y', $data[self::CSV_DATE_HABILITATION])->format('Y-m-d') : null;
         $dateArchivage = ($data[self::CSV_DATE_ARCHIVAGE]) ? DateTime::createFromFormat('m-d-y', $data[self::CSV_DATE_ARCHIVAGE])->format('Y-m-d') : null;
+        if($dateTransmissionAVPI && $dateTransmissionAVPI > $dateHabilitation) {
+            $dateTransmissionAVPI = null;
+            echo "La date de transmission est supérieur à la date d'habilitation;".implode(";", $data)."\n";
+        }
+        if($dateCompletODG && $dateTransmissionAVPI && $dateCompletODG > $dateTransmissionAVPI) {
+            $dateTransmissionAVPI = $dateCompletODG;
+            echo "La date de transmission est inférieur à la date de complétude;".implode(";", $data)."\n";
+        }
 
         $activitesData = explode(';', $data[self::CSV_ACTIVITE]);
         $activitesData = array_map('trim', $activitesData);
@@ -325,6 +326,12 @@ EOF;
                 continue;
             }
             $activites[] = self::activites[$activiteTerm];
+        }
+
+        if(in_array(HabilitationClient::ACTIVITE_PRODUCTEUR, $activites) && !$etablissement->cvi) {
+            echo "Producteur sans CVI;".implode(";", $data)."\n";
+        } elseif(in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $activites) && !$etablissement->cvi) {
+            echo "Vinificateur sans CVI;".implode(";", $data)."\n";
         }
 
         $datesCommentaire = [];
