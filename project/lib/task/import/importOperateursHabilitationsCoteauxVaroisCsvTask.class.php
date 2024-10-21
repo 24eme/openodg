@@ -260,7 +260,7 @@ EOF;
                         echo "Activite \"".$activiteTerm."\" non trouvé;".implode(";", $data)."\n";
                         continue;
                     }
-                    $activites[] = self::activitesChais[$activiteTerm];
+                    $activites[self::activitesChais[$activiteTerm]] = EtablissementClient::$chaisAttributsLibelles[self::activitesChais[$activiteTerm]];
                 }
                 $chai->add('attributs', $activites);
             }
