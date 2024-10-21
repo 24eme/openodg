@@ -10,6 +10,7 @@ all:
         VRAC: "Détenteur de vin en vrac"
         PRESTATAIRE_DE_SERVICE: "Prestataire de service"
       demande:
+        listing: false
         statuts:
           DEPOT: "Dépôt"
           COMPLET: "Complet"
