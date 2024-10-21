@@ -291,5 +291,16 @@ EOF;
         }else{
             $h = HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_demande, $activites, [], HabilitationClient::STATUT_DEMANDE_HABILITATION, $commentaires);
         }
+        if ($h) {
+            foreach($h->historique as $hist) {
+                if ($hist->iddoc != $h->_id) {
+                    continue;
+                }
+                $hist->auteur = "import";
+            }
+            if (!isset($_ENV['DRY_RUN'])) {
+                $h->save();
+            }
+        }
     }
 }

@@ -391,10 +391,10 @@ EOF;
         }
 
         if($dateArchivage && $data[self::CSV_ETAT_HABILITATION] == "Suspension d'habilitation") {
-            HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, $dateArchivage, $activites, [], HabilitationClient::STATUT_SUSPENDU);
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, $dateArchivage, $activites, [], HabilitationClient::STATUT_SUSPENDU, 'Import');
         }
         if($dateArchivage && $data[self::CSV_ETAT_HABILITATION] == "Retrait d'habilitation") {
-            HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, $dateArchivage, $activites, [], HabilitationClient::STATUT_RETRAIT);
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, $dateArchivage, $activites, [], HabilitationClient::STATUT_RETRAIT, 'Import');
         }
     }
 }
