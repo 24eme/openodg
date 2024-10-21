@@ -118,9 +118,10 @@ EOF;
             $data = array_map('trim', $data);
 
             $etablissement = $this->findEtablissement($data);
-
+            $imported = false;
             if(!$etablissement) {
                 $etablissement = $this->importSocieteEtablissement($data, (bool)$options['suspendu']);
+                $imported = true;
             }
 
             if ($etablissement === false) {
@@ -128,10 +129,27 @@ EOF;
                 continue;
             }
 
-            if(!preg_match('/Opérateur Coteaux du Varois/', $etablissement->commentaire)) {
-                $etablissement->addCommentaire("Opérateur Coteaux du Varois (ex n°".$data[self::CSV_NUMERO_ENREGISTREMENT].")");
+            if ($imported) {
+                $etablissement->addCommentaire("Importé de CVP le ".date('d/m/Y'));
+            }else {
+                if (strpos($etablissement->num_interne, 'CAP') !== false) {
+                    if (strpos($etablissement->commentaire, 'partagé')) {
+                        $etablissement->addCommentaire("Etablissement partagé CAP");
+                    }else{
+                        $etablissement->addCommentaire("Etablissement partagé CAP - CVP (".date('d/m/Y').")");
+                    }
+                }else{
+                    $etablissement->addCommentaire("Etablissement partagé CDP - CVP (".date('d/m/Y').")");
+                }
             }
 
+            if (strpos($etablissement->num_interne, 'CVP') === false) {
+                if ($etablissement->num_interne) {
+                    $etablissement->num_interne .= '|';
+                }
+                $etablissement->num_interne .= $data[self::CSV_NUMERO_ENREGISTREMENT];
+            }
+            print_r([$etablissement]);
             if($data[self::CSV_OBSERVATION]) {
                 $data[self::CSV_OBSERVATION] = preg_replace("/([0-9]{4} ?[0-9]{2} [0-9]{2})/", "\n".'\1', $data[self::CSV_OBSERVATION]);
                 foreach(explode("\n", $data[self::CSV_OBSERVATION]) as $commentaire) {
