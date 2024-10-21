@@ -10,7 +10,7 @@ all:
           produits:
             - "TRANQ/appellations/CDR"
             - "TRANQ/appellations/CVG"
-          habilitation_produits: "/Beaumes de Venise/"
+          habilitation_produits: "/Côtes du Rhône/"
         BEAUMESVENISE:
           nom: "Conservatoire AOC Beaumes Venise"
           adresse: "Place du marché à coté de la poste, 84190 Beaumes-de-Venise"
