@@ -108,11 +108,11 @@ EOF;
         }
         if ($e) {
             echo("Etablissement existe " . $e->_id . ", ". $data[0]." ".$data[1]."\n");
-            if ($e->commentaire) {
-                $e->commentaire = " - ".$e->commentaire."\n";
-                $e->commentaire = preg_replace('/ - * -/', ' - ', $e->commentaire);
+            if ($e->num_interne) {
+                $e->num_interne .= "|";
             }
-            $e->commentaire .= " - Etablissement partagé CDP - CAP (Numéro interne CAP ".$data[self::CSV_AIX_OPERATEUR_NUMERO_ENREGISTREMENT].")\n";
+            $e->num_interne .= sprintf("CAP%05d", $data[self::CSV_AIX_OPERATEUR_NUMERO_ENREGISTREMENT]);
+            $e->addCommentaire("Etablissement partagé CDP - CAP (".date('d/m/Y').")");
             if (!isset($_ENV['DRY_RUN'])) {
                 $e->save();
             }
@@ -197,7 +197,8 @@ EOF;
 
         $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
         $etablissement->nom = $data[self::CSV_AIX_OPERATEUR_RAISON_SOCIALE];
-        $etablissement->num_interne = $data[self::CSV_AIX_OPERATEUR_NUMERO_ENREGISTREMENT];
+        $etablissement->num_interne = sprintf("CAP%05d", $data[self::CSV_AIX_OPERATEUR_NUMERO_ENREGISTREMENT]);
+        $etablissement->addCommentaire("Importé de CAP le ".date('d/m/Y'));
 
         $cvi = null;
         if (isset($data[self::CSV_AIX_OPERATEUR_CVI])){
@@ -258,7 +259,7 @@ EOF;
             throw new sfException("etablissement empty");
         }
         $dates = [];
-        foreach(explode('|', $data[self::CSV_AIX_OPERATEUR_DI_DATE]) as $date) {
+        foreach(explode('|', $data[self::CSV_AIX_OPERATEUR_DI_DATE]) as $date) if ($date ){
             $dates[] = DateTime::createFromFormat('d/m/Y', explode(" ", $date)[0])->format('Y-m-d');
         }
         sort($dates);
