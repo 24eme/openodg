@@ -364,7 +364,7 @@ EOF;
                 if(!$demande) {
                     $demande = HabilitationClient::getInstance()->createDemandeAndSave($etablissement->identifiant, HabilitationClient::DEMANDE_HABILITATION, self::hash_produit, $activites, [], $statut, $date, $commentaire, "Import");
                 } else {
-                    $demande = HabilitationClient::getInstance()->updateDemandeAndSave($etablissement->identifiant, $demande->getKey(), $date, $statut, $commentaire, "Import");
+                    $demande = HabilitationClient::getInstance()->updateDemandeAndSave($etablissement->identifiant, $demande->getKey(), $date, $statut, implode(",", [$commentaire, "Import"]), "Import");
                 }
                 if(isset($_ENV['DRY_RUN'])) {
                     $demande = null;
