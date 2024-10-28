@@ -139,7 +139,7 @@ class FactureClient extends acCouchdbClient {
         return array_values($mouvementsAggreges);
     }
 
-    public function createEmptyDoc($compte, $date_facturation = null, $message_communication = null, $region = null, $template = null, $date_emission = null) {
+    public function createEmptyDoc($compte, $date_facturation = null, $message_communication = null, $region = null, $date_emission = null) {
         $facture = new Facture();
         $facture->storeDatesCampagne($date_facturation, $date_emission);
         if(get_class($compte) == "stdClass") {
@@ -162,7 +162,6 @@ class FactureClient extends acCouchdbClient {
         $facture->constructIds();
         $facture->storeEmetteur();
         $facture->storeDeclarant($compte);
-        $facture->storeTemplates($template);
         if(trim($message_communication)) {
           $facture->addOneMessageCommunication($message_communication);
         }
@@ -170,23 +169,39 @@ class FactureClient extends acCouchdbClient {
         return $facture;
     }
 
-    public function createDocFromView($mouvements, $compte, $date_facturation = null, $message_communication = null, $region = null, $template = null) {
+    public function createDocFromView($mouvements, $compte, $date_facturation = null, $message_communication = null, $region = null) {
         if(!$region){
             $region = Organisme::getCurrentRegion();
         }
-        $facture = $this->createEmptyDoc($compte, $date_facturation, $message_communication, $region, $template);
+
+        $facture = $this->createEmptyDoc($compte, $date_facturation, $message_communication, $region);
         $types = [];
+        $templates = [];
+
         foreach($mouvements as $mvt) {
             $types[$mvt->value->type] = $mvt->value->type;
+            $campagne = substr($mvt->value->campagne, 0, 4);
+
+            if (in_array($campagne, $templates)) {
+                continue;
+            }
+
+            $templates[] = TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($campagne, strtoupper(sfConfig::get('app_region', sfConfig::get('sf_app'))));
         }
-        foreach($template->cotisations as $configCollection) {
-            if(!$configCollection->isForType($types)) {
-                continue;
+        $templates = array_unique($templates);
+
+        $facture->storeTemplates($templates);
+
+        foreach ($templates as $template) {
+            foreach($template->cotisations as $configCollection) {
+                if(!$configCollection->isForType($types)) {
+                    continue;
+                }
+                if(!$configCollection->isRequired()) {
+                    continue;
+                }
+                $facture->addLigne($configCollection)->updateTotaux();
             }
-            if(!$configCollection->isRequired()) {
-                continue;
-            }
-            $facture->addLigne($configCollection)->updateTotaux();
         }
 
         $lignes = array();
@@ -305,16 +320,6 @@ class FactureClient extends acCouchdbClient {
       $generation->documents = array();
       $generation->somme = 0;
       $region = ($generation->arguments->exist('region'))? $generation->arguments->region : null;
-      $modele = ($generation->arguments->exist('modele'))? $generation->arguments->modele : null;
-
-      if(!$modele){
-          throw new sfException("La génération ne possède pas de modèle de facture");
-      }
-
-      $template = TemplateFactureClient::getInstance()->find($modele);
-      if(!$template){
-          throw new sfException(sprintf("Le template %s n'existe pas dans la base ", $modele));
-      }
 
       $cpt = 0;
 
@@ -332,7 +337,7 @@ class FactureClient extends acCouchdbClient {
               continue;
           }
 
-          $f = $this->createDocFromView($mouvementsSoc, $compte, $date_facturation, $message_communication, $region, $template);
+          $f = $this->createDocFromView($mouvementsSoc, $compte, $date_facturation, $message_communication, $region);
           if(!$f) {
                continue;
           }

@@ -38,6 +38,15 @@ class HabilitationConfiguration {
         return count($this->getDemandeStatuts()) > 0;
     }
 
+    public function isListingParDemande() {
+        if(!isset($this->configuration['demande']['listing'])) {
+
+            return $this->isSuiviParDemande();
+        }
+
+        return $this->configuration['demande']['listing'];
+    }
+
     public function getDemandeStatuts() {
         if(!isset($this->configuration['demande']['statuts'])) {
 

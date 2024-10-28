@@ -195,10 +195,10 @@
 
     <?php if (count($chgtsProd)): ?>
         <p style="margin-top: -10px; margin-bottom: 20px;">
-            Ce document à <?php echo count($chgtsProd) ?> déclassements sans revendication :
+            Ce document à <?php echo count($chgtsProd) ?> <?php if (count($chgtsProd) > 1): ?> déclassements <?php else: ?> déclassement <?php endif ?>sans revendication :
             <ul>
                 <?php foreach ($chgtsProd as $c): ?>
-                    <li><a href="#"><?php echo $c->_id ?></a></li>
+                <li><a href="<?php echo url_for('chgtdenom_visualisation', ['id' => $c->_id]) ?>"><?php echo $c->origine_produit_libelle ?></a> (- <?php echo $c->origine_volume ?> hl)</li>
                 <?php endforeach ?>
             </ul>
         </p>

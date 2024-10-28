@@ -244,10 +244,21 @@ class DRevProduit extends BaseDRevProduit
 			}
 		}
 
+        $toSubstract = 0;
+        foreach (ChgtDenomClient::getInstance()->getChgtDenomProduction(
+            $this->getDocument()->identifiant, $this->getDocument()->getPeriode()
+        ) as $chgt) {
+            if ($chgt->origine_produit_hash !== $this->getParent()->getHash()) {
+                continue;
+            }
+
+            $toSubstract += $chgt->origine_volume;
+        }
+
         if($this->vci->rafraichi + $this->vci->substitution)
-			return $this->recolte->recolte_nette - $this->vci->rafraichi - $this->vci->substitution;
+            return $this->recolte->recolte_nette - $toSubstract - $this->vci->rafraichi - $this->vci->substitution;
 		else
-			return $this->recolte->recolte_nette;
+            return $this->recolte->recolte_nette - $toSubstract;
 	}
 
 	public function getRendementVci(){

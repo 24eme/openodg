@@ -76,7 +76,7 @@ class habilitationActions extends sfActions {
 
   public function executeIndexHabilitation(sfWebRequest $request)
   {
-      if(HabilitationConfiguration::getInstance()->isSuiviParDemande()) {
+      if(HabilitationConfiguration::getInstance()->isListingParDemande()) {
 
           return $this->redirect('habilitation_demande');
       }

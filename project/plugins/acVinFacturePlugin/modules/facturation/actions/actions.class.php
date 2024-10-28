@@ -163,8 +163,6 @@ class facturationActions extends sfActions
 
             usort($this->mouvements, function ($a, $b) { return $a->value->date < $b->value->date; });
 
-            $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
-
             $this->setTemplate('declarant');
 
             if (!$request->isMethod(sfWebRequest::POST)) {
@@ -180,8 +178,6 @@ class facturationActions extends sfActions
             }
 
             $generation = $this->form->save();
-
-            $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getPeriode(), strtoupper(sfConfig::get('app_region', sfConfig::get('sf_app')))));
 
             $mouvementsBySoc = array($this->societe->identifiant => $this->mouvements);
             $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,$generation->arguments->toArray(0,1));
