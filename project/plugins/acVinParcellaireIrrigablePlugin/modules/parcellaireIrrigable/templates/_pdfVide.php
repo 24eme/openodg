@@ -32,8 +32,8 @@
                 </tr>
             </table>
         </td></tr></table>
-<br /> 
 <br />
-<i>Aucune parcelle irrigable n'a été déclarée pour cette année en Côtes de Provence.</i>
+<br />
+<i>Aucune parcelle irrigable n'a été déclarée pour cette année.</i>
 <br />
 <br />
