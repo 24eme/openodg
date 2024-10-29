@@ -9,9 +9,9 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-Ua-Compatible" content="IE=edge" />
-        <meta name="title" content="Plateforme de télédéclaration du syndicat Côtes-de-Provence" />
+        <meta name="title" content="Plateforme de télédéclaration du syndicats des Vins de Provence" />
 <meta name="charset" content="utf-8" />
-<meta name="description" content="Plateforme de télédéclaration du syndicat Côtes de Provence" />
+<meta name="description" content="Plateforme de télédéclaration du syndicats des Vins de Provence" />
 <meta name="robots" content="index,follow" />
 <meta name="content-language" content="fr-FR" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
