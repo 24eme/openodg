@@ -26,6 +26,7 @@
 	</div>
 	<div class="col-xs-12">
 		<h3>Conception / hébergement</h3>
+		<p><a href="https://github.com/24eme/openodg/">OpenODG</a> est un logiciel libre <a href="https://github.com/24eme/openodg/">disponible publiquement</a> sous <a href="https://www.gnu.org/licenses/agpl-3.0.fr.html">licence AGPL</a>. Il est développé par la société <a href="http://24eme.fr/">24ème</a>.</p>
 		<p>
 			<strong><a href="http://24eme.fr/">24ème</a></strong><br />
 			2 place Sainte Opportune<br />
