@@ -92,6 +92,11 @@
                             </span>
                         </small>
                     <?php endif; ?>
+                    <span class="pull-right text-muted" style="opacity: 0.5">
+                      <a href="<?php echo url_for('chgtdenom_create_from_production', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne, 'hash_produit' => $produit['hash']]) ?>">
+                          <span title="Déclassement <?php echo $dr->type ?>" class="glyphicon glyphicon-transfer"></span>
+                      </a>
+                    </span>
                     <br />
                     <small class="pull-right text-muted">
                         <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
