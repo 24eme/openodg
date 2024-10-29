@@ -38,6 +38,10 @@ class chgtdenomActions extends sfActions
 
     public function executeCreateFromProduction(sfWebRequest $request)
     {
+        if ($this->getUser()->isAdminOdg() === false) {
+            throw new sfError403Exception("Le déclassement de lot de production n'est accessible qu'à l'admin");
+        }
+
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->campagne = $request->getParameter('campagne');
         $this->hash = $request->getParameter('hash_produit');
