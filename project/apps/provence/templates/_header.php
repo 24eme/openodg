@@ -1,7 +1,9 @@
 <header class="container" role="banner">
       <div id="logo">
-          <a href="http://www.syndicat-cotesdeprovence.com/" title="Syndicat des Cotes de Provence | Retour à la page d'accueil">
-              <img src="/images/logo_provence.png" alt="Syndicat des Cotes de Provence">
+          <a href="https://www.vinsdeprovence.com/" title="Syndicat des Cotes de Provence | Retour à la page d'accueil">
+              <img width="135" src="/images/logo_vins_provence.png" alt="Vins de Provence">
+              <img width="130" src="/images/logo_syndicats_provence.png" alt="Syndicats des Vins">
+
           </a>
       </div>
       <div id="titre"><h1>
