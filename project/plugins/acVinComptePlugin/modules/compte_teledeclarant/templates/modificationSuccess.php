@@ -7,7 +7,7 @@ if($compte->getSociete()->isTransaction()){
 }
 
 ?>
-<div id="principal" >
+<div id="principal mt-5">
   <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
