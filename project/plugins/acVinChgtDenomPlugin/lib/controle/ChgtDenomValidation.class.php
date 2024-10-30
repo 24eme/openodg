@@ -40,6 +40,7 @@ class ChgtDenomValidation extends DocumentValidation
             $this->addControle(self::TYPE_ERROR, 'production_volume_max', "Le volume changé dépasse le volume restant du document de production");
             $this->addControle(self::TYPE_ERROR, 'production_volume_mismatch', "Les volumes ne correspondent pas");
             $this->addControle(self::TYPE_ERROR, 'not_in_production', "Produit non présent dans le document de production");
+            $this->addControle(self::TYPE_ERROR, 'not_in_drev', "Produit non présent dans la revendication");
         }
     }
 
@@ -99,6 +100,11 @@ class ChgtDenomValidation extends DocumentValidation
         $campagne = substr($this->document->campagne, 0, 4);
         $lastDrev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->document->identifiant, $campagne);
         $synthese = $lastDrev->summerizeProduitsLotsByCouleur();
+
+        if (array_key_exists($this->document->origine_produit_libelle." ".$campagne, $synthese) === false) {
+            $this->addPoint(self::TYPE_ERROR, 'not_in_drev', "Vous n'avez pas revendiqué de " . $this->document->origine_produit_libelle);
+            return;
+        }
         $maxVolume = $synthese[$this->document->origine_produit_libelle." ".$campagne]["volume_restant_max"];
 
         if ($maxVolume < $this->document->origine_volume) {
