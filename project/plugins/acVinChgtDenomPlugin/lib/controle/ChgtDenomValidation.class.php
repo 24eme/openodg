@@ -40,6 +40,7 @@ class ChgtDenomValidation extends DocumentValidation
             $this->addControle(self::TYPE_ERROR, 'production_volume_max', "Le volume changé dépasse le volume restant du document de production");
             $this->addControle(self::TYPE_ERROR, 'production_volume_mismatch', "Les volumes ne correspondent pas");
             $this->addControle(self::TYPE_ERROR, 'not_in_production', "Produit non présent dans le document de production");
+            $this->addControle(self::TYPE_ERROR, 'production_no_L15', "Produit sans L15");
             $this->addControle(self::TYPE_ERROR, 'not_in_drev', "Produit non présent dans la revendication");
         }
     }
@@ -96,6 +97,10 @@ class ChgtDenomValidation extends DocumentValidation
         if (array_key_exists($hash, $produits) === false) {
             $this->addPoint(self::TYPE_ERROR, 'not_in_production', "Vous n'avez pas récolté de ".$this->document->origine_produit_libelle);
             return;
+        }
+
+        if (array_key_exists(15, $produits[$hash]["lignes"]) === false) {
+            $this->addPoint(self::TYPE_ERROR, 'production_no_L15', $this->document->origine_produit_libelle);
         }
 
         $campagne = substr($this->document->campagne, 0, 4);
