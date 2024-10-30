@@ -95,6 +95,7 @@ class ChgtDenomValidation extends DocumentValidation
             $doc->getProduits()
         ) === false) {
             $this->addPoint(self::TYPE_ERROR, 'not_in_production', "Vous n'avez pas récolté de ".$this->document->origine_produit_libelle);
+            return;
         }
 
         $campagne = substr($this->document->campagne, 0, 4);
