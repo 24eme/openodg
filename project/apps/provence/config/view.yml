@@ -7,9 +7,9 @@ default:
     X-UA-Compatible: IE=edge
 
   metas:
-    title:            "Plateforme de télédéclaration du syndicat Côtes de Provence"
+    title:            "Plateforme de télédéclaration du syndicats des Vins de Provence"
     charset:          "utf-8"
-    description:      "Plateforme de télédéclaration du syndicat Côtes de Provence"
+    description:      "Plateforme de télédéclaration du syndicats des Vins de Provence"
     robots:           "index,follow"
     content-language: "fr-FR"
     viewport:         "width=device-width, initial-scale=1"
