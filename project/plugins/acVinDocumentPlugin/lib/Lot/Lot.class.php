@@ -312,7 +312,9 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function isCleanable() {
-
+        if (!$this->produit_hash) {
+            return true;
+        }
         return $this->isEmpty();
     }
 
