@@ -90,10 +90,10 @@ class ChgtDenomValidation extends DocumentValidation
         }
 
         $doc = DeclarationClient::getInstance()->find($this->document->changement_origine_id_document);
-        if (array_key_exists(
-            str_replace('/declaration/', '', $this->document->origine_produit_hash),
-            $doc->getProduits()
-        ) === false) {
+        $produits = $doc->getProduits();
+        $hash = str_replace('/declaration/', '', $this->document->origine_produit_hash);
+
+        if (array_key_exists($hash, $produits) === false) {
             $this->addPoint(self::TYPE_ERROR, 'not_in_production', "Vous n'avez pas récolté de ".$this->document->origine_produit_libelle);
             return;
         }
