@@ -102,6 +102,7 @@
     </thead>
     <tbody>
         <?php foreach ($produits['produits']->getRawValue() as $hash => $produit): ?>
+        <?php $isDeclasse = strpos($produit['complement'], 'déclassé') !== false; ?>
             <tr>
                 <td>
                     <strong><?= $produit['libelle'] ?></strong>
@@ -114,6 +115,7 @@
                         </small>
                     <?php endif; ?>
                     <br />
+                    <?php if ($isDeclasse === false): ?>
                     <small class="pull-right text-muted">
                         <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
                             <span title="Rendement L5" style="cursor: help">
@@ -131,6 +133,7 @@
                             <?php endif ?>
                         </span> hl/ha
                     </small>
+                    <?php endif ?>
                 </td>
                 <?php foreach ($produit['lignes'] as $l => $p): ?>
                     <td class="text-right" title="Ligne L<?= $l ?>">
