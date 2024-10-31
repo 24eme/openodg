@@ -102,7 +102,7 @@
     </thead>
     <tbody>
         <?php foreach ($produits['produits']->getRawValue() as $hash => $produit): ?>
-        <?php $isDeclasse = strpos($produit['complement'], 'déclassé') !== false; ?>
+        <?php $isDeclasse = isset($produit['complement']) && strpos($produit['complement'], 'déclassé') !== false; ?>
             <tr <?php if ($isDeclasse): ?>class="bg-warning" style="opacity: 0.6"<?php endif ?>>
                 <td>
                     <strong><?= $produit['libelle'] ?></strong>
