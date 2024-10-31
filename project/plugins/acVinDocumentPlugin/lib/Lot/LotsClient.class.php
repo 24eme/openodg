@@ -360,7 +360,7 @@ class LotsClient
         }
         $mouvements = [];
         foreach($campagnes as $campagne) {
-            $mouvements = array_merge($mouvements, MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne)->rows);
+            $mouvements = array_merge($mouvements, MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne, $region)->rows);
         }
 
         if ($region) {
