@@ -45,6 +45,7 @@ class chgtdenomActions extends sfActions
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->campagne = $request->getParameter('campagne');
         $this->hash = $request->getParameter('hash_produit');
+        $this->complement = $request->getParameter('complement', null);
 
         if (! $this->hash) {
             return $this->forward404("Il manque la hash produit");
@@ -60,7 +61,7 @@ class chgtdenomActions extends sfActions
             return $this->forward404("Le produit n'a pas été trouvé dans le document douanier");
         }
 
-        $this->chgtDenom = ChgtDenomClient::getInstance()->createDocFromProduction($docProduction, $this->hash);
+        $this->chgtDenom = ChgtDenomClient::getInstance()->createDocFromProduction($docProduction, $this->hash, $this->complement);
         $this->chgtDenom->save();
 
         return $this->redirect('chgtdenom_edition', ['id' => $this->chgtDenom->_id]);
