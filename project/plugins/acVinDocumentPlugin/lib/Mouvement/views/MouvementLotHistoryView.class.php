@@ -2,14 +2,15 @@
 
 class MouvementLotHistoryView extends acCouchdbView
 {
-    const KEY_DECLARANT_IDENTIFIANT = 0;
-    const KEY_CAMPAGNE = 1;
-    const KEY_NUMERO_DOSSIER = 2;
-    const KEY_NUMERO_ARCHIVE = 3;
-    const KEY_DOC_ORDRE = 4;
-    const KEY_STATUT = 5;
-    const KEY_ORIGINE_DOCUMENT_ID = 6;
-    const KEY_UNIQUE_ID = 7;
+    const KEY_REGION = 0;
+    const KEY_DECLARANT_IDENTIFIANT = 1;
+    const KEY_CAMPAGNE = 2;
+    const KEY_NUMERO_DOSSIER = 3;
+    const KEY_NUMERO_ARCHIVE = 4;
+    const KEY_DOC_ORDRE = 5;
+    const KEY_STATUT = 6;
+    const KEY_ORIGINE_DOCUMENT_ID = 7;
+    const KEY_UNIQUE_ID = 8;
 
     const VALUE_LOT = 0;
 
@@ -18,10 +19,10 @@ class MouvementLotHistoryView extends acCouchdbView
         return acCouchdbManager::getView('mouvement', 'lotHistory');
     }
 
-    public function getMouvementsByUniqueId($declarant, $uniqueId, $documentOrdre = null, $statut = null, $descending = false)
+    public function getMouvementsByUniqueId($declarant, $uniqueId, $region = null, $documentOrdre = null, $statut = null, $descending = false)
     {
 
-        return $this->getMouvements($declarant, LotsClient::getCampagneFromUniqueId($uniqueId), LotsClient::getNumeroDossierFromUniqueId($uniqueId), LotsClient::getNumeroArchiveFromUniqueId($uniqueId), $documentOrdre, $statut, $descending);
+        return $this->getMouvements($declarant, LotsClient::getCampagneFromUniqueId($uniqueId), LotsClient::getNumeroDossierFromUniqueId($uniqueId), LotsClient::getNumeroArchiveFromUniqueId($uniqueId), $region, $documentOrdre, $statut, $descending);
     }
 
     public function getCampagneFromDeclarantMouvements($declarant) {
@@ -31,16 +32,16 @@ class MouvementLotHistoryView extends acCouchdbView
                     ->startkey(array_merge(array($declarant,array())))
                     ->descending(true)
                     ->reduce(true)
-                    ->group_level(2)
+                    ->group_level(self::KEY_CAMPAGNE + 1)
                     ->getView($this->design, $this->view)->rows as $r) {
             $campagnes[] = $r->value->campagne;
         }
         return $campagnes;
     }
 
-    public function getMouvements($declarant, $campagne, $dossier, $archive, $documentOrdre = null, $statut = null, $descending = false)
+    public function getMouvements($declarant, $campagne, $dossier, $archive, $region = null, $documentOrdre = null, $statut = null, $descending = false)
     {
-        $keys = array($declarant, $campagne, $dossier, $archive);
+        $keys = array($region, $declarant, $campagne, $dossier, $archive);
         if($documentOrdre) {
             $keys[] = $documentOrdre;
         }
@@ -64,9 +65,9 @@ class MouvementLotHistoryView extends acCouchdbView
                 ->getView($this->design, $this->view);
     }
 
-    public function getMouvementsByDeclarant($declarant,$campagne,$level = 4)
+    public function getMouvementsByDeclarant($declarant,$campagne, $region = null,$level = self::KEY_NUMERO_ARCHIVE + 1)
     {
-        $keys = array($declarant, $campagne);
+        $keys = array($region, $declarant, $campagne);
 
         return $this->client
                     ->endkey($keys)

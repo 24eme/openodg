@@ -135,8 +135,7 @@ EOF;
                         $a_comp1 = (isset($adresses[2]))? $adresses[2] : "";
 
                         $identifiantsChais = array();
-
-                        if(!preg_match('/ETABLISSEMENT-CDP([0-9]+)01\/chais\/([0-9]+)$/',$keyL, $identifiantsChais)){
+                        if(!preg_match('/ETABLISSEMENT-CDP([0-9]+)[0-9]{2}\/chais\/([0-9]+)$/',$keyL, $identifiantsChais)){
                             throw new sfException("l'identifiant du chai n'est pas bon pour $keyL");
                         }
                         if(count($identifiantsChais) < 2){

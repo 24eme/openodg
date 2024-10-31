@@ -7,6 +7,7 @@ function (doc) {
       mouvement = doc.mouvements_lots[identifiant][key];
 
       emit([
+        null,
         mouvement.declarant_identifiant,
         mouvement.campagne,
         mouvement.numero_dossier,
