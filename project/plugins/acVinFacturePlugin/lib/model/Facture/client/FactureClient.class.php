@@ -602,7 +602,7 @@ class FactureClient extends acCouchdbClient {
             ->descending(true)
             ->getView('declaration', 'export')->rows;
 
-        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+        if (FactureConfiguration::getInstance()->hasFacturationParRegion() && RegionConfiguration::getInstance()->hasOdgProduits()) {
             $region = Organisme::getInstance()->getCurrentRegion();
             $factures = array_filter($factures, function ($facture) use ($region) {
                 return $facture->doc->region === $region;
@@ -624,7 +624,7 @@ class FactureClient extends acCouchdbClient {
             ->descending(true)
             ->getView('declaration', 'export')->rows;
 
-        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+        if (FactureConfiguration::getInstance()->hasFacturationParRegion() && RegionConfiguration::getInstance()->hasOdgProduits()) {
             $region = Organisme::getInstance()->getCurrentRegion();
             $factures = array_filter($factures, function ($facture) use ($region) {
                 return $facture->doc->region === $region;

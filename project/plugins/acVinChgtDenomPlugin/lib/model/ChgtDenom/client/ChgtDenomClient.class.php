@@ -131,6 +131,10 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
                 continue;
             }
 
+            if ($chgt->isValideeOdg() === false) {
+                continue;
+            }
+
             $chgts[] = $chgt;
         }
 

@@ -12,8 +12,8 @@ class ChgtDenomForm extends acCouchdbObjectForm
         $produits = $this->getProduits();
         $cepages = $this->getCepages();
 
-        $this->setWidget('changement_type', new bsWidgetFormChoice(array('choices' => self::$types, 'expanded' => true)));
-        $this->setValidator('changement_type', new sfValidatorChoice(array('choices' => array_keys(self::$types), 'required' => true)));
+        $this->setWidget('changement_type', new bsWidgetFormChoice(array('choices' => $this->getTypes(), 'expanded' => true)));
+        $this->setValidator('changement_type', new sfValidatorChoice(array('choices' => array_keys($this->getTypes()), 'required' => true)));
 
         $this->setWidget('changement_volume', new bsWidgetFormInputFloat());
         $this->setValidator('changement_volume', new sfValidatorNumber(array('required' => false)));
@@ -99,5 +99,10 @@ class ChgtDenomForm extends acCouchdbObjectForm
     public function getSpecificites()
     {
         return array_merge(array(Lot::SPECIFICITE_UNDEFINED => "", "" => "Aucune"),  ChgtDenomConfiguration::getInstance()->getSpecificites());
+    }
+
+    public function getTypes()
+    {
+        return $this->getObject()->isFromProduction() ? [ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT  => "Déclassement"] : self::$types;
     }
 }
