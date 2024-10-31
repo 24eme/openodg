@@ -53,6 +53,27 @@
     </a>
     <?php endif; ?>
 <?php endif; ?>
+<?php if ($sf_user->isAdminOdg()): ?>
+    <div class="btn-group pull-right" style="margin-right: 1rem">
+      <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdown-declassement" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Déclassement <?php echo $dr->type ?>
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdown-declassement">
+        <?php foreach ($dr->getProduitsDetail()['produits'] as $produit): ?>
+          <?php if (strpos($produit['libelle'], "déclassé") !== false): ?>
+              <?php continue; ?>
+          <?php endif ?>
+          <li>
+            <a href="<?php echo url_for('chgtdenom_create_from_production', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne, 'hash_produit' => $produit['hash'], 'complement' => isset($produit['complement'])? $produit['complement']:null]) ?>">
+              Déclassement <?php echo $dr->type ?> <?php echo $produit['libelle'] ?>
+            </a>
+          </li>
+        <?php endforeach ?>
+      </ul>
+    </div>
+<?php endif ?>
+
 
 <h3 class="text-left">Détail par produit</h3>
 
@@ -92,13 +113,6 @@
                             </span>
                         </small>
                     <?php endif; ?>
-                    <?php if ($sf_user->isAdminOdg()): ?>
-                    <span class="pull-right text-muted" style="opacity: 0.5">
-                      <a href="<?php echo url_for('chgtdenom_create_from_production', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne, 'hash_produit' => $produit['hash'], 'complement' => isset($produit['complement'])? $produit['complement']:null]) ?>">
-                          <span title="Déclassement <?php echo $dr->type ?>" class="glyphicon glyphicon-transfer"></span>
-                      </a>
-                    </span>
-                    <?php endif ?>
                     <br />
                     <small class="pull-right text-muted">
                         <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
