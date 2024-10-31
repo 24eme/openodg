@@ -92,6 +92,13 @@
                             </span>
                         </small>
                     <?php endif; ?>
+                    <?php if ($sf_user->isAdminOdg()): ?>
+                    <span class="pull-right text-muted" style="opacity: 0.5">
+                      <a href="<?php echo url_for('chgtdenom_create_from_production', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne, 'hash_produit' => $produit['hash']]) ?>">
+                          <span title="Déclassement <?php echo $dr->type ?>" class="glyphicon glyphicon-transfer"></span>
+                      </a>
+                    </span>
+                    <?php endif ?>
                     <br />
                     <small class="pull-right text-muted">
                         <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
@@ -198,7 +205,7 @@
             Ce document à <?php echo count($chgtsProd) ?> <?php if (count($chgtsProd) > 1): ?> déclassements <?php else: ?> déclassement <?php endif ?>sans revendication :
             <ul>
                 <?php foreach ($chgtsProd as $c): ?>
-                <li><a href="<?php echo url_for('chgtdenom_visualisation', ['id' => $c->_id]) ?>"><?php echo $c->origine_produit_libelle ?></a> (- <?php echo $c->origine_volume ?> hl)</li>
+                <li><a href="<?php echo url_for('chgtdenom_visualisation', ['id' => $c->_id]) ?>"><?php echo $c->origine_produit_libelle ?></a> (<span style="text-decoration: underline dotted;cursor: help;" title="Volume imputé sur la L15">- <?php echo $c->origine_volume ?> hl</span>)</li>
                 <?php endforeach ?>
             </ul>
         </p>
