@@ -943,6 +943,7 @@ class degustationActions extends sfActions {
         $this->etablissement = $this->getRoute()->getEtablissement(['allow_stalker' => true]);
         $this->forward404Unless($this->etablissement);
         $identifiant = $this->etablissement->identifiant;
+        $region = Organisme::getInstance()->getCurrentRegion();
 
         if(class_exists("EtablissementChoiceForm")) {
             $this->formEtablissement = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
@@ -950,14 +951,14 @@ class degustationActions extends sfActions {
             $this->formEtablissement = new LoginForm();
         }
 
-        $this->campagnes = MouvementLotHistoryView::getInstance()->getCampagneFromDeclarantMouvements($identifiant);
+        $this->campagnes = MouvementLotHistoryView::getInstance()->getCampagneFromDeclarantMouvements($identifiant, $region);
         if(!$this->campagnes) {
             $this->campagnes = array(ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate(date('Y-m-d')));
         }
         $this->campagne = $request->getParameter('campagne', $this->campagnes[0]);
-        $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
+        $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne, $region)->rows;
 
-        if ($region = Organisme::getInstance()->getCurrentRegion()) {
+        if ($region) {
             $this->mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($this->mouvements, $region);
         }
 
