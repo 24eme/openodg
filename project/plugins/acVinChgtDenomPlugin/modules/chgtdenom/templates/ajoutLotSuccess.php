@@ -9,7 +9,7 @@
 
 <h2><?php echo $etablissement->getNom(); ?> - Ajout d'un lot </h2>
 
-<form style="margin-top: 20px;" role="form" action="" method="post" id="form_ajout_lots" class="form-horizontal">
+<form style="margin-top: 20px;" role="form" action="" method="post" id="form_ajout_lot" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     <?php include_partial('degustation/lotForm', array('form' => $form, 'lot' => $lot)); ?>
