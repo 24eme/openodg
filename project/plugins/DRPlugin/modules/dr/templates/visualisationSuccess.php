@@ -94,7 +94,7 @@
                     <?php endif; ?>
                     <?php if ($sf_user->isAdminOdg()): ?>
                     <span class="pull-right text-muted" style="opacity: 0.5">
-                      <a href="<?php echo url_for('chgtdenom_create_from_production', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne, 'hash_produit' => $produit['hash']]) ?>">
+                      <a href="<?php echo url_for('chgtdenom_create_from_production', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne, 'hash_produit' => $produit['hash'], 'complement' => isset($produit['complement'])? $produit['complement']:null]) ?>">
                           <span title="Déclassement <?php echo $dr->type ?>" class="glyphicon glyphicon-transfer"></span>
                       </a>
                     </span>
