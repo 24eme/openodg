@@ -34,8 +34,8 @@ th {
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
         <thead>
           <tr>
-            <th style="width:35%">Nom</th>
-            <th style="width:35%">Prénom</th>
+            <th style="width:35%; text-align:left; margin-left: 1em;">Nom</th>
+            <th style="width:35%; text-align:left; margin-left: 1em;">Prénom</th>
             <th style="width:30%">Signature</th>
           </tr>
         </thead>
@@ -43,17 +43,17 @@ th {
         <?php foreach ($degustation->getDegustateursConfirmesTableOrFreeTable($numTab) as $id_compte => $degustateur): ?>
             <?php $compte = CompteClient::getInstance()->find($id_compte); ?>
               <tr>
-                <td class="text-center" style="width:35%; margin-left: 1em;"><?php echo $compte->getNom() ?>&nbsp;<br/>&nbsp;</td>
-                <td class="text-center" style="width:35%; margin-left: 1em;"><?php echo $compte->getPrenom() ?><br/></td>
-                <td style="width:30%"><br/></td>
+                <td class="text-left" style="width:35%; margin-left: 1em; text-align:left;"><?php echo $compte->getNom() ?></td>
+                <td class="text-left" style="width:35%; margin-left: 1em; text-align:left;"><?php echo $compte->getPrenom() ?></td>
+                <td style="width:30%"><small style="font-size: 4pt;"><br /><br /></small></td>
               </tr>
           <?php endforeach; ?>
         <?php $t = count($degustation->getDegustateursConfirmesTableOrFreeTable($numTab)); ?>
-        <?php for ($i = $t; $i<5; $i++): ?>
+        <?php for ($i = $t; $i<6; $i++): ?>
         <tr>
-            <td class="text-center" style="width:35%; margin-left: 1em;">&nbsp;<br/>&nbsp;</td>
-            <td class="text-center" style="width:35%; margin-left: 1em;"><br/></td>
-            <td style="width:30%"><br/></td>
+            <td class="text-center" style="width:35%; margin-left: 1em;"></td>
+            <td class="text-center" style="width:35%; margin-left: 1em;"></td>
+            <td style="width:30%"><small style="font-size: 4pt;"><br /><br /></small></td>
         </tr>
         <?php endfor; ?>
         </tbody>
