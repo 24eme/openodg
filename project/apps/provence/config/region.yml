@@ -1,0 +1,28 @@
+all:
+  configuration:
+    region:
+      odg:
+        CDP:
+          nom: "Syndicat des Vignerons des Côtes de Provence"
+          adresse: "DN7 - 83460 Les Arcs sur Argens"
+          telephone: "%app_drev_CDP_telephone%"
+          email: "%app_drev_CDP_email%"
+          produits:
+            - "TRANQ/appellations/CDP"
+          habilitation_produits: "/Côtes de Provence/"
+        CAP:
+          nom: "Syndicat des Vignerons des Coteaux d'Aix en Provence"
+          adresse: "Avenue Henri Pontier 13626 AIX EN PROVENCE cedex"
+          telephone: "%app_drev_CAP_telephone%"
+          email: "%app_drev_CAP_email%"
+          produits:
+            - "TRANQ/appellations/CAP"
+          habilitation_produits: "/Coteaux d'Aix-en-Provence/"
+        CVP:
+          nom: "Syndicat des Vignerons des Coteaux Varois en Provence"
+          adresse: "8 Bis Place du Général de Gaulle 83170 La Celle"
+          telephone: "%app_drev_CAP_telephone%"
+          email: "%app_drev_CAP_email%"
+          produits:
+            - "TRANQ/appellations/CVP"
+          habilitation_produits: "/Coteaux Varois en Provence/"

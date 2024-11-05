@@ -72,23 +72,6 @@ class degustationActions extends sfActions {
         $this->degustations = DegustationClient::getInstance()->getHistory(9999, $this->annee, acCouchdbClient::HYDRATE_JSON, $this->getUser()->getRegion());
     }
 
-    public function executeListeDeclarant(sfWebRequest $request)
-    {
-        $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
-        $this->etablissement = $request->getRoute()->getEtablissement();
-        $this->degustations = [];
-
-        $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($this->etablissement, $this->campagne)->rows;
-
-        foreach ($mouvements as $lot) {
-            if (in_array($lot->value->document_id, $this->degustations)) {
-                continue;
-            }
-
-            $this->degustations[$lot->value->document_id] = DegustationClient::getInstance()->find($lot->value->document_id, acCouchdbClient::HYDRATE_JSON);
-        }
-    }
-
     public function executeAttente(sfWebRequest $request)
     {
         $this->active = $request->getParameter('active', "degustation");
@@ -886,12 +869,12 @@ class degustationActions extends sfActions {
     }
 
     public function executeLotHistorique(sfWebRequest $request){
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(['allow_stalker' => true]);
         $identifiant = $request->getParameter('identifiant');
         $uniqueId = $request->getParameter('unique_id');
 
         $this->lot = LotsClient::getInstance()->findByUniqueId($identifiant, $uniqueId);
-        $mvts = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($identifiant, $uniqueId, null, null, true);
+        $mvts = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($identifiant, $uniqueId, null, null, null, true);
         if (!$this->getUser()->hasDrevAdmin() && (!$mvts->rows[0] || MouvementLotHistoryView::isWaitingLotNotification($mvts->rows[0]->value))) {
             throw new sfError403Exception('Accès impossible');
         }
@@ -957,9 +940,10 @@ class degustationActions extends sfActions {
     }
 
     public function executeLotsListe(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(['allow_stalker' => true]);
         $this->forward404Unless($this->etablissement);
         $identifiant = $this->etablissement->identifiant;
+        $region = Organisme::getInstance()->getCurrentRegion();
 
         if(class_exists("EtablissementChoiceForm")) {
             $this->formEtablissement = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
@@ -967,14 +951,14 @@ class degustationActions extends sfActions {
             $this->formEtablissement = new LoginForm();
         }
 
-        $this->campagnes = MouvementLotHistoryView::getInstance()->getCampagneFromDeclarantMouvements($identifiant);
+        $this->campagnes = MouvementLotHistoryView::getInstance()->getCampagneFromDeclarantMouvements($identifiant, $region);
         if(!$this->campagnes) {
             $this->campagnes = array(ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate(date('Y-m-d')));
         }
         $this->campagne = $request->getParameter('campagne', $this->campagnes[0]);
-        $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
+        $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne, $region)->rows;
 
-        if ($region = Organisme::getInstance()->getCurrentRegion()) {
+        if ($region) {
             $this->mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($this->mouvements, $region);
         }
 

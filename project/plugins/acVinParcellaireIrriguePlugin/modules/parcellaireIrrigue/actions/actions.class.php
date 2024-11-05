@@ -63,7 +63,7 @@ class parcellaireIrrigueActions extends sfActions {
 
     public function executePDF(sfWebRequest $request) {
         set_time_limit(180);
-        $this->parcellaireIrrigue = $this->getRoute()->getParcellaireIrrigue();
+        $this->parcellaireIrrigue = $this->getRoute()->getParcellaireIrrigue(['allow_habilitation' => true, 'allow_stalker' => true]);
         $this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireIrrigue);
 
 
