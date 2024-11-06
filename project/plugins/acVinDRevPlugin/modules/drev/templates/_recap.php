@@ -47,7 +47,11 @@
                         <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'substitution') ?>"><?php if($produit->vci->substitution): ?><?php echoFloat($produit->vci->substitution) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                         <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'constitue') ?><?php if($produit->getRendementVci() > $produit->getConfig()->getRendementVci()): ?>text-danger<?php endif; ?>"><?php if($produit->vci->constitue): ?><?php echoFloat($produit->vci->constitue) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                         <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'stock_final') ?><?php if($produit->getRendementVciTotal() > $produit->getConfig()->getRendementVciTotal()): ?> text-danger<?php endif; ?>"><?php if($produit->vci->stock_final): ?>
-                          <?php if($produit->vci->exist('ajustement')){ echo "(+"; echoFloat($produit->vci->ajustement); echo ") "; } ?>
+                          <?php if($produit->vci->exist('ajustement'))?>
+                            <?php if($produit->vci->ajustement < 0 ): ?>
+                            <?php echo "(-"; echoFloat(str_replace("-", "", $produit->vci->ajustement)); echo ") "; ?>
+                            <?php else: ?> <?php echo "(+"; echoFloat($produit->vci->ajustement); echo ") "; ?>
+                            <?php endif; ?>
                           <?php echoFloat($produit->vci->stock_final) ?> <small class="text-muted">hl</small><?php endif; ?>
                         </td>
                       </tr>
