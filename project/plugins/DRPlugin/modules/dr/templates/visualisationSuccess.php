@@ -53,6 +53,27 @@
     </a>
     <?php endif; ?>
 <?php endif; ?>
+<?php if ($sf_user->isAdminOdg()): ?>
+    <div class="btn-group pull-right" style="margin-right: 1rem">
+      <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdown-declassement" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Déclassement <?php echo $dr->type ?>
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdown-declassement">
+        <?php foreach ($dr->getProduitsDetail()['produits'] as $produit): ?>
+          <?php if (strpos($produit['libelle'], "déclassé") !== false): ?>
+              <?php continue; ?>
+          <?php endif ?>
+          <li>
+            <a href="<?php echo url_for('chgtdenom_create_from_production', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne, 'hash_produit' => $produit['hash'], 'complement' => isset($produit['complement'])? $produit['complement']:null]) ?>">
+              Déclassement <?php echo $dr->type ?> <?php echo $produit['libelle'] ?>
+            </a>
+          </li>
+        <?php endforeach ?>
+      </ul>
+    </div>
+<?php endif ?>
+
 
 <h3 class="text-left">Détail par produit</h3>
 
@@ -81,7 +102,8 @@
     </thead>
     <tbody>
         <?php foreach ($produits['produits']->getRawValue() as $hash => $produit): ?>
-            <tr>
+        <?php $isDeclasse = isset($produit['complement']) && strpos($produit['complement'], 'déclassé') !== false; ?>
+            <tr <?php if ($isDeclasse): ?>class="bg-warning" style="opacity: 0.6"<?php endif ?>>
                 <td>
                     <strong><?= $produit['libelle'] ?></strong>
                     <?php if ($dr->isBailleur()): ?>
@@ -93,6 +115,7 @@
                         </small>
                     <?php endif; ?>
                     <br />
+                    <?php if ($isDeclasse === false): ?>
                     <small class="pull-right text-muted">
                         <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
                             <span title="Rendement L5" style="cursor: help">
@@ -110,6 +133,7 @@
                             <?php endif ?>
                         </span> hl/ha
                     </small>
+                    <?php endif ?>
                 </td>
                 <?php foreach ($produit['lignes'] as $l => $p): ?>
                     <td class="text-right" title="Ligne L<?= $l ?>">
@@ -195,10 +219,12 @@
 
     <?php if (count($chgtsProd)): ?>
         <p style="margin-top: -10px; margin-bottom: 20px;">
-            Ce document à <?php echo count($chgtsProd) ?> déclassements sans revendication :
+            Ce document à <?php echo count($chgtsProd) ?> <?php if (count($chgtsProd) > 1): ?> déclassements <?php else: ?> déclassement <?php endif ?>sans revendication :
             <ul>
                 <?php foreach ($chgtsProd as $c): ?>
-                    <li><a href="#"><?php echo $c->_id ?></a></li>
+                <li><a href="<?php echo url_for('chgtdenom_visualisation', ['id' => $c->_id]) ?>"><?php echo $c->origine_produit_libelle ?><?php echo $c->origine_specificite ? " ".str_replace('déclassé', '', $c->origine_specificite) : null ?></a>
+                    (<span style="text-decoration: underline dotted;cursor: help;" title="Volume imputé sur la L15">- <?php echo $c->origine_volume ?> hl</span>)
+                </li>
                 <?php endforeach ?>
             </ul>
         </p>

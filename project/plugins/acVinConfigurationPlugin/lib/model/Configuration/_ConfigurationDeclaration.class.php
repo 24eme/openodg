@@ -842,7 +842,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
 
     public function getRendementReserveInterproMin() {
-        return $this->getRendementByKey('rendement_reserve_interpro_min');
+        return $this->getRendementByKey('rendement_reserve_interpro_min') * 1;
     }
 
     public function isActif()

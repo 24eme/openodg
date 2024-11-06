@@ -217,7 +217,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             }
 
             $quantite = 0;
-            $template = $this->getTemplate();
+            $template = $this->getTemplate(substr($mouvement_agreges->value->campagne, 0, 4));
             $code_comptable = false;
             if (!$template) {
                 throw new sfException("No template found (".$mouvement_agreges->id.")");
@@ -318,9 +318,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return  $origines;
     }
 
-    public function storeTemplates($template) {
-        if ($template) {
-            $this->templates->add($template->_id, $template->_id);
+    public function storeTemplates(array $templates = null) {
+        if ($templates) {
+            foreach ($templates as $template) {
+                $this->templates->add($template, $template);
+            }
         }
     }
 
@@ -423,7 +425,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
     }
 
-    public function getTemplate() {
+    public function getTemplate($campagne = null) {
+        if ($campagne) {
+            foreach ($this->templates as $template_id) {
+                if (strpos($template_id, $campagne) !== false) {
+                    return TemplateFactureClient::getInstance()->find($template_id);
+                }
+            }
+        }
+
         $template_id = $this->getTemplateId();
         if ($template_id) {
             return TemplateFactureClient::getInstance()->find($template_id);

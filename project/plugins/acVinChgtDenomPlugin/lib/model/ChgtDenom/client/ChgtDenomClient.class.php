@@ -94,7 +94,7 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         return $chgtdenom;
     }
 
-    public function createDocFromProduction($doc, $hash)
+    public function createDocFromProduction($doc, $hash, $complement = null)
     {
         $chgtdenom = new ChgtDenom();
         $chgtdenom->identifiant = $doc->identifiant;
@@ -111,6 +111,7 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         $chgtdenom->origine_produit_libelle = $chgtdenom->getDocument()->getConfigProduits()[
             $chgtdenom->origine_produit_hash
         ]->getLibelleComplet();
+        $chgtdenom->origine_specificite = $complement === null ? "déclassé" : $complement . " déclassé";
 
         $chgtdenom->storeDeclarant();
         $chgtdenom->constructId();
@@ -128,6 +129,10 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
             }
 
             if (strpos($chgt->changement_origine_id_document, '-'.$campagne) === false) {
+                continue;
+            }
+
+            if ($chgt->isValideeOdg() === false) {
                 continue;
             }
 
