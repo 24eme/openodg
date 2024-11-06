@@ -81,7 +81,8 @@
 
 \begin{minipage}{0.5\textwidth}
 	\vspace{-0.8cm}
-	\includegraphics[width=4cm]{\LOGO} \\
+	\includegraphics[width=4cm]{\LOGO} \\ \\
+    AOC <?php echo ucfirst(strtolower(Organisme::getInstance($facture->region)->getRegion())); ?> \\
     }
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
