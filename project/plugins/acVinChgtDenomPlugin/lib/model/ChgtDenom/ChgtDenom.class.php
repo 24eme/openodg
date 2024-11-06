@@ -288,6 +288,19 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return LotsClient::getInstance()->findByUniqueId($this->identifiant, $this->changement_origine_lot_unique_id, "01");
     }
 
+    public function isFromProduction()
+    {
+        if (strpos($this->changement_origine_id_document, 'DR-') === 0) {
+            return true;
+        }
+
+        if (strpos($this->changement_origine_id_document, 'SV1') === 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function getLotOrigine() {
         if(!$this->changement_origine_id_document) {
             return false;
@@ -300,7 +313,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return null;
         }
 
-        if (!$doc->getLot($this->changement_origine_lot_unique_id)) {
+        if (method_exists($doc, 'getLot') === false || !$doc->getLot($this->changement_origine_lot_unique_id)) {
            $lot = ChgtDenomLot::freeInstance($this);
            $lot->id_document = $this->changement_origine_id_document;
            $lot->unique_id = $this->changement_origine_lot_unique_id;
@@ -363,7 +376,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $this->piece_document->generatePieces();
     	}
 
-    public function saveDocumentsDependants() {
+    public function saveDocumentsDependants()
+    {
+        if ($this->isFromProduction()) {
+            return false;
+        }
+
         foreach($this->docToSave as $docId) {
             DeclarationClient::getInstance()->findCache($docId)->save(false);
         }
@@ -989,5 +1007,27 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function getVolumeSeuil()
     {
         return VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->changement_millesime, str_replace('/declaration/', '', $this->changement_produit_hash));
+    }
+
+    public function addDonneesForProduction(DouaneProduction $doc)
+    {
+        if ($this->isFromProduction() === false) {
+            return null;
+        }
+
+        $hash = str_replace('/declaration/', '', $this->origine_produit_hash);
+        if ($doc->getConfiguration()->declaration->exist($hash) === false) {
+            return null;
+        }
+
+        $doc->add('donnees');
+        $item = $doc->get('donnees')->add();
+
+        $item->produit = $hash;
+        $item->produit_libelle = $this->origine_produit_libelle;
+        $item->complement = $this->origine_specificite;
+        $item->categorie = "15";
+        $item->categorie_libelle = "Vol. de vin avec AO/IGP avec/sans cépage dans la limite du rdt autorisé";
+        $item->valeur = - $this->origine_volume;
     }
 }

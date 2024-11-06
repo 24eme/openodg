@@ -28,7 +28,7 @@ if [ ! $APPLICATIONS ]
 then
     echo "Vous devez définir une application en argument :"
     echo ;
-    echo "$0 [-t <unit|functional>] [-x <fichier xml de sortie>] [<application>] [<nom du test>]) ";
+    echo "Usage : $0 [-t <unit|functional>] [-x <fichier xml de sortie>] <application> [<nom du test>]";
     exit;
 fi
 

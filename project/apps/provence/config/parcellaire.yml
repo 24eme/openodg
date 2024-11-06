@@ -12,3 +12,11 @@ all:
           name: "AOC Sainte-Victoire"
           color: "#52e536"
           denomination_id: "01702"
+        communes-cap:
+          name: "AOC Coteaux d'Aix en provence"
+          color: "#fcd9c7"
+          denomination_id: "01380"
+        communes-cvp:
+          name: "AOC Coteaux Varois en provence"
+          color: "#efc868"
+          denomination_id: "01707"

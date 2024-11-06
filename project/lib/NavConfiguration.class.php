@@ -29,7 +29,7 @@ class NavConfiguration {
             $regions = array(sfContext::getInstance()->getUser()->getRegion());
         }
         if (count($regions)) {
-            $this->nav_configuration['stats'][] = array('name' => 'Export Crus', 'url' => '#', 'title' => 1);
+            $this->nav_configuration['stats'][] = array('name' => 'Export Tiers', 'url' => '#', 'title' => 1);
             foreach($regions as $r) {
                 $this->nav_configuration['stats'][] = array('name' => 'Tableurs '.$r, 'url' => '/exports_'.$r.'/');
             }

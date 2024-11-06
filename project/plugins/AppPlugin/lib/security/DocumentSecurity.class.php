@@ -30,7 +30,7 @@ abstract class DocumentSecurity implements SecurityInterface {
             return true;
         }
 
-        if(in_array(self::PDF, $droits) && $this->user->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
+        if(in_array(self::PDF, $droits)) {
 
             return true;
         }
