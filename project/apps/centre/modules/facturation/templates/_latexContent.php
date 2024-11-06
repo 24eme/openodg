@@ -198,6 +198,13 @@
 <?php if ($facture->exist('message_communication') && $facture->message_communication): ?>
 \textit{<?= escape_string_for_latex($facture->message_communication); ?>} \\ \\
 <?php endif; ?>
+
+Contact de l'INAO: \\
+12 place Anatole France, \\
+37000 Tours \\
+02~47~20~58~38 \\
+www.inao.gouv.fr \\
+
 \\\vspace{6mm}
 <?php if (count($facture->paiements)): ?>
 \textbf{Paiement(s) :} \\
