@@ -1,0 +1,153 @@
+{
+   "_id": "TEMPLATE-FACTURE-SANCERRE-2024",
+   "type": "TemplateFacture",
+   "campagne": 2024,
+   "libelle": "2024 - Sancerre",
+   "docs": [
+       "DRev"
+   ],
+   "cotisations": {
+       "00_uvs": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation UVS",
+           "code_comptable": "70610000",
+           "details": {
+               "00_surface": {
+                   "modele": "CotisationVariable",
+                   "prix": 183,
+                   "tva": 0,
+                   "unite": "ha",
+                   "libelle": "surface en production",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteSuperficeRecolte",
+                   "callback_parameters": {
+                       "precision": 4
+                   }
+               },
+               "10_recolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.51,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "sur volume",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRecolteClair",
+                   "callback_parameters": {
+                   }
+               }
+           }
+       },
+       "01_inao": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Droits INAO",
+           "code_comptable": "70610000",
+           "details": {
+               "00_recolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.15,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "dû au titre de l'article L642-13 du code rural",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRecolteClair",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "02_oivc": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation OIVC",
+           "code_comptable": "70610000",
+           "details": {
+               "00_surface": {
+                   "modele": "CotisationVariable",
+                   "prix": 12,
+                   "tva": 0,
+                   "unite": "ha",
+                   "libelle": "surface en production",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteSuperficeRecolte",
+                   "callback_parameters": {
+                       "precision": 4
+                   }
+               },
+               "10_recolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.22,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "sur volume",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRecolteClair",
+                   "callback_parameters": {
+                   }
+               }
+           }
+       },
+       "03_fuvc": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation FUVC",
+           "code_comptable": "70610000",
+           "details": {
+               "00_recolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.12,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "sur volume",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRecolteClair",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "04_arelfa": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation ARELFA",
+           "code_comptable": "70610000",
+           "details": {
+               "00_recolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 20,
+                   "tva": 0,
+                   "unite": "ha",
+                   "libelle": "surface en production",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteSuperficeRecolte",
+                   "callback_parameters": {
+                       "precision": 4
+                   }
+               }
+           }
+       }
+   },
+   "region": "SANCERRE"
+}

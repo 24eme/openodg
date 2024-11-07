@@ -149,7 +149,6 @@ EOF;
                 }
                 $etablissement->num_interne .= $data[self::CSV_NUMERO_ENREGISTREMENT];
             }
-            print_r([$etablissement]);
             if($data[self::CSV_OBSERVATION]) {
                 $data[self::CSV_OBSERVATION] = preg_replace("/([0-9]{4} ?[0-9]{2} [0-9]{2})/", "\n".'\1', $data[self::CSV_OBSERVATION]);
                 foreach(explode("\n", $data[self::CSV_OBSERVATION]) as $commentaire) {
