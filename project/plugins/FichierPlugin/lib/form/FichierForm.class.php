@@ -58,6 +58,11 @@ class FichierForm extends BaseForm
 		return array_merge(array("" => "Fichier"), FichierClient::getInstance()->getCategories());
 	}
 
+    public function getFichier() {
+
+        return $this->fichier;
+    }
+
     public function save() {
 
     	$file = $this->getValue('file');

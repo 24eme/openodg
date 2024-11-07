@@ -205,6 +205,9 @@ class drevActions extends sfActions {
                 throw new sfException("Mauvais format");
             }
         } catch(Exception $e) {
+            if($this->form->getFichier()) {
+                $this->form->getFichier()->delete();
+            }
 
             $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus ('.$e->getMessage().').';
 
