@@ -15,7 +15,7 @@
            "details": {
                "00_surface": {
                    "modele": "CotisationVariable",
-                   "prix": 215,
+                   "prix": 183,
                    "tva": 0,
                    "unite": "ha",
                    "libelle": "surface en production",
@@ -30,7 +30,7 @@
                },
                "10_recolte": {
                    "modele": "CotisationVariable",
-                   "prix": 1,
+                   "prix": 0.51,
                    "tva": 0,
                    "unite": "hl",
                    "libelle": "sur volume",
