@@ -35,6 +35,14 @@ class ChgtDenomValidation extends DocumentValidation
                 }
             }
         }
+
+        if ($this->document->isFromProduction()) {
+            $this->addControle(self::TYPE_ERROR, 'production_volume_max', "Le volume changé dépasse le volume restant du document de production");
+            $this->addControle(self::TYPE_ERROR, 'production_volume_mismatch', "Les volumes ne correspondent pas");
+            $this->addControle(self::TYPE_ERROR, 'not_in_production', "Produit non présent dans le document de production");
+            $this->addControle(self::TYPE_ERROR, 'production_no_L15', "Produit sans L15");
+            $this->addControle(self::TYPE_ERROR, 'not_in_drev', "Produit non présent dans la revendication");
+        }
     }
 
     public function controle()
@@ -43,6 +51,10 @@ class ChgtDenomValidation extends DocumentValidation
 
         if (VIP2C::hasVolumeSeuil() && $this->document->campagne >= VIP2C::getConfigCampagneVolumeSeuil()) {
             $this->controleVolumeSeuil();
+        }
+
+        if ($this->document->isFromProduction()) {
+            $this->controleProduction();
         }
     }
 
@@ -59,6 +71,10 @@ class ChgtDenomValidation extends DocumentValidation
           if($lot->volume > $origine_volume){
             $this->addPoint(self::TYPE_ERROR, 'lot_volume', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('chgtdenom_edition', array("id" => $this->document->_id, "appellation" => $key)));
           }
+
+          if ($lot->volume < 0) {
+              $this->addPoint(self::TYPE_ERROR, 'lot_volume', $lot->getProduitLibelle()." $lot->millesime ( ".($origine_volume - $volume)." hl )", $this->generateUrl('chgtdenom_edition', array("id" => $this->document->_id, "appellation" => $key)));
+          }
       }
 
         if ($this->document->isChgtDenomination() && ! $this->document->changement_produit_hash) {
@@ -67,6 +83,40 @@ class ChgtDenomValidation extends DocumentValidation
 
     }
   }
+
+    public function controleProduction()
+    {
+        if ($this->document->origine_volume !== $this->document->changement_volume) {
+            $this->addPoint(self::TYPE_ERROR, 'production_volume_mismatch', "Volume origine (".$this->document->origine_volume." hl) n'est pas égal au volume changé (".$this->document->changement_volume." hl)");
+        }
+
+        $doc = DeclarationClient::getInstance()->find($this->document->changement_origine_id_document);
+        $produits = $doc->getProduits();
+        $hash = str_replace('/declaration/', '', $this->document->origine_produit_hash);
+
+        if (array_key_exists($hash, $produits) === false) {
+            $this->addPoint(self::TYPE_ERROR, 'not_in_production', "Vous n'avez pas récolté de ".$this->document->origine_produit_libelle);
+            return;
+        }
+
+        if (array_key_exists(15, $produits[$hash]["lignes"]) === false) {
+            $this->addPoint(self::TYPE_ERROR, 'production_no_L15', $this->document->origine_produit_libelle);
+        }
+
+        $campagne = substr($this->document->campagne, 0, 4);
+        $lastDrev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->document->identifiant, $campagne);
+        $synthese = $lastDrev->summerizeProduitsLotsByCouleur();
+
+        if (array_key_exists($this->document->origine_produit_libelle." ".$campagne, $synthese) === false) {
+            $this->addPoint(self::TYPE_ERROR, 'not_in_drev', "Vous n'avez pas revendiqué de " . $this->document->origine_produit_libelle);
+            return;
+        }
+        $maxVolume = $synthese[$this->document->origine_produit_libelle." ".$campagne]["volume_restant_max"];
+
+        if ($maxVolume < $this->document->origine_volume) {
+            $this->addPoint(self::TYPE_ERROR, 'production_volume_max', "Le volume changé (".$this->document->origine_volume." hl) dépasse le volume max (".$maxVolume." hl)");
+        }
+    }
 
     public function controleVolumeSeuil()
     {

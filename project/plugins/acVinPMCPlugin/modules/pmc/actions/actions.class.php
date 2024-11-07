@@ -347,7 +347,7 @@ class pmcActions extends sfActions {
     }
 
     public function executePDF(sfWebRequest $request) {
-        $pmc = $this->getRoute()->getPMC();
+        $pmc = $this->getRoute()->getPMC(['allow_habilitation' => true, 'allow_stalker' => true]);
         $this->secure(PMCSecurity::PDF, $pmc);
         $this->document = new ExportPMCPDF($pmc, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));

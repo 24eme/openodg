@@ -338,7 +338,7 @@ class transactionActions extends sfActions {
     }
 
     public function executePDF(sfWebRequest $request) {
-        $transaction = $this->getRoute()->getTransaction();
+        $transaction = $this->getRoute()->getTransaction(['allow_habilitation' => true, 'allow_stalker' => true]);
         $this->secure(TransactionSecurity::PDF, $transaction);
         $this->document = new ExportTransactionPdf($transaction, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));

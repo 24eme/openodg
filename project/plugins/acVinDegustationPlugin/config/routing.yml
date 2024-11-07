@@ -19,13 +19,6 @@ degustation_liste:
     sf_method: [get]
   class: DegustationGeneralRoute
 
-degustation_liste_declarant:
-  url: /degustation/all/:identifiant/:campagne
-  param: { module: degustation, action: listeDeclarant }
-  requirements:
-    sf_method: [get]
-  class: DegustationGeneralRoute
-
 degustation_attente:
   url: /degustation/attente
   param: { module: degustation, action: attente }

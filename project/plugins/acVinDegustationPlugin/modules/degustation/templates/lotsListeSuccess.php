@@ -33,9 +33,12 @@
   <h2>Historique des lots de <?php echo $etablissement->getNom(); ?> (<?php echo $campagne; ?>)</h2>
 </div>
 
+<?php if(!$sf_user->hasCredential(AppUser::CREDENTIAL_OI)): ?>
 <h3>Synthèse de la commercialisation</h3>
 
 <?php include_component('degustation', 'syntheseCommercialise', ['identifiant' => $etablissement->identifiant, 'campagnes' => [$campagne], 'region' => $sf_user->getRegion()]) ?>
+
+<?php endif; ?>
 
 <?php if (count($mouvements)): ?>
       <table class="table table-condensed table-striped">

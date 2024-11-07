@@ -54,7 +54,6 @@
                     </label>
                 </div>
             <?php endforeach; ?>
-        </ul>
     </div>
 </div>
 <hr />
