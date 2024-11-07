@@ -199,9 +199,8 @@ class drevActions extends sfActions {
         	return $this->redirect('drev_revendication_superficie', $this->drev);
         }
 
-        $this->form->save();
-
         try {
+            $this->form->save();
             if (!$this->drev->resetAndImportFromDocumentDouanier()) {
                 throw new sfException("Mauvais format");
             }
