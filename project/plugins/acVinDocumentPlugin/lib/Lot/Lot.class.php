@@ -950,7 +950,7 @@ abstract class Lot extends acCouchdbDocumentTree
     public function getMouvements() {
         if (!$this->cache_mouvements) {
             $this->cache_mouvements = array();
-            $mvts = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($this->declarant_identifiant, $this->unique_id, $this->document_ordre);
+            $mvts = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($this->declarant_identifiant, $this->unique_id, null, $this->document_ordre);
             foreach($mvts->rows as $r) {
                 $this->cache_mouvements[] = $r->value;
             }
