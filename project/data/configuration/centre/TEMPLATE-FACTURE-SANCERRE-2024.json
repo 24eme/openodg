@@ -15,7 +15,7 @@
            "details": {
                "00_surface": {
                    "modele": "CotisationVariable",
-                   "prix": 183,
+                   "prix": 175.92,
                    "tva": 0,
                    "unite": "ha",
                    "libelle": "surface en production",
@@ -30,7 +30,7 @@
                },
                "10_recolte": {
                    "modele": "CotisationVariable",
-                   "prix": 0.51,
+                   "prix": 0.63,
                    "tva": 0,
                    "unite": "hl",
                    "libelle": "sur volume",
@@ -111,17 +111,18 @@
            "details": {
                "00_recolte": {
                    "modele": "CotisationVariable",
-                   "prix": 0.12,
+                   "prix": 7.08,
                    "tva": 0,
-                   "unite": "hl",
-                   "libelle": "sur volume",
+                   "unite": "ha",
+                   "libelle": "surface en production",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteVolumeRecolteClair",
-                   "callback_parameters": [
-                   ]
+                   "callback": "getQuantiteSuperficeRecolte",
+                   "callback_parameters": {
+                       "precision": 4
+                   }
                }
            }
        },
