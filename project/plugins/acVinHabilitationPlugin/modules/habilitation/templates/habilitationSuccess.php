@@ -49,7 +49,7 @@ if($etablissement->cvi && count($e) > 1):
 
 <?php include_partial('habilitation/habilitation', array('habilitation' => $habilitation, 'editForm' => isset($editForm) ? $editForm : null, 'public' => !$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION), 'has_ajoutForm' => isset($ajoutForm))); ?>
 
-    <?php if ($sf_user->isAdmin()): ?>
+    <?php if ($sf_user->isAdminODG()): ?>
         <div class="text-right">
             <div class="btn-group">
                 <?php if($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
