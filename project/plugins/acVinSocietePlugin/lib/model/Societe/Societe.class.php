@@ -496,8 +496,8 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
         return null;
     }
 
-    public function setEmailTeledeclaration($email) {
-        $this->add('teledeclaration_email', $email);
+    public function setEmailTeledeclaration($email_teledeclaration) {
+        $this->add('teledeclaration_email', $email_teledeclaration);
     }
 
     public function getCommentaire() {
@@ -528,6 +528,12 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
         return $this->_set('commentaire', $s);
     }
 
+    public function activateLinks($str) {
+        $find = array('`((?:https?|ftp)://\S+[[:alnum:]]/?)`si', '`((?<!//)(www\.\S+[[:alnum:]]/?))`si');
+        $replace = array('<a href="$1" target="_blank">$1</a>', '<a href="http://$1" target="_blank">$1</a>');
+        return preg_replace($find,$replace,$str);
+    }
+
     public function hasLegalSignature() {
         if ($this->exist('legal_signature'))
             return ($this->add('legal_signature')->add('v1'));
@@ -546,9 +552,13 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
     public function createEtablissement($famille) {
       $etablissement = new Etablissement();
       $etablissement->id_societe = $this->_id;
-      $societeSingleton = SocieteClient::getInstance()->findSingleton($this->_id);
-      if(!$societeSingleton) {
-          throw new sfException("La société doit être créé avant de créer l'établissement");
+      if (isset($_ENV['DRY_RUN'])) {
+          $societeSingleton = $this;
+      }else {
+          $societeSingleton = SocieteClient::getInstance()->findSingleton($this->_id);
+          if(!$societeSingleton) {
+              throw new sfException("La société doit être créé avant de créer l'établissement");
+          }
       }
       $etablissement->setSociete($societeSingleton);
       $etablissement->identifiant = EtablissementClient::getInstance()->getNextIdentifiantForSociete($societeSingleton);
@@ -571,7 +581,9 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
 
     public function switchStatusAndSave() {
       $newStatus = "";
-      $this->save();
+      if (!isset($_ENV['DRY_RUN'])) {
+          $this->save();
+      }
 
       if($this->isActif() || !$this->statut){
          $newStatus = SocieteClient::STATUT_SUSPENDU;
@@ -587,7 +599,9 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
               continue;
           }
           $contact->setStatut($newStatus);
-          $contact->save();
+          if (!isset($_ENV['DRY_RUN'])) {
+            $contact->save();
+          }
       }
       foreach($toberemoved as $keyCompte) {
           $this->removeContact($keyCompte);
@@ -604,9 +618,11 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
           $etablissementtobesaved[] = $etablissement;
       }
       $this->setStatut($newStatus);
-      $this->save();
-      foreach($etablissementtobesaved as $etablissement) {
-          $etablissement->save();
+      if (!isset($_ENV['DRY_RUN'])) {
+          $this->save();
+          foreach($etablissementtobesaved as $etablissement) {
+              $etablissement->save();
+          }
       }
     }
 

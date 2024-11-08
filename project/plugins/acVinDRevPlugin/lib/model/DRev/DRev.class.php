@@ -463,6 +463,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->cache_document_douanier;
     }
 
+    public function getDocumentDouanierFile($ext) {
+        return DouaneClient::getInstance()->getDocumentDouanierEtablissement($ext, $this->periode, $this->getEtablissementObject());
+    }
+
     public function hasDocumentDouanierForFacturation() {
         return ($this->getDocumentDouanierOlderThanMe());
     }
@@ -1776,6 +1780,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return 1;
     }
 
+    /* Volume : L5 - L16 + L19 */
+    /* Une partie du VCI (L19) est dans la L16 */
+    public function getQuantiteVolumeRecolteClair(TemplateFactureCotisationCallbackParameters $parameters)
+    {
+        $volume = 0;
+        $docDouanier = $this->getDocumentDouanier();
+
+        if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
+            return;
+        }
+
+        $L5  = $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L5, null, $parameters);
+        $L16 = $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_USAGESIND_L16, null, $parameters);
+        $L19 = $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_VCI_L19, null, $parameters);
+
+        return $L5 - $L16 + $L19;
+    }
+
     public function getQuantiteVolumeRevendique(TemplateFactureCotisationCallbackParameters $parameters)
     {
         $volume = 0;
@@ -2513,8 +2535,31 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getProduitsHashWithVolumeSeuil() {
         $p = array();
+        $parLot = $this->declaration->getConfig()->isRevendicationParLots();
         foreach(VIP2C::getProduitsHashWithVolumeSeuil($this->declarant->cvi, $this->getDefaultMillesime()) as $hash_produit) {
-            if ($this->declaration->exist($hash_produit)) {
+            if (! $this->declaration->exist($hash_produit)) {
+                continue;
+            }
+
+            if (! $parLot) {
+                $p[] = $hash_produit;
+                continue;
+            }
+
+            $toadd = false;
+            foreach ($this->getLots() as $l) {
+                if ($l->produit_hash != "/declaration/".$hash_produit) {
+                    continue;
+                }
+
+                if ($l->millesime != $this->getDefaultMillesime()) {
+                    continue;
+                }
+
+                $toadd = true;
+            }
+
+            if ($toadd) {
                 $p[] = $hash_produit;
             }
         }

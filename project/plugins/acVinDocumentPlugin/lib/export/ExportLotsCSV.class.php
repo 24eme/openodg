@@ -2,16 +2,14 @@
 class ExportLotsCSV {
 
     protected $header = false;
-    protected $appName = null;
     protected $lots = array();
 
     public static function getHeaderCsv() {
         return "Origine;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Date commission;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Statut de lot;Destination;Date de destination;Pays de destination;Elevage;Centilisation;Date prélévement;Conformité;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Declarant Lot unique Id;Hash produit\n";
     }
 
-    public function __construct($header = true, $appName = null) {
+    public function __construct($header = true) {
         $this->header = $header;
-        $this->appName = $appName;
     }
 
     public function getUniqueLotsLastStatut() {
@@ -120,7 +118,7 @@ class ExportLotsCSV {
               (isset($lot['preleve']))? $lot['preleve'] : '',
               VarManipulator::protectStrForCsv($conformite),
               (isset($lot['conforme_appel']))? $lot['conforme_appel'] : '',
-              $this->appName,
+              Organisme::getCurrentOrganisme(),
               $lot['id_document'],
               $lot['unique_id'],
               $lot['declarant_identifiant'].'-'.$lot['unique_id'],

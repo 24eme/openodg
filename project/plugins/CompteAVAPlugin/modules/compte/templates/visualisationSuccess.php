@@ -12,7 +12,7 @@
         <?php endif; ?>
         <a href="<?php echo url_for('compte_modification', $compte) ?>" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Modifier</a>
     </div>
-    <h2><?php echo $compte->nom_a_afficher ?> <small><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->type_compte); ?></span> - <?php echo $compte->identifiant; ?></small></h2>
+    <h2><?php echo $compte->nom_a_afficher ?> <small><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->type_compte); ?> - <?php echo $compte->identifiant; ?></small></h2>
 </div>
 
 <div class="row col-xs-12">
@@ -104,7 +104,7 @@
                             <div class="row">
                                 <label class="col-xs-6">Téléphone bureau</label>
                                 <div class="col-xs-6">
-                                    <?php echo $compte->telephone_bureau; ?>
+                                    <a class="btn-link" href="tel:<?php echo $compte->telephone_bureau ?>"><?php echo $compte->telephone_bureau; ?></a>
                                 </div>
                             </div>
                         </div>
@@ -114,7 +114,7 @@
                             <div class="row">
                                 <label class="col-xs-6">Téléphone mobile</label>
                                 <div class="col-xs-6">
-                                    <?php echo $compte->telephone_mobile; ?>
+                                    <a class="btn-link" href="tel:<?php echo $compte->telephone_mobile ?>"><?php echo $compte->telephone_mobile; ?></a>
                                 </div>
                             </div>
                         </div>
@@ -124,7 +124,7 @@
                             <div class="row">
                                 <label class="col-xs-6">Téléphone privé</label>
                                 <div class="col-xs-6">
-                                    <?php echo $compte->telephone_prive; ?>
+                                    <a class="btn-link" href="tel:<?php echo $compte->telephone_prive ?>"><?php echo $compte->telephone_prive; ?></a>
                                 </div>
                             </div>
                         </div>

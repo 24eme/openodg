@@ -350,7 +350,7 @@ class conditionnementActions extends sfActions {
     }
 
     public function executePDF(sfWebRequest $request) {
-        $conditionnement = $this->getRoute()->getConditionnement();
+        $conditionnement = $this->getRoute()->getConditionnement(['allow_habilitation' => true, 'allow_stalker' => true]);
         $this->secure(ConditionnementSecurity::PDF, $conditionnement);
         $this->document = new ExportConditionnementPdf($conditionnement, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));

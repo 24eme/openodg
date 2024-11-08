@@ -49,6 +49,7 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
         return $parcelles;
     }
 
+    private $allready_seen = null;
     public function getParcelles() {
         $parcelles = array();
         foreach($this as $produit) {

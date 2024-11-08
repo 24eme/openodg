@@ -39,7 +39,7 @@
 <?php if($parcellesByCommune === false): ?>
     <br />
     <br />
-    <i>Aucune parcelle affectée n'a été déclarée pour cette année en Côtes de Provence.</i>
+    <i>Aucune parcelle affectée n'a été déclarée pour cette année.</i>
     <br />
     <br />
     <?php return; ?>
@@ -61,7 +61,6 @@
     </tr>
     <?php foreach ($parcelles as $parcelle):
             if(!$parcelle->affectee): continue; endif;
-                $date_affectation = new DateTime($parcelle->date_affectation);
          ?>
     	<tr>
     		<td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->commune; ?>&nbsp;</td>

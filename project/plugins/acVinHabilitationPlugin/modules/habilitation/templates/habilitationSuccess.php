@@ -49,19 +49,19 @@ if($etablissement->cvi && count($e) > 1):
 
 <?php include_partial('habilitation/habilitation', array('habilitation' => $habilitation, 'editForm' => isset($editForm) ? $editForm : null, 'public' => !$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION), 'has_ajoutForm' => isset($ajoutForm))); ?>
 
-    <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
+    <?php if ($sf_user->isAdminODG()): ?>
         <div class="text-right">
-        <a class="btn btn-sm btn-default" href="<?php echo url_for('habilitation_demande_creation', $etablissement) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Saisie d’une demande</a>
-        </div>
-    <?php endif; ?>
-
-    <?php if ($sf_user->isAdmin() && ($habilitation->getProduits()->getRawValue())): ?>
-        <div class="row">
-            <div class="col-xs-12">
-                <button class="btn btn-sm btn-default pull-right" id="editHabilitation" type="button"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Éditer l'habilitation</button>
+            <div class="btn-group">
+                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
+                    <a class="btn btn-sm btn-default" href="<?php echo url_for('habilitation_demande_creation', $etablissement) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Saisie d’une demande</a>
+                <?php endif; ?>
+		<?php if ($habilitation->getProduits()->getRawValue()): ?>
+                <button class="btn btn-sm btn-default" id="editHabilitation" type="button"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Éditer l'habilitation</button>
+		<?php endif; ?>
             </div>
         </div>
     <?php endif; ?>
+
 
     <?php if($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
     <h3>Demandes en cours <small><a id="voir_toutes_les_demandes" href="javascript:void(0)">(voir tout)</a></small></h3>
@@ -85,11 +85,12 @@ if($etablissement->cvi && count($e) > 1):
                 <td class="text-center">
                     <?php if($habilitation->isLastOne()): ?>
                     <?php if($sf_user->hasHabilitation() && (!$filtre || preg_match("/".$filtre."/i", $d->getStatut()))): ?>
-                        <a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir&nbsp;/&nbsp;Modifier</a></td>
+                        <a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir&nbsp;/&nbsp;Modifier</a>
                     <?php else: ?>
-                        <a href="<?php echo url_for('habilitation_demande_visualisation', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir</a></td>
+                        <a href="<?php echo url_for('habilitation_demande_visualisation', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir</a>
                     <?php endif; ?>
                     <?php endif; ?>
+                </td>
             </tr>
         <?php endforeach; ?>
         </tbody>

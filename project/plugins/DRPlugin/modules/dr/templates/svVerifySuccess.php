@@ -51,9 +51,9 @@
             </tbody>
             <tbody class="collapse" id="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>">
                 <?php foreach($cvis as $cvi => $valeur): ?>
+                    <?php if ($cvi == $dr->getEtablissementObject()->cvi) { continue; } ?>
+                    <?php if (round($valeur['DR'] - $valeur['SV'], 2) == 0) { continue; } ?>
                     <tr>
-                        <?php if ($cvi == $dr->getEtablissementObject()->cvi) { continue; } ?>
-                        <?php if (round($valeur['DR'] - $valeur['SV'], 2) == 0) { continue; } ?>
                         <td class="text-right">
                             <?php $etablissement = EtablissementClient::getInstance()->findByCvi($cvi); ?>
                             <?php if ($etablissement): ?>

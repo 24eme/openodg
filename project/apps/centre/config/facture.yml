@@ -3,5 +3,5 @@ all:
     facture:
       ligne_unique: true
       uniq_template_prefix: "TEMPLATE-FACTURE-%region%"
-      export_type: "custom"
+      export_type: "isa"
       facturation_region: true

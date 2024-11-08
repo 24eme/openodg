@@ -24,6 +24,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         return $this->campagne;
     }
 
+    public function getCampagneReelle()
+    {
+        return sprintf("%s-%s", $this->campagne, $this->campagne + 1);
+    }
+
     public function __clone() {
 		parent::__clone();
 	}
@@ -231,6 +236,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             return $this->enhanced_donnees;
         }
         $this->generateDonnees();
+
+        foreach (ChgtDenomClient::getInstance()->getChgtDenomProduction($this->identifiant, $this->campagne) as $chgt) {
+            $chgt->addDonneesForProduction($this);
+        }
+
         $this->enhanced_donnees = array();
         $colonnesid = array();
         $colonneid = 0;
@@ -479,11 +489,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         $produitExclude = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
 
-        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produit->produit)) {
+        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produit)) {
 
             return false;
         }
-        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produit->produit)) {
+        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produit)) {
 
             return false;
         }
@@ -647,6 +657,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                 $donnees['produits'][$produit]['libelle'] = $this->getConfiguration()->declaration->get($entry->produit)->getCepage()->getLibelleComplet();
                 if (DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $entry->complement) {
                     $donnees['produits'][$produit]['libelle'] .= ' - '.$entry->complement;
+                    $donnees['produits'][$produit]['complement'] = $entry->complement;
                 }
                 $donnees['produits'][$produit]['hash'] = $entry->produit;
                 if ($this->isBailleur()) {

@@ -70,13 +70,19 @@
 </table>
 
 <br/>
-<p style="text-align:center">qui devient</p>
+
+<?php if ($chgtdenom->isDeclassement()): ?>
+        <p style="text-align:center">qui devient</p>
+<?php elseif (!$chgtdenom->lots[1]->isAffecte() && !$chgtdenom->lots[1]->isAffectable() && $chgtdenom->isApprouve()): ?>
+        <p style="text-align:center">qui devient</p>
+<?php else: ?>
+        <p style="text-align:left">en attente de contrôle organoleptique conformément au cahier des charges et au plan de contrôle</p>
+<?php endif;?>
 
 <br/>
 
-<?php
-$lots = $chgtdenom->getLotsWithPseudoDeclassement();
-$lot = $lots[0]; ?>
+<?php $lots = $chgtdenom->getLotsWithPseudoDeclassement(); ?>
+<?php $lot = $lots[0]; ?>
 <table border="1">
     <tr>
         <th style="font-size: 14px">Lot n°: <?php echo $lot->numero_dossier.' / '.$lot->numero_archive ?></th>

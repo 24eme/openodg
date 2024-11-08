@@ -15,7 +15,7 @@ class DRevConfiguration extends DeclarationConfiguration {
 
     public function getCampagneDebutMois() {
 
-        return 9;
+        return 10;
     }
 
     public function load() {
@@ -163,6 +163,10 @@ class DRevConfiguration extends DeclarationConfiguration {
 
     public function isModificativeEnabled() {
         return $this->isRevendicationParLots();
+    }
+
+    public function isSentToInnovagro() {
+        return isset($this->configuration['send_to_innovagro']) && boolval($this->configuration['send_to_innovagro']);
     }
 
 }

@@ -187,6 +187,7 @@ $drev->devalidate();
 $t->is($drev->validation, NULL, "La DRev n'est plus validée");
 
 $drev->validate();
+$drev->validateOdg();
 $drev->save();
 
 $region = null;
@@ -256,6 +257,7 @@ if (DRevConfiguration::getInstance()->isRevendicationParLots()) {
 
 $drevM1->save();
 $drevM1->validate();
+$drevM1->validateOdg();
 $drevM1->generateMouvementsFactures();
 $drevM1->save();
 

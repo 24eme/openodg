@@ -1,4 +1,4 @@
-<div id="principal" >
+<div id="principal mt-5" >
   <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
@@ -6,12 +6,8 @@
     <h4 class="titre_principal">Mon compte > Coordonnées bancaires</h4>
   </div>
    <div class="panel-body">
-    <br/>
-
-        <div id="modification_compte" class="col-xs-12">
+        <div id="modification_compte" class="col-xs-12 mt-3">
         	<p>Pour vous inscrire au prélèvement automatique, merci de bien vouloir renseigner vos coordonnées bancaires dans le formulaire ci-dessous.</p>
-
-          <div class="col-sm-12">&nbsp;<br/></div>
 
           <form action="<?php echo url_for('compte_teledeclarant_coordonnees_bancaires') ?>" method="post" class="form-horizontal">
             <?php echo $form->renderHiddenFields(); ?>
@@ -86,9 +82,7 @@
 
             <p>Une fois vos coordonnées bancaires saisies, vous devrez télécharger le document PDF du mandat de prélèvement SEPA, l'imprimer, le signer et nous le retourner par voie postale à l'adresse indiqué sur ledit document.</p>
 
-            <div class="col-sm-12">&nbsp;<br/></div>
-
-            <div class="col-sm-12">
+            <div class="col-sm-12 mt-3">
                   <a href="<?php echo url_for('compte_teledeclarant_modification'); ?>" class=" btn btn-default " alt="Retour" style="cursor: pointer;">Retour</a>
                   <input type="submit" class="btn btn-success" style="cursor: pointer; float: right;" value="Enregistrer" />
             </div>

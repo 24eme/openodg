@@ -49,7 +49,7 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
     public function getProduits()
     {
         $produits = array();
-        foreach ($this->getDocument()->getProduitsConfig() as $produit) {
+        foreach ($this->getDocument()->getProduitsConfig(date('Y-m-d')) as $produit) {
             $produits[$produit->getHash()] = $produit->getLibelleComplet();
         }
         return array_merge(array('' => ''), $produits);

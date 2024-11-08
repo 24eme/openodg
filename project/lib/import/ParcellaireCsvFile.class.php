@@ -140,19 +140,26 @@ class ParcellaireCsvFile
     public function convert()
     {
         $configuration = ConfigurationClient::getInstance()->getCurrent();
+        $header = $this->file->getHeaders();
 
         foreach ($this->file->getLignes() as $parcelle) {
 
             if (!isset($is_old_format)) {
                 if ($parcelle[self::CSV_FORMAT_ORIGINE] != 'Origine' && $parcelle[self::CSV_FORMAT_ORIGINE] != 'PRODOUANE' && $parcelle[self::CSV_FORMAT_ORIGINE] != 'INAO') {
-                    $is_old_format = 1;
+                    if( preg_match('/nom/i', $header[self::CSV_FORMAT_CVI]) ) {
+                        $is_old_format = 2;
+                    }elseif( preg_match('/siret/i', $header[self::CSV_FORMAT_CVI]) ) {
+                        $is_old_format = 1;
+                    }elseif( preg_match('/cvi/i', $header[self::CSV_FORMAT_CVI]) ) {
+                        $is_old_format = 0;
+                    }
                 }else{
                     $this->parcellaire->source = $parcelle[self::CSV_FORMAT_ORIGINE];
                     $is_old_format = 0;
                 }
             }
 
-            if (!is_numeric($parcelle[self::CSV_FORMAT_CVI - $is_old_format]) && !is_numeric($parcelle[self::CSV_FORMAT_SIRET - $is_old_format]) && !is_numeric($parcelle[self::CSV_FORMAT_CP - $is_old_format]) && !is_numeric($parcelle[self::CSV_FORMAT_IDU - $is_old_format]) && !is_numeric($parcelle[self::CSV_FORMAT_SUPERFICIE - $is_old_format])) {
+            if (!is_numeric($parcelle[self::CSV_FORMAT_SIRET - $is_old_format]) && !is_numeric($parcelle[self::CSV_FORMAT_CP - $is_old_format]) && !is_numeric($parcelle[self::CSV_FORMAT_IDU - $is_old_format]) && !is_numeric($parcelle[self::CSV_FORMAT_SUPERFICIE - $is_old_format])) {
                 continue;
             }
 
@@ -285,7 +292,7 @@ class ParcellaireCsvFile
             $new_parcelle->superficie = (float) str_replace(',', '.', $parcelle[self::CSV_FORMAT_SUPERFICIE - $is_old_format]);
             $new_parcelle->superficie_cadastrale = (float) str_replace(',', '.', $parcelle[self::CSV_FORMAT_SUPERFICIE_CADASTRALE - $is_old_format]);
             $new_parcelle->set('mode_savoirfaire',$parcelle[self::CSV_FORMAT_FAIRE_VALOIR - $is_old_format]);
-            if ($new_parcelle->produit_hash && strpos($new_parcelle->produit_hash, ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH) === false) {
+            if ($hash && $new_parcelle->produit_hash && strpos($new_parcelle->produit_hash, ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH) === false) {
                 $new_parcelle = $this->parcellaire->affecteParcelleToHashProduit($hash, $new_parcelle);
             }
 

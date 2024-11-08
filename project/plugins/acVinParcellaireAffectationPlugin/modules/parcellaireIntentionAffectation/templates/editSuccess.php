@@ -3,7 +3,7 @@
 <?php include_partial('parcellaireIntentionAffectation/breadcrumb', array('parcellaireIntentionAffectation' => $parcellaireIntentionAffectation)); ?>
 
 <div class="page-header no-border">
-    <h2>Identification parcellaire de l'AOC de Côtes de Provence</h2>
+    <h2>Identification parcellaire AOC</h2>
 </div>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
@@ -17,7 +17,7 @@
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
-    <?php foreach ($parcellaireIntentionAffectation->getParcellesByDgc() as $dgc => $parcelles): ?>
+    <?php foreach ($parcellaireIntentionAffectation->declaration->getParcellesByDgc() as $dgc => $parcelles): ?>
     <div style="margin-bottom: 1em;" class="row">
         <div class="col-xs-12">
             <h3>Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?></h3>
@@ -42,14 +42,13 @@
       $parcelles = $parcelles->getRawValue();
       ksort($parcelles);
 			foreach ($parcelles as $parcelle):
-                $produitKey = str_replace('/declaration/', '', $parcelle->produit_hash);
                 $formkey = $parcelle->produit_hash.'/'.$parcelle->parcelle_id;
 			if (isset($form[$formkey])):
 		?>
 			<tr class="vertical-center" id="tr_<?php echo str_replace("/","-",$produitKey)."-".$parcelle->getKey();?>">
 				<td><?php echo $parcelle->commune; ?></td>
                 <td><?php echo $parcelle->lieu; ?></td>
-                <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
+                <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?><br><span class="text-muted"><?php echo $parcelle->getParcelleId(); ?></span></td>
                 <td><?php echo $parcelle->cepage; ?></td>
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
                 <td style="text-align: right;"><?php echo number_format($parcelle->superficie_parcellaire,4); ?></td>
