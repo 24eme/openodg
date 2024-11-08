@@ -40,22 +40,32 @@ th {
           </tr>
         </thead>
         <tbody>
-        <?php foreach ($degustation->getDegustateursConfirmesTableOrFreeTable($numTab) as $id_compte => $degustateur): ?>
-            <?php $compte = CompteClient::getInstance()->find($id_compte); ?>
-              <tr>
-                <td class="text-left" style="width:35%; margin-left: 1em; text-align:left;"><?php echo $compte->getNom() ?></td>
-                <td class="text-left" style="width:35%; margin-left: 1em; text-align:left;"><?php echo $compte->getPrenom() ?></td>
+        <?php if (DegustationConfiguration::getInstance()->hasDegustateursPrerempli()): ?>
+            <?php foreach ($degustation->getDegustateursConfirmesTableOrFreeTable($numTab) as $id_compte => $degustateur): ?>
+                <?php $compte = CompteClient::getInstance()->find($id_compte); ?>
+                  <tr>
+                    <td class="text-left" style="width:35%; margin-left: 1em; text-align:left;"><?php echo $compte->getNom() ?></td>
+                    <td class="text-left" style="width:35%; margin-left: 1em; text-align:left;"><?php echo $compte->getPrenom() ?></td>
+                    <td style="width:30%"><small style="font-size: 4pt;"><br /><br /></small></td>
+                  </tr>
+              <?php endforeach; ?>
+            <?php $t = count($degustation->getDegustateursConfirmesTableOrFreeTable($numTab)); ?>
+            <?php for ($i = $t; $i<6; $i++): ?>
+            <tr>
+                <td class="text-center" style="width:35%; margin-left: 1em;"></td>
+                <td class="text-center" style="width:35%; margin-left: 1em;"></td>
                 <td style="width:30%"><small style="font-size: 4pt;"><br /><br /></small></td>
-              </tr>
-          <?php endforeach; ?>
-        <?php $t = count($degustation->getDegustateursConfirmesTableOrFreeTable($numTab)); ?>
-        <?php for ($i = $t; $i<6; $i++): ?>
-        <tr>
-            <td class="text-center" style="width:35%; margin-left: 1em;"></td>
-            <td class="text-center" style="width:35%; margin-left: 1em;"></td>
-            <td style="width:30%"><small style="font-size: 4pt;"><br /><br /></small></td>
-        </tr>
-        <?php endfor; ?>
+            </tr>
+            <?php endfor; ?>
+        <?php else : ?>
+            <?php for ($i = 0; $i<6; $i++): ?>
+            <tr>
+                <td class="text-center" style="width:35%; margin-left: 1em;"></td>
+                <td class="text-center" style="width:35%; margin-left: 1em;"></td>
+                <td style="width:30%"><small style="font-size: 4pt;"><br /><br /></small></td>
+            </tr>
+            <?php endfor; ?>
+        <?php endif ?>
         </tbody>
       </table>
       <div></div>

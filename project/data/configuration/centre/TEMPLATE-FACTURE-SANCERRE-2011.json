@@ -15,7 +15,7 @@
            "details": {
                "00_recolte": {
                    "modele": "CotisationVariable",
-                   "prix": 2.81,
+                   "prix": 3.01,
                    "tva": 0,
                    "unite": "hl",
                    "libelle": "Cotisation sur récolte",
