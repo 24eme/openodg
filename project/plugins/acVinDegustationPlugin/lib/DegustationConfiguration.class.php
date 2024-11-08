@@ -115,4 +115,9 @@ class DegustationConfiguration {
         }
         return $this->configuration['always_identifiant_table'];
     }
+
+    public function hasDegustateursPrerempli()
+    {
+        return isset($this->configuration['has_degustateurs_prerempli']) && $this->configuration['has_degustateurs_prerempli'];
+    }
 }

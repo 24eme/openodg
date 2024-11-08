@@ -39,7 +39,7 @@
 <?php if($parcellesByCommune === false): ?>
     <br />
     <br />
-    <i>Aucune parcelle affectée n'a été déclarée pour cette année en Côtes de Provence.</i>
+    <i>Aucune parcelle affectée n'a été déclarée pour cette année.</i>
     <br />
     <br />
     <?php return; ?>

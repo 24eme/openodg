@@ -123,6 +123,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <?php echo $lot['date_degustation_voulue']->renderLabel("Lot prélevable à partir du", array('class' => "col-sm-5 control-label")); ?>
+                            <?php echo getPointAideHtml('pmc','lot_prelevable_date'); ?>
                             <div class="col-sm-5">
                                 <div class="input-group date-picker">
                                     <?php echo $lot['date_degustation_voulue']->render(array("class" => "form-control", 'placeholder' => "Date")); ?>

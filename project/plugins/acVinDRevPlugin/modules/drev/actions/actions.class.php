@@ -199,13 +199,15 @@ class drevActions extends sfActions {
         	return $this->redirect('drev_revendication_superficie', $this->drev);
         }
 
-        $this->form->save();
-
         try {
+            $this->form->save();
             if (!$this->drev->resetAndImportFromDocumentDouanier()) {
                 throw new sfException("Mauvais format");
             }
         } catch(Exception $e) {
+            if($this->form->getFichier()) {
+                $this->form->getFichier()->delete();
+            }
 
             $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus ('.$e->getMessage().').';
 
@@ -956,7 +958,7 @@ class drevActions extends sfActions {
     }
 
     public function executePDF(sfWebRequest $request) {
-        $drev = $this->getRoute()->getDRev(['allow_habilitation' => true]);
+        $drev = $this->getRoute()->getDRev(['allow_habilitation' => true, 'allow_stalker' => true]);
         $this->secure(DRevSecurity::PDF, $drev);
 
         if (!$drev->validation) {

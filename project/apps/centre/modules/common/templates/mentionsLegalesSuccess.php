@@ -13,17 +13,18 @@
 	</div>
 	<div class="col-xs-12">
 		<h3>Conception / hébergement</h3>
+		<p><a href="https://github.com/24eme/openodg/">OpenODG</a> est un logiciel libre <a href="https://github.com/24eme/openodg/">disponible publiquement</a> sous <a href="https://www.gnu.org/licenses/agpl-3.0.fr.html">licence AGPL</a>. Il est développé par la société <a href="http://24eme.fr/">24ème</a>.</p>
 		<p>
 			<strong><a href="http://24eme.fr/">24ème</a></strong><br />
-			48 rue René Clair<br />
-			75018 Paris<br />
+			2 place Sainte opportune<br />
+			75001 Paris<br />
 			France
 		</p>
 		<p>
 			<strong>Tél.</strong> : +33184259401<br />
 		</p>
 		<p>
-			<strong>Site Internet</strong> : <a href="https://24eme.fr/">https://24eme.fr/</a>
+			<strong>Site Internet</strong> : <a href="http://24eme.fr/">http://24eme.fr/</a>
 		</p>
 	</div>
 </div>

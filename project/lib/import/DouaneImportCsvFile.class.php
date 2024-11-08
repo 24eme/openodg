@@ -193,7 +193,7 @@ class DouaneImportCsvFile {
 
     public function getRelatedDrev() {
         $this->loadEtablissement();
-        return DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->campagne);
+        return DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->campagne, $this->drev_produit_filter);
     }
 
     public static function extractLabels($mentionComplementaire) {

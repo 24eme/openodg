@@ -505,12 +505,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $lot->id_document_affectation = null;
         $lot->id_document = $this->_id;
         $lot->affectable = false;
-        $lot->numero_anonymat = null;
-        $lot->motif = null;
+        $lot->conforme_appel = null;
         $lot->conformite = null;
+        $lot->email_envoye = null;
+        $lot->motif = null;
+        $lot->numero_anonymat = null;
         $lot->numero_table = null;
+        $lot->observation = null;
+        $lot->position = null;
+        $lot->preleve = null;
         $lot->recours_oc = null;
-		$lot->email_envoye = null;
         if(!$lot->preleve || $this->type == TourneeClient::TYPE_MODEL) {
             $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
             $lot->preleve = null;
