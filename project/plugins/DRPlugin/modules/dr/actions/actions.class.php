@@ -7,6 +7,8 @@ class drActions extends sfActions
         $this->dr = $this->getRoute()->getDR();
         $this->configuration = ConfigurationClient::getInstance()->getCurrent();
         $this->validation = new DRValidation($this->dr, ['configuration' => $this->configuration]);
+
+        $this->chgtsProd = ChgtDenomClient::getInstance()->getChgtDenomProduction($this->dr->identifiant, $this->dr->campagne);
     }
 
     public function executeApprobation(sfWebRequest $request)

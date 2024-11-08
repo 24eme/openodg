@@ -17,9 +17,12 @@ function(doc) {
      if (doc.versement_sepa === 0) {
          versement_sepa = 0;
      }
+     region = '';
+     if (doc.region) {
+        region = doc.region;
+     }
 
-     emit(["FACTURE", versement_comptable, doc.identifiant, doc._id], [doc.date_facturation, doc.origines, doc.total_ttc, doc.statut, doc.numero_archive, doc.numero_interloire, doc.total_ht, doc.declarant.nom, doc.date_paiement]);
-     emit(["PAIEMENT", versement_comptable_paiement, doc.identifiant, doc._id], [doc.date_facturation, doc.origines, doc.total_ttc, doc.statut, doc.numero_archive, doc.numero_interloire, doc.total_ht, doc.declarant.nom, doc.date_paiement]);
-     emit(["SEPA", versement_sepa, doc.identifiant, doc._id], [doc.date_facturation, doc.origines, doc.total_ttc, doc.statut, doc.numero_archive, doc.numero_interloire, doc.total_ht, doc.declarant.nom, doc.date_paiement]);
-
+     emit(["FACTURE", versement_comptable, doc.identifiant, doc._id, region], [doc.date_facturation, doc.origines, doc.total_ttc, doc.statut, doc.numero_archive, doc.numero_interloire, doc.total_ht, doc.declarant.nom, doc.date_paiement]);
+     emit(["PAIEMENT", versement_comptable_paiement, doc.identifiant, doc._id, region], [doc.date_facturation, doc.origines, doc.total_ttc, doc.statut, doc.numero_archive, doc.numero_interloire, doc.total_ht, doc.declarant.nom, doc.date_paiement]);
+     emit(["SEPA", versement_sepa, doc.identifiant, doc._id, region], [doc.date_facturation, doc.origines, doc.total_ttc, doc.statut, doc.numero_archive, doc.numero_interloire, doc.total_ht, doc.declarant.nom, doc.date_paiement]);
  }

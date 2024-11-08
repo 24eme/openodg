@@ -46,6 +46,7 @@ class CompteSendmailTask extends sfBaseTask
 
     $message->setSubject($this->parseTemplate($arguments['subject'], $compte));
     $message->setBody($this->parseTemplate(file_get_contents($arguments['body_template']), $compte));
+    $message->setReplyTo(array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name')));
     $message->setTo($email);
 
     $resultSend = $this->getMailer()->send($message);
@@ -59,6 +60,10 @@ class CompteSendmailTask extends sfBaseTask
   }
 
     protected function parseTemplate($body, $compte){
+        if(!$compte->getCodeCreation()) {
+            throw new Exception("Pas de code de création");
+        }
+
         $login = $compte->getLogin();
         $codeCreation = $compte->getCodeCreation();
 

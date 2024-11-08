@@ -236,6 +236,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             return $this->enhanced_donnees;
         }
         $this->generateDonnees();
+
+        foreach (ChgtDenomClient::getInstance()->getChgtDenomProduction($this->identifiant, $this->campagne) as $chgt) {
+            $chgt->addDonneesForProduction($this);
+        }
+
         $this->enhanced_donnees = array();
         $colonnesid = array();
         $colonneid = 0;
@@ -652,6 +657,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                 $donnees['produits'][$produit]['libelle'] = $this->getConfiguration()->declaration->get($entry->produit)->getCepage()->getLibelleComplet();
                 if (DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $entry->complement) {
                     $donnees['produits'][$produit]['libelle'] .= ' - '.$entry->complement;
+                    $donnees['produits'][$produit]['complement'] = $entry->complement;
                 }
                 $donnees['produits'][$produit]['hash'] = $entry->produit;
                 if ($this->isBailleur()) {

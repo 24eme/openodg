@@ -162,7 +162,7 @@ class LotsClient
 
     public function find($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive, $documentOrdre = null, $descending = false) {
         $numOrdre = ($documentOrdre)? sprintf("%02d", $documentOrdre) : null;
-        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive, $numOrdre, null, $descending);
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive, null, $numOrdre, null, $descending);
         $docId = null;
         foreach($mouvements->rows as $mouvement) {
             $docId = $mouvement->id;
@@ -200,7 +200,11 @@ class LotsClient
             if(in_array($mouvement->id, $documents)) {
                 continue;
             }
-            $documents[$mouvement->value->date.$typePriorites[$mouvement->value->document_type].$mouvement->key[MouvementLotHistoryView::KEY_DOC_ORDRE].$mouvement->id] = $mouvement->id;
+
+            $formatDate = $mouvement->value->date;
+            $formatDate = substr($formatDate, 0, 10);
+
+            $documents[$formatDate.$typePriorites[$mouvement->value->document_type].$mouvement->key[MouvementLotHistoryView::KEY_DOC_ORDRE].$mouvement->id] = $mouvement->id;
         }
 
         ksort($documents);
@@ -356,7 +360,7 @@ class LotsClient
         }
         $mouvements = [];
         foreach($campagnes as $campagne) {
-            $mouvements = array_merge($mouvements, MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne)->rows);
+            $mouvements = array_merge($mouvements, MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne, $region)->rows);
         }
 
         if ($region) {
