@@ -2517,11 +2517,31 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getProduitsWithReserveInterpro($region = null) {
         $produits = array();
         foreach($this->getProduits($region) as $p) {
-            if ($p->hasReserveInterpro()) {
-                $produits[] = $p;
+            if (!$p->getConfig()->getRendementReserveInterpro()) {
+                continue;
             }
+            $produit_libelle = $p->getCepage()->getLibelleComplet();
+            if (!isset($produits[$produit_libelle])) {
+                $produits[$produit_libelle] = [];
+            }
+            $produits[$produit_libelle][] = $p;
         }
-        return $produits;
+        $produit_ret = array();
+        foreach($produits as $l => $prods) {
+            if (count($prods) < 1) {
+                continue;
+            }
+            $meta_prod = clone $prods[0];
+            $meta_prod->volume_revendique_total = 0;
+            $meta_prod->superficie_revendique = 0;
+            $meta_prod->libelle = $l;
+            foreach($prods as $p) {
+                $meta_prod->volume_revendique_total += $p->volume_revendique_total;
+                $meta_prod->superficie_revendique += $p->superficie_revendique;
+            }
+            $produit_ret[] = $meta_prod;
+        }
+        return $produit_ret;
     }
 
     public function hasProduitsReserveInterpro($region = null) {
