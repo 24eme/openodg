@@ -9,7 +9,7 @@
 </ol>
 
 
-<div class="page-header no-border clearfix">
+<div class="page-header no-border">
     <h2>
         <?php if ($dr->isBailleur()): ?>
             <?php
