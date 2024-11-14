@@ -53,7 +53,7 @@
     </a>
     <?php endif; ?>
 <?php endif; ?>
-<?php if ($sf_user->isAdminOdg()): ?>
+<?php if ($sf_user->isAdminOdg() && !$dr->isBailleur()): ?>
     <div class="btn-group pull-right" style="margin-right: 1rem">
       <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdown-declassement" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         Déclassement <?php echo $dr->type ?>
