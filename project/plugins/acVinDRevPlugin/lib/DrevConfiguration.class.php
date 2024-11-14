@@ -56,6 +56,15 @@ class DRevConfiguration extends DeclarationConfiguration {
       return isset($this->configuration['denomination_auto']) && boolval($this->configuration['denomination_auto']);
     }
 
+    public function getDenominationsExtra()
+    {
+        if (! isset($this->configuration['denominations_extra'])) {
+            return [];
+        }
+
+        return $this->configuration['denominations_extra'];
+    }
+
     public function hasDenominationBiodynamie() {
 
       return isset($this->configuration['denomination_biodynamie']) && boolval($this->configuration['denomination_biodynamie']);

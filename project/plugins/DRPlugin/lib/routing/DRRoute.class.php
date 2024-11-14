@@ -7,7 +7,11 @@ class DRRoute extends EtablissementRoute implements InterfaceDeclarationRoute
     protected function getObjectForParameters($parameters = null)
     {
         $this->dr = DRClient::getInstance()->find($parameters['id']);
-        if (! $this->dr) {
+        if (!$this->dr && str_contains($parameters['id'], 'DRBAILLEUR')) {
+            $this->dr = DRClient::getInstance()->createDoc(explode("-", $parameters['id'])[1], explode("-", $parameters['id'])[2]);
+            $this->dr->add('has_metayers', true);
+        }
+        if(!$this->dr) {
             throw new sfError404Exception(sprintf('No DR found with the id "%s".', $parameters['id']));
         }
         parent::getObjectForParameters(['identifiant' => $this->dr->identifiant]);
