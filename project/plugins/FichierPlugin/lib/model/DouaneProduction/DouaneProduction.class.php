@@ -235,6 +235,9 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         if (isset($this->enhanced_donnees)) {
             return $this->enhanced_donnees;
         }
+
+        $donneesExist = $this->exist('donnees');
+
         $this->generateDonnees();
 
         foreach (ChgtDenomClient::getInstance()->getChgtDenomProduction($this->identifiant, $this->campagne) as $chgt) {
@@ -293,6 +296,10 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             $this->enhanced_donnees[] = $d;
         }
         $this->enhancedDonnneesWithFamille();
+
+        if(!$donneesExist) {
+            $this->remove('donnees');
+        }
         return $this->enhanced_donnees;
     }
 
@@ -1099,5 +1106,24 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         }
 
         return isset($tableau_comparaison) ? $tableau_comparaison : null;
+    }
+
+    public function getAllPieces() {
+        $pieces = parent::getAllPieces();
+
+        foreach($this->getBailleurs() as $bailleur) {
+            $pieces[] = [
+                'identifiant' => str_replace("ETABLISSEMENT-", "", $bailleur['etablissement_id']),
+                'date_depot' => $this->getDateDepot(),
+                'libelle' =>  sprintf("DR provenant du metayer %s (%s)", $this->declarant->nom, $this->declarant->cvi),
+                'categorie' => $this->getCategorie(),
+                'visibilite' => $this->getVisibilite(),
+                'mime' => null,
+                'source' => null,
+                'fichiers' => $this->getFichiers()
+            ];
+        }
+
+        return $pieces;
     }
 }
