@@ -24,8 +24,10 @@ class DR extends BaseDR {
         if (DRConfiguration::getInstance()->hasValidationDR()) {
             $this->storeDeclarant();
         }
-        foreach($this->donnees as $d) {
-            $d->updateTiers();
+        if($this->exist('donnees')) {
+            foreach($this->donnees as $d) {
+                $d->updateTiers();
+            }
         }
         parent::save();
     }
