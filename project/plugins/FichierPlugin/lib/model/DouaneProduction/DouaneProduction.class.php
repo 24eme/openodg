@@ -1115,7 +1115,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             $pieces[] = [
                 'identifiant' => str_replace("ETABLISSEMENT-", "", $bailleur['etablissement_id']),
                 'date_depot' => $this->getDateDepot(),
-                'libelle' =>  sprintf("DR provenant du metayer %s (%s)", $this->declarant->nom, $this->declarant->cvi),
+                'libelle' =>  sprintf("DR %s provenant du metayer %s (%s)", $this->periode, $this->declarant->nom, $this->declarant->cvi),
                 'categorie' => $this->getCategorie(),
                 'visibilite' => $this->getVisibilite(),
                 'mime' => null,
