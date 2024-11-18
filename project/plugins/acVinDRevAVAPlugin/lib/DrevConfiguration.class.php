@@ -41,4 +41,9 @@ class DRevConfiguration/*** AVA ***/ extends DeclarationConfiguration {
         return false;
     }
 
+    public function isSendMailToOperateur() {
+
+        return true;
+    }
+
 }
