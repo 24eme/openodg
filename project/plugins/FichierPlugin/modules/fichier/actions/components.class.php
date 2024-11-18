@@ -8,7 +8,7 @@ class fichierComponents extends sfComponents {
 
 
         $this->hasDeclarationsMetayer = false;
-        if(class_exists("DRClient") {
+        if(class_exists("DRClient")) {
             $pieces = PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, true, ConfigurationClient::getInstance()->getCampagneVinicole()->getDateDebutByCampagne($this->campagne), ConfigurationClient::getInstance()->getCampagneVinicole()->getDateFinByCampagne($this->campagne), [strtolower(DRClient::TYPE_COUCHDB)]);
             foreach($pieces as $piece) {
                 if(explode('-', $piece->id)[1] != $this->etablissement->identifiant) {
