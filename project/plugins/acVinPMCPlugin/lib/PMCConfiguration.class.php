@@ -114,4 +114,12 @@ class PMCConfiguration {
     public function hasAllProduits() {
         return isset($this->configuration['all_produits']) && ($this->configuration['all_produits']);
     }
+
+    public function getModuleName() {
+        return 'pmc';
+    }
+
+    public function getCurrentPeriode() {
+        return DRevConfiguration::getInstance()->getCampagneDebutMois();
+    }
 }
