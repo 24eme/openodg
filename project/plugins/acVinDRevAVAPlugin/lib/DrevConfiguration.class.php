@@ -6,7 +6,6 @@ class DRevConfiguration/*** AVA ***/ extends DeclarationConfiguration {
 
     private static $_instance = null;
     protected $configuration;
-    protected $campagneManager = null;
 
     public static function getInstance() {
         if (is_null(self::$_instance)) {
@@ -32,9 +31,6 @@ class DRevConfiguration/*** AVA ***/ extends DeclarationConfiguration {
         $this->load();
     }
 
-    public function isModuleEnabled() {
-        return in_array('drev', sfConfig::get('sf_enabled_modules'));
-    }
 
     public function isRevendicationParLots() {
 
@@ -46,4 +42,9 @@ class DRevConfiguration/*** AVA ***/ extends DeclarationConfiguration {
         return true;
     }
 
+
+    public function getModuleName() {
+
+        return 'drev';
+    }
 }

@@ -41,10 +41,10 @@ class VIP2C
         $result = json_decode($content,true);
         $todelete = array();
         if ($hash_produit) {
-            $confProduit = ConfigurationClient::getInstance()->getConfiguration()->declaration->get($hash_produit);
+            $confProduit = ConfigurationClient::getInstance()->getConfiguration()->get($hash_produit);
         }
         foreach($result as $contratid => $data) {
-            if ($hash_produit && strpos($data['produit'], $hash_produit) === false && $confProduit->code_douane != $data['code_douane']) {
+            if ($hash_produit && strpos(str_replace('/declaration/', '', $data['produit']), str_replace('/declaration/', '', $hash_produit)) === false && $confProduit->code_douane != $data['code_douane']) {
                 $todelete[] = $contratid;
             }
         }

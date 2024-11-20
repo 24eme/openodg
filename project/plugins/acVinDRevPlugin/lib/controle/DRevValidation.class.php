@@ -92,7 +92,7 @@ class DRevValidation extends DeclarationLotsValidation
 
         if (VIP2C::hasVolumeSeuil() && $this->document->hasDestionationVrac()) {
             foreach ($this->document->getProduitsWithoutLots() as $produit_hash => $produit) {
-                $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $produit_hash);
+                $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $produit->getConfig()->getHash());
                 foreach($contrats as $k=>$v){
                     $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
                 }
@@ -115,7 +115,7 @@ class DRevValidation extends DeclarationLotsValidation
             $lots = []; foreach ($this->document->declaration->get($produit_hash) as $produit) { $lots[] = $produit->libelle; }
             $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$produit_hash, "<strong>J'atteste de conditionnements,</strong> en revendiquant au-delà de mon Volume Individuel de Production Commercialisable Certifiée (VIP2C), je m'engage à fournir à Intervins Sud Est <strong>une copie du registre de conditionnement</strong> pour les lots <strong>".implode(', ', $lots)."</strong> en dépassement sur cette revendication.");
 
-            $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $produit_hash);
+            $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $this->document->declaration->get($produit_hash)->getConfig()->getHash());
 
             if($contrats){
                 foreach($contrats as $k=>$v){
@@ -490,7 +490,7 @@ class DRevValidation extends DeclarationLotsValidation
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$hash_produit, '', null, $hash_produit);
             }
             if (VIP2C::hasVolumeSeuil() && $this->document->hasDestionationVrac()) {
-                $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $hash_produit);
+                $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $this->document->declaration->get($hash_produit)->getConfig()->getHash());
 
                 if(!$contrats){
                     $this->addPoint(self::TYPE_ERROR,'vip2c_pas_de_contrats_'.$hash_produit, $produit,$this->generateUrl('drev_lots', array("id" => $this->document->_id)) );

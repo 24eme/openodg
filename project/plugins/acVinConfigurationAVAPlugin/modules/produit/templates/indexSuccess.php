@@ -4,12 +4,46 @@
     <li class="text-muted"><?php echo $config->_id ?><small>@<?php echo $config->_rev ?></small></li>
 </ol>
 
-<div style="position: relative;">
-    <img src="/<?php echo $organisme->getLogoPdfWebPath() ?>" class="pull-right" />
-</div>
-
 <h2>Facturation</h2>
 <a href="<?php echo url_for('facturation_template_last'); ?>">Voir le template de facturation</a>
+
+<h2>Dates d'ouverture des télédéclarations</h2>
+
+<?php $teledeclarations = array(
+    "ParcellaireManquantConfiguration" => "Pieds manquants",
+    "DRevConfiguration" => "Revendication",
+    "TravauxMarcConfiguration" => "Travaux de Marc",
+    "DRevMarcConfiguration" => "Revendication de Marc",
+    "PMCConfiguration" => "PMC",
+    "ParcellaireAffectationConfiguration" => "Affectation Parcellaire",
+    "ParcellaireAffectationCremantConfiguration" => "Affectation Parcellaire Crémant",
+    "IntentionCremantConfiguration" => "Intention Cremant",
+    "TirageConfiguration" => "Tirage",
+); ?>
+<table class="table table-bordered table-striped table-condensed">
+    <thead>
+        <tr>
+            <th>Déclaration</th>
+            <th class="col-xs-2 text-center">Mois de début de campagne</th>
+            <th class="text-center">Date d'ouverture</th>
+            <th class="text-center">Date de fermeture</th>
+            <th class="text-center">État</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($teledeclarations as $classConfig => $libelle): ?>
+        <?php if(class_exists($classConfig) && $classConfig::getInstance()->isModuleEnabled()): ?>
+        <tr>
+            <td><?php echo $libelle ?></td>
+            <td class="text-center"><?php echo $classConfig::getInstance()->getCampagneDebutMois(); ?></td>
+            <td class="text-center"><?php echo $classConfig::getInstance()->getDateOuvertureDebut(); ?></td>
+            <td class="text-center"><?php echo $classConfig::getInstance()->getDateOuvertureFin(); ?></td>
+            <td class="text-center <?php if($classConfig::getInstance()->isOpen()): ?>success text-success<?php else: ?>danger text-danger<?php endif; ?>"><?php if($classConfig::getInstance()->isOpen()): ?>Ouvert<?php else: ?>Fermé<?php endif; ?></td>
+        </tr>
+        <?php endif; ?>
+        <?php endforeach; ?>
+    </tbody>
+</table>
 
 <h2>Produits</h2>
 

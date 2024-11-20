@@ -4,7 +4,6 @@ class DRevConfiguration extends DeclarationConfiguration {
 
     private static $_instance = null;
     protected $configuration;
-    protected $campagneManager = null;
 
     public static function getInstance() {
         if (is_null(self::$_instance)) {

@@ -166,15 +166,13 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function getDateOuvertureDebut() {
-        $dates = sfConfig::get('app_dates_ouverture_drev');
 
-        return $dates['debut'];
+        return DRevConfiguration::getInstance()->getDateOuvertureDebut();
     }
 
     public function getDateOuvertureFin() {
-        $dates = sfConfig::get('app_dates_ouverture_drev');
 
-        return $dates['fin'];
+        return DRevConfiguration::getInstance()->getDateOuvertureFin();
     }
 
     public function isOpen($date = null) {
