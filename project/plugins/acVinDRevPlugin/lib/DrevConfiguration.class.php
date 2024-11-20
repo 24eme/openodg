@@ -17,6 +17,11 @@ class DRevConfiguration extends DeclarationConfiguration {
         return 10;
     }
 
+    public function getModuleName() {
+
+        return 'drev';
+    }
+
     public function load() {
         $this->configuration = sfConfig::get('drev_configuration_drev', array());
     }

@@ -1,6 +1,6 @@
 <?php
 
-class TransactionConfiguration {
+class TransactionConfiguration extends DeclarationConfiguration {
 
     private static $_instance = null;
     protected $configuration;
@@ -131,5 +131,15 @@ class TransactionConfiguration {
         if($this->hasStaticOrigineType()){
           return $this->configuration['static_origine_type'];
         }
+    }
+
+    public function getCampagneDebutMois() {
+
+        return DRevConfiguration::getInstance()->getCampagneDebutMois();
+    }
+
+    public function getModuleName() {
+
+        return 'transaction';
     }
 }
