@@ -1,6 +1,6 @@
 <?php
 
-class PMCConfiguration {
+class PMCConfiguration extends DeclarationConfiguration {
 
     private static $_instance = null;
     protected $configuration;
