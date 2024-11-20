@@ -6,7 +6,7 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($tirage && $tirage->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
         <div class="panel-heading">
-            <h3>Tirage Crémant<br /></h3>
+            <h3>Tirage Crémant<br />&nbsp;</h3>
         </div>
         <?php if ($tirage && $tirage->validation): ?>
             <div class="panel-body">
