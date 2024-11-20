@@ -1,4 +1,4 @@
-<h2>Dates d'ouverture des télédéclarations</h2>
+<h2>Dates d'ouverture des télédéclarations <a href="#ouvertures" name="ouvertures" class="small"><span class="glyphicon glyphicon-link"></span></a></h2>
 <?php $teledeclarations = array(
     "ParcellaireManquantConfiguration" => "Pieds manquants",
     "DRevConfiguration" => "Revendication",

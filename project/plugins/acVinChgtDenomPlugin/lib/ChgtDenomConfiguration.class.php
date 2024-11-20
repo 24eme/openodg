@@ -51,9 +51,9 @@ class ChgtDenomConfiguration extends DeclarationConfiguration {
         return 'chgtdenom';
     }
 
-    public function isOpen() {
+    public function isOpen($date = null) {
 
-        return parent::isOpen() && $this->isDematEnabled();
+        return parent::isOpen($date) && $this->isDematEnabled();
     }
 
 }
