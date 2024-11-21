@@ -3,7 +3,6 @@
 class ParcellaireManquantConfiguration extends DeclarationConfiguration {
 
     private static $_instance = null;
-    protected $campagneManager = null;
 
     public static function getInstance() {
         if (is_null(self::$_instance)) {
@@ -17,4 +16,13 @@ class ParcellaireManquantConfiguration extends DeclarationConfiguration {
         return 2;
     }
 
+    public function getModuleName() {
+
+        return 'parcellaireManquant';
+    }
+
+    public function getDateOuvertureConfigName() {
+
+        return 'parcellaire_manquant';
+    }
 }

@@ -3,7 +3,6 @@
 class ParcellaireAffectationConfiguration extends DeclarationConfiguration {
 
     private static $_instance = null;
-    protected $campagneManager = null;
 
     public static function getInstance() {
         if (is_null(self::$_instance)) {
@@ -17,4 +16,12 @@ class ParcellaireAffectationConfiguration extends DeclarationConfiguration {
         return 2;
     }
 
+    public function getModuleName() {
+        return 'parcellaireAffectation';
+    }
+
+    public function getDateOuvertureConfigName() {
+
+        return 'parcellaire';
+    }
 }

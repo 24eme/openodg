@@ -1,26 +1,28 @@
 <?php
 
-class ParcellaireAffectationConfiguration extends DeclarationConfiguration {
+class ParcellaireIrrigueConfiguration extends DeclarationConfiguration {
 
     private static $_instance = null;
 
     public static function getInstance() {
         if (is_null(self::$_instance)) {
-            self::$_instance = new ParcellaireAffectationConfiguration();
+            self::$_instance = new ParcellaireIrrigueConfiguration();
         }
         return self::$_instance;
     }
 
     public function getCampagneDebutMois() {
 
-        return 2;
+        return ParcellaireAffectationConfiguration::getInstance()->getCampagneDebutMois();
     }
 
     public function getModuleName() {
-        return 'parcellaireAffectation';
+
+        return 'parcellaireIrrigue';
     }
 
     public function getDateOuvertureConfigName() {
-        return 'parcellaire_affectation';
+
+        return 'parcellaire_irrigue';
     }
 }

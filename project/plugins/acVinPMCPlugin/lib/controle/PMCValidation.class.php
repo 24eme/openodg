@@ -152,7 +152,7 @@ class PMCValidation extends DocumentValidation
                 foreach ($totalVolumePMC as $hash => $millesimes) {
                     $produit = ConfigurationClient::getInstance()->getCurrent()->get($hash);
                     foreach ($millesimes as $millesime => $volume) {
-                        $volumeDejaCommercialise = @$syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]['Lot'];
+                        $volumeDejaCommercialise = @$syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]['PMC'];
                         $volumeDRev = @$syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]['DRev'];
 
                         if (round($volumeDejaCommercialise + $volume, 2) > round($volumeDRev, 2)) {
