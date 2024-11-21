@@ -87,7 +87,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 	}
 
 	public function getSyndicats() {
-        if(!$this->getDocument()->exist('regions')) {
+        if(!$this->getDocument()->exist('region')) {
             return [];
         }
 		$syndicats = array();
