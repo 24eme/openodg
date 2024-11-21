@@ -1252,7 +1252,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
 
       if(!count($this->getProduits($region))) {
-           return true;
+           return false;
       }
 
       foreach ($this->getProduits($region) as $hash => $produit) {
