@@ -1,6 +1,6 @@
 <?php
 
-class PMCConfiguration {
+class PMCConfiguration extends DeclarationConfiguration {
 
     private static $_instance = null;
     protected $configuration;
@@ -113,5 +113,13 @@ class PMCConfiguration {
 
     public function hasAllProduits() {
         return isset($this->configuration['all_produits']) && ($this->configuration['all_produits']);
+    }
+
+    public function getModuleName() {
+        return 'pmc';
+    }
+
+    public function getCurrentPeriode() {
+        return DRevConfiguration::getInstance()->getCampagneDebutMois();
     }
 }
