@@ -51,13 +51,13 @@
         <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireirrigable')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
     </div>
 <?php elseif ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>
-    <?php if (!ParcellaireIrrigueClient::getInstance()->isOpen()): ?>
+    <?php if (!ParcellaireIrrigueConfiguration::getInstance()->isOpen()): ?>
           <div class="panel-body">
               <p class="explications">
-              <?php if(date('Y-m-d') > ParcellaireIrrigueClient::getInstance()->getDateOuvertureFin()): ?>
+              <?php if(date('Y-m-d') > ParcellaireIrrigueConfiguration::getInstance()->getDateOuvertureFin()): ?>
               Le Téléservice « Irrigué » est fermé. Pour toute question, veuillez contacter directement l'ODG.
               <?php else: ?>
-                  Le Téléservice « Irrigué »  sera ouvert à partir du <?php echo format_date(ParcellaireIrrigueClient::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>
+                  Le Téléservice « Irrigué »  sera ouvert à partir du <?php echo format_date(ParcellaireIrrigueConfiguration::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>
               <?php endif; ?>
               </p>
               <div class="actions">
