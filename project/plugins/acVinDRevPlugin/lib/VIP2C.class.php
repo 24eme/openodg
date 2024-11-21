@@ -85,10 +85,12 @@ class VIP2C
         if (!isset(self::$csv_seuil[$millesime])) {
             self::$csv_seuil[$millesime] = self::getVolumeSeuilFromCSV($cvi, $millesime);
         }
-        if (!isset(self::$csv_seuil[$millesime][$hash_produit])) {
-            return null;
+        foreach (self::$csv_seuil[$millesime] as $hash => $volumeSeuil) {
+            if (self::isHashMatch($hash, $hash_produit)) {
+                return $volumeSeuil;
+            }
         }
-        return self::$csv_seuil[$millesime][$hash_produit];
+        return null;
     }
 
     public static function getConfigCampagneVolumeSeuil() {
