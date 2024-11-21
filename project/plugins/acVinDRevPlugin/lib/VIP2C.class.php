@@ -44,7 +44,7 @@ class VIP2C
             $confProduit = ConfigurationClient::getInstance()->getConfiguration()->get($hash_produit);
         }
         foreach($result as $contratid => $data) {
-            if ($hash_produit && strpos(str_replace('/declaration/', '', $data['produit']), str_replace('/declaration/', '', $hash_produit)) === false && $confProduit->code_douane != $data['code_douane']) {
+            if ($hash_produit && !VIP2C::isHashMatch($hash_produit, $data['produit']) && $confProduit->code_douane != $data['code_douane']) {
                 $todelete[] = $contratid;
             }
         }
