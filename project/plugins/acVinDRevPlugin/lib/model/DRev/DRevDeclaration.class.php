@@ -87,6 +87,9 @@ class DRevDeclaration extends BaseDRevDeclaration
 	}
 
 	public function getSyndicats() {
+        if(!$this->getDocument()->exist('regions')) {
+            return [];
+        }
 		$syndicats = array();
 		foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
 			if(!count($this->getProduitsByRegion($region))) {

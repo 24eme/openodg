@@ -20,7 +20,7 @@
                     <a class="btn btn-block btn-default" href="<?php echo url_for('drev_visualisation', $drev) ?>">Visualiser la déclaration</a>
                 </div>
             </div>
-        <?php elseif ($drev && (DRevClient::getInstance()->isOpen() || $sf_user->isAdmin() || $sf_user->hasDrevAdmin())): ?>
+        <?php elseif ($drev && (DRevConfiguration::getInstance()->isOpen() || $sf_user->isAdmin() || $sf_user->hasDrevAdmin())): ?>
             <div class="panel-body">
                 <p class="explications">Votre déclaration de revendication de cette année a été débutée sans avoir été validée.</p>
                 <div class="actions">
@@ -28,12 +28,12 @@
                     <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('drev_delete', $drev) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                 </div>
             </div>
-        <?php elseif (!DRevClient::getInstance()->isOpen()): ?>
+        <?php elseif (!DRevConfiguration::getInstance()->isOpen()): ?>
             <div class="panel-body">
-                <?php if(date('Y-m-d') > DRevClient::getInstance()->getDateOuvertureFin()): ?>
+                <?php if(date('Y-m-d') > DRevConfiguration::getInstance()->getDateOuvertureFin()): ?>
                 <p class="explications">Le Téléservice est fermé. Pour toute question, veuillez contacter directement l'ODG.</p>
                 <?php else: ?>
-                <p class="explications">Le Téléservice sera ouvert à partir du <?php echo format_date(DRevClient::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
+                <p class="explications">Le Téléservice sera ouvert à partir du <?php echo format_date(DRevConfiguration::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
                 <?php endif; ?>
                 <div class="actions">
                 <?php if ($sf_user->isAdmin()): ?>

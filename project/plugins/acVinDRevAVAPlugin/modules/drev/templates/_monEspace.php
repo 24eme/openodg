@@ -34,12 +34,12 @@
                     <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-xs btn-danger pull-right" href="<?php echo url_for('drev_delete', $drev) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                 </p>
             </div>
-        <?php elseif (!DRevClient::getInstance()->isOpen()): ?>
+        <?php elseif (!DRevConfiguration::getInstance()->isOpen()): ?>
             <div class="panel-body">
-                <?php if(date('Y-m-d') > DRevClient::getInstance()->getDateOuvertureFin()): ?>
+                <?php if(date('Y-m-d') > DRevConfiguration::getInstance()->getDateOuvertureFin()): ?>
                 <p>Le Téléservice est fermé. Pour toute question, veuillez contacter directement l'AVA.</p>
                 <?php else: ?>
-                <p>Le Téléservice sera ouvert à partir du <?php echo format_date(DRevClient::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
+                <p>Le Téléservice sera ouvert à partir du <?php echo format_date(DRevConfiguration::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
                 <?php endif; ?>
             </div>
             <div class="panel-bottom">

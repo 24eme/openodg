@@ -7,12 +7,12 @@
             <h3 class="panel-title">Déclarations d'irrigation <?php echo $periode ?></h3>
         </div>
 <?php if (!$parcellaireIrrigable): ?>
-    <?php if (!ParcellaireIrrigableClient::getInstance()->isOpen()): ?>
+    <?php if (!ParcellaireIrrigableConfiguration::getInstance()->isOpen()): ?>
       <div class="panel-body">
-          <?php if(date('Y-m-d') > ParcellaireIrrigableClient::getInstance()->getDateOuvertureFin()): ?>
+          <?php if(date('Y-m-d') > ParcellaireIrrigableConfiguration::getInstance()->getDateOuvertureFin()): ?>
           <p class="explications">Le Téléservice « Irrigable » est fermé.</p>
           <?php else: ?>
-          <p class="explications">Le Téléservice « Irrigable » sera ouvert à partir du <?php echo format_date(ParcellaireIrrigableClient::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
+          <p class="explications">Le Téléservice « Irrigable » sera ouvert à partir du <?php echo format_date(ParcellaireIrrigableConfiguration::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
           <?php endif; ?>
           <div class="actions">
               <?php if ($sf_user->isAdmin()): ?>

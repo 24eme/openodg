@@ -9,7 +9,7 @@
   <li class="active"><a href="">Vérification</a></li>
 </ol>
 
-<div class="page-header no-border clearfix">
+<div class="page-header no-border">
     <h2>Tableau de vérification <?php echo $dr->type; ?> <?= $dr->campagne ?></h2>
 </div>
 

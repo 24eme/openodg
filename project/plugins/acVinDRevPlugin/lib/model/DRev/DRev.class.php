@@ -1132,7 +1132,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
             foreach($this->getRegions() as $region) {
                 foreach ($this->getProduits($region) as $hash => $produit) {
-                    $produit->validation_odg = null;
+                    if ($produit->exist('validation_odg')) {
+                        $produit->validation_odg = null;
+                    }
                 }
             }
         }
@@ -1251,7 +1253,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
 
       if(!count($this->getProduits($region))) {
-           return false;
+           return true;
       }
 
       foreach ($this->getProduits($region) as $hash => $produit) {
@@ -1426,7 +1428,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->generateMouvementsFactures();
         }
 
-        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+        if (RegionConfiguration::getInstance()->hasOdgProduits() && !$this->validation_odg) {
             $regions = $this->getRegions();
             if (count($regions)) {
                 $this->add('region', implode('|', $regions));
