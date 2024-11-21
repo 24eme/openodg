@@ -51,60 +51,60 @@
 
 <p>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</p>
 <div class="row">
-    <?php if(class_exists("ParcellaireManquant") && in_array('parcellaireManquant', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php if(class_exists("ParcellaireManquantConfiguration") && ParcellaireManquantConfiguration::getInstance()->isModuleEnabled()): ?>
     <?php include_component('parcellaireManquant', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireManquantConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
     <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
-    <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules')) && !DRevConfiguration::getInstance()->isRevendicationParLots()): ?>
+    <?php if(class_exists("DRevConfiguration") && DRevConfiguration::getInstance()->isModuleEnabled() && !DRevConfiguration::getInstance()->isRevendicationParLots()): ?>
     <?php include_component('drev', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules')) && class_exists("DRevConfiguration") && DRevConfiguration::getInstance()->isRevendicationParLots()): ?>
+    <?php if(class_exists("DRevConfiguration") && DRevConfiguration::getInstance()->isModuleEnabled() && class_exists("DRevConfiguration") && DRevConfiguration::getInstance()->isRevendicationParLots()): ?>
         <?php include_component('drev', 'monEspaceIGP', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("TravauxMarc")): ?>
-    <?php include_component('travauxmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php if(class_exists("TravauxMarcConfiguration")): ?>
+    <?php include_component('travauxmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : TravauxMarcConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("DRevMarc")): ?>
-    <?php include_component('drevmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php if(class_exists("DRevMarcConfiguration")): ?>
+    <?php include_component('drevmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevMarcConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("PMC") && in_array('pmc', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('pmc', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php if(class_exists("PMCConfiguration") && PMCConfiguration::getInstance()->isModuleEnabled()): ?>
+    <?php include_component('pmc', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : PMCConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("PMC") && in_array('pmcNc', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('pmcNc', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php if(class_exists("PMCConfiguration") && PMCConfiguration::getInstance()->isModuleEnabled()): ?>
+    <?php include_component('pmcNc', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : PMCConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("Conditionnement") && in_array('conditionnement', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('conditionnement', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php if(class_exists("ConditionnementConfiguration") && ConditionnementConfiguration::getInstance()->isModuleEnabled()): ?>
+    <?php include_component('conditionnement', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ConditionnementConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("Transaction") && in_array('transaction', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('transaction', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php if(class_exists("TransactionConfiguration") && TransactionConfiguration::getInstance()->isModuleEnabled()): ?>
+    <?php include_component('transaction', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : TransactionConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("ChgtDenom") && in_array('chgtdenom', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('chgtdenom', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php if(class_exists("ChgtDenomConfiguration") && ChgtDenomConfiguration::getInstance()->isModuleEnabled()): ?>
+    <?php include_component('chgtdenom', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ChgtDenomConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
     <?php if(in_array('parcellaireAffectationCoop', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_partial('parcellaireAffectationCoop/monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireAffectationConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("ParcellaireIrrigable") && in_array('parcellaireIrrigable', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireIrrigable', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireAffectationConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php if(class_exists("ParcellaireIrrigableConfiguration") && ParcellaireIrrigableConfiguration::getInstance()->isModuleEnabled()): ?>
+    <?php include_component('parcellaireIrrigable', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireIrrigableConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("ParcellaireIrrigue") && in_array('parcellaireIrrigue', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireIrrigue', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireAffectationConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php if(class_exists("ParcellaireIrrigueConfiguration") && ParcellaireIrrigueConfiguration::getInstance()->isModuleEnabled()): ?>
+    <?php include_component('parcellaireIrrigue', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireIrrigueConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
     <?php if($sf_user->isAdmin() && class_exists("ParcellaireIntentionAffectation") && in_array('parcellaireIntentionAffectation', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('parcellaireIntentionAffectation', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireAffectationConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("ParcellaireAffectation") && in_array('parcellaireAffectation', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php if(class_exists("ParcellaireAffectationConfiguration") && ParcellaireAffectationConfiguration::getInstance()->isModuleEnabled()): ?>
     <?php include_component('parcellaireAffectation', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireAffectationConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("ParcellaireAffectationCremant") && in_array('parcellaireAffectationCremant', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireAffectationCremant', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireAffectationConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php if(class_exists("ParcellaireAffectationCremantConfiguration") && ParcellaireAffectationCremantConfiguration::getInstance()->isModuleEnabled()): ?>
+    <?php include_component('parcellaireAffectationCremant', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireAffectationCremantConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("IntentionCremant") && in_array('intentionCremant', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('intentionCremant', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireAffectationConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php if(class_exists("IntentionCremantConfiguration") && IntentionCremantConfiguration::getInstance()->isModuleEnabled()): ?>
+    <?php include_component('intentionCremant', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : IntentionCremantConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("Tirage")): ?>
-    <?php include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php if(class_exists("TirageConfiguration")): ?>
+    <?php include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : TirageConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
     <?php if(class_exists("Adelphe") && in_array('adelphe', sfConfig::get('sf_enabled_modules')) && $etablissement->getMasterCompte()->hasDroit(AdelpheSecurity::DROIT_ADELPHE)): ?>
     <?php include_component('adelphe', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>

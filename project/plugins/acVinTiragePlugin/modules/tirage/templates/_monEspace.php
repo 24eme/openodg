@@ -6,7 +6,7 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($tirage && $tirage->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
         <div class="panel-heading">
-            <h3>Tirage Crémant</h3>
+            <h3>Tirage Crémant<br />&nbsp;</h3>
         </div>
         <?php if ($tirage && $tirage->validation): ?>
             <div class="panel-body">
@@ -34,12 +34,12 @@
                         <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-xs btn-danger pull-right" href="<?php echo url_for('tirage_delete', $tirage) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                     </p>
                 </div>
-        <?php elseif (!TirageClient::getInstance()->isOpen()): ?>
+        <?php elseif (!TirageConfiguration::getInstance()->isOpen()): ?>
             <div class="panel-body">
-                <?php if(date('Y-m-d') > TirageClient::getInstance()->getDateOuvertureFin()): ?>
+                <?php if(date('Y-m-d') > TirageConfiguration::getInstance()->getDateOuvertureFin()): ?>
                 <p>Le Téléservice est fermé. Pour toute question, veuillez contacter directement l'AVA.</p>
                 <?php else: ?>
-                <p>Le Téléservice sera ouvert à partir du <?php echo format_date(TirageClient::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
+                <p>Le Téléservice sera ouvert à partir du <?php echo format_date(TirageConfiguration::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
                 <?php endif; ?>
             </div>
             <div class="panel-bottom">
