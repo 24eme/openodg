@@ -2555,22 +2555,33 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return -1;
     }
 
+    public function getHashRegexp($hash_produit_regexp) {
+        $hashes = [];
+        foreach($this->getProduits() as $hash => $produit) {
+            if (VIP2C::isHashMatch($hash_produit_regexp, $hash)) {
+                $hashes[] = VIP2C::cleanHash($produit->getCepage()->getHash());
+            }
+        }
+        return $hashes;
+    }
+
     public function getProduitsHashWithVolumeSeuil() {
         $p = array();
         $parLot = $this->declaration->getConfig()->isRevendicationParLots();
         foreach(VIP2C::getProduitsHashWithVolumeSeuil($this->declarant->cvi, $this->getDefaultMillesime()) as $hash_produit) {
-            if (! $this->declaration->exist($hash_produit)) {
+            $hashes = $this->getHashRegexp($hash_produit);
+            if (!$hashes) {
                 continue;
             }
 
-            if (! $parLot) {
-                $p[] = $hash_produit;
+            if (!$parLot) {
+                $p += $hashes;
                 continue;
             }
 
             $toadd = false;
             foreach ($this->getLots() as $l) {
-                if ($l->produit_hash != "/declaration/".$hash_produit) {
+                if (!VIP2C::isHashMatch($hash_produit, $l->produit_hash)) {
                     continue;
                 }
 
@@ -2578,14 +2589,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     continue;
                 }
 
-                $toadd = true;
-            }
-
-            if ($toadd) {
-                $p[] = $hash_produit;
+                $p[] = VIP2C::cleanHash($l->produit_hash);
             }
         }
-        return $p;
+        return array_unique($p);
     }
 
     public function hasVolumeSeuilAndSetIfNecessary(){
