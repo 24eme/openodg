@@ -111,4 +111,22 @@ class VIP2C
         return DRevConfiguration::getInstance()->hasVolumeSeuil();
     }
 
+    public static function cleanHash($hash) {
+        $from = ['/declaration/', 'declaration/'];
+        $to = ['', ''];
+        return str_replace($from, $to, $hash);
+    }
+
+    public static function isHashMatch($regexp, $hash) {
+        $hashes = explode('+',self::cleanHash($regexp));
+        $hashCleaned = self::cleanHash($hash);
+        $match = true;
+        foreach ($hashes as $h) {
+            if (strpos($hashCleaned, $h) === false) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
