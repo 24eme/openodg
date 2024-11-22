@@ -4,10 +4,6 @@
     <li class="text-muted"><?php echo $config->_id ?><small>@<?php echo $config->_rev ?></small></li>
 </ol>
 
-<div style="position: relative;">
-    <img src="/<?php echo $organisme->getLogoPdfWebPath() ?>" class="pull-right" />
-</div>
-
 <h2>Facturation</h2>
 <a href="<?php echo url_for('facturation_template_last'); ?>">Voir le template de facturation</a>
 
@@ -106,3 +102,5 @@
         </tbody>
     </table>
 <?php endif; ?>
+
+<?php include_partial('produit/ouverturesTeledeclarations'); ?>

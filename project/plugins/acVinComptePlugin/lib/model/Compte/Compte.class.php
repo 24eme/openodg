@@ -842,6 +842,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
 
+    public function setEmailTeledeclaration($email_teledeclaration) {
+        $this->add('teledeclaration_email', $email);
+    }
+
+
     public function hasAlternativeLogins() {
         if (!$this->exist('alternative_logins')) {
             return false;

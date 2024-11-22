@@ -154,8 +154,15 @@ echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '[A-Z]' | while read subhab; 
     cat $EXPORTDIR/habilitation.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591 >> $SUBDIR/habilitation.csv
     head -n 1 $EXPORTDIR/drev.csv > $SUBDIR/drev.csv
     cat $EXPORTDIR/drev.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/drev.csv
+    cat $SUBDIR/habilitation.csv | iconv -f ISO88591 -t UTF8 | cut -d ";" -f 2 | sed 's/"//g' | sed -r 's/.{2}$//' | sort | uniq | grep -E '[0-9]+$' | tr "\n" "|" | sed 's/^/(/' | sed 's/|$/)/' > $SUBDIR/.etablissements.grep
     head -n 1 $EXPORTDIR/etablissements.csv > $SUBDIR/etablissements.csv
-    cat $EXPORTDIR/etablissements.csv | iconv -f ISO88591 -t UTF8 | grep -E "^$(cat $SUBDIR/habilitation.csv | iconv -f ISO88591 -t UTF8 | cut -d ";" -f 2 | sed 's/"//g' | sed -r 's/.{2}$//' | sort | uniq | grep -E "^[0-9]+" | tr "\n" "|" | sed 's/^/(/' | sed 's/|$/)/');" | iconv -f UTF8 -t ISO88591 >> $SUBDIR/etablissements.csv
+    cat $EXPORTDIR/etablissements.csv | iconv -f ISO88591 -t UTF8 | grep -E "^$(cat $SUBDIR/.etablissements.grep)" | iconv -f UTF8 -t ISO88591 >> $SUBDIR/etablissements.csv
+    head -n 1 $EXPORTDIR/societe.csv > $SUBDIR/societes.csv
+    cat $EXPORTDIR/societe.csv | iconv -f ISO88591 -t UTF8 | grep -E "^$(cat $SUBDIR/.etablissements.grep)" | iconv -f UTF8 -t ISO88591 >> $SUBDIR/societes.csv
+    head -n 1 $EXPORTDIR/comptes.csv > $SUBDIR/comptes.csv
+    cat $EXPORTDIR/comptes.csv | iconv -f ISO88591 -t UTF8 | grep -E "^$(cat $SUBDIR/.etablissements.grep)" | iconv -f UTF8 -t ISO88591 >> $SUBDIR/comptes.csv
+    head -n 1 $EXPORTDIR/chais.csv > $SUBDIR/chais.csv
+    cat $EXPORTDIR/chais.csv | iconv -f ISO88591 -t UTF8 | grep -E "^$(cat $SUBDIR/.etablissements.grep)" | iconv -f UTF8 -t ISO88591 >> $SUBDIR/chais.csv
 
     if [ -z $IS_NO_VINIF ]; then
         head -n 1 $EXPORTDIR/dr.csv > $SUBDIR/dr.csv
