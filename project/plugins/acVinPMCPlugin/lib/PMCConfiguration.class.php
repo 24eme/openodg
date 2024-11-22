@@ -119,7 +119,7 @@ class PMCConfiguration extends DeclarationConfiguration {
         return 'pmc';
     }
 
-    public function getCurrentPeriode() {
+    public function getCampagneDebutMois() {
         return DRevConfiguration::getInstance()->getCampagneDebutMois();
     }
 }
