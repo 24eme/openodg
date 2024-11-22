@@ -71,7 +71,7 @@ class PMCValidation extends DocumentValidation
                 }
             }
         }
-
+        $campagnes = [];
         foreach ($this->document->lots as $key => $lot) {
 
             if($lot->isEmpty()){
@@ -108,7 +108,8 @@ class PMCValidation extends DocumentValidation
             } else {
                 $totalVolumePMC[$lot->produit_hash][$lot->millesime] += $lot->volume;
             }
-
+            $campagnes[$lot->millesime."-".($lot->millesime + 1)] = $lot->millesime."-".($lot->millesime + 1);
+            $campagnes[$lot->campagne] = $lot->campagne;
             $volume = sprintf("%01.02f",$lot->getVolume());
 
             if(!$this->document->isValideeOdg() && !$lot->numero_logement_operateur){
@@ -147,14 +148,13 @@ class PMCValidation extends DocumentValidation
         }
 
         if ($this->document->isNonConformite() === false) {
-            $syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant, array(ConfigurationClient::getInstance()->getPreviousCampagne($this->document->campagne), $this->document->campagne));
+            $syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant, array_keys($campagnes));
             if(!$this->document->isValideeOdg()) {
                 foreach ($totalVolumePMC as $hash => $millesimes) {
                     $produit = ConfigurationClient::getInstance()->getCurrent()->get($hash);
                     foreach ($millesimes as $millesime => $volume) {
                         $volumeDejaCommercialise = @$syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]['PMC'];
                         $volumeDRev = @$syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]['DRev'];
-
                         if (round($volumeDejaCommercialise + $volume, 2) > round($volumeDRev, 2)) {
                             $this->addPoint(self::TYPE_ERROR, 'volume_depasse', $produit->getLibelleComplet().'  '.$millesime." - ".($volumeDejaCommercialise + $volume)  . " hl déclaré en circulation pour ".$volumeDRev." hl revendiqué" , $this->generateUrl($routeName, array("id" => $this->document->_id)));
                         }
