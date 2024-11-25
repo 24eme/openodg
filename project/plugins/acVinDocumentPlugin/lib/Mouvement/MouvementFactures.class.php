@@ -75,8 +75,13 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
     }
 
     public function getMD5Key() {
-        $key = $this->getDocument()->identifiant . $this->produit_hash . $this->type_hash . $this->detail_identifiant;
-        $key.= uniqid();
+        $key  = $this->getDocument()->_id . $this->getDocument()->getIdentifiant();
+        $key .= $this->produit_hash . $this->type_hash;
+        $key .= $this->detail_identifiant.$this->date;
+        if ($this->exist('region')) {
+            $key.= $this->region;
+        }
+        $key .= $this->getDocument()->validation_odg;
 
         return md5($key);
     }
