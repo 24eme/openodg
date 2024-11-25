@@ -1220,13 +1220,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
 
-        $allValidate = true;
+        $no_validate = false;
         foreach ($this->declaration->getProduits() as $key => $produit) {
-            if($produit->isValidateOdg()){
-               continue;
+            if($produit->isValidateOdg() === false){
+                $no_validate = true;
+                break;
             }
-            $allValidate = false;
-            break;
         }
 
         if($this->isModificative()){
@@ -1239,7 +1238,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->generateMouvementsFactures();
         }
 
-        if(!$allValidate) {
+        if($no_validate) {
 
             return;
         }
@@ -1253,7 +1252,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
 
       if(!count($this->getProduits($region))) {
-           return true;
+           return false;
       }
 
       foreach ($this->getProduits($region) as $hash => $produit) {
