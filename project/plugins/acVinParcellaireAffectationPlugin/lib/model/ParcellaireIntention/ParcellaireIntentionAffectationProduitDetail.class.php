@@ -21,7 +21,7 @@ class ParcellaireIntentionAffectationProduitDetail extends ParcellaireAffectatio
             $this->superficie = $this->superficie_affectation;
             $this->remove('superficie_affectation');
         }
-        ParcellaireClient::CopyParcelle($this, $p);
+        ParcellaireClient::CopyParcelle($this, $p, false);
     }
 
     public function getProduitHash() {
