@@ -60,7 +60,7 @@ th {
           </small>
           </td>
           <td></td>
-          <td><?php echo date_create_from_format("Y-m-d", $lot->date)->format('d/m/Y') ?> <?php echo $lot->prelevement_heure ?></td>
+          <td><?php echo date_create_from_format("Y-m-d H:i:s", $degustation->date)->format('d/m/Y') ?> <?php echo $lot->prelevement_heure ?></td>
          </tr>
          <?php $ligne++; ?>
       <?php endforeach; ?>
