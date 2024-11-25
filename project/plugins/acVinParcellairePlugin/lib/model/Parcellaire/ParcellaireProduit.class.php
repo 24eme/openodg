@@ -117,7 +117,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         $k = $p->getParcelleId();
         $detail = $this->detail->add($k);
         $detail->produit_hash = $this->getHash();
-        $r = ParcellaireClient::CopyParcelle($detail, $p);
+        $r = ParcellaireClient::CopyParcelle($detail, $p, true);
         $detail->produit_hash = $this->getHash();
         return $r;
     }

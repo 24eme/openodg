@@ -90,7 +90,7 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
   			$item->libelle = $parcelle->libelle;
   			foreach ($parcelle->detail as $subkey => $detail) {
   				$subitem = $item->detail->add($subkey);
-  				ParcellaireClient::CopyParcelle($subitem, $detail);
+  				ParcellaireClient::CopyParcelle($subitem, $detail, true);
   				$subitem->active = $detail->active;
 		  		if($detail->exist('vtsgn')) {
 		  			$subitem->add('vtsgn', (int)$detail->vtsgn);
