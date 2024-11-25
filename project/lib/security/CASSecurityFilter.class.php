@@ -50,7 +50,7 @@ class CASSecurityFilter extends sfBasicSecurityFilter
                $this->getContext()->getUser()->signInOrigin(acCas::getUser());
            }
 
-           return $this->redirect($this->request->getUri());
+           return $this->controller->redirect($this->request->getUri());
        }
 
        parent::execute($filterChain);
