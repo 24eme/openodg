@@ -30,7 +30,7 @@ class ParcellaireIntentionAffectationProduitsForm extends acCouchdbObjectForm {
                     $node->superficie = null;
                     continue;
                 }
-                ParcellaireClient::CopyParcelle($node, $parcelle);
+                ParcellaireClient::CopyParcelle($node, $parcelle, true);
                 $node->affectation = 1;
                 if (!$node->date_affectation) {
                     $node->date_affectation = date('Y-m-d');
