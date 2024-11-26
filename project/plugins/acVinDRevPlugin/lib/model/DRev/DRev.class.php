@@ -1272,7 +1272,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           return $produit->validation_odg;
         }
       }
-      return null;
+      return $this->validation_odg;
     }
 
     public function getEtablissementObject() {
@@ -1849,6 +1849,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L5, null, $parameters);
+    }
+
+    /** @see getQuantiteSuperficeRecolte Typo dans la fonction originelle */
+    public function getQuantiteSuperficieRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
+        return $this->getQuantiteSuperficeRecolte($parameters);
     }
 
     public function getQuantiteSuperficeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
