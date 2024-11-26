@@ -1272,7 +1272,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           return $produit->validation_odg;
         }
       }
-      return null;
+      return $this->validation_odg;
     }
 
     public function getEtablissementObject() {
