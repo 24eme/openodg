@@ -524,7 +524,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             if($produitFilter && !$this->matchFilter($donnee, $produitFilter)) {
                 continue;
             }
-            if(preg_replace('/^0/', '', $donnee->categorie) !== preg_replace('/^0/', '', str_replace("L", "", $numLigne))) {
+            if(preg_replace('/^0/', '', strtolower($donnee->categorie)) !== preg_replace('/^0/', '', str_replace("L", "", strtolower($numLigne)))) {
                 continue;
             }
             if ($metayer_vrai_bailleur_faux && $donnee->bailleur_raison_sociale) {

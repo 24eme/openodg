@@ -146,7 +146,7 @@ EOF;
         $item = $doc->declaration->add('certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT');
         $item->libelle = "Ventoux";
         $subitem = $item->detail->add($parcelle->getKey());
-        ParcellaireClient::CopyParcelle($subitem, $parcelle);
+        ParcellaireClient::CopyParcelle($subitem, $parcelle, false);
 
         return $subitem;
     }
