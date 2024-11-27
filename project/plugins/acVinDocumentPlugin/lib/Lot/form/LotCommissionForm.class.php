@@ -40,7 +40,9 @@ class LotCommissionForm extends acCouchdbObjectForm
             $degustations[$date->format('d/m/Y')] = "Degustation du ".$degustation->getDateFormat('d/m/Y');
         }
 
-        ksort($degustations);
+        uasort($degustations, function($a, $b) {
+            return implode("-", array_reverse(explode("/", $a))) > implode("-", array_reverse(explode("/", $b)));
+        });
 
         return array_merge(["" => ""], $degustations);
     }
