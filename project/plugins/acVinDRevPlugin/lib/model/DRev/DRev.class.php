@@ -1272,7 +1272,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           return $produit->validation_odg;
         }
       }
-      return null;
+      return $this->validation_odg;
     }
 
     public function getEtablissementObject() {
@@ -1427,7 +1427,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->generateMouvementsFactures();
         }
 
-        if (RegionConfiguration::getInstance()->hasOdgProduits() && !$this->validation_odg) {
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
             $regions = $this->getRegions();
             if (count($regions)) {
                 $this->add('region', implode('|', $regions));
@@ -1851,6 +1851,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L5, null, $parameters);
     }
 
+    /** @see getQuantiteSuperficeRecolte Typo dans la fonction originelle */
+    public function getQuantiteSuperficieRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
+        return $this->getQuantiteSuperficeRecolte($parameters);
+    }
+
     public function getQuantiteSuperficeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
 
         if (DRevClient::getInstance()->matchFilterDrev($this, $parameters) === false) {
@@ -1863,6 +1868,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L4, null, $parameters);
+    }
+
+    public function getQuantiteSuperficieRecolteWithBailleur(TemplateFactureCotisationCallbackParameters $parameters) {
+
+        if (DRevClient::getInstance()->matchFilterDrev($this, $parameters) === false) {
+            return null;
+        }
+        $docDouanier = $this->getDocumentDouanier();
+
+        if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
+            return;
+        }
+
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L4_ORIGINALE, null, $parameters);
     }
 
     public function getQuantiteVolumeVendue(TemplateFactureCotisationCallbackParameters $parameters) {
