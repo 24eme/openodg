@@ -24,19 +24,22 @@ class VIP2C
         $hashesRegex = array_column($infosProduits, 'hashes');
         $volumes = array_fill_keys($hashesRegex, 0);
 
-        foreach ($contrats as $contrat) {
-            foreach ($hashesRegex as $hash) {
-                if (VIP2C::isHashMatch($hash, $contrat['produit']) === true) {
-                    self::$infos['contrats'][] = $contrat;
-                }
-            }
-        }
-
+        $codesDouanes = [];
         foreach ($doc->getProduits() as $produit) {
             $drevHash = $produit->getCepage()->getHash();
             foreach ($hashesRegex as $hash) {
                 if (VIP2C::isHashMatch($hash, $drevHash) === true) {
                     $volumes[$hash] += $doc->getVolumeRevendiqueLotsWithFilterAppellations($drevHash);
+                    $codesDouanes[] = $produit->getConfig()->getCodeDouane();
+                    $codesDouanes = array_unique($codesDouanes);
+                }
+            }
+        }
+
+        foreach ($contrats as $contrat) {
+            foreach ($hashesRegex as $hash) {
+                if (VIP2C::isHashMatch($hash, $contrat['produit']) === true || in_array($contrat['code_douane'], $codesDouanes)) {
+                    self::$infos['contrats'][$contrat['numero']] = $contrat;
                 }
             }
         }
