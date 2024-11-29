@@ -21,7 +21,7 @@ class VIP2C
         $contrats = self::getContratsFromAPI($doc->declarant->cvi, $millesime);
         $infosProduits = self::getInfosFromCSV($doc->declarant->cvi, $millesime);
 
-        $hashesRegex = array_column($infosProduits, 'hashes');
+        $hashesRegex = array_column($infosProduits, 'hash_regex');
         $volumes = array_fill_keys($hashesRegex, 0);
 
         $codesDouanes = [];
@@ -45,7 +45,7 @@ class VIP2C
         }
 
         $infosProduits = array_map(function ($value) use ($volumes) {
-            $value['volume'] = $volumes[$value['hashes']];
+            $value['volume'] = $volumes[$value['hash_regex']];
             return $value;
         }, $infosProduits);
 
@@ -116,7 +116,7 @@ class VIP2C
 
             $volumes[] = [
                 "libelle" => $line[self::VIP2C_COLONNE_LIBELLE],
-                "hashes"  => $line[self::VIP2C_COLONNE_PRODUIT],
+                "hash_regex"  => $line[self::VIP2C_COLONNE_PRODUIT],
                 "volume_max"  => str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME])
             ];
         }
