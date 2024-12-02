@@ -38,7 +38,8 @@ class DRevDeclaration extends BaseDRevDeclaration
                 }
                 if ($saveStock) {
                     foreach ($hash as $element) {
-                        if ($element->vci->stock_precedent && $element->recolte->superficie_total) {
+                        //On ne réécrit pas le stock précédent de vci si l'utilisateur l'a édité (en étape 4)
+                        if (!$element->vci->stock_precedent && $element->recolte->superficie_total) {
                             $element->vci->stock_precedent = $saveStock;
                         }
                     }
