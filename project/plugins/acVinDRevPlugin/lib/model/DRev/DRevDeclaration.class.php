@@ -28,8 +28,8 @@ class DRevDeclaration extends BaseDRevDeclaration
 	}
 
 	public function cleanNode() {
-        $saveStock = 0;
         foreach ($this as $hash) {
+            $saveStock = 0;
             if (count($hash) == 2) {
                 foreach ($hash as $element) {
                     if ($element->vci->stock_precedent && !$element->recolte->superficie_total) {
