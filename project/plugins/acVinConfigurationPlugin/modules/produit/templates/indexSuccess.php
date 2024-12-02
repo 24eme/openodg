@@ -71,3 +71,5 @@
     </tbody>
 </table>
 <?php endif; ?>
+
+<?php include_partial('produit/ouverturesTeledeclarations'); ?>

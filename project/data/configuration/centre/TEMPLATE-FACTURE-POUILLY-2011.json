@@ -24,7 +24,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteSuperficeRecolte",
+                   "callback": "getQuantiteSuperficieRecolteWithBailleur",
                    "callback_parameters": {
                        "precision": 4
                    }

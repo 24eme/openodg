@@ -1132,7 +1132,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
             foreach($this->getRegions() as $region) {
                 foreach ($this->getProduits($region) as $hash => $produit) {
-                    $produit->validation_odg = null;
+                    if ($produit->exist('validation_odg')) {
+                        $produit->validation_odg = null;
+                    }
                 }
             }
         }
@@ -1218,13 +1220,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
 
-        $allValidate = true;
+        $no_validate = false;
         foreach ($this->declaration->getProduits() as $key => $produit) {
-            if($produit->isValidateOdg()){
-               continue;
+            if($produit->isValidateOdg() === false){
+                $no_validate = true;
+                break;
             }
-            $allValidate = false;
-            break;
         }
 
         if($this->isModificative()){
@@ -1237,7 +1238,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->generateMouvementsFactures();
         }
 
-        if(!$allValidate) {
+        if($no_validate) {
 
             return;
         }
@@ -1271,7 +1272,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           return $produit->validation_odg;
         }
       }
-      return null;
+      return $this->validation_odg;
     }
 
     public function getEtablissementObject() {
@@ -1850,6 +1851,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L5, null, $parameters);
     }
 
+    /** @see getQuantiteSuperficeRecolte Typo dans la fonction originelle */
+    public function getQuantiteSuperficieRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
+        return $this->getQuantiteSuperficeRecolte($parameters);
+    }
+
     public function getQuantiteSuperficeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
 
         if (DRevClient::getInstance()->matchFilterDrev($this, $parameters) === false) {
@@ -1862,6 +1868,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L4, null, $parameters);
+    }
+
+    public function getQuantiteSuperficieRecolteWithBailleur(TemplateFactureCotisationCallbackParameters $parameters) {
+
+        if (DRevClient::getInstance()->matchFilterDrev($this, $parameters) === false) {
+            return null;
+        }
+        $docDouanier = $this->getDocumentDouanier();
+
+        if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
+            return;
+        }
+
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L4_ORIGINALE, null, $parameters);
     }
 
     public function getQuantiteVolumeVendue(TemplateFactureCotisationCallbackParameters $parameters) {
@@ -2553,22 +2573,33 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return -1;
     }
 
+    public function getHashRegexp($hash_produit_regexp) {
+        $hashes = [];
+        foreach($this->getProduits() as $hash => $produit) {
+            if (VIP2C::isHashMatch($hash_produit_regexp, $hash)) {
+                $hashes[] = VIP2C::cleanHash($produit->getCepage()->getHash());
+            }
+        }
+        return $hashes;
+    }
+
     public function getProduitsHashWithVolumeSeuil() {
         $p = array();
         $parLot = $this->declaration->getConfig()->isRevendicationParLots();
         foreach(VIP2C::getProduitsHashWithVolumeSeuil($this->declarant->cvi, $this->getDefaultMillesime()) as $hash_produit) {
-            if (! $this->declaration->exist($hash_produit)) {
+            $hashes = $this->getHashRegexp($hash_produit);
+            if (!$hashes) {
                 continue;
             }
 
-            if (! $parLot) {
-                $p[] = $hash_produit;
+            if (!$parLot) {
+                $p += $hashes;
                 continue;
             }
 
             $toadd = false;
             foreach ($this->getLots() as $l) {
-                if ($l->produit_hash != "/declaration/".$hash_produit) {
+                if (!VIP2C::isHashMatch($hash_produit, $l->produit_hash)) {
                     continue;
                 }
 
@@ -2576,14 +2607,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     continue;
                 }
 
-                $toadd = true;
-            }
-
-            if ($toadd) {
-                $p[] = $hash_produit;
+                $p[] = VIP2C::cleanHash($l->produit_hash);
             }
         }
-        return $p;
+        return array_unique($p);
     }
 
     public function hasVolumeSeuilAndSetIfNecessary(){

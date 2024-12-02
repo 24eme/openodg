@@ -40,8 +40,11 @@ class VIP2C
 
         $result = json_decode($content,true);
         $todelete = array();
+        if ($hash_produit) {
+            $confProduit = ConfigurationClient::getInstance()->getConfiguration()->get($hash_produit);
+        }
         foreach($result as $contratid => $data) {
-            if ($hash_produit && strpos($data['produit'], $hash_produit) === false) {
+            if ($hash_produit && !VIP2C::isHashMatch($hash_produit, $data['produit']) && $confProduit->code_douane != $data['code_douane']) {
                 $todelete[] = $contratid;
             }
         }
@@ -82,10 +85,12 @@ class VIP2C
         if (!isset(self::$csv_seuil[$millesime])) {
             self::$csv_seuil[$millesime] = self::getVolumeSeuilFromCSV($cvi, $millesime);
         }
-        if (!isset(self::$csv_seuil[$millesime][$hash_produit])) {
-            return null;
+        foreach (self::$csv_seuil[$millesime] as $hash => $volumeSeuil) {
+            if (self::isHashMatch($hash, $hash_produit)) {
+                return $volumeSeuil;
+            }
         }
-        return self::$csv_seuil[$millesime][$hash_produit];
+        return null;
     }
 
     public static function getConfigCampagneVolumeSeuil() {
@@ -106,6 +111,24 @@ class VIP2C
 
     public static function hasVolumeSeuil() {
         return DRevConfiguration::getInstance()->hasVolumeSeuil();
+    }
+
+    public static function cleanHash($hash) {
+        $from = ['/declaration/', 'declaration/'];
+        $to = ['', ''];
+        return str_replace($from, $to, $hash);
+    }
+
+    public static function isHashMatch($regexp, $hash) {
+        $hashes = explode('+',self::cleanHash($regexp));
+        $hashCleaned = self::cleanHash($hash);
+        $match = true;
+        foreach ($hashes as $h) {
+            if (strpos($hashCleaned, $h) === false) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

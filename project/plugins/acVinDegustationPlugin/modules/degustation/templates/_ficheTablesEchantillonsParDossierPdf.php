@@ -74,8 +74,8 @@
           <tr>
             <?php if($firstDisplay == true):
               $affiche = count($lots_operateur) - $reste;
-              if(($nb_lots_par_page - $i) > 0 && ($nb_lots_par_page - $i) < count($lots_operateur) && !$reste){
-                $reste = ($nb_lots_par_page - $i);
+              if(($nb_lots_par_page - $i) > 0 && ($nb_lots_par_page - $i) < count($lots_operateur) - $reste){
+                $reste += ($nb_lots_par_page - $i);
                 $affiche = ($nb_lots_par_page - $i);
               }
               ?>
