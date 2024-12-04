@@ -5,6 +5,8 @@ class MouvementFacturesDocument
     protected $document;
     protected $hash;
 
+    protected $oldmvts = [];
+
     public function __construct(acCouchdbDocument $document)
     {
         $this->document = $document;
@@ -23,7 +25,12 @@ class MouvementFacturesDocument
 
         if (class_exists('RegionConfiguration') && RegionConfiguration::getInstance()->hasOdgProduits()) {
             foreach ($this->document->getRegions() as $r) {
-                $mouvements = array_merge_recursive($mouvements, $this->document->getMouvementsFacturesCalcule($r));
+                $mouvements_calcules = $this->document->getMouvementsFacturesCalcule($r);
+                // on check si les mouvements générés pour les deux régions ne sont pas les mêmes
+                if (array_diff($this->oldmvts, $mouvements_calcules)) {
+                    $mouvements = array_merge_recursive($mouvements, $mouvements_calcules);
+                    $this->oldmvts = $mouvements_calcules;
+                }
             }
         } else {
             $mouvements = $this->document->getMouvementsFacturesCalcule();
