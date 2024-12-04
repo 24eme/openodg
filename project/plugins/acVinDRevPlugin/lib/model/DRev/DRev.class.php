@@ -343,16 +343,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       return $lots;
     }
 
-    public function hasDestinationConditionnement(){
-        return $this->hasDestionation("CONDITIONNEMENT");
+    public function hasDestinationConditionnement($produit_hash){
+        return $this->hasDestination("CONDITIONNEMENT", $produit_hash);
     }
 
-    public function hasDestionationVrac(){
-        return $this->hasDestionation("VRAC");
+    public function hasDestinationVrac($produit_hash){
+        return $this->hasDestination("VRAC", $produit_hash);
     }
 
-    protected function hasDestionation($type){
+    protected function hasDestination($type, $produit_hash){
         foreach($this->getCurrentLots() as $lot){
+            if(strpos($lot->produit_hash, $produit_hash) === false) {
+                continue;
+            }
             if(strrpos($lot->destination_type,$type) !== false){
                 return true;
             }
