@@ -28,7 +28,7 @@ class Transaction extends BaseTransaction
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $date,
-    		'libelle' => 'Déclaration de vrac '.$complement,
+            'libelle' => 'Déclaration de '.TransactionConfiguration::getInstance()->getDeclarationName().' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null
