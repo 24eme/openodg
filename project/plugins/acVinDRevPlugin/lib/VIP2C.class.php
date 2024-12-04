@@ -52,6 +52,15 @@ class VIP2C
             return $value;
         }, $infosProduits);
 
+        $infosProduits = array_filter($infosProduits, function ($value) {
+            return count($value['hashes']) > 0;
+        });
+
+        $infosProduits = array_map(function ($value) use ($doc) {
+            $value['libelle'] = $doc->get(current($value['hashes']))->getConfig()->getLibelleComplet();
+            return $value;
+        }, $infosProduits);
+
         self::$infos['produits'] = $infosProduits;
         return self::$infos;
     }
@@ -118,7 +127,6 @@ class VIP2C
             }
 
             $volumes[] = [
-                "libelle" => $line[self::VIP2C_COLONNE_LIBELLE],
                 "hash_regex"  => $line[self::VIP2C_COLONNE_PRODUIT],
                 "volume_max"  => str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME])
             ];
