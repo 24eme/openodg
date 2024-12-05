@@ -136,32 +136,12 @@ class VIP2C
         return $volumes;
     }
 
-    public static function getVolumeSeuilProduitFromCSV($cvi, $millesime, $hash_produit) {
-        if (!isset(self::$csv_seuil[$millesime])) {
-            self::$csv_seuil[$millesime] = self::getVolumeSeuilFromCSV($cvi, $millesime);
-        }
-        foreach (self::$csv_seuil[$millesime] as $hash => $volumeSeuil) {
-            if (self::isHashMatch($hash, $hash_produit)) {
-                return $volumeSeuil;
-            }
-        }
-        return null;
-    }
-
     public static function getConfigCampagneVolumeSeuil() {
         return DRevConfiguration::getInstance()->getCampagneVolumeSeuil();
     }
 
     public static function getConfigMillesimeVolumeSeuil() {
         return substr(self::getConfigCampagneVolumeSeuil(), 0, 4);
-    }
-
-    public static function getProduitsHashWithVolumeSeuil($cvi, $millesime) {
-        $r = self::getVolumeSeuilFromCSV($cvi, $millesime);
-        if (!$r) {
-            return array();
-        }
-        return array_keys($r);
     }
 
     public static function hasVolumeSeuil() {

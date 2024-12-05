@@ -2573,46 +2573,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return -1;
     }
 
-    public function getHashRegexp($hash_produit_regexp) {
-        $hashes = [];
-        foreach($this->getProduits() as $hash => $produit) {
-            if (VIP2C::isHashMatch($hash_produit_regexp, $hash)) {
-                $hashes[] = VIP2C::cleanHash($produit->getCepage()->getHash());
-            }
-        }
-        return $hashes;
-    }
-
-    public function getProduitsHashWithVolumeSeuil() {
-        $p = array();
-        $parLot = $this->declaration->getConfig()->isRevendicationParLots();
-        foreach(VIP2C::getProduitsHashWithVolumeSeuil($this->declarant->cvi, $this->getDefaultMillesime()) as $hash_produit) {
-            $hashes = $this->getHashRegexp($hash_produit);
-            if (!$hashes) {
-                continue;
-            }
-
-            if (!$parLot) {
-                $p += $hashes;
-                continue;
-            }
-
-            $toadd = false;
-            foreach ($this->getLots() as $l) {
-                if (!VIP2C::isHashMatch($hash_produit, $l->produit_hash)) {
-                    continue;
-                }
-
-                if ($l->millesime != $this->getDefaultMillesime()) {
-                    continue;
-                }
-
-                $p[] = VIP2C::cleanHash($l->produit_hash);
-            }
-        }
-        return array_unique($p);
-    }
-
     public function hasVolumeSeuilAndSetIfNecessary()
     {
         if(!VIP2C::hasVolumeSeuil()) {
@@ -2646,33 +2606,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         return $ret;
 
-    }
-
-    public function getVolumeRevendiqueSeuil($hash){
-        if(!VIP2C::hasVolumeSeuil()) {
-            return null;
-        }
-
-        if(!isset($this->document->declaration[$hash])){
-            return null;
-        }
-
-        if (! $this->document->declaration->get($hash)->exist('DEFAUT')) {
-            return null;
-        }
-
-        $produit = $this->document->declaration->get($hash)->DEFAUT;
-
-        if(! $produit->exist('volume_revendique_seuil')){
-            return null;
-        }
-        return $produit->volume_revendique_seuil;
-
-    }
-
-    public function getVolumeCommercialisableLibre($hash){
-        $volumeSeuil = $this->getVolumeRevendiqueSeuil($hash);
-        return($volumeSeuil-($volumeSeuil*0.1)); #les prévenir à 10%
     }
 
     public function hasLotsProduitFilter($hash_or_filter) {
