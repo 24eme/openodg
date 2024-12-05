@@ -11,13 +11,13 @@ class TirageDocuments extends BaseTirageDocuments {
     const DOC_SV12 = 'SV12';
     const STATUT_EN_ATTENTE = 'EN ATTENTE';
     const STATUT_RECU = 'RECU';
-    const PARTAGE_DONNEES_CIVA = "AUTORISATION_PARTAGE_CIVA";
+    const AUTORISATION_PARTAGE_CIVA = "AUTORISATION_PARTAGE_CIVA";
 
     private static $_document_libelles = array(
         self::DOC_PRODUCTEUR => 'Déclaration de Récolte',
         self::DOC_SV11 => 'SV11',
         self::DOC_SV12 => 'SV12',
-        self::PARTAGE_DONNEES_CIVA => 'Autorisation de partage de données au CIVA'
+        self::AUTORISATION_PARTAGE_CIVA => 'Autorisation de partage de données au CIVA'
     );
     private static $_statut_libelles = array(
         self::STATUT_EN_ATTENTE => 'En attente de réception',

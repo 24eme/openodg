@@ -250,8 +250,8 @@ class tirageActions extends sfActions {
 
         foreach ($this->validation->getPoints(TirageValidation::TYPE_ENGAGEMENT) as $engagement) {
             $document = $documents->add($engagement->getCode());
-            $document->statut = ($engagement->getCode() == (TirageDocuments::DOC_PRODUCTEUR && $this->tirage->hasDr())) || TirageDocuments::PARTAGE_DONNEES_CIVA ? TirageDocuments::STATUT_RECU : TirageDocuments::STATUT_EN_ATTENTE;
-            $document->libelle = (TirageDocuments::getDocumentLibelle(TirageDocuments::PARTAGE_DONNEES_CIVA));
+            $document->statut = ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $this->tirage->hasDr()) || TirageDocuments::AUTORISATION_PARTAGE_CIVA ? TirageDocuments::STATUT_RECU : TirageDocuments::STATUT_EN_ATTENTE;
+            $document->libelle = TirageDocuments::getDocumentLibelle($document->getKey());
         }
 
         if ($this->tirage->isPapier()) {
