@@ -23,19 +23,13 @@
         <div class="alert" role="alert" id="engagements" style="padding-top:0;">
             <div class="form-group">
 
-                <div class="alert alert-danger <?php if(!$form->hasErrors()): ?>hidden<?php endif; ?>" role="alert">
-                    <ul class="error_list">
-                        <li class="text-left">Vous devez cocher pour valider votre déclaration.</li>
-                    </ul>
-                </div>
-
                 <?php foreach ($validation->getPoints(TirageValidation::TYPE_ENGAGEMENT) as $engagement): ?>
                     <div class="checkbox-container <?php if ($form['engagement_' . $engagement->getCode()]->hasError()): ?>has-error<?php endif; ?>">
                         <div class="checkbox<?php if($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()): ?> disabled<?php endif; ?>">
                             <label>
                                 <?php if($engagement->getCode() == TirageDocuments::AUTORISATION_PARTAGE_CIVA): ?>
                                 <h3 style="margin-left:-37px;" >Autorisation de partage des données</h3>
-                                <?php echo $form['engagement_' . $engagement->getCode()]->render(array('checked' => 'checked')); ?>
+                                <?php echo $form['engagement_' . $engagement->getCode()]->render(array('class' => 'hidden')); ?>
                                 <?php endif ?>
                                 <?php
                                     if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()) {
@@ -61,6 +55,11 @@
                         </div>
                         </div>
                     <?php endforeach; ?>
+                    <div class="alert alert-danger <?php if(!$form->hasErrors()): ?>hidden<?php endif; ?>" role="alert" style="margin-top:30px;">
+                        <ul class="error_list">
+                            <li class="text-left">Vous devez cocher les deux cases pour valider votre déclaration.</li>
+                        </ul>
+                    </div>
             </div>
         </div>
     <?php endif; ?>
