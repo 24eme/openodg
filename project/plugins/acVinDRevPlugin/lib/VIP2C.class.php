@@ -5,9 +5,8 @@ class VIP2C
 
     const VIP2C_COLONNE_MILLESIME = 0;
     const VIP2C_COLONNE_CVI = 3;
-    const VIP2C_COLONNE_LIBELLE = 6;
-    const VIP2C_COLONNE_PRODUIT = 7;
-    const VIP2C_COLONNE_VOLUME = 8;
+    const VIP2C_COLONNE_PRODUIT = 6;
+    const VIP2C_COLONNE_VOLUME = 7;
 
     static $csv_seuil = [];
     static $infos = [];
@@ -151,11 +150,12 @@ class VIP2C
     public static function cleanHash($hash) {
         $from = ['/declaration/', 'declaration/'];
         $to = ['', ''];
+
         return str_replace($from, $to, $hash);
     }
 
     public static function isHashMatch($regexp, $hash) {
-        $hashes = explode('*',self::cleanHash($regexp));
+        $hashes = explode('|',self::cleanHash($regexp));
         $hashCleaned = self::cleanHash($hash);
 
         foreach ($hashes as $h) {
