@@ -1060,9 +1060,7 @@ class drevActions extends sfActions {
 
     protected function secure($droits, $doc) {
         if ($droits == DRevSecurity::EDITION) {
-            if ($doc && $doc->validation) {
-                return $this->forwardSecure();
-            }
+            return $this->forward404Unless($doc && !$doc->validation);
         }
         if (!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
 
