@@ -1004,9 +1004,15 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return false;
     }
 
-    public function getVolumeSeuil()
+    public function getVolumeSeuil($produits)
     {
-        return VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->changement_millesime, str_replace('/declaration/', '', $this->changement_produit_hash));
+        foreach ($produits as $produit) {
+            if (VIP2C::isHashMatch($produit['hash_regex'], $this->changement_produit_hash)) {
+                return $produit['volume_max'];
+            }
+        }
+
+        return 0;
     }
 
     public function addDonneesForProduction(DouaneProduction $doc)
