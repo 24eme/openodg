@@ -7,8 +7,6 @@
 <h2>Facturation</h2>
 <a href="<?php echo url_for('facturation_template_last'); ?>">Voir le template de facturation</a>
 
-<?php include_partial('produit/ouverturesTeledeclarations'); ?>
-
 <h2>Produits</h2>
 
 <table class="table table-condensed table-striped table-bordered">
@@ -104,3 +102,5 @@
         </tbody>
     </table>
 <?php endif; ?>
+
+<?php include_partial('produit/ouverturesTeledeclarations'); ?>

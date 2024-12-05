@@ -50,7 +50,7 @@ class DRevValidation extends DeclarationLotsValidation
 
         $this->addControle(self::TYPE_WARNING, 'parcellaire_affectation_superficie_sup', 'La superficie revendiquée est supérieure à celle qui figure sur votre affectation parcellaire');
 
-        $this->addControle(self::TYPE_WARNING, 'dr_recolte_rendement', "Vous dépassez le rendement dans votre DR (L5)");
+        $this->addControle(self::TYPE_WARNING, 'dr_recolte_rendement', "Vous dépassez le rendement dans votre DR (L15)");
         $this->addControle(self::TYPE_WARNING, 'sv12_recolte_rendement', "Vous dépassez le rendement dans votre SV12");
         $this->addControle(self::TYPE_WARNING, 'sv11_recolte_rendement', "Vous dépassez le rendement dans votre SV11");
 
@@ -90,15 +90,15 @@ class DRevValidation extends DeclarationLotsValidation
 
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VSI_DESTRUCTION, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VSI_DESTRUCTION));
 
-        if (VIP2C::hasVolumeSeuil() && $this->document->hasDestionationVrac()) {
             foreach ($this->document->getProduitsWithoutLots() as $produit_hash => $produit) {
-                $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $produit->getConfig()->getHash());
-                foreach($contrats as $k=>$v){
-                    $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
+                if (VIP2C::hasVolumeSeuil() && $this->document->hasDestinationVrac($produit_hash)) {
+                    $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $produit->getConfig()->getHash());
+                    foreach($contrats as $k=>$v){
+                        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
+                    }
                 }
             }
             $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
-        }
 
         /* Lots */
 
@@ -108,17 +108,17 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
 
-        foreach($this->document->getProduitsHashWithVolumeSeuil() as $produit_hash) {
-            $this->addControle(self::TYPE_ERROR, 'vip2c_pas_de_contrats_'.$produit_hash,"Depuis le millésime ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil($produit_hash)." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation or Declarvins nous informe que vous n'avez pas de contrat de vrac non soldé. Veuillez prendre contact avec Intervins Sud Est - 04 90 42 90 04.");
-            $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable_'.$produit_hash,"A partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous êtes sur le point de dépasser les ".$this->document->getVolumeRevendiqueSeuil($produit_hash)." hl qui vous a été attribués. Au delà, vous devrez avoir une preuve de commercialisation pour pouvoir revendiquer vos volumes.");
-            $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$produit_hash,"A partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil($produit_hash)." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation.");
-            $lots = []; foreach ($this->document->declaration->get($produit_hash) as $produit) { $lots[] = $produit->libelle; }
+        $this->vip2c = VIP2C::gatherInformations($this->document, $this->document->getPeriode());
+
+        foreach($this->vip2c['produits'] as $produit) {
+            $this->addControle(self::TYPE_ERROR, 'vip2c_pas_de_contrats_'.$produit['hash_regex'],"Depuis le millésime ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$produit['volume_max']." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation or Declarvins nous informe que vous n'avez pas de contrat de vrac non soldé. Veuillez prendre contact avec Intervins Sud Est - 04 90 42 90 04.");
+            $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable_'.$produit['hash_regex'],"À partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous êtes sur le point de dépasser les ".$produit['volume_max']." hl qui vous ont été attribués. Au delà, vous devrez avoir une preuve de commercialisation pour pouvoir revendiquer vos volumes.");
+            $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$produit['hash_regex'],"À partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$produit['volume_max']." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation.");
+            $lots = []; if ($this->document->declaration->exist($produit_hash)) { foreach ($this->document->declaration->get($produit_hash) as $produit) { $lots[] = $produit->libelle; } }
             $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$produit_hash, "<strong>J'atteste de conditionnements,</strong> en revendiquant au-delà de mon Volume Individuel de Production Commercialisable Certifiée (VIP2C), je m'engage à fournir à Intervins Sud Est <strong>une copie du registre de conditionnement</strong> pour les lots <strong>".implode(', ', $lots)."</strong> en dépassement sur cette revendication.");
 
-            $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $this->document->declaration->get($produit_hash)->getConfig()->getHash());
-
-            if($contrats){
-                foreach($contrats as $k=>$v){
+            if(array_key_exists('contrats', $this->vip2c['contrats'])){
+                foreach($this->vip2c['contrats'] as $k=>$v){
                     $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
                 }
             }
@@ -485,11 +485,11 @@ class DRevValidation extends DeclarationLotsValidation
         if(($volumeCommercialisableLibre < $volumeTotalSeuilDeclare) && ($volumeTotalSeuilDeclare < $volumeMaxAutorise)) {
             $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable_'.$hash_produit,  $produit." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
         } elseif($volumeMaxAutorise < $volumeTotalSeuilDeclare) {
-            if($this->document->hasDestinationConditionnement()){
+            if($this->document->hasDestinationConditionnement($hash_produit)){
                 $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$hash_produit, $produit." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$hash_produit, '', null, $hash_produit);
             }
-            if (VIP2C::hasVolumeSeuil() && $this->document->hasDestionationVrac()) {
+            if (VIP2C::hasVolumeSeuil() && $this->document->hasDestinationVrac($hash_produit)) {
                 $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $this->document->declaration->get($hash_produit)->getConfig()->getHash());
 
                 if(!$contrats){

@@ -876,6 +876,8 @@ class drevActions extends sfActions {
             $this->regionParam = $this->getUser()->getRegion();
         }
 
+        $this->vip2c = VIP2C::gatherInformations($this->drev, "2024");
+
         $this->form = null;
         if($this->getUser()->hasDrevAdmin() || $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);
