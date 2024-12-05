@@ -343,16 +343,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       return $lots;
     }
 
-    public function hasDestinationConditionnement(){
-        return $this->hasDestionation("CONDITIONNEMENT");
+    public function hasDestinationConditionnement($produit_hash){
+        return $this->hasDestination("CONDITIONNEMENT", $produit_hash);
     }
 
-    public function hasDestionationVrac(){
-        return $this->hasDestionation("VRAC");
+    public function hasDestinationVrac($produit_hash){
+        return $this->hasDestination("VRAC", $produit_hash);
     }
 
-    protected function hasDestionation($type){
+    protected function hasDestination($type, $produit_hash){
         foreach($this->getCurrentLots() as $lot){
+            if(strpos($lot->produit_hash, $produit_hash) === false) {
+                continue;
+            }
             if(strrpos($lot->destination_type,$type) !== false){
                 return true;
             }
@@ -2624,29 +2627,25 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $ret = false;
-        foreach($this->getProduitsHashWithVolumeSeuil() as $hash_produit) {
+        $vip2c = VIP2C::gatherInformations($this, $this->getPeriode());
+        foreach($vip2c['produits'] as $produit) {
+            foreach ($produit['hashes'] as $hash) {
+                if(! $this->exist($hash)){
+                    continue;
+                }
 
-            if(!isset($this->document->declaration[$hash_produit])){
-                continue;
-            }
+                if(! $this->get($hash)->exist('DEFAUT')) {
+                    continue;
+                }
 
-            if(!$this->document->declaration->get($hash_produit)->exist('DEFAUT')) {
-                continue;
-            }
+                $produit = $this->get($hash)->DEFAUT;
 
-            $produit = $this->document->declaration->get($hash_produit)->DEFAUT;
+                if($produit->exist('volume_revendique_seuil')){
+                    $ret = true;
+                    continue;
+                }
 
-            if(!$produit->exist('volume_revendique_seuil') && !(VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->getDefaultMillesime(), $hash_produit))) {
-                continue;
-            }
-            if($produit->exist('volume_revendique_seuil')){
-                $ret = true;
-                continue;
-            }
-
-            $volumeSeuil = VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->getDefaultMillesime(), $hash_produit);
-            if ($volumeSeuil) {
-                $produit->add('volume_revendique_seuil',floatval($volumeSeuil));
+                $produit->add('volume_revendique_seuil', floatval($produit['volume_max']));
                 $this->save();
             }
         }
