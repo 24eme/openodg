@@ -2613,38 +2613,36 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return array_unique($p);
     }
 
-    public function hasVolumeSeuilAndSetIfNecessary(){
-
+    public function hasVolumeSeuilAndSetIfNecessary()
+    {
         if(!VIP2C::hasVolumeSeuil()) {
             return false;
         }
 
-        if(!($this->getCampagne() >= VIP2C::getConfigCampagneVolumeSeuil())){
+        if($this->getCampagne() < VIP2C::getConfigCampagneVolumeSeuil()) {
             return false;
         }
 
         $ret = false;
         $vip2c = VIP2C::gatherInformations($this, $this->getPeriode());
+
         foreach($vip2c['produits'] as $produit) {
-            foreach ($produit['hashes'] as $hash) {
-                if(! $this->exist($hash)){
-                    continue;
-                }
+            $hash = reset($produit['hashes']); // Première hash du tableau
 
-                if(! $this->get($hash)->exist('DEFAUT')) {
-                    continue;
-                }
-
-                $produit = $this->get($hash)->DEFAUT;
-
-                if($produit->exist('volume_revendique_seuil')){
-                    $ret = true;
-                    continue;
-                }
-
-                $produit->add('volume_revendique_seuil', floatval($produit['volume_max']));
-                $this->save();
+            if (! $this->exist($hash)) {
+                // on ne devrait jamais passer ici
+                continue;
             }
+
+            $p = $this->get($hash)->getFirst();
+
+            if ($p->exist('volume_revendique_seuil')) {
+                $ret = true;
+                continue;
+            }
+
+            $p->add('volume_revendique_seuil', floatval($produit['volume_max']));
+            $this->save();
         }
         return $ret;
 
