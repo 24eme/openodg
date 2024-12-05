@@ -55,13 +55,9 @@ class ExportDocEngagementCSV{
         foreach ([DRevClient::TYPE_MODEL, TirageClient::TYPE_MODEL] as $type) {
                 foreach(DeclarationExportView::getInstance()->getDeclarations($type)->rows as $json_doc){
                     $doc = DeclarationClient::getInstance()->find($json_doc->id);
-                    if($doc instanceof DRev) {
+                    if($doc instanceof DRev && !$doc->isMaster()){
                         continue;
                     }
-                    if($type instanceof DRev && !$doc->isMaster()){
-                        continue;
-                    }
-        
                     $csv .= $this->getCsvLinesByDoc($doc);
                 }
 
