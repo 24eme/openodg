@@ -846,16 +846,8 @@ class drevActions extends sfActions {
     public function executeVip2c(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $drev);
-        $vip2c = array();
-        $vip2c['declarvins_api_url'] = VIP2C::getContratsAPIURL($drev->declarant->cvi, $drev->campagne);
-        $vip2c['declarvins_api_contrats'] = VIP2C::getContratsFromAPI($drev->declarant->cvi, $drev->campagne);
-        $vip2c['volumes'] = array();
-        foreach ($drev->getProduitsHashWithVolumeSeuil() as $produit_hash) {
-            $vip2c['volumes'][$produit_hash] = array();
-            $vip2c['volumes'][$produit_hash]['revendique'] = $drev->getVolumeRevendiqueLots($drev->declaration->get($produit_hash)->getConfig()->getHash());
-            $vip2c['volumes'][$produit_hash]['seuil'] = $drev->getVolumeRevendiqueSeuil($produit_hash);
-        }
-        header('Content-type: text/json');
+        $vip2c = VIP2C::gatherInformations($drev, $drev->getPeriode());
+        header('Content-Type: application/json');
         echo json_encode($vip2c);
         exit;
     }
