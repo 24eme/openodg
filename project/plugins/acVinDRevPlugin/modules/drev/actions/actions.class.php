@@ -646,6 +646,8 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
         $this->isAdmin = $this->getUser()->isAdmin();
 
+        $this->vip2c = VIP2C::gatherInformations($this->drev, $this->drev->getPeriode());
+
         if ($this->needDrDouane()) {
 
         	return $this->redirect('drev_dr_upload', $this->drev);
