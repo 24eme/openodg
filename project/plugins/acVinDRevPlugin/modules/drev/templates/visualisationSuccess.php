@@ -59,7 +59,7 @@
     <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation, 'noLink' => true)); ?>
 <?php endif; ?>
 
-<?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
+<?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr, 'vip2c' => $vip2c)); ?>
 
 <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) ): ?>
     <hr />

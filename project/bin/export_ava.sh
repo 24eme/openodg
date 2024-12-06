@@ -96,3 +96,7 @@ rm $EXPORTDIR/bilan_vci.tmp.csv 2> /dev/null
 iconv -f ISO88591//TRANSLIT -t UTF8 $EXPORTDIR/bilan_vci.csv > $EXPORTDIR/bilan_vci.csv.part
 split_export_by_annee "bilan_vci"
 rm $EXPORTDIR/bilan_vci.csv.part
+
+php symfony declaration:engagements $SYMFONYTASKOPTIONS > $EXPORTDIR/engagements.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/engagements.csv.part > $EXPORTDIR/engagements.csv
+rm $EXPORTDIR/engagements.csv.part

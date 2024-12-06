@@ -1,12 +1,12 @@
 <?php
 
-class ExportDRevEngagementCSV{
+class ExportDocEngagementCSV{
 
-    protected $drev = null;
+    protected $doc = null;
     protected $header = false;
 
     const CSV_CAMPAGNE = 0;
-    const CSV_DREV_IDENTIFIANT = 1;
+    const CSV_DOC_IDENTIFIANT = 1;
     const CSV_CVI = 2;
     const CSV_SIRET = 3;
     const CSV_NOM = 4;
@@ -26,9 +26,9 @@ class ExportDRevEngagementCSV{
         return "Organisme;Doc Id;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Tag Engagement;Statut Engagement;Libelle Engagement;Millesime;Produit;Hash Produit\n";
     }
 
-    public function __construct($drev = null,$header = true) {
-        if($drev){
-            $this->drev = $drev;
+    public function __construct($doc = null,$header = true) {
+        if($doc){
+            $this->doc = $doc;
         }
         $this->header = $header;
     }
@@ -37,12 +37,12 @@ class ExportDRevEngagementCSV{
         return  'engagements.csv';
     }
 
-    public function exportForOneDRev(){
+    public function exportForOneDoc(){
         $csv = "";
         if($this->header) {
             $csv .= self::getHeaderCsv();
         }
-        $csv .= $this->getCsvLinesByDrev($this->drev);
+        $csv .= $this->getCsvLinesByDoc($this->doc);
         return $csv;
     }
 
@@ -51,37 +51,45 @@ class ExportDRevEngagementCSV{
         if($this->header) {
             $csv .= self::getHeaderCsv();
         }
-        foreach(DeclarationExportView::getInstance()->getDeclarations('DRev')->rows as $json_doc){
-            $drev = DRevClient::getInstance()->find($json_doc->id);
-            if(!$drev->exist('documents')){
-                continue;
-            }
-            if(!$drev->isMaster()){
-                continue;
-            }
-            $csv .= $this->getCsvLinesByDrev($drev);
+        
+        foreach ([DRevClient::TYPE_MODEL, TirageClient::TYPE_MODEL] as $type) {
+                foreach(DeclarationExportView::getInstance()->getDeclarations($type)->rows as $json_doc){
+                    $doc = DeclarationClient::getInstance()->find($json_doc->id);
+                    if($doc instanceof DRev && !$doc->isMaster()){
+                        continue;
+                    }
+                    $csv .= $this->getCsvLinesByDoc($doc);
+                }
+
         }
+
         return $csv;
     }
 
-    public function getCsvLinesByDrev($drev) {
+    public function getCsvLinesByDoc($doc) {
+        if (!$doc->exist('documents')) {
+            return;
+        }
+        
         $csv = "";
-        $periode = substr($drev->campagne, 0, 4);
+        $periode = substr($doc->campagne, 0, 4);
         $conf = ConfigurationClient::getInstance()->getConfiguration($periode.'-10-01');
         $ligneBase = sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s",
-        Organisme::getCurrentOrganisme(),
-        $drev->_id,
-        $drev->campagne,
-        $drev->identifiant,
-        $drev->declarant->famille,
-        $drev->declarant->cvi,
-        $drev->declarant->siret,
-        $this->protectStr($drev->declarant->raison_sociale),
-        $this->protectStr($drev->declarant->adresse),
-        $drev->declarant->code_postal,
-        $this->protectStr($drev->declarant->commune),
-        $drev->declarant->email);
-        foreach($drev->documents as $key => $document){
+            Organisme::getCurrentOrganisme(),
+            $doc->_id,
+            $doc->campagne,
+            $doc->identifiant,
+            ($doc->declarant->exist('famille')) ? $doc->declarant->famille : null,
+            $doc->declarant->cvi,
+            $doc->declarant->siret,
+            $this->protectStr($doc->declarant->raison_sociale),
+            $this->protectStr($doc->declarant->adresse),
+            $doc->declarant->code_postal,
+            $this->protectStr($doc->declarant->commune),
+            $doc->declarant->email
+        );
+
+        foreach($doc->documents as $key => $document){
             $tabKey = explode('_', $key);
             $tabKeySize = count($tabKey);
             $hashProduit = null;
@@ -91,13 +99,14 @@ class ExportDRevEngagementCSV{
                 $produit = $conf->declaration->getOrAdd($hashProduit)->getLibelleComplet();
             }
             $csv .= $ligneBase;
-            $libelle = strip_tags(str_replace(";","\;",$document->libelle));
+            $libelle = strip_tags(str_replace(";","\;",$document->exist('libelle') ? $document->libelle : null));
             $csv .= sprintf(";%s;%s",$document->statut,$libelle);
             $csv .= ';'.$periode;
             $csv .= ';'.$produit;
             $csv .= ';'.$hashProduit;
             $csv .= "\n";
         }
+
         return $csv;
     }
 
