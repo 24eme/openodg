@@ -90,15 +90,15 @@ class DRevValidation extends DeclarationLotsValidation
 
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VSI_DESTRUCTION, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VSI_DESTRUCTION));
 
-        if (VIP2C::hasVolumeSeuil() && $this->document->hasDestionationVrac()) {
             foreach ($this->document->getProduitsWithoutLots() as $produit_hash => $produit) {
-                $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $produit->getConfig()->getHash());
-                foreach($contrats as $k=>$v){
-                    $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
+                if (VIP2C::hasVolumeSeuil() && $this->document->hasDestinationVrac($produit_hash)) {
+                    $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $produit->getConfig()->getHash());
+                    foreach($contrats as $k=>$v){
+                        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
+                    }
                 }
             }
             $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
-        }
 
         /* Lots */
 
@@ -494,12 +494,12 @@ class DRevValidation extends DeclarationLotsValidation
         if(($volumeCommercialisableLibre < $volumeTotalSeuilDeclare) && ($volumeTotalSeuilDeclare < $volumeMaxAutorise)) {
             $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable_'.$produit['hash_regex'], $libelle." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
         } elseif($volumeMaxAutorise < $volumeTotalSeuilDeclare) {
-            if($this->document->hasDestinationConditionnement()){
+            if($this->document->hasDestinationConditionnement($produit['hash_regex'])){
                 $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$produit['hash_regex'], $libelle." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$produit['hash_regex'], '', null, $hash_produit);
             }
-            if (VIP2C::hasVolumeSeuil() && $this->document->hasDestionationVrac()) {
-                $contrats = $this->vip2c['contrats'];
+            if (VIP2C::hasVolumeSeuil() && $this->document->hasDestinationVrac($produit['hash_regex'])) {
+                $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $this->document->declaration->get($produit['hash_regex'])->getConfig()->getHash());
 
                 if (count($contrats) === 0) {
                     $this->addPoint(self::TYPE_ERROR,'vip2c_pas_de_contrats_'.$produit['hash_regex'], $libelle, $this->generateUrl('drev_lots', array("id" => $this->document->_id)) );

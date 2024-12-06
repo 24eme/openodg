@@ -6,7 +6,7 @@ class ExportEngagementsCSVTask extends sfBaseTask{
     {
 
         $this->addArguments(array(
-            new sfCommandArgument('drev_id', sfCommandArgument::OPTIONAL, "Id de la DRev"),
+            new sfCommandArgument('doc_id', sfCommandArgument::OPTIONAL, "Id du document"),
         ));
 
         $this->addOptions(array(
@@ -15,9 +15,9 @@ class ExportEngagementsCSVTask extends sfBaseTask{
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
         ));
 
-        $this->namespace        = 'drev';
+        $this->namespace        = 'declaration';
         $this->name             = 'engagements';
-        $this->briefDescription = '';
+        $this->briefDescription = 'Export engagements/autorisations opérateur';
         $this->detailedDescription = <<<EOF
 EOF;
     }
@@ -28,20 +28,18 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $context = sfContext::createInstance($this->configuration);
 
-        if (isset($arguments['drev_id']) && $arguments['drev_id']) {
+        if (isset($arguments['doc_id']) && $arguments['doc_id']) {
+            $doc = acCouchdbManager::getClient()->find($arguments['doc_id']);
+            $export = new ExportDocEngagementCSV($doc);
 
-            $drev = DRevClient::getInstance()->find($arguments['drev_id']);
-            $export = new ExportDRevEngagementCSV($drev);
-
-            $csv = $export->exportForOneDRev();
+            $csv = $export->exportForOneDoc();
 
             print($csv);
             return;
         }
 
-        $export = new ExportDRevEngagementCSV();
+        $export = new ExportDocEngagementCSV();
         $csv = $export->export();
-
         print($csv);
         return;
     }
