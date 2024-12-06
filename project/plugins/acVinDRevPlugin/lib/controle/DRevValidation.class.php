@@ -3,10 +3,12 @@ class DRevValidation extends DeclarationLotsValidation
 {
     protected $etablissement = null;
     protected $produit_revendication_rendement = array();
+    protected $vip2c = null;
 
     public function __construct($document, $options = null)
     {
         $this->etablissement = $document->getEtablissementObject();
+        $this->vip2c = VIP2C::gatherInformations($document, $document->getPeriode());
         parent::__construct($document, $options);
         $this->noticeVigilance = true;
     }
