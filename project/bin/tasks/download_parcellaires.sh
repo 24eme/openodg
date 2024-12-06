@@ -7,8 +7,8 @@ APPLICATION=$1
 
 source "$(dirname $0)/../config.inc"
 
-if test -f "$(dirname $0)/../config.$APPLICATION.inc"; then
-    source "$(dirname $0)/../config.$APPLICATION.inc"
+if test -f "$(dirname $0)/../config_$APPLICATION.inc"; then
+    source "$(dirname $0)/../config_$APPLICATION.inc"
 else
     source "$(dirname $0)/../config.inc"
 fi
@@ -24,7 +24,7 @@ fi
 while read -r id; do
     echo "Import de l'opérateur $id"
     if [ "$(curl -s "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/ETABLISSEMENT-$id" | jq . | grep "statut" | cut -d'"' -f4)" = "ACTIF" ]; then
-        sudo -u www-data "$WORKINGDIR/bin/import_parcellaire.sh" "$id"
+        sudo -u www-data "$WORKINGDIR/bin/import_parcellaire.sh" "$id" "$APPLICATION"
     else
         echo "ETABLISSEMENT-$id;WARNING;Opérateur archivé, parcellaire non mis à jour"
     fi
