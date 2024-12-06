@@ -5,9 +5,8 @@ class VIP2C
 
     const VIP2C_COLONNE_MILLESIME = 0;
     const VIP2C_COLONNE_CVI = 3;
-    const VIP2C_COLONNE_LIBELLE = 6;
-    const VIP2C_COLONNE_PRODUIT = 7;
-    const VIP2C_COLONNE_VOLUME = 8;
+    const VIP2C_COLONNE_PRODUIT = 6;
+    const VIP2C_COLONNE_VOLUME = 7;
 
     static $csv_seuil = [];
     static $infos = [];
@@ -49,6 +48,15 @@ class VIP2C
         $infosProduits = array_map(function ($value) use ($volumes, $hashProduits) {
             $value['volume'] = $volumes[$value['hash_regex']];
             $value['hashes'] = $hashProduits[$value['hash_regex']];
+            return $value;
+        }, $infosProduits);
+
+        $infosProduits = array_filter($infosProduits, function ($value) {
+            return count($value['hashes']) > 0;
+        });
+
+        $infosProduits = array_map(function ($value) use ($doc) {
+            $value['libelle'] = $doc->get(current($value['hashes']))->getConfig()->getLibelleComplet();
             return $value;
         }, $infosProduits);
 
@@ -118,7 +126,6 @@ class VIP2C
             }
 
             $volumes[] = [
-                "libelle" => $line[self::VIP2C_COLONNE_LIBELLE],
                 "hash_regex"  => $line[self::VIP2C_COLONNE_PRODUIT],
                 "volume_max"  => str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME])
             ];
@@ -126,18 +133,6 @@ class VIP2C
         fclose($configFile);
 
         return $volumes;
-    }
-
-    public static function getVolumeSeuilProduitFromCSV($cvi, $millesime, $hash_produit) {
-        if (!isset(self::$csv_seuil[$millesime])) {
-            self::$csv_seuil[$millesime] = self::getVolumeSeuilFromCSV($cvi, $millesime);
-        }
-        foreach (self::$csv_seuil[$millesime] as $hash => $volumeSeuil) {
-            if (self::isHashMatch($hash, $hash_produit)) {
-                return $volumeSeuil;
-            }
-        }
-        return null;
     }
 
     public static function getConfigCampagneVolumeSeuil() {
@@ -148,14 +143,6 @@ class VIP2C
         return substr(self::getConfigCampagneVolumeSeuil(), 0, 4);
     }
 
-    public static function getProduitsHashWithVolumeSeuil($cvi, $millesime) {
-        $r = self::getVolumeSeuilFromCSV($cvi, $millesime);
-        if (!$r) {
-            return array();
-        }
-        return array_keys($r);
-    }
-
     public static function hasVolumeSeuil() {
         return DRevConfiguration::getInstance()->hasVolumeSeuil();
     }
@@ -163,11 +150,12 @@ class VIP2C
     public static function cleanHash($hash) {
         $from = ['/declaration/', 'declaration/'];
         $to = ['', ''];
+
         return str_replace($from, $to, $hash);
     }
 
     public static function isHashMatch($regexp, $hash) {
-        $hashes = explode('*',self::cleanHash($regexp));
+        $hashes = explode('|',self::cleanHash($regexp));
         $hashCleaned = self::cleanHash($hash);
 
         foreach ($hashes as $h) {

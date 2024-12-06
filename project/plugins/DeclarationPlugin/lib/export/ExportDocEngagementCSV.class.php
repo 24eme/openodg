@@ -100,7 +100,7 @@ class ExportDocEngagementCSV{
             }
             $csv .= $ligneBase;
             $libelle = strip_tags(str_replace(";","\;",$document->exist('libelle') ? $document->libelle : null));
-            $csv .= sprintf(";%s;%s",$document->statut,$libelle);
+            $csv .= sprintf(";%s;%s;%s",$key,$document->statut,$libelle);
             $csv .= ';'.$periode;
             $csv .= ';'.$produit;
             $csv .= ';'.$hashProduit;

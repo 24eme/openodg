@@ -251,7 +251,7 @@
 </div>
         <hr/>
         <?php if($drev->hasVolumeSeuilAndSetIfNecessary()): ?>
-        <?php include_partial('drev/vip2c', array('drev' => $drev, 'form' => $form)); ?>
+        <?php include_partial('drev/vip2c', array('drev' => $drev, 'form' => $form, 'vip2c' => $vip2c)); ?>
         <hr/>
         <?php endif; ?>
 
