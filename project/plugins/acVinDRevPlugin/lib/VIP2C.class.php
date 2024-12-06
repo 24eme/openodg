@@ -155,7 +155,7 @@ class VIP2C
     }
 
     public static function isHashMatch($regexp, $hash) {
-        $hashes = explode('+',self::cleanHash($regexp));
+        $hashes = explode('|',self::cleanHash($regexp));
         $hashCleaned = self::cleanHash($hash);
 
         foreach ($hashes as $h) {
