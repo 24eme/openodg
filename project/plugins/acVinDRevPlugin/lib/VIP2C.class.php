@@ -19,6 +19,12 @@ class VIP2C
 
         $contrats = self::getContratsFromAPI($doc->declarant->cvi, $millesime);
         $infosProduits = self::getInfosFromCSV($doc->declarant->cvi, $millesime);
+
+        if ($infosProduits === null) {
+            self::$infos = ['contrats' => [], 'produits' => []];
+            return self::$infos;
+        }
+
         $hashesRegex = array_column($infosProduits, 'hash_regex');
 
         $codesDouanes = [];
