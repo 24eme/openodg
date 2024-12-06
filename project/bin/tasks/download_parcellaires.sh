@@ -3,7 +3,15 @@
 # Title: Téléchargement des parcellaires
 # Description: Télécharge l'ensemble des parcellaires
 
+APPLICATION=$1
+
 source "$(dirname $0)/../config.inc"
+
+if test -f "$(dirname $0)/../config.$APPLICATION.inc"; then
+    source "$(dirname $0)/../config.$APPLICATION.inc"
+else
+    source "$(dirname $0)/../config.inc"
+fi
 
 IDS=$(mktemp)
 
