@@ -34,7 +34,7 @@ class VIP2C
         foreach ($doc->getProduits() as $produit) {
             $drevHash = $produit->getCepage()->getHash();
             foreach ($hashesRegex as $hash) {
-                if (VIP2C::isHashMatch($hash, $drevHash) === true) {
+                if (VIP2C::isHashMatch($hash, $drevHash) === true && in_array($drevHash, $hashProduits[$hash]) === false) {
                     $volumes[$hash] += $doc->getVolumeRevendiqueLotsWithFilterAppellations($drevHash);
                     $hashProduits[$hash][] = $drevHash;
                     $codesDouanes[] = $produit->getConfig()->getCodeDouane();
