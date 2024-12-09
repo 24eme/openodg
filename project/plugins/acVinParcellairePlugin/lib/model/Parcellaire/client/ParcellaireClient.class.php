@@ -147,7 +147,7 @@ class ParcellaireClient extends acCouchdbClient {
             $parcellaire->save();
             $returncsv = true;
         }else{
-            $errors['csv'] = 'Pas de CSV issu du scrapping trouvé';
+            $errors['csv'] = 'Pas de CSV issu du scrapping trouvé ('.$fileCsv.')';
         }
 
         $this->loadParcellaireCSV($parcellaire);
