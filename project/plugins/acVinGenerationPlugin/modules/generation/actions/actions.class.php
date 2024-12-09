@@ -76,7 +76,8 @@ class generationActions extends sfActions {
         $task->libelle = $this->tasks[$request->getParameter('task')]['title'];
         $task->arguments = [
             'bash',
-            $this->tasks[$request->getParameter('task')]['script']
+            $this->tasks[$request->getParameter('task')]['script'],
+            sfConfig::get('sf_app'),
         ];
         $task->save();
         return $this->redirect('generation_view', ['id' => $task->_id]);
