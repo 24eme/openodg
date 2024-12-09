@@ -3,7 +3,15 @@
 # Title: Titre de la tache. Apparaît dans le listing
 # Description: Description de la tâche. Apparaît dans le listing
 
+APPLICATION=$1
+
 source "$(dirname $0)/../config.inc"
+
+if test -f "$(dirname $0)/../config.$APPLICATION.inc"; then
+    source "$(dirname $0)/../config.$APPLICATION.inc"
+else
+    source "$(dirname $0)/../config.inc"
+fi
 
 echo "Script d'exemple"
 

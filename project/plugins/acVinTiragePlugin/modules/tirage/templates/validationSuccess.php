@@ -19,44 +19,47 @@
     <?php include_partial('tirage/recap', array('tirage' => $tirage)); ?>
 
     <?php  if (!$tirage->isPapier() && count($validation->getEngagements()) > 0): ?>
-        <h2 class="h3">J'ai pris connaissance des pièces à fournir</h2>
-        <div class="alert" role="alert" id="engagements">
+        <h2 class="h3" style="margin-bottom:0;">J'ai pris connaissance des pièces à fournir</h2>
+        <div class="alert" role="alert" id="engagements" style="padding-top:0;">
             <div class="form-group">
 
-                <div class="alert alert-danger <?php if(!$form->hasErrors()): ?>hidden<?php endif; ?>" role="alert">
-                    <ul class="error_list">
-                        <li class="text-left">Vous devez cocher pour valider votre déclaration.</li>
-                    </ul>
-                </div>
-
                 <?php foreach ($validation->getPoints(TirageValidation::TYPE_ENGAGEMENT) as $engagement): ?>
-                <div class="checkbox-container <?php if ($form['engagement_' . $engagement->getCode()]->hasError()): ?>has-error<?php endif; ?>">
-                    <div class="checkbox<?php if($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()): ?> disabled<?php endif; ?>">
-                        <label>
-                            <?php
-                                if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()) {
-                                    echo $form['engagement_' . $engagement->getCode()]->render(array('checked' => 'checked'));
-                                } elseif($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && !$tirage->hasDr()) {
-                                    echo $form['engagement_' . $engagement->getCode()]->render(array('class' => 'hidden'));
+                    <div class="checkbox-container <?php if ($form['engagement_' . $engagement->getCode()]->hasError()): ?>has-error<?php endif; ?>">
+                        <div class="checkbox<?php if($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()): ?> disabled<?php endif; ?>">
+                            <label>
+                                <?php if($engagement->getCode() == TirageDocuments::AUTORISATION_PARTAGE_CIVA): ?>
+                                <h3 style="margin-left:-37px;" >Autorisation de partage des données</h3>
+                                <?php echo $form['engagement_' . $engagement->getCode()]->render(array('class' => 'hidden')); ?>
+                                <?php endif ?>
+                                <?php
+                                    if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()) {
+                                        echo $form['engagement_' . $engagement->getCode()]->render(array('checked' => 'checked'));
+                                    } elseif($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && !$tirage->hasDr()) {
+                                        echo $form['engagement_' . $engagement->getCode()]->render(array('class' => 'hidden'));
 
-                                } else {
-                                    $svRecu = ($tirage->hasSV())? array('checked' => 'checked') : array();
-                                    echo $form['engagement_' . $engagement->getCode()]->render($svRecu);
+                                    } else {
+                                        $svRecu = ($tirage->hasSV())? array('checked' => 'checked') : array();
+                                        echo $form['engagement_' . $engagement->getCode()]->render($svRecu);
 
-                                }
-                            ?>
-                            <?php if ($engagement->getCode() != TirageDocuments::DOC_PRODUCTEUR || $tirage->hasDr()): ?>
-                            <?php echo $engagement->getRawValue()->getMessage() ?>
-                            <?php endif; ?>
-                            <?php if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()): ?>- <a href="<?php echo url_for("tirage_dr_pdf", $tirage); ?>" class="btn-link" target="_blank"><small>Voir ma Déclaration de récolte associée</small></a>
-                            <?php endif; ?>
-                            <?php if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && !$tirage->hasDr()): ?>
-                                <a href="<?php echo url_for("tirage_dr_recuperation", $tirage) ?>">☐ Récupérer ma DR <?php echo $tirage->getCampagneDR(); ?> depuis le CIVA</a>
-                            <?php endif; ?>
-                        </label>
+                                    }
+                                ?>
+                                <?php if ($engagement->getCode() != TirageDocuments::DOC_PRODUCTEUR || $tirage->hasDr()): ?>
+                                <?php echo $engagement->getRawValue()->getMessage() ?>
+                                <?php endif; ?>
+                                <?php if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()): ?>- <a href="<?php echo url_for("tirage_dr_pdf", $tirage); ?>" class="btn-link" target="_blank"><small>Voir ma Déclaration de récolte associée</small></a>
+                                <?php endif; ?>
+                                <?php if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && !$tirage->hasDr()): ?>
+                                    <a href="<?php echo url_for("tirage_dr_recuperation", $tirage) ?>">☐ Récupérer ma DR <?php echo $tirage->getCampagneDR(); ?> depuis le CIVA</a>
+                                <?php endif; ?>
+                            </label>
+                        </div>
+                        </div>
+                    <?php endforeach; ?>
+                    <div class="alert alert-danger <?php if(!$form->hasErrors()): ?>hidden<?php endif; ?>" role="alert" style="margin-top:30px;">
+                        <ul class="error_list">
+                            <li class="text-left">Vous devez cocher les deux cases pour valider votre déclaration.</li>
+                        </ul>
                     </div>
-                    </div>
-                <?php endforeach; ?>
             </div>
         </div>
     <?php endif; ?>
