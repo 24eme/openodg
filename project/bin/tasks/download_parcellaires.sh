@@ -5,8 +5,6 @@
 
 APPLICATION=$1
 
-source "$(dirname $0)/../config.inc"
-
 if test -f "$(dirname $0)/../config_$APPLICATION.inc"; then
     source "$(dirname $0)/../config_$APPLICATION.inc"
 else
