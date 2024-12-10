@@ -19,6 +19,7 @@ class TirageValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_PRODUCTEUR, "Joindre une copie de votre Déclaration de Récolte");
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_SV11, 'Joindre une copie de votre SV11');
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
+        $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::AUTORISATION_PARTAGE_CIVA, 'J\'accepte que mes données soient transmises au CIVA à des fins statistiques');
         // $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_ACHETEUR, "Joindre une copie de votre Certificat de Fabrication visé par les douanes ou une copie de la DRM visé par les Douanes");
         $this->addControle(self::TYPE_WARNING, 'famille_elaborateur', "Vous n’êtes pas identifié(e) en tant qu’élaborateur");
     }
@@ -48,6 +49,7 @@ class TirageValidation extends DocumentValidation {
         } else {
             $this->addPoint(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_PRODUCTEUR, null);
         }
+        $this->addPoint(self::TYPE_ENGAGEMENT, TirageDocuments::AUTORISATION_PARTAGE_CIVA, null);
 
         $composition_incomplete = true;
         if (count($this->document->composition)) {

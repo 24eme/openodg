@@ -138,6 +138,15 @@ class TransactionConfiguration extends DeclarationConfiguration {
         return DRevConfiguration::getInstance()->getCampagneDebutMois();
     }
 
+    public function getDeclarationName() {
+        if(isset($this->configuration['declaration_name']) && $this->configuration['declaration_name']) {
+
+            return $this->configuration['declaration_name'];
+        }
+
+        return "Transaction";
+    }
+
     public function getModuleName() {
 
         return 'transaction';
