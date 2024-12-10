@@ -5,8 +5,6 @@ class MouvementFacturesDocument
     protected $document;
     protected $hash;
 
-    protected $oldmvts = [];
-
     public function __construct(acCouchdbDocument $document)
     {
         $this->document = $document;
@@ -31,7 +29,6 @@ class MouvementFacturesDocument
                 }
 
                 $mouvements = array_merge_recursive($mouvements, $mouvements_calcules);
-                $this->oldmvts = $mouvements_calcules;
             }
         } else {
             $mouvements = $this->document->getMouvementsFacturesCalcule();
