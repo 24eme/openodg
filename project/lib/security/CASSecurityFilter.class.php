@@ -58,7 +58,7 @@ class CASSecurityFilter extends sfBasicSecurityFilter
 
    protected function forwardToLoginAction()
    {
-       $this->controller->redirect(acCas::getConfig('app_cas_url') . '/login?service=' . urlencode($this->request->getUri()));
+       $this->controller->redirect(acCas::getConfig('app_cas_url') . '/login?service=' . urlencode(preg_replace("/\?$/", '', $this->request->getUri())));
 
        throw new sfStopException();
    }
