@@ -13,7 +13,7 @@
     <?php if($validation->hasPoints()): ?>
         <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
-    <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
+    <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr, 'vip2c' => $vip2c)); ?>
 	<?php  if (count($validation->getEngagements()) > 0): ?>
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php elseif($sf_user->isAdmin()) : ?>

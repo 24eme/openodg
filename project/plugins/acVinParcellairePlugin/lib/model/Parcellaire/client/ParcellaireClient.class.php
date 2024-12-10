@@ -147,7 +147,7 @@ class ParcellaireClient extends acCouchdbClient {
             $parcellaire->save();
             $returncsv = true;
         }else{
-            $errors['csv'] = 'Pas de CSV issu du scrapping trouvé';
+            $errors['csv'] = 'Pas de CSV issu du scrapping trouvé ('.$fileCsv.')';
         }
 
         $this->loadParcellaireCSV($parcellaire);
@@ -332,7 +332,7 @@ class ParcellaireClient extends acCouchdbClient {
         $parcelle->setNumeroParcelle(preg_replace('/^0+/', '', substr($parcelle->idu, 10, 4)));
     }
 
-    public static function CopyParcelle($p1, $p2) {
+    public static function CopyParcelle($p1, $p2, $withSuperficie = true) {
         if (!$p2) {
             throw new sfException('2d parcelle should not be empty');
         }
@@ -342,7 +342,7 @@ class ParcellaireClient extends acCouchdbClient {
         $p1->commune = $p2->commune;
         $p1->code_commune = $p2->code_commune;
         $p1->cepage = $p2->cepage;
-        if ($p1->getDocument()->getType() == 'Parcellaire' || $p2->getDocument()->getType() != 'Parcellaire') {
+        if ($withSuperficie) {
             $p1->superficie = $p2->superficie;
         }
         if ($p1->exist('produit_hash')) {

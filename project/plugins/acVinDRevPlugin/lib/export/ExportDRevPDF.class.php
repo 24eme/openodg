@@ -3,28 +3,20 @@
 class ExportDRevPDF extends ExportPDF {
 
     protected $drev = null;
-    protected $regions = array();
+    protected $regions_multi_pdf = array();
+    protected $region = null;
     protected $infos = [];
 
     public function __construct($drev, $region = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->drev = $drev;
-        if(! $region && RegionConfiguration::getInstance()->hasOdgProduits() && ! DrevConfiguration::getInstance()->hasPDFUniqueRegion()) {
-            $this->regions = $this->drev->declaration->getSyndicats();
-        }
-
-        if(!count($this->regions)){
-          $this->regions[] = $region;
-        }
-
-        if (!$filename) {
-            $filename = $this->getFileName(true);
-        }
-
-        if ($this->getRegion()) {
-            $this->infos = RegionConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
+        $this->region = $region;
+        if(! $this->region && RegionConfiguration::getInstance()->hasOdgProduits() && ! DrevConfiguration::getInstance()->hasPDFUniqueRegion()) {
+            $this->regions_multi_pdf = $this->drev->declaration->getSyndicats();
+        } elseif($this->region) {
+            $this->infos = RegionConfiguration::getInstance()->getOdgRegionInfos($this->region);
 
             if (isset($this->infos['nom']) === false) {
-                $infoOrga = Organisme::getInstance($this->getRegion());
+                $infoOrga = Organisme::getInstance($this->region);
                 $this->infos['nom'] = $infoOrga->getNom();
                 $this->infos['adresse'] = implode(', ', [$infoOrga->getAdresse(), $infoOrga->getCodePostal(), $infoOrga->getCommune()]);
                 $this->infos['telephone'] = $infoOrga->getTelephone();
@@ -32,26 +24,19 @@ class ExportDRevPDF extends ExportPDF {
             }
         }
 
+        if (!$filename) {
+            $filename = $this->getFileName(true);
+        }
+
         parent::__construct($type, $use_cache, $file_dir, $filename);
     }
 
     public function create() {
-        foreach ($this->regions as $region) {
-            $this->printable_document->addPage($this->getPartial('drev/pdf', array('drev' => $this->drev, 'region' => $region)));
-        }
-    }
-
-    public function getRegion() {
-        $region = null;
-        if(count($this->regions) == 1 && $this->regions[0]) {
-            $region = $this->regions[0];
-        }
-
-        return $region;
+        $this->printable_document->addPage($this->getPartial('drev/pdf', array('drev' => $this->drev, 'region' => $this->region)));
     }
 
     public function generate() {
-        if(count($this->regions) <= 1) {
+        if(!count($this->regions_multi_pdf)) {
 
             return parent::generate();
         }
@@ -61,7 +46,7 @@ class ExportDRevPDF extends ExportPDF {
         }
 
         $files = array();
-        foreach ($this->regions as $region) {
+        foreach ($this->regions_multi_pdf as $region) {
             $pdf = new ExportDRevPDF($this->drev, $region);
             $pdf->setPartialFunction($this->getPartialFunction());
             $pdf->removeCache();
@@ -74,7 +59,7 @@ class ExportDRevPDF extends ExportPDF {
     }
 
     public function output() {
-        if(count($this->regions) <= 1) {
+        if(!count($this->regions_multi_pdf)) {
 
             return parent::output();
         }
@@ -87,7 +72,7 @@ class ExportDRevPDF extends ExportPDF {
     }
 
     public function getFile() {
-        if(count($this->regions) <= 1) {
+        if(count($this->regions_multi_pdf) <= 1) {
 
             return parent::getFile();
         }
@@ -101,7 +86,7 @@ class ExportDRevPDF extends ExportPDF {
 
     protected function getHeaderTitle() {
         $titre = sprintf("Déclaration de Revendication %s", $this->drev->campagne);
-        if($this->getRegion()) {
+        if($this->region) {
             $titre .= " (".$this->infos['nom'].")";
         }
 
@@ -113,7 +98,8 @@ class ExportDRevPDF extends ExportPDF {
     }
 
     protected function getFooterText() {
-        if(!$this->getRegion()) {
+        if(!$this->region) {
+
             return sprintf(
                 "<span style='color:#ff0000;'>%s - %s - %s - %s - %s - %s</span>",
                 Organisme::getInstance()->getNom(),
@@ -132,20 +118,19 @@ class ExportDRevPDF extends ExportPDF {
 
         $header_subtitle = sprintf("%s\n\n", $this->drev->declarant->nom
         );
-        $region = $this->getRegion();
         if (!$this->drev->isPapier() && $this->drev->getDateDepot()) {
             $date = new DateTime($this->drev->getDateDepot());
             $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
-            if($region && $this->drev->getValidationOdgDateByRegion($region)){
-              $dateOdg = new DateTime($this->drev->getValidationOdgDateByRegion($region));
+            if($this->region && $this->drev->getValidationOdgDateByRegion($this->region)){
+              $dateOdg = new DateTime($this->drev->getValidationOdgDateByRegion($this->region));
               $header_subtitle .= ", validée par l'ODG le ".$dateOdg->format('d/m/Y');
-            }elseif($region){
+            }elseif($this->region){
                 $header_subtitle .= ", en attente de l'approbation par l'ODG";
             }
-            if(!$region && $this->drev->validation_odg) {
+            if(!$this->region && $this->drev->validation_odg) {
                 $dateOdg = new DateTime($this->drev->validation_odg);
                 $header_subtitle .= ", validée par l'ODG le ".$dateOdg->format('d/m/Y');
-            } elseif(!$region) {
+            } elseif(!$this->region) {
                 $header_subtitle .= ", en attente de l'approbation par l'ODG";
             }
 
@@ -164,14 +149,8 @@ class ExportDRevPDF extends ExportPDF {
     protected function getConfig() {
         $config = parent::getConfig();
 
-        $region = null;
-
-        if(count($this->regions) == 1 && $this->regions[0]) {
-            $region = $this->regions[0];
-        }
-
-        if($region && file_exists(sfConfig::get('sf_web_dir').'/images/pdf/logo_'.strtolower($region).'.jpg')) {
-            $config->header_logo = 'logo_'.strtolower($region).'.jpg';
+        if($this->region && file_exists(sfConfig::get('sf_web_dir').'/images/pdf/logo_'.strtolower($this->region).'.jpg')) {
+            $config->header_logo = 'logo_'.strtolower($this->region).'.jpg';
         }
         $config->header_string = $this->getHeaderSubtitle();
         return $config;
@@ -179,7 +158,7 @@ class ExportDRevPDF extends ExportPDF {
 
     public function getFileName($with_rev = false) {
 
-        return self::buildFileName($this->drev, true, $this->getRegion());
+        return self::buildFileName($this->drev, true, $this->region);
     }
 
     public static function buildFileName($drev, $with_rev = false, $region = null) {

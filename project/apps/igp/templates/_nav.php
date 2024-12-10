@@ -86,6 +86,7 @@
                   <ul class="dropdown-menu">
                     <li><a href="<?php echo url_for("produits") ?>">Catalogue produit</a></li>
                     <li><a href="<?php echo url_for("facturation_template_last") ?>">Facturation</a></li>
+                    <li><a href="<?php echo url_for("generation_list") ?>">Tâches récurrentes</a></li>
                   </ul>
                 </li>
                 <?php elseif($sf_user->isAuthenticated()): ?>
