@@ -1643,7 +1643,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->getVolumeRevendiqueLots($produitFilter) > 0;
     }
 
-    public function getVolumeRevendiqueLotsWithFilterAppellations(string $appellations){
+    public function getVolumeRevendiqueLotsMillesimeCourantByAppellations(string $appellations){
         $t = new TemplateFactureCotisationCallbackParameters($this, array('appellations' => $appellations, 'millesime' => '/millesime/courant'));
         return $this->getVolumeRevendiqueLots($t);
     }
