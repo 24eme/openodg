@@ -74,9 +74,9 @@ class Configuration extends BaseConfiguration {
 
             return $this->identifyLibelleProduct[$libelle];
         }
-        $couleurs = array('blanc', 'rouge', 'rosé');
-        $libelle_couleur = $libelle;
+        $couleurs = array('', ' blanc', ' rouge', ' rosé');
         while (count($couleurs)) {
+            $libelle_couleur = $libelle . array_shift($couleurs);
             $libelleSlugify = self::slugifyProduitLibelle($libelle_couleur);
 
             foreach($this->getProduits() as $produit) {
@@ -88,7 +88,6 @@ class Configuration extends BaseConfiguration {
                     return $produit;
                 }
             }
-            $libelle_couleur = $libelle." " . array_shift($couleurs);
         }
 
         return false;

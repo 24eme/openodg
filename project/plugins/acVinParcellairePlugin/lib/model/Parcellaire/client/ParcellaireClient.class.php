@@ -123,7 +123,7 @@ class ParcellaireClient extends acCouchdbClient {
         $lastParcellaire = $this->getLast($etablissement->identifiant);
         if($filePdf && is_file($filePdf) && $lastParcellaire && $lastParcellaire->hasParcellairePDF() && md5_file($filePdf) == $lastParcellaire->getParcellairePDFMd5()) {
 
-            throw new Exception("Aucune nouvelle vesion du PDF trouvée (il se peut que le parcellaire de cet opérateur ne soit pas accessible sur prodouane)");
+            throw new Exception("Aucune nouvelle version du PDF trouvée (il se peut que le parcellaire de cet opérateur ne soit pas accessible sur prodouane)");
         }
 
         $parcellaire = ParcellaireClient::getInstance()->findOrCreate(
@@ -147,7 +147,7 @@ class ParcellaireClient extends acCouchdbClient {
             $parcellaire->save();
             $returncsv = true;
         }else{
-            $errors['csv'] = 'Pas de CSV issu du scrapping trouvé';
+            $errors['csv'] = 'Pas de CSV issu du scrapping trouvé ('.$fileCsv.')';
         }
 
         $this->loadParcellaireCSV($parcellaire);
