@@ -410,7 +410,7 @@ class DRevValidation extends DeclarationLotsValidation
     protected function controleHabilitationODG()
     {
         $e = EtablissementFindByCviView::getInstance()->findByCvi($this->document->declarant->cvi);
-        if(count($e) > 1) {
+        if(count($e) > 1 && ($this->document->declarant->cvi || !$this->document->declarant->ppm)) {
             $this->addPoint(self::TYPE_ERROR, 'declaration_multi_cvi', 'Le CVI '.$this->document->declarant->cvi, $this->generateUrl('compte_search', array('q' => $this->document->declarant->cvi, 'contacts_all' => 1, 'tags' => 'automatique:etablissement')) );
         }
 
