@@ -102,7 +102,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                   continue;
               }
               $subitem = $item->detail->add($parcelle->getParcelleId());
-              ParcellaireClient::CopyParcelle($subitem, $parcelle);
+              ParcellaireClient::CopyParcelle($subitem, $parcelle, true);
               $subitem->active = 1;
               $subitem->remove('vtsgn');
               if($parcelle->exist('vtsgn')) {

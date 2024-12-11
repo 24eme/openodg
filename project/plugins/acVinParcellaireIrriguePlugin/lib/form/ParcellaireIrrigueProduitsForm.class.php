@@ -50,7 +50,7 @@ class ParcellaireIrrigueProduitsForm extends acCouchdbObjectForm {
             if (!$parcelle->isExistingParcelle($object->_id)) {
                 $node = $object->declaration->add(str_replace('/declaration/', '', $parcelle->getProduit()->getHash()));
                 $node = $node->detail->add($parcelle->getKey());
-                ParcellaireClient::CopyParcelle($node, $parcelle);
+                ParcellaireClient::CopyParcelle($node, $parcelle, true);
                 $node->materiel = $parcelle->materiel;
                 $node->ressource = $parcelle->ressource;
             }

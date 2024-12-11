@@ -32,12 +32,12 @@
                     <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-xs btn-default btn-block" href="<?php echo url_for('parcellairemanquant_delete', $parcellaireManquant) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                 </div>
             </div>
-          <?php elseif (!ParcellaireManquantClient::getInstance()->isOpen()): ?>
+          <?php elseif (!ParcellaireManquantConfiguration::getInstance()->isOpen()): ?>
                 <div class="panel-body">
-                    <?php if(date('Y-m-d') > ParcellaireManquantClient::getInstance()->getDateOuvertureFin()): ?>
+                    <?php if(date('Y-m-d') > ParcellaireManquantConfiguration::getInstance()->getDateOuvertureFin()): ?>
                     <p class="explications">Le Téléservice est fermé. Pour toute question, veuillez contacter directement l'ODG.</p>
                     <?php else: ?>
-                    <p class="explications">Le Téléservice sera ouvert à partir du <?php echo format_date(ParcellaireManquantClient::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
+                    <p class="explications">Le Téléservice sera ouvert à partir du <?php echo format_date(ParcellaireManquantConfiguration::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
                     <?php endif; ?>
                     <div class="actions">
                         <?php if ($sf_user->isAdmin()): ?>

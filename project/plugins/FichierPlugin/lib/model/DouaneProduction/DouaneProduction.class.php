@@ -235,6 +235,9 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         if (isset($this->enhanced_donnees)) {
             return $this->enhanced_donnees;
         }
+
+        $donneesExist = $this->exist('donnees');
+
         $this->generateDonnees();
 
         foreach (ChgtDenomClient::getInstance()->getChgtDenomProduction($this->identifiant, $this->campagne) as $chgt) {
@@ -293,6 +296,10 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             $this->enhanced_donnees[] = $d;
         }
         $this->enhancedDonnneesWithFamille();
+
+        if(!$donneesExist) {
+            $this->remove('donnees');
+        }
         return $this->enhanced_donnees;
     }
 
@@ -467,12 +474,6 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         foreach ($produitFilter as $type => $filter) {
             if ($type === 'appellations') {
                 $match = $match && $this->matchFilterProduit($produit, $filter);
-            } elseif ($type === 'millesime') {
-                $match = $match && $this->matchFilterMillesime($produit, $filter);
-            } elseif ($type === 'deja') {
-                // On gère que l'option (NOT)? /deja/CONFORME pour le moment
-                // Pas NONCONFORME
-                $match = $match && $this->matchFilterConformite($produit, $filter);
             } elseif ($type === 'region') {
                 $region = $filter;
                 $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit->produit);
@@ -489,11 +490,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         $produitExclude = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
 
-        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produit)) {
+        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produit->produit)) {
 
             return false;
         }
-        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produit)) {
+        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produit->produit)) {
 
             return false;
         }
@@ -517,7 +518,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             if($produitFilter && !$this->matchFilter($donnee, $produitFilter)) {
                 continue;
             }
-            if(preg_replace('/^0/', '', $donnee->categorie) !== preg_replace('/^0/', '', str_replace("L", "", $numLigne))) {
+            if(preg_replace('/^0/', '', strtolower($donnee->categorie)) !== preg_replace('/^0/', '', str_replace("L", "", strtolower($numLigne)))) {
                 continue;
             }
             if ($metayer_vrai_bailleur_faux && $donnee->bailleur_raison_sociale) {
@@ -1099,5 +1100,24 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         }
 
         return isset($tableau_comparaison) ? $tableau_comparaison : null;
+    }
+
+    public function getAllPieces() {
+        $pieces = parent::getAllPieces();
+
+        foreach($this->getBailleurs() as $bailleur) {
+            $pieces[] = [
+                'identifiant' => str_replace("ETABLISSEMENT-", "", $bailleur['etablissement_id']),
+                'date_depot' => $this->getDateDepot(),
+                'libelle' =>  sprintf("DR %s provenant du metayer %s (%s)", $this->periode, $this->declarant->nom, $this->declarant->cvi),
+                'categorie' => $this->getCategorie(),
+                'visibilite' => $this->getVisibilite(),
+                'mime' => null,
+                'source' => null,
+                'fichiers' => $this->getFichiers()
+            ];
+        }
+
+        return $pieces;
     }
 }

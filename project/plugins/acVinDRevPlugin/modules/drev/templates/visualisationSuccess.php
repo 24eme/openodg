@@ -59,7 +59,7 @@
     <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation, 'noLink' => true)); ?>
 <?php endif; ?>
 
-<?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
+<?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr, 'vip2c' => $vip2c)); ?>
 
 <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) ): ?>
     <hr />
@@ -169,11 +169,13 @@
         <?php if(!$drev->validation): ?>
                 <a href="<?php echo url_for("drev_delete", $drev) ?>" class="btn btn-default alert-danger" onclick="return confirm('Souhaitez-vous vraiment SUPPRIMER la saisie de ce document ?')"><span class="glyphicon glyphicon-remove"></span> Supprimer</a>
                 <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
-        <?php elseif(!$drev->validation_odg && ( $sf_user->isAdminODG() && !DrevConfiguration::getInstance()->hasValidationOdgRegion() || ($sf_user->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion() && !$drev->isValidateOdgByRegion($regionParam)))): ?>
-        <?php if (!$drev->isMiseEnAttenteOdg()): ?>
-                <a href="<?php echo url_for("drev_enattente_admin", $params); ?>" class="btn btn-default"><span class="glyphicon glyphicon-hourglass"></span>&nbsp;Mettre en attente</a>
-        <?php endif; ?>
-                <button type="button" name="validateOdg" id="btn-validation-document" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && (!$sf_user->hasDrevAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
+        <?php elseif(!$drev->validation_odg && (
+            $sf_user->isAdminODG() && !DrevConfiguration::getInstance()->hasValidationOdgRegion() || ($sf_user->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion() && !$drev->isValidateOdgByRegion($regionParam))
+        )): ?>
+            <?php if (!$drev->isMiseEnAttenteOdg()): ?>
+                    <a href="<?php echo url_for("drev_enattente_admin", $params); ?>" class="btn btn-default"><span class="glyphicon glyphicon-hourglass"></span>&nbsp;Mettre en attente</a>
+            <?php endif; ?>
+            <button type="button" name="validateOdg" id="btn-validation-document" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && (!$sf_user->hasDrevAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
         <?php endif; ?>
         </div>
     </div>

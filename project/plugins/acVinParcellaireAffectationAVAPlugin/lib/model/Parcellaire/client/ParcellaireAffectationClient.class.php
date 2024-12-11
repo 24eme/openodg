@@ -124,34 +124,4 @@ class ParcellaireAffectationClient extends acCouchdbClient {
         return 'CREMANT';
     }
 
-    public function getDateOuverture($type = self::TYPE_COUCHDB) {
-        if ($type == self::TYPE_COUCHDB) {
-            $dates = sfConfig::get('app_dates_ouverture_parcellaire');
-        } elseif ($type == self::TYPE_COUCHDB_PARCELLAIRE_CREMANT) {
-            $dates = sfConfig::get('app_dates_ouverture_parcellaire_cremant');
-        } elseif ($type == self::TYPE_COUCHDB_INTENTION_CREMANT) {
-            $dates = sfConfig::get('app_dates_ouverture_intention_cremant');
-        } else {
-        	throw new sfException("Le type de parcellaire $type n'existe pas");
-        }
-        return $dates;
-    }
-
-    public function getDateOuvertureDebut($type = self::TYPE_COUCHDB) {
-        $dates = $this->getDateOuverture($type);
-        return $dates['debut'];
-    }
-
-    public function getDateOuvertureFin($type = self::TYPE_COUCHDB) {
-        $dates = $this->getDateOuverture($type);
-        return $dates['fin'];
-    }
-
-    public function isOpen($type = self::TYPE_COUCHDB, $date = null) {
-        if (is_null($date)) {
-            $date = date('Y-m-d');
-        }
-        return $date >= $this->getDateOuvertureDebut($type) && $date <= $this->getDateOuvertureFin($type);
-    }
-
 }

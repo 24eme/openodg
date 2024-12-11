@@ -10,7 +10,7 @@ class CompteRoute extends sfObjectRoute implements InterfaceCompteRoute {
 
       $myUser = sfContext::getInstance()->getUser();
       $allowed = $myUser->isAdmin();
-      $allowed = $allowed || (isset($this->accesses['allow_stalker']) && $this->accesses['allow_stalker'] && $myUser->isStalker() && ($this->getSociete()->type_societe != SocieteClient::TYPE_AUTRE));
+      $allowed = $allowed || (isset($this->accesses['allow_stalker']) && $this->accesses['allow_stalker'] && $myUser->isStalker());
       $allowed = $allowed || (isset($this->accesses['allow_habilitation']) && $this->accesses['allow_habilitation'] && $myUser->hasHabilitation() && $this->compte->getSociete()->type_societe != SocieteClient::TYPE_AUTRE);
       $allowed = $allowed || (isset($this->accesses['allow_admin_odg']) && $this->accesses['allow_admin_odg'] && $myUser->isAdminODG());
       if ($allowed) {
