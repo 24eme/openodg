@@ -454,7 +454,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getDocumentDouanierOlderThanMe($hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $doc = $this->getDocumentDouanier($hydrate);
-        if ( !DRevConfiguration::getInstance()->isModificativeEnabled() || ($doc->date_import <= substr($this->validation_odg, 0, 10)) ) {
+        if ( !DRevConfiguration::getInstance()->isModificativeEnabled() || ($doc && ($doc->date_import <= substr($this->validation_odg, 0, 10)) ) ) {
             return $doc;
         }
         return null;
@@ -2103,6 +2103,28 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if (!$this->isValideeOdg()) {
           return;
         }
+
+        $degustations = array();
+        $is_controle = true;
+        foreach ($this->lots as $lot) {
+            if ($lot->id_document_affectation && strpos($lot->id_document_affectation, 'DEGUSTATION') !== false) {
+                $degustations[$lot->id_document_affectation] = $lot->id_document_affectation;
+            }else{
+                if ($lot->affectable) {
+                    $is_controle = false;
+                }
+            }
+        }
+        foreach ($degustations as $id => $value) {
+            $d = DegustationClient::getInstance()->find($id);
+            if ($d->isAnonymized()) {
+                $is_controle = true;
+            }else{
+                $is_controle = false;
+                break;
+            }
+        }
+
         $commission_date = [];
         foreach ($this->lots as $lot) {
             if($lot->hasBeenEdited()) {
@@ -2142,7 +2164,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
                 }
             }else{
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
+                if ($is_controle) {
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
+                }else{
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE_EN_ATTENTE));
+                }
             }
         }
         if (count(array_keys($commission_date)) == 1) {

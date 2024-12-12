@@ -49,7 +49,14 @@ class generationActions extends sfActions {
         $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_SHELL, 100, $this->getUser()->getRegion());
 
         $this->tasks = [];
-        foreach(glob(sfConfig::get('sf_root_dir').'/bin/tasks/*.sh') as $script) {
+        $scripts = [];
+        foreach(glob(sfConfig::get('sf_root_dir').'/bin/tasks/global/*.sh') as $script) {
+            $scripts[] = $script;
+        }
+        foreach(glob(sfConfig::get('sf_root_dir').'/bin/tasks/'.sfConfig::get('sf_app').'/*.sh') as $script) {
+            $scripts[] = $script;
+        }
+        foreach($scripts as $script) {
             $content = fopen($script, 'r');
 
             $title = $desc = '';
