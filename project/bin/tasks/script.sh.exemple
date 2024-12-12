@@ -5,12 +5,12 @@
 
 APPLICATION=$1
 
-source "$(dirname $0)/../config.inc"
+source "$(dirname $0)/../../config.inc"
 
-if test -f "$(dirname $0)/../config.$APPLICATION.inc"; then
-    source "$(dirname $0)/../config.$APPLICATION.inc"
+if test -f "$(dirname $0)/../../config.$APPLICATION.inc"; then
+    source "$(dirname $0)/../../config.$APPLICATION.inc"
 else
-    source "$(dirname $0)/../config.inc"
+    source "$(dirname $0)/../../config.inc"
 fi
 
 echo "Script d'exemple"
@@ -18,5 +18,5 @@ echo "Script d'exemple"
 # Type de commande qui peut être appelé
 # source monfichier.inc
 # curl -s ad.dr.es.se
-# php monscript.php | grep foo 
+# php monscript.php | grep foo
 # while read -r var; do echo $var; done
