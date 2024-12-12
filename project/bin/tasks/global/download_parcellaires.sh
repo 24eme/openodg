@@ -1,14 +1,14 @@
 #! /bin/bash
 #
 # Title: Téléchargement des parcellaires
-# Description: Télécharge l'ensemble des parcellaires
+# Description: Télécharge les parcellaires des établissements habilités depuis prodouane
 
 APPLICATION=$1
 
-if test -f "$(dirname $0)/../config_$APPLICATION.inc"; then
-    source "$(dirname $0)/../config_$APPLICATION.inc"
+if test -f "$(dirname $0)/../../config_$APPLICATION.inc"; then
+    source "$(dirname $0)/../../config_$APPLICATION.inc"
 else
-    source "$(dirname $0)/../config.inc"
+    source "$(dirname $0)/../../config.inc"
 fi
 
 IDS=$(mktemp)
