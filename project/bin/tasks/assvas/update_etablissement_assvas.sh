@@ -1,6 +1,9 @@
 #! /bin/bash
+#
+# Title: Mise à jour des établissements
+# Description: Met à jour les établissements par rapport au fichier csv déposé sur un cloud
 
-. bin/config.inc
+source "$(dirname $0)/../../config.inc"
 
 mkdir $TMPDIR 2> /dev/null
 
@@ -25,5 +28,8 @@ if test "$CHECKSUM" = "$(md5sum $CSV_IMPORT)"; then
     exit;
 fi
 
-iconv -f iso-8859-15 -t utf-8 "$CSV_IMPORT" | tr "\n" "|" | sed -r 's/(;|\|)(\"[^\"]*)\|([^\"]*\")(;|\|)/\1\2/g' | tr "|" "\n" > "$CSV_IMPORT".utf8
+iconv -f iso-8859-15 -t utf-8 "$CSV_IMPORT" | tr "\n" "|" | sed -r 's/(;|\|)(\"[^\"]*)\|([^\"]*\")(;|\|)/\1\2\3\4/g' | tr "|" "\n" > "$CSV_IMPORT".utf8
+
+cd "$WORKINGDIR"
+
 php symfony import:etablissements-assvas $SYMFONYTASKOPTIONS "$CSV_IMPORT".utf8 --trace

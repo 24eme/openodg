@@ -28,6 +28,8 @@ th {
           <td border="1px" style="width:10%; border-style: solid;text-align:right;">
               <?php echo DegustationClient::getNumeroTableStr($numTab); ?> &nbsp;  &nbsp;
           </td>
+          <td style="width:3%">&nbsp;</td>
+          <td style="width:45%">Nom & Signature du responsable :</td>
         </tr>
       </table>
       <div></div>
