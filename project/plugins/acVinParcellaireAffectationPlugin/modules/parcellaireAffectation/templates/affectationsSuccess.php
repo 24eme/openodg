@@ -16,7 +16,7 @@ if(isset($coop)):
 <h2>Affectation de vos parcelles</h2>
 
 <?php $parcellaire2reference = $parcellaireAffectation->getParcellaire2Reference(); ?>
-<?php if (parcellaire2reference): ?>
+<?php if ($parcellaire2reference): ?>
 <p>Les parcelles listées ci-dessous sont reprises
 <?php if (strpos($parcellaire2reference->_id, 'PARCELLAIRE-') !== false) : ?>
     <a href="<?php echo url_for('parcellaire_visualisation', $parcellaire2reference); ?>">parcellaire douanier</a></p>

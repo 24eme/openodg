@@ -199,13 +199,15 @@ class drevActions extends sfActions {
         	return $this->redirect('drev_revendication_superficie', $this->drev);
         }
 
-        $this->form->save();
-
         try {
+            $this->form->save();
             if (!$this->drev->resetAndImportFromDocumentDouanier()) {
                 throw new sfException("Mauvais format");
             }
         } catch(Exception $e) {
+            if($this->form->getFichier()) {
+                $this->form->getFichier()->delete();
+            }
 
             $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus ('.$e->getMessage().').';
 
@@ -644,6 +646,8 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
         $this->isAdmin = $this->getUser()->isAdmin();
 
+        $this->vip2c = VIP2C::gatherInformations($this->drev, $this->drev->getPeriode());
+
         if ($this->needDrDouane()) {
 
         	return $this->redirect('drev_dr_upload', $this->drev);
@@ -844,16 +848,8 @@ class drevActions extends sfActions {
     public function executeVip2c(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $drev);
-        $vip2c = array();
-        $vip2c['declarvins_api_url'] = VIP2C::getContratsAPIURL($drev->declarant->cvi, $drev->campagne);
-        $vip2c['declarvins_api_contrats'] = VIP2C::getContratsFromAPI($drev->declarant->cvi, $drev->campagne);
-        $vip2c['volumes'] = array();
-        foreach ($drev->getProduitsHashWithVolumeSeuil() as $produit_hash) {
-            $vip2c['volumes'][$produit_hash] = array();
-            $vip2c['volumes'][$produit_hash]['revendique'] = $drev->getVolumeRevendiqueLots($drev->declaration->get($produit_hash)->getConfig()->getHash());
-            $vip2c['volumes'][$produit_hash]['seuil'] = $drev->getVolumeRevendiqueSeuil($produit_hash);
-        }
-        header('Content-type: text/json');
+        $vip2c = VIP2C::gatherInformations($drev, $drev->getPeriode());
+        header('Content-Type: application/json');
         echo json_encode($vip2c);
         exit;
     }
@@ -873,6 +869,8 @@ class drevActions extends sfActions {
         if (!$this->regionParam && $this->getUser()->getRegion()) {
             $this->regionParam = $this->getUser()->getRegion();
         }
+
+        $this->vip2c = VIP2C::gatherInformations($this->drev, $this->drev->getPeriode());
 
         $this->form = null;
         if($this->getUser()->hasDrevAdmin() || $this->drev->validation) {
@@ -956,7 +954,7 @@ class drevActions extends sfActions {
     }
 
     public function executePDF(sfWebRequest $request) {
-        $drev = $this->getRoute()->getDRev(['allow_habilitation' => true]);
+        $drev = $this->getRoute()->getDRev(['allow_habilitation' => true, 'allow_stalker' => true]);
         $this->secure(DRevSecurity::PDF, $drev);
 
         if (!$drev->validation) {

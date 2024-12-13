@@ -7,3 +7,6 @@ all:
       denomination_biodynamie: true
       engagement_pdf: true
       pdf_unique_region: true
+      send_to_innovagro: true
+      denominations_extra:
+        BIODYNAMIE: "Biodynamie hors conversion"

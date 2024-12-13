@@ -5,3 +5,6 @@ all:
       denomination_auto: true
       denomination_biodynamie: true
       engagement_pdf: true
+      denominations_extra:
+        CONVERSION_BIO: "Conversion en Bio"
+        BIODYNAMIE: "Biodynamie hors conversion"

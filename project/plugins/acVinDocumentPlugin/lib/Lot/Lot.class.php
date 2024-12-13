@@ -37,6 +37,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_CONDITIONNE = "01_CONDITIONNE";
     const STATUT_REVENDICATION_SUPPRIMEE = "01_REVENDICATION_SUPPRIMEE";
     const STATUT_NONAFFECTABLE = "09_NON_AFFECTABLE";
+    const STATUT_NONAFFECTABLE_EN_ATTENTE = 'X9_NON_AFFECTABLE';
     const STATUT_AFFECTABLE = "09_AFFECTABLE_ENATTENTE";
     const STATUT_AFFECTABLE_PRELEVE = "09_AFFECTABLE_PRELEVE_ENATTENTE";
 
@@ -94,6 +95,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_CONDITIONNE => 'Conditionné',
         self::STATUT_REVENDICATION_SUPPRIMEE => 'Revendication supprimée',
         self::STATUT_NONAFFECTABLE => 'Réputé conforme',
+        self::STATUT_NONAFFECTABLE_EN_ATTENTE => 'Réputé conforme',
         self::STATUT_AFFECTABLE => 'Affectable',
         self::STATUT_AFFECTABLE_PRELEVE => 'Affectable prelevé',
 
@@ -312,7 +314,9 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function isCleanable() {
-
+        if (!$this->produit_hash) {
+            return true;
+        }
         return $this->isEmpty();
     }
 
@@ -948,7 +952,7 @@ abstract class Lot extends acCouchdbDocumentTree
     public function getMouvements() {
         if (!$this->cache_mouvements) {
             $this->cache_mouvements = array();
-            $mvts = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($this->declarant_identifiant, $this->unique_id, $this->document_ordre);
+            $mvts = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($this->declarant_identifiant, $this->unique_id, null, $this->document_ordre);
             foreach($mvts->rows as $r) {
                 $this->cache_mouvements[] = $r->value;
             }
@@ -1054,9 +1058,19 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getDocumentOrdreCalcule() {
         $i = 0;
-        foreach(LotsClient::getInstance()->getDocumentsIdsByDate($this->declarant_identifiant, $this->unique_id) as $id) {
+        $ids = LotsClient::getInstance()->getDocumentsIdsByDate($this->declarant_identifiant, $this->unique_id);
+
+        $filteredIDs = [];
+
+        foreach($ids as $id) {
+            $id = preg_replace("/-M[0-9]+$/", "", $id);
+            if (in_array($id, $filteredIDs)) {
+                continue;
+            }
+            $filteredIDs[] = $id;
+
             $i++;
-            if(preg_replace("/-M[0-9]+$/", "", $id) != preg_replace("/-M[0-9]+$/", "", $this->getDocument()->_id)) {
+            if($id != preg_replace("/-M[0-9]+$/", "", $this->getDocument()->_id)) {
                 continue;
             }
 

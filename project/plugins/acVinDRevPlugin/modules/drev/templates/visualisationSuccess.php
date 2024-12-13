@@ -18,6 +18,7 @@
     Télédéclaration<?php if($drev->getDateDepot()): ?> signée le <?php echo format_date($drev->getDateDepot(), "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->validation_odg): ?> et approuvée le <?php echo format_date($drev->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?>
     <?php endif; ?>
     <?php if ($sf_user->hasDrevAdmin() && $drev->exist('envoi_oi') && $drev->envoi_oi) { echo ", envoyée à l'InnovAgro le ".format_date($drev->envoi_oi, 'dd/MM') ; } ?>
+    <?php if ($sf_user->isAdminODG() && $drev->validation_odg && DrevConfiguration::getInstance()->isSentToInnovagro()): ?><a href="<?php echo url_for('drev_send_oi', $drev); echo ($regionParam)? '?region='.$regionParam : ''; ?>" onclick="return confirm('Êtes vous sûr de vouloir envoyer la DRev à Innovagro ?');"  class="btn btn-default btn-xs btn-warning"><span class="glyphicon glyphicon-copy"></span> Envoyer à Innovagro</a>&nbsp;<small><a href="<?php  echo url_for('drev_export_xml', $drev) ?>" class=""></a></small><?php endif; ?>
     </small>
     </h2>
     <?php if ($drev->isFactures()): ?><div style="margin-top: -20px;" class="pull-right"><span class="text-muted">DRev facturée</span></div><?php endif; ?>
@@ -58,7 +59,7 @@
     <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation, 'noLink' => true)); ?>
 <?php endif; ?>
 
-<?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
+<?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr, 'vip2c' => $vip2c)); ?>
 
 <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) ): ?>
     <hr />
@@ -168,11 +169,13 @@
         <?php if(!$drev->validation): ?>
                 <a href="<?php echo url_for("drev_delete", $drev) ?>" class="btn btn-default alert-danger" onclick="return confirm('Souhaitez-vous vraiment SUPPRIMER la saisie de ce document ?')"><span class="glyphicon glyphicon-remove"></span> Supprimer</a>
                 <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
-        <?php elseif(!$drev->validation_odg && ( $sf_user->isAdminODG() && !DrevConfiguration::getInstance()->hasValidationOdgRegion() || ($sf_user->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion() && !$drev->isValidateOdgByRegion($regionParam)))): ?>
-        <?php if (!$drev->isMiseEnAttenteOdg()): ?>
-                <a href="<?php echo url_for("drev_enattente_admin", $params); ?>" class="btn btn-default"><span class="glyphicon glyphicon-hourglass"></span>&nbsp;Mettre en attente</a>
-        <?php endif; ?>
-                <button type="button" name="validateOdg" id="btn-validation-document" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && (!$sf_user->hasDrevAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
+        <?php elseif(!$drev->validation_odg && (
+            $sf_user->isAdminODG() && !DrevConfiguration::getInstance()->hasValidationOdgRegion() || ($sf_user->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion() && !$drev->isValidateOdgByRegion($regionParam))
+        )): ?>
+            <?php if (!$drev->isMiseEnAttenteOdg()): ?>
+                    <a href="<?php echo url_for("drev_enattente_admin", $params); ?>" class="btn btn-default"><span class="glyphicon glyphicon-hourglass"></span>&nbsp;Mettre en attente</a>
+            <?php endif; ?>
+            <button type="button" name="validateOdg" id="btn-validation-document" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && (!$sf_user->hasDrevAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
         <?php endif; ?>
         </div>
     </div>

@@ -8,7 +8,7 @@ function getHashProduit($line, $startAt) {
     $lieu = getHashValue($line[$startAt+4]);
     $coul = getHashValue($line[$startAt+5]);
     $cep = getHashValue($line[$startAt+6]);
-    return "certifications/$cert/genres/$gen/appellations/$app/mentions/$men/lieux/$lieu/couleurs/$coul/cepages/$cep";
+    return "certifications/$cert/genres/$gen/appellations/$app/mentions/$men/lieux+couleurs/$coul/cepages/$cep";
 }
 function getHashValue($value) {
     return (trim($value))? trim($value) : 'DEFAUT';

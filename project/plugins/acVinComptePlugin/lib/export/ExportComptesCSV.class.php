@@ -38,6 +38,8 @@ class ExportComptesCsv
             "En alerte",
             "Login",
             "Code 1ere connexion",
+            "Etat Login",
+            "Mot de passe",
             "Date de dernière modification",
             "Tags",
             "N° Compte Type"
@@ -61,7 +63,7 @@ class ExportComptesCsv
     public function export()
     {
         $compteclient = CompteClient::getInstance();
-
+        $logins = array();
         foreach (CompteAllView::getInstance()->getAll() as $json_doc) {
             $compte = $compteclient->find($json_doc->id);
             $domaine = sfConfig::get('app_routing_context_production_host');
@@ -77,6 +79,18 @@ class ExportComptesCsv
                 $login = $ecompte->login;
             }elseif (strpos($compte->mot_de_passe, '{TEXT}') === 0) {
                 $code1erecon = substr($compte->mot_de_passe, 6);
+            }
+            $etat_compte = null;
+            if (isset($logins[$login])) {
+                $etat_compte = "SECONDAIRE";
+            }
+            $logins[$login] = true;
+            if (strpos($compte->mot_de_passe, '{OUBLIE}') === 0) {
+                $etat_compte = "MDP OUBLIÉ";
+            }elseif (!$etat_compte && strpos($compte->mot_de_passe, '{TEXT}') === 0) {
+                $etat_compte = "EN ATTENTE DE CRÉATION";
+            }elseif (strpos($compte->mot_de_passe, '{SSHA}') === 0) {
+                $etat_compte = "CRÉÉ";
             }
             $data = [
                 $compte->getCodeComptable(),
@@ -101,6 +115,8 @@ class ExportComptesCsv
                 $compte->isEnAlerte(),
                 ''.$login.' ',
                 $code1erecon,
+                $etat_compte,
+                preg_replace('/}.*/', '}', $compte->mot_de_passe),
                 $compte->date_modification,
                 $this->compte2strtags($compte),
                 $compte->_id

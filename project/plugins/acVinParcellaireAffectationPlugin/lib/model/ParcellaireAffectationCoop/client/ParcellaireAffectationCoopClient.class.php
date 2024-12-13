@@ -30,6 +30,11 @@ class ParcellaireAffectationCoopClient extends acCouchdbClient {
         $parcellaireAffectationCoop = new ParcellaireAffectationCoop();
         $parcellaireAffectationCoop->initDoc($identifiant, $periode, $type);
 
+        $sv11 = SV11Client::getInstance()->find("SV11-".$identifiant."-".($periode - 1));
+        if (!$sv11) {
+            throw new sfException('SV11 misssing '."SV11-".$identifiant."-".($periode - 1));
+        }
+
         $parcellaireAffectationCoop->buildApporteurs();
 
         return $parcellaireAffectationCoop;

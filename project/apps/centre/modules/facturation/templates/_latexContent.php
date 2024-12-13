@@ -81,7 +81,8 @@
 
 \begin{minipage}{0.5\textwidth}
 	\vspace{-0.8cm}
-	\includegraphics[width=4cm]{\LOGO} \\
+	\includegraphics[width=4cm]{\LOGO} \\ \\
+    AOC <?php echo ucfirst(strtolower(Organisme::getInstance($facture->region)->getRegion())); ?> \\
     }
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
@@ -198,6 +199,13 @@
 <?php if ($facture->exist('message_communication') && $facture->message_communication): ?>
 \textit{<?= escape_string_for_latex($facture->message_communication); ?>} \\ \\
 <?php endif; ?>
+
+Contact de l'INAO: \\
+12 place Anatole France, \\
+37000 Tours \\
+02~47~20~58~38 \\
+www.inao.gouv.fr \\
+
 \\\vspace{6mm}
 <?php if (count($facture->paiements)): ?>
 \textbf{Paiement(s) :} \\

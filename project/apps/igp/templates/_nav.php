@@ -41,6 +41,12 @@
                 <li class="<?php if($route instanceof InterfaceFacturationRoute): ?>active<?php endif; ?>"><a href="<?php if($compte  && !$route instanceof InterfaceFacturationRoute): ?><?php echo url_for('facturation_declarant', $compte); ?><?php else: ?><?php echo url_for('facturation'); ?><?php endif; ?>">Facturation</a></li>
                 <li class="<?php if($route instanceof InterfaceCompteRoute && !$route instanceof FacturationDeclarantRoute): ?>active<?php endif; ?>"><a href="<?php if($compte && !$route instanceof InterfaceCompteRoute || $route instanceof FacturationDeclarantRoute): ?><?php echo url_for('compte_visualisation', $compte); ?><?php else: ?><?php echo url_for('compte_search'); ?><?php endif; ?>">Contacts</a></li>
             </ul>
+            <?php elseif($sf_user->isStalker()): ?>
+                <ul class="nav navbar-nav <?php if($compte): ?>mode-operateur<?php endif; ?>" style="border: 0;">
+                    <li class="<?php if(!$etablissement): ?>disabled<?php endif; ?> <?php if($route instanceof InterfaceDegustationGeneralRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceDegustationGeneralRoute): ?><?php echo url_for('degustation_declarant_lots_liste', array('identifiant' => $etablissement->identifiant)); ?><?php endif; ?>">Dégustation</a></li>
+                    <li class="<?php if(!$etablissement): ?>disabled<?php endif; ?> <?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceDocumentsRoute): ?><?php echo url_for('pieces_historique', $etablissement); ?><?php endif; ?>">Documents</a></li>
+                    <li class="<?php if($route instanceof InterfaceCompteRoute && !$route instanceof FacturationDeclarantRoute): ?>active<?php endif; ?>"><a href="<?php if($compte && !$route instanceof InterfaceCompteRoute || $route instanceof FacturationDeclarantRoute): ?><?php echo url_for('compte_visualisation', $compte); ?><?php else: ?><?php echo url_for('compte_search'); ?><?php endif; ?>">Contacts</a></li>
+                </ul>
             <?php elseif($sf_user->isAuthenticated() && $etablissement): ?>
                 <ul class="nav navbar-nav <?php if($compte): ?>mode-operateur<?php endif; ?>" style="border: 0;">
                     <li class="<?php if($route instanceof InterfaceDeclarationRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>">Déclarations</a></li>
@@ -80,6 +86,7 @@
                   <ul class="dropdown-menu">
                     <li><a href="<?php echo url_for("produits") ?>">Catalogue produit</a></li>
                     <li><a href="<?php echo url_for("facturation_template_last") ?>">Facturation</a></li>
+                    <li><a href="<?php echo url_for("generation_list") ?>">Tâches récurrentes</a></li>
                   </ul>
                 </li>
                 <?php elseif($sf_user->isAuthenticated()): ?>
