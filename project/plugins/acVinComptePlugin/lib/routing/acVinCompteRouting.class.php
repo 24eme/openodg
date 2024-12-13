@@ -58,7 +58,6 @@ class acVinCompteRouting {
 
         $r->prependRoute('compte_search', new SearchRoute('/compte/search', array('module' => 'compte', 'action' => 'search')));
         $r->prependRoute('compte_recherche_avancee', new SearchRoute('/compte/search/advanced', array('module' => 'compte', 'action' => 'searchadvanced')));
-        $r->prependRoute('compte_search_csv', new SearchRoute('/compte/search/csv', array('module' => 'compte', 'action' => 'searchcsv')));
         $r->prependRoute('compte_addtag', new SearchRoute('/compte/search/addtag', array('module' => 'compte', 'action' => 'addtag')));
         $r->prependRoute('compte_addingroupe', new SearchRoute('/compte/addingroupe/:identifiant', array('module' => 'compte', 'action' => 'addingroupe')));
         $r->prependRoute('compte_removetag', new SearchRoute('/compte/search/removetag', array('module' => 'compte', 'action' => 'removetag')));

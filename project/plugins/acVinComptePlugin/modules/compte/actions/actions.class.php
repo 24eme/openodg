@@ -170,38 +170,6 @@ class compteActions extends sfCredentialActions {
       return $q;
     }
 
-    public function executeSearchcsv(sfWebRequest $request) {
-        ini_set('memory_limit', '1G');
-        $index = acElasticaManager::getType('COMPTE');
-        $this->selected_rawtags = array_unique(array_diff(explode(',', $request->getParameter('tags')), array('')));
-        $this->selected_typetags = array();
-        foreach ($this->selected_rawtags as $t) {
-              if (preg_match('/^([^:]+):(.+)$/', $t, $m)) {
-          		if (!isset($this->selected_typetags[$m[1]])) {
-            		$this->selected_typetags[$m[1]] = array();
-          		}
-          		$this->selected_typetags[$m[1]][] = $m[2];
-        	}
-        }
-
-        $q = $this->initSearch($request);
-        $resset = $index->search($q);
-        $nbTotal = $resset->getTotalHits();
-        if ($nbTotal > 1000000) {
-        	throw new sfException('Trop de résultat ES pour l\'export CSV');
-        }
-        $q = $this->initSearch($request);
-        $q->setSize($nbTotal);
-        $resset = $index->search($q);
-        $this->results = $resset->getResults();
-        $this->logins = CompteLoginView::getInstance()->getAllLogins();
-        $this->setLayout(false);
-        $filename = 'export_contacts';
-        $attachement = "attachment; filename=".$filename.".csv";
-        $this->response->setContentType('text/csv');
-        $this->response->setHttpHeader('Content-Disposition',$attachement);
-    }
-
     private function addRemoveGroupe(sfWebRequest $request, $remove = false) {
       $compteAjout = $request->getParameter('compte_groupe_ajout');
       $groupe = $request->getParameter('groupeName');
@@ -438,11 +406,26 @@ class compteActions extends sfCredentialActions {
 
 
     public function executeSearch(sfWebRequest $request) {
+      $MAX_EXPORT_RES = 10000;
+
       $res_by_page = 30;
       $page = $request->getParameter('page', 1);
       $from = $res_by_page * ($page - 1);
 
       $this->contacts_all = $request->getParameter('contacts_all');
+
+      $export = false;
+      if ($request->getParameter('format') == 'csv') {
+          $this->setLayout(false);
+          $filename = 'export_contacts';
+          $attachement = "attachment; filename=".$filename.".csv";
+          $this->response->setContentType('text/csv');
+          $this->response->setHttpHeader('Content-Disposition',$attachement);
+          $this->setTemplate('searchcsv');
+          $res_by_page = $MAX_EXPORT_RES;
+          $this->logins = CompteLoginView::getInstance()->getAllLogins();
+          $export = true;
+      }
 
       $q = $this->initSearch($request);
       $q->setLimit($res_by_page);
@@ -453,11 +436,14 @@ class compteActions extends sfCredentialActions {
           $resset = $index->search($q);
           $this->results = $resset->getResults();
           $this->nb_results = $resset->getTotalHits();
-          $this->facets = $resset->getFacets();
-          foreach($this->selected_nottypetags as $type => $nottags) {
-                foreach($nottags as $nottag) {
-                    $this->facets[$type]['buckets'][] = array('key' => $nottag, 'doc_count' => -1);
-                }
+          if (!$export) {
+              $this->facets = $resset->getFacets();
+              foreach($this->selected_nottypetags as $type => $nottags) {
+                    foreach($nottags as $nottag) {
+                        $this->facets[$type]['buckets'][] = array('key' => $nottag, 'doc_count' => -1);
+                    }
+              }
+              ksort($this->facets);
           }
       }catch(Exception $e) {
           $this->results = array();
@@ -465,8 +451,9 @@ class compteActions extends sfCredentialActions {
           $this->facets = array();
       }
 
-
-      ksort($this->facets);
+      if ($export && ($this->nb_results > $MAX_EXPORT_RES)) {
+          throw new sfException('Trop de résultat ES pour l\'export');
+      }
 
       $this->last_page = ceil($this->nb_results / $res_by_page);
       $this->current_page = $page;

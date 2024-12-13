@@ -37,6 +37,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_CONDITIONNE = "01_CONDITIONNE";
     const STATUT_REVENDICATION_SUPPRIMEE = "01_REVENDICATION_SUPPRIMEE";
     const STATUT_NONAFFECTABLE = "09_NON_AFFECTABLE";
+    const STATUT_NONAFFECTABLE_EN_ATTENTE = 'X9_NON_AFFECTABLE';
     const STATUT_AFFECTABLE = "09_AFFECTABLE_ENATTENTE";
     const STATUT_AFFECTABLE_PRELEVE = "09_AFFECTABLE_PRELEVE_ENATTENTE";
 
@@ -94,6 +95,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_CONDITIONNE => 'Conditionné',
         self::STATUT_REVENDICATION_SUPPRIMEE => 'Revendication supprimée',
         self::STATUT_NONAFFECTABLE => 'Réputé conforme',
+        self::STATUT_NONAFFECTABLE_EN_ATTENTE => 'Réputé conforme',
         self::STATUT_AFFECTABLE => 'Affectable',
         self::STATUT_AFFECTABLE_PRELEVE => 'Affectable prelevé',
 
