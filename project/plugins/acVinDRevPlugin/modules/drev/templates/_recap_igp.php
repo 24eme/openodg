@@ -26,7 +26,7 @@
                     ?>
                     <tr <?php if ($isTotal) { echo ' style="font-weight: bold;"'; } ?>>
                       <td>
-                          <strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $synthese['libelle']; ?></strong></a>
+                          <strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $synthese['libelle']; ?></strong>
                           <?php if (!$isTotal) : ?>
                               <small class="pull-right">&nbsp;<?php if($synthese['superficie_totale']): ?><?php echoFloat(round($synthese['volume_total'] / $synthese['superficie_totale'], 2), true); ?>&nbsp;hl/ha</small><?php endif; ?>
                           <?php endif; ?>
@@ -251,7 +251,7 @@
 </div>
         <hr/>
         <?php if($drev->hasVolumeSeuilAndSetIfNecessary()): ?>
-        <?php include_partial('drev/vip2c', array('drev' => $drev, 'form' => $form)); ?>
+        <?php include_partial('drev/vip2c', array('drev' => $drev, 'form' => $form, 'vip2c' => $vip2c)); ?>
         <hr/>
         <?php endif; ?>
 

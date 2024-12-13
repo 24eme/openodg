@@ -9,7 +9,7 @@
 <?php endif; ?>
 
 <div class="page-header no-border">
-    <h2>Transaction <small>du <?php echo format_date($transaction->getDate(), 'dd/MM/yyyy'); ?></small>
+    <h2>Déclaration de <?php echo TransactionConfiguration::getInstance()->getDeclarationName() ?> <small>du <?php echo format_date($transaction->getDate(), 'dd/MM/yyyy'); ?></small>
     <?php if($transaction->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($transaction->validation && $transaction->validation !== true): ?> reçue le <?php echo format_date($transaction->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
     <?php elseif($transaction->validation): ?>

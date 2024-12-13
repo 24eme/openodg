@@ -474,12 +474,6 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         foreach ($produitFilter as $type => $filter) {
             if ($type === 'appellations') {
                 $match = $match && $this->matchFilterProduit($produit, $filter);
-            } elseif ($type === 'millesime') {
-                $match = $match && $this->matchFilterMillesime($produit, $filter);
-            } elseif ($type === 'deja') {
-                // On gère que l'option (NOT)? /deja/CONFORME pour le moment
-                // Pas NONCONFORME
-                $match = $match && $this->matchFilterConformite($produit, $filter);
             } elseif ($type === 'region') {
                 $region = $filter;
                 $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit->produit);
@@ -496,11 +490,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         $produitExclude = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
 
-        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produit)) {
+        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produit->produit)) {
 
             return false;
         }
-        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produit)) {
+        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produit->produit)) {
 
             return false;
         }
@@ -524,7 +518,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             if($produitFilter && !$this->matchFilter($donnee, $produitFilter)) {
                 continue;
             }
-            if(preg_replace('/^0/', '', $donnee->categorie) !== preg_replace('/^0/', '', str_replace("L", "", $numLigne))) {
+            if(preg_replace('/^0/', '', strtolower($donnee->categorie)) !== preg_replace('/^0/', '', str_replace("L", "", strtolower($numLigne)))) {
                 continue;
             }
             if ($metayer_vrai_bailleur_faux && $donnee->bailleur_raison_sociale) {

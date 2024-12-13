@@ -28,8 +28,8 @@ class DRevDeclaration extends BaseDRevDeclaration
 	}
 
 	public function cleanNode() {
-        $saveStock = 0;
         foreach ($this as $hash) {
+            $saveStock = 0;
             if (count($hash) == 2) {
                 foreach ($hash as $element) {
                     if ($element->vci->stock_precedent && !$element->recolte->superficie_total) {
@@ -38,7 +38,8 @@ class DRevDeclaration extends BaseDRevDeclaration
                 }
                 if ($saveStock) {
                     foreach ($hash as $element) {
-                        if ($element->vci->stock_precedent && $element->recolte->superficie_total) {
+                        //On ne réécrit pas le stock précédent de vci si l'utilisateur l'a édité (en étape 4)
+                        if (!$element->vci->stock_precedent && $element->recolte->superficie_total) {
                             $element->vci->stock_precedent = $saveStock;
                         }
                     }
@@ -87,9 +88,6 @@ class DRevDeclaration extends BaseDRevDeclaration
 	}
 
 	public function getSyndicats() {
-        if(!$this->getDocument()->exist('region')) {
-            return [];
-        }
 		$syndicats = array();
 		foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
 			if(!count($this->getProduitsByRegion($region))) {

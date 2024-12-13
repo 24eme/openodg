@@ -44,11 +44,13 @@ class CASSecurityFilter extends sfBasicSecurityFilter
                    if (acCas::getConfig('sf_environment') == 'dev') {
                        throw new sfException('identifiant viticonnect non reconnu : '.implode(', ', acCas::getAttributes()));
                    }
-                   return $this->getContext()->getUser()->signInOrigin(acCas::getUser());
+                   $this->getContext()->getUser()->signInOrigin(acCas::getUser());
                }
            } else {
                $this->getContext()->getUser()->signInOrigin(acCas::getUser());
            }
+
+           return $this->controller->redirect($this->request->getUri());
        }
 
        parent::execute($filterChain);
@@ -56,7 +58,7 @@ class CASSecurityFilter extends sfBasicSecurityFilter
 
    protected function forwardToLoginAction()
    {
-       $this->controller->redirect(acCas::getConfig('app_cas_url') . '/login?service=' . $this->request->getUri());
+       $this->controller->redirect(acCas::getConfig('app_cas_url') . '/login?service=' . urlencode(preg_replace("/\?$/", '', $this->request->getUri())));
 
        throw new sfStopException();
    }
