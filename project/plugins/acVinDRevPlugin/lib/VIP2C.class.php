@@ -35,7 +35,7 @@ class VIP2C
             $drevHash = $produit->getCepage()->getHash();
             foreach ($hashesRegex as $hash) {
                 if (VIP2C::isHashMatch($hash, $drevHash) === true && in_array($drevHash, $hashProduits[$hash]) === false) {
-                    $volumes[$hash] += $doc->getVolumeRevendiqueLotsWithFilterAppellations($drevHash);
+                    $volumes[$hash] += $doc->getVolumeRevendiqueLotsMillesimeCourantByAppellations($drevHash);
                     $hashProduits[$hash][] = $drevHash;
                     $codesDouanes[] = $produit->getConfig()->getCodeDouane();
                     $codesDouanes = array_unique($codesDouanes);
@@ -99,6 +99,11 @@ class VIP2C
         $content = file_get_contents($url);
 
         $result = json_decode($content,true);
+
+        if(!$result) {
+            return [];
+        }
+
         $todelete = array();
         if ($hash_produit) {
             $confProduit = ConfigurationClient::getInstance()->getConfiguration()->get($hash_produit);

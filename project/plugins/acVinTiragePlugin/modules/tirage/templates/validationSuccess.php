@@ -24,13 +24,13 @@
             <div class="form-group">
 
                 <?php foreach ($validation->getPoints(TirageValidation::TYPE_ENGAGEMENT) as $engagement): ?>
+                    <?php if($engagement->getCode() == TirageDocuments::AUTORISATION_PARTAGE_CIVA): ?>
+                        <?php continue; ?>
+                    <?php endif ?>
+
                     <div class="checkbox-container <?php if ($form['engagement_' . $engagement->getCode()]->hasError()): ?>has-error<?php endif; ?>">
                         <div class="checkbox<?php if($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()): ?> disabled<?php endif; ?>">
                             <label>
-                                <?php if($engagement->getCode() == TirageDocuments::AUTORISATION_PARTAGE_CIVA): ?>
-                                <h3 style="margin-left:-37px;" >Autorisation de partage des données</h3>
-                                <?php echo $form['engagement_' . $engagement->getCode()]->render(array('class' => 'hidden')); ?>
-                                <?php endif ?>
                                 <?php
                                     if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()) {
                                         echo $form['engagement_' . $engagement->getCode()]->render(array('checked' => 'checked'));
@@ -53,7 +53,7 @@
                                 <?php endif; ?>
                             </label>
                         </div>
-                        </div>
+                    </div>
                     <?php endforeach; ?>
                     <div class="alert alert-danger <?php if(!$form->hasErrors()): ?>hidden<?php endif; ?>" role="alert" style="margin-top:30px;">
                         <ul class="error_list">
@@ -63,6 +63,25 @@
             </div>
         </div>
     <?php endif; ?>
+
+    <?php  if (!$tirage->isPapier() && count($validation->getEngagements()) > 0 && array_key_exists(TirageDocuments::AUTORISATION_PARTAGE_CIVA, $validation->getEngagements()->getRawValue())): ?>
+        <h2 class="h3">Autorisation de partage des données</h2>
+        <div class="alert" role="alert" id="engagements_partage" style="padding-top:0;">
+            <div class="form-group">
+                <?php foreach ($validation->getEngagements() as $engagement): ?>
+                    <?php if (strpos($engagement->getCode(), "AUTORISATION_PARTAGE") !== 0): continue; endif ?>
+                    <div class="checkbox-container<?php if ($form['engagement_' . $engagement->getCode()]->hasError()): ?> has-error<?php endif; ?>">
+                        <div class="checkbox">
+                            <label>
+                                <?php echo $form['engagement_' . $engagement->getCode()]->render(['checked' => 'checked']); ?>
+                                <?php echo $engagement->getMessage(); ?>
+                            </label>
+                        </div>
+                    </div>
+                <?php endforeach ?>
+            </div>
+        </div>
+    <?php endif ?>
 
     <?php if(isset($form["date"])): ?>
     <div class="row">

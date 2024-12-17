@@ -85,6 +85,12 @@ class MouvementLotHistoryView extends acCouchdbView
     }
 
     public static function isWaitingLotNotification($mvt_value) {
+        if ($mvt_value->statut == Lot::STATUT_NONAFFECTABLE_EN_ATTENTE) {
+            return true;
+        }
+        if ($mvt_value->statut == Lot::STATUT_AFFECTABLE) {
+            return true;
+        }
         if (($mvt_value->document_type == 'Degustation') && (!isset($mvt_value->date_notification) || !$mvt_value->date_notification)) {
             return true;
         }
