@@ -4,6 +4,7 @@ class ExportDocEngagementCSV{
 
     protected $doc = null;
     protected $header = false;
+    private $docTypes = [];
 
     const CSV_CAMPAGNE = 0;
     const CSV_DOC_IDENTIFIANT = 1;
@@ -31,6 +32,10 @@ class ExportDocEngagementCSV{
             $this->doc = $doc;
         }
         $this->header = $header;
+        $this->docTypes[] = DRevClient::TYPE_MODEL;
+        if (class_exists('TirageClient')) {
+            $this->docTypes[] = TirageClient::TYPE_MODEL;
+        }
     }
 
     public function getFileName() {
@@ -51,8 +56,8 @@ class ExportDocEngagementCSV{
         if($this->header) {
             $csv .= self::getHeaderCsv();
         }
-        
-        foreach ([DRevClient::TYPE_MODEL, TirageClient::TYPE_MODEL] as $type) {
+
+        foreach ($this->docTypes as $type) {
                 foreach(DeclarationExportView::getInstance()->getDeclarations($type)->rows as $json_doc){
                     $doc = DeclarationClient::getInstance()->find($json_doc->id);
                     if($doc instanceof DRev && !$doc->isMaster()){
@@ -70,7 +75,7 @@ class ExportDocEngagementCSV{
         if (!$doc->exist('documents')) {
             return;
         }
-        
+
         $csv = "";
         $periode = substr($doc->campagne, 0, 4);
         $conf = ConfigurationClient::getInstance()->getConfiguration($periode.'-10-01');
