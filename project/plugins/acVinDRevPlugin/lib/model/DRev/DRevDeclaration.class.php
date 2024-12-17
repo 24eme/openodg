@@ -32,7 +32,10 @@ class DRevDeclaration extends BaseDRevDeclaration
             $saveStock = 0;
             if (count($hash) == 2) {
                 foreach ($hash as $element) {
-                    if ($element->vci->stock_precedent && !$element->recolte->superficie_total) {
+                    if (  $element->vci->stock_precedent &&
+                          !$element->recolte->superficie_total && !$element->vci->destruction && !$element->vci->complement &&
+                          !$element->vci->substitution && !$element->vci->rafraichi && !$element->vci->constitue && !$element->vci->ajustement
+                    ) {
                         $saveStock = $element->vci->stock_precedent;
                     }
                 }
