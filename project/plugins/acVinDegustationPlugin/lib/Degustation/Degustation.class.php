@@ -514,9 +514,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $lot->observation = null;
         $lot->position = null;
         $lot->recours_oc = null;
-        if(!$lot->preleve || $this->type == TourneeClient::TYPE_MODEL) {
+        $lot->preleve = null;
+        if($this->type == DegustationClient::TYPE_MODEL && $lotOrig->getDocOrigine() && $lotOrig->getDocOrigine()->getType() == TourneeClient::TYPE_MODEL) {
+            $lot->preleve = $lotOrig->preleve;
+        }
+        if(!$lot->preleve) {
             $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
-            $lot->preleve = null;
         }
         if ($this->type == TourneeClient::TYPE_MODEL
             && strpos($lot->id_document_provenance, 'PMCNC') === false
