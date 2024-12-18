@@ -87,8 +87,8 @@ class ExportReserveInterproCSV {
                 $certification,$certificationLibelle,$genre,$genreLibelle,$appellation,$appellationLibelle,$lieu,$lieuLibelle,$couleur,$couleurLibelle,$cepage,$cepageLibelle,$inao,$denominationComplementaire,
                 $libelle_complet = $produit->getLibelleComplet(),
                 $produit->superficie_revendique,
-                $produit->getVolumeReserveInterpro(),
-                $produit->getVolumeRevendiqueCommecialisable(),
+                floatval($produit->getVolumeReserveInterpro()),
+                floatval($produit->getVolumeRevendiqueCommecialisable()),
                 );
         }
         return $csv;
