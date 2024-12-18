@@ -99,6 +99,11 @@ class VIP2C
         $content = file_get_contents($url);
 
         $result = json_decode($content,true);
+
+        if(!$result) {
+            return [];
+        }
+
         $todelete = array();
         if ($hash_produit) {
             $confProduit = ConfigurationClient::getInstance()->getConfiguration()->get($hash_produit);
