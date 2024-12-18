@@ -28,7 +28,7 @@ class ExportReserveInterproCSV {
         }
 
         foreach ([DRevClient::TYPE_MODEL] as $type) {
-                foreach(DeclarationExportView::getInstance()->getDeclarations($type, "2024-2025")->rows as $json_doc){
+                foreach(DeclarationExportView::getInstance()->getDeclarations($type)->rows as $json_doc){
                     $drev = DeclarationClient::getInstance()->find($json_doc->id);
                     if($drev instanceof DRev && !$drev->isMaster()){
                         continue;
