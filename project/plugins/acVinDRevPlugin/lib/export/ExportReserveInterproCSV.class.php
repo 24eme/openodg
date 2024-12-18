@@ -86,11 +86,18 @@ class ExportReserveInterproCSV {
             $csv .= sprintf(";%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                 $certification,$certificationLibelle,$genre,$genreLibelle,$appellation,$appellationLibelle,$lieu,$lieuLibelle,$couleur,$couleurLibelle,$cepage,$cepageLibelle,$inao,$denominationComplementaire,
                 $libelle_complet = $produit->getLibelleComplet(),
-                $produit->superficie_revendique,
-                floatval($produit->getVolumeReserveInterpro()),
-                floatval($produit->getVolumeRevendiqueCommecialisable()),
+                formatFloat($produit->superficie_revendique),
+                formatFloat($produit->getVolumeReserveInterpro()),
+                formatFloat($produit->getVolumeRevendiqueCommecialisable()),
                 );
         }
         return $csv;
+    }
+
+    protected function formatFloat($value) {
+        if ($value) {
+            $value = str_replace(".", ",", $value);
+        }
+        return $value;
     }
 }
