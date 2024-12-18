@@ -515,12 +515,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $lot->position = null;
         $lot->recours_oc = null;
         $lot->preleve = null;
-        if ($lotOrig instanceof stdClass) {
-            $doc_origine = DeclarationClient::getInstance()->findCache($lotOrig->id_document);
-        }else{
-            $doc_origine = $lotOrig->getDocOrigine();
-        }
-        if($this->type == DegustationClient::TYPE_MODEL && $doc_origine && $doc_origine->getType() == TourneeClient::TYPE_MODEL) {
+        if($this->type == DegustationClient::TYPE_MODEL && strpos($lotOrig->id_document, TourneeClient::TYPE_COUCHDB) !== false) {
             $lot->preleve = $lotOrig->preleve;
         }
         if(!$lot->preleve) {
