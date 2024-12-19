@@ -70,7 +70,7 @@ class VIP2C
             return array();
         }
 
-        if ($millesime < VIP2C::getConfigMillesimeVolumeSeuil()) {
+        if ($millesime < self::getConfigMillesimeVolumeSeuil()) {
             return array();
         }
 
@@ -100,7 +100,7 @@ class VIP2C
             $confProduit = ConfigurationClient::getInstance()->getConfiguration()->get($hash_produit);
         }
         foreach($result as $contratid => $data) {
-            if ($hash_produit && !VIP2C::isHashMatch($hash_produit, $data['produit']) && $confProduit->code_douane != $data['code_douane']) {
+            if ($hash_produit && !self::isHashMatch($hash_produit, $data['produit']) && $confProduit->code_douane != $data['code_douane']) {
                 $todelete[] = $contratid;
             }
         }
@@ -111,7 +111,7 @@ class VIP2C
     }
 
     public static function getInfosFromCSV($cvi, $millesime){
-        if(! VIP2C::hasVolumeSeuil() || ! $cvi){
+        if(! self::hasVolumeSeuil() || ! $cvi){
             return null;
         }
 
