@@ -51,11 +51,6 @@ class VIP2C
             return count($value['hashes']) > 0;
         });
 
-        $infosProduits = array_map(function ($value) use ($doc) {
-            $value['libelle'] = $doc->get(current($value['hashes']))->getConfig()->getLibelleComplet();
-            return $value;
-        }, $infosProduits);
-
         self::$infos['produits'] = $infosProduits;
         return self::$infos;
     }
