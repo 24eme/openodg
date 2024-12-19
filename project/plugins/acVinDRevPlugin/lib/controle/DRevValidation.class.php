@@ -501,7 +501,7 @@ class DRevValidation extends DeclarationLotsValidation
         } elseif($volumeMaxAutorise < $volumeTotalSeuilDeclare) {
             if($this->document->hasDestinationConditionnement($produit['hashes'])){
                 $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$produit['hash_regex'], $libelle." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
-                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$produit['hash_regex'], '', null, $hash_produit);
+                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$produit['hash_regex'], '', null, $produit['hash_regex']);
             }
             if (VIP2C::hasVolumeSeuil() && $this->document->hasDestinationVrac($produit['hashes'])) {
                 $contrats = (array_key_exists('contrats', $produit))? $produit['contrats'] : [];
