@@ -490,7 +490,7 @@ class DRevValidation extends DeclarationLotsValidation
             return false;
         }
 
-        $libelle = $this->document->get(current($produit['hashes']))->getConfig()->getLibelleComplet()." ".$this->document->getDefaultMillesime();
+        $libelle = $produit['libelle']." ".$this->document->getDefaultMillesime();
 
         $volumeTotalSeuilDeclare = $produit['volume'];
         $volumeCommercialisableLibre = $produit['volume_max'] - ($produit['volume_max'] * 0.1);
