@@ -43,7 +43,7 @@ class VIP2C
         $infosProduits = array_map(function ($value) use ($volumes, $hashProduits, $contrats) {
             $value['volume'] = $volumes[$value['hash_regex']];
             $value['hashes'] = $hashProduits[$value['hash_regex']];
-            $value['contrats'] = $contrats[$value['hash_regex']];
+            $value['contrats'] = (isset($contrats[$value['hash_regex']]))? $contrats[$value['hash_regex']] : [];
             return $value;
         }, $infosProduits);
 
