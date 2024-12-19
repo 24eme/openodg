@@ -126,8 +126,8 @@ class DRevValidation extends DeclarationLotsValidation
                 }
                 $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$produit['hash_regex'], "<strong>J'atteste de conditionnements,</strong> en revendiquant au-delà de mon Volume Individuel de Production Commercialisable Certifiée (VIP2C), je m'engage à fournir à Intervins Sud Est <strong>une copie du registre de conditionnement</strong> pour les lots <strong>".implode(', ', $lots)."</strong> en dépassement sur cette revendication.");
 
-                if(array_key_exists('contrats', $this->vip2c)){
-                    foreach($this->vip2c['contrats'] as $k=>$v){
+                if(array_key_exists('contrats', $produit)){
+                    foreach($produit['contrats'] as $k=>$v){
                         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
                     }
                 }
@@ -504,7 +504,7 @@ class DRevValidation extends DeclarationLotsValidation
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$produit['hash_regex'], '', null, $hash_produit);
             }
             if (VIP2C::hasVolumeSeuil() && $this->document->hasDestinationVrac($produit['hashes'])) {
-                $contrats = (array_key_exists('contrats', $this->vip2c))? $this->vip2c['contrats'] : [];
+                $contrats = (array_key_exists('contrats', $produit))? $produit['contrats'] : [];
 
                 if (count($contrats) === 0) {
                     $this->addPoint(self::TYPE_ERROR,'vip2c_pas_de_contrats_'.$produit['hash_regex'], $libelle, $this->generateUrl('drev_lots', array("id" => $this->document->_id)) );
