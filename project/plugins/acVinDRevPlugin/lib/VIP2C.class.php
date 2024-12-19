@@ -29,9 +29,8 @@ class VIP2C
         $volumes = array_fill_keys($hashesRegex, 0);
         $hashProduits = array_fill_keys($hashesRegex, []);
         $contrats = [];
-
-        foreach ($doc->getProduits() as $produit) {
-            $drevHash = $produit->getCepage()->getHash();
+        foreach ($doc->getLots() as $produit) {
+            $drevHash = $produit->getConfig()->getHash();
             foreach ($hashesRegex as $hash) {
                 if (self::isHashMatch($hash, $drevHash) === true && in_array($drevHash, $hashProduits[$hash]) === false) {
                     $volumes[$hash] += $doc->getVolumeRevendiqueLotsMillesimeCourantByAppellations($drevHash);
