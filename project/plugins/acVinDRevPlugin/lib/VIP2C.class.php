@@ -17,7 +17,7 @@ class VIP2C
             return self::$infos;
         }
 
-        $infosProduits = self::getInfosFromCSV($doc->declarant->cvi, $millesime);
+        $infosProduits = self::getInfosFromCSV($doc, $millesime);
 
         if ($infosProduits === null) {
             self::$infos = ['produits' => []];
@@ -29,9 +29,8 @@ class VIP2C
         $volumes = array_fill_keys($hashesRegex, 0);
         $hashProduits = array_fill_keys($hashesRegex, []);
         $contrats = [];
-
-        foreach ($doc->getProduits() as $produit) {
-            $drevHash = $produit->getCepage()->getHash();
+        foreach ($doc->getLots() as $produit) {
+            $drevHash = $produit->getConfig()->getHash();
             foreach ($hashesRegex as $hash) {
                 if (self::isHashMatch($hash, $drevHash) === true && in_array($drevHash, $hashProduits[$hash]) === false) {
                     $volumes[$hash] += $doc->getVolumeRevendiqueLotsMillesimeCourantByAppellations($drevHash);
@@ -44,18 +43,13 @@ class VIP2C
         $infosProduits = array_map(function ($value) use ($volumes, $hashProduits, $contrats) {
             $value['volume'] = $volumes[$value['hash_regex']];
             $value['hashes'] = $hashProduits[$value['hash_regex']];
-            $value['contrats'] = $contrats[$value['hash_regex']];
+            $value['contrats'] = (isset($contrats[$value['hash_regex']]))? $contrats[$value['hash_regex']] : [];
             return $value;
         }, $infosProduits);
 
         $infosProduits = array_filter($infosProduits, function ($value) {
             return count($value['hashes']) > 0;
         });
-
-        $infosProduits = array_map(function ($value) use ($doc) {
-            $value['libelle'] = $doc->get(current($value['hashes']))->getConfig()->getLibelleComplet();
-            return $value;
-        }, $infosProduits);
 
         self::$infos['produits'] = $infosProduits;
         return self::$infos;
@@ -110,8 +104,8 @@ class VIP2C
         return($result);
     }
 
-    public static function getInfosFromCSV($cvi, $millesime){
-        if(! self::hasVolumeSeuil() || ! $cvi){
+    public static function getInfosFromCSV($doc, $millesime){
+        if(! self::hasVolumeSeuil() || !$doc->declarant->cvi){
             return null;
         }
 
@@ -123,13 +117,15 @@ class VIP2C
                 continue;
             }
 
-            if ($line[self::VIP2C_COLONNE_CVI] !== $cvi) {
+            if ($line[self::VIP2C_COLONNE_CVI] !== $doc->declarant->cvi) {
                 continue;
             }
 
+            $defautHash = str_replace(['genres/|','|'], ['genres/TRANQ', 'DEFAUT'], $line[self::VIP2C_COLONNE_PRODUIT]);
             $volumes[] = [
                 "hash_regex"  => $line[self::VIP2C_COLONNE_PRODUIT],
-                "volume_max"  => str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME])
+                "volume_max"  => str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME]),
+                "libelle" => $doc->getConfiguration()->declaration->get($defautHash)->getLibelleComplet()
             ];
         }
         fclose($configFile);
