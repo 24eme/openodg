@@ -15,7 +15,7 @@ class ChgtDenomValidation extends DocumentValidation
         if($lastDrev) {
             $this->vip2c = VIP2C::gatherInformations($lastDrev, $lastDrev->getPeriode());
         } else {
-            $this->vip2c = ['contrats' => [], 'produits' => []];
+            $this->vip2c = ['produits' => []];
         }
         parent::__construct($document, $options);
         $this->noticeVigilance = true;
