@@ -116,7 +116,8 @@
                    ],
                    "callback": "getVolumeFacturable",
                    "callback_parameters": {
-                       "appellations": "/appellations/MED"
+                       "appellations": "/appellations/MED",
+                       "campagne": "NOT same"
                    }
                }
            }
