@@ -269,6 +269,29 @@
                    "callback": "getVolumeLotsFacturables"
                }
            }
+       },
+      "09_conditionnement": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "IGP Arles",
+           "code_comptable": "70600502",
+           "details": {
+               "cotisation": {
+                   "modele": "Cotisation",
+                   "prix": 60,
+                   "tva": 0.2,
+                   "libelle": "Contrôle conditionné - N° %detail_identifiant%",
+                   "unite": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "Degustation"
+                   ],
+                   "callback": "getForfaitConditionnement",
+                   "callback_parameters": {
+                       "appellations": "NOT /genres/EFF/appellations/MED"
+                   }
+               }
+           }
        }
    }
 }
