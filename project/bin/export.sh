@@ -304,6 +304,10 @@ php symfony declaration:engagements $SYMFONYTASKOPTIONS > $EXPORTDIR/engagements
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/engagements.csv.part > $EXPORTDIR/engagements.csv
 rm $EXPORTDIR/engagements.csv.part
 
+php symfony drev:reserve-interpro $SYMFONYTASKOPTIONS > $EXPORTDIR/reserve-interpro.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/reserve-interpro.csv.part > $EXPORTDIR/reserve-interpro.csv
+rm $EXPORTDIR/reserve-interpro.csv.part
+
 mkdir -p $EXPORTDIR/stats
 
 cd bin/notebook/

@@ -13,6 +13,7 @@ class TemplateFactureCotisationCallbackParameters
         'round_methode',
         'origine',
         'precision',
+        'campagne',
         'region'
     ];
 

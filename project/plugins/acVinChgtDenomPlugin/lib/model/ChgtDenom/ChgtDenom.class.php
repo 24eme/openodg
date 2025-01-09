@@ -914,6 +914,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             } elseif ($type === 'famille') {
                 // filtre sur famille
                 $match = $match && $this->isDeclarantFamille($filter);
+            } elseif ($type === 'campagne') {
+                // filtre campagnes suivantes
+                $match = $match && $this->sameCampagneFilter($filter);
             }
         }
 
@@ -992,6 +995,23 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         return $found;
+    }
+
+    private function sameCampagneFilter($filter)
+    {
+        $not = strpos($filter, 'NOT') === 0;
+
+        $c = substr($this->changement_origine_lot_unique_id, 0, 4) + 1;
+        $dateLimite = new DateTimeImmutable($c."-07-31");
+        $dateValidation = new DateTimeImmutable($this->validation);
+
+        $result = $dateLimite > $dateValidation;
+
+        if ($not) {
+            $result = ! $result;
+        }
+
+        return $result;
     }
 
     public function getBigDocumentSize() {
