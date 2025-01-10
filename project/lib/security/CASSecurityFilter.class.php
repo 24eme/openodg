@@ -38,13 +38,17 @@ class CASSecurityFilter extends sfBasicSecurityFilter
                        }
                    }
                }
-               if ($e && $e->getSociete() && $e->getSociete()->getMasterCompte()) {
+               if (class_exists("Societe") && $e && $e->getSociete() && $e->getSociete()->getMasterCompte()) {
                    $this->getContext()->getUser()->signInOrigin($e->getSociete()->getMasterCompte()->identifiant);
+               } elseif (!class_exists("Societe") &&  $e) {
+                   $this->getContext()->getUser()->signInOrigin($e->identifiant);
+               } elseif(CompteClient::getInstance()->findByLogin(acCas::getUser())) {
+                   $this->getContext()->getUser()->signInOrigin(acCas::getUser());
                } else {
                    if (acCas::getConfig('sf_environment') == 'dev') {
-                       throw new sfException('identifiant viticonnect non reconnu : '.implode(', ', acCas::getAttributes()));
+                       throw new sfException('identifiant viticonnect non reconnu : '.acCas::getUser().', '.implode(', ', acCas::getAttributes()));
                    }
-                   $this->getContext()->getUser()->signInOrigin(acCas::getUser());
+                   throw new sfError403Exception("Le compte n'est pas reconnu");
                }
            } else {
                $this->getContext()->getUser()->signInOrigin(acCas::getUser());
