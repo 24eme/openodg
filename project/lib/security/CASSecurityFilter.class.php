@@ -48,8 +48,8 @@ class CASSecurityFilter extends sfBasicSecurityFilter
                    if (acCas::getConfig('sf_environment') == 'dev') {
                        throw new sfException('identifiant viticonnect non reconnu : '.acCas::getUser().', '.implode(', ', acCas::getAttributes()));
                    }
-                   $this->getContext()->getUser()->signOutOrigin();
-                   throw new sfError403Exception("L'identifiant viticonnect n'a pas été reconnu.");
+                   // On passe quand même par la procédure d'authentification pour que l'utilisateur puisse cliquer sur le bouton déconnexion sinon on risque une situation de blocage
+                   $this->getContext()->getUser()->signInOrigin(acCas::getUser());
                }
            } else {
                $this->getContext()->getUser()->signInOrigin(acCas::getUser());
