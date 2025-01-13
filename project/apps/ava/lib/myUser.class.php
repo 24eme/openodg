@@ -75,6 +75,11 @@ class myUser extends sfBasicSecurityUser
         $this->etablissement = null;
     }
 
+    public function signOutOrigin() {
+
+        return $this->signOut();
+    }
+
     public function signOut()
     {
         $this->setAuthenticated(false);
