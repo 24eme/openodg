@@ -16,11 +16,8 @@
   </h2>
 </div>
 
-<div class="col-xs-8">
-    <h4>Lots <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL) : ?>dégustés<?php else: ?>prélevés<?php endif;?> (<?php echo count($lots->getRawValue()) ?>)</h4>
-</div>
 <div class="btn-group pull-right">
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button type="button" class="btn btn-default dropdown-toggle mb-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Documents téléchargeables&nbsp;<span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
@@ -41,6 +38,9 @@
         <?php endif; ?>
     </ul>
 </div>
+
+<h4>Lots <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL) : ?>dégustés<?php else: ?>prélevés<?php endif;?> (<?php echo count($lots->getRawValue()) ?>)</h4>
+
 <table class="table table-condensed table-bordered table-striped">
     <thead>
         <tr>
@@ -91,7 +91,7 @@
     </tbody>
 </table>
 
-<div class="col-xs-12 text-right">
+<div class="text-right">
     <?php $etape_devalidation = 'degustation_resultats_etape'; if ($degustation->isTournee()) { $etape_devalidation = 'degustation_prelevements_etape'; }  ?>
     <a title="Les lots de ce documents ont été dégusté, la dévalidation n'est pas possible" class="btn btn-default btn-sm" href="<?php echo url_for($etape_devalidation, $degustation); ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
 </div>

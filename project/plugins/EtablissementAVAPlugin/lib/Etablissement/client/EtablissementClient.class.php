@@ -121,6 +121,11 @@ class EtablissementClient extends acCouchdbClient {
             }
             return $this->find($data['etablissement']);
         }
+
+        if($this->findByCvi($cvi_or_accise_or_ppm)) {
+            return $this->findByCvi($cvi_or_accise_or_ppm);
+        }
+
         return null;
     }
 
