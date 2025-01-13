@@ -150,3 +150,8 @@ h3 {
 .alert-danger a.alert-link:hover, .alert-danger a.alert-link:focus  {
 	text-decoration: none;
 }
+
+code {
+    color: #c7254e;
+    background-color: #f9f2f4;
+}
