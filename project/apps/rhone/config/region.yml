@@ -52,6 +52,14 @@ all:
           produits:
             - "TRANQ/appellations/LIR"
           habilitation_produits: "/Lirac/"
+        LAUDUN:
+          nom: "Syndicat de Laudun"
+          adresse: "Espace Barbara, Place de l'église B.P. 2 30290 Laudun L'Ardoise"
+          telephone: "%app_drev_LAUDUN_telephone%"
+          email: "%app_drev_LAUDUN_email%"
+          produits:
+            - "TRANQ/appellations/LAU"
+          habilitation_produits: "/Laudun/"
         GIGONDAS:
           nom: "Syndicat de Gigondas "
           adresse: "8 rue du fond du sac, 84190 Gigondas"
