@@ -153,7 +153,11 @@ all:
 #        HermitagePaille:
 #          name: "Hermitage Paille"
 #          color: "#37474F"
-#          denomination_id: 
+#          denomination_id:
+        Laudun:
+          name: "Laudun"
+          color: "#C07490"
+          denomination_id: "01349"
         Lirac:
           name: "Lirac"
           color: "#EF5350"
