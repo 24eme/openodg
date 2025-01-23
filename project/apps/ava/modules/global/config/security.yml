@@ -1,0 +1,5 @@
+error404:
+  is_secure: false
+
+error403:
+  is_secure: false
