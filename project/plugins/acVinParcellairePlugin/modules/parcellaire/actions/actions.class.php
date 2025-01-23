@@ -295,50 +295,54 @@ class parcellaireActions extends sfActions {
         $parcellaire = $this->getRoute()->getParcellaire();
         $synthese = $parcellaire->getSyntheseProduitsCepages();
 
-
         $rewrite = $request->getParameter('rewrite');
         if ($rewrite) {
             $c = explode(':', $rewrite);
-            $synthese['Côtes de Provence Rouge'][$c[0]]['superficie_max'] = floatval($c[1]);
+            $synthese['Côtes de Provence Rouge']['Cepage'][$c[0]]['superficie_max'] = floatval($c[1]);
         }
 
 
         $cepages_principaux = [];
         foreach(['GRENACHE N', 'SYRAH N', 'MOURVEDRE N', 'TIBOUREN N', 'CINSAUT N'] as $c) {
-            if (isset($synthese['Côtes de Provence Rouge'][$c])) {
-                $cepages_principaux[$c] = $synthese['Côtes de Provence Rouge'][$c]['superficie_max'];
+            if (isset($synthese['Côtes de Provence Rouge']['Cepage'][$c])) {
+                $cepages_principaux[$c] = $synthese['Côtes de Provence Rouge']['Cepage'][$c]['superficie_max'];
             }
         }
         $cepages_blancs = [];
         foreach(['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B'] as $c) {
-            if (isset($synthese['Côtes de Provence Rouge'][$c])) {
-                $cepages_blancs[$c] = $synthese['Côtes de Provence Rouge'][$c]['superficie_max'];
+            if (isset($synthese['Côtes de Provence Rouge']['Cepage'][$c])) {
+                $cepages_blancs[$c] = $synthese['Côtes de Provence Rouge']['Cepage'][$c]['superficie_max'];
             }
         }
         $cepages_accessoires = [];
         foreach(['ROUSSELI RS','CALADOC N'] as $c) {
-            if (isset($synthese['Côtes de Provence Rouge'][$c])) {
-                $cepages_accessoires[$c] = $synthese['Côtes de Provence Rouge'][$c]['superficie_max'];
+            if (isset($synthese['Côtes de Provence Rouge']['Cepage'][$c])) {
+                $cepages_accessoires[$c] = $synthese['Côtes de Provence Rouge']['Cepage'][$c]['superficie_max'];
             }
         }
         $cepages_varietedinteret = [];
         foreach(['AGIORGITIKO N','CALABRESE N','MOSCHOFILERO RS','XINOMAVRO N','VERDEJO B'] as $c) {
-            if (isset($synthese['Côtes de Provence Rouge'][$c])) {
-                $cepages_accessoires[$c] = $synthese['Côtes de Provence Rouge'][$c]['superficie_max'];
+            if (isset($synthese['Côtes de Provence Rouge']['Cepage'][$c])) {
+                $cepages_accessoires[$c] = $synthese['Côtes de Provence Rouge']['Cepage'][$c]['superficie_max'];
             }
         }
 
         $cepages_a_max = [];
         $encepagement = 0;
-        foreach($synthese['Côtes de Provence Rouge'] as $k => $superficies) {
-            if ($k == 'Total') {
-                continue;
+        foreach($synthese['Côtes de Provence Rouge'] as $cepages) {
+            foreach($cepages as $k => $superficies) {
+                if ($k == 'Total') {
+                    continue;
+                }
+                if (strpos($k, 'XXX') !== false) {
+                    continue;
+                }
+                if (!isset($superficies['superficie_max'])) {
+                    continue;
+                }
+                $cepages_a_max[$k] = $superficies['superficie_max'];
+                $encepagement += $superficies['superficie_max'];
             }
-            if (!isset($superficies['superficie_max'])) {
-                continue;
-            }
-            $cepages_a_max[$k] = $superficies['superficie_max'];
-            $encepagement += $superficies['superficie_max'];
         }
         $task = new Simplex\Task(new Simplex\Func($this->addemptycepage($cepages_a_max,$cepages_a_max)));
 
@@ -441,18 +445,18 @@ class parcellaireActions extends sfActions {
         $rewrite = $request->getParameter('rewrite');
         if ($rewrite) {
             $c = explode(':', $rewrite);
-            $synthese['Côtes de Provence Blanc'][$c[0]]['superficie_max'] = floatval($c[1]);
+            $synthese['Côtes de Provence Blanc']['Cepage'][$c[0]]['superficie_max'] = floatval($c[1]);
         }
         $cepages_principaux = [];
         foreach(['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B'] as $c) {
-            if (isset($synthese['Côtes de Provence Blanc'][$c])) {
-                $cepages_principaux[$c] = $synthese['Côtes de Provence Blanc'][$c]['superficie_max'];
+            if (isset($synthese['Côtes de Provence Blanc']['Cepage'][$c])) {
+                $cepages_principaux[$c] = $synthese['Côtes de Provence Blanc']['Cepage'][$c]['superficie_max'];
             }
         }
         $cepages_varietedinteret = [];
         foreach(['VERDEJO B'] as $c) {
-            if (isset($synthese['Côtes de Provence Blanc'][$c])) {
-                $cepages_varietedinteret[$c] = $synthese['Côtes de Provence Blanc'][$c]['superficie_max'];
+            if (isset($synthese['Côtes de Provence Blanc']['Cepage'][$c])) {
+                $cepages_varietedinteret[$c] = $synthese['Côtes de Provence Blanc']['Cepage'][$c]['superficie_max'];
             }
         }
         $cepages_a_max = array_merge($cepages_principaux, $cepages_varietedinteret);
