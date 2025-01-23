@@ -97,13 +97,13 @@ EOF;
                                     case 'xls':
                                         $csvfile = Fichier::convertXlsFile($fic);
                                         break;
-                                        case 'csv':
+                                    case 'csv':
                                         $csvfile = $fic;
                                         break;
-                                    }
                                 }
-                                if ($csvfile) {
-                                    $fichier = DouaneImportCsvFile::getNewInstanceFromType(DouaneImportCsvFile::getTypeFromFile($csvfile), $csvfile, null, null, $etablissement->cvi);
+                            }
+                            if ($csvfile) {
+                                $fichier = DouaneImportCsvFile::getNewInstanceFromType(DouaneImportCsvFile::getTypeFromFile($csvfile), $csvfile, null, null, $etablissement->cvi);
                                 $temp = tempnam(sys_get_temp_dir(), 'production_');
                                 file_put_contents($temp, $fichier->convert());
                                 $csv2 = new CsvFile($temp);
@@ -111,16 +111,18 @@ EOF;
                                 unlink($temp);
                                 if ($count_diff) {
                                     echo sprintf("WARNING;Document douanier déjà existant %s et le fichier en base ne semble pas à jour : %d diff\n", $f->_id, $count_diff);
-                                    continue;
+                                }else{
+                                    echo sprintf("WARNING;Document douanier déjà existant %s (no diff)\n", $f->_id);
                                 }
+                                continue;
                             }
                         }
                         echo sprintf("WARNING;Document douanier déjà existant %s\n", $f->_id);
                     }else{
                         echo sprintf("WARNING;Document douanier en saisie interne %s\n", $f->_id);
                     }
-        			continue;
-        		}
+                    continue;
+                }
 
         		try {
         			$fichiers = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, ($options['scrapefiles']), $contextInstance);
