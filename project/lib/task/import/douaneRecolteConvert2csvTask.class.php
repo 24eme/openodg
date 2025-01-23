@@ -45,7 +45,10 @@ EOF;
         if (isset($options['header']) && $options['header']) {
             echo DouaneCsvFile::CSV_ENTETES;
         }
-        $fichier = DouaneImportCsvFile::getNewInstanceFromType(DouaneImportCsvFile::getTypeFromFile($file), $csvfile);
+        if (preg_match('/(sv|production)-[0-9]*-([0-9A-Z]{10})\./', $csvfile,$m)) {
+            $cvi = $m[2];
+        }
+        $fichier = DouaneImportCsvFile::getNewInstanceFromType(DouaneImportCsvFile::getTypeFromFile($file), $csvfile, null, null, $cvi);
         $m = array();
         preg_match("/[a-zA-Z0-9]+-([0-9]{4})-.+/",$file,$m);
         if(count($m) > 1){
