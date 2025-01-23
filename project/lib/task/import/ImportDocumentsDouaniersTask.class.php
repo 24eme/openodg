@@ -19,6 +19,7 @@ class ImportDocumentsDouaniersTask extends sfBaseTask
             new sfCommandOption('forceimport', null, sfCommandOption::PARAMETER_OPTIONAL, "Force import document (exept if manualy edited)", false),
             new sfCommandOption('scrapefiles', null, sfCommandOption::PARAMETER_OPTIONAL, "Scrape import document", false),
             new sfCommandOption('dateimport', null, sfCommandOption::PARAMETER_OPTIONAL, "Date d'import", null),
+            new sfCommandOption('diff', null, sfCommandOption::PARAMETER_OPTIONAL, "Diff", false),
         ));
 
         $this->namespace = 'import';
@@ -85,6 +86,35 @@ EOF;
 
                 if (($f = $c->findByArgs($etablissement->identifiant, $annee)) && (!($options['forceimport']) || ($f && $f->exist('donnees')))) {
                     if (!$options['forceimport']) {
+                        if ($options['diff']) {
+                            $fichier = DouaneImportCsvFile::getNewInstanceFromType($ddType, $csvfile, null, null, $etablissement->cvi);
+                            $fichiers = FichierClient::getInstance()->getScrapyFiles($etablissement, $ddType, $annee);
+                            $csvFile = null;
+                            foreach($fichiers as $fic) {
+                                $infos = pathinfo($fic);
+                                $extension = (isset($infos['extension']) && $infos['extension'])? strtolower($infos['extension']): null;
+                                switch (strtolower($extension)) {
+                                    case 'xls':
+                                        $csvfile = Fichier::convertXlsFile($fic);
+                                        break;
+                                        case 'csv':
+                                        $csvfile = $fic;
+                                        break;
+                                    }
+                                }
+                                if ($csvfile) {
+                                    $fichier = DouaneImportCsvFile::getNewInstanceFromType(DouaneImportCsvFile::getTypeFromFile($csvfile), $csvfile, null, null, $etablissement->cvi);
+                                $temp = tempnam(sys_get_temp_dir(), 'production_');
+                                file_put_contents($temp, $fichier->convert());
+                                $csv2 = new CsvFile($temp);
+                                $count_diff = count(array_diff( $f->getCsv(), $csv2->getCsv()));
+                                unlink($temp);
+                                if ($count_diff) {
+                                    echo sprintf("WARNING;Document douanier déjà existant %s et le fichier en base ne semble pas à jour : %d diff\n", $f->_id, $count_diff);
+                                    continue;
+                                }
+                            }
+                        }
                         echo sprintf("WARNING;Document douanier déjà existant %s\n", $f->_id);
                     }else{
                         echo sprintf("WARNING;Document douanier en saisie interne %s\n", $f->_id);
