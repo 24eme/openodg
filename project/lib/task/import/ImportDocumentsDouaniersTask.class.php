@@ -88,7 +88,7 @@ EOF;
                     if (!$options['forceimport']) {
                         if ($options['diff']) {
                             $fichier = DouaneImportCsvFile::getNewInstanceFromType($ddType, $csvfile, null, null, $etablissement->cvi);
-                            $fichiers = FichierClient::getInstance()->getScrapyFiles($etablissement, $ddType, $annee);
+                            $fichiers = FichierClient::getInstance()->getScrapyFiles($etablissement, strtolower($ddType), $annee);
                             $csvFile = null;
                             foreach($fichiers as $fic) {
                                 $infos = pathinfo($fic);
