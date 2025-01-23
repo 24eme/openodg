@@ -13,7 +13,7 @@ class ParcellaireAffectationConfiguration extends DeclarationConfiguration {
 
     public function getCampagneDebutMois() {
 
-        return 2;
+        return 1;
     }
 
     public function getModuleName() {
