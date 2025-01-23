@@ -14,7 +14,7 @@ class DouaneImportCsvFile {
     public $raison_sociale = '';
     public $commune = '';
 
-    public function __construct($filePath, $doc = null, $drev_produit_filter = null) {
+    public function __construct($filePath, $doc = null, $drev_produit_filter = null, $cvi = null) {
         $this->filePath = $filePath;
         $this->doc = $doc;
         $this->configuration = ConfigurationClient::getConfiguration();
@@ -24,6 +24,9 @@ class DouaneImportCsvFile {
             $this->campagne = ConfigurationClient::getInstance()->buildCampagne(date('Y-m-d'));
         }
         $this->cvi = null;
+        if ($cvi) {
+            $this->cvi = $cvi;
+        }
         $this->drev_produit_filter = $drev_produit_filter;
         set_time_limit(30000);
     }
@@ -43,14 +46,14 @@ class DouaneImportCsvFile {
     	return str_replace(';', ' - ', preg_replace('/^ */', '', preg_replace('/ *$/', '', str_replace(array("\r", "\r\n", "\n"), ' ', html_entity_decode($val)))));
     }
 
-    public static function getNewInstanceFromType($type, $file, $doc = null, $drev_produit_filter = null)  {
+    public static function getNewInstanceFromType($type, $file, $doc = null, $drev_produit_filter = null, $cvi = null)  {
         switch ($type) {
             case 'DR':
-                return new DRDouaneCsvFile($file, $doc, $drev_produit_filter);
+                return new DRDouaneCsvFile($file, $doc, $drev_produit_filter, $cvi);
             case 'SV11':
-                return new SV11DouaneCsvFile($file, $doc, $drev_produit_filter);
+                return new SV11DouaneCsvFile($file, $doc, $drev_produit_filter, $cvi);
             case 'SV12':
-                return new SV12DouaneCsvFile($file, $doc, $drev_produit_filter);
+                return new SV12DouaneCsvFile($file, $doc, $drev_produit_filter, $cvi);
         }
 
         return null;
