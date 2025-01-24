@@ -111,7 +111,7 @@ class FichierClient extends acCouchdbClient {
         $status = ProdouaneScrappyClient::exec("download_douane.sh", "$t $annee $cvi 1>&2", $output);
     }
 
-    private function getScrapyFiles($etablissement, $type, $annee, $context = null)
+    public function getScrapyFiles($etablissement, $type, $annee, $context = null)
     {
     	$files = array();
     	$directory = new DirectoryIterator(ProdouaneScrappyClient::getDocumentPath($context));
