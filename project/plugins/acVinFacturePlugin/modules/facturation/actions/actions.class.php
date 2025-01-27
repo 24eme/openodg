@@ -94,7 +94,7 @@ class facturationActions extends sfActions
           $defaults['requete'] = $request->getParameter('q');
         }
 
-        $this->form = new FactureGenerationForm();
+        $this->form = new FactureGenerationMasseForm();
 
 
         if (!$request->isMethod(sfWebRequest::POST)) {

@@ -16,8 +16,8 @@ class FactureGenerationForm extends BaseForm {
         $this->setWidget('message_communication', new sfWidgetFormTextarea());
 
         $this->setValidator('type_document', new sfValidatorChoice(array('choices' => array_keys($this->getTypesDocumentFacturant()), 'required' => true)));
-        $this->setValidator('date_mouvement', new sfValidatorString());
-        $this->setValidator('date_facturation', new sfValidatorString());
+        $this->setValidator('date_facturation' , new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
+        $this->setValidator('date_mouvement' , new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
         $this->setValidator('message_communication', new sfValidatorString(array('required' => false)));
 
         $this->widgetSchema->setLabels(array(
