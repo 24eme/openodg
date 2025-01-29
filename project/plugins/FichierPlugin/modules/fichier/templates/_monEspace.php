@@ -39,7 +39,7 @@
             	<?php endif; ?>
                 <?php if($sf_user->isAdminODG() && $declaration && $declaration->type == DRClient::TYPE_MODEL): ?>
                     <a class="btn btn-xs btn-block btn-default" style="opacity: 0.75;" href="<?php echo url_for('edit_fichier', $declaration) ?>"><span class="glyphicon glyphicon-pencil"></span> Modifier la déclaration</a>
-                <?php elseif($sf_user->isAdminODG() && !$type == DRClient::TYPE_MODEL): ?>
+                <?php elseif($sf_user->isAdminODG() && ($type != DRClient::TYPE_MODEL || date('m') < '08')): // Pas de création possible si on peut récupérer les DR à la douane ?>
                     <a class="btn btn-xs btn-block btn-default"  style="opacity: 0.75;" href="<?php echo url_for('new_fichier', array('sf_subject' => $etablissement, 'periode' => $periode, 'type' => DRClient::TYPE_MODEL)); ?>"><span class="glyphicon glyphicon-pencil"></span> Saisir la déclaration</a>
                 <?php endif; ?>
             </div>
