@@ -13,7 +13,7 @@ class ExportDRCSV extends ExportDouaneCSV
         }
         if ($this->doc->isBailleur()) {
             $e = EtablissementClient::getInstance()->findByIdentifiant($this->doc->identifiant);
-            $docs_metayers = DRClient::getInstance()->getDocumentsDouaniers($etablissement, $this->doc->campagne);
+            $docs_metayers = DRClient::getInstance()->getDocumentsDouaniers($e, $this->doc->campagne);
             foreach ($docs_metayers as $doc) {
                 if (count($doc->getDonnees()) >= 1) {
                   $c = new DRDouaneCsvFile(null, $doc, $this->drev_produit_filter);

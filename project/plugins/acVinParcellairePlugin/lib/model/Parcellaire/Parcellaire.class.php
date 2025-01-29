@@ -120,7 +120,7 @@ class Parcellaire extends BaseParcellaire {
             }
             $p = $this->_get('parcelles')->add($id);
             $dp->produit_hash = preg_replace('/\/detail\/.*/', '', $dp->getHash());
-            ParcellaireClient::CopyParcelle($p, $dp);
+            ParcellaireClient::CopyParcelle($p, $dp, true);
         }
         return $this->_get('parcelles');
     }

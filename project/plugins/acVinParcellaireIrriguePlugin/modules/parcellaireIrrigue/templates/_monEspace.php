@@ -7,12 +7,12 @@
             <h3 class="panel-title">Déclarations d'irrigation <?php echo $periode ?></h3>
         </div>
 <?php if (!$parcellaireIrrigable): ?>
-    <?php if (!ParcellaireIrrigableClient::getInstance()->isOpen()): ?>
+    <?php if (!ParcellaireIrrigableConfiguration::getInstance()->isOpen()): ?>
       <div class="panel-body">
-          <?php if(date('Y-m-d') > ParcellaireIrrigableClient::getInstance()->getDateOuvertureFin()): ?>
+          <?php if(date('Y-m-d') > ParcellaireIrrigableConfiguration::getInstance()->getDateOuvertureFin()): ?>
           <p class="explications">Le Téléservice « Irrigable » est fermé.</p>
           <?php else: ?>
-          <p class="explications">Le Téléservice « Irrigable » sera ouvert à partir du <?php echo format_date(ParcellaireIrrigableClient::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
+          <p class="explications">Le Téléservice « Irrigable » sera ouvert à partir du <?php echo format_date(ParcellaireIrrigableConfiguration::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
           <?php endif; ?>
           <div class="actions">
               <?php if ($sf_user->isAdmin()): ?>
@@ -51,21 +51,21 @@
         <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireirrigable')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
     </div>
 <?php elseif ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>
-    <?php if (!ParcellaireIrrigueClient::getInstance()->isOpen()): ?>
+    <?php if (!ParcellaireIrrigueConfiguration::getInstance()->isOpen()): ?>
           <div class="panel-body">
               <p class="explications">
-              <?php if(date('Y-m-d') > ParcellaireIrrigueClient::getInstance()->getDateOuvertureFin()): ?>
+              <?php if(date('Y-m-d') > ParcellaireIrrigueConfiguration::getInstance()->getDateOuvertureFin()): ?>
               Le Téléservice « Irrigué » est fermé. Pour toute question, veuillez contacter directement l'ODG.
               <?php else: ?>
-                  Le Téléservice « Irrigué »  sera ouvert à partir du <?php echo format_date(ParcellaireIrrigueClient::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>
+                  Le Téléservice « Irrigué »  sera ouvert à partir du <?php echo format_date(ParcellaireIrrigueConfiguration::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>
               <?php endif; ?>
               </p>
               <div class="actions">
                   <div class="actions">
                   <?php if ($sf_user->isAdmin()): ?>
-                          <a class="btn btn-default btn-block <?php if($parcellaireIrrigue): ?>btn-primary<?php endif; ?>" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><?php if(!$parcellaireIrrigue): ?>Démarrer un « Irrigué »<?php else: ?>Visualiser et continuer l'Irrigué<?php endif; ?></a>
+                          <a class="btn btn-default btn-block" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><?php if(!$parcellaireIrrigue): ?>Démarrer un « Irrigué »<?php else: ?>Visualiser et continuer l'Irrigué<?php endif; ?></a>
                   <?php endif; ?>
-                        <div class="panel-success mt-2">
+                        <div class="panel-default mt-2">
                         <a class="panel-heading btn btn-block btn-xs p-1" href="<?php echo url_for('parcellaireirrigable_visualisation', $parcellaireIrrigable) ?>">Voir la déclaration « Irrigable »</a>
                     </div>
               </div>

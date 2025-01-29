@@ -38,17 +38,24 @@ class CASSecurityFilter extends sfBasicSecurityFilter
                        }
                    }
                }
-               if ($e && $e->getSociete() && $e->getSociete()->getMasterCompte()) {
+               if (class_exists("Societe") && $e && $e->getSociete() && $e->getSociete()->getMasterCompte()) {
                    $this->getContext()->getUser()->signInOrigin($e->getSociete()->getMasterCompte()->identifiant);
+               } elseif (!class_exists("Societe") &&  $e) {
+                   $this->getContext()->getUser()->signInOrigin($e->identifiant);
+               } elseif(CompteClient::getInstance()->findByLogin(acCas::getUser())) {
+                   $this->getContext()->getUser()->signInOrigin(acCas::getUser());
                } else {
                    if (acCas::getConfig('sf_environment') == 'dev') {
-                       throw new sfException('identifiant viticonnect non reconnu : '.implode(', ', acCas::getAttributes()));
+                       throw new sfException('identifiant viticonnect non reconnu : '.acCas::getUser().', '.implode(', ', acCas::getAttributes()));
                    }
-                   return $this->getContext()->getUser()->signInOrigin(acCas::getUser());
+                   // On passe quand même par la procédure d'authentification pour que l'utilisateur puisse cliquer sur le bouton déconnexion sinon on risque une situation de blocage
+                   $this->getContext()->getUser()->signInOrigin(acCas::getUser());
                }
            } else {
                $this->getContext()->getUser()->signInOrigin(acCas::getUser());
            }
+
+           return $this->controller->redirect($this->request->getUri());
        }
 
        parent::execute($filterChain);
@@ -56,7 +63,7 @@ class CASSecurityFilter extends sfBasicSecurityFilter
 
    protected function forwardToLoginAction()
    {
-       $this->controller->redirect(acCas::getConfig('app_cas_url') . '/login?service=' . $this->request->getUri());
+       $this->controller->redirect(acCas::getConfig('app_cas_url') . '/login?service=' . urlencode(preg_replace("/\?$/", '', $this->request->getUri())));
 
        throw new sfStopException();
    }

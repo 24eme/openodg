@@ -28,17 +28,21 @@ class DRevDeclaration extends BaseDRevDeclaration
 	}
 
 	public function cleanNode() {
-        $saveStock = 0;
         foreach ($this as $hash) {
+            $saveStock = 0;
             if (count($hash) == 2) {
                 foreach ($hash as $element) {
-                    if ($element->vci->stock_precedent && !$element->recolte->superficie_total) {
+                    if (  $element->vci->stock_precedent &&
+                          !$element->recolte->superficie_total && !$element->vci->destruction && !$element->vci->complement &&
+                          !$element->vci->substitution && !$element->vci->rafraichi && !$element->vci->constitue && !$element->vci->ajustement
+                    ) {
                         $saveStock = $element->vci->stock_precedent;
                     }
                 }
                 if ($saveStock) {
                     foreach ($hash as $element) {
-                        if ($element->vci->stock_precedent && $element->recolte->superficie_total) {
+                        //On ne réécrit pas le stock précédent de vci si l'utilisateur l'a édité (en étape 4)
+                        if (!$element->vci->stock_precedent && $element->recolte->superficie_total) {
                             $element->vci->stock_precedent = $saveStock;
                         }
                     }

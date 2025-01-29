@@ -914,6 +914,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             } elseif ($type === 'famille') {
                 // filtre sur famille
                 $match = $match && $this->isDeclarantFamille($filter);
+            } elseif ($type === 'campagne') {
+                // filtre campagnes suivantes
+                $match = $match && $this->sameCampagneFilter($filter);
             }
         }
 
@@ -994,6 +997,23 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $found;
     }
 
+    private function sameCampagneFilter($filter)
+    {
+        $not = strpos($filter, 'NOT') === 0;
+
+        $c = substr($this->changement_origine_lot_unique_id, 0, 4) + 1;
+        $dateLimite = new DateTimeImmutable($c."-07-31");
+        $dateValidation = new DateTimeImmutable($this->validation);
+
+        $result = $dateLimite > $dateValidation;
+
+        if ($not) {
+            $result = ! $result;
+        }
+
+        return $result;
+    }
+
     public function getBigDocumentSize() {
 
         return -1;
@@ -1004,9 +1024,15 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return false;
     }
 
-    public function getVolumeSeuil()
+    public function getVolumeSeuil($produits)
     {
-        return VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->changement_millesime, str_replace('/declaration/', '', $this->changement_produit_hash));
+        foreach ($produits as $produit) {
+            if (VIP2C::isHashMatch($produit['hash_regex'], $this->changement_produit_hash)) {
+                return $produit['volume_max'];
+            }
+        }
+
+        return 0;
     }
 
     public function addDonneesForProduction(DouaneProduction $doc)

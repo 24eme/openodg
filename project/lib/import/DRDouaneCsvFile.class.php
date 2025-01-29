@@ -262,6 +262,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
           $colExtraIds .= ';'.$familles_lignes[$k];
           $colExtraIds .= ';'.implode('|', DouaneImportCsvFile::extractLabels($p[9]));
 
+          $has_L6 = in_array("06", array_column($exploitant[$k], 0));
 	        foreach ($exploitant[$k] as $sk => $e) {
                 $eOrigin = null;
                 if($e[0] == 4) {
@@ -270,8 +271,12 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
                     $eOrigin[1] = "Superificie de récolte originale";
                 }
                 $ratio_bailleur = null;
-                if(!$ratio_bailleur && isset($ratios_bailleur["15"][$k]) && $ratios_bailleur["15"][$k]) {
-                    $ratio_bailleur = $ratios_bailleur["15"][$k];
+                $ligne_calcul_ratio = "15";
+                if ($has_L6) {
+                    $ligne_calcul_ratio = "05";
+                }
+                if(!$ratio_bailleur && isset($ratios_bailleur[$ligne_calcul_ratio][$k]) && $ratios_bailleur[$ligne_calcul_ratio][$k]) {
+                    $ratio_bailleur = $ratios_bailleur[$ligne_calcul_ratio][$k];
                 }
                 if(($e[0] == 4) && isset($baillage[$k])) {
                     $superficieInitiale = (float) (str_replace(",", ".", $e[2]));

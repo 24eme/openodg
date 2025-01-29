@@ -71,7 +71,7 @@ ParcellaireAffectation:
                               campagne_plantation: {  }
                               numero_ordre: { }
                               affectation: { type: integer, required: false } # déprécié à supprimer
-                              date_affectation: { type: integer, required: false } # déprécié à supprimer
+                              date_affectation: { required: false } # déprécié à supprimer
                               affectee: { type: integer }
                               produit_hash: { }
                               source_produit_libelle: { }

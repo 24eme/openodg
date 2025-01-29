@@ -13,7 +13,7 @@
 <?php endif; ?>
 
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel <?php if($declaration):?>panel-success<?php else: ?>panel-default<?php endif; ?>">
+    <div class="block_declaration panel <?php if($declaration || $hasDeclarationsMetayer):?>panel-success<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
             <h3 class="panel-title">
                 <?php echo $typeLibelle ?> <?php echo $periode; ?><?php if ($sf_user->isAdminODG() && $declaration && $declaration->isValideeOdg() ): ?> <span class="pull-right"><span class="glyphicon glyphicon-ok-circle"></span></span> <?php endif; ?>
@@ -23,6 +23,8 @@
             <p class="explications">
             <?php if($declaration): ?>
                 Votre déclaration a été récupérée depuis prodouane.
+            <?php elseif($hasDeclarationsMetayer): ?>
+                Des déclarations de vos metayers ont été récupérées depuis prodouane.
             <?php else: ?>
                 Votre déclaration n'a pas encore été récupérée. Pour la récupérer il vous suffit de démarrer la télédéclaration de votre déclaration de Revendication.
             <?php endif; ?>
@@ -30,12 +32,14 @@
             <div class="actions">
                 <?php if($declaration): ?>
                     <a class="btn btn-block btn-default" href="<?php echo url_for('dr_visualisation', $declaration) ?>">Visualiser la synthèse du document</a>
+                <?php elseif($hasDeclarationsMetayer): ?>
+                    <a class="btn btn-block btn-default" href="<?php echo url_for('dr_visualisation', ['id' => 'DRBAILLEUR-'.$etablissement->identifiant.'-'.$periode]) ?>">Visualiser la synthèse des documents</a>
                 <?php elseif($sf_user->isAdminODG()): ?>
                     <a class="btn btn-default btn-block" href="<?php echo url_for('scrape_fichier', array('sf_subject' => $etablissement, 'periode' => $periode, 'type' => $type)) ?>"><span class="glyphicon glyphicon-cloud-download"></span>&nbsp;&nbsp;Importer depuis Prodouane</a>
             	<?php endif; ?>
                 <?php if($sf_user->isAdminODG() && $declaration && $declaration->type == DRClient::TYPE_MODEL): ?>
                     <a class="btn btn-xs btn-block btn-default" style="opacity: 0.75;" href="<?php echo url_for('edit_fichier', $declaration) ?>"><span class="glyphicon glyphicon-pencil"></span> Modifier la déclaration</a>
-                <?php elseif($sf_user->isAdminODG() && !$type == DRClient::TYPE_MODEL): ?>
+                <?php elseif($sf_user->isAdminODG() && ($type != DRClient::TYPE_MODEL || date('m') < '08')): // Pas de création possible si on peut récupérer les DR à la douane ?>
                     <a class="btn btn-xs btn-block btn-default"  style="opacity: 0.75;" href="<?php echo url_for('new_fichier', array('sf_subject' => $etablissement, 'periode' => $periode, 'type' => DRClient::TYPE_MODEL)); ?>"><span class="glyphicon glyphicon-pencil"></span> Saisir la déclaration</a>
                 <?php endif; ?>
             </div>
