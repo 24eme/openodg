@@ -71,7 +71,7 @@
                         <div class="col-sm-12 text-danger">
                           <?php echo $lot['engagement_8515']->renderError(); ?>
                         </div>
-                    <?php elseif(true || $pmc->getLotOrigine()->exist('engagement_8515') && $pmc->getLotOrigine()->engagement_8515): ?>
+                    <?php elseif($pmc->getLotOrigine()->exist('engagement_8515') && $pmc->getLotOrigine()->engagement_8515): ?>
                             <div class="col-md-4 checkbox">
                                 <p>☑ Est en 85/15</p>
                             </div>
