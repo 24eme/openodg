@@ -42,11 +42,7 @@ class generationActions extends sfActions {
 
     public function executeList(sfWebRequest $request)
     {
-        if (! $this->getUser()->isAdmin()) {
-            throw new sfException("Vous n'avez pas les droits d'accéder à cette page");
-        }
-
-        $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_SHELL, 100, $this->getUser()->getRegion());
+        $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_SHELL, 100);
 
         $this->tasks = [];
         $scripts = [];
