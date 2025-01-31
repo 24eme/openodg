@@ -591,6 +591,6 @@ class facturationActions extends sfActions
     }
 
     public function getCurrentRegion() {
-        return (RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null ;
+        return (FactureConfiguration::getInstance()->hasFacturationParRegion() && RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null ;
     }
 }
