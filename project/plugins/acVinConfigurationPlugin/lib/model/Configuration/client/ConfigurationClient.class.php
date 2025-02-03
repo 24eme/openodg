@@ -257,6 +257,7 @@ class ConfigurationClient extends acCouchdbClient {
             $this->countries['inconnu'] = 'Inconnu';
             $this->countries['UE'] = 'Union Européenne';
             $this->countries['HORS_UE'] = 'Hors Union Européenne';
+            $this->countries['CW'] = 'Curaçao';
         }
 
         return $this->countries;

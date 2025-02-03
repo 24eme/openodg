@@ -94,7 +94,7 @@ class facturationActions extends sfActions
           $defaults['requete'] = $request->getParameter('q');
         }
 
-        $this->form = new FactureGenerationForm();
+        $this->form = new FactureGenerationMasseForm();
 
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -591,6 +591,6 @@ class facturationActions extends sfActions
     }
 
     public function getCurrentRegion() {
-        return (RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null ;
+        return (FactureConfiguration::getInstance()->hasFacturationParRegion() && RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null ;
     }
 }

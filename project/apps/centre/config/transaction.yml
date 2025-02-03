@@ -4,4 +4,3 @@ all:
       static_region: OIVC
       static_origine_type: VracExport
       declaration_name: "Vrac export"
-      validation_odg: true
