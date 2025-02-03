@@ -15,7 +15,7 @@
                   </div>
                   <div class="col-xs-1">
                     <a href="<?php echo url_for('compte_search', array('tags' => $filtre,'contacts_all' => true)) ; ?>"><span class="glyphicon glyphicon-search"></span></a> &nbsp;
-                    <a href="<?php echo url_for('compte_search_csv', array('tags' => $filtre,'contacts_all' => true)) ; ?>"><span class="glyphicon glyphicon-export"></span></a>
+                    <a href="<?php echo url_for('compte_search', array('tags' => $filtre,'contacts_all' => true, 'format' => "csv")) ; ?>"><span class="glyphicon glyphicon-export"></span></a>
                   </div>
               </div>
             </div>

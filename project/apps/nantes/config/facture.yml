@@ -6,7 +6,7 @@ all:
       export_sage_width_txt: true
       numero_campagne: true
       numero_format: "%02d%05d"
-      modalite_paiement: "Modalités de paiements : \\ - Comptant, virement ou chèque libellé à l'ordre de FVN \\ - Prélèvement automatique ou virement maximum en 9 fois (mars à novembre)"
+      modalite_paiement: "Modalités de paiements : \\ - Comptant, virement ou chèque libellé à l'ordre de FVN \\ - Prélèvement automatique ou virement maximum en 10 fois (février à novembre)"
       uniq_template_prefix: "TEMPLATE-FACTURE-AOC"
       paiements: true
       exercice: "viticole"
