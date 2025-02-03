@@ -1971,16 +1971,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if (strpos($k, '/unique_id') === false) {
                 continue;
             }
-            if (!$this->getLot($v)) {
+            $lot = $this->getLot($v);
+            if (!$lot || !$lot->volume) {
                 $deleted[] = $v;
             }
         }
         $lots = array();
         foreach($deleted as $unique_id) {
-            if(!$this->getMother()->getLot($unique_id)) {
+            $l = $this->getMother()->getLot($unique_id);
+            if(!$l || !$l->volume) {
                 continue;
             }
-            $lots[] = $this->getMother()->getLot($unique_id);
+            $lots[] = $l;
         }
         return $lots;
     }
@@ -2130,8 +2132,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if($lot->hasBeenEdited()) {
                 continue;
             }
-
-            if(!$this->isMaster() && $this->getMaster()->isValideeOdg() && (!$this->getMaster()->getLot($lot->unique_id) || $this->getMaster()->getLot($lot->unique_id)->id_document != $lot->id_document)) {
+            $masterlot = $this->getMasterValidee()->getLot($lot->unique_id);
+            if(!$this->isMaster() && $this->getMasterValidee() && (!$masterlot || $masterlot->id_document != $lot->id_document || !$masterlot->volume)) {
                 continue;
             }
 
@@ -2320,6 +2322,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function needNextVersion() {
 
         return $this->version_document->needNextVersion() || !$this->isSuivanteCoherente();
+    }
+
+    public function getMasterValidee() {
+        $master = $this->getMaster();
+        if ($master->isValidee()) {
+            return $master;
+        }
+        return $master->getMother();
     }
 
     public function getMaster() {
