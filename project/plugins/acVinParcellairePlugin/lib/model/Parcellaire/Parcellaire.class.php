@@ -336,7 +336,7 @@ class Parcellaire extends BaseParcellaire {
             $cepage = $p->getCepage();
             $libelles = array();
             foreach($this->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
-                $libelles[] = $prod->getLibelleComplet();
+                $libelles[] = $prod->formatProduitLibelle("%a% %m% %l% - %co% %ce%");
             }
             if (!count($libelles)) {
                 $libelles[] = '';
@@ -351,7 +351,6 @@ class Parcellaire extends BaseParcellaire {
                     $synthese[$libelle] = array();
                     $synthese[$libelle]['Total'] = array();
                     $synthese[$libelle]['Total']['Total'] = array();
-                    $synthese[$libelle]['Total']['Total']['superficie_min'] = 0;
                     $synthese[$libelle]['Total']['Total']['superficie_max'] = 0;
                 }
                 if (!isset($synthese[$libelle]['Cepage'])) {
@@ -359,18 +358,15 @@ class Parcellaire extends BaseParcellaire {
                 }
                 if (!isset($synthese[$libelle]['Cepage'][$cepage])) {
                     $synthese[$libelle]['Cepage'][$cepage] = array();
-                    $synthese[$libelle]['Cepage'][$cepage]['superficie_min'] = 0;
                     $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] = 0;
                 }
-                if (count($libelles) == 1) {
-                    $synthese[$libelle]['Cepage'][$cepage]['superficie_min'] = round($synthese[$libelle]['Cepage'][$cepage]['superficie_min'] + $p->superficie, 6);
-                    $synthese[$libelle]['Total']['Total']['superficie_min'] = round($synthese[$libelle]['Total']['Total']['superficie_min'] + $p->superficie, 6);
-                }
                 $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] = round($synthese[$libelle]['Cepage'][$cepage]['superficie_max'] + $p->superficie, 6);
-                $synthese[$libelle]['Total']['Total']['superficie_max'] = round($synthese[$libelle]['Total']['Total']['superficie_max'] + $p->superficie, 6);
-                ksort($synthese);
+                if (strpos($cepage, 'jeunes vignes') === false) {
+                    $synthese[$libelle]['Total']['Total']['superficie_max'] = round($synthese[$libelle]['Total']['Total']['superficie_max'] + $p->superficie, 6);
+                }
             }
         }
+        ksort($synthese);
 
         foreach ($synthese as $libelle => &$cepagetotal) {
             ksort($cepagetotal);
