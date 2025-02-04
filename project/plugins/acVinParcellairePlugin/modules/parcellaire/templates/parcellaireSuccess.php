@@ -286,6 +286,7 @@ $list_idu = [];
 <?php
     $cepages_autorises = [];
     foreach($synthese as $produit_libelle => $sous_synthese):
+        $cepages_autorises = [];
         foreach($sous_synthese as $totalcepage => $cepages):
         foreach($cepages as $cepage_libelle => $s):
             if ($cepage_libelle == 'Total' || strpos($produit_libelle, 'XXXX') !== false): ?>
@@ -294,11 +295,10 @@ $list_idu = [];
                 <td><?php echo implode(', ', $cepages_autorises); ?></td>
                 <td class="text-right"><?php echoSuperficie($s['superficie_max']); ?></td>
             </tr>
-        <?php  $cepages_autorises = []; elseif(strpos($cepage_libelle, 'XXXX') === false): ?>
-            <?php $cepages_autorises[] = $cepage_libelle; ?>
-        <?php endif; ?>
-<?php
-            endforeach;
+<?php       elseif(strpos($cepage_libelle, 'XXXX') === false):
+                $cepages_autorises[] = $cepage_libelle;
+            endif;
+        endforeach;
         endforeach;
     endforeach;
 ?>

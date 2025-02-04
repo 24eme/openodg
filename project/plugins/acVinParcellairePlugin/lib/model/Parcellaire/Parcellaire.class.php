@@ -361,7 +361,7 @@ class Parcellaire extends BaseParcellaire {
                     $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] = 0;
                 }
                 $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] = round($synthese[$libelle]['Cepage'][$cepage]['superficie_max'] + $p->superficie, 6);
-                if (strpos($cepage, 'jeunes vignes') === false) {
+                if (strpos($cepage, 'XXXX') === false) {
                     $synthese[$libelle]['Total']['Total']['superficie_max'] = round($synthese[$libelle]['Total']['Total']['superficie_max'] + $p->superficie, 6);
                 }
             }
