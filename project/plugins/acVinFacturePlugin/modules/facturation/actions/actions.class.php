@@ -5,6 +5,10 @@ class facturationActions extends sfActions
 
     public function executeIndex(sfWebRequest $request)
     {
+        if(!FactureConfiguration::getInstance()->hasFacturationParRegion() && !$this->getUser()->isAdmin()) {
+            throw new sfError403Exception("L'accès à cette page n'est pas autorisé");
+        }
+
         $this->generations = GenerationClient::getInstance()->findHistoryWithType(array(
             GenerationClient::TYPE_DOCUMENT_FACTURES,
             GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE,
