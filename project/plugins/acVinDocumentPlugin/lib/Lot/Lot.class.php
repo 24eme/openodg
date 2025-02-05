@@ -420,6 +420,7 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($iselevage) {
             $this->elevage = false;
             $this->eleve = $date;
+            $this->affectable = true;
         }else{
             $this->elevage = true;
             $this->eleve = null;

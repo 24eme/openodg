@@ -1065,9 +1065,8 @@ class degustationActions extends sfActions {
         $doc = acCouchdbManager::getClient()->find($docid);
         $lot = $doc->getLot($unique_id);
         if (!$lot->getMouvement(Lot::STATUT_NONAFFECTABLE)) {
-            throw new sfException("Action impossible");
+            $lot->affectable = true;
         }
-        $lot->affectable = true;
         $doc->save();
         return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
     }
