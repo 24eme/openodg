@@ -236,7 +236,7 @@ $list_idu = [];
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
     <tr>
-        <th class="col-xs-4">Cépage</th>
+        <th class="col-xs-4">Cépage <small class="text-muted">(jeunes vignes séparées)</small></th>
         <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
     </tr>
   </thead>
@@ -277,38 +277,28 @@ $list_idu = [];
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
     <tr>
-        <th class="col-xs-4">Produit</th>
-        <th class="col-xs-4">Cépage</th>
-        <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
+        <th class="col-xs-3">Produit</th>
+        <th class="col-xs-8">Cépages autorisés <small class="text-muted">(hors jeunes vignes)</small></th>
+        <th class="col-xs-1 text-center">Superficie max. <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
     </tr>
   </thead>
   <tbody>
 <?php
-
+    $cepages_autorises = [];
     foreach($synthese as $produit_libelle => $sous_synthese):
+        $cepages_autorises = [];
         foreach($sous_synthese as $totalcepage => $cepages):
-        foreach($cepages as $cepage_libelle => $s): ?>
-        <tr>
-            <?php if ($cepage_libelle == 'Total' || strpos($produit_libelle, 'XXXX') !== false): ?>
-                <th><?php echo str_replace('XXXX', '', $produit_libelle); ?></th>
-                <th><?php echo str_replace('XXXX', '', $cepage_libelle); ?></th>
-                <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
-                <th class="text-right" colspan="2"><?php echoSuperficie($s['superficie_min']); ?></th>
-                <?php else: ?>
-                <th class="text-right"><?php echoSuperficie($s['superficie_min']); ?></th><th class="text-right"><?php echoSuperficie($s['superficie_max']); ?></th>
-                <?php endif; ?>
-            <?php else: ?>
-                <td><?php echo $produit_libelle ; ?></td>
-                <th><?php echo str_replace('XXXX', '', $cepage_libelle); ?></th>
-                <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
-                <td class="text-right" colspan="2"><?php echoSuperficie($s['superficie_min']); ?></td>
-                <?php else: ?>
-                <td class="text-right"><?php echoSuperficie($s['superficie_min']); ?></td><td class="text-right"><?php echoSuperficie($s['superficie_max']); ?></td>
-                <?php endif; ?>
-            <?php endif; ?>
-        </tr>
-<?php
-            endforeach;
+        foreach($cepages as $cepage_libelle => $s):
+            if ($cepage_libelle == 'Total' || strpos($produit_libelle, 'XXXX') !== false): ?>
+            <tr>
+                <td><?php echo str_replace('XXXX', '', $produit_libelle); ?></td>
+                <td><?php echo implode(', ', $cepages_autorises); ?></td>
+                <td class="text-right"><?php echoSuperficie($s['superficie_max']); ?></td>
+            </tr>
+<?php       elseif(strpos($cepage_libelle, 'XXXX') === false):
+                $cepages_autorises[] = $cepage_libelle;
+            endif;
+        endforeach;
         endforeach;
     endforeach;
 ?>
