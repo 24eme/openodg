@@ -147,11 +147,11 @@ class habilitationActions extends sfActions {
             $this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation');
         }
 
-        if($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) && !HabilitationConfiguration::getInstance()->isSuiviParDemande()) {
+        if($this->getUser()->isAdminODG() && !HabilitationConfiguration::getInstance()->isSuiviParDemande()) {
           $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
         }
 
-        if($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
+        if($this->getUser()->isAdminODG()) {
             $this->editForm = new HabilitationEditionForm($this->habilitation);
         }
 

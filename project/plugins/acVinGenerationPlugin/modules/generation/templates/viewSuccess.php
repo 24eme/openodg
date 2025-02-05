@@ -17,7 +17,7 @@
 <?php if(count($generation->arguments) > 0): ?>
 <p class="text-center text-muted">
     <?php foreach ($generation->arguments as $key => $argument) : ?>
-        <?php echo ucfirst(getLabelForKeyArgument($key)) ?></strong> <?php echo $argument; ?><br />
+        <span><?php echo ucfirst(getLabelForKeyArgument($key)) ?></span> <?php echo $argument; ?><br />
     <?php endforeach; ?>
 </p>
 <?php endif; ?>
