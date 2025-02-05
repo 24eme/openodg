@@ -81,7 +81,7 @@
                        <li><a class="dropdown-item" href="<?php echo url_for('drev_switch_eleve', array('id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>" onclick="return confirm('Confirmez vous de rendre dégustable ce lot ?')">Mettre en élevage</a></li>
                        <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_delete', array('identifiant' => $mouvement->value->declarant_identifiant, 'unique_id' => $mouvement->value->lot_unique_id)) ?>" onclick="return confirm('Confirmez vous la suppression définitive de ce lot ?')">Supprimer ce lot</a></li>
                        <li><a class="dropdown-item" href="<?php echo url_for('degustation_affectation_lot', array('id' => $mouvement->value->declarant_identifiant, 'unique_id' => $mouvement->value->lot_unique_id)) ?>">Affecter à une dégustation</a></li>
-                 <?php elseif ($mouvement->value->statut == Lot::STATUT_NONAFFECTABLE): ?>
+                 <?php elseif ($mouvement->value->statut == Lot::STATUT_NONAFFECTABLE || $mouvement->value->statut == Lot::STATUT_NONAFFECTABLE_EN_ATTENTE): ?>
                        <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_affectable', array('id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>">Retirer le "réputé conforme"</a></li>
                 <?php endif; ?>
                 <?php if (in_array($mouvement->value->statut, array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME, Lot::STATUT_NONAFFECTABLE, Lot::STATUT_AFFECTABLE))): ?>
