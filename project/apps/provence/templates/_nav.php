@@ -100,7 +100,7 @@ if (($compte && ($compte->statut == CompteClient::STATUT_SUSPENDU)) && !$sf_user
                   </ul>
                 </li>
                 <?php endif; ?>
-                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+                <?php if($sf_user->isAdmin()): ?>
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span><span class="caret"></span></a>
                   <ul class="dropdown-menu">
@@ -108,10 +108,17 @@ if (($compte && ($compte->statut == CompteClient::STATUT_SUSPENDU)) && !$sf_user
                     <li><a href="<?php echo url_for("generation_list") ?>">Tâches récurrentes</a></li>
                   </ul>
                 </li>
+                <?php elseif($sf_user->isAdminODG()): ?>
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span><span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="<?php echo url_for("produits") ?>">Catalogue produit</a></li>
+                  </ul>
+                </li>
                 <?php elseif($sf_user->isAuthenticated()): ?>
                  <li><a tabindex="-1" href="<?php echo url_for("compte_teledeclarant_modification") ?>" title="Mon compte"><span class="glyphicon glyphicon-user"></span></a></li>
                 <?php endif; ?>
-                <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && $compte && $route instanceof InterfaceUsurpationRoute && !$sf_user->isUsurpationCompte()) : ?>
+                <?php if ($sf_user->isAdminODG() && $compte && $route instanceof InterfaceUsurpationRoute && !$sf_user->isUsurpationCompte()) : ?>
                      <li><a tabindex="-1" href="<?php echo url_for('auth_usurpation', array('identifiant' => $compte->identifiant)) ?>" title="Connexion mode déclarant"><span class="glyphicon glyphicon-cloud-upload"></span></a></li>
                 <?php endif; ?>
                 <?php if ($sf_user->isUsurpationCompte()): ?>
