@@ -1643,6 +1643,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->getVolumeRevendiqueLots($produitFilter) > 0;
     }
 
+    public function hasVolumeRevendiqueCurrentLots(TemplateFactureCotisationCallbackParameters $produitFilter) {
+
+        return $this->getInternalVolumeRevendique($this->getCurrentLots(), $produitFilter) > 0;
+    }
+
     public function getVolumeRevendiqueLotsMillesimeCourantByAppellations(string $appellations){
         $t = new TemplateFactureCotisationCallbackParameters($this, array('appellations' => $appellations, 'millesime' => '/millesime/courant'));
         return $this->getVolumeRevendiqueLots($t);
@@ -1693,6 +1698,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return $docDouanier->getTotalValeur(SV12CsvFile::CSV_LIGNE_CODE_VOLUME_TOTAL, null, $produitFilter);
         }
         throw new sfException("type de document douanier $type n'est pas supporté");
+    }
+
+    public function getVolumeVinFromDRPrecedente($produitFilter = null) {
+        $dr = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode()-1);
+        if (!$dr || ($dr->type != DRClient::TYPE_MODEL)) {
+             return null;
+        }
+        return $dr->getTotalValeur("15", null, null, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL) + $dr->getTotalValeur("14", null, null, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
+    }
+
+    public function getVolumeVinFromSV11Precedente($produitFilter = null) {
+        $sv11 = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode()-1);
+        if (!$sv11 || ($sv11->type != SV11Client::TYPE_MODEL)) {
+            return ;
+        }
+        return $sv11->getTotalValeur("10");
     }
 
     public function getVolumeIGPSIGFromDR($produitFilter = null) {
@@ -1971,16 +1992,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if (strpos($k, '/unique_id') === false) {
                 continue;
             }
-            if (!$this->getLot($v)) {
+            $lot = $this->getLot($v);
+            if (!$lot || !$lot->volume) {
                 $deleted[] = $v;
             }
         }
         $lots = array();
         foreach($deleted as $unique_id) {
-            if(!$this->getMother()->getLot($unique_id)) {
+            $l = $this->getMother()->getLot($unique_id);
+            if(!$l || !$l->volume) {
                 continue;
             }
-            $lots[] = $this->getMother()->getLot($unique_id);
+            $lots[] = $l;
         }
         return $lots;
     }
@@ -2130,8 +2153,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if($lot->hasBeenEdited()) {
                 continue;
             }
-
-            if(!$this->isMaster() && $this->getMaster()->isValideeOdg() && (!$this->getMaster()->getLot($lot->unique_id) || $this->getMaster()->getLot($lot->unique_id)->id_document != $lot->id_document)) {
+            $masterlot = $this->getMasterValidee()->getLot($lot->unique_id);
+            if(!$this->isMaster() && $this->getMasterValidee() && (!$masterlot || $masterlot->id_document != $lot->id_document || !$masterlot->volume)) {
                 continue;
             }
 
@@ -2320,6 +2343,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function needNextVersion() {
 
         return $this->version_document->needNextVersion() || !$this->isSuivanteCoherente();
+    }
+
+    public function getMasterValidee() {
+        $master = $this->getMaster();
+        if ($master->isValidee()) {
+            return $master;
+        }
+        return $master->getMother();
     }
 
     public function getMaster() {

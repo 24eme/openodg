@@ -58,6 +58,10 @@ class HabilitationEditionForm extends acCouchdbForm
                   continue;
                 }
 
+                if (Organisme::getCurrentRegion() && !RegionConfiguration::getInstance()->isHashProduitInRegion(Organisme::getCurrentRegion() ,$activite->getProduitHash())) {
+                    throw new sfError403Exception("L'édition de ce produit n'est pas autorisé pour ".$region);
+                }
+
                 $hash = str_replace('-','/',$idWidgets);
                 $values = $this->getValues();
                 $activite = $this->getDocument()->get($hash);
