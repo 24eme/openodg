@@ -1,4 +1,4 @@
-<h1>Potentiel de production</h1>
+<h1><a href="<?php echo url_for('parcellaire_visualisation', $parcellaire); ?>">Parcellaire</a> / Potentiel de production</h1>
 <?php foreach($table_potentiel as $produit => $table): ?>
 <h2><?php echo $produit; ?></h2>
 <table class="table">

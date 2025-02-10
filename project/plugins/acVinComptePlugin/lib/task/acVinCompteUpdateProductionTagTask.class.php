@@ -29,11 +29,13 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
     protected static $accent_matching = array('accent' => array('Ô','ô', 'Â','â','ê','è','é','É', 'È','Ê','û','Û','î','Î'), 'to_replace' => array('o','o', 'A','a','e','e','e','e','e','e','u','u','i','i'));
 
     protected function configure() {
+
         $this->addOptions(array(
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
             new sfCommandOption('debug', null, sfCommandOption::PARAMETER_OPTIONAL, 'use only one code creation', '0'),
+            new sfCommandOption('etablissement_id', null, sfCommandOption::PARAMETER_OPTIONAL, 'Etablissement ID'),
         ));
 
         $this->namespace = 'compte';
@@ -59,6 +61,9 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
         $this->logSection("campagne use", implode(',', $campagnes));
 
         foreach (EtablissementAllView::getInstance()->findByInterproStatutAndFamilleVIEW('INTERPRO-declaration', EtablissementClient::STATUT_ACTIF, null) as $e) {
+            if(isset($options['etablissement_id']) && $options['etablissement_id'] != $e->key[EtablissementAllView::KEY_ETABLISSEMENT_ID]) {
+                continue;
+            }
             $id = $e->key[EtablissementAllView::KEY_ETABLISSEMENT_ID];
             $tags = array('export' => array(), 'produit' => array(), 'domaines' => array(), 'documents' => array());
             $etablissement = EtablissementClient::getInstance()->findByIdentifiant(str_replace('ETABLISSEMENT-', '', $id));
