@@ -2207,20 +2207,46 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     /**** PIECES ****/
 
     public function getAllPieces() {
-    	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
-      $date = null;
-      if ($this->getValidation()) {
-        $dt = new DateTime($this->getValidation());
-        $date = $dt->format('Y-m-d');
-      }
-    	return (!$this->getValidation())? array() : array(array(
-    		'identifiant' => $this->getIdentifiant(),
-    		'date_depot' => $date,
-    		'libelle' => 'Revendication des produits '.$this->periode.' '.$complement,
-    		'mime' => Piece::MIME_PDF,
-    		'visibilite' => 1,
-    		'source' => null
-    	));
+        $complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
+        $date = null;
+        if ($this->getValidation()) {
+            $dt = new DateTime($this->getValidation());
+            $date = $dt->format('Y-m-d');
+        }else{
+            return array();
+        }
+
+        $dossiers = $this->getNumerosDossier();
+        if (count($dossiers) == 1) {
+            return array(array(
+                'identifiant' => $this->getIdentifiant(),
+                'date_depot' => $date,
+                'libelle' => 'Revendication '.$this->periode.' '.$complement,
+                'mime' => Piece::MIME_PDF,
+                'visibilite' => 1,
+                'source' => $this->_id
+            ));
+        }else{
+            $pieces = array();
+            foreach($dossiers as $d) {
+                $lot_date = $date;
+                foreach ($this->lots as $l) {
+                    if ($l->numero_dossier == $d)  {
+                        $lot_date = $l->date;
+                        continue;
+                    }
+                }
+                $pieces[] = array(
+                    'identifiant' => $this->getIdentifiant(),
+                    'date_depot' => $lot_date,
+                    'libelle' => 'Revendication n°'.$d.' - '.$this->periode.' '.$complement,
+                    'mime' => Piece::MIME_PDF,
+                    'visibilite' => 1,
+                    'source' => $d
+                );
+            }
+            return $pieces;
+        }
     }
 
     public function generatePieces() {
@@ -2228,6 +2254,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function generateUrlPiece($source = null) {
+        if ($source) {
+            return sfContext::getInstance()->getRouting()->generate('drev_export_pdf',  ['id' => $this->_id, 'numero_dossier' => $source]);
+        }
     	return sfContext::getInstance()->getRouting()->generate('drev_export_pdf', $this);
     }
 

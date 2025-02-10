@@ -15,7 +15,7 @@
           <p class="explications">Le Téléservice « Irrigable » sera ouvert à partir du <?php echo format_date(ParcellaireIrrigableConfiguration::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
           <?php endif; ?>
           <div class="actions">
-              <?php if ($sf_user->isAdmin()): ?>
+              <?php if ($sf_user->isAdminODG()): ?>
                   <a class="btn btn-default btn-block" href="<?php echo url_for('parcellaireirrigable_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><?php if(!$parcellaireIrrigable): ?>Démarrer la déclaration « Irrigable »<?php else: ?>Voir ou continuer l'Irrigable<?php endif; ?></a>
               <?php endif; ?>
           </div>
@@ -62,7 +62,7 @@
               </p>
               <div class="actions">
                   <div class="actions">
-                  <?php if ($sf_user->isAdmin()): ?>
+                  <?php if ($sf_user->isAdminODG()): ?>
                           <a class="btn btn-default btn-block" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><?php if(!$parcellaireIrrigue): ?>Démarrer un « Irrigué »<?php else: ?>Visualiser et continuer l'Irrigué<?php endif; ?></a>
                   <?php endif; ?>
                         <div class="panel-default mt-2">
