@@ -1388,7 +1388,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
      }
 
 	protected function doSave() {
-        $this->piece_document->generatePieces();
         foreach ($this->declaration->getProduits() as $key => $produit) {
             $produit->update();
         }
@@ -1420,6 +1419,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function save($saveDependants = true) {
         $this->archiver();
+
+        $this->piece_document->generatePieces();
 
         $this->getDateDepot();
 

@@ -80,6 +80,7 @@ EOF;
             $initialRevisionEtablissement = null;
             $initialRevisionCompteEtablissement = null;
 
+            try {
             $societe = new Societe();
             $societe->identifiant = sprintf(sfConfig::get('app_societe_format_identifiant'), $line[self::CSV_IDENTIFIANT]);
             $societe->type_societe = SocieteClient::TYPE_OPERATEUR;
@@ -151,10 +152,6 @@ EOF;
             $compte->statut = $etablissement->statut;
             $compte->save();
 
-            if(!$actif) {
-
-            }
-
             $societe = SocieteClient::getInstance()->find($societe->_id);
             $etablissement = EtablissementClient::getInstance()->find($etablissement->_id);
 
@@ -181,7 +178,9 @@ EOF;
             if($initialRevisionCompteEtablissement != $compte->_rev) {
                 echo "Success compte enregistrée : $compte->_id ($initialRevisionCompteEtablissement => $compte->_rev)".PHP_EOL;
             }
-
+            } catch (Exception $e) {
+                echo "Error: Exception \"".$e->getMessage()."\" on id ".$line[self::CSV_IDENTIFIANT]." (CSV: ".implode(',', $line).")".PHP_EOL;
+            }
 
         }
     }
