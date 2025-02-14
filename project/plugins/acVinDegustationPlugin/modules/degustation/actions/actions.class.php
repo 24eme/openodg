@@ -1068,7 +1068,7 @@ class degustationActions extends sfActions {
             //Pendant quelques semaine en 2025, cette exception a été désativée
             //et potentiellement affactable n'a pas eu d'impact sur les statuts
             //=> si c'est le cas, il faut intervenir en base et pas toucher ici
--            throw new sfException("Action impossible");
+           throw new sfException("Action impossible");
         }
         $lot->affectable = true;
         $lot->updateStatut();
