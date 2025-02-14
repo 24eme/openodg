@@ -174,8 +174,12 @@ class DegustationLot extends BaseDegustationLot {
         return true;
     }
 
+    public function isLotTournee() {
+        return strpos($this->id_document_provenance, TourneeClient::TYPE_COUCHDB) !== false;
+    }
+
     public function isDegustable() {
-        if(! $this->isPreleve() && ! $this->isLeurre()) {
+        if( ! $this->isLotTournee() && ! $this->isPreleve() && ! $this->isLeurre()) {
             return false;
         }
         if($this->isAnnule()) {

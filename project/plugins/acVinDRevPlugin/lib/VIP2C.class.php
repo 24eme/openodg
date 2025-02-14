@@ -17,54 +17,39 @@ class VIP2C
             return self::$infos;
         }
 
-        $contrats = self::getContratsFromAPI($doc->declarant->cvi, $millesime);
-        $infosProduits = self::getInfosFromCSV($doc->declarant->cvi, $millesime);
+        $infosProduits = self::getInfosFromCSV($doc, $millesime);
 
         if ($infosProduits === null) {
-            self::$infos = ['contrats' => [], 'produits' => []];
+            self::$infos = ['produits' => []];
             return self::$infos;
         }
 
         $hashesRegex = array_column($infosProduits, 'hash_regex');
 
-        $codesDouanes = [];
         $volumes = array_fill_keys($hashesRegex, 0);
         $hashProduits = array_fill_keys($hashesRegex, []);
-
-        foreach ($doc->getProduits() as $produit) {
-            $drevHash = $produit->getCepage()->getHash();
+        $contrats = [];
+        foreach ($doc->getLots() as $produit) {
+            $drevHash = $produit->getConfig()->getHash();
             foreach ($hashesRegex as $hash) {
-                if (VIP2C::isHashMatch($hash, $drevHash) === true && in_array($drevHash, $hashProduits[$hash]) === false) {
+                if (self::isHashMatch($hash, $drevHash) === true && in_array($drevHash, $hashProduits[$hash]) === false) {
                     $volumes[$hash] += $doc->getVolumeRevendiqueLotsMillesimeCourantByAppellations($drevHash);
                     $hashProduits[$hash][] = $drevHash;
-                    $codesDouanes[] = $produit->getConfig()->getCodeDouane();
-                    $codesDouanes = array_unique($codesDouanes);
+                    $contrats[$hash] = self::getContratsFromAPI($doc->declarant->cvi, $millesime, $drevHash);
                 }
             }
         }
 
-        foreach ($contrats as $contrat) {
-            foreach ($hashesRegex as $hash) {
-                if (VIP2C::isHashMatch($hash, $contrat['produit']) === true || in_array($contrat['code_douane'], $codesDouanes)) {
-                    self::$infos['contrats'][$contrat['numero']] = $contrat;
-                }
-            }
-        }
-
-        $infosProduits = array_map(function ($value) use ($volumes, $hashProduits) {
+        $infosProduits = array_map(function ($value) use ($volumes, $hashProduits, $contrats) {
             $value['volume'] = $volumes[$value['hash_regex']];
             $value['hashes'] = $hashProduits[$value['hash_regex']];
+            $value['contrats'] = (isset($contrats[$value['hash_regex']]))? $contrats[$value['hash_regex']] : [];
             return $value;
         }, $infosProduits);
 
         $infosProduits = array_filter($infosProduits, function ($value) {
             return count($value['hashes']) > 0;
         });
-
-        $infosProduits = array_map(function ($value) use ($doc) {
-            $value['libelle'] = $doc->get(current($value['hashes']))->getConfig()->getLibelleComplet();
-            return $value;
-        }, $infosProduits);
 
         self::$infos['produits'] = $infosProduits;
         return self::$infos;
@@ -79,7 +64,7 @@ class VIP2C
             return array();
         }
 
-        if ($millesime < VIP2C::getConfigMillesimeVolumeSeuil()) {
+        if ($millesime < self::getConfigMillesimeVolumeSeuil()) {
             return array();
         }
 
@@ -99,12 +84,17 @@ class VIP2C
         $content = file_get_contents($url);
 
         $result = json_decode($content,true);
+
+        if(!$result) {
+            return [];
+        }
+
         $todelete = array();
         if ($hash_produit) {
             $confProduit = ConfigurationClient::getInstance()->getConfiguration()->get($hash_produit);
         }
         foreach($result as $contratid => $data) {
-            if ($hash_produit && !VIP2C::isHashMatch($hash_produit, $data['produit']) && $confProduit->code_douane != $data['code_douane']) {
+            if ($hash_produit && !self::isHashMatch($hash_produit, $data['produit']) && $confProduit->code_douane != $data['code_douane']) {
                 $todelete[] = $contratid;
             }
         }
@@ -114,8 +104,8 @@ class VIP2C
         return($result);
     }
 
-    public static function getInfosFromCSV($cvi, $millesime){
-        if(! VIP2C::hasVolumeSeuil() || ! $cvi){
+    public static function getInfosFromCSV($doc, $millesime){
+        if(! self::hasVolumeSeuil() || !$doc->declarant->cvi){
             return null;
         }
 
@@ -127,13 +117,15 @@ class VIP2C
                 continue;
             }
 
-            if ($line[self::VIP2C_COLONNE_CVI] !== $cvi) {
+            if ($line[self::VIP2C_COLONNE_CVI] !== $doc->declarant->cvi) {
                 continue;
             }
 
+            $defautHash = str_replace(['genres/|','|'], ['genres/TRANQ', 'DEFAUT'], $line[self::VIP2C_COLONNE_PRODUIT]);
             $volumes[] = [
                 "hash_regex"  => $line[self::VIP2C_COLONNE_PRODUIT],
-                "volume_max"  => str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME])
+                "volume_max"  => str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME]),
+                "libelle" => $doc->getConfiguration()->declaration->get($defautHash)->getLibelleComplet()
             ];
         }
         fclose($configFile);

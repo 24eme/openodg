@@ -194,15 +194,15 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
     $partBouteilleNormale = 75/100;
     $partBouteilleAllegee = 25/100;
     $partCarton = 1/6;
-    $prixUnitaireBouteilleNormale = 0.0090;
-    $prixUnitaireBouteilleAllegee = 0.0084;
-    $prixUnitaireCarton = 0.0458;
+    $prixUnitaireBouteilleNormale = 0.0105;
+    $prixUnitaireBouteilleAllegee = 0.0090;
+    $prixUnitaireCarton = 0.0535;
     $partBib3L = 55/100;
     $partBib5L = 35/100;
     $partBib10L = 10/100;
-    $prixUnitaireBib3L = 0.0363;
-    $prixUnitaireBib5L = 0.0501;
-    $prixUnitaireBib10L = 0.0900;
+    $prixUnitaireBib3L = 0.0498;
+    $prixUnitaireBib5L = 0.0617;
+    $prixUnitaireBib10L = 0.1062;
     /*
     * Calcul des unités de conditionnement
     */

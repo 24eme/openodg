@@ -420,6 +420,7 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($iselevage) {
             $this->elevage = false;
             $this->eleve = $date;
+            $this->affectable = true;
         }else{
             $this->elevage = true;
             $this->eleve = null;
@@ -1142,6 +1143,16 @@ abstract class Lot extends acCouchdbDocumentTree
             $this->statut = Lot::STATUT_NONAFFECTABLE;
             return;
         }
+
+        if (!$this->id_document_affectation && $this->affectable) {
+            $this->statut = Lot::STATUT_AFFECTABLE;
+            return;
+        }
+
+        if (!$this->id_document_affectation && !$this->affectable) {
+            $this->statut = Lot::STATUT_NONAFFECTABLE;
+            return;
+        }
     }
 
     public function getAdresseLogement() {
@@ -1262,6 +1273,13 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getPrelevementHeure() {
         return $this->getPrelevementFormat('H:i');
+    }
+
+    public function getPreleveFormat($format = 'd/m/Y') {
+        if (!$this->preleve) {
+            return ;
+        }
+        return date($format, strtotime($this->preleve));
     }
 
     public function getPrelevementFormat($format = 'd/m/Y H:i') {

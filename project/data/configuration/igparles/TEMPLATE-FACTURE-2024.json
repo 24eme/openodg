@@ -1,0 +1,297 @@
+{
+   "_id": "TEMPLATE-FACTURE-2024",
+   "_rev": "6-b014b6590b41283f1927705fa3029767",
+   "type": "TemplateFacture",
+   "campagne": "2024",
+   "template": "IGP",
+   "libelle": "2024 - IGP13",
+   "docs": [
+       "DRev",
+       "ChgtDenom",
+       "Degustation"
+   ],
+   "cotisations": {
+       "01_cotisationSyndicale": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "",
+           "code_comptable": "70600000",
+           "details": {
+               "cotisation_dr_ha": {
+                   "modele": "CotisationVariable",
+                   "prix": 6,
+                   "tva": 0,
+                   "unite": "ha",
+                   "libelle": "Cotisation syndicale - Surfaces en production DR",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getSuperficieFromDR"
+               },
+               "cotisation_dr_hl": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.06,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "Cotisation syndicale - Volumes produits DR",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeVininifieFromDocumentDouanier"
+               },
+               "cotisation_intermed": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.01,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "Cotisation fédération Inter-Med - Volumes produits DR",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeVininifieFromDocumentDouanier"
+               },
+               "cotisation_vinsigp": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.0424,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "Cotisation VinIGP - N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeLotsFacturables"
+               }
+           }
+       },
+       "02_igp13": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "",
+           "code_comptable": "70600100",
+           "details": {
+               "superficie": {
+                   "modele": "CotisationVariable",
+                   "prix": 10,
+                   "tva": 0.2,
+                   "unite": "ha",
+                   "libelle": "Cotisation ODG - Superficie en production DR",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getSuperficieFromDR"
+               },
+               "revendication": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.5,
+                   "tva": 0.2,
+                   "unite": "hl",
+                   "libelle": "Cotisation ODG - N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeLotsFacturables"
+               }
+           }
+       },
+       "03_chgtdeno": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "",
+           "code_comptable": "70600100",
+           "details": {
+               "revendication": {
+                   "modele": "CotisationFixe",
+                   "prix": 70,
+                   "tva": 0.2,
+                   "libelle": "Forfait Chgt de déno - N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "ChgtDenom"
+                   ],
+                   "callback": "getVolumeFacturable",
+                   "callback_parameters": {
+                       "appellations": "/appellations/MED",
+                       "campagne": "NOT same"
+                   }
+               }
+           }
+       },
+       "04_degustation": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "",
+           "code_comptable": "70600501",
+           "details": {
+               "forfait_redegustation": {
+                   "modele": "Cotisation",
+                   "prix": 80,
+                   "tva": 0.2,
+                   "unite": "",
+                   "libelle": "Nouveau passage suite à NC - N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "Degustation"
+                   ],
+                   "callback": "getFacturationLotRedeguste"
+               },
+               "frais_recours": {
+                   "modele": "Cotisation",
+                   "prix": 56.33,
+                   "tva": 0.2,
+                   "unite": "",
+                   "libelle": "Frais Recours suite à NC - N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "Degustation"
+                   ],
+                   "callback": "getFacturationLotRecours"
+               },
+               "forfait_recours": {
+                   "modele": "Cotisation",
+                   "prix": 40,
+                   "tva": 0.2,
+                   "unite": "",
+                   "libelle": "Forfait Recours suite à NC - N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "Degustation"
+                   ],
+                   "callback": "getFacturationLotRecours"
+               }
+           }
+       },
+       "05_alpilles": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation Alpilles - N° %detail_identifiant%",
+           "code_comptable": "70600401",
+           "details": {
+               "cotisation": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.05,
+                   "tva": 0.2,
+                   "libelle": "",
+                   "unite": "hl",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeLotsFacturables",
+                   "callback_parameters": {
+                       "appellations": "/appellations/APL"
+                   }
+               }
+           }
+       },
+       "06_terreDeCamargue": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation Terre de Camargue - N° %detail_identifiant%",
+           "code_comptable": "70600400",
+           "details": {
+               "cotisation": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.05,
+                   "tva": 0.2,
+                   "libelle": "",
+                   "unite": "hl",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeLotsFacturables",
+                   "callback_parameters": {
+                       "appellations": "/appellations/D13/mentions/DEFAUT/lieux/TDC"
+                   }
+               }
+           }
+       },
+       "07_mediterrannee": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation Méditerrannée - N° %detail_identifiant%",
+           "code_comptable": "70610000",
+           "details": {
+               "revendication": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.15,
+                   "tva": 0.2,
+                   "libelle": "",
+                   "unite": "hl",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeLotsFacturables",
+                   "callback_parameters": {
+                       "appellations": "/appellations/MED"
+                   }
+               },
+               "changement": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.15,
+                   "tva": 0.2,
+                   "unite": "hl",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "ChgtDenom"
+                   ],
+                   "callback": "getVolumeFacturable",
+                   "callback_parameters": {
+                       "appellations": "/appellations/MED"
+                   }
+               }
+           }
+       },
+       "08_inao": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Droits INAO - N° %detail_identifiant%",
+           "code_comptable": "70600300",
+           "details": {
+               "cotisation": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.03,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeLotsFacturables"
+               }
+           }
+       },
+      "09_conditionnement": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "IGP Arles",
+           "code_comptable": "70600502",
+           "details": {
+               "cotisation": {
+                   "modele": "Cotisation",
+                   "prix": 60,
+                   "tva": 0.2,
+                   "libelle": "Contrôle conditionné - N° %detail_identifiant%",
+                   "unite": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "Degustation"
+                   ],
+                   "callback": "getForfaitConditionnement",
+                   "callback_parameters": {
+                       "appellations": "NOT /genres/EFF/appellations/MED"
+                   }
+               }
+           }
+       }
+   }
+}

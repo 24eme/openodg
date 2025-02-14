@@ -362,7 +362,7 @@ class phpCAS
         // initialize the object $_PHPCAS_CLIENT
         try {
             self::$_PHPCAS_CLIENT = new CAS_Client(
-                $server_version, false, $server_hostname, $server_port, $server_uri,
+                $server_version, false, $server_hostname, intval($server_port), $server_uri,
                 $changeSessionID
             );
         } catch (Exception $e) {

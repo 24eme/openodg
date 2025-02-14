@@ -7,7 +7,7 @@
 </ol>
 
 <div class="page-header">
-    <h2><?php if($fichier->isNew()): ?>Ajout de document<?php else: ?>Modification du document<?php endif; ?></a></h2>
+    <h2><?php if($fichier->isNew()): ?>Ajout de document<?php else: ?>Modification du document<?php endif; ?></h2>
 </div>
 
 <form class="form-horizontal" role="form" action="<?php echo url_for("upload_fichier", array('fichier_id' => $fichier_id, 'sf_subject' => $etablissement)) ?>" method="post" enctype="multipart/form-data">
