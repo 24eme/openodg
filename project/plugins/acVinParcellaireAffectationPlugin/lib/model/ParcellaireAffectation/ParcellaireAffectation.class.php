@@ -268,7 +268,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             $destinataires[$liaison->id_etablissement] = $liaison;
         }
 
-        foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_APPORTEUR_RAISIN) as $liaison) {
+        foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR) as $liaison) {
             $destinataires[$liaison->id_etablissement] = $liaison;
         }
 
