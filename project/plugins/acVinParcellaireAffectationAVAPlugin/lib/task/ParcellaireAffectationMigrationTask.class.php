@@ -178,7 +178,7 @@ EOF;
             }
             $parcelle->numero_parcelle = preg_replace("/^0+/", "", $parcelle->numero_parcelle);
             $parcelle->section = preg_replace("/^0+/", "", $parcelle->section);
-            if (is_null($parcelle->numero_ordre) && preg_match('/-[0-9]+-[0-9]+-([0-9]{2})(-[A-Z]|-?$)/', $parcelle->getKey(), $m)) {
+            if (is_null($parcelle->numero_ordre) && preg_match('/-[0-9]+-([0-9]{2})(-[A-Z]|-?$)/', $parcelle->getKey(), $m)) {
                 $parcelle->numero_ordre = $m[1];
             }
 
