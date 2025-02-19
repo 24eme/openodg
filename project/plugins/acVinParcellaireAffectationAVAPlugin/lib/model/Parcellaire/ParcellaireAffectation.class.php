@@ -167,14 +167,14 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
                     if (strpos(strtoupper($nom), 'GRAND CRU') !== false || strpos(strtoupper($nom), 'COMMUNALE') !== false) {
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod) {
-                            $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
+                            $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle);
                             $parcelle->superficie = $CVIParcelle->superficie * 100;
                             $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                         }
                     }elseif ($nom == 'Alsace') {
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod && $prod->hasVtsgn()) {
-                            $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
+                            $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle);
                             $parcelle->superficie = $CVIParcelle->superficie * 100;
                             $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                             $parcelle->vtsgn = 0;
@@ -182,7 +182,7 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
                         $libelle = str_replace('ALSACE', 'ALSACE LIEU-DIT', $libelle);
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod) {
-                            $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
+                            $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle);
                             $parcelle->superficie = $CVIParcelle->superficie * 100;
                             $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                         }
@@ -301,7 +301,7 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
                     $parcelle = $this->get($appellation->getHash())->findParcelle($prevParcelle);
                 }
                 if(!$parcelle) {
-                    $parcelle = $this->addParcelleForAppellation($appellation->getHash(), $prevParcelle->getCepage()->getHash(), $prevParcelle->commune, $prevParcelle->section, $prevParcelle->numero_parcelle, $prevParcelle->lieu, $prevParcelle->departement);
+                    $parcelle = $this->addProduitParcelle($prevParcelle->getProduitHash(), $prevParcelle);
                     $parcelle->superficie = $prevParcelle->superficie;
                 }
                 $parcelle->active = $prevParcelle->active;
@@ -416,11 +416,11 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
         return $produit;
     }
 
-    public function addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
+    public function addProduitParcelle($hash, $parcelle) {
         $produit = $this->getOrAdd($hash);
         $this->addProduit($produit->getHash());
 
-        return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $lieu, $dpt);
+        return $produit->addDetailNode($parcelle->getKey(), $parcelle);
     }
 
     public function addParcelleForAppellation($appellationKey, $cepage, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
@@ -433,7 +433,20 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
             $parcelleKey.='-' . KeyInflector::slugify($lieu);
         }
 
-        return $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu, $dpt);
+        $produit = $this->addProduit($hash);
+
+        $detail = $produit->detail->add($parcelleKey);
+
+        $detail->commune = $commune;
+        $detail->section = $section;
+        $detail->numero_parcelle = $numero_parcelle;
+        if($lieu){
+           $lieu = strtoupper($lieu);
+        }
+        $detail->lieu = $lieu;
+        $detail->departement = $dpt;
+
+        return $detail;
     }
 
     public function addAppellation($hash) {

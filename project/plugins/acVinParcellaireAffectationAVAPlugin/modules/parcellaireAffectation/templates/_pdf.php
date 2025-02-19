@@ -105,9 +105,9 @@
                     <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;&nbsp;</td>
                 <?php endif; ?>
             <?php endif; ?>
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.2f", $parcelle->parcelle->superficie); ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.2f", $parcelle->parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)); ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
         </tr>
-        <?php $totaleSuperficie += $parcelle->parcelle->superficie; ?>
+        <?php $totaleSuperficie += $parcelle->parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE); ?>
 <?php endforeach; ?>
 <tr>
     <td class="td" style="text-align: left; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<strong>Total</strong>&nbsp;</td>

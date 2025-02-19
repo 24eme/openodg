@@ -118,7 +118,7 @@ abstract class _ParcellaireAffectationDeclarationNoeud extends acCouchdbDocument
 
     public function findParcelle($parcelle) {
 
-        return ParcellaireClient::findParcelle($this, $parcelle, 0.5);
+        return ParcellaireClient::findParcelle($this, $parcelle);
     }
 
     public function getLieuxEditable() {
@@ -135,15 +135,15 @@ abstract class _ParcellaireAffectationDeclarationNoeud extends acCouchdbDocument
         return $lieux;
     }
 
-    public function getSuperficieTotale() {
+    public function getSuperficieTotale($unite = ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_HECTARE) {
         $superficie = 0;
         foreach ($this->getProduitsCepageDetails() as $detail) {
-            if (!$detail->isCleanable()) 
-                $superficie += $detail->superficie;
+            if (!$detail->isCleanable())
+                $superficie += $detail->getSuperficie($unite);
         }
         return $superficie;
     }
-    
+
     public function getAcheteursNode($lieu = null, $cviFilter = null) {
         $acheteurs = array();
         foreach($this->getProduits() as $produit) {
