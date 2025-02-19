@@ -1,6 +1,6 @@
 <?php use_helper('Date'); ?>
 
-<?php if (!EtablissementSecurity::getInstance($sf_user, $etablissement->getRawValue())->isAuthorized(EtablissementSecurity::DECLARANT_DREV) && (!$drev || !$sf_user->isAdmin() || !$sf_user->hasDrevAdmin())): ?>
+<?php if (!EtablissementSecurity::getInstance($sf_user, $etablissement->getRawValue())->isAuthorized(EtablissementSecurity::DECLARANT_DREV) && (!$drev || !$sf_user->hasDrevAdmin())): ?>
     <?php return; ?>
 <?php endif; ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
@@ -8,7 +8,7 @@
         <div class="panel-heading">
             <h3 class="panel-title">
                 Revendication&nbsp;des&nbsp;produits&nbsp;<?php echo $periode; ?>
-<?php if ( $sf_user->isAdmin() && $drev && $drev->isValideeOdg() ): ?>
+<?php if($sf_user->hasDrevAdmin() && $drev && $drev->isValideeOdg()): ?>
                 <span class="pull-right"><span class="glyphicon glyphicon-ok-circle"></span></span>
 <?php endif; ?>
             </h3>
@@ -20,7 +20,7 @@
                     <a class="btn btn-block btn-default" href="<?php echo url_for('drev_visualisation', $drev) ?>">Visualiser la déclaration</a>
                 </div>
             </div>
-        <?php elseif ($drev && (DRevConfiguration::getInstance()->isOpen() || $sf_user->isAdmin() || $sf_user->hasDrevAdmin())): ?>
+        <?php elseif ($drev && (DRevConfiguration::getInstance()->isOpen() || $sf_user->hasDrevAdmin())): ?>
             <div class="panel-body">
                 <p class="explications">Votre déclaration de revendication de cette année a été débutée sans avoir été validée.</p>
                 <div class="actions">
@@ -36,7 +36,7 @@
                 <p class="explications">Le Téléservice sera ouvert à partir du <?php echo format_date(DRevConfiguration::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
                 <?php endif; ?>
                 <div class="actions">
-                <?php if ($sf_user->isAdmin()): ?>
+                <?php if ($sf_user->hasDrevAdmin()): ?>
                     <a class="btn btn-default btn-block" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
                 <?php endif; ?>
                 </div>

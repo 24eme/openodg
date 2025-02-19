@@ -39,13 +39,13 @@ if (($compte && ($compte->statut == CompteClient::STATUT_SUSPENDU)) && !$sf_user
           <a class="navbar-brand" href="<?php echo url_for('accueil') ?>"></a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="padding-left: 0;">
-            <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+            <?php if($sf_user->isAdminODG()): ?>
             <ul class="nav navbar-nav <?php if($compte): ?>mode-operateur<?php endif; ?>" style="border: 0;">
                 <li id="nav_item_operateur" class="<?php if(!$compte): ?>disabled<?php endif; ?>"><a <?php if($compte): ?>onclick="document.location = $(this).parents('ul.mode-operateur').find('li.active a').attr('href');"<?php endif; ?> href="#"><span class="glyphicon glyphicon-user"></span></a></li>
                 <li class="<?php if($route instanceof InterfaceDeclarationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceDeclarationRoute): ?><?php echo url_for('declaration_etablissement', $etablissement); ?><?php else: ?><?php echo url_for('declaration'); ?><?php endif; ?>">Déclarations</a></li>
                 <li class="<?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceDocumentsRoute): ?><?php echo url_for('pieces_historique', $etablissement); ?><?php else: ?><?php echo url_for('documents'); ?><?php endif; ?>">Documents</a></li>
                 <li class="<?php if($route instanceof InterfaceParcellaireRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceParcellaireRoute): ?><?php echo url_for('parcellaire_declarant', $etablissement); ?><?php else: ?><?php echo url_for('parcellaire'); ?><?php endif; ?>">Parcellaire</a></li>
-                <li class="<?php if($route instanceof InterfaceFacturationRoute): ?>active<?php endif; ?>"><a href="<?php if($compte  && !$route instanceof InterfaceFacturationRoute): ?><?php echo url_for('facturation_declarant', $compte); ?><?php else: ?><?php echo url_for('facturation'); ?><?php endif; ?>">Facturation</a></li>
+                <li class="<?php if($route instanceof InterfaceFacturationRoute): ?>active<?php endif; ?> <?php if(!$sf_user->isAdmin()): ?>disabled<?php endif; ?>"><a href="<?php if($sf_user->isAdmin() && $compte  && !$route instanceof InterfaceFacturationRoute): ?><?php echo url_for('facturation_declarant', $compte); ?><?php else: ?><?php echo url_for('facturation'); ?><?php endif; ?>">Facturation</a></li>
                 <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceHabilitationRoute): ?><?php echo url_for('habilitation_declarant', $etablissement); ?><?php else: ?><?php echo url_for('habilitation'); ?><?php endif; ?>">Habilitations</a></li>
                 <li class="<?php if($route instanceof InterfaceCompteRoute && !$route instanceof InterfaceFacturationRoute): ?>active<?php endif; ?>"><a href="<?php if($compte && !$route instanceof InterfaceCompteRoute): ?><?php echo url_for('compte_visualisation', $compte); ?><?php else: ?><?php echo url_for('compte_search'); ?><?php endif; ?>">Contacts</a></li>
             </ul>
@@ -100,7 +100,7 @@ if (($compte && ($compte->statut == CompteClient::STATUT_SUSPENDU)) && !$sf_user
                   </ul>
                 </li>
                 <?php endif; ?>
-                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+                <?php if($sf_user->isAdmin()): ?>
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span><span class="caret"></span></a>
                   <ul class="dropdown-menu">
@@ -108,10 +108,17 @@ if (($compte && ($compte->statut == CompteClient::STATUT_SUSPENDU)) && !$sf_user
                     <li><a href="<?php echo url_for("generation_list") ?>">Tâches récurrentes</a></li>
                   </ul>
                 </li>
+                <?php elseif($sf_user->isAdminODG()): ?>
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span><span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="<?php echo url_for("produits") ?>">Catalogue produit</a></li>
+                  </ul>
+                </li>
                 <?php elseif($sf_user->isAuthenticated()): ?>
                  <li><a tabindex="-1" href="<?php echo url_for("compte_teledeclarant_modification") ?>" title="Mon compte"><span class="glyphicon glyphicon-user"></span></a></li>
                 <?php endif; ?>
-                <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && $compte && $route instanceof InterfaceUsurpationRoute && !$sf_user->isUsurpationCompte()) : ?>
+                <?php if ($sf_user->isAdminODG() && $compte && $route instanceof InterfaceUsurpationRoute && !$sf_user->isUsurpationCompte()) : ?>
                      <li><a tabindex="-1" href="<?php echo url_for('auth_usurpation', array('identifiant' => $compte->identifiant)) ?>" title="Connexion mode déclarant"><span class="glyphicon glyphicon-cloud-upload"></span></a></li>
                 <?php endif; ?>
                 <?php if ($sf_user->isUsurpationCompte()): ?>

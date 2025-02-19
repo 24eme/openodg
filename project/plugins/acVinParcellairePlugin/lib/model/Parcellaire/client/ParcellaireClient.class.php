@@ -341,7 +341,9 @@ class ParcellaireClient extends acCouchdbClient {
         $p1->campagne_plantation = $p2->campagne_plantation;
         $p1->commune = $p2->commune;
         $p1->code_commune = $p2->code_commune;
-        $p1->cepage = $p2->cepage;
+        if($p1->exist('cepage') && $p2->exist('cepage')) {
+            $p1->cepage = $p2->cepage;
+        }
         if ($withSuperficie) {
             $p1->superficie = $p2->superficie;
         }

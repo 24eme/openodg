@@ -420,6 +420,7 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($iselevage) {
             $this->elevage = false;
             $this->eleve = $date;
+            $this->affectable = true;
         }else{
             $this->elevage = true;
             $this->eleve = null;
@@ -1139,6 +1140,16 @@ abstract class Lot extends acCouchdbDocumentTree
         }
 
         if(!$this->isAffectable()) {
+            $this->statut = Lot::STATUT_NONAFFECTABLE;
+            return;
+        }
+
+        if (!$this->id_document_affectation && $this->affectable) {
+            $this->statut = Lot::STATUT_AFFECTABLE;
+            return;
+        }
+
+        if (!$this->id_document_affectation && !$this->affectable) {
             $this->statut = Lot::STATUT_NONAFFECTABLE;
             return;
         }

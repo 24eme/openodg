@@ -268,7 +268,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             $destinataires[$liaison->id_etablissement] = $liaison;
         }
 
-        foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_APPORTEUR_RAISIN) as $liaison) {
+        foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR) as $liaison) {
             $destinataires[$liaison->id_etablissement] = $liaison;
         }
 
@@ -425,7 +425,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             return $produit->detail->add($parcelle->getParcelleId(), $parcelle);
         }
         $detail = $produit->detail->add($parcelle->getParcelleId());
-        ParcellaireClient::CopyParcelle($detail, $parcelle, $parcelle->getDocument()->getType !== 'Parcellaire');
+        ParcellaireClient::CopyParcelle($detail, $parcelle, $parcelle->getDocument()->getType() !== 'Parcellaire');
         $detail->origine_doc = $parcelle->getDocument()->_id;
         $detail->superficie = null;
         return $detail;

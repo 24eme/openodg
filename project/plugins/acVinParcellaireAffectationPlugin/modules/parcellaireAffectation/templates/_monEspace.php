@@ -10,7 +10,7 @@
             <p class="explications">Vous avez déjà validé votre Déclaration d'affectation parcellaire.</p>
             <div class="actions">
                 <a class="btn btn-block btn-default" href="<?php echo url_for('parcellaireaffectation_visualisation', $parcellaireAffectation) ?>">Visualiser</a>
-           		<?php if($sf_user->isAdmin()): ?>
+                <?php if($sf_user->isAdminODG()): ?>
                 <a onclick='return confirm("Êtes vous sûr de vouloir dévalider cette déclaration ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('parcellaireaffectation_devalidation', $parcellaireAffectation) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
             	<?php endif; ?>
             </div>
@@ -31,7 +31,7 @@
                     <p class="explications">Le Téléservice sera ouvert à partir du <?php echo format_date(ParcellaireAffectationConfiguration::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
                     <?php endif; ?>
                     <div class="actions">
-                        <?php if ($sf_user->isAdmin()): ?>
+                        <?php if ($sf_user->isAdminODG()): ?>
                                 <a class="btn btn-default btn-block" href="<?php echo url_for('parcellaireaffectation_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
                         <?php endif; ?>
                     </div>

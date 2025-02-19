@@ -5,6 +5,10 @@ class facturationActions extends sfActions
 
     public function executeIndex(sfWebRequest $request)
     {
+        if(!FactureConfiguration::getInstance()->hasFacturationParRegion() && !$this->getUser()->isAdmin()) {
+            throw new sfError403Exception("L'accès à cette page n'est pas autorisé");
+        }
+
         $this->generations = GenerationClient::getInstance()->findHistoryWithType(array(
             GenerationClient::TYPE_DOCUMENT_FACTURES,
             GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE,
@@ -94,7 +98,7 @@ class facturationActions extends sfActions
           $defaults['requete'] = $request->getParameter('q');
         }
 
-        $this->form = new FactureGenerationForm();
+        $this->form = new FactureGenerationMasseForm();
 
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -591,6 +595,6 @@ class facturationActions extends sfActions
     }
 
     public function getCurrentRegion() {
-        return (RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null ;
+        return (FactureConfiguration::getInstance()->hasFacturationParRegion() && RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null ;
     }
 }
