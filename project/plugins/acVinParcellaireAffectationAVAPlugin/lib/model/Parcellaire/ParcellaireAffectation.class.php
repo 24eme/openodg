@@ -235,7 +235,7 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
                 }
 
                 $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
-                $parcelle = $this->addProduitParcelle($hash, $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
+                $parcelle = $this->addProduitParcelle($hash, $CVIParcelle);
                 $parcelle->superficie = $CVIParcelle->superficie * 100; // hectare -> are
                 $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
             }
