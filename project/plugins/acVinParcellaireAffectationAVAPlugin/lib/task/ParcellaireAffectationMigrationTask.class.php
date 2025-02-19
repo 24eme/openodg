@@ -169,7 +169,7 @@ EOF;
             if(array_key_exists($parcelle->commune, $this->communes)) {
                 $parcelle->code_commune = $this->communes[$parcelle->commune];
             } else {
-                echo "code commune non trouvé : ".$parcelle->commune."\n";
+                echo "Code commune non trouvé : ".$parcelle->commune." (".$parcellaire->_id.")\n";
             }
             if (is_null($parcelle->prefix) && preg_match('/[A-Z]-([0-9]{3})[0-9]{2}-/', $parcelle->getKey(), $m)) {
                 $parcelle->prefix = $m[1];
