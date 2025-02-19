@@ -182,8 +182,11 @@ EOF;
                 $parcelle->numero_ordre = $m[1];
             }
 
-            if(!is_null($parcelle->code_commune) && !is_null($parcelle->prefix) && !is_null($parcelle->numero_ordre)) {
+            if(!is_null($parcelle->code_commune) && !is_null($parcelle->prefix)) {
                 $parcelle->idu = sprintf('%05s%03s%02s%04s', $parcelle->code_commune, $parcelle->prefix, $parcelle->section, $parcelle->numero_parcelle);
+            }
+
+            if($parcelle->idu && !is_null($parcelle->numero_ordre)) {
                 $parcelle->parcelle_id = sprintf("%s-%02s", $parcelle->idu, $parcelle->numero_ordre);
             }
 
