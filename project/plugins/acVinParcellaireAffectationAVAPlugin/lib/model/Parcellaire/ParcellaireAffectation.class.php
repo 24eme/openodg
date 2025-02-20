@@ -9,6 +9,7 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
     protected $repartition_par_parcelle = [];
     protected $parcelles_idu = null;
     protected $etablissement = null;
+    protected $parcellaire = null;
 
     public function __construct() {
         parent::__construct();
@@ -737,7 +738,10 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
     }
 
     public function getParcellaire() {
-        return ParcellaireClient::getInstance()->getLast($this->identifiant);
+        if(is_null($this->parcellaire)) {
+            $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
+        }
+        return $this->parcellaire;
     }
 
     public function getRegions() {
