@@ -163,6 +163,14 @@ EOF;
 
         $parcellaire = ParcellaireAffectationClient::getInstance()->find($arguments['doc_id']);
         foreach($parcellaire->declaration->getParcelles() as $parcelle) {
+
+            if(preg_match("/^([0-9]{14})-([0-9]{2})$/", $parcelle->getKey(), $m)) {
+                $parcelle->origine_doc = $this->getDocument()->getParcellaire()->_id;
+                $parcelle->idu = $m[1];
+                $parcelle->numero_ordre = $m[2];
+                $parcelle->parcelle_id = $parcelle->getKey();
+            }
+
             if($parcelle->origine_doc) {
                 continue;
             }
