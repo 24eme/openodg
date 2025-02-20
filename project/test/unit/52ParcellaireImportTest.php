@@ -64,7 +64,7 @@ $parcellaire = ParcellaireClient::getInstance()->findOrCreate(
     date('Y-m-d'),
     'PRODOUANE'
 );
-$parcellaireloader = new ParcellaireCsvFile($parcellaire, $tempfname);
+$parcellaireloader = ParcellaireCsvFile::getInstance($parcellaire, $tempfname);
 $parcellaireloader->convert();
 $parcellaireloader->save();
 
@@ -134,7 +134,7 @@ $parcellaire = ParcellaireClient::getInstance()->findOrCreate(
     date('Y-m-d'),
     'PRODOUANE'
 );
-$parcellaireloader = new ParcellaireCsvFile($parcellaire, $tempfname);
+$parcellaireloader = ParcellaireCsvFile::getInstance($parcellaire, $tempfname);
 $parcellaireloader->convert();
 $parcellaireloader->save();
 
@@ -159,7 +159,7 @@ $parcellaire = ParcellaireClient::getInstance()->findOrCreate(
     date('Y-m-d'),
     'PRODOUANE'
 );
-$parcellaireloader = new ParcellaireCsvFile($parcellaire, $tempfname);
+$parcellaireloader = ParcellaireCsvFile::getInstance($parcellaire, $tempfname);
 $parcellaireloader->convert();
 $parcellaireloader->save();
 $parcellaire = $parcellaireloader->getParcellaire();
@@ -188,7 +188,7 @@ $parcellaire = ParcellaireClient::getInstance()->findOrCreate(
     date('Y-m-d'),
     'PRODOUANE'
 );
-$parcellaireLoader = new ParcellaireCsvFile($parcellaire, $csv_same_parcelles);
+$parcellaireLoader = ParcellaireCsvFile::getInstance($parcellaire, $csv_same_parcelles);
 $parcellaireLoader->convert();
 
 $parcellaire = $parcellaireLoader->getParcellaire();
