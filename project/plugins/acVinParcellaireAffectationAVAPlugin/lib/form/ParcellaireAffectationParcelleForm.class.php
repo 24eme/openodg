@@ -62,6 +62,14 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
         $this->widgetSchema->setNameFormat('parcellaire_parcelle[%s]');
     }
 
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+
+        if($this->getObject() instanceof ParcellaireAffectationCepageDetail) {
+            $this->setDefault('superficie', $this->getObject()->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_HECTARE));
+        }
+    }
+
     public function getProduits() {
         $appellationNode = $this->getAppellationNode();
         $this->allCepagesAppellation = array();
@@ -129,7 +137,7 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
 
         $parcelle = $this->getObject()->getDocument()->addParcelleForAppellation($this->getAppellationNode()->getKey(), $cepage, $commune, $section, $numero_parcelle, $lieu, $dpt);
 
-        $parcelle->superficie = $values['superficie'];
+        $parcelle->superficie = round($values['superficie'] / 100, 4);
 
         $parcelle->active = 1;
         if ($this->getAppellationNode()->getKey() == 'appellation_'.ParcellaireAffectationClient::APPELLATION_ALSACEBLANC) {

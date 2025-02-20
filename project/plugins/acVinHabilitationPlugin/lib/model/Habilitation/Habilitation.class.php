@@ -106,7 +106,11 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $produits = array();
         foreach($this->getProduits() as $p) {
             foreach($p->getConfig()->getProduits() as $c) {
-                if (in_array($cepage, (array) $c->getCepagesAutorises()->toArray(true, false))) {
+                $cepages = $c->getCepagesAutorises();
+                if($cepages instanceof acCouchdbJson) {
+                    $cepages = (array) $c->getCepagesAutorises()->toArray(true, false);
+                }
+                if (in_array($cepage, $cepages)) {
                     $produits[] = $c;
                     continue;
                 }

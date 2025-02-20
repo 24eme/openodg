@@ -2474,6 +2474,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $drev = $this->version_document->generateModificative();
+        $drev->remove('declarant');
+        $drev->add('declarant');
+        $drev->storeDeclarant();
         try {
             $drev->resetAndImportFromDocumentDouanier();
         } catch(Exception $e) {

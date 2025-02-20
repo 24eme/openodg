@@ -130,22 +130,20 @@ class ParcellaireAffectationCepage extends BaseParcellaireAffectationCepage {
         return false;
     }
 
-    public function addDetailNode($key, $commune, $section , $numero_parcelle, $lieu = null,$dpt = null) {
+    public function addDetailNode($key, $parcelle) {
         $detail = $this->getDetailNode($key);
         if($detail) {
 
             return $detail;
         }
 
-        $detail = $this->detail->add($key);
-        $detail->commune = $commune;
-        $detail->section = $section;
-        $detail->numero_parcelle = $numero_parcelle;
-        if($lieu){
-           $lieu = strtoupper($lieu);
+        $detail = $this->detail->add($parcelle->getParcelleId());
+        ParcellaireClient::CopyParcelle($detail, $parcelle, $parcelle->getDocument()->getType() !== 'Parcellaire');
+        $detail->origine_doc = $parcelle->getDocument()->_id;
+        $detail->superficie = null;
+        if($detail->lieu){
+           $detail->lieu = strtoupper($detail->getLieu());
         }
-        $detail->lieu = $lieu;
-        $detail->departement = $dpt;
         return $detail;
     }
 
