@@ -169,14 +169,14 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod) {
                             $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle);
-                            $parcelle->superficie = $CVIParcelle->superficie * 100;
+                            $parcelle->superficie = $CVIParcelle->superficie;
                             $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                         }
                     }elseif ($nom == 'Alsace') {
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod && $prod->hasVtsgn()) {
                             $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle);
-                            $parcelle->superficie = $CVIParcelle->superficie * 100;
+                            $parcelle->superficie = $CVIParcelle->superficie;
                             $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                             $parcelle->vtsgn = 0;
                         }
@@ -184,7 +184,7 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod) {
                             $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle);
-                            $parcelle->superficie = $CVIParcelle->superficie * 100;
+                            $parcelle->superficie = $CVIParcelle->superficie;
                             $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                         }
                     }
@@ -237,7 +237,7 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
 
                 $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
                 $parcelle = $this->addProduitParcelle($hash, $CVIParcelle);
-                $parcelle->superficie = $CVIParcelle->superficie * 100; // hectare -> are
+                $parcelle->superficie = $CVIParcelle->superficie; // hectare -> are
                 $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
             }
         }
@@ -333,7 +333,7 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
         foreach ($this->declaration->getProduitsCepageDetails() as $detail) {
             if (preg_match("/^[0-9]+\.[0-9]{3,}$/", $detail->superficie) || ($detail->superficie < 2 && $detail->getAppellation()->getKey() == "appellation_GRDCRU")) {
                 $old_superficie = $detail->superficie;
-                $detail->superficie = $detail->superficie * 100;
+                $detail->superficie = $detail->superficie;
                 echo "REWRITE SUPERFICIE;" . $this->_id . ";" . $detail->getLibelleComplet() . ";" . $old_superficie . ";" . $detail->superficie . "\n";
             }
         }
