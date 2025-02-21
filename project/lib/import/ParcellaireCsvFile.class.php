@@ -20,11 +20,18 @@ class ParcellaireCsvFile
     protected $contextInstance = '';
 
     public static function getInstance(Parcellaire $parcellaire, $file_path = null, $contextInstance = null) {
-        $c = file_get_contents($file_path);
+        if ($file_path) {
+            $c = file_get_contents($file_path);
+        }else{
+            $c = $parcellaire->getParcellaireCSV();
+        }
         if (strpos($c, "Numéro d'exploitation;Raison sociale de l'exploitation;SIRET de l'exploitation;Référence cadastrale") !== false) {
             return new ParcellaireDouaneNatifCsvFile($parcellaire, $file_path, $contextInstance);
         }
-        return new ParcellaireScrappedCsvFile($parcellaire, $file_path, $contextInstance);
+        if (strpos($c, "CVI Operateur;Siret Operateur;Nom Operateur;Adresse Operateur;CP Operateur") !== false) {
+            return new ParcellaireScrappedCsvFile($parcellaire, $file_path, $contextInstance);
+        }
+        throw new sfException("Parcellaire CSV non géré ".$parcellaire->_id." ".$file_path);
     }
 
     /**
