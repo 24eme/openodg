@@ -59,7 +59,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
 
     public function updateIDU() {
         throw new sfException('updateIUD');
-        $this->idu = $this->getDocument()->computeIDU($this->code_commune, $this->prefix, $this->section, $this->numero_parcelle);
+        $this->idu = Parcellaire::computeIDU($this->code_commune, $this->prefix, $this->section, $this->numero_parcelle);
     }
 
     public function getLieuLibelle() {

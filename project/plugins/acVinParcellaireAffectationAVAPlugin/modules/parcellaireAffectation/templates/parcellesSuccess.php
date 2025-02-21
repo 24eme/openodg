@@ -110,7 +110,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                     <?php endif; ?>
                                     <td><?php echo $parcelle->getCepageLibelle(); ?></td>
                                     <td class="edit text-right" style="position: relative;">
-                                        <?php echoFloatFr($parcelle->getSuperficie(), 2) ?> <small class="text-muted">ares</small>
+                                        <?php echoFloatFr($parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE), 2) ?> <small class="text-muted">ares</small>
                                         <span style="position: absolute; right: -20px;">
                                         <?php if (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireAffectationClient::APPELLATION_ALSACEBLANC)): ?>
                                            <a class="btn btn-link btn-xs ajax" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" ><span class="glyphicon glyphicon-pencil"></span></a>

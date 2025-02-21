@@ -93,7 +93,7 @@ $parcellaire = ParcellaireClient::getInstance()->findOrCreate(
     date('Y-m-d'),
     'PRODOUANE'
 );
-$import = new ParcellaireCsvFile($parcellaire, $csv_path);
+$import = ParcellaireCsvFile::getInstance($parcellaire, $csv_path);
 $import->convert();
 $import->save();
 $parcellaire = $import->getParcellaire();

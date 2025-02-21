@@ -301,6 +301,9 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($type == DegustationClient::DEGUSTATION_TRI_GENRE) {
             return $this->getConfig()->getGenre()->getKey();
         }
+        if ($type == DegustationClient::DEGUSTATION_TRI_LIEU) {
+            return $this->getConfig()->getLieu()->getKey();
+        }
         if ($type == DegustationClient::DEGUSTATION_TRI_CEPAGE) {
             return $this->getCepagesLibelle();
         }
