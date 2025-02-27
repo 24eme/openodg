@@ -6,6 +6,7 @@ class DegustationTriTableForm extends BaseForm
     private $elements = array('' => '',
         DegustationClient::DEGUSTATION_TRI_APPELLATION => 'Appellation',
         DegustationClient::DEGUSTATION_TRI_GENRE => 'Genre',
+        DegustationClient::DEGUSTATION_TRI_LIEU => 'Lieu',
         DegustationClient::DEGUSTATION_TRI_COULEUR => 'Couleur',
         DegustationClient::DEGUSTATION_TRI_CEPAGE => 'Cépage',
         DegustationClient::DEGUSTATION_TRI_MILLESIME => 'Millesime',

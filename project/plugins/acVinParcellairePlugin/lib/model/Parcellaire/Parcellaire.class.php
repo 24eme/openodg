@@ -193,12 +193,12 @@ class Parcellaire extends BaseParcellaire {
         if (!intval($code_commune)) {
             throw new sfException('Wrong code commune : '.$code_commune.'/'.$commune);
         }
-        $idu = $this->computeIDU($code_commune, $prefix, $section, $numero_parcelle);
+        $idu = self::computeIDU($code_commune, $prefix, $section, $numero_parcelle);
         $parcelle  = $this->addParcelle($idu, $source_produit_libelle, $cepage, $campagne_plantation, $commune, $lieu, $produit->getConfig()->getLibelle());
         return $produit->affecteParcelle($parcelle);
     }
 
-    public function computeIDU($code_commune, $prefix, $section, $numero_parcelle) {
+    public static function computeIDU($code_commune, $prefix, $section, $numero_parcelle) {
         if (!intval($code_commune)) {
             throw new sfException('Wrong code commune : '.$code_commune);
         }
