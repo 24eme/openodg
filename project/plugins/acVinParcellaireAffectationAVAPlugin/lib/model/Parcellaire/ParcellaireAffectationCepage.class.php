@@ -137,7 +137,7 @@ class ParcellaireAffectationCepage extends BaseParcellaireAffectationCepage {
             return $detail;
         }
 
-        $detail = $this->detail->add($parcelle->getParcelleId());
+        $detail = $this->detail->add(($parcelle->getParcelleId()) ? $parcelle->getParcelleId() : $parcelle->getKey());
         ParcellaireClient::CopyParcelle($detail, $parcelle, $parcelle->getDocument()->getType() !== 'Parcellaire');
         $detail->origine_doc = $parcelle->getDocument()->_id;
         $detail->superficie = null;

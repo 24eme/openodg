@@ -169,7 +169,7 @@ class ParcellaireClient extends acCouchdbClient {
     public function loadParcellaireCSV(Parcellaire $parcellaire, $contextInstance = null) {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         try {
-            $parcellairecsv = new ParcellaireCsvFile($parcellaire);
+            $parcellairecsv = ParcellaireCsvFile::getInstance($parcellaire);
             $parcellairecsv->convert();
         } catch (Exception $e) {
             $contextInstance->getLogger()->info("loadParcellaireCSV() : exception ".$e->getMessage());

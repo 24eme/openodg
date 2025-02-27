@@ -60,11 +60,11 @@ EOF;
         // Mettre en forme le fichier via la classe
         try {
             $new_parcellaire = ParcellaireClient::getInstance()->findOrCreate(
-                $etablissement,
+                $etablissement->identifiant,
                 date('Y-m-d'),
                 'PRODOUANE'
             );
-            $parcellairecsv = new ParcellaireCsvFile($new_parcellaire, $file);
+            $parcellairecsv = ParcellaireCsvFile::getInstance($new_parcellaire, $file);
             $parcellairecsv->convert();
         } catch (Exception $e) {
             echo $e->getMessage()."\n";
