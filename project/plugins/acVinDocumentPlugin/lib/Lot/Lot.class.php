@@ -904,6 +904,8 @@ abstract class Lot extends acCouchdbDocumentTree
         }
         if (isset($this->date_commission)) {
             $mouvement->date_commission = $this->date_commission;
+        }elseif (strpos(DegustationClient::TYPE_COUCHDB, $this->id_document) === 0) {
+            $mouvement->date_commission = explode(' ', $this->getDocument()->date)[0];
         }
         $mouvement->libelle = $this->getLibelle();
         $mouvement->detail = $detail;
