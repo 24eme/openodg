@@ -292,6 +292,11 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
           $needSocieteSave = true;
           $societe->addEtablissement($this);
         }
+
+        if($compte->region != $this->region) {
+            $needSocieteSave = true;
+        }
+
         parent::save();
 
         $this->getMasterCompte()->setStatut($this->getStatut());
