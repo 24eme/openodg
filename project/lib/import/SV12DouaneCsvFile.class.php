@@ -102,6 +102,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = substr($this->campagne, 0, 4);
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
                 $produit[] = implode('|', DouaneImportCsvFile::extractLabels($values[2]));
+                $produit[] = $this->getHabilitationStatus(HabilitationClient::ACTIVITE_VINIFICATEUR, $p);
                 $produits[] = $produit;
             }
             $cpt++;
@@ -214,6 +215,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = substr($this->campagne, 0, 4);
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
                 $produit[] = implode('|', DouaneImportCsvFile::extractLabels($values[7]));
+                $produit[] = $this->getHabilitationStatus(HabilitationClient::ACTIVITE_VINIFICATEUR, $p);
 	        			$produits[] = $produit;
                     }
                     $cpt++;

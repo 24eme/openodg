@@ -173,6 +173,7 @@ class DouaneImportCsvFile {
                     $p[] = substr($this->campagne, 0, 4);
                     $p[] = $donnee->colonne_famille;
                     $p[] = implode('|', DouaneImportCsvFile::extractLabels($p[11]));
+                    $p[] = $this->getHabilitationStatus(($this->getCsvType() == 'DR') ? HabilitationClient::ACTIVITE_PRODUCTEUR : HabilitationClient::ACTIVITE_VINIFICATEUR, $produit);
                     $produits[] = $p;
                 }
             }
@@ -235,6 +236,19 @@ class DouaneImportCsvFile {
         ksort($labels);
 
         return $labels;
+    }
+    private $habilitation = null;
+    public function getHabilitationStatus($activite, $prodconfobj) {
+        if (!$this->doc) {
+            return;
+        }
+        if (!$this->habilitation) {
+            $this->habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->doc->getEtablissementObject()->identifiant, $this->doc->date_depot);
+        }
+        $ph = ($this->habilitation && isset($prodconfobj)) ? $this->habilitation->getProduitByProduitConf($prodconfobj) : null;
+        $pa = ($ph && $ph->activites->exist($activite) ) ? $ph->activites->get($activite) : null;
+        $default_hab_status = ($ph) ? 'PAS PRODUCTEUR' : 'SANS HABILITATION';
+        return ($pa && $pa->statut) ? $pa->statut : $default_hab_status;
     }
 
 }
