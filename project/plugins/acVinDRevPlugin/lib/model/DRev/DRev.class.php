@@ -1388,7 +1388,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
      }
 
 	protected function doSave() {
-        $this->piece_document->generatePieces();
         foreach ($this->declaration->getProduits() as $key => $produit) {
             $produit->update();
         }
@@ -1420,6 +1419,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function save($saveDependants = true) {
         $this->archiver();
+
+        $this->piece_document->generatePieces();
 
         $this->getDateDepot();
 
@@ -2187,7 +2188,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
                 }
             }else{
-                if ($is_controle) {
+                if ($is_controle || $lot->date_commission < date('Y-m-d')) {
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
                 }else{
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE_EN_ATTENTE));
@@ -2207,20 +2208,46 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     /**** PIECES ****/
 
     public function getAllPieces() {
-    	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
-      $date = null;
-      if ($this->getValidation()) {
-        $dt = new DateTime($this->getValidation());
-        $date = $dt->format('Y-m-d');
-      }
-    	return (!$this->getValidation())? array() : array(array(
-    		'identifiant' => $this->getIdentifiant(),
-    		'date_depot' => $date,
-    		'libelle' => 'Revendication des produits '.$this->periode.' '.$complement,
-    		'mime' => Piece::MIME_PDF,
-    		'visibilite' => 1,
-    		'source' => null
-    	));
+        $complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
+        $date = null;
+        if ($this->getValidation()) {
+            $dt = new DateTime($this->getValidation());
+            $date = $dt->format('Y-m-d');
+        }else{
+            return array();
+        }
+
+        $dossiers = $this->getNumerosDossier();
+        if (count($dossiers) == 1) {
+            return array(array(
+                'identifiant' => $this->getIdentifiant(),
+                'date_depot' => $date,
+                'libelle' => 'Revendication '.$this->periode.' '.$complement,
+                'mime' => Piece::MIME_PDF,
+                'visibilite' => 1,
+                'source' => $this->_id
+            ));
+        }else{
+            $pieces = array();
+            foreach($dossiers as $d) {
+                $lot_date = $date;
+                foreach ($this->lots as $l) {
+                    if ($l->numero_dossier == $d)  {
+                        $lot_date = $l->date;
+                        continue;
+                    }
+                }
+                $pieces[] = array(
+                    'identifiant' => $this->getIdentifiant(),
+                    'date_depot' => $lot_date,
+                    'libelle' => 'Revendication n°'.$d.' - '.$this->periode.' '.$complement,
+                    'mime' => Piece::MIME_PDF,
+                    'visibilite' => 1,
+                    'source' => $d
+                );
+            }
+            return $pieces;
+        }
     }
 
     public function generatePieces() {
@@ -2228,6 +2255,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function generateUrlPiece($source = null) {
+        if ($source) {
+            return sfContext::getInstance()->getRouting()->generate('drev_export_pdf',  ['id' => $this->_id, 'numero_dossier' => $source]);
+        }
     	return sfContext::getInstance()->getRouting()->generate('drev_export_pdf', $this);
     }
 
@@ -2444,6 +2474,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $drev = $this->version_document->generateModificative();
+        $drev->remove('declarant');
+        $drev->add('declarant');
+        $drev->storeDeclarant();
         try {
             $drev->resetAndImportFromDocumentDouanier();
         } catch(Exception $e) {
@@ -2651,7 +2684,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach($vip2c['produits'] as $produit) {
             $hash = reset($produit['hashes']); // Première hash du tableau
 
-            if (! $this->exist($hash)) {
+            if (! $this->exist($hash) || !count($this->get($hash))) {
                 // on ne devrait jamais passer ici
                 continue;
             }

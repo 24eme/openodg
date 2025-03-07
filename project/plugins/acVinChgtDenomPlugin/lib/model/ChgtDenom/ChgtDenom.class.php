@@ -796,6 +796,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
               $rienAFacturer = false;
           }
 
+          $mouvement->campagne = $this->getCampagneByDate();
           $mouvements[$mouvement->getMD5Key()] = $mouvement;
       }
 

@@ -301,6 +301,9 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($type == DegustationClient::DEGUSTATION_TRI_GENRE) {
             return $this->getConfig()->getGenre()->getKey();
         }
+        if ($type == DegustationClient::DEGUSTATION_TRI_LIEU) {
+            return $this->getConfig()->getLieu()->getKey();
+        }
         if ($type == DegustationClient::DEGUSTATION_TRI_CEPAGE) {
             return $this->getCepagesLibelle();
         }
@@ -901,6 +904,8 @@ abstract class Lot extends acCouchdbDocumentTree
         }
         if (isset($this->date_commission)) {
             $mouvement->date_commission = $this->date_commission;
+        }elseif (strpos(DegustationClient::TYPE_COUCHDB, $this->id_document) === 0) {
+            $mouvement->date_commission = explode(' ', $this->getDocument()->date)[0];
         }
         $mouvement->libelle = $this->getLibelle();
         $mouvement->detail = $detail;
@@ -1140,6 +1145,16 @@ abstract class Lot extends acCouchdbDocumentTree
         }
 
         if(!$this->isAffectable()) {
+            $this->statut = Lot::STATUT_NONAFFECTABLE;
+            return;
+        }
+
+        if (!$this->id_document_affectation && $this->affectable) {
+            $this->statut = Lot::STATUT_AFFECTABLE;
+            return;
+        }
+
+        if (!$this->id_document_affectation && !$this->affectable) {
             $this->statut = Lot::STATUT_NONAFFECTABLE;
             return;
         }
