@@ -245,7 +245,7 @@ class DouaneImportCsvFile {
         if (!$this->habilitation) {
             $this->habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->doc->getEtablissementObject()->identifiant, $this->doc->date_depot);
         }
-        $ph = ($this->habilitation && isset($prodconfobj)) ? $this->habilitation->getProduitByProduitConf($prodconfobj) : null;
+        $ph = ($this->habilitation && $prodconfobj) ? $this->habilitation->getProduitByProduitConf($prodconfobj) : null;
         $pa = ($ph && $ph->activites->exist($activite) ) ? $ph->activites->get($activite) : null;
         $default_hab_status = ($ph) ? 'PAS PRODUCTEUR' : 'SANS HABILITATION';
         return ($pa && $pa->statut) ? $pa->statut : $default_hab_status;

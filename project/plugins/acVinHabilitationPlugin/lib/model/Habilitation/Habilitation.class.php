@@ -179,6 +179,9 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function getProduitByProduitConf($prodconf) {
         $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prodconf);
+        if (!$node) {
+            return null;
+        }
         $hashToAdd = preg_replace("|/declaration/|", '', $node->getHash());
         return $this->add('declaration')->add($hashToAdd);
     }
