@@ -906,7 +906,7 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
         $lastRegistreVCI = $this->getLastRegistreVCI();
         foreach($this->declaration->getProduits() as $produit) {
             $hasVci = false;
-            if($produit->exist('detail') && $produit->detail->total_vci > 0) {
+            if($produit->exist('detail') && $produit->detail->vci_total > 0) {
                 $hasVci = true;
             }
             if($lastRegistreVCI) {
