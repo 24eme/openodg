@@ -163,11 +163,8 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
           return null;
         }
         $prod = $this->getConfiguration()->get('/declaration/'.$hash);
-        $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prod);
-        $hashToAdd = preg_replace("|/declaration/|", '', $node->getHash());
-        $exist = $this->exist('declaration/'.$hashToAdd);
-        $produit = $this->add('declaration')->add($hashToAdd);
-        if(!$exist) {
+        $produit = $this->getProduitByProduitConf($prod);
+        if(!$produit) {
             $produit_libelle = $produit->getLibelle();
             $produit->initActivites();
             if($date == $this->date || !$date) {
@@ -180,6 +177,14 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
 
+    public function getProduitByProduitConf($prodconf) {
+        $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prodconf);
+        if (!$node) {
+            return null;
+        }
+        $hashToAdd = preg_replace("|/declaration/|", '', $node->getHash());
+        return $this->add('declaration')->add($hashToAdd);
+    }
 
     public function storeEtape($etape) {
         $etapeOriginal = ($this->exist('etape')) ? $this->etape : null;

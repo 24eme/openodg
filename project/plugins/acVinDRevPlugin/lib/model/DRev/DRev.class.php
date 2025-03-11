@@ -2188,7 +2188,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
                 }
             }else{
-                if ($is_controle) {
+                if ($is_controle || $lot->date_commission < date('Y-m-d')) {
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
                 }else{
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE_EN_ATTENTE));

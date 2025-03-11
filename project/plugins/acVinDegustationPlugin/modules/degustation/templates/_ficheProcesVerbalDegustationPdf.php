@@ -1,6 +1,7 @@
 <?php use_helper('TemplatingPDF'); ?>
 <?php use_helper('Lot'); ?>
 <?php use_helper('Date'); ?>
+<?php use_helper('Float'); ?>
 
 <style>
 <?php echo style(); ?>
@@ -38,9 +39,9 @@ th {
             <tr>
               <th><small>Volumes total (hl)</small></th>
               <?php $volumeNC = $degustation->getVolumeLotsConformesOrNot(false); $volumeC = $degustation->getVolumeLotsConformesOrNot(true) ?>
-              <td style="text-align: right"><small><?php echo $volumeNC + $volumeC ?> hl</small>&nbsp;&nbsp;</td>
-              <td style="text-align: right"><small><?php echo $volumeC ?> hl</small>&nbsp;&nbsp;</td>
-              <td style="text-align: right"><small><?php echo $volumeNC ?> hl</small>&nbsp;&nbsp;</td>
+              <td style="text-align: right"><small><?php echoFloat($volumeNC + $volumeC) ?> hl</small>&nbsp;&nbsp;</td>
+              <td style="text-align: right"><small><?php echoFloat($volumeC) ?> hl</small>&nbsp;&nbsp;</td>
+              <td style="text-align: right"><small><?php echoFloat($volumeNC) ?> hl</small>&nbsp;&nbsp;</td>
             </tr>
             <tr>
               <th><small>Nombre d'opérateurs</small></th>
@@ -78,9 +79,9 @@ th {
         <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
           <thead>
             <tr>
-              <th rowspan="2" style="width:35%"></th>
+              <th rowspan="2" style="width:30%"></th>
               <th rowspan="2" style="width:15%"><small>Synthèse</small></th>
-              <th colspan="2" style="width:20%"><small>Résultat</small></th>
+              <th colspan="2" style="width:30%"><small>Résultat</small></th>
             </tr>
             <tr>
               <th><small>C</small></th>
@@ -103,9 +104,9 @@ th {
             </tr>
             <tr>
               <th><small>Volumes total (hl)</small></th>
-              <td style="text-align: right"><small><?php echo $vc + $vnc ?> hl</small></td>
-              <td style="text-align: right"><small><?php echo $vc ?> hl</small></td>
-              <td style="text-align: right"><small><?php echo $vnc ?> hl</small></td>
+              <td style="text-align: right"><small><?php echoFloat($vc + $vnc) ?> hl</small></td>
+              <td style="text-align: right"><small><?php echoFloat($vc) ?> hl</small></td>
+              <td style="text-align: right"><small><?php echoFloat($vnc) ?> hl</small></td>
             </tr>
             <tr>
               <th><small>Nombre d'opérateurs</small></th>

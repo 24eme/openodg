@@ -47,6 +47,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_DECLASSE_OLD = "10_DECLASSE";
 
     const CONFORMITE_CONFORME = "CONFORME";
+    const CONFORMITE_NONCONFORME_PREFIX = "NON";
     const CONFORMITE_NONCONFORME_MINEUR = "NONCONFORME_MINEUR";
     const CONFORMITE_NONCONFORME_MAJEUR = "NONCONFORME_MAJEUR";
     const CONFORMITE_NONCONFORME_GRAVE = "NONCONFORME_GRAVE";
@@ -904,6 +905,8 @@ abstract class Lot extends acCouchdbDocumentTree
         }
         if (isset($this->date_commission)) {
             $mouvement->date_commission = $this->date_commission;
+        }elseif (strpos(DegustationClient::TYPE_COUCHDB, $this->id_document) === 0) {
+            $mouvement->date_commission = explode(' ', $this->getDocument()->date)[0];
         }
         $mouvement->libelle = $this->getLibelle();
         $mouvement->detail = $detail;
