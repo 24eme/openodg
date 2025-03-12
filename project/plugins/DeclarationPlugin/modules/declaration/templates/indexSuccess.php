@@ -51,8 +51,8 @@
         <div class="text-center">
             <ul class="pagination" style="margin-top: 0;">
                 <li <?php if ($page - 1  < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => (($page - 1) > 0) ? $page - 1 : 1)); ?>" aria-label="Previous"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-left"></span></span></a></li>
-                <li <?php if ($page -1 < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => 1)); ?>" aria-label="Previous"><span aria-hidden="true"><small>Première page</small></span</span></a></li>
-                <li><span aria-hidden="true"><small>Page <?php echo $page ?> / <?php echo $nbPage ?></span></small></li>
+                <li <?php if ($page -1 < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => 1)); ?>" aria-label="Previous"><span aria-hidden="true"><small>Première page</small></span></a></li>
+                <li><span aria-hidden="true"><small>Page <?php echo $page ?> / <?php echo $nbPage ?></small></span></li>
                 <li <?php if ($page +1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => $nbPage)); ?>" aria-label="Next"><span aria-hidden="true"><small>Dernière page</small></span></a></li>
                 <li <?php if ($page + 1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' =>(($page + 1) > $nbPage) ? $page : $page + 1)); ?>" aria-label="Next"><span aria-hidden="true"></span><span class="glyphicon glyphicon-chevron-right"></span></a></li>
             </ul>
@@ -69,10 +69,16 @@
             <a href="<?php echo url_for('declaration', array('query' => 0)) ?>"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
         </p>
         <?php endif; ?>
-        <?php if ($regionParam) : ?>
+        <?php if($regionParam): ?>
         <h4>Région</h4>
         <div class="list-group">
-            <span class="list-group-item active"><span class="badge"><?php echo $nbResultats; ?></span> <?php echo str_replace('_', ' ', $regionParam); ?></a>
+            <?php if($sf_user->isAdmin()): ?>
+            <?php foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region): ?>
+                <a href="<?php echo url_for('declaration', ['region' => $region]) ?>" class="list-group-item <?php if($region == $regionParam): ?>active<?php endif; ?>"><span class="badge"><?php if($region == $regionParam): ?><?php echo $nbResultats; ?><?php else : ?>?<?php endif; ?></span> <?php echo str_replace('_', ' ', $region); ?></a>
+            <?php endforeach; ?>
+            <?php else: ?>
+                <span class="list-group-item active"><span class="badge"><?php echo $nbResultats; ?></span> <?php echo str_replace('_', ' ', $regionParam); ?></span>
+            <?php endif; ?>
         </div>
         <?php endif; ?>
         <?php foreach($facets as $facetNom => $items): ?>
