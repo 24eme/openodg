@@ -4,17 +4,17 @@
 
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
-  <li><a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $dr->identifiant, 'campagne' => $dr->campagne)); ?>"><?php echo $dr->getEtablissementObject()->getNom() ?> (<?php echo $dr->getEtablissementObject()->identifiant ?> - <?php echo $dr->getEtablissementObject()->cvi ?>)</a></li>
-  <li><a href="<?php echo url_for('dr_visualisation', array('id' => $dr->_id)); ?>"><?php if($dr->isBailleur()) echo "Synthèse bailleur "; else echo $dr->type; ?> de <?php echo $dr->getperiode(); ?></a></li>
+  <li><a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $sv->identifiant, 'campagne' => $sv->campagne)); ?>"><?php echo $sv->getEtablissementObject()->getNom() ?> (<?php echo $sv->getEtablissementObject()->identifiant ?> - <?php echo $sv->getEtablissementObject()->cvi ?>)</a></li>
+  <li><a href="<?php echo url_for('dr_visualisation', array('id' => $sv->_id)); ?>"><?php if($sv->isBailleur()) echo "Synthèse bailleur "; else echo $sv->type; ?> de <?php echo $sv->getperiode(); ?></a></li>
   <li class="active"><a href="">Vérification</a></li>
 </ol>
 
 <div class="page-header no-border">
-    <h2>Tableau de vérification <?php echo $dr->type; ?> <?= $dr->campagne ?></h2>
+    <h2>Tableau de vérification <?php echo $sv->type; ?> <?= $sv->campagne ?></h2>
 </div>
 
 <div class="well mb-5">
-    <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $dr->getEtablissementObject()]); ?>
+    <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $sv->getEtablissementObject()]); ?>
 </div>
 
 <?php use_helper('Float') ?>
@@ -29,9 +29,9 @@
             <th>Détails</th>
         </tr>
     </thead>
-    <?php if (isset($tableau_comparaison)): ?>
+    <?php if ($tableau_comparaison = $sv->getTableauComparaisonTiersApporteurs()) : ?>
         <?php foreach ($tableau_comparaison as $produit => $cvis): ?>
-            <?php $totalDeclarantSV = $cvis[$dr->getEtablissementObject()->getCvi()]['SV']; $totalApporteurDR = $cvis[$dr->getEtablissementObject()->getCvi()]['DR']; $diffSVDR = round($totalDeclarantSV - $totalApporteurDR, 2); ?>
+            <?php $totalDeclarantSV = $cvis[$sv->getEtablissementObject()->getCvi()]['SV']; $totalApporteurDR = $cvis[$sv->getEtablissementObject()->getCvi()]['DR']; $diffSVDR = round($totalDeclarantSV - $totalApporteurDR, 2); ?>
             <tbody>
                 <tr>
                     <div class="row">
@@ -51,15 +51,15 @@
             </tbody>
             <tbody class="collapse" id="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>">
                 <?php foreach($cvis as $cvi => $valeur): ?>
-                    <?php if ($cvi == $dr->getEtablissementObject()->cvi) { continue; } ?>
+                    <?php if ($cvi == $sv->getEtablissementObject()->cvi) { continue; } ?>
                     <?php if (round($valeur['DR'] - $valeur['SV'], 2) == 0) { continue; } ?>
                     <tr>
                         <td class="text-right">
                             <?php $etablissement = EtablissementClient::getInstance()->findByCvi($cvi); ?>
                             <?php if ($etablissement): ?>
-                                <?php $dr_apporteur = DRClient::getInstance()->find('DR-'.$etablissement->identifiant.'-'.$dr->campagne); ?>
+                                <?php $dr_apporteur = DRClient::getInstance()->find('DR-'.$etablissement->identifiant.'-'.$sv->campagne); ?>
                                 <?php if ($dr_apporteur): ?>
-                                    <a href="<?php echo url_for('dr_visualisation', ['id' =>'DR-'.$etablissement->identifiant.'-'.$dr->campagne]); ?>"><?php echo $etablissement->getNom(); ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a>
+                                    <a href="<?php echo url_for('dr_visualisation', ['id' =>'DR-'.$etablissement->identifiant.'-'.$sv->campagne]); ?>"><?php echo $etablissement->getNom(); ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a>
                                 <?php else: ?>
                                     <a href="<?php echo url_for('declaration_etablissement', ['identifiant' => $etablissement->identifiant]); ?>"><?php echo $etablissement->getNom(); ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a>
                                 <?php endif; ?>
@@ -94,7 +94,7 @@
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
-        <a href="<?= (isset($service) && $service) ?: url_for('dr_visualisation', array('id' => $dr->_id)); ?>"
+        <a href="<?= (isset($service) && $service) ?: url_for('dr_visualisation', array('id' => $sv->_id)); ?>"
             class="btn btn-default"
             >
             <i class="glyphicon glyphicon-chevron-left"></i> Retour
