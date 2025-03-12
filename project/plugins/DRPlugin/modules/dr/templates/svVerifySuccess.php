@@ -35,7 +35,7 @@
             <tbody>
                 <tr>
                     <div class="row">
-                        <td class="col-xs-4"><?php echo $produit; ?></td>
+                        <td class="col-xs-4"><?php echo explode('|', $produit)[1]; ?></td>
                         <td class="col-xs-3 text-right"><?php echo abs($totalDeclarantSV) ; ?></td>
                         <td class="col-xs-3 text-right"><?php echo abs($totalApporteurDR) ; ?></td>
                         <td class="col-xs-1 text-center strong <?php if (! $diffSVDR) { echo 'bg-success'; } else { echo 'bg-danger'; }; ?>">
@@ -55,7 +55,7 @@
                     <?php if (round($valeur['DR'] - $valeur['SV'], 2) == 0) { continue; } ?>
                     <tr>
                         <td class="text-right">
-                            <?php $etablissement = EtablissementClient::getInstance()->findByCvi($cvi); ?>
+                            <?php $etablissement = $sv->getCachedTiersByCVI($cvi); ?>
                             <?php if ($etablissement): ?>
                                 <?php $dr_apporteur = DRClient::getInstance()->find('DR-'.$etablissement->identifiant.'-'.$sv->campagne); ?>
                                 <?php if ($dr_apporteur): ?>
@@ -91,7 +91,43 @@
         </tbody>
     <?php endif; ?>
 </table>
-
+<h2>Vérification des habilitations des tiers</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Etablissement</th>
+            <th>Habilitation Producteur (<a href="#" onclick="$('.habilitation').show(); return false;">toutes</a>)</th>
+        </tr>
+    </thead>
+    <tbody>
+<?php $operateur_nb = 0 ; $habilitation_ok = 0 ; $etablissement_ok = 0; ?>
+<?php foreach ($sv->getHabilitationTiers() as $cvi => $hab): $e = $sv->getCachedTiersByCVI($cvi); $operateur_nb++;?>
+    <tr class="habilitation <?php echo ($hab['habilitation_ok']) ? "collapse" : ""; ?>">
+        <td>
+            <?php if ($e) : $etablissement_ok++ ; ?>
+            <a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => $e->identifiant));?>"><?php echo $e->raison_sociale.' - '.$cvi; ?></a>
+            <?php else: ?>
+            <?php echo 'inconnu - '.$cvi; ?>
+            <?php endif; ?>
+        </td>
+        <td class="<?php echo (isset($hab['habilitation_ok'])  && $hab['habilitation_ok']) ? 'bg-success': 'bg-danger'; ?>">
+            <?php if($hab['habilitation_ok']): $habilitation_ok++ ; ?>
+                <a href="<?php echo url_for('habilitation_visualisation', $hab['habilitation']); ?>">Habilitation OK</a>
+            <?php else: ?>
+                <?php if (isset($hab['habilitation'])): ?>
+                <a href="<?php echo url_for('habilitation_visualisation', $hab['habilitation']); ?>">Habilitation ERERUR</a>
+                <?php else: ?>
+                Habilitation inexistante
+                <?php endif; ?>
+            <?php endif; ?>
+        </td>
+    </tr>
+<?php endforeach; ?>
+<tr>
+    <td class="text-center"><?php echo $etablissement_ok; ?> établissements trouvés <span class="text-muted">/ <?php echo $operateur_nb; ?></span></td>
+    <td class="text-center"><?php echo $habilitation_ok; ?> habilitations correctes <span class="text-muted">/ <?php echo $operateur_nb; ?></span></td>
+</tr>
+</table>
 <div class="row row-margin row-button">
     <div class="col-xs-4">
         <a href="<?= (isset($service) && $service) ?: url_for('dr_visualisation', array('id' => $sv->_id)); ?>"
