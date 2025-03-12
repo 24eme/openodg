@@ -16,6 +16,7 @@ all:
           COMPLET: "Complet"
           TRANSMIS_OC: "Transmis à l'OC"
           RECUS_OC: "Reçu par l'OC"
+          VALIDE_OC: "Validé par l'OC"
           VALIDE: "Validé"
           REFUSE: "Refusé"
           ANNULE: "Annulé"
@@ -23,6 +24,7 @@ all:
         habilitations:
           HABILITATION:
             COMPLET: DEMANDE_HABILITATION
+            VALIDE_OC: HABILITE
             VALIDE: HABILITE
             REFUSE: REFUS
             ANNULE: ANNULÉ

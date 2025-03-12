@@ -123,7 +123,7 @@ EOF;
         $lieu = $data[self::CSV_LIEUDIT];
         $campagne_plantation = $data[self::CSV_ANNEE_PLANTATION];
         try {
-            $idu = $parcellaireTotal->computeIDU($code_commune, $prefix, $section, $numero_parcelle);
+            $idu = Parcellaire::computeIDU($code_commune, $prefix, $section, $numero_parcelle);
             $parcelle  = $parcellaireTotal->addParcelle($idu, "Ventoux", $cepage, $campagne_plantation, $commune, $lieu, $produit->getConfig()->getLibelle(), "X%02d");
         } catch (Exception $e) {
             echo $e->getMessage().";non importé;".implode(";", $data)."\n";

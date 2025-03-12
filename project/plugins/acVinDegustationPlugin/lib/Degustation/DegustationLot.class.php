@@ -11,7 +11,7 @@ class DegustationLot extends BaseDegustationLot {
   }
 
   public function isNonConforme(){
-    return ($this->statut == Lot::STATUT_NONCONFORME);
+    return ($this->exist('conformite') && (strpos($this->conformite, Lot::CONFORMITE_NONCONFORME_PREFIX) === 0)) || ($this->statut == Lot::STATUT_NONCONFORME) || ($this->statut == Lot::STATUT_NONCONFORME_LEVEE);
   }
 
   public function isRecoursOC()
@@ -22,6 +22,10 @@ class DegustationLot extends BaseDegustationLot {
   public function isManquement()
   {
     return $this->isRecoursOC() || $this->isNonConforme();
+  }
+
+  public function isConforme(){
+      return $this->exist('conformite') && ($this->conformite == Lot::CONFORMITE_CONFORME);
   }
 
   public function isConformeObs(){

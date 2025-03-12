@@ -272,7 +272,10 @@ class LotsClient
                 $ids2Save[$master->_id] = $master->_id;
                 continue;
             } elseif($doc->isFactures()) {
-                throw new sfException("Le doc ".$id." est déjà facturé modification impossible");
+                $lotM = $doc->getLot($lot->unique_id);
+                if (($lotM->produit_hash != $lot->produit_hash) || ($lotM->volume != $lot->volume) || ($lotM->millesime != $lot->millesime)) {
+                    throw new sfException("Le doc ".$id." est déjà facturé modification impossible");
+                }
             }
             $ids2Save[$id] = $id;
         }

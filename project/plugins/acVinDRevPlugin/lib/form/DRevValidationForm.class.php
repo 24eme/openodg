@@ -123,13 +123,14 @@ class DRevValidationForm extends acCouchdbForm
             }
         }
 
-        foreach($checked as $key => $val)
-        if (strpos($key, '_OU_') !== false && $val < 1) {
-            throw new sfValidatorError($validator, 'Il faut sélectionner au moins un engagement');
-        }
+        foreach($checked as $key => $val) {
+            if (strpos($key, '_OU_') !== false && $val < 1) {
+                throw new sfValidatorError($validator, 'Il faut sélectionner au moins un engagement');
+            }
 
-        if (strpos($key, '_OUEX_') !== false && $val != 1) {
-            throw new sfValidatorError($validator, 'Il ne faut sélectionner qu\'un engagement');
+            if (strpos($key, '_OUEX_') !== false && $val != 1) {
+                throw new sfValidatorError($validator, 'Il ne faut sélectionner qu\'un engagement');
+            }
         }
 
         return $values;
