@@ -69,18 +69,6 @@
             <a href="<?php echo url_for('declaration', array('query' => 0)) ?>"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
         </p>
         <?php endif; ?>
-        <?php if($regionParam): ?>
-        <h4>Région</h4>
-        <div class="list-group">
-            <?php if($sf_user->isAdmin()): ?>
-            <?php foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region): ?>
-                <a href="<?php echo url_for('declaration', ['region' => $region]) ?>" class="list-group-item <?php if($region == $regionParam): ?>active<?php endif; ?>"><span class="badge"><?php if($region == $regionParam): ?><?php echo $nbResultats; ?><?php else : ?>?<?php endif; ?></span> <?php echo str_replace('_', ' ', $region); ?></a>
-            <?php endforeach; ?>
-            <?php else: ?>
-                <span class="list-group-item active"><span class="badge"><?php echo $nbResultats; ?></span> <?php echo str_replace('_', ' ', $regionParam); ?></span>
-            <?php endif; ?>
-        </div>
-        <?php endif; ?>
         <?php foreach($facets as $facetNom => $items): ?>
         <h4><?php echo $facetNom; ?></h4>
         <div class="list-group">
@@ -94,5 +82,17 @@
             <?php endforeach; ?>
         </div>
         <?php endforeach; ?>
+        <?php if($regionParam || RegionConfiguration::getInstance()->getOdgRegions()): ?>
+        <h4>Région</h4>
+        <div class="list-group">
+            <?php if($sf_user->isAdmin()): ?>
+            <?php foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region): ?>
+                <a href="<?php echo url_for('declaration', ['region' => $region]) ?>" class="list-group-item <?php if($region == $regionParam): ?>active<?php endif; ?>"><span class="badge"><?php if($region == $regionParam): ?><?php echo $nbResultats; ?><?php else : ?>?<?php endif; ?></span> <?php echo str_replace('_', ' ', $region); ?></a>
+            <?php endforeach; ?>
+            <?php else: ?>
+                <span class="list-group-item active"><span class="badge"><?php echo $nbResultats; ?></span> <?php echo str_replace('_', ' ', $regionParam); ?></span>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
     </div>
 </div>
