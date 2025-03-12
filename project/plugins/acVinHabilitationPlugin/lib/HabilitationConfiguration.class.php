@@ -81,6 +81,10 @@ class HabilitationConfiguration {
 
     public function getProduitAtHabilitationLevel($produit){
 
+      if (!$produit) {
+          return null;
+      }
+
       $produithab = $produit->getAppellation();
 
       if(!isset($this->configuration['produits'])){

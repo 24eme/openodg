@@ -10,6 +10,7 @@ class Configuration extends BaseConfiguration {
     const DEFAULT_DENSITE = "1.3";
 
     protected $identifyLibelleProduct = array();
+    protected $identifyCodeDouaneProduct = array();
     protected $effervescent_vindebase_active = false;
 
     public function constructId() {

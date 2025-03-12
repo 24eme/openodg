@@ -7,7 +7,10 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
     protected $accesses = array();
 
     protected function getObjectForParameters($parameters = null) {
-        $this->etablissement = EtablissementClient::getInstance()->find($parameters['identifiant']);
+        $this->preGetObject($parameters);
+        if (!$this->etablissement && isset($parameters['identifiant'])) {
+            $this->etablissement = EtablissementClient::getInstance()->find($parameters['identifiant']);
+        }
         if (!$this->etablissement) {
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page (pas d'etablissement)");
         }
@@ -66,14 +69,17 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
         return parent::generate($params, $context, $absolute);
     }
 
-    public function getEtablissement($parameters = null) {
+    private function preGetObject($parameters) {
         if (is_array($parameters)) foreach($parameters as $k => $v) {
             if (strpos($k, 'allow') === false) {
                 continue;
             }
             $this->accesses[$k] = $v;
         }
+    }
 
+    public function getEtablissement($parameters = null) {
+        $this->preGetObject($parameters);
 	    if (!$this->etablissement) {
             $this->getObject();
       	}
