@@ -85,10 +85,10 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
       return HabilitationClient::getinstance()->getProduitsConfig($this->getConfiguration($date));
     }
 
-    public function getProduitsHabilites() {
+    public function getProduitsHabilites($activite = null) {
         $produits = array();
         foreach($this->getProduits() as $produit) {
-            if(!count($produit->getActivitesHabilites())) {
+            if(!count($produit->getActivitesHabilites($activite))) {
                 continue;
             }
 
