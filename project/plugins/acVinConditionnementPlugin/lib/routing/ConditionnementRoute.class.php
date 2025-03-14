@@ -9,7 +9,7 @@ class ConditionnementRoute extends EtablissementRoute implements InterfaceDeclar
 
             throw new sfError404Exception(sprintf('No Conditionnement found with the id "%s".', $parameters['id']));
         }
-        parent::getObjectForParameters(array('identifiant' => $this->doc->identifiant));
+        parent::getObjectForParameters(array_merge($parameters, array('identifiant' => $this->doc->identifiant)));
         return $this->doc;
     }
 
@@ -18,7 +18,10 @@ class ConditionnementRoute extends EtablissementRoute implements InterfaceDeclar
         return $parameters;
     }
 
-    public function getConditionnement() {
+    public function getConditionnement($parameters = null) {
+        if ($parameters) {
+            $this->parameters = array_merge($this->parameters, $parameters);
+        }
         if (!$this->doc) {
             $this->getObject();
         }

@@ -118,7 +118,7 @@ abstract class _ParcellaireAffectationDeclarationNoeud extends acCouchdbDocument
 
     public function findParcelle($parcelle) {
 
-        return ParcellaireClient::findParcelle($this, $parcelle);
+        return ParcellaireClient::findParcelle($this, $parcelle, 0.75);
     }
 
     public function getLieuxEditable() {

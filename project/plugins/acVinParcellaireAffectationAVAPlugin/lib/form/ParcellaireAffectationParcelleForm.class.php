@@ -66,7 +66,7 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
         parent::updateDefaultsFromObject();
 
         if($this->getObject() instanceof ParcellaireAffectationCepageDetail) {
-            $this->setDefault('superficie', $this->getObject()->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_HECTARE));
+            $this->setDefault('superficie', $this->getObject()->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE));
         }
     }
 

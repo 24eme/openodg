@@ -122,11 +122,15 @@ class VIP2C
             }
 
             $defautHash = str_replace(['genres/|','|'], ['genres/TRANQ', 'DEFAUT'], $line[self::VIP2C_COLONNE_PRODUIT]);
+            try{
             $volumes[] = [
                 "hash_regex"  => $line[self::VIP2C_COLONNE_PRODUIT],
                 "volume_max"  => str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME]),
                 "libelle" => $doc->getConfiguration()->declaration->get($defautHash)->getLibelleComplet()
             ];
+            }catch(sfException $e){
+                //Cas où la hash trouvée ne fait pas partie du catalogue produit car ça concerne une autre IGP
+            }
         }
         fclose($configFile);
 
