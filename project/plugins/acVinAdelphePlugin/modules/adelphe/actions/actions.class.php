@@ -102,6 +102,7 @@ class adelpheActions extends sfActions {
   public function executeExport(sfWebRequest $request) {
     $this->forward404Unless($this->getUser()->isAdmin());
     $ids = DeclarationClient::getInstance()->getIds(AdelpheClient::TYPE_MODEL);
+    $ids = array_reverse($ids);
     $csv = ExportAdelpheCSV::getHeaderCsv();
     foreach($ids as $id) {
       $doc = AdelpheClient::getInstance()->find($id);

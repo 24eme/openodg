@@ -220,5 +220,11 @@ le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?>
 \\ \\
 \textbf{ * : Exonération de TVA en vertu du 9° du 4. de l'article 261 du Code général des impôts}
 <?php endif ?>
+
+
+\textbf{- Nos conditions de vente ne prévoient pas d'escompte pour paiement anticipé} \\ \\
+\textbf{- Conditions de règlement : A réception de la facture} \\ \\
+\textbf{- En cas de retard de paiement, seront exigibles, conformément à l'article L 441-10 du code de commerce, une indemnité calculée sur la base de trois fois le taux de l'intérêt légal en vigueur ainsi qu'une indemnité forfaitaire pour frais de recouvrement de 40 euros}
+
 \end{center}
 \end{document}

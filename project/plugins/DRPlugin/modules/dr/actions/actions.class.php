@@ -112,11 +112,9 @@ class drActions extends sfActions
     }
 
     public function executeSvVerify(sfWebRequest $request) {
-        $this->dr = $this->getRoute()->getDR();
-        if ($this->dr->type == 'SV11') {
-            $this->tableau_comparaison = $this->dr->getTableauComparaisonSV11();
-        } else if ($this->dr->type == 'SV12') {
-            $this->tableau_comparaison = $this->dr->getTableauComparaisonSV12();
+        $this->sv = $this->getRoute()->getDR();
+        if ($this->sv->type == 'DR') {
+            throw new sfException('Dédié aux SV');
         }
     }
 
