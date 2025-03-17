@@ -112,6 +112,10 @@ class ChgtDenomValidation extends DocumentValidation
 
         $campagne = substr($this->document->campagne, 0, 4);
         $lastDrev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->document->identifiant, $campagne);
+        if (!$lastDrev) {
+            //Cas des renoncement à produire sur les DR (et non les DREV)
+            return;
+        }
         $synthese = $lastDrev->summerizeProduitsLotsByCouleur();
 
         if (array_key_exists($this->document->origine_produit_libelle." ".$campagne, $synthese) === false) {

@@ -8,7 +8,6 @@ function(doc) {
         doc.type != "DRevMarc" &&
         doc.type != "ParcellaireManquant" &&
         doc.type != "ParcellaireAffectation" &&
-        doc.type != "ParcellaireIntentionAffectation" &&
         doc.type != "ParcellaireIrrigable" &&
         doc.type != "ParcellaireIrrigue" &&
         doc.type != "RegistreVCI" &&

@@ -4,10 +4,10 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
-
         $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() * 1);
         $parcellaireAffectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
+        $this->secure(ParcellaireSecurity::EDITION, $parcellaireAffectation);
+
         $parcellaireAffectation->save();
 
         return $this->redirect('parcellaireaffectation_edit', $parcellaireAffectation);
@@ -120,10 +120,11 @@ class parcellaireAffectationActions extends sfActions {
             }
         }
 
-        $this->parcellaireAffectation->updateParcellesAffectation();
     	if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_AFFECTATIONS))) {
     		$this->parcellaireAffectation->save();
     	}
+
+        $this->parcellaireAffectation->updateParcellesAffectation();
 
     	$this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
 
