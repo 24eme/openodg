@@ -2,7 +2,7 @@
 <div style="margin-bottom: 5px;" class="col-xs-1  text-muted">Login&nbsp;:</div>
 <div style="margin-bottom: 5px;" class="col-xs-3">
 <?php echo $compte->getLogin(); ?>
-<?php if ($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && $compte
+<?php if ($sf_user->isAdminODG() && $compte
 && !$sf_user->isUsurpationCompte() && $compte->getLogin()) : ?>
         <a style="text-decoration: none; color:gray;" href="<?php echo url_for('auth_usurpation', array('identifiant' => $compte->identifiant)) ?>" title="Connexion mode déclarant"><span class="glyphicon glyphicon-cloud-upload"></span></a>
 <?php endif; ?>

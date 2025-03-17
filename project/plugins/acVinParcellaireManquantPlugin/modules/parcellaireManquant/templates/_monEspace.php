@@ -40,7 +40,7 @@
                     <p class="explications">Le Téléservice sera ouvert à partir du <?php echo format_date(ParcellaireManquantConfiguration::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
                     <?php endif; ?>
                     <div class="actions">
-                        <?php if ($sf_user->isAdmin()): ?>
+                        <?php if ($sf_user->isAdminODG()): ?>
                                 <a class="btn btn-default btn-block" href="<?php echo url_for('parcellairemanquant_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
                                 <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('parcellairemanquant_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                         <?php endif; ?>
@@ -51,7 +51,7 @@
                 <p class="explications">Déclarer vos parcelles de pieds morts ou manquants.</p>
             	<div class="actions">
                     <a class="btn btn-block btn-default" href="<?php echo url_for('parcellairemanquant_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
-                    <?php if ($sf_user->isAdmin()): ?>
+                    <?php if ($sf_user->isAdminODG()): ?>
                     <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('parcellairemanquant_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                     <?php endif; ?>
                 </div>
