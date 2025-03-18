@@ -378,6 +378,16 @@ class parcellaireActions extends sfActions {
                         }
                         $potentiel_sans_blocant = $potentiel_sans_blocant && $this->table_potentiel[$groupe_synthese][$regle_nom]['res'];
                         break;
+                    case 'SAppliqueSiProportionSomme':
+                        $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] = array_sum($categories[$regle['category']]);
+                        $this->table_potentiel[$groupe_synthese][$regle_nom]['limit'] = $encepagement * $regle['limit'];
+                        if ($regle['sens'] == '>=') {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] >= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
+                        }elseif ($regle['sens'] == '<=') {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] <= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
+                        }
+                        $potentiel_has_desactive = $potentiel_has_desactive || !$this->table_potentiel[$groupe_synthese][$regle_nom]['res'];
+                        break;
                     case 'ProportionSomme':
                         $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] = array_sum($categories[$regle['category']]);
                         $this->table_potentiel[$groupe_synthese][$regle_nom]['limit'] = $encepagement * $regle['limit'];
