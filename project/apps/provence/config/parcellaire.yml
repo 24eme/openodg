@@ -187,3 +187,100 @@ all:
               category: 'cepage_ugni'
               sens: "<="
               limit: 0.25
+        cap_rouge:
+          synthese_libelle: "Coteaux d'Aix-en-Provence - Rouge"
+          filter_produit_hash: 'appellations/CAP'
+          categories:
+            cepages_principaux : ['CINSAUT N', 'COUNOISE N', 'GRENACHE N', 'MOURVÈDRE N', 'SYRAH N']
+            cepages_accessoires : ['CABERNET-SAUVIGNON N', 'CARIGNAN N', 'CALADOC N']
+            cepage_grenache: ['GRENACHE N']
+            cepage_caladoc: ['CALADOC N']
+          regles:
+            -
+              fonction: 'SAppliqueSiSomme'
+              category: 'cepages_toutes_couleurs'
+              sens: ">="
+              limit: 1.50
+            -
+              fonction: "Nombre"
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 2
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepage_grenache'
+              sens: ">="
+              limit: 0.2
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_accessoires'
+              sens: "<="
+              limit: 0.3
+            -
+              fonction: "ProportionSomme"
+              category: 'cepage_caladoc'
+              sens: "<="
+              limit: 0.1
+        cap_rose:
+          synthese_libelle: "Coteaux d'Aix-en-Provence - Rosé"
+          filter_produit_hash: 'appellations/CAP'
+          categories:
+            cepages_principaux : ['CINSAUT N', 'COUNOISE N', 'GRENACHE N', 'MOURVÈDRE N', 'SYRAH N']
+            cepages_accessoires : ['CABERNET-SAUVIGNON N', 'CARIGNAN N', 'CALADOC N']
+            cepage_grenache: ['GRENACHE N']
+            cepage_caladoc: ['CALADOC N']
+            cepages_blancs: ['VERMENTINO B', 'CLAIRETTE B', 'GRENACHE B', 'SAUVIGNON B', 'UGNI BLANC B', 'BOURBOULENC B', 'SÉMILLON B']
+          regles:
+            -
+              fonction: 'SAppliqueSiSomme'
+              category: 'cepages_toutes_couleurs'
+              sens: ">="
+              limit: 1.50
+            -
+              fonction: "Nombre"
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 2
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepage_grenache'
+              sens: ">="
+              limit: 0.2
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_accessoires'
+              sens: "<="
+              limit: 0.3
+            -
+              fonction: "ProportionSomme"
+              category: 'cepage_caladoc'
+              sens: "<="
+              limit: 0.1
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_blancs'
+              sens: "<="
+              limit: 0.20
+        cap_blanc:
+          synthese_libelle: "Coteaux d'Aix-en-Provence - Blanc"
+          filter_produit_hash: 'appellations/CAP'
+          categories:
+            cepage_principal : ['VERMENTINO B']
+            cepages_complementaires: ['CLAIRETTE B', 'GRENACHE B', 'SAUVIGNON B', 'UGNI BLANC B']
+            cepages_accessoires : ['BOURBOULENC B', 'SÉMILLON B']
+          regles:
+            -
+              fonction: 'SAppliqueSiSomme'
+              category: 'cepages_toutes_couleurs'
+              sens: ">="
+              limit: 1.50
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepage_principal'
+              sens: ">="
+              limit: 0.5
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_complementaires'
+              sens: ">="
+              limit: 0.3
