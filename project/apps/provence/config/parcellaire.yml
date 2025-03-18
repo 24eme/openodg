@@ -20,3 +20,81 @@ all:
           name: "AOC Coteaux Varois en provence"
           color: "#efc868"
           denomination_id: "01707"
+      potentiel_de_production:
+        cdp_rouge:
+          synthese_libelle: "Côtes de Provence - Rouge"
+          filter_produit_hash: 'appellations/CDP'
+          categories:
+            cepages_principaux: ['GRENACHE N', 'SYRAH N', 'MOURVEDRE N', 'TIBOUREN N', 'CINSAUT N']
+            cepages_blancs: ['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B']
+            cepages_blancs_sans_vermentino: ['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B']
+            cepages_accessoires: ['ROUSSELI RS','CALADOC N']
+            cepages_varietedinteret: ['AGIORGITIKO N','CALABRESE N','MOSCHOFILERO RS','XINOMAVRO N','VERDEJO B']
+          regles:
+            -
+              fonction: "SAppliqueSiSomme"
+              category: "cepages_toutes_couleurs"
+              sens: ">="
+              limit: 1.5
+            -
+              fonction: "Nombre"
+              category: "cepages_couleur"
+              sens: ">="
+              limit: 2
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_principaux"
+              sens: ">="
+              limit: 0.70
+            -
+              fonction: "ProportionChaque"
+              category: "cepages_principaux"
+              sens: "<="
+              limit: 0.90
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_blancs"
+              sens: "<="
+              limit: 0.20
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_blancs_sans_vermentino"
+              sens: "<="
+              limit: 0.10
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_accessoires"
+              sens: "<="
+              limit: 0.10
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_varietedinteret"
+              sens: "<="
+              limit: 0.05
+        cdp_blanc:
+          synthese_libelle: "Côtes de Provence - Blanc"
+          filter_produit_hash: 'appellations/CDP'
+          categories:
+            cepages_principaux: ['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B']
+            cepages_varietedinteret: ['VERDEJO B']
+          regles:
+            -
+              fonction: 'SAppliqueSiSomme'
+              category: 'cepages_toutes_couleurs'
+              sens: ">="
+              limit: 1.50
+            -
+              fonction: 'SAppliqueSiSomme'
+              category: 'cepages_couleur'
+              sens: ">="
+              limit: 0
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.50
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_varietedinteret'
+              sens: "<="
+              limit: 0.05

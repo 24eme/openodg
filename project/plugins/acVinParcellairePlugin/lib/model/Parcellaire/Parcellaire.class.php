@@ -310,7 +310,7 @@ class Parcellaire extends BaseParcellaire {
         if (!$this->habilitation) {
             return $this->getConfiguration()->getProduitsByCepage($cepage);
         }
-        return $this->habilitation->getProduitsByCepage($cepage);
+        return $this->habilitation->getProduitsByCepage($cepage, $this->getDate());
     }
 
     public function getSyntheseCepages($only_produit_connu = false) {
@@ -345,7 +345,7 @@ class Parcellaire extends BaseParcellaire {
             $cepage = $p->getCepage();
             $libelles = array();
             foreach($this->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
-                $libelles[] = $prod->formatProduitLibelle("%a% %m% %l% - %co% %ce%");
+                $libelles[] = preg_replace('/ +$/', '', $prod->formatProduitLibelle("%a% %m% %l% - %co% %ce%"));
             }
             if (!count($libelles)) {
                 $libelles[] = '';

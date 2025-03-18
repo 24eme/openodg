@@ -347,6 +347,12 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             return $h;
         }
         $h = preg_replace('/\/detail\/.*/', '', $this->getHash());
+        if (strpos($h, 'declaration') === false) {
+            return null;
+        }
+        if (strpos($h, 'parcelles') !== false) {
+            return null;
+        }
         $this->_set('produit_hash', $h);
         return $h;
     }
