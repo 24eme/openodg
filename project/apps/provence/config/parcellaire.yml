@@ -37,6 +37,66 @@ all:
               sens: ">="
               limit: 1.5
             -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.50
+            -
+              fonction: "Nombre"
+              category: "cepages_principaux"
+              sens: ">="
+              limit: 2
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_principaux"
+              sens: ">="
+              limit: 0.70
+            -
+              fonction: "ProportionChaque"
+              category: "cepages_principaux"
+              sens: "<="
+              limit: 0.90
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_blancs"
+              sens: "<="
+              limit: 0.20
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_blancs_sans_vermentino"
+              sens: "<="
+              limit: 0.10
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_accessoires"
+              sens: "<="
+              limit: 0.10
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_varietedinteret"
+              sens: "<="
+              limit: 0.05
+        cdp_rose:
+          synthese_libelle: "Côtes de Provence - Rose"
+          filter_produit_hash: 'appellations/CDP'
+          categories:
+            cepages_principaux: ['GRENACHE N', 'SYRAH N', 'MOURVEDRE N', 'TIBOUREN N', 'CINSAUT N']
+            cepages_blancs: ['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B']
+            cepages_blancs_sans_vermentino: ['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B']
+            cepages_accessoires: ['ROUSSELI RS','CALADOC N']
+            cepages_varietedinteret: ['AGIORGITIKO N','CALABRESE N','MOSCHOFILERO RS','XINOMAVRO N','VERDEJO B']
+          regles:
+            -
+              fonction: "SAppliqueSiSomme"
+              category: "cepages_toutes_couleurs"
+              sens: ">="
+              limit: 1.5
+            -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.50
+            -
               fonction: "Nombre"
               category: "cepages_principaux"
               sens: ">="
