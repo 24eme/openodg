@@ -218,7 +218,7 @@ le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?>
 <?= escape_string_for_latex($facture->modalite_paiement) ?>
 <?php endif; ?>
 \vspace{-0.6cm}
-\begin{itemize}[noitemsep, topsep=0mm, left=-0.3cm..0.2cm]
+\begin{itemize}[noitemsep, topsep=0mm, left=-0.25cm..0.2cm]
     \item[-] Nos conditions de vente ne prévoient pas d'escompte pour paiement anticipé
     \item[-] Conditions de règlement : A réception de la facture
     \item[-] En cas de retard de paiement, seront exigibles, conformément à l'article L 441-10 du code de commerce, une indemnité calculée sur la base de trois fois le taux de l'intérêt légal en vigueur ainsi qu'une indemnité forfaitaire pour frais de recouvrement de 40 euros
