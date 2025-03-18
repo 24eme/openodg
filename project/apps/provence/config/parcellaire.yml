@@ -38,7 +38,7 @@ all:
               limit: 1.5
             -
               fonction: "Nombre"
-              category: "cepages_couleur"
+              category: "cepages_principaux"
               sens: ">="
               limit: 2
             -
