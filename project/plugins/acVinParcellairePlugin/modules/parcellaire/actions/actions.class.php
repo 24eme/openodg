@@ -305,6 +305,9 @@ class parcellaireActions extends sfActions {
             $potentiel_sans_blocant = true;
             $groupe_synthese = ParcellaireConfiguration::getInstance()->getGroupeSyntheseLibelle($groupe_key);
             $synthese = $this->parcellaire->getSyntheseProduitsCepages(ParcellaireConfiguration::getInstance()->getGroupeFilterProduitHash($groupe_key));
+            if (!count($synthese)) {
+                continue;
+            }
             foreach (ParcellaireConfiguration::getInstance()->getGroupeCategories($groupe_key) as $category_key => $category_cepages) {
                 $categories[$category_key] = [];
                 foreach($category_cepages as $c) {
