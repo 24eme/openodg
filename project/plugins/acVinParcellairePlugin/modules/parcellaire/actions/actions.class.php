@@ -301,6 +301,8 @@ class parcellaireActions extends sfActions {
 
 
         foreach (ParcellaireConfiguration::getInstance()->getPotentielGroupes() as $groupe_key) {
+            $potentiel_has_desactive = false;
+            $potentiel_sans_blocant = true;
             $groupe_synthese = ParcellaireConfiguration::getInstance()->getGroupeSyntheseLibelle($groupe_key);
             $synthese = $this->parcellaire->getSyntheseProduitsCepages(ParcellaireConfiguration::getInstance()->getGroupeFilterProduitHash($groupe_key));
             foreach (ParcellaireConfiguration::getInstance()->getGroupeCategories($groupe_key) as $category_key => $category_cepages) {
@@ -361,6 +363,7 @@ class parcellaireActions extends sfActions {
                         }elseif ($regle['sens'] == '<=') {
                             $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] <= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
                         }
+                        $potentiel_has_desactive = $potentiel_has_desactive || !$this->table_potentiel[$groupe_synthese][$regle_nom]['res'];
                         break;
                     case 'Nombre':
                         $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] = count($categories[$regle['category']]);
@@ -370,6 +373,7 @@ class parcellaireActions extends sfActions {
                         }elseif ($regle['sens'] == '<=') {
                             $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] <= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
                         }
+                        $potentiel_sans_blocant = $potentiel_sans_blocant && $this->table_potentiel[$groupe_synthese][$regle_nom]['res'];
                         break;
                     case 'ProportionSomme':
                         $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] = array_sum($categories[$regle['category']]);
@@ -415,6 +419,13 @@ class parcellaireActions extends sfActions {
                 $this->potentiel_de_production[$groupe_synthese] = round($optimum->toFloat(), 5);
             }else{
                 $this->potentiel_de_production[$groupe_synthese] = "IMPOSSIBLE";
+            }
+            if (!$potentiel_sans_blocant) {
+                $this->potentiel_de_production[$groupe_synthese] = "IMPOSSIBLE";
+            }
+            if ($potentiel_has_desactive) {
+                $this->potentiel_de_production[$groupe_synthese] = round(array_sum($categories['cepages_couleur']), 5);
+                $encepagement = array_sum($categories['cepages_couleur']);
             }
             $this->encepagement[$groupe_synthese] = round($encepagement, 5);
         }
