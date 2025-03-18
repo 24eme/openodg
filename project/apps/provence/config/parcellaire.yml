@@ -84,6 +84,11 @@ all:
               sens: ">="
               limit: 1.50
             -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.50
+            -
               fonction: 'SAppliqueSiSomme'
               category: 'cepages_couleur'
               sens: ">="
@@ -110,6 +115,11 @@ all:
               category: 'cepages_toutes_couleurs'
               sens: ">="
               limit: 1.50
+            -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.50
             -
               fonction: 'ProportionSomme'
               category: 'cepages_principaux'
@@ -138,6 +148,11 @@ all:
               category: 'cepages_toutes_couleurs'
               sens: ">="
               limit: 1.50
+            -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.50
             -
               fonction: 'ProportionSomme'
               category: 'cepages_principaux'
@@ -202,11 +217,6 @@ all:
               sens: ">="
               limit: 1.50
             -
-              fonction: 'SAppliqueSiProportionSomme'
-              category: 'cepages_principaux'
-              sens: ">="
-              limit: 0.50
-            -
               fonction: "Nombre"
               category: 'cepages_principaux'
               sens: ">="
@@ -241,11 +251,6 @@ all:
               category: 'cepages_toutes_couleurs'
               sens: ">="
               limit: 1.50
-            -
-              fonction: 'SAppliqueSiProportionSomme'
-              category: 'cepages_principaux'
-              sens: ">="
-              limit: 0.50
             -
               fonction: "Nombre"
               category: 'cepages_principaux'
@@ -284,11 +289,6 @@ all:
               category: 'cepages_toutes_couleurs'
               sens: ">="
               limit: 1.50
-            -
-              fonction: 'SAppliqueSiProportionSomme'
-              category: 'cepage_principal'
-              sens: ">="
-              limit: 0.50
             -
               fonction: 'ProportionSomme'
               category: 'cepage_principal'

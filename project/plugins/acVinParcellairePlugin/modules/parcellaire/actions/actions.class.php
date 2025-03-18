@@ -301,7 +301,7 @@ class parcellaireActions extends sfActions {
 
 
         foreach (ParcellaireConfiguration::getInstance()->getPotentielGroupes() as $groupe_key) {
-            $potentiel_has_desactive = false;
+            $potentiel_has_desactive = true;
             $potentiel_sans_blocant = true;
             $groupe_synthese = ParcellaireConfiguration::getInstance()->getGroupeSyntheseLibelle($groupe_key);
             $synthese = $this->parcellaire->getSyntheseProduitsCepages(ParcellaireConfiguration::getInstance()->getGroupeFilterProduitHash($groupe_key));
@@ -366,7 +366,7 @@ class parcellaireActions extends sfActions {
                         }elseif ($regle['sens'] == '<=') {
                             $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] <= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
                         }
-                        $potentiel_has_desactive = $potentiel_has_desactive || !$this->table_potentiel[$groupe_synthese][$regle_nom]['res'];
+                        $potentiel_has_desactive = $potentiel_has_desactive && !$this->table_potentiel[$groupe_synthese][$regle_nom]['res'];
                         break;
                     case 'Nombre':
                         $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] = count($categories[$regle['category']]);
@@ -386,7 +386,7 @@ class parcellaireActions extends sfActions {
                         }elseif ($regle['sens'] == '<=') {
                             $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] <= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
                         }
-                        $potentiel_has_desactive = $potentiel_has_desactive || !$this->table_potentiel[$groupe_synthese][$regle_nom]['res'];
+                        $potentiel_has_desactive = $potentiel_has_desactive && !$this->table_potentiel[$groupe_synthese][$regle_nom]['res'];
                         break;
                     case 'ProportionSomme':
                         $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] = array_sum($categories[$regle['category']]);
