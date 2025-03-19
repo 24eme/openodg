@@ -115,7 +115,7 @@
                 <a href="<?php echo url_for('habilitation_visualisation', $hab['habilitation']); ?>">Habilitation OK</a>
             <?php else: ?>
                 <?php if (isset($hab['habilitation'])): ?>
-                <a href="<?php echo url_for('habilitation_visualisation', $hab['habilitation']); ?>">Habilitation ERERUR</a>
+                <a href="<?php echo url_for('habilitation_visualisation', $hab['habilitation']); ?>">Habilitation ERREUR</a>
                 <?php else: ?>
                 Habilitation inexistante
                 <?php endif; ?>

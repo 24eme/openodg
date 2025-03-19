@@ -22,6 +22,7 @@
 \usepackage{multirow}
 \usepackage{hhline}
 \usepackage{longfbox}
+\usepackage{enumitem}
 
 \definecolor{noir}{rgb}{0,0,0}
 \definecolor{blanc}{rgb}{1,1,1}
@@ -213,12 +214,19 @@ le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?>
 <?php endforeach; ?>
 \end{itemize}
 <?php elseif (!$facture->isAvoir() && $facture->exist('modalite_paiement') && $facture->modalite_paiement): ?>
-\textbf{Modalités de paiements} \\ \\
+\textbf{Modalités de paiements} \\
 <?= escape_string_for_latex($facture->modalite_paiement) ?>
 <?php endif; ?>
+\vspace{-0.6cm}
+\begin{itemize}[noitemsep, topsep=0mm, left=-0.25cm..0.2cm]
+    \item[-] Nos conditions de vente ne prévoient pas d'escompte pour paiement anticipé
+    \item[-] Conditions de règlement : A réception de la facture
+    \item[-] En cas de retard de paiement, seront exigibles, conformément à l'article L 441-10 du code de commerce, une indemnité calculée sur la base de trois fois le taux de l'intérêt légal en vigueur ainsi qu'une indemnité forfaitaire pour frais de recouvrement de 40 euros
+\end{itemize}
 <?php if (isset($exoneration) && $exoneration === true): ?>
 \\ \\
 \textbf{ * : Exonération de TVA en vertu du 9° du 4. de l'article 261 du Code général des impôts}
 <?php endif ?>
+
 \end{center}
 \end{document}
