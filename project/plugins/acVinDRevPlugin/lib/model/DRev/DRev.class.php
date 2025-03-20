@@ -1388,7 +1388,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
      }
 
 	protected function doSave() {
-        $this->piece_document->generatePieces();
         foreach ($this->declaration->getProduits() as $key => $produit) {
             $produit->update();
         }
@@ -1420,6 +1419,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function save($saveDependants = true) {
         $this->archiver();
+
+        $this->piece_document->generatePieces();
 
         $this->getDateDepot();
 
@@ -2187,7 +2188,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
                 }
             }else{
-                if ($is_controle) {
+                if ($is_controle || $lot->date_commission < date('Y-m-d')) {
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
                 }else{
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE_EN_ATTENTE));
@@ -2473,6 +2474,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $drev = $this->version_document->generateModificative();
+        $drev->remove('declarant');
+        $drev->add('declarant');
+        $drev->storeDeclarant();
         try {
             $drev->resetAndImportFromDocumentDouanier();
         } catch(Exception $e) {
@@ -2680,7 +2684,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach($vip2c['produits'] as $produit) {
             $hash = reset($produit['hashes']); // Première hash du tableau
 
-            if (! $this->exist($hash)) {
+            if (! $this->exist($hash) || !count($this->get($hash))) {
                 // on ne devrait jamais passer ici
                 continue;
             }

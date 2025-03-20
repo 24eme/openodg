@@ -7,7 +7,7 @@ class ExportAdelpheCSV implements InterfaceDeclarationExportCsv {
     protected $region = null;
 
     public static function getHeaderCsv() {
-        return "Raison sociale;Adresse;Commune;CVI;Mise en marché de BIB;Part BIB (%);Volume conditionne total (hl);Contribution (€);Identifiant;Volume bouteille (hl);Volume BIB (hl);Quantité bouteille normale (uc);Prix bouteille normale (€);Quantité bouteille allégée (uc);Prix bouteille allégée (€);Quantité carton (uc);Prix carton (€);Quantité BIB 3L (uc);Prix BIB 3L (€);Quantité BIB 5L (uc);Prix BIB 5L (€);Quantité BIB 10L (uc);Prix BIB 10L (€)\n";
+        return "Campagne;Raison sociale;Adresse;Commune;CVI;Mise en marché de BIB;Part BIB (%);Volume conditionne total (hl);Contribution (€);Identifiant;Volume bouteille (hl);Volume BIB (hl);Quantité bouteille normale (uc);Prix bouteille normale (€);Quantité bouteille allégée (uc);Prix bouteille allégée (€);Quantité carton (uc);Prix carton (€);Quantité BIB 3L (uc);Prix BIB 3L (€);Quantité BIB 5L (uc);Prix BIB 5L (€);Quantité BIB 10L (uc);Prix BIB 10L (€)\n";
     }
 
     public function __construct($doc, $header = true, $region = null) {
@@ -34,7 +34,8 @@ class ExportAdelpheCSV implements InterfaceDeclarationExportCsv {
         $mis_en_marche_bib = ($this->doc->isRepartitionForfaitaire())? 'Oui, sur la base du standard' : 'Oui, sur le réel';
 
       }
-    	$csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+        $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+        $this->protectStr($this->doc->campagne),
       	$this->protectStr($this->doc->declarant->raison_sociale),
       	$this->protectStr($this->doc->declarant->adresse),
         $this->protectStr($this->doc->declarant->code_postal.' '.$this->doc->declarant->commune),

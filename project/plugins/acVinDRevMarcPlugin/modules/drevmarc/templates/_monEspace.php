@@ -69,6 +69,9 @@
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
+            <div style="padding-top: 0; padding-bottom: 0;">
+                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'drevmarc')) ?>" class="btn btn-xs btn-link btn-block text-muted">Voir tous les documents</a>
+            </div>
         </div>
     <?php endif; ?>
 </div>

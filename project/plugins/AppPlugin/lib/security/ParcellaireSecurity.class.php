@@ -15,8 +15,13 @@ class ParcellaireSecurity extends DocumentSecurity implements SecurityInterface 
             $droits = array($droits);
         }
 
-        $authorized = parent::isAuthorized($droits);
+        foreach($this->doc->getEtablissementObject()->liaisons_operateurs as $k => $l) {
+            if (strpos($k, $this->user->getCompte()->identifiant) !== false) {
+                return true;
+            }
+        }
 
+        $authorized = parent::isAuthorized($droits);
         if(!$authorized) {
 
             return false;
