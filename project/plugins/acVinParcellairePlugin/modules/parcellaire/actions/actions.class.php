@@ -308,6 +308,9 @@ class parcellaireActions extends sfActions {
             if (!count($synthese)) {
                 continue;
             }
+            if (!isset($synthese[$groupe_synthese])) {
+                continue;
+            }
             foreach (ParcellaireConfiguration::getInstance()->getGroupeCategories($groupe_key) as $category_key => $category_cepages) {
                 $categories[$category_key] = [];
                 foreach($category_cepages as $c) {
