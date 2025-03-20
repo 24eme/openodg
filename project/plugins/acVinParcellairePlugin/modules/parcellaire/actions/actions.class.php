@@ -370,6 +370,9 @@ class parcellaireActions extends sfActions {
                             $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] <= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
                         }
                         $potentiel_has_desactive = $potentiel_has_desactive && !$this->table_potentiel[$groupe_synthese][$regle_nom]['res'];
+                        if (!$this->table_potentiel[$groupe_synthese][$regle_nom]['res']) {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['impact'] = 'disabling';
+                        }
                         break;
                     case 'Nombre':
                         $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] = count($categories[$regle['category']]);
@@ -380,6 +383,9 @@ class parcellaireActions extends sfActions {
                             $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] <= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
                         }
                         $potentiel_sans_blocant = $potentiel_sans_blocant && $this->table_potentiel[$groupe_synthese][$regle_nom]['res'];
+                        if (!$this->table_potentiel[$groupe_synthese][$regle_nom]['res']) {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['impact'] = 'blocker';
+                        }
                         break;
                     case 'SAppliqueSiProportionSomme':
                         $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] = array_sum($categories[$regle['category']]);
@@ -390,6 +396,9 @@ class parcellaireActions extends sfActions {
                             $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] <= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
                         }
                         $potentiel_has_desactive = $potentiel_has_desactive && !$this->table_potentiel[$groupe_synthese][$regle_nom]['res'];
+                        if (!$this->table_potentiel[$groupe_synthese][$regle_nom]['res']) {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['impact'] = 'disabling';
+                        }
                         break;
                     case 'ProportionSomme':
                         $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] = array_sum($categories[$regle['category']]);
