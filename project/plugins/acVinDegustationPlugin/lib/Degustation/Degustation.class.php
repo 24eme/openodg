@@ -753,18 +753,18 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 return count($this->getLotsConformesOrNot(false, $including_leurre));
 	 }
 
-	 public function getLotsConformesOrNot($conforme = true, $including_leurre = false){
-		 $lots = array();
-		 foreach ($this->getLotsDegustes($including_leurre) as $lot) {
-			 if($conforme && $lot->exist('conformite') && $lot->conformite == Lot::CONFORMITE_CONFORME){
-				 $lots[] = $lot;
-			 }
-			 if(!$conforme && $lot->isNonConforme()){
-				 $lots[] = $lot;
-			 }
-		 }
-		 return $lots;
-	 }
+    public function getLotsConformesOrNot($conforme = true, $including_leurre = false){
+        $lots = array();
+        foreach ($this->getLotsDegustes($including_leurre) as $lot) {
+            //Sélection des lots en fonction de l'argument conforme
+            // (et avoir une meilleur garantie que
+            // les lots conforme et non conforme = lots)
+            if(!$conforme XOR $lot->isConforme()){
+                $lots[] = $lot;
+            }
+        }
+        return $lots;
+    }
 
     /**** FIN DES PIECES ****/
 
