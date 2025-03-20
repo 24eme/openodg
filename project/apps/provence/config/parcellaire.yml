@@ -359,3 +359,314 @@ all:
               category: 'cepages_complementaires'
               sens: ">="
               limit: 0.3
+        cdp_stevictoire_rouge:
+          synthese_libelle: "Côtes de Provence Sainte Victoire - Rouge"
+          filter_produit_hash: 'appellations/CDP'
+          categories:
+            cepages_principaux: ['CINSAUT N', 'GRENACHE N', 'SYRAH N']
+            cepages_accessoires: ['CABERNET-SAUVIGNON N', 'CARIGNAN N', 'CLAIRETTE B', 'MOURVÈDRE N', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B']
+            cepages_grenache_syrah: ['GRENACHE N', 'SYRAH N']
+            cepage_cabernet: ['CABERNET-SAUVIGNON N']
+            cepages_clairette_semillon_ugni: ['CLAIRETTE B', 'SÉMILLON B', 'UGNI BLANC B']
+            cepages_clairette_semillon_ugni_vermentino: ['CLAIRETTE B', 'SÉMILLON B', 'UGNI BLANC B', 'VERMENTINO B']
+          regles:
+            -
+              fonction: 'SAppliqueSiSomme'
+              category: 'cepages_toutes_couleurs'
+              sens: ">="
+              limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.8
+            -
+              fonction: "Nombre"
+              category: "cepages_principaux"
+              sens: ">="
+              limit: 2
+            -
+              fonction: "ProportionChaque"
+              category: 'cepages_principaux'
+              sens: "<="
+              limit: 0.8
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_grenache_syrah'
+              sens: '>='
+              limit: 0.5
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepage_cabernet'
+              sens: '<='
+              limit: 0.1
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_clairette_semillon_ugni'
+              sens: '<='
+              limit: 0.1
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_clairette_semillon_ugni_vermentino'
+              sens: '<='
+              limit: 0.2
+        cdp_stevictoire_rose:
+          synthese_libelle: "Côtes de Provence Sainte Victoire - Rosé"
+          filter_produit_hash: 'appellations/CDP'
+          categories:
+            cepages_principaux: ['CINSAUT N', 'GRENACHE N', 'SYRAH N']
+            cepages_accessoires: ['CABERNET-SAUVIGNON N', 'CARIGNAN N', 'CLAIRETTE B', 'MOURVÈDRE N', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B']
+            cepages_grenache_syrah: ['GRENACHE N', 'SYRAH N']
+            cepages_clairette_semillon_ugni: ['CLAIRETTE B', 'SÉMILLON B', 'UGNI BLANC B']
+            cepages_clairette_semillon_ugni_vermentino: ['CLAIRETTE B', 'SÉMILLON B', 'UGNI BLANC B', 'VERMENTINO B']
+          regles:
+            -
+              fonction: 'SAppliqueSiSomme'
+              category: 'cepages_toutes_couleurs'
+              sens: ">="
+              limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.8
+            -
+              fonction: "Nombre"
+              category: "cepages_principaux"
+              sens: ">="
+              limit: 2
+            -
+              fonction: "ProportionChaque"
+              category: 'cepages_principaux'
+              sens: "<="
+              limit: 0.8
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_grenache_syrah'
+              sens: '>='
+              limit: 0.5
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_clairette_semillon_ugni'
+              sens: '<='
+              limit: 0.1
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_clairette_semillon_ugni_vermentino'
+              sens: '<='
+              limit: 0.2
+        cdp_frejus_rouge:
+          synthese_libelle: "Côtes de Provence Fréjus - Rouge"
+          filter_produit_hash: 'appellations/CDP'
+          categories:
+            cepages: ['GRENACHE N', 'MOURVÈDRE N', 'SYRAH N']
+          regles:
+            -
+              fonction: 'SAppliqueSiSomme'
+              category: 'cepages_toutes_couleurs'
+              sens: ">="
+              limit: 1.50
+            -
+              fonction: "ProportionChaque"
+              category: 'cepages'
+              sens: "<="
+              limit: 0.6
+        cdp_frejus_rose:
+          synthese_libelle: "Côtes de Provence Fréjus - Rosé"
+          filter_produit_hash: 'appellations/CDP'
+          categories:
+            cepages_principaux : ['GRENACHE N', 'MOURVÈDRE N', 'SYRAH N', 'TIBOUREN N']
+            cepage_tibouren: ['TIBOUREN N']
+            cepage_accessoire : ['CINSAUT N']
+          regles:
+            -
+              fonction: 'SAppliqueSiSomme'
+              category: 'cepages_toutes_couleurs'
+              sens: ">="
+              limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.8
+            -
+              fonction: "Nombre"
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 2
+            -
+              fonction: "ProportionChaque"
+              category: 'cepages_principaux'
+              sens: "<="
+              limit: 0.6
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepage_tibouren'
+              sens: ">="
+              limit: 0.2
+        cdp_lalonde_blanc:
+          synthese_libelle: "Côtes de Provence La Londe - Blanc"
+          filter_produit_hash: 'appellations/CDP'
+          categories:
+            cepage_principal: ['VERMENTINO B']
+            cepages_accessoires: ['CLAIRETTE B', 'SÉMILLON B', 'UGNI BLANC B']
+          regles:
+            -
+              fonction: 'SAppliqueSiSomme'
+              category: 'cepages_toutes_couleurs'
+              sens: ">="
+              limit: 1.50
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepage_principal'
+              sens: ">="
+              limit: 0.5
+        cdp_lalonde_rouge:
+          synthese_libelle: "Côtes de Provence La Londe - Rouge"
+          filter_produit_hash: 'appellations/CDP'
+          categories:
+            cepages_principaux: ['GRENACHE N', 'MOURVÈDRE N', 'SYRAH N']
+            cepages_grenache_syrah: ['GRENACHE N', 'SYRAH N']
+            cepages_accessoires: ['CABERNET-SAUVIGNON N', 'CARIGNAN N']
+            cepage_cabernet: ['CABERNET-SAUVIGNON N']
+          regles:
+            -
+              fonction: 'SAppliqueSiSomme'
+              category: 'cepages_toutes_couleurs'
+              sens: ">="
+              limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.8
+            -
+              fonction: "Nombre"
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 2
+            -
+              fonction: "ProportionChaque"
+              category: 'cepages_principaux'
+              sens: "<="
+              limit: 0.6
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_grenache_syrah'
+              sens: ">="
+              limit: 0.5
+            -
+              fonction: "ProportionSomme"
+              category: 'cepage_cabernet'
+              sens: "<="
+              limit: 0.1
+        cdp_lalonde_rose:
+          synthese_libelle: "Côtes de Provence La Londe - Rosé"
+          filter_produit_hash: 'appellations/CDP'
+          categories:
+            cepages_principaux : ['CINSAUT N', 'GRENACHE N']
+            cepages_clairette_semillon_ugni: ['CLAIRETTE B', 'SÉMILLON B', 'UGNI BLANC B']
+            cepages_accessoires : ['CARIGNAN N', 'CLAIRETTE B', 'MOURVÈDRE N', 'SÉMILLON B', 'SYRAH N', 'TIBOUREN N', 'UGNI BLANC B', 'VERMENTINO B']
+            cepages_clairette_semillon_ugni_vermentino: ['CLAIRETTE B', 'SÉMILLON B', 'UGNI BLANC B', 'VERMENTINO B']
+          regles:
+            -
+              fonction: 'SAppliqueSiSomme'
+              category: 'cepages_toutes_couleurs'
+              sens: ">="
+              limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.8
+            -
+              fonction: "Nombre"
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 2
+            -
+              fonction: "ProportionChaque"
+              category: 'cepages_principaux'
+              sens: "<="
+              limit: 0.6
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_clairette_semillon_ugni'
+              sens: "<="
+              limit: 0.1
+            -
+              fonction: "ProportionSomme"
+              category: 'cepage_cabernet'
+              sens: "<="
+              limit: 0.1
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_clairette_semillon_ugni_vermentino'
+              sens: '<='
+              limit: 0.2
+        cdp_pierrefeu_rouge:
+          synthese_libelle: "Côtes de Provence Pierrefeu - Rouge"
+          filter_produit_hash: 'appellations/CDP'
+          categories:
+            cepages_principaux: ['GRENACHE N', 'MOURVÈDRE N', 'SYRAH N']
+            cepages_accessoires: ['CABERNET SAUVIGNON N', 'CARIGNAN N']
+          regles:
+            -
+              fonction: 'SAppliqueSiSomme'
+              category: 'cepages_toutes_couleurs'
+              sens: ">="
+              limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.8
+            -
+              fonction: "Nombre"
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 2
+            -
+              fonction: "ProportionChaque"
+              category: 'cepages_principaux'
+              sens: "<="
+              limit: 0.8
+        cdp_pierrefeu_rose:
+          synthese_libelle: "Côtes de Provence Pierrefeu - Rosé"
+          filter_produit_hash: 'appellations/CDP'
+          categories:
+            cepages_principaux : ['CINSAUT N', 'GRENACHE N', 'SYRAH N']
+            cepages_accessoires : ['MOURVÈDRE N', 'TIBOUREN N', 'CLAIRETTE B', 'SÉMILLON B', 'UGNI BLANC B', 'VERMENTINO B']
+            cepages_clairette_ugni_semillon: ['CLAIRETTE B', 'UGNI B', 'SÉMILLON B']
+            cepages_clairette_semillon_ugni_vermentino: ['CLAIRETTE B', 'SÉMILLON B', 'UGNI B', 'VERMENTINO B']
+          regles:
+            -
+              fonction: 'SAppliqueSiSomme'
+              category: 'cepages_toutes_couleurs'
+              sens: ">="
+              limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.8
+            -
+              fonction: "Nombre"
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 2
+            -
+              fonction: "ProportionChaque"
+              category: 'cepages_principaux'
+              sens: "<="
+              limit: 0.8
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_clairette_ugni_semillon'
+              sens: '<='
+              limit: 0.1
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_clairette_semillon_ugni_vermentino'
+              sens: '<='
+              limit: 0.2
