@@ -416,8 +416,10 @@ class parcellaireActions extends sfActions {
                         $this->table_potentiel[$groupe_synthese][$regle_nom]['limit'] = $encepagement * $regle['limit'];
                         $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = true;
                         foreach(array_keys($categories['cepages_principaux']) as $c) {
-                            $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] .= $categories[$regle['category']][$c].',';
-
+                            if (!isset($categories[$regle['category']][$c])) {
+                                continue;
+                            }
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] .= $categories[$regle['category']][$c].'|';
                             if ($regle['sens'] == '>=') {
                                 $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] &= ($categories[$regle['category']][$c] >=  $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
                                 $task->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $categories[$regle['category']][$c]], $categories['cepages_couleur'], $regle['limit'] * -1), Simplex\Restriction::TYPE_GOE, 0));
