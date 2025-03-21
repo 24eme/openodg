@@ -603,7 +603,7 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
     	if ($registreVCI = $this->getLastRegistreVCI()) {
     		foreach ($this->getProduitsVci() as $produit) {
                 foreach(['destruction', 'complement', 'substitution', 'rafraichi'] as $typeMouvement) {
-                    $registreVCI->updateVCI($produit->getParent()->getParent()->getConfig()->getHash(), $typeMouvement, $produit->get($typeMouvement), $produit->stockage_identifiant);
+                    $registreVCI->updateVCI($produit->getParent()->getParent()->getConfig()->getHash(), $typeMouvement, $produit->get($typeMouvement), $produit->stockage_identifiant, self::TYPE_MODEL);
                 }
     		}
     		$registreVCI->save();
