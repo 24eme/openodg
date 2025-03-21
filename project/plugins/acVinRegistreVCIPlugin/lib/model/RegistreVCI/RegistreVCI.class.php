@@ -83,15 +83,32 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           }
       }
 
-      public function addLigne($produit, $mouvement_type, $volume, $lieu) {
-          if (is_string($produit)) {
-            $hproduit = preg_replace('/\/*declaration\//', '', $produit);
-            $produit = $this->getConfiguration()->declaration->get($hproduit);
-          }else{
-            $hproduit = preg_replace('/\/*declaration\//', '', $produit->getHash());
+      protected function normalizeHashProduit($produit) {
+          $hash = $produit;
+          if (!is_string($produit)) {
+              $hash = $produit->getHash();
           }
-          $hproduit = preg_replace('|appellation_CREMANT/mention/lieu/couleur/.*|', 'appellation_CREMANT', $hproduit);
-          $nDetail = $this->add('declaration')->add($hproduit)->addLigne($mouvement_type, $volume, $lieu);
+
+          $hash = preg_replace('/\/*declaration\//', '', $hash);
+          $hash = preg_replace('|appellation_CREMANT/mention/lieu/couleur/.*|', 'appellation_CREMANT', $hash);
+
+          return $hash;
+      }
+
+      public function updateVCI($produit, $mouvement_type, $volume, $lieuId) {
+        $hash = $this->normalizeHashProduit($produit);
+        if($this->exist('/declaration/'.$hash.'/details/'.$lieuId)) {
+            $volume = round($volume - $this->get('/declaration/'.$hash.'/details/'.$lieuId)->get($mouvement_type), 2);
+        }
+        if(!$volume) {
+            return;
+        }
+        return $this->addLigne($hash, $mouvement_type, $volume, $lieuId);
+      }
+
+      public function addLigne($produit, $mouvement_type, $volume, $lieu_id) {
+          $hproduit = $this->normalizeHashProduit($produit);
+          $nDetail = $this->add('declaration')->add($hproduit)->addLigne($mouvement_type, $volume, $lieu_id);
           $mvt = $this->add('lignes')->add();
           $mvt->produit_hash = $hproduit;
           $mvt->produit_libelle = $nDetail->getLibelleProduit();
@@ -106,6 +123,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
             $mvt->date = ($this->campagne + 1).'-12-31';
           }
       	  $this->reorderProduits();
+          return $mvt;
       }
 
             protected function reorderProduits() {
