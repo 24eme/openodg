@@ -602,40 +602,15 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
     	}
     	if ($registreVCI = $this->getLastRegistreVCI()) {
     		foreach ($this->getProduitsVci() as $produit) {
-    			$hash = str_replace('/vci/', '/details/', $produit->getHash());
-    			if (!preg_match('/\/cepage_/', $hash)) {
-    				$hash = str_replace('/mention/lieu/couleur', '', $hash);
-    			} else {
-    				$hash = str_replace('/detail/0', '', $hash);
-    			}
-		   if (!$registreVCI->exist($hash)) {
-			$hash = preg_replace('|/details/.+$|', '', $hash);
-                    if($produit->destruction) {
-                        $registreVCI->addLigne($hash, 'destruction', $produit->destruction, $produit->stockage_identifiant);
-                    }
-                    if($produit->complement) {
-                        $registreVCI->addLigne($hash, 'complement', $produit->complement, $produit->stockage_identifiant);
-                    }
-                    if($produit->substitution) {
-                        $registreVCI->addLigne($hash, 'substitution', $produit->substitution, $produit->stockage_identifiant);
-                    }
-                    if($produit->rafraichi) {
-                        $registreVCI->addLigne($hash, 'rafraichi', $produit->rafraichi, $produit->stockage_identifiant);
-                    }
-                    continue;
-    			}
-    			$detail = $registreVCI->get($hash);
-                if(round($produit->destruction - $detail->destruction, 2)) {
-    			    $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'destruction', round($produit->destruction - $detail->destruction, 2), $detail->stockage_identifiant);
+                $hash = str_replace('/vci/', '/details/', $produit->getHash());
+                if (!preg_match('/\/cepage_/', $hash)) {
+                    $hash = str_replace('/mention/lieu/couleur', '', $hash);
+                } else {
+                    $hash = str_replace('/detail/0', '', $hash);
                 }
-                if(round($produit->complement - $detail->complement, 2)) {
-    			    $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'complement', round($produit->complement -  $detail->complement, 2), $detail->stockage_identifiant);
-                }
-                if(round($produit->substitution - $detail->substitution, 2)) {
-		            $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'substitution', round($produit->substitution - $detail->substitution, 2), $detail->stockage_identifiant);
-                }
-                if(round($produit->rafraichi - $detail->rafraichi, 2)) {
-			        $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'rafraichi', round($produit->rafraichi - $detail->rafraichi, 2), $detail->stockage_identifiant);
+                $hash = preg_replace('|/details/.+$|', '', $hash);
+                foreach(['destruction', 'complement', 'substitution', 'rafraichi'] as $typeMouvement) {
+                    $registreVCI->updateVCI($hash, $typeMouvement, $produit->get($typeMouvement), $produit->stockage_identifiant, DRevClient::TYPE_MODEL);
                 }
     		}
     		$registreVCI->save();
