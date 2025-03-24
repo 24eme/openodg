@@ -313,10 +313,13 @@ class Parcellaire extends BaseParcellaire {
         return $this->habilitation->getProduitsByCepage($cepage, $this->getDate());
     }
 
-    public function getSyntheseCepages($only_produit_connu = false) {
+    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null) {
         $synthese = array();
         foreach($this->getParcelles() as $p) {
             if ($only_produit_connu && !$p->produit_hash) {
+                continue;
+            }
+            if ($filter_insee && !in_array($p->code_commune, $filter_insee)) {
                 continue;
             }
             $cepage = $p->getCepage();
@@ -333,13 +336,16 @@ class Parcellaire extends BaseParcellaire {
         return $synthese;
     }
 
-    public function getSyntheseProduitsCepages($filter_produit_hash = null) {
+    public function getSyntheseProduitsCepages($filter_produit_hash = null, $filter_insee = null) {
         $synthese = array();
         foreach($this->getParcelles() as $p) {
             if ($filter_produit_hash === true && !$p->produit_hash) {
                 continue;
             }
             if ($filter_produit_hash && is_string($filter_produit_hash) && strpos($p->produit_hash, $filter_produit_hash) === false) {
+                continue;
+            }
+            if ($filter_insee && !in_array($p->code_commune, $filter_insee)) {
                 continue;
             }
             $cepage = $p->getCepage();

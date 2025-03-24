@@ -136,6 +136,12 @@ class ParcellaireConfiguration {
     public function getGroupeFilterProduitHash($k) {
         return $this->configuration['potentiel_de_production'][$k]['filter_produit_hash'];
     }
+    public function getGroupeFilterINSEE($k) {
+        if (!isset($this->configuration['potentiel_de_production'][$k]['filter_insee'])) {
+            return null;
+        }
+        return $this->configuration['potentiel_de_production'][$k]['filter_insee'];
+    }
     public function getGroupeRegles($k) {
         return $this->configuration['potentiel_de_production'][$k]['regles'];
     }

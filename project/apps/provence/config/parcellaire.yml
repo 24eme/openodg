@@ -458,6 +458,7 @@ all:
         cdp_frejus_rouge:
           synthese_libelle: "Côtes de Provence Fréjus - Rouge"
           filter_produit_hash: 'appellations/CDP'
+          filter_insee: ['83061', '83085', '83086', '83480', '83107', '83118', '83028, 83141']
           categories:
             cepages: ['GRENACHE N', 'MOURVÈDRE N', 'SYRAH N']
           regles:
@@ -474,6 +475,7 @@ all:
         cdp_frejus_rose:
           synthese_libelle: "Côtes de Provence Fréjus - Rosé"
           filter_produit_hash: 'appellations/CDP'
+          filter_insee: ['83061', '83085', '83086', '83480', '83107', '83118', '83028, 83141']
           categories:
             cepages_principaux : ['GRENACHE N', 'MOURVÈDRE N', 'SYRAH N', 'TIBOUREN N']
             cepage_tibouren: ['TIBOUREN N']
