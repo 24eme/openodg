@@ -95,7 +95,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           return $hash;
       }
 
-      public function updateVCI($produit, $mouvement_type, $volume, $lieuId) {
+      public function updateVCI($produit, $mouvement_type, $volume, $lieuId, $origine) {
         $hash = $this->normalizeHashProduit($produit);
         if($this->exist('/declaration/'.$hash.'/details/'.$lieuId)) {
             $volume = round($volume - $this->get('/declaration/'.$hash.'/details/'.$lieuId)->get($mouvement_type), 2);
@@ -103,10 +103,10 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
         if(!$volume) {
             return;
         }
-        return $this->addLigne($hash, $mouvement_type, $volume, $lieuId);
+        return $this->addLigne($hash, $mouvement_type, $volume, $lieuId, $origine);
       }
 
-      public function addLigne($produit, $mouvement_type, $volume, $lieu_id) {
+      public function addLigne($produit, $mouvement_type, $volume, $lieu_id, $origine) {
           $hproduit = $this->normalizeHashProduit($produit);
           $nDetail = $this->add('declaration')->add($hproduit)->addLigne($mouvement_type, $volume, $lieu_id);
           $mvt = $this->add('lignes')->add();
@@ -122,6 +122,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           }else{
             $mvt->date = ($this->campagne + 1).'-12-31';
           }
+          $mvt->origine = $origine;
       	  $this->reorderProduits();
           return $mvt;
       }

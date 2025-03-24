@@ -73,7 +73,7 @@ EOF;
             ];
 
             foreach($volumes as $typeMouvement => $volume) {
-                $mouvement = $registre->updateVCI($confProduit->getHash(), $typeMouvement, $volume, $cviStockage);
+                $mouvement = $registre->updateVCI($confProduit->getHash(), $typeMouvement, $volume, $cviStockage, "Import");
                 if(!$mouvement) {
                     continue;
                 }
