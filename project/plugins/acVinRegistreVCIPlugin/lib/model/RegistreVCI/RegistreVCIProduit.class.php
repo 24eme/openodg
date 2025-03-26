@@ -32,9 +32,12 @@ class RegistreVCIProduit extends BaseRegistreVCIProduit {
   }
 
   public function addLigne($mouvement_type, $volume, $lieu_id) {
+    if($lieu_id == $this->getDocument()->identifiant) {
+        $lieu_id = RegistreVCIClient::LIEU_CAVEPARTICULIERE;
+    }
     if (!$this->details->exist($lieu_id)) {
       $detail = $this->add('details')->add($lieu_id);
-      if (!$lieu_id || $lieu_id == RegistreVCIClient::LIEU_CAVEPARTICULIERE) {
+      if ($lieu_id == RegistreVCIClient::LIEU_CAVEPARTICULIERE) {
         $detail->stockage_libelle = "Cave particulière";
       }else{
         $e = EtablissementClient::getInstance()->findByIdentifiant($lieu_id);
