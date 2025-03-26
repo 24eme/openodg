@@ -293,218 +293,168 @@ class parcellaireActions extends sfActions {
         $this->secureTeledeclarant();
 
         $this->parcellaire = $this->getRoute()->getParcellaire();
-        $synthese = $this->parcellaire->getSyntheseProduitsCepages();
-        $rewrite = $request->getParameter('rewrite');
-        if ($rewrite) {
-            $c = explode(':', $rewrite);
-            $synthese['Côtes de Provence - Rouge ']['Cepage'][$c[0]]['superficie_max'] = floatval($c[1]);
-        }
 
-
-        $cepages_principaux = [];
-        foreach(['GRENACHE N', 'SYRAH N', 'MOURVEDRE N', 'TIBOUREN N', 'CINSAUT N'] as $c) {
-            if (isset($synthese['Côtes de Provence - Rouge ']['Cepage'][$c])) {
-                $cepages_principaux[$c] = $synthese['Côtes de Provence - Rouge ']['Cepage'][$c]['superficie_max'];
-            }
-        }
-        $cepages_blancs = [];
-        foreach(['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B'] as $c) {
-            if (isset($synthese['Côtes de Provence - Rouge ']['Cepage'][$c])) {
-                $cepages_blancs[$c] = $synthese['Côtes de Provence - Rouge ']['Cepage'][$c]['superficie_max'];
-            }
-        }
-        $cepages_accessoires = [];
-        foreach(['ROUSSELI RS','CALADOC N'] as $c) {
-            if (isset($synthese['Côtes de Provence - Rouge ']['Cepage'][$c])) {
-                $cepages_accessoires[$c] = $synthese['Côtes de Provence - Rouge ']['Cepage'][$c]['superficie_max'];
-            }
-        }
-        $cepages_varietedinteret = [];
-        foreach(['AGIORGITIKO N','CALABRESE N','MOSCHOFILERO RS','XINOMAVRO N','VERDEJO B'] as $c) {
-            if (isset($synthese['Côtes de Provence - Rouge ']['Cepage'][$c])) {
-                $cepages_accessoires[$c] = $synthese['Côtes de Provence - Rouge ']['Cepage'][$c]['superficie_max'];
-            }
-        }
-
-        $cepages_a_max = [];
-        $encepagement = 0;
-        foreach($synthese['Côtes de Provence - Rouge '] as $cepages) {
-            foreach($cepages as $k => $superficies) {
-                if ($k == 'Total') {
-                    continue;
-                }
-                if (strpos($k, 'XXX') !== false) {
-                    continue;
-                }
-                if (!isset($superficies['superficie_max'])) {
-                    continue;
-                }
-                $cepages_a_max[$k] = $superficies['superficie_max'];
-                $encepagement += $superficies['superficie_max'];
-            }
-        }
-        $task = new Simplex\Task(new Simplex\Func($this->addemptycepage($cepages_a_max,$cepages_a_max)));
-
+        $categories = [];
         $this->table_potentiel = [];
-        $this->encepagement = [];
-        $this->table_potentiel['Côtes de Provence Rouge'] = [];
-
-        $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50'] = [];
-        $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50']['somme'] = array_sum($cepages_a_max);
-        $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50']['limit'] = 1.5;
-        $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50']['cepages'] = $cepages_a_max;
-        $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50']['res'] = (array_sum($cepages_a_max) >= 1.5);
-        $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50']['sens'] = '>=';
-
-        $this->table_potentiel['Côtes de Provence Rouge']['Nombre(cepages_principaux) >= 2'] = [];
-        $this->table_potentiel['Côtes de Provence Rouge']['Nombre(cepages_principaux) >= 2']['somme'] = count($cepages_principaux);
-        $this->table_potentiel['Côtes de Provence Rouge']['Nombre(cepages_principaux) >= 2']['limit'] = 2;
-        $this->table_potentiel['Côtes de Provence Rouge']['Nombre(cepages_principaux) >= 2']['cepages'] = $cepages_principaux;
-        $this->table_potentiel['Côtes de Provence Rouge']['Nombre(cepages_principaux) >= 2']['res'] = (count($cepages_principaux) >=  2);
-        $this->table_potentiel['Côtes de Provence Rouge']['Nombre(cepages_principaux) >= 2']['sens'] = '>=';
-
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70'] = [];
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['somme'] = array_sum($cepages_principaux);
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['limit'] = $encepagement * 0.7;
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['cepages'] = $cepages_principaux;
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['res'] = (array_sum($cepages_principaux) >=  $encepagement * 0.7);
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['sens'] = '>=';
-        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_principaux, $cepages_a_max, -0.7), Simplex\Restriction::TYPE_GOE, 0));
-
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90'] = [];
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['somme'] = '';
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['limit'] = $encepagement * 0.9;
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['cepages'] = $cepages_principaux;
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['res'] = true;
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['sens'] = '<=';
-        foreach(array_keys($cepages_principaux) as $c) {
-            $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['somme'] .= $cepages_principaux[$c].',';
-            $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['res'] &= ($cepages_principaux[$c] <=  $encepagement * 0.9);
-            $task->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $cepages_principaux[$c]], $cepages_a_max, - 0.9), Simplex\Restriction::TYPE_LOE, 0));
-        }
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['somme'] = substr($this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['somme'], 0, -1);
-
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20'] = [];
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20']['somme'] = array_sum($cepages_blancs);
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20']['cepages'] = $cepages_blancs;
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20']['limit'] = $encepagement * 0.2;
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20']['res'] = (array_sum($cepages_blancs) <= $encepagement * 0.2);
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20']['sens'] = '<=';
-        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_blancs, $cepages_a_max, - 0.2), Simplex\Restriction::TYPE_LOE, 0));
-
-        unset($cepages_blancs['VERMENTINO B']);
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10'] = [];
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10']['somme'] = array_sum($cepages_blancs);
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10']['cepages'] = $cepages_blancs;
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10']['limit'] = $encepagement * 0.1;
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10']['res'] = (array_sum($cepages_blancs) <= $encepagement * 0.1);
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10']['sens'] = '<=';
-        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_blancs, $cepages_a_max, - 0.1), Simplex\Restriction::TYPE_LOE, 0));
-
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10'] = [];
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10']['somme'] = array_sum($cepages_accessoires);
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10']['cepages'] = $cepages_accessoires;
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10']['limit'] = $encepagement * 0.1;
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10']['res'] = (array_sum($cepages_accessoires) <= $encepagement * 0.1);
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10']['sens'] = '<=';
-        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_accessoires, $cepages_a_max, - 0.1), Simplex\Restriction::TYPE_LOE, 0));
-
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05'] = [];
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05']['somme'] = array_sum($cepages_varietedinteret);
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05']['cepages'] = $cepages_varietedinteret;
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05']['limit'] = $encepagement * 0.05;
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05']['res'] = (array_sum($cepages_varietedinteret) <= $encepagement * 0.05);
-        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05']['sens'] = '<=';
-        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_varietedinteret, $cepages_a_max, - 0.05), Simplex\Restriction::TYPE_LOE, 0));
-
-        foreach(array_keys($cepages_a_max) as $c) {
-            if ($cepages_a_max[$c]) {
-                $task->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $cepages_a_max[$c]], $cepages_a_max), Simplex\Restriction::TYPE_LOE, $cepages_a_max[$c]));
-            }
-        }
-
         $this->potentiel_de_production = [];
+        $this->encepagement = [];
 
-        $solver = new Simplex\Solver($task);
-        $solution = $solver->getSolution();
-        if ($solution) {
-            $optimum = $solver->getSolutionValue($solution);
-            $this->potentiel_de_production['Côtes de Provence Rouge'] = round($optimum->toFloat(), 5);
-        }else{
-            $this->potentiel_de_production['Côtes de Provence Rouge'] = "IMPOSSIBLE";
-        }
-        $this->encepagement['Côtes de Provence Rouge'] = round($encepagement, 5);
 
-        /*
-        $printer = new Simplex\Printer;
-        $printer->printSolution($solver);
-        echo $printer->printSolver($solver); exit;
-        */
-
-        $rewrite = $request->getParameter('rewrite');
-        if ($rewrite) {
-            $c = explode(':', $rewrite);
-            $synthese['Côtes de Provence - Blanc ']['Cepage'][$c[0]]['superficie_max'] = floatval($c[1]);
-        }
-        $cepages_principaux = [];
-        foreach(['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B'] as $c) {
-            if (isset($synthese['Côtes de Provence - Blanc ']['Cepage'][$c])) {
-                $cepages_principaux[$c] = $synthese['Côtes de Provence - Blanc ']['Cepage'][$c]['superficie_max'];
+        foreach (ParcellaireConfiguration::getInstance()->getPotentielGroupes() as $groupe_key) {
+            $potentiel_has_desactive = true;
+            $potentiel_sans_blocant = true;
+            $groupe_synthese = ParcellaireConfiguration::getInstance()->getGroupeSyntheseLibelle($groupe_key);
+            $synthese = $this->parcellaire->getSyntheseProduitsCepages(ParcellaireConfiguration::getInstance()->getGroupeFilterProduitHash($groupe_key), ParcellaireConfiguration::getInstance()->getGroupeFilterINSEE($groupe_key));
+            if (!count($synthese)) {
+                continue;
             }
-        }
-        $cepages_varietedinteret = [];
-        foreach(['VERDEJO B'] as $c) {
-            if (isset($synthese['Côtes de Provence - Blanc ']['Cepage'][$c])) {
-                $cepages_varietedinteret[$c] = $synthese['Côtes de Provence - Blanc ']['Cepage'][$c]['superficie_max'];
+            if (!isset($synthese[$groupe_synthese])) {
+                continue;
             }
+            foreach (ParcellaireConfiguration::getInstance()->getGroupeCategories($groupe_key) as $category_key => $category_cepages) {
+                $categories[$category_key] = [];
+                foreach($category_cepages as $c) {
+                    if (isset($synthese[$groupe_synthese]) && isset($synthese[$groupe_synthese]['Cepage'][$c])) {
+                        $categories[$category_key][$c] = $synthese[$groupe_synthese]['Cepage'][$c]['superficie_max'];
+                    }
+                }
+            }
+            $categories['cepages_couleur'] = [];
+            $categories['cepages_toutes_couleurs'] = [];
+            $encepagement = 0;
+            foreach($synthese as $synthese_libelle => $synthese_couleur) {
+                foreach($synthese_couleur as $cepages) {
+                    foreach($cepages as $k => $superficies) {
+                        if ($k == 'Total') {
+                            continue;
+                        }
+                        if (strpos($k, 'XXX') !== false) {
+                            continue;
+                        }
+                        if (!isset($superficies['superficie_max'])) {
+                            continue;
+                        }
+                        if (!isset($categories['cepages_toutes_couleurs'][$k])) {
+                            $categories['cepages_toutes_couleurs'][$k] = $superficies['superficie_max'];
+                        }
+                        if ($synthese_libelle != $groupe_synthese) {
+                            continue;
+                        }
+                        $categories['cepages_couleur'][$k] = $superficies['superficie_max'];
+                        $encepagement += $superficies['superficie_max'];
+                    }
+                }
+            }
+
+            $task = new Simplex\Task(new Simplex\Func($this->addemptycepage($categories['cepages_couleur'],$categories['cepages_couleur'])));
+
+            $this->table_potentiel[$groupe_synthese] = [];
+            foreach(ParcellaireConfiguration::getInstance()->getGroupeRegles($groupe_key) as $regle) {
+                $regle_nom = $regle['fonction'].'('.$regle['category'].') '.$regle['sens'].' '.$regle['limit'];
+                $this->table_potentiel[$groupe_synthese][$regle_nom] = [];
+
+                if (($regle['sens'] != '>=') && ($regle['sens'] != '<=')) {
+                    throw new sfException('sens '.$regle['sens'].' non géré');
+                }
+                $this->table_potentiel[$groupe_synthese][$regle_nom]['sens'] = $regle['sens'];
+
+                $this->table_potentiel[$groupe_synthese][$regle_nom]['cepages'] = $categories[$regle['category']];
+
+                switch ($regle['fonction']) {
+                    case 'SAppliqueSiSomme':
+                        $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] = array_sum($categories[$regle['category']]);
+                        $this->table_potentiel[$groupe_synthese][$regle_nom]['limit'] = $regle['limit'];
+                        if ($regle['sens'] == '>=') {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] >= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
+                        }elseif ($regle['sens'] == '<=') {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] <= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
+                        }
+                        $potentiel_has_desactive = $potentiel_has_desactive && !$this->table_potentiel[$groupe_synthese][$regle_nom]['res'];
+                        if (!$this->table_potentiel[$groupe_synthese][$regle_nom]['res']) {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['impact'] = 'disabling';
+                        }
+                        break;
+                    case 'Nombre':
+                        $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] = count($categories[$regle['category']]);
+                        $this->table_potentiel[$groupe_synthese][$regle_nom]['limit'] = $regle['limit'];
+                        if ($regle['sens'] == '>=') {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] >= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
+                        }elseif ($regle['sens'] == '<=') {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] <= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
+                        }
+                        $potentiel_sans_blocant = $potentiel_sans_blocant && $this->table_potentiel[$groupe_synthese][$regle_nom]['res'];
+                        if (!$this->table_potentiel[$groupe_synthese][$regle_nom]['res']) {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['impact'] = 'blocker';
+                        }
+                        break;
+                    case 'SAppliqueSiProportionSomme':
+                        $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] = array_sum($categories[$regle['category']]);
+                        $this->table_potentiel[$groupe_synthese][$regle_nom]['limit'] = $encepagement * $regle['limit'];
+                        if ($regle['sens'] == '>=') {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] >= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
+                        }elseif ($regle['sens'] == '<=') {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] <= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
+                        }
+                        $potentiel_has_desactive = $potentiel_has_desactive && !$this->table_potentiel[$groupe_synthese][$regle_nom]['res'];
+                        if (!$this->table_potentiel[$groupe_synthese][$regle_nom]['res']) {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['impact'] = 'disabling';
+                        }
+                        break;
+                    case 'ProportionSomme':
+                        $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] = array_sum($categories[$regle['category']]);
+                        $this->table_potentiel[$groupe_synthese][$regle_nom]['limit'] = $encepagement * $regle['limit'];
+                        if ($regle['sens'] == '>=') {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] >= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
+                            $task->addRestriction(new Simplex\Restriction($this->addemptycepage($categories[$regle['category']], $categories['cepages_couleur'], $regle['limit'] * -1), Simplex\Restriction::TYPE_GOE, 0));
+                        }elseif ($regle['sens'] == '<=') {
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = ($this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] <= $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
+                            $task->addRestriction(new Simplex\Restriction($this->addemptycepage($categories[$regle['category']], $categories['cepages_couleur'], $regle['limit'] * -1), Simplex\Restriction::TYPE_LOE, 0));
+                        }
+                        break;
+                    case 'ProportionChaque':
+                        $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] = 0;
+                        $this->table_potentiel[$groupe_synthese][$regle_nom]['limit'] = $encepagement * $regle['limit'];
+                        $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] = true;
+                        foreach(array_keys($categories['cepages_principaux']) as $c) {
+                            if (!isset($categories[$regle['category']][$c])) {
+                                continue;
+                            }
+                            $this->table_potentiel[$groupe_synthese][$regle_nom]['somme'] .= $categories[$regle['category']][$c].'|';
+                            if ($regle['sens'] == '>=') {
+                                $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] &= ($categories[$regle['category']][$c] >=  $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
+                                $task->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $categories[$regle['category']][$c]], $categories['cepages_couleur'], $regle['limit'] * -1), Simplex\Restriction::TYPE_GOE, 0));
+                            }elseif ($regle['sens'] == '<=') {
+                                $this->table_potentiel[$groupe_synthese][$regle_nom]['res'] &= ($categories[$regle['category']][$c] <=  $this->table_potentiel[$groupe_synthese][$regle_nom]['limit']);
+                                $task->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $categories[$regle['category']][$c]], $categories['cepages_couleur'], $regle['limit'] * -1), Simplex\Restriction::TYPE_LOE, 0));
+                            }
+                        }
+                        break;
+                    default:
+                        throw new sfException('Fonction de Potentiel de production "'.$regle['fonction'].'" non gérée');
+                }
+            }
+            foreach(array_keys($categories['cepages_couleur']) as $c) {
+                if ($categories['cepages_couleur'][$c]) {
+                    $task->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $categories['cepages_couleur'][$c]], $categories['cepages_couleur']), Simplex\Restriction::TYPE_LOE, $categories['cepages_couleur'][$c]));
+                }
+            }
+
+            $solver = new Simplex\Solver($task);
+            $solution = $solver->getSolution();
+            if ($solution) {
+                $optimum = $solver->getSolutionValue($solution);
+                $this->potentiel_de_production[$groupe_synthese] = round($optimum->toFloat(), 5);
+            }else{
+                $this->potentiel_de_production[$groupe_synthese] = "IMPOSSIBLE";
+            }
+            if (!$potentiel_sans_blocant) {
+                $this->potentiel_de_production[$groupe_synthese] = "IMPOSSIBLE";
+            }
+            if ($potentiel_has_desactive) {
+                $this->potentiel_de_production[$groupe_synthese] = round(array_sum($categories['cepages_couleur']), 5);
+                $encepagement = array_sum($categories['cepages_couleur']);
+            }
+            $this->encepagement[$groupe_synthese] = round($encepagement, 5);
         }
-        $cepages_a_max = array_merge($cepages_principaux, $cepages_varietedinteret);
-        $encepagement = array_sum($cepages_a_max);
-
-        $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50'] = [];
-        $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50']['somme'] = array_sum($cepages_a_max);
-        $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50']['limit'] = 1.5;
-        $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50']['cepages'] = $cepages_a_max;
-        $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50']['res'] = (array_sum($cepages_a_max) >= 1.5);
-        $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50']['sens'] = '>=';
-
-        $cepages_a_max = array_merge($cepages_principaux, $cepages_varietedinteret);
-        $task_blanc = new Simplex\Task(new Simplex\Func($this->addemptycepage($cepages_a_max,$cepages_a_max)));
-        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50'] = [];
-        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50']['somme'] = array_sum($cepages_principaux);
-        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50']['limit'] = $encepagement * 0.5;
-        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50']['cepages'] = $cepages_principaux;
-        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50']['res'] = (array_sum($cepages_principaux) >=  $encepagement * 0.5);
-        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50']['sens'] = '>=';
-        $task_blanc->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_principaux, $cepages_a_max, -0.5), Simplex\Restriction::TYPE_GOE, 0));
-
-        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05'] = [];
-        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['somme'] = array_sum($cepages_varietedinteret);
-        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['limit'] = $encepagement * 0.05;
-        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['cepages'] = $cepages_varietedinteret;
-        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['res'] = (array_sum($cepages_varietedinteret) <=  $encepagement * 0.05);
-        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['sens'] = '<=';
-        if ($this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['somme']) {
-            $task_blanc->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_varietedinteret, $cepages_a_max, - 0.05), Simplex\Restriction::TYPE_LOE, 0));
-        }
-        foreach(array_keys($cepages_a_max) as $c) {
-            $task_blanc->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $cepages_a_max[$c]], $cepages_a_max), Simplex\Restriction::TYPE_LOE, $cepages_a_max[$c]));
-        }
-
-        $solver = new Simplex\Solver($task_blanc);
-        $solution = $solver->getSolution();
-        if ($solution) {
-            $optimum = $solver->getSolutionValue($solution);
-            $this->potentiel_de_production['Côtes de Provence Blanc'] = round($optimum->toFloat(), 5);
-        }else{
-            $this->potentiel_de_production['Côtes de Provence Blanc'] = "IMPOSSIBLE";
-        }
-        $this->encepagement['Côtes de Provence Blanc'] = round($encepagement, 5);
-        /*
-        $printer = new Simplex\Printer;
-        $printer->printSolution($solver);
-        echo $printer->printSolver($solver); exit;
-        */
-
     }
 }
