@@ -6,9 +6,9 @@
 
 class HabilitationProduit extends BaseHabilitationProduit {
 
-    public function getConfig()
+    public function getConfig($date = null)
     {
-        return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
+        return $this->getCouchdbDocument()->getConfiguration($date)->get($this->getHash());
     }
 
     public function getChildrenNode()

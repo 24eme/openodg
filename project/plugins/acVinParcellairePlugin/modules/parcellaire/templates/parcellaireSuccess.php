@@ -226,12 +226,17 @@ $list_idu = [];
     $synthese = array();
 
     if($parcellaire) {
-        $synthese = $parcellaire->getSyntheseCepages();
+        $synthese = $parcellaire->getSyntheseCepages(ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration());
     }
 
     if (count($synthese)):
 ?>
-<h3 id="synthese_cepage">Synthèse par cépages</h3>
+<h3 id="synthese_cepage">
+    Synthèse par cépages
+<?php if (ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration()): ?>
+    des produits reconnus au CVI
+<?php endif; ?>
+</h3>
 
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
@@ -260,13 +265,17 @@ $list_idu = [];
 
 <?php
     $synthese = array();
-
     if($parcellaire) {
-        $synthese = $parcellaire->getSyntheseProduitsCepages();
+        $synthese = $parcellaire->getSyntheseProduitsCepages(ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration());
     }
     if (count($synthese)):
 ?>
-<h3 id="synthese_produit">Synthèse par produits habilités</h3>
+<h3 id="synthese_produit">
+    Synthèse par produits habilités
+<?php if (ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration()): ?>
+    et reconnus au CVI
+<?php endif; ?>
+</h3>
 
 <?php if (! HabilitationClient::getInstance()->getLastHabilitation($etablissement->identifiant)): ?>
     <div class="alert alert-warning" role="alert">
