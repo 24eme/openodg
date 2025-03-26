@@ -42,7 +42,7 @@
 <?php endforeach; ?>
 </table>
 </div></div>
-<button class="btn btn-default btn-lg"><a class="btn btn-xs btn-link" href="<?php  echo url_for('registrevci_ajout_mouvement', array('id' => $registre->_id)) ?>">Ajouter un mouvement</a></button>
+<button class="btn btn-default btn-md"><a href="<?php  echo url_for('registrevci_ajout_mouvement', array('id' => $registre->_id)) ?>">Ajouter un mouvement</a></button>
 <div class="row">
     <div class="col-xs-12">
         <h3>Détails du registre VCI</h3>

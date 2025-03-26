@@ -2,42 +2,52 @@
 
 class RegistreVCIAjoutMouvementForm extends acCouchdbForm 
 {
-    protected $produits;
-    protected $date;
-    protected $lieu;
-    protected $mouvement_type;
+    protected $registre;
 
-    // $registre_VCI, $produit, $date, $lieu, $mouvement_type
-    public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) 
+    public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null)
     {
-        parent::__construct($object, $options, $CSRFSecret);
+        parent::__construct($doc, $defaults, $options, $CSRFSecret);
     }
-
 
     public function configure() 
     { 
-        $registreVCI = $this->doc;
+        $this->registre = $this->getDocument();
         $produitLibelle = [];
-        $produitLieu = [];
+        $mouvements = RegistreVCIClient::$mouvement_type;
+        $mouvement_type = [];
 
-        foreach($registreVCI->getProduits() as $produit) {
-            $produitLibelle[] = $produit->getLibelle();
-            
-            foreach($produit->getDetails() as $detail) {
-                $produitLieu[] = $detail->getStockageLibelle();
-            }            
+        foreach($this->registre->getProduits() as $produit) {
+            $produitLibelle[$produit->getProduitHash()] = $produit->getLibelle();
         }
-        
+
+        foreach($mouvements as $m) {
+            $mouvement_type[$m] = RegistreVCIClient::MOUVEMENT_LIBELLE($m);
+        }
 
         $this->setWidgets(array(
             'produit' => new sfWidgetFormChoice(array('choices' => $produitLibelle)),
-            'date' => new bsWidgetFormInputDate(array(), array()),
-            'lieu' => new sfWidgetFormChoice(array('choices' => $produitLieu)),
-            // 'mouvement_type' => new sfWidgetFormChoice(array('choices' => $produits)),
-            
+            'mouvement_type' => new sfWidgetFormChoice(array('choices' => $mouvement_type)),
+            'volume' => new sfWidgetFormInputFloat(),
         ));
         
-          $this->setValidator('produit', new sfValidatorChoice(array('choices' => array_keys($registreVCI->getProduits()))));
+        $this->setValidators(array(
+            'produit' =>  new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produitLibelle))),
+            'mouvement_type' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($mouvement_type))),
+            'volume' => new sfValidatorNumber(array('required' => true)),
+        ));
 
+        $this->widgetSchema->setNameFormat('vci_ajout_mouvement[%s]');
+    }
+
+    public function save() {
+        $registreVCI = $this->getDocument();
+        $values = $this->getValues();
+        $produit = $values['produit'];
+        $mouvement_type = $values['mouvement_type'];
+        $volume = $values['volume'];
+        $lieu_id = RegistreVCIClient::LIEU_CAVEPARTICULIERE;
+        $origine = 'Admin';
+        $registreVCI->addLigne($produit, $mouvement_type, $volume, $lieu_id, $origine);
+        $registreVCI->save();
     }
 }
