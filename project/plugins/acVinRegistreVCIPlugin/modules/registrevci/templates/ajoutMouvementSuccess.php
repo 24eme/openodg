@@ -27,12 +27,6 @@
                 </div>
             </div>
 
-                <!-- <div class="form-group">
-                    <?php # echo $form['lieu']->renderLabel("Lieu de stockage", array('class' => "col-sm-3 control-label")); ?>
-                    <div class="col-sm-7">
-                          <?php # echo $form['lieu']->render(array("placeholder" => "Lieu de stockage", "required" => true, "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
-                    </div>
-                </div> -->
             <div class="col text-center">
                 <button type="submit" class="btn btn-success btn">Valider</button>
             </div>
