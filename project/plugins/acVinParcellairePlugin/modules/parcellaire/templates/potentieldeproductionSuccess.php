@@ -10,12 +10,39 @@
         <th>Résultat</th>
     </tr>
 <?php
+    $disabled = false;
     foreach($table as $c => $t) {
-        echo "<tr";
+        echo "<tr class='";
         if (!$t['res']) {
-            echo ' class="danger"';
+            if ($disabled){
+                echo '';
+            }elseif (isset($t['impact'])) {
+                switch ($t['impact']) {
+                    case 'blocker':
+                        echo 'danger';
+                        break;
+                    case 'disabling':
+                        echo 'info';
+                        $disabled = true;
+                        break;
+                    case 'disabled':
+                        echo '';
+                        break;
+                    default:
+                        echo 'warning';
+                        break;
+                }
+            } else{
+                echo 'warning';
+            }
+        }else{
+            if ($disabled) {
+                echo '';
+            }else{
+                echo 'success';
+            }
         }
-        echo ">";
+        echo "'>";
         echo "<td>$c</td>";
         echo "<td>".implode(', ', array_keys($t['cepages']->getRawValue()))."</td>";
         echo "<td>".$t['somme']."</td>";
