@@ -16,8 +16,10 @@ class RegistreVCIAjoutMouvementForm extends acCouchdbForm
         $mouvements = RegistreVCIClient::$mouvement_type;
         $mouvement_type = [];
 
-        foreach($this->registre->getProduits() as $produit) {
-            $produitLibelle[$produit->getProduitHash()] = $produit->getLibelle();
+        foreach(ConfigurationClient::getCurrent()->getProduits() as $produit) {
+            if($produit->hasRendementVci()){
+                $produitLibelle[$produit->getHash()] = $produit->getLibelleComplet();
+            }
         }
 
         foreach($mouvements as $m) {
@@ -25,13 +27,15 @@ class RegistreVCIAjoutMouvementForm extends acCouchdbForm
         }
 
         $this->setWidgets(array(
-            'produit' => new sfWidgetFormChoice(array('choices' => $produitLibelle)),
-            'mouvement_type' => new sfWidgetFormChoice(array('choices' => $mouvement_type)),
-            'volume' => new sfWidgetFormInputFloat(),
+            'produit' => new bsWidgetFormChoice(array('choices' => array_merge(['' => ''], $produitLibelle))),
+            'lieu' => new sfWidgetFormInput(),
+            'mouvement_type' => new bsWidgetFormChoice(array('choices' =>  array_merge(['' => ''], $mouvement_type))),
+            'volume' => new bsWidgetFormInputFloat(),
         ));
         
         $this->setValidators(array(
             'produit' =>  new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produitLibelle))),
+            'lieu' => new sfValidatorString(array("required" => false)),
             'mouvement_type' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($mouvement_type))),
             'volume' => new sfValidatorNumber(array('required' => true)),
         ));
@@ -45,7 +49,11 @@ class RegistreVCIAjoutMouvementForm extends acCouchdbForm
         $produit = $values['produit'];
         $mouvement_type = $values['mouvement_type'];
         $volume = $values['volume'];
-        $lieu_id = RegistreVCIClient::LIEU_CAVEPARTICULIERE;
+        if(empty($values['lieu'])) {
+            $lieu_id = RegistreVCIClient::LIEU_CAVEPARTICULIERE;
+        } else {
+            $lieu_id = CompteClient::getInstance()->find($this->values['lieu'])->getEtablissementObj()->getIdentifiant();
+        }
         $origine = 'Admin';
         $registreVCI->addLigne($produit, $mouvement_type, $volume, $lieu_id, $origine);
         $registreVCI->save();

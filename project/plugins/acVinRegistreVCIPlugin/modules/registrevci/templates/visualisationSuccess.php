@@ -42,7 +42,9 @@
 <?php endforeach; ?>
 </table>
 </div></div>
-<button class="btn btn-default btn-md"><a href="<?php  echo url_for('registrevci_ajout_mouvement', array('id' => $registre->_id)) ?>">Ajouter un mouvement</a></button>
+<?php if($sf_user->isAuthenticated() && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+    <a class="btn btn-default btn-md" href="<?php  echo url_for('registrevci_ajout_mouvement', array('id' => $registre->_id)) ?>">Ajouter un mouvement</a>
+<?php endif; ?>
 <div class="row">
     <div class="col-xs-12">
         <h3>Détails du registre VCI</h3>
