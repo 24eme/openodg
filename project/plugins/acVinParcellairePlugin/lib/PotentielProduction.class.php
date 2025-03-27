@@ -2,7 +2,9 @@
 
 class PotentielProduction {
 
-    private $parcellaire;
+    private $parcellaire = null;
+    private $produits = [];
+
     public $table_potentiel = [];
     public $potentiel_de_production = [];
     public $encepagement = [];
@@ -61,6 +63,10 @@ class PotentielProduction {
             $task = new Simplex\Task(new Simplex\Func($this->addemptycepage($categories['cepages_couleur'],$categories['cepages_couleur'])));
 
             $this->table_potentiel[$groupe_synthese] = [];
+
+            $ppproduit = new PotentielProductionProduit($this, $groupe_key, $groupe_synthese, $categories['cepages_couleur']);
+            $this->produits[$groupe_key] = $ppproduit;
+
             foreach(ParcellaireConfiguration::getInstance()->getGroupeRegles($groupe_key) as $regle) {
                 $regle_nom = $regle['fonction'].'('.$regle['category'].') '.$regle['sens'].' '.$regle['limit'];
                 $this->table_potentiel[$groupe_synthese][$regle_nom] = [];
@@ -144,6 +150,8 @@ class PotentielProduction {
                     default:
                         throw new sfException('Fonction de Potentiel de production "'.$regle['fonction'].'" non gérée');
                 }
+                $pprule = new PotentielProductionRule($ppproduit, $regle_nom, $this->table_potentiel[$groupe_synthese][$regle_nom]);
+                $ppproduit->addRule($pprule);
             }
             foreach(array_keys($categories['cepages_couleur']) as $c) {
                 if ($categories['cepages_couleur'][$c]) {
@@ -167,6 +175,8 @@ class PotentielProduction {
                 $encepagement = array_sum($categories['cepages_couleur']);
             }
             $this->encepagement[$groupe_synthese] = round($encepagement, 5);
+            $ppproduit->setSuperficieMax($this->potentiel_de_production[$groupe_synthese]);
+            $ppproduit->setSuperficieEncepagement($this->encepagement[$groupe_synthese]);
         }
     }
 
@@ -180,6 +190,10 @@ class PotentielProduction {
         }
         ksort($original);
         return $original;
+    }
+
+    public function getProduits() {
+        return array_values($this->produits);
     }
 
 }
