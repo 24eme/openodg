@@ -547,6 +547,9 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public static function generateTextePassageMouvement($nb)
     {
+        if (!$nb) {
+            return null;
+        }
         $detail = sprintf("%dme passage", $nb);
         if ($nb == 1) {
             $detail = "1er passage";
