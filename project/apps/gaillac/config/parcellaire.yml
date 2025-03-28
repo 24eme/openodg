@@ -1,0 +1,4 @@
+all:
+  configuration:
+    parcellaire:
+      show_filter_produits_configuration: false

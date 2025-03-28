@@ -443,7 +443,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function isTotal()
     {
-        if ($this->getLotOrigine() == null) {
+        if (!$this->getLotOrigine()) {
             return $this->changement_volume == $this->origine_volume;
         }
 
@@ -664,10 +664,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         if($this->isTotal()) {
-            if ($this->isDeclassement()) {
-                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassement total"));
-            }else{
-                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changement total : ".$this->lots[0]->getLibelle()));
+            if ($this->lots[0]->volume) {
+                if ($this->isDeclassement()) {
+                    $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassement total"));
+                }else{
+                    $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changement total : ".$this->lots[0]->getLibelle()));
+                }
             }
 
         }else{
@@ -682,6 +684,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         foreach ($this->lots as $i => $lot) {
+            if (!$lot->volume) {
+                continue;
+            }
             $lot->updateDocumentDependances();
             if ($this->isDeclassement() && ($this->isTotal() || $i == 1)) {
                 continue;
