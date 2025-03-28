@@ -316,7 +316,7 @@ class Parcellaire extends BaseParcellaire {
     public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null) {
         $synthese = array();
         foreach($this->getParcelles() as $p) {
-            if ($only_produit_connu && !$p->produit_hash) {
+            if ($filter_produit_hash && is_string($filter_produit_hash) && strpos($p->produit_hash, $filter_produit_hash) === false) {
                 continue;
             }
             if ($filter_insee && !in_array($p->code_commune, $filter_insee)) {
