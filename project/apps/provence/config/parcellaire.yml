@@ -93,7 +93,7 @@ all:
               sens: "<="
               limit: 0.05
         cdp_rose:
-          synthese_libelle: "Côtes de Provence - Rose"
+          synthese_libelle: "Côtes de Provence - Rosé"
           filter_produit_hash: 'appellations/CDP'
           categories:
             cepages_principaux: ['GRENACHE N', 'SYRAH N', 'MOURVEDRE N', 'TIBOUREN N', 'CINSAUT N']
