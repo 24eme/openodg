@@ -133,7 +133,7 @@ class LotForm extends acCouchdbObjectForm
 
     public function getMillesimes() {
         $m = array('NM', 'nm');
-        for($i = 0 ; $i < 10 ; $i++) {
+        for($i = 0 ; $i < 15 ; $i++) {
             $m[] = date('Y') - $i;
         }
         return $m;
