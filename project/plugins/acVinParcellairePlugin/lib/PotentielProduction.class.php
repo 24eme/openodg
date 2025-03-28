@@ -5,9 +5,9 @@ class PotentielProduction {
     private $parcellaire = null;
     private $produits = [];
 
-    public $table_potentiel = [];
-    public $potentiel_de_production = [];
-    public $encepagement = [];
+    private $table_potentiel = [];
+    private $potentiel_de_production = [];
+    private $encepagement = [];
 
     public function __construct(Parcellaire $parcellaire) {
         $this->parcellaire = $parcellaire;

@@ -7,7 +7,7 @@ class PotentielProductionProduit {
     private $rules = [];
     private $superficie_encepagement;
     private $superficie_max;
-    private $cepages = [];
+    private $cepages_superficie = [];
 
     private $encepagement;
     private $potentiel_production;
@@ -16,6 +16,7 @@ class PotentielProductionProduit {
         $this->potentiel_production = $p;
         $this->key = $key;
         $this->libelle = $libelle;
+        $this->cepages_superficie = $cepages;
     }
 
     public function addRule($r) {
@@ -34,11 +35,19 @@ class PotentielProductionProduit {
     }
 
     public function getSuperficieEncepagement() {
-        return $this->superficie_encepagement;
+        return round($this->superficie_encepagement, 5);
     }
 
     public function getSuperficieMax() {
-        return floatval($this->superficie_max);
+        return round(floatval($this->superficie_max), 5);
+    }
+
+    public function hasLimit() {
+        return $this->getSuperficieEncepagement() != $this->getSuperficieMax();
+    }
+
+    public function getCepages() {
+        return array_keys($this->cepages_superficie);
     }
 
     public function getRules() {
