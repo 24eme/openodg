@@ -310,12 +310,18 @@ class Parcellaire extends BaseParcellaire {
         if (!$this->habilitation) {
             return $this->getConfiguration()->getProduitsByCepage($cepage);
         }
-        return $this->habilitation->getProduitsByCepage($cepage);
+        return $this->habilitation->getProduitsByCepage($cepage, $this->getDate());
     }
 
-    public function getSyntheseCepages() {
+    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null) {
         $synthese = array();
         foreach($this->getParcelles() as $p) {
+            if ($only_produit_connu && !$p->produit_hash) {
+                continue;
+            }
+            if ($filter_insee && !in_array($p->code_commune, $filter_insee)) {
+                continue;
+            }
             $cepage = $p->getCepage();
             if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
                 $cepage .= ' - jeunes vignes';
@@ -330,13 +336,22 @@ class Parcellaire extends BaseParcellaire {
         return $synthese;
     }
 
-    public function getSyntheseProduitsCepages() {
+    public function getSyntheseProduitsCepages($filter_produit_hash = null, $filter_insee = null) {
         $synthese = array();
         foreach($this->getParcelles() as $p) {
+            if ($filter_produit_hash === true && !$p->produit_hash) {
+                continue;
+            }
+            if ($filter_produit_hash && is_string($filter_produit_hash) && strpos($p->produit_hash, $filter_produit_hash) === false) {
+                continue;
+            }
+            if ($filter_insee && !in_array($p->code_commune, $filter_insee)) {
+                continue;
+            }
             $cepage = $p->getCepage();
             $libelles = array();
             foreach($this->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
-                $libelles[] = $prod->formatProduitLibelle("%a% %m% %l% - %co% %ce%");
+                $libelles[] = preg_replace('/ +$/', '', $prod->formatProduitLibelle("%a% %m% %l% - %co% %ce%"));
             }
             if (!count($libelles)) {
                 $libelles[] = '';

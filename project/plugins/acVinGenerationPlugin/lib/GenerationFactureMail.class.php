@@ -63,7 +63,7 @@ class GenerationFactureMail extends GenerationAbstract {
         $fp = fopen($this->getLogPath(), 'a');
 
         if($header) {
-            fputcsv($fp, array("Date", "Numéro de facture", "Identifiant Opérateur", "Raison sociale", "Email", "Statut", "Commentaire", "Facture ID"));
+            fputcsv($fp, array("Date", "Numéro de facture", "Identifiant Opérateur", "Raison sociale", "Email", "Statut", "Commentaire", "Facture ID", "Lien de téléchargement"));
         }
 
         fputcsv($fp, $this->getLog($factureId, $statut, $commentaire, $date));
@@ -84,7 +84,7 @@ class GenerationFactureMail extends GenerationAbstract {
             $email = $facture->getSociete()->getEmailCompta();
         }
 
-        return array($date, $facture->getNumeroOdg(), $facture->identifiant, $facture->declarant->raison_sociale, $email, $statut, $commentaire, $facture->_id);
+        return array($date, $facture->getNumeroOdg(), $facture->identifiant, $facture->declarant->raison_sociale, $email, $statut, $commentaire, $facture->_id, ProjectConfiguration::getAppRouting()->generate('piece_public_view', array('doc_id' => $facture->_id, 'auth' => UrlSecurity::generateAuthKey($facture->_id)), true));
     }
 
     public function generate() {
