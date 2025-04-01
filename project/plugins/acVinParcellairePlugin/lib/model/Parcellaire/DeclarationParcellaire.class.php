@@ -16,6 +16,9 @@ class DeclarationParcellaire extends acCouchdbDocument {
     public function getParcelles() {
         $parcelles = [];
         if ($this->declaration && count($this->declaration)) foreach ($this->declaration->getParcelles() as $p) {
+            if (isset($parcelles[$p->getParcelleId()])) {
+                throw new sfException('parcelleid '.$p->getParcelleId().' already exists');
+            }
             $parcelles[$p->getParcelleId()] = $p;
         }
         return $parcelles;

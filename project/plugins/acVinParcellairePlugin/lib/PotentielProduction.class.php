@@ -64,4 +64,13 @@ class PotentielProduction {
         return $this->parcellaire_affectation;
     }
 
+    public function hasPotentiels() {
+        foreach ($this->produits as $key => $prod) {
+            if ($prod->hasPotentiel()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

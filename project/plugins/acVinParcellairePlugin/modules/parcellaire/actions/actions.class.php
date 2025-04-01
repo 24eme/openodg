@@ -281,6 +281,7 @@ class parcellaireActions extends sfActions {
     public function executePotentieldeproduction(sfWebRequest $request) {
         $this->secureTeledeclarant();
         $this->parcellaire = $this->getRoute()->getParcellaire();
+        $this->etablissement = $this->getRoute()->getEtablissement();
         $this->potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->parcellaire);
     }
 }
