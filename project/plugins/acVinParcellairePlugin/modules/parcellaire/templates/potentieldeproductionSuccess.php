@@ -1,5 +1,5 @@
 <h1><a href="<?php echo url_for('parcellaire_visualisation', $parcellaire); ?>">Parcellaire</a> / Potentiel de production</h1>
-<?php foreach($potentiel->getProduits() as $produit): ?>
+<?php foreach($potentiel->getProduits() as $produit): if ($produit->hasPotentiel()): ?>
 <h2><?php echo $produit->getLibelle(); ?></h2>
 <table class="table">
     <tr>
@@ -44,4 +44,5 @@
 
 <h3>Potentiel : <?php echo $produit->getSuperficieMax(); ?> ha</h3>
 <h3>Superficie non revendicable : <?php echo $produit->getSuperficieEncepagement() - $produit->getSuperficieMax(); ?> ha</h3>
+<?php endif; ?>
 <?php endforeach; ?>

@@ -264,11 +264,11 @@ $list_idu = [];
 <?php endif; ?>
 
 <?php
-    $synthese = array();
+    $potentiel = null;
     if($parcellaire) {
-        $synthese = $parcellaire->getSyntheseProduitsCepages(ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration());
+        $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($parcellaire->getRawValue());
     }
-    if (count($synthese)):
+    if ($potentiel):
 ?>
 <h3 id="synthese_produit">
     Synthèse par produits habilités
@@ -288,31 +288,31 @@ $list_idu = [];
     <tr>
         <th class="col-xs-3">Produit</th>
         <th class="col-xs-8">Cépages autorisés <small class="text-muted">(hors jeunes vignes)</small></th>
-        <th class="col-xs-1 text-center">Superficie max. <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
+        <th class="col-xs-1 text-center">Superficie Pot. max. <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
+        <th class="col-xs-1 text-center">Encépa- gement <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
     </tr>
   </thead>
   <tbody>
 <?php
     $cepages_autorises = [];
-    foreach($synthese as $produit_libelle => $sous_synthese):
-        $cepages_autorises = [];
-        foreach($sous_synthese as $totalcepage => $cepages):
-        foreach($cepages as $cepage_libelle => $s):
-            if ($cepage_libelle == 'Total' || strpos($produit_libelle, 'XXXX') !== false): ?>
+    $has_affectation = false;
+    foreach($potentiel->getProduits() as $ppproduit): ?>
             <tr>
-                <td><?php echo str_replace('XXXX', '', $produit_libelle); ?></td>
-                <td><?php echo implode(', ', $cepages_autorises); ?></td>
-                <td class="text-right"><?php echoSuperficie($s['superficie_max']); ?></td>
+                <td>
+                    <?php echo $ppproduit->getLibelle(); ?>
+                    <?php if ($ppproduit->parcellaire2refIsAffectation()) { echo ' <b>*</b> '; $has_affectation = true; } ?>
+                </td>
+                <td><?php echo implode(', ', $ppproduit->getCepages()); ?></td>
+                <td class="text-right<?php if ($ppproduit->hasSuperificieMax() && $ppproduit->hasLimit()) { echo " warning"; } ?>"><?php if ($ppproduit->hasSuperificieMax()) echoSuperficie($ppproduit->getSuperficieMax()); ?></td>
+                <td class="text-right<?php if (!$ppproduit->hasLimit()) { echo " success"; } ?>"><?php echoSuperficie($ppproduit->getSuperficieEncepagement()); ?></td>
             </tr>
-<?php       elseif(strpos($cepage_libelle, 'XXXX') === false):
-                $cepages_autorises[] = $cepage_libelle;
-            endif;
-        endforeach;
-        endforeach;
-    endforeach;
-?>
+<?php endforeach; ?>
   </tbody>
 </table>
+
+<?php if ($has_affectation) : ?>
+<p><b>*</b> : Pour ce produit, les superficies sont issues de l'affectation et non du parcellaire.</p>
+<?php endif; ?>
 <?php endif; ?>
 
 <?php else: ?>

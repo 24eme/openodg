@@ -42,8 +42,10 @@ class ExportComptesCsv
             "Mot de passe",
             "Date de dernière modification",
             "Tags",
+            "Duplicata",
             "N° Compte Type"
         ];
+
     }
 
     public function __construct($header = true)
@@ -119,6 +121,7 @@ class ExportComptesCsv
                 preg_replace('/}.*/', '}', $compte->mot_de_passe),
                 $compte->date_modification,
                 $this->compte2strtags($compte),
+                $compte->isDuplicate(),
                 $compte->_id
             ];
 
