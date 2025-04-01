@@ -4,10 +4,9 @@ class parcellaireManquantActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
     	$etablissement = $this->getRoute()->getEtablissement();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
-
         $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() * 1);
         $parcellaireManquant = ParcellaireManquantClient::getInstance()->createDocFromPrevious($etablissement->identifiant, $periode);
+        $this->secure(ParcellaireSecurity::EDITION, $parcellaireManquant);
         $parcellaireManquant->save();
 
         return $this->redirect('parcellairemanquant_edit', $parcellaireManquant);

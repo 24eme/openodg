@@ -84,8 +84,7 @@ class DRevValidation extends DocumentValidation {
             foreach ($revendicationProduit->getProduitsVCI() as $produitVCI) {
                 $stockVCIFinal += $produitVCI->getStockFinalCalcule();
             }
-
-            if ($stockVCIFinal != 0) {
+            if (round($stockVCIFinal, 2) != 0) {
                 $this->addPoint(self::TYPE_ERROR, 'repartition_vci', sprintf("%s", $revendicationProduit->getLibelleComplet()), $this->generateUrl('drev_revendication_vci', array('sf_subject' => $this->document)));
             }
         }

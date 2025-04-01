@@ -31,6 +31,7 @@ all:
             - "TRANQ/appellations/MTS"
           habilitation_produits: "/Menetou-Salon/"
           facture_exercice: 'viticole'
+          facture_block_missing: true
         QUINCY:
           # nom: "Syndicat des Vignerons de Châteauneuf-du-Pape"
           # adresse: "25 avenue Général De Gaulle, 84231 Châteauneuf-du-Pape"
