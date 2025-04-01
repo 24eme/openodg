@@ -21,8 +21,7 @@ class PotentielProductionRule {
         $this->somme = 0;
         $this->limit = null;
         $this->cepages_superficie = $this->potentiel_production_produit->getCepagesFromCategorie($this->regle['category']);
-
-        $encepagement = array_sum($this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur'));
+        $encepagement = $this->potentiel_production_produit->getSuperficieEncepagement();
 
         $this->name = $this->regle['fonction'].'('.$this->regle['category'].') '.$this->regle['sens'].' '.$this->regle['limit'];
 

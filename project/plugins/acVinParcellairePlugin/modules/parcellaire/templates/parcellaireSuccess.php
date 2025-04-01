@@ -266,7 +266,7 @@ $list_idu = [];
 <?php
     $potentiel = null;
     if($parcellaire) {
-        $potentiel = new PotentielProduction($parcellaire->getRawValue());
+        $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($parcellaire->getRawValue());
     }
     if ($potentiel):
 ?>
@@ -295,16 +295,24 @@ $list_idu = [];
   <tbody>
 <?php
     $cepages_autorises = [];
+    $has_affectation = false;
     foreach($potentiel->getProduits() as $ppproduit): ?>
             <tr>
-                <td><?php echo $ppproduit->getLibelle(); ?></td>
+                <td>
+                    <?php echo $ppproduit->getLibelle(); ?>
+                    <?php if ($ppproduit->parcellaire2refIsAffectation()) { echo ' <b>*</b> '; $has_affectation = true; } ?>
+                </td>
                 <td><?php echo implode(', ', $ppproduit->getCepages()); ?></td>
-                <td class="text-right<?php if ($ppproduit->hasLimit()) { echo " warning"; } ?>"><?php echoSuperficie($ppproduit->getSuperficieMax()); ?></td>
+                <td class="text-right<?php if ($ppproduit->hasSuperificieMax() && $ppproduit->hasLimit()) { echo " warning"; } ?>"><?php if ($ppproduit->hasSuperificieMax()) echoSuperficie($ppproduit->getSuperficieMax()); ?></td>
                 <td class="text-right<?php if (!$ppproduit->hasLimit()) { echo " success"; } ?>"><?php echoSuperficie($ppproduit->getSuperficieEncepagement()); ?></td>
             </tr>
 <?php endforeach; ?>
   </tbody>
 </table>
+
+<?php if ($has_affectation) : ?>
+<p><b>*</b> : Pour ce produit, les superficies sont issues de l'affectation et non du parcellaire.</p>
+<?php endif; ?>
 <?php endif; ?>
 
 <?php else: ?>

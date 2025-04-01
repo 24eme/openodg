@@ -3,31 +3,64 @@
 class PotentielProduction {
 
     private $parcellaire = null;
+    private $parcellaire_affectation = null;
     private $produits = [];
 
     private $table_potentiel = [];
     private $potentiel_de_production = [];
     private $encepagement = [];
 
-    public function __construct(Parcellaire $parcellaire) {
-        $this->parcellaire = $parcellaire;
+    public static function retrievePotentielProductionFromParcellaire(Parcellaire $parcellaire, $date = null) {
+        $affectation = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($parcellaire->identifiant, $date);
+        return new PotentielProduction($parcellaire, $affectation);
+    }
 
-        foreach (ParcellaireConfiguration::getInstance()->getPotentielGroupes() as $groupe_key) {
-            $groupe_synthese = ParcellaireConfiguration::getInstance()->getGroupeSyntheseLibelle($groupe_key);
-            $synthese = $this->parcellaire->getSyntheseProduitsCepages(ParcellaireConfiguration::getInstance()->getGroupeFilterProduitHash($groupe_key), ParcellaireConfiguration::getInstance()->getGroupeFilterINSEE($groupe_key));
-            if (!count($synthese)) {
+    public static function retrievePotentielProductionFromIdentifiant($identifiant, $date = null) {
+        $parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($identifiant, $date);
+        $affectation = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($identifiant, $date);
+        return new PotentielProduction($parcellaire, $affectation);
+    }
+
+    public function __construct(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null) {
+        $this->parcellaire = $parcellaire;
+        $this->parcellaire_affectation = $affectation;
+
+        foreach($this->getLibellesPotentielProduits() as $k) {
+            if (!$k) {
                 continue;
             }
-            if (!isset($synthese[$groupe_synthese])) {
-                continue;
+            $ppproduit = null;
+            $ppproduit = new PotentielProductionProduit($this, $k);
+            if ($ppproduit && $ppproduit->hasEncepagement()) {
+                $this->produits[$k] = $ppproduit;
             }
-            $ppproduit = new PotentielProductionProduit($this, $groupe_key, $groupe_synthese, $synthese);
-            $this->produits[$groupe_key] = $ppproduit;
         }
+    }
+
+    private function getLibellesPotentielProduits() {
+        $libelles = [];
+        foreach($this->parcellaire->getParcelles() as $p) {
+            $cepage = $p->getCepage();
+            foreach($this->parcellaire->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
+                $l = preg_replace('/ +$/', '', $prod->formatProduitLibelle("%a% %m% %l% - %co% %ce%"));
+                $libelles[$l] = $l;
+            }
+            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
+                $libelles['XXXXjeunes vignes'] = 'XXXXjeunes vignes';
+            }
+        }
+        return array_keys($libelles);
     }
 
     public function getProduits() {
         return array_values($this->produits);
+    }
+
+    public function getParcellaire() {
+        return $this->parcellaire;
+    }
+    public function getParcellaireAffectation() {
+        return $this->parcellaire_affectation;
     }
 
 }
