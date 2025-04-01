@@ -857,4 +857,9 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         }
         return (count($a));
     }
+
+    public function isDuplicate() {
+        return ($this->isSameAdresseThanSociete() && $this->raison_sociale == $this->getSociete()->raison_sociale);
+    }
+
 }
