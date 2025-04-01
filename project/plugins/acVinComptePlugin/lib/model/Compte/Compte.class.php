@@ -859,7 +859,16 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function isDuplicate() {
-        return ($this->isSameAdresseThanSociete() && $this->raison_sociale == $this->getSociete()->raison_sociale);
+        if ($this->getCompteType() == "SOCIETE") {
+            return false;
+        }
+        if ($this->getNomAAfficher() == $this->getSociete()->raison_sociale) {
+            if ($this->isSameAdresseThanSociete()) {
+                return "Identique";
+            }
+            return 'Meme raison sociale';
+        } else {
+            return false;
+        }
     }
-
 }
