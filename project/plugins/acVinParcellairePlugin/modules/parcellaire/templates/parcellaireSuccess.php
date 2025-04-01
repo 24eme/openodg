@@ -303,7 +303,7 @@ $list_idu = [];
                     <?php if ($ppproduit->parcellaire2refIsAffectation()) { echo ' <b>*</b> '; $has_affectation = true; } ?>
                 </td>
                 <td><?php echo implode(', ', $ppproduit->getCepages()); ?></td>
-                <td class="text-right<?php if ($ppproduit->hasSuperificieMax() && $ppproduit->hasLimit()) { echo " warning"; } ?>"><?php if ($ppproduit->hasSuperificieMax()) echoSuperficie($ppproduit->getSuperficieMax()); ?></td>
+                <td class="text-right<?php if ($ppproduit->hasSuperificieMax() && $ppproduit->hasLimit()) { if ($ppproduit->getSuperficieMax() > 0) { echo " warning"; } else {echo " danger"; } } ?>"><?php if ($ppproduit->hasSuperificieMax()) echoSuperficie($ppproduit->getSuperficieMax()); ?></td>
                 <td class="text-right<?php if (!$ppproduit->hasLimit()) { echo " success"; } ?>"><?php echoSuperficie($ppproduit->getSuperficieEncepagement()); ?></td>
             </tr>
 <?php endforeach; ?>

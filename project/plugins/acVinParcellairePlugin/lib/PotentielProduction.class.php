@@ -49,6 +49,7 @@ class PotentielProduction {
                 $libelles['XXXXjeunes vignes'] = 'XXXXjeunes vignes';
             }
         }
+        ksort($libelles);
         return array_keys($libelles);
     }
 
