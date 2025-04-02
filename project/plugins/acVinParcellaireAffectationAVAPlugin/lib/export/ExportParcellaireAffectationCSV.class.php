@@ -112,7 +112,7 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
         $export .= $parcelle->getAppellation()->getLibelle() . ";";
         $export .= str_replace(array('"',';'),array('',''),$parcelle->getLieuLibelle()) . ";";
         $export .= $parcelle->getCepageLibelle() . ";";
-        $export .= sprintf("%01.02f", $parcelle->superficie) . ";";
+        $export .= $parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE) . ";";
         $export .= $this->parcellaire->declarant->cvi . ";";
         $export .= $this->parcellaire->declarant->nom . ";";
         $export .= $this->parcellaire->declarant->adresse . ";";
