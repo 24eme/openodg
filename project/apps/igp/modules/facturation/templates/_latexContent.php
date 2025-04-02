@@ -217,7 +217,6 @@ le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?>
 \textbf{Modalités de paiements} \\
 <?= escape_string_for_latex($facture->modalite_paiement) ?>
 <?php endif; ?>
-\vspace{-0.6cm}
 \begin{itemize}[noitemsep, topsep=0mm, left=-0.25cm..0.2cm]
     \item[-] Nos conditions de vente ne prévoient pas d'escompte pour paiement anticipé
     \item[-] Conditions de règlement : A réception de la facture
