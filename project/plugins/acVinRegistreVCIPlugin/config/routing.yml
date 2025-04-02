@@ -7,3 +7,7 @@ registrevci_visualisation:
     type:     object
   requirements:
     sf_method: [get, post]
+
+registrevci_ajout_mouvement:
+  url: /registrevci/ajout-mouvement/:id
+  param: { module: registrevci, action: ajoutMouvement }

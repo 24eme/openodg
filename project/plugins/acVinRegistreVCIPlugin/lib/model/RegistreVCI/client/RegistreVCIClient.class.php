@@ -13,6 +13,8 @@ class RegistreVCIClient extends acCouchdbClient implements FacturableClient {
 
     const LIEU_CAVEPARTICULIERE = 'CAVEPARTICULIERE';
 
+    public static $mouvement_type = array(self::MOUVEMENT_CONSTITUE, self::MOUVEMENT_RAFRAICHI, self::MOUVEMENT_COMPLEMENT, self::MOUVEMENT_DESTRUCTION, self::MOUVEMENT_SUBSTITUTION);
+
     public static function MOUVEMENT_SENS($m) {
       $sens = array(self::MOUVEMENT_CONSTITUE => 1, self::MOUVEMENT_RAFRAICHI => -1, self::MOUVEMENT_COMPLEMENT => -1, self::MOUVEMENT_DESTRUCTION => -1, self::MOUVEMENT_SUBSTITUTION => -1);
       return $sens[$m];
