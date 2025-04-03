@@ -192,7 +192,7 @@ class PotentielProductionProduit {
 
     private static $cache_init = [];
     private static function cacheSynthese($parcellaire2ref, $filter_produit_hash, $filter_insee) {
-        $cache_id = $parcellaire2ref->_id.'@'.$filter_produit_hash.'@'.$filter_insee;
+        $cache_id = sprintf('%s@%s@%s', $parcellaire2ref->_id, strval($filter_produit_hash), ($filter_insee) ? implode(',',$filter_insee) : '');
         if (!isset(self::$cache_init[$cache_id])) {
             self::$cache_init[$cache_id] = self::realSynthese($parcellaire2ref, $filter_produit_hash, $filter_insee);
         }
