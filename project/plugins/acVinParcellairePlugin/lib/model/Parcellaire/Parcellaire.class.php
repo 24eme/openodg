@@ -314,26 +314,7 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null) {
-        $synthese = array();
-        foreach($this->getParcelles() as $p) {
-            if ($filter_produit_hash && is_string($filter_produit_hash) && strpos($p->produit_hash, $filter_produit_hash) === false) {
-                continue;
-            }
-            if ($filter_insee && !in_array($p->code_commune, $filter_insee)) {
-                continue;
-            }
-            $cepage = $p->getCepage();
-            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
-                $cepage .= ' - jeunes vignes';
-            }
-            if (!isset($synthese[$cepage])) {
-                $synthese[$cepage] = array();
-                $synthese[$cepage]['superficie'] = 0;
-            }
-            $synthese[$cepage]['superficie'] = round($synthese[$cepage]['superficie'] + $p->superficie, 6);
-        }
-        ksort($synthese);
-        return $synthese;
+        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee);
     }
 
     public function getSuperficieTotale($avec_jv = true) {

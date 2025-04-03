@@ -57,7 +57,10 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
                 $this->set('superficie', $superficie);
             }
         }
-
+        //On préserve les usages antérieurs où la superficie concernées et superficie_affectation
+        if ($this->exist('superficie_affectation')) {
+            return $this->get('superficie_affectation');
+        }
         if (! $this->getParcelleFromParcellaire()) {
             return $superficie;
         }
