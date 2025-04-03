@@ -108,6 +108,11 @@ all:
               sens: ">="
               limit: 1.5
             -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
+            -
               fonction: 'SAppliqueSiProportionSomme'
               category: 'cepages_principaux'
               sens: ">="
@@ -160,6 +165,11 @@ all:
               sens: ">="
               limit: 1.50
             -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
+            -
               fonction: 'SAppliqueSiProportionSomme'
               category: 'cepages_principaux'
               sens: ">="
@@ -191,6 +201,11 @@ all:
               category: 'cepages_toutes_couleurs'
               sens: ">="
               limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
             -
               fonction: 'SAppliqueSiProportionSomme'
               category: 'cepages_principaux'
@@ -224,6 +239,11 @@ all:
               category: 'cepages_toutes_couleurs'
               sens: ">="
               limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
             -
               fonction: 'SAppliqueSiProportionSomme'
               category: 'cepages_principaux'
@@ -264,6 +284,11 @@ all:
               sens: ">="
               limit: 1.50
             -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
+            -
               fonction: 'ProportionSomme'
               category: 'cepage_vermentino'
               sens: ">="
@@ -292,6 +317,11 @@ all:
               category: 'cepages_toutes_couleurs'
               sens: ">="
               limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
             -
               fonction: "Nombre"
               category: 'cepages_principaux'
@@ -327,6 +357,11 @@ all:
               category: 'cepages_toutes_couleurs'
               sens: ">="
               limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
             -
               fonction: "Nombre"
               category: 'cepages_principaux'
@@ -366,6 +401,11 @@ all:
               sens: ">="
               limit: 1.50
             -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
+            -
               fonction: 'ProportionSomme'
               category: 'cepage_principal'
               sens: ">="
@@ -392,6 +432,11 @@ all:
               category: 'cepages_toutes_couleurs'
               sens: ">="
               limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
             -
               fonction: "ProportionSomme"
               category: 'cepages_principaux'
@@ -445,6 +490,11 @@ all:
               limit: 1.50
             -
               fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
+            -
+              fonction: "ProportionSomme"
               category: 'cepages_principaux'
               sens: ">="
               limit: 0.8
@@ -487,6 +537,11 @@ all:
               sens: ">="
               limit: 1.50
             -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
+            -
               fonction: "ProportionChaque"
               category: 'cepages'
               sens: "<="
@@ -506,6 +561,11 @@ all:
               category: 'cepages_toutes_couleurs'
               sens: ">="
               limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
             -
               fonction: "ProportionSomme"
               category: 'cepages_principaux'
@@ -540,6 +600,11 @@ all:
               sens: ">="
               limit: 1.50
             -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
+            -
               fonction: 'ProportionSomme'
               category: 'cepage_principal'
               sens: ">="
@@ -559,6 +624,11 @@ all:
               category: 'cepages_toutes_couleurs'
               sens: ">="
               limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
             -
               fonction: "ProportionSomme"
               category: 'cepages_principaux'
@@ -599,6 +669,11 @@ all:
               category: 'cepages_toutes_couleurs'
               sens: ">="
               limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
             -
               fonction: "ProportionSomme"
               category: 'cepages_principaux'
@@ -645,6 +720,11 @@ all:
               limit: 1.50
             -
               fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
+            -
+              fonction: "ProportionSomme"
               category: 'cepages_principaux'
               sens: ">="
               limit: 0.8
@@ -674,6 +754,11 @@ all:
               category: 'cepages_toutes_couleurs'
               sens: ">="
               limit: 1.50
+            -
+              fonction: "ProportionSomme"
+              category: 'cepages_couleur'
+              sens: "<="
+              limit: 1
             -
               fonction: "ProportionSomme"
               category: 'cepages_principaux'
