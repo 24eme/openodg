@@ -49,6 +49,7 @@ class PotentielProduction {
                 $libelles['XXXXjeunes vignes'] = 'XXXXjeunes vignes';
             }
         }
+        ksort($libelles);
         return array_keys($libelles);
     }
 
@@ -61,6 +62,15 @@ class PotentielProduction {
     }
     public function getParcellaireAffectation() {
         return $this->parcellaire_affectation;
+    }
+
+    public function hasPotentiels() {
+        foreach ($this->produits as $key => $prod) {
+            if ($prod->hasPotentiel()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

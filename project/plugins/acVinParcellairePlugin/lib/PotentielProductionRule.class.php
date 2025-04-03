@@ -122,7 +122,7 @@ class PotentielProductionRule {
     }
 
     public function getImpact() {
-        if ($this->res && $this->rule_type) {
+        if (!$this->res && $this->rule_type) {
             return $this->rule_type;
         }
         return null;

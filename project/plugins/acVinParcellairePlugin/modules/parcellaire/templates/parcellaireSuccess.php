@@ -303,18 +303,27 @@ $list_idu = [];
                     <?php if ($ppproduit->parcellaire2refIsAffectation()) { echo ' <b>*</b> '; $has_affectation = true; } ?>
                 </td>
                 <td><?php echo implode(', ', $ppproduit->getCepages()); ?></td>
-                <td class="text-right<?php if ($ppproduit->hasSuperificieMax() && $ppproduit->hasLimit()) { echo " warning"; } ?>"><?php if ($ppproduit->hasSuperificieMax()) echoSuperficie($ppproduit->getSuperficieMax()); ?></td>
+                <td class="text-right<?php if ($ppproduit->hasSuperificieMax() && $ppproduit->hasLimit()) { if ($ppproduit->getSuperficieMax() > 0) { echo " warning"; } else {echo " danger"; } } ?>"><?php if ($ppproduit->hasSuperificieMax()) echoSuperficie($ppproduit->getSuperficieMax()); ?></td>
                 <td class="text-right<?php if (!$ppproduit->hasLimit()) { echo " success"; } ?>"><?php echoSuperficie($ppproduit->getSuperficieEncepagement()); ?></td>
             </tr>
 <?php endforeach; ?>
   </tbody>
 </table>
 
-<?php if ($has_affectation) : ?>
-<p><b>*</b> : Pour ce produit, les superficies sont issues de l'affectation et non du parcellaire.</p>
+<?php
+$a = $potentiel->getParcellaireAffectation();
+if ($has_affectation) :
+?>
+<p><b>*</b> : Pour ce produit, les superficies sont issues de l'<a href="<?php echo url_for('parcellaireaffectation_visualisation', $a)?>">affectation</a> et non du parcellaire.</p>
 <?php endif; ?>
+<?php if ($potentiel->hasPotentiels()): ?>
+<p>
+    <a href="<?php echo url_for('parcellaire_potentiel_visualisation', array('id' => $parcellaire->_id)); ?>">Voir le détail du potentiel du production</a>
+    qui a été calculé d'après le parcellaire<?php if ($a): ?> et l'<a href="<?php echo url_for('parcellaireaffectation_visualisation', $a)?>">affectation parcellaire</a><?php endif; ?>.
+</p>
 <?php endif; ?>
 
+<?php endif; ?>
 <?php else: ?>
     <div class="row" style="min-height: 370px;">
         <div class="col-xs-12 text-center">
@@ -324,6 +333,7 @@ $list_idu = [];
 <?php endif; ?>
 
 <?php if ($parcellaire): ?>
+<hr/>
 <?php
     //Permet aux différentes régions d'avoir des liens personnalisables
     include_partial('downloadLinks', array('parcellaire' => $parcellaire));

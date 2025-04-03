@@ -176,17 +176,19 @@ class PotentielProductionProduit {
         return (ParcellaireConfiguration::getInstance()->affectationIsParcellaire2Reference($this->key) && $this->potentiel_production->getParcellaireAffectation());
     }
 
+    public function getParcellaire2Ref() {
+        if (ParcellaireConfiguration::getInstance()->affectationIsParcellaire2Reference($this->key)) {
+            return $this->potentiel_production->getParcellaireAffectation();
+        }
+        return $parcellaire2ref = $this->potentiel_production->getParcellaire();
+    }
+
     private function initSynthese() {
         $filter_produit_hash = ParcellaireConfiguration::getInstance()->getGroupeFilterProduitHash($this->key);
         $filter_insee = ParcellaireConfiguration::getInstance()->getGroupeFilterINSEE($this->key);
-        $affectationIsParcellaire2Reference = ParcellaireConfiguration::getInstance()->affectationIsParcellaire2Reference($this->key);
 
         $this->synthese = array();
-        if ($affectationIsParcellaire2Reference) {
-            $parcellaire2ref = $this->potentiel_production->getParcellaireAffectation();
-        }else {
-            $parcellaire2ref = $this->potentiel_production->getParcellaire();
-        }
+        $parcellaire2ref = $this->getParcellaire2Ref();
         if (!$parcellaire2ref) {
             $this->synthese = [];
             return [];
@@ -196,6 +198,9 @@ class PotentielProductionProduit {
                 continue;
             }
             if ($filter_produit_hash && is_string($filter_produit_hash) && strpos($p->produit_hash, $filter_produit_hash) === false) {
+                continue;
+            }
+            if (($parcellaire2ref->type == ParcellaireAffectationClient::TYPE_MODEL) && !$p->affectee)  {
                 continue;
             }
             if ($filter_insee && !in_array($p->code_commune, $filter_insee)) {
@@ -228,9 +233,9 @@ class PotentielProductionProduit {
                     $this->synthese[$libelle]['Cepage'][$cepage] = array();
                     $this->synthese[$libelle]['Cepage'][$cepage]['superficie_max'] = 0;
                 }
-                $this->synthese[$libelle]['Cepage'][$cepage]['superficie_max'] = round($this->synthese[$libelle]['Cepage'][$cepage]['superficie_max'] + $p->superficie, 6);
+                $this->synthese[$libelle]['Cepage'][$cepage]['superficie_max'] += $p->superficie;
                 if (strpos($cepage, '- jeunes vignes') === false) {
-                    $this->synthese[$libelle]['Total']['Total']['superficie_max'] = round($this->synthese[$libelle]['Total']['Total']['superficie_max'] + $p->superficie, 6);
+                    $this->synthese[$libelle]['Total']['Total']['superficie_max'] += $p->superficie;
                 }
             }
         }
