@@ -165,7 +165,7 @@ abstract class acCouchdbDocument extends acCouchdbDocumentStorable {
         $mime_type = finfo_file($finfo, $file);
         finfo_close($finfo);
         // Vérifier si le MIME commence par "text/" ou appartient à certaines familles
-        return preg_match("^#text/#", $mime_type) ||
+        return preg_match("#^text/#", $mime_type) ||
                in_array($mime_type, ["application/json", "application/javascript", "application/xml", "application/xhtml+xml"]);
     }
 
