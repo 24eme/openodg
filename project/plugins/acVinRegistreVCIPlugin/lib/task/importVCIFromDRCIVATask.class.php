@@ -149,7 +149,7 @@ EOF;
                     echo ($unvci['ACHETEUR_CVI'] && $unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_NOM'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE;
                     echo "\n";
 
-                    $registre->addLigne(preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT'])), RegistreVCIClient::MOUVEMENT_CONSTITUE, $unvci['VOLUME'] * 1.0, ($unvci['ACHETEUR_CVI'] && $unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_CVI'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE);
+                    $registre->addLigne(preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT'])), RegistreVCIClient::MOUVEMENT_CONSTITUE, $unvci['VOLUME'] * 1.0, ($unvci['ACHETEUR_CVI'] && $unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_CVI'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE, "DR");
                   }
                 }
               }

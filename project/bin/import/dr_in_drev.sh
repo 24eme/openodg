@@ -9,12 +9,7 @@ if ! test "$CAMPAGNE"; then
     exit;
 fi
 
-PATH_DR=$2
-
-if ! test "$PATH_DR"; then
-    echo "Vous devez spécifier le chemin vers les documents csv et pdf de la DR"
-    exit;
-fi
+PATH_DR=data/dr/$CAMPAGNE
 
 curl -s http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/declaration/_view/tous | grep "DREV\-" | grep "\-$CAMPAGNE" | cut -d "," -f 1 | sed 's/{"id":"//' | sed 's/"//' > /tmp/drev_to_import_dr.csv
 

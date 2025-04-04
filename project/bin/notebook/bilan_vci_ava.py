@@ -255,7 +255,7 @@ bilan_infos['rendement_vci_ha_hl'] = round((bilan_infos['vci_rafraichi'] + bilan
 # In[ ]:
 
 
-bilan_infos = bilan_infos.query("stock_vci_n-1 > 0 or vci_constitue > 0 or vci_complement > 0 or vci_substitution > 0 or vci_rafraichi > 0 or vci_desctruction > 0 or stock_vci_n > 0 ").reset_index(drop=True);
+bilan_infos = bilan_infos.reset_index(drop=True);
 bilan_final = bilan_infos.sort_values(['campagne', 'CVI', 'Produit']).reindex(columns=["campagne","Produit","titre", "raison_sociale", "adresse", "commune", "code_postal", "CVI", "siret", "stock_vci_n-1", "dr_surface", "dr_volume", "dr_vci", "vci_constitue", "vci_complement", "vci_substitution", "vci_rafraichi", "vci_desctruction", "drev_revendique_n", "drev_revendique_n-1", "stock_vci_n", "rendement_vci_ha_hl"]).drop_duplicates().reset_index(drop=True);
 
 

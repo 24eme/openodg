@@ -18,11 +18,17 @@ if ($route instanceof SocieteRoute) {
         $compte = $societe->getMasterCompte();
     }
 }
+if ($sf_user->isAuthenticated() && !$compte) {
+       $compte = $sf_user->getCompte();
+}
 if ($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)) {
     $etablissement = $sf_user->getEtablissement();
 }
-if ($sf_user->isAuthenticated() && !$compte && !$etablissement && !count($sf_user->getCredentials())) {
+if ($sf_user->isAuthenticated() && !$compte) {
     throw new sfError403Exception("pas de compte");
+}
+if (!count($sf_user->getCredentials())) {
+    throw new sfError403Exception("pas de credentials");
 }
 if (($compte && ($compte->statut == CompteClient::STATUT_SUSPENDU)) && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)) {
     throw new sfError403Exception("Compte inactif");

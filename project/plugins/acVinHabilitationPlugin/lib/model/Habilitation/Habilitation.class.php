@@ -102,10 +102,13 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return $this->declaration->getProduits($onlyActive);
     }
 
-    public function getProduitsByCepage($cepage) {
+    public function getProduitsByCepage($cepage, $date = null) {
+        if (!$date) {
+            $date = $this->getDate();
+        }
         $produits = array();
         foreach($this->getProduits() as $p) {
-            foreach($p->getConfig()->getProduits() as $c) {
+            foreach($p->getConfig($date)->getProduits() as $c) {
                 $cepages = $c->getCepagesAutorises();
                 if($cepages instanceof acCouchdbJson) {
                     $cepages = (array) $c->getCepagesAutorises()->toArray(true, false);
@@ -159,10 +162,10 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function addProduit($hash, $date = null) {
         $hash = preg_replace("|/declaration/|", '', $hash);
-        if(!$this->getConfiguration()->exist('/declaration/'.$hash)){
+        if(!$this->getConfiguration($date)->exist('/declaration/'.$hash)){
           return null;
         }
-        $prod = $this->getConfiguration()->get('/declaration/'.$hash);
+        $prod = $this->getConfiguration($date)->get('/declaration/'.$hash);
         $produit = $this->getProduitByProduitConf($prod);
         if(!$produit) {
             $produit_libelle = $produit->getLibelle();
@@ -314,16 +317,16 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 		}
 	}
 
-    public function isHabiliteFor($hash_produit, $activite) {
+    public function isHabiliteFor($hash_produit, $activite, $date = null) {
         if(strpos($hash_produit, '/EFF/') !== false && $this->isHabiliteFor(str_replace('/EFF/', '/TRANQ/', $hash_produit), $activite))  {
             return true;
         }
 
-        if (!$this->addProduit($hash_produit)) {
+        if (!$this->addProduit($hash_produit, $date)) {
             return false;
         }
 
-        return $this->addproduit($hash_produit)->isHabiliteFor($activite);
+        return $this->addProduit($hash_produit, $date)->isHabiliteFor($activite);
     }
 
   public function containHashProduit($hash) {

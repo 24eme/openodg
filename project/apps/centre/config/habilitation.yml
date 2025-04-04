@@ -7,7 +7,7 @@ all:
         VINIFICATEUR: "Vinificateur"
         CONDITIONNEUR: "Conditionneur"
         ELEVEUR: "Éleveur"
-        NEGOCIANT: "Négociant"
+        NEGOCIANT: "AVV, achat et vente en vrac"
       demande:
         statuts:
           DEPOT: "Dépôt"

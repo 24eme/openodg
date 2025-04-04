@@ -443,7 +443,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function isTotal()
     {
-        if ($this->getLotOrigine() == null) {
+        if (!$this->getLotOrigine()) {
             return $this->changement_volume == $this->origine_volume;
         }
 
@@ -664,12 +664,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         if($this->isTotal()) {
-            if ($this->isDeclassement()) {
-                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassement total"));
-            }else{
-                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changement total : ".$this->lots[0]->getLibelle()));
+            if (!$this->isSansOrigine()) {
+                if ($this->isDeclassement()) {
+                    $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassement total"));
+                }else{
+                    $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changement total : ".$this->lots[0]->getLibelle()));
+                }
             }
-
         }else{
             if ($this->isDeclassement()) {
                 $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partie non déclassée de ".$this->lots[0]->volume." hl"));
@@ -682,6 +683,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         foreach ($this->lots as $i => $lot) {
+            if (!$lot->volume) {
+                continue;
+            }
             $lot->updateDocumentDependances();
             if ($this->isDeclassement() && ($this->isTotal() || $i == 1)) {
                 continue;
@@ -1056,5 +1060,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $item->categorie = "15";
         $item->categorie_libelle = "Vol. de vin avec AO/IGP avec/sans cépage dans la limite du rdt autorisé";
         $item->valeur = - $this->origine_volume;
+    }
+
+    public function isSansOrigine() {
+        return ! ($this->lots[0]->id_document_provenance);
     }
 }
