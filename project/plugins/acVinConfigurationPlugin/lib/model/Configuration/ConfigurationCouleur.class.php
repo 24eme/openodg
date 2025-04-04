@@ -95,7 +95,25 @@ class ConfigurationCouleur extends BaseConfigurationCouleur {
         return str_replace('Vin de base ', '', trim($this->getLieu()->getLibelleComplet(). " ".$this->getLibelleDR()));
     }
 
+    public function getCepagesAutorises() {
+        if(!$this->hasCepagesAutorises() && $this->getAppellation()->hasCepagesAutorises()) {
+            return $this->getAppellation()->getCepagesAutorises();
+        }
+        if(!$this->hasCepagesAutorises() && $this->getCertification()->hasCepagesAutorises()) {
+            return $this->getCertification()->getCepagesAutorises();
+        }
+
+        return $this->_get('cepages_autorises');
+    }
+
+    public function hasCepagesAutorises(){
+        return $this->exist('cepages_autorises') && count($this->_get('cepages_autorises')->toArray(true, false));
+    }
+
     public function isCepageAutorise($cepage) {
+        if ($this->hasCepagesAutorises()) {
+            return true;
+        }
         foreach($this->getCepages() as $c) {
             if ($c->isCepageAutorise($cepage)) {
                 return true;

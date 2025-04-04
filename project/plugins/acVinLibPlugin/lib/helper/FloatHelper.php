@@ -60,3 +60,10 @@ function sprintInputFloat($float, $format = "%01.02f") {
         return null;
     return sprintFloat($float, $format);
 }
+function echoSuperficie($s) {
+    if (ParcellaireConfiguration::getInstance()->isAres()) {
+        echo formatFloatFr($s * 100, 2, 2);
+        return ;
+    }
+    echo formatFloatFr($s, 4, 4);
+}

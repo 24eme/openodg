@@ -2,13 +2,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
 <?php
-function echoSuperficie($s) {
-    if (ParcellaireConfiguration::getInstance()->isAres()) {
-        echo formatFloatFr($s * 100, 2, 2);
-        return ;
-    }
-    echo formatFloatFr($s, 4, 4);
-}
 $parcellaire_client = ParcellaireClient::getInstance();
 $last = null;
 $list_communes = [];
@@ -222,47 +215,7 @@ $list_idu = [];
     <?php endforeach; ?>
         </div>
     </div>
-<?php
-    $synthese = array();
-
-    if($parcellaire) {
-        $synthese = $parcellaire->getSyntheseCepages(ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration());
-    }
-
-    if (count($synthese)):
-?>
-<h3 id="synthese_cepage">
-    Synthèse par cépages
-<?php if (ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration()): ?>
-    des produits reconnus au CVI
-<?php endif; ?>
-</h3>
-
-<table class="table table-bordered table-condensed table-striped tableParcellaire">
-  <thead>
-    <tr>
-        <th class="col-xs-4">Cépage <small class="text-muted">(jeunes vignes séparées)</small></th>
-        <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
-    </tr>
-  </thead>
-  <tbody>
-<?php
-
-    foreach($synthese as $cepage_libelle => $s): ?>
-        <tr>
-            <td><?php echo $cepage_libelle ; ?></td>
-            <td class="text-right"><?php echoSuperficie($s['superficie']); ?></td>
-<?php
-    endforeach;
-?>
-    <tr>
-        <td><strong>Total</strong></td>
-        <td class="text-right"><strong><?php echoSuperficie(array_sum(array_column($synthese->getRawValue(), 'superficie'))); ?></strong></td>
-    </tr>
-  </tbody>
-</table>
-<?php endif; ?>
-
+<?php include_component('parcellaire', 'syntheseParCepages', array('parcellaire' => $parcellaire)); ?>
 <?php
     $potentiel = null;
     if($parcellaire) {
@@ -319,7 +272,7 @@ if ($has_affectation) :
 <?php if ($potentiel->hasPotentiels()): ?>
 <p>
     <a href="<?php echo url_for('parcellaire_potentiel_visualisation', array('id' => $parcellaire->_id)); ?>">Voir le détail du potentiel du production</a>
-    qui a été calculé d'après le parcellaire<?php if ($a): ?> et l'<a href="<?php echo url_for('parcellaireaffectation_visualisation', $a)?>">affectation parcellaire</a><?php endif; ?>.
+    qui a été calculé d'après le parcellaire<?php if ($a):?> et l'<a href="<?php echo url_for('parcellaireaffectation_visualisation', $a)?>">affectation parcellaire</a><?php endif; ?>.
 </p>
 <?php endif; ?>
 
