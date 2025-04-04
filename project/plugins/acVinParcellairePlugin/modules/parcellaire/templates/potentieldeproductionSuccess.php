@@ -54,9 +54,9 @@
 </table>
 
 <p>Caculé d'après <a href="<?php echo url_for( ($produit->parcellaire2refIsAffectation()) ? 'parcellaireaffectation_visualisation' : 'parcellaire_visualisation', $produit->getParcellaire2Ref()) ?>"><?php echo $produit->getParcellaire2Ref()->_id; ?></a></p>
-
+<h4>Encepagement : <?php echo $produit->getSuperficieEncepagement(); ?> ha</h4>
+<h4>Superficie non revendicable : <?php echo $produit->getSuperficieEncepagement() - $produit->getSuperficieMax(); ?> ha</h4>
 <h3>Potentiel : <?php echo $produit->getSuperficieMax(); ?> ha</h3>
-<h3>Superficie non revendicable : <?php echo $produit->getSuperficieEncepagement() - $produit->getSuperficieMax(); ?> ha</h3>
 <hr/>
 <?php endif; ?>
 <?php endforeach; ?>
