@@ -1259,7 +1259,7 @@ abstract class Lot extends acCouchdbDocumentTree
 		if (!$hab) {
 			return false;
 		}
-		return $hab->isHabiliteFor($this->getProduitHash(), $activite);
+		return $hab->isHabiliteFor($this->getProduitHash(), $activite, $this->document->date);
 	}
 
     public function getRegion() {
