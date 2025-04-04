@@ -20,6 +20,18 @@ all:
           name: "Muscadet Sèvre et Maine"
           color: "#ecbe5b"
           denomination_id: "00214"
+        muscadet-sevre-maine-clisson:
+          name: "Muscadet Sèvre et Maine Clisson"
+          color: "#e9d900"
+          denomination_id: "00214"
+        muscadet-sevre-maine-lepallet:
+          name: "Muscadet Sèvre et Maine Le Pallet"
+          color: "#e9c900"
+          denomination_id: "02523"
+        muscadet-sevre-maine-gorges:
+          name: "Muscadet Sèvre et Maine Gorges"
+          color: "#e9b900"
+          denomination_id: "02522"
         coteaux-ancenis:
           name: "Coteaux d'Ancenis"
           color: "#520100"
