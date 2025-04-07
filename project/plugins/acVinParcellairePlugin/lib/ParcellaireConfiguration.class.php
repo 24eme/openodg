@@ -125,6 +125,9 @@ class ParcellaireConfiguration {
     }
 
     public function getPotentielGroupes() {
+        if (!isset($this->configuration['potentiel_de_production'])) {
+            return [];
+        }
         return array_keys($this->configuration['potentiel_de_production']);
     }
     public function getGroupeSyntheseLibelle($k) {
@@ -134,6 +137,9 @@ class ParcellaireConfiguration {
         return $this->configuration['potentiel_de_production'][$k]['categories'];
     }
     public function getGroupeFilterProduitHash($k) {
+        if (!isset($this->configuration['potentiel_de_production'][$k]['filter_produit_hash'])) {
+            return null;
+        }
         return $this->configuration['potentiel_de_production'][$k]['filter_produit_hash'];
     }
     public function getGroupeFilterINSEE($k) {
@@ -141,6 +147,12 @@ class ParcellaireConfiguration {
             return null;
         }
         return $this->configuration['potentiel_de_production'][$k]['filter_insee'];
+    }
+    public function affectationIsParcellaire2Reference($k) {
+        if (!isset($this->configuration['potentiel_de_production'][$k]['parcellaire2reference'])) {
+            return false;
+        }
+        return $this->configuration['potentiel_de_production'][$k]['parcellaire2reference'] == 'ParcellaireAffectation';
     }
     public function getGroupeRegles($k) {
         return $this->configuration['potentiel_de_production'][$k]['regles'];
