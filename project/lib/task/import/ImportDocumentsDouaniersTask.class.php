@@ -20,6 +20,7 @@ class ImportDocumentsDouaniersTask extends sfBaseTask
             new sfCommandOption('scrapefiles', null, sfCommandOption::PARAMETER_OPTIONAL, "Scrape import document", false),
             new sfCommandOption('dateimport', null, sfCommandOption::PARAMETER_OPTIONAL, "Date d'import", null),
             new sfCommandOption('diff', null, sfCommandOption::PARAMETER_OPTIONAL, "Diff", false),
+            new sfCommandOption('debug', null, sfCommandOption::PARAMETER_OPTIONAL, "Debug", false),
         ));
 
         $this->namespace = 'import';
@@ -111,6 +112,9 @@ EOF;
                                 $new = DouaneCsvFile::convertToDiffableArray($csv2->getCsv());
                                 $diff = array_diff_assoc( $old, $new );
                                 unlink($temp);
+                                if ($options['debug']) {
+                                    print_r(['old' => $old, 'new' => $new, 'diff' => $diff]);
+                                }
                                 if ($nb = count($diff)) {
                                     echo sprintf("WARNING;Document douanier déjà existant %s et le fichier en base ne semble pas à jour : %d diff\n", $f->_id, $nb);
                                 }else{
