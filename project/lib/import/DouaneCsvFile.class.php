@@ -160,4 +160,54 @@ class DouaneCsvFile
       return $tab;
   }
 
+
+    public static function getDocumentDouanierType($etablissement)
+    {
+        if($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR || $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
+            return DRCsvFile::CSV_TYPE_DR;
+        }
+
+        if($etablissement->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) {
+            return SV11CsvFile::CSV_TYPE_SV11;
+        }
+
+        if($etablissement->famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR || $etablissement->famille == EtablissementFamilles::FAMILLE_NEGOCIANT) {
+            return SV12CsvFile::CSV_TYPE_SV12;
+        }
+        return null;
+    }
+
+    public static function getDiffWithScrapyFile(DouaneProduction $f, array & $old, array & $new)
+    {
+        $etablissement = $f->getEtablissementObject();
+        $ddType = DouaneCsvFile::getDocumentDouanierType($etablissement);
+        $csvFile = null;
+
+        $fichier = DouaneImportCsvFile::getNewInstanceFromType($ddType, $csvfile, null, null, $etablissement->cvi);
+        $fichiers = FichierClient::getInstance()->getScrapyFiles($etablissement, strtolower($ddType), $f->campagne);
+        foreach($fichiers as $fic) {
+            $infos = pathinfo($fic);
+            $extension = (isset($infos['extension']) && $infos['extension'])? strtolower($infos['extension']): null;
+            switch (strtolower($extension)) {
+                case 'xls':
+                    $csvfile = Fichier::convertXlsFile($fic);
+                    break;
+                case 'csv':
+                    $csvfile = $fic;
+                    break;
+            }
+        }
+        $diff = [];
+        if ($csvfile) {
+            $fichier = DouaneImportCsvFile::getNewInstanceFromType(DouaneImportCsvFile::getTypeFromFile($csvfile), $csvfile, null, null, $etablissement->cvi);
+            $temp = tempnam(sys_get_temp_dir(), 'production_');
+            file_put_contents($temp, $fichier->convert());
+            $csv2 = new CsvFile($temp);
+            $old = DouaneCsvFile::convertToDiffableArray($f->getCsv());
+            $new = DouaneCsvFile::convertToDiffableArray($csv2->getCsv());
+            $diff = array_diff_assoc( $old, $new );
+            unlink($temp);
+        }
+        return $diff;
+    }
 }
