@@ -123,4 +123,12 @@ class drActions extends sfActions
         $this->tableau_comparaison = $this->dr->getTableauComparaisonDrDap();
     }
 
+    public function executeDiffVerify(sfWebRequest $request) {
+        $this->dr = $this->getRoute()->getDR();
+        $this->old = [];
+        $this->new = [];
+        $this->diff = DouaneCsvFile::getDiffWithScrapyFile($this->dr, $this->old, $this->new, $request->getParameter('full'));
+        $this->keys = array_unique(array_merge(array_keys($this->old), array_keys($this->new)));
+    }
+
 }

@@ -63,7 +63,7 @@ EOF;
         	$i++;
 
         	if ($etablissement = EtablissementClient::getInstance()->find($item->id)) {
-        		$ddType = $this->getDocumentDouanierType($etablissement);
+                $ddType = DouaneCsvFile::getDocumentDouanierType($etablissement);
 
         		if ($type && $ddType != $type) {
         			continue;
@@ -88,40 +88,18 @@ EOF;
                 if (($f = $c->findByArgs($etablissement->identifiant, $annee)) && (!($options['forceimport']) || ($f && $f->exist('donnees')))) {
                     if (!$options['forceimport']) {
                         if ($options['diff']) {
-                            $fichier = DouaneImportCsvFile::getNewInstanceFromType($ddType, $csvfile, null, null, $etablissement->cvi);
-                            $fichiers = FichierClient::getInstance()->getScrapyFiles($etablissement, strtolower($ddType), $annee);
-                            $csvFile = null;
-                            foreach($fichiers as $fic) {
-                                $infos = pathinfo($fic);
-                                $extension = (isset($infos['extension']) && $infos['extension'])? strtolower($infos['extension']): null;
-                                switch (strtolower($extension)) {
-                                    case 'xls':
-                                        $csvfile = Fichier::convertXlsFile($fic);
-                                        break;
-                                    case 'csv':
-                                        $csvfile = $fic;
-                                        break;
-                                }
+                            $old = [];
+                            $new = [];
+                            $diff = DouaneCsvFile::getDiffWithScrapyFile($f, $old, $new);
+                            if ($options['debug']) {
+                                print_r(['old' => $old, 'new' => $new, 'diff' => $diff]);
                             }
-                            if ($csvfile) {
-                                $fichier = DouaneImportCsvFile::getNewInstanceFromType(DouaneImportCsvFile::getTypeFromFile($csvfile), $csvfile, null, null, $etablissement->cvi);
-                                $temp = tempnam(sys_get_temp_dir(), 'production_');
-                                file_put_contents($temp, $fichier->convert());
-                                $csv2 = new CsvFile($temp);
-                                $old = DouaneCsvFile::convertToDiffableArray($f->getCsv());
-                                $new = DouaneCsvFile::convertToDiffableArray($csv2->getCsv());
-                                $diff = array_diff_assoc( $old, $new );
-                                unlink($temp);
-                                if ($options['debug']) {
-                                    print_r(['old' => $old, 'new' => $new, 'diff' => $diff]);
-                                }
-                                if ($nb = count($diff)) {
-                                    echo sprintf("WARNING;Document douanier déjà existant %s et le fichier en base ne semble pas à jour : %d diff\n", $f->_id, $nb);
-                                }else{
-                                    echo sprintf("WARNING;Document douanier déjà existant %s (no diff)\n", $f->_id);
-                                }
-                                continue;
+                            if ($nb = count($diff)) {
+                                echo sprintf("WARNING;Document douanier déjà existant %s et le fichier en base ne semble pas à jour : %d diff\n", $f->_id, $nb);
+                            }else{
+                                echo sprintf("WARNING;Document douanier déjà existant %s (no diff)\n", $f->_id);
                             }
+                            continue;
                         }
                         echo sprintf("WARNING;Document douanier déjà existant %s\n", $f->_id);
                     }else{
@@ -159,28 +137,13 @@ EOF;
         }
     }
 
-    protected function getDocumentDouanierType($etablissement)
-    {
-        if($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR || $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
-            return DRCsvFile::CSV_TYPE_DR;
-        }
-
-        if($etablissement->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) {
-            return SV11CsvFile::CSV_TYPE_SV11;
-        }
-
-        if($etablissement->famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR || $etablissement->famille == EtablissementFamilles::FAMILLE_NEGOCIANT) {
-            return SV12CsvFile::CSV_TYPE_SV12;
-        }
-        return null;
-    }
-
     protected function getDocumentDouanierTypes()
     {
-    	return array(
-    			DRCsvFile::CSV_TYPE_DR,
-    			SV11CsvFile::CSV_TYPE_SV11,
-    			SV12CsvFile::CSV_TYPE_SV12
-    	);
+        return array(
+            DRCsvFile::CSV_TYPE_DR,
+            SV11CsvFile::CSV_TYPE_SV11,
+            SV12CsvFile::CSV_TYPE_SV12
+        );
     }
+
 }
