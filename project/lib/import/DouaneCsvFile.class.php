@@ -145,7 +145,7 @@ class DouaneCsvFile
       $tab = array();
       foreach($csv as $ligne ) {
           foreach($ligne as $id => $col) {
-              if ($id >= DouaneCsvFile::CSV_COLONNE_ID) {
+              if ($id != DouaneCsvFile::CSV_VALEUR) {
                   continue;
               }
               $tab[str_replace('"', '', sprintf("%s-%s-%s/%s %s/%s/%d",
