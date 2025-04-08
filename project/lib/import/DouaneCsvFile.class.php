@@ -141,19 +141,28 @@ class DouaneCsvFile
       return null;
   }
 
-  public static function convertToDiffableArray($csv) {
+  public static function convertToDiffableArray($csv, $full = false) {
       $tab = array();
       foreach($csv as $ligne ) {
+          if ( ! $ligne[DouaneCsvFile::CSV_PRODUIT_APPELLATION]) {
+              continue;
+          }
           foreach($ligne as $id => $col) {
-              if ($id != DouaneCsvFile::CSV_VALEUR) {
+              if ( (! $full) && ($id != DouaneCsvFile::CSV_VALEUR)) {
                   continue;
               }
-              $tab[str_replace('"', '', sprintf("%s-%s-%s/%s %s/%s/%d",
+              if ($id >= DouaneCsvFile::CSV_COLONNE_ID) {
+                  continue;
+              }
+              $prekey = str_replace('"', '', $ligne[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT],$id);
+              $delimiter = ' ';
+              $prekey = strtolower(trim(preg_replace('/[\s-]+/', $delimiter, preg_replace('/[^A-Za-z0-9-]+/', $delimiter, preg_replace('/[&]/', 'and', preg_replace('/[\']/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $prekey))))), $delimiter));
+              $key = str_replace('"', '', sprintf("%s-%s-%s/%s %s/%s/%d",
                               $ligne[DouaneCsvFile::CSV_TYPE], $ligne[DouaneCsvFile::CSV_RECOLTANT_CVI], $ligne[DouaneCsvFile::CSV_CAMPAGNE],
-                              $ligne[DouaneCsvFile::CSV_PRODUIT_INAO], $ligne[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT],
+                              $ligne[DouaneCsvFile::CSV_PRODUIT_INAO], $prekey,
                               $ligne[DouaneCsvFile::CSV_LIGNE_CODE],
-                              $id
-                    ))] = str_replace('"', '', $col);
+                              $id));
+              $tab[$key] = str_replace('"', '', $col);
           }
       }
       ksort($tab);
@@ -177,13 +186,12 @@ class DouaneCsvFile
         return null;
     }
 
-    public static function getDiffWithScrapyFile(DouaneProduction $f, array & $old, array & $new)
+    public static function getDiffWithScrapyFile(DouaneProduction $f, array & $old, array & $new, $full = false)
     {
         $etablissement = $f->getEtablissementObject();
         $ddType = DouaneCsvFile::getDocumentDouanierType($etablissement);
-        $csvFile = null;
+        $csvfile = null;
 
-        $fichier = DouaneImportCsvFile::getNewInstanceFromType($ddType, $csvfile, null, null, $etablissement->cvi);
         $fichiers = FichierClient::getInstance()->getScrapyFiles($etablissement, strtolower($ddType), $f->campagne);
         foreach($fichiers as $fic) {
             $infos = pathinfo($fic);
@@ -203,9 +211,9 @@ class DouaneCsvFile
             $temp = tempnam(sys_get_temp_dir(), 'production_');
             file_put_contents($temp, $fichier->convert());
             $csv2 = new CsvFile($temp);
-            $old = DouaneCsvFile::convertToDiffableArray($f->getCsv());
-            $new = DouaneCsvFile::convertToDiffableArray($csv2->getCsv());
-            $diff = array_diff_assoc( $old, $new );
+            $old = DouaneCsvFile::convertToDiffableArray($f->getCsv(), $full);
+            $new = DouaneCsvFile::convertToDiffableArray($csv2->getCsv(), $full);
+            $diff = array_merge(array_diff_assoc( $old, $new ), array_diff_assoc( $new, $old ));
             unlink($temp);
         }
         return $diff;
