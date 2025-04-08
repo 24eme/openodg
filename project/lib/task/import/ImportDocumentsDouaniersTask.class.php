@@ -108,7 +108,7 @@ EOF;
                                 file_put_contents($temp, $fichier->convert());
                                 $csv2 = new CsvFile($temp);
                                 $old = DouaneCsvFile::convertToDiffableArray($f->getCsv());
-                                $new = DouaneCsvFile::convertToDiffableArray($csv2->getCsv())
+                                $new = DouaneCsvFile::convertToDiffableArray($csv2->getCsv());
                                 $diff = array_diff_assoc( $old, $new );
                                 unlink($temp);
                                 if ($nb = count($diff)) {
