@@ -107,9 +107,9 @@ EOF;
                                 $temp = tempnam(sys_get_temp_dir(), 'production_');
                                 file_put_contents($temp, $fichier->convert());
                                 $csv2 = new CsvFile($temp);
-                                $count_diff = count(array_diff( $f->getCsv(), $csv2->getCsv()));
+                                $diff = array_assoc_diff( DouaneCsvFile::convertToDiffableArray($f->getCsv()), DouaneCsvFile::convertToDiffableArray($csv2->getCsv()) );
                                 unlink($temp);
-                                if ($count_diff) {
+                                if (count($diff)) {
                                     echo sprintf("WARNING;Document douanier déjà existant %s et le fichier en base ne semble pas à jour : %d diff\n", $f->_id, $count_diff);
                                 }else{
                                     echo sprintf("WARNING;Document douanier déjà existant %s (no diff)\n", $f->_id);

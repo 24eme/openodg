@@ -140,4 +140,24 @@ class DouaneCsvFile
 
       return null;
   }
+
+  public static function convertToDiffableArray($csv) {
+      $tab = array();
+      foreach($csv as $ligne ) {
+          foreach($ligne as $id => $col) {
+              if ($id >= DouaneCsvFile::CSV_COLONNE_ID) {
+                  continue;
+              }
+              $tab[str_replace('"', '', sprintf("%s-%s-%s/%s %s/%s/%d",
+                              $ligne[DouaneCsvFile::CSV_TYPE], $ligne[DouaneCsvFile::CSV_RECOLTANT_CVI], $ligne[DouaneCsvFile::CSV_CAMPAGNE],
+                              $ligne[DouaneCsvFile::CSV_PRODUIT_INAO], $ligne[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT],
+                              $ligne[DouaneCsvFile::CSV_LIGNE_CODE],
+                              $id
+                    ))] = str_replace('"', '', $col);
+          }
+      }
+      ksort($tab);
+      return $tab;
+  }
+
 }
