@@ -41,8 +41,7 @@
                     <a class="btn_saisie_affectation_parcellaire text-muted" href="<?php echo url_for('parcellaireaffectationcoop_switch', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant(), "sens" => "0")) ?>">Pas cette année</a>
                 <?php elseif($type != ParcellaireAffectationClient::TYPE_MODEL && $apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_A_SAISIR && (!ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire() || $apporteur->getDeclarationStatut(ParcellaireAffectationClient::TYPE_MODEL) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE)): ?>
                     <a class="btn_saisie_affectation_parcellaire" href="<?php echo url_for($baseurl.'_create', array('identifiant' => $apporteur->getEtablissementIdentifiant(), 'periode' => $parcellaireAffectationCoop->periode, 'coop' => $parcellaireAffectationCoop->_id)) ?>">Saisir la déclaration</a>
-                    <br />
-                    <a class="btn btn-sm btn-default" href="<?php echo url_for('parcellaireaffectationcoop_'.strtolower($type).'_reconduction', ['id' => $parcellaireAffectationCoop->_id, 'apporteur' => $apporteur->getEtablissementIdentifiant()]) ?>">
+                    <a class="btn btn-xs btn-default mt-2" href="<?php echo url_for('parcellaireaffectationcoop_'.strtolower($type).'_reconduction', ['id' => $parcellaireAffectationCoop->_id, 'apporteur' => $apporteur->getEtablissementIdentifiant()]) ?>">
                         <i class="glyphicon glyphicon-refresh"></i> Reconduire
                     </a>
                 <?php elseif($type == ParcellaireAffectationClient::TYPE_MODEL): ?>
