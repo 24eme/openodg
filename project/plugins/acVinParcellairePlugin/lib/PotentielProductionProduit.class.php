@@ -87,11 +87,13 @@ class PotentielProductionProduit {
 
         $task = new Simplex\Task(new Simplex\Func(PotentielProductionRule::addemptycepage($this->cepages_par_categories['cepages_couleur'], $this->cepages_par_categories['cepages_couleur'])));
 
+        $is_all_ok = true;
         foreach(ParcellaireConfiguration::getInstance()->getGroupeRegles($this->key) as $regle) {
             $pprule = new PotentielProductionRule($this, $regle);
             $this->addRule($pprule);
             $simplex = $pprule->getSimplexRestriction();
             if ($simplex) {
+                $is_all_ok = $is_all_ok && $pprule->getResult();
                 $task->addRestriction($simplex);
             }
             if ($pprule->isDisablingRule()) {
@@ -107,13 +109,19 @@ class PotentielProductionProduit {
             }
         }
 
-        $solver = new Simplex\Solver($task);
-        $solution = $solver->getSolution();
-        if ($solution) {
-            $optimum = $solver->getSolutionValue($solution);
-            $this->superficie_max = round($optimum->toFloat(), 5);
-        } else {
-            $this->superficie_max = "IMPOSSIBLE";
+        if ($is_all_ok) {
+            $this->superficie_max = $this->superficie_encepagement;
+        }else {
+            $solver = new Simplex\Solver($task);
+            $solution = $solver->getSolution();
+            if ($solution) {
+                $optimum = $solver->getSolutionValue($solution);
+                $this->superficie_max = round($optimum->toFloat(), 5);
+            } else {
+                $printer = new Simplex\Printer;
+                $printer->printSolution($solver);
+                $this->superficie_max = "IMPOSSIBLE";
+            }
         }
         if (!$potentiel_sans_blocant) {
             $this->superficie_max = "IMPOSSIBLE";
