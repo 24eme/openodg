@@ -162,7 +162,12 @@ class DouaneCsvFile
                               $ligne[DouaneCsvFile::CSV_PRODUIT_INAO], $prekey,
                               $ligne[DouaneCsvFile::CSV_LIGNE_CODE],
                               $id));
-              $tab[$key] = str_replace('"', '', $col);
+              $key = preg_replace('/ +/', ' ', $key);
+              $col = str_replace('"', '', $col);
+              if (preg_match('/^[0-9,]+$/', $col)) {
+                  $col = sprintf('%.04f', str_replace(',', '.', $col));
+              }
+              $tab[$key] = $col;
           }
       }
       ksort($tab);
