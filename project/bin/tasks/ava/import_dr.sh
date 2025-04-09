@@ -1,7 +1,7 @@
 #! /bin/bash
 #
-# Title: Import des DR
-# Description: Récupère et importe les DR depuis le CIVA pour la campagne courante
+# Title: Import des DR et VCI constitué
+# Description: Récupère et importe les DR depuis le CIVA et importe le VCI constitué dans les registres VCI pour la campagne courante
 
 APPLICATION=$1
 CAMPAGNE=$(date '+%Y' -d '-9 month')
@@ -14,5 +14,9 @@ fi
 
 cd "$(dirname $0)/../../.."
 
+echo "Récupération des $CAMPAGNE chez le CIVA"
 bash bin/import/get_dr_from_civa.sh $CAMPAGNE
+echo "Import des DR $CAMPAGNE"
 bash bin/import/dr_in_drev.sh $CAMPAGNE
+echo "Création des registres VCI $CAMPAGNE"
+php symfony import:VCIFromDR $CAMPAGNE data/dr/$CAMPAGNE.csv $SYMFONYTASKOPTIONS
