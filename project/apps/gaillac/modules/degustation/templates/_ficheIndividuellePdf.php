@@ -29,7 +29,6 @@
         } else if ($lot_certif === "AOP") {
             $arr_lots_aop[] = ['date' => $lot->date_commission, 'cepage' => $lot->getCepagesLibelle()];
         } else if ($lot_certif === "IGP") {
-            print_r($lot->numero_anonymat);
             $arr_lots_igp[] = ['num' => $lot->numero_anonymat, 'cepage' => $lot->getCepagesLibelle()];
         }
 
@@ -40,12 +39,14 @@
             $arr_lots_igp[] = null;
         }
         echo include_partial('degustation/IGPficheIndividuellePdf', array('lots' => $arr_lots_igp));
-    } else if (count($arr_lots_aop) != 4) {
+    }
+    if (count($arr_lots_aop) != 4) {
         while (count($arr_lots_aop) < 4) {
             $arr_lots_aop[] = null;
         }
         echo include_partial('degustation/AOCficheIndividuellePdf', array('lots' => $arr_lots_aop));
-    } else if (count($arr_lots_aop_mousseux) != 4) {
+    }
+    if (count($arr_lots_aop_mousseux) != 4) {
         while (count($arr_lots_aop_mousseux) < 4) {
             $arr_lots_aop_mousseux[] = null;
         }
