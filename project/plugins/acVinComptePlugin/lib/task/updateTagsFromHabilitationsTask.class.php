@@ -91,6 +91,9 @@ class updateTagsFromHabilitationsTask extends sfBaseTask {
           $updated[$comptesociete->_id] = 1;
           $compte->save();
           $comptesociete->save();
+          if (++$temporise % 100 === 0) {
+              sleep(10);
+          }
         }
 
         //On repère les comptes qui ont des tags activités
