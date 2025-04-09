@@ -154,7 +154,7 @@ class DouaneCsvFile
               if ($id >= DouaneCsvFile::CSV_COLONNE_ID) {
                   continue;
               }
-              $prekey = str_replace('"', '', $ligne[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT],$id);
+              $prekey = str_replace('"', '', $ligne[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT]);
               $delimiter = ' ';
               $prekey = strtolower(trim(preg_replace('/[\s-]+/', $delimiter, preg_replace('/[^A-Za-z0-9-]+/', $delimiter, preg_replace('/[&]/', 'and', preg_replace('/[\']/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $prekey))))), $delimiter));
               $key = str_replace('"', '', sprintf("%s-%s-%s/%s %s/%s/%d",
