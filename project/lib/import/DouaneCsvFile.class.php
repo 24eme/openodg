@@ -154,7 +154,7 @@ class DouaneCsvFile
               if ($id >= DouaneCsvFile::CSV_COLONNE_ID) {
                   continue;
               }
-              $prekey = str_replace('"', '', $ligne[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT],$id);
+              $prekey = str_replace('"', '', $ligne[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT]);
               $delimiter = ' ';
               $prekey = strtolower(trim(preg_replace('/[\s-]+/', $delimiter, preg_replace('/[^A-Za-z0-9-]+/', $delimiter, preg_replace('/[&]/', 'and', preg_replace('/[\']/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $prekey))))), $delimiter));
               $key = str_replace('"', '', sprintf("%s-%s-%s/%s %s/%s/%d",
@@ -162,7 +162,12 @@ class DouaneCsvFile
                               $ligne[DouaneCsvFile::CSV_PRODUIT_INAO], $prekey,
                               $ligne[DouaneCsvFile::CSV_LIGNE_CODE],
                               $id));
-              $tab[$key] = str_replace('"', '', $col);
+              $key = preg_replace('/ +/', ' ', $key);
+              $col = str_replace('"', '', $col);
+              if (preg_match('/^[0-9,]+$/', $col)) {
+                  $col = sprintf('%.04f', str_replace(',', '.', $col));
+              }
+              $tab[$key] = $col;
           }
       }
       ksort($tab);

@@ -27,7 +27,7 @@ if ($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_A
 if ($sf_user->isAuthenticated() && !$compte) {
     throw new sfError403Exception("pas de compte");
 }
-if (!count($sf_user->getCredentials())) {
+if (! $etablissement && !count($sf_user->getCredentials())) {
     throw new sfError403Exception("pas de credentials");
 }
 if (($compte && ($compte->statut == CompteClient::STATUT_SUSPENDU)) && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)) {
