@@ -1,58 +1,54 @@
-<?php use_helper('TemplatingPDF'); ?>
-<?php use_helper('Lot') ?>
-<style>
-<?php echo style(); ?>
+<?php
 
-.td, .th {
-    border: 1px solid #000;
-}
+?>
 
-.align-right {
-    text-align: right;
-}
+<?php
 
-.align-left {
-    text-align: left;
-}
+    $arr_lots_igp = array();
+    $arr_lots_aop = array();
+    $arr_lots_aop_mousseux = array();
 
-.align-mid {
-    text-align: center;
-}
+    foreach ($degustation->lots as $lot) {
 
-.text-red {
-    color: red;
-}
+        $lot_certif = $lot->getConfigProduit()->getCertification()->getKey();
+        $lot_genre = $lot->getConfigProduit()->getGenre()->getLibelle();
 
-.text-huit-pt {
-    font-size: 8pt;
-}
+        if (count($arr_lots_igp) == 4) {
+            echo include_partial('degustation/IGPficheIndividuellePdf', array('lots' => $arr_lots_igp));
+            $arr_lots_igp = array();
+        } else if (count($arr_lots_aop) == 4) {
+            echo include_partial('degustation/AOCficheIndividuellePdf', array('lots' => $arr_lots_aop));
+            $arr_lots_aop = array();
+        } else if (count($arr_lots_aop_mousseux) == 4) {
+            echo include_partial('degustation/AOCficheIndividuelleMousseuxPdf', array('lots' => $arr_lots_aop_mousseux));
+            $arr_lots_aop_mousseux = array();
+        }
 
-.text-dix-pt {
-    font-size: 10pt;
-}
+        if ($lot_certif === "AOP" && $lot_genre === "Mousseux") {
+            $arr_lots_aop_mousseux[] = ['date' => $lot->date_commission, 'cepage' => $lot->getCepagesLibelle()];
+        } else if ($lot_certif === "AOP") {
+            $arr_lots_aop[] = ['date' => $lot->date_commission, 'cepage' => $lot->getCepagesLibelle()];
+        } else if ($lot_certif === "IGP") {
+            $arr_lots_igp[] = ['num' => $lot->numero_anonymat, 'cepage' => $lot->getCepagesLibelle()];
+        }
 
-.text-six-pt {
-    font-size: 6pt;
-}
+    }
 
-.size-cepage {
-    height: 25px;
-}
-
-.size-commentaire {
-    height: 60px;
-}
-
-.fond-sombre {
-    background-color: grey;
-}
-
-.encart-nom {
-    padding: 0px;
-    margin: 0px;
-}
-
-</style>
-
-<!-- <?php echo include_partial('degustation/IGPficheIndividuellePdf', array());?> -->
-<?php echo include_partial('degustation/AOCficheIndividuellePdf', array());?>
+    if (count($arr_lots_igp) != 4) {
+        while (count($arr_lots_igp) < 4) {
+            $arr_lots_igp[] = null;
+        }
+        echo include_partial('degustation/IGPficheIndividuellePdf', array('lots' => $arr_lots_igp));
+    }
+    if (count($arr_lots_aop) != 4) {
+        while (count($arr_lots_aop) < 4) {
+            $arr_lots_aop[] = null;
+        }
+        echo include_partial('degustation/AOCficheIndividuellePdf', array('lots' => $arr_lots_aop));
+    }
+    if (count($arr_lots_aop_mousseux) != 4) {
+        while (count($arr_lots_aop_mousseux) < 4) {
+            $arr_lots_aop_mousseux[] = null;
+        }
+        echo include_partial('degustation/AOCficheIndividuelleMousseuxPdf', array('lots' => $arr_lots_aop_mousseux));
+    }
