@@ -1,5 +1,22 @@
 <?php
 
+function handleIfFull($base_array, $certif)
+{
+    if (count($base_array[$certif]) == 4) {
+        echo include_partial($certif, array('lots' => $base_array[$certif]));
+    }
+}
+
+function fillArray($base_array, $certif)
+{
+    if (count($base_array[$certif]) != 4) {
+        while (count($base_array[$certif]) < 4) {
+            $base_array[$certif][] = null;
+        }
+        echo include_partial($certif, array('lots' => $base_array[$certif]));
+    }
+}
+
 ?>
 
 <?php
@@ -13,21 +30,8 @@
         $lot_certif = $lot->getConfigProduit()->getCertification()->getKey();
         $lot_genre = $lot->getConfigProduit()->getGenre()->getLibelle();
 
-        if (count($arr_lots['degustation/IGPficheIndividuellePdf']) == 4) {
-
-
-            echo include_partial('degustation/IGPficheIndividuellePdf', array('lots' => $arr_lots['degustation/IGPficheIndividuellePdf']));
-            $arr_lots['degustation/IGPficheIndividuellePdf'] = array();
-        } else if (count($arr_lots['degustation/AOCficheIndividuellePdf']) == 4) {
-
-
-            echo include_partial('degustation/AOCficheIndividuellePdf', array('lots' => $arr_lots['degustation/AOCficheIndividuellePdf']));
-            $arr_lots['degustation/AOCficheIndividuellePdf'] = array();
-        } else if (count($arr_lots['degustation/AOCficheIndividuelleMousseuxPdf']) == 4) {
-
-
-            echo include_partial('degustation/AOCficheIndividuelleMousseuxPdf', array('lots' => $arr_lots['degustation/AOCficheIndividuelleMousseuxPdf']));
-            $arr_lots['degustation/AOCficheIndividuelleMousseuxPdf'] = array();
+        foreach ($arr_lots as $certif => $lots) {
+            handleIfFull($arr_lots, $certif);
         }
 
         if ($lot_certif === "AOP" && $lot_genre === "Mousseux") {
@@ -40,21 +44,6 @@
 
     }
 
-    if (count($arr_lots['degustation/IGPficheIndividuellePdf']) != 4) {
-        while (count($arr_lots['degustation/IGPficheIndividuellePdf']) < 4) {
-            $arr_lots['degustation/IGPficheIndividuellePdf'][] = null;
-        }
-        echo include_partial('degustation/IGPficheIndividuellePdf', array('lots' => $arr_lots['degustation/IGPficheIndividuellePdf']));
-    }
-    if (count($arr_lots['degustation/AOCficheIndividuellePdf']) != 4) {
-        while (count($arr_lots['degustation/AOCficheIndividuellePdf']) < 4) {
-            $arr_lots['degustation/AOCficheIndividuellePdf'][] = null;
-        }
-        echo include_partial('degustation/AOCficheIndividuellePdf', array('lots' => $arr_lots['degustation/AOCficheIndividuellePdf']));
-    }
-    if (count($arr_lots['degustation/AOCficheIndividuelleMousseuxPdf']) != 4) {
-        while (count($arr_lots['degustation/AOCficheIndividuelleMousseuxPdf']) < 4) {
-            $arr_lots['degustation/AOCficheIndividuelleMousseuxPdf'][] = null;
-        }
-        echo include_partial('degustation/AOCficheIndividuelleMousseuxPdf', array('lots' => $arr_lots['degustation/AOCficheIndividuelleMousseuxPdf']));
+    foreach ($arr_lots as $certif => $lots) {
+        fillArray($arr_lots, $certif);
     }
