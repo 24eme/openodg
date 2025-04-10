@@ -3,6 +3,7 @@ all:
     parcellaire:
       ecart_rangs_max: 250
       ecart_pieds_min:  80
+      declarations_liees: true
       aires:
         communes-aoc:
           name: "AOC Côte de Provence"
