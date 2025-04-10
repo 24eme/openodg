@@ -7,6 +7,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   protected $parcelles_idu = null;
   protected $previous_document = null;
   protected $etablissement = null;
+  protected $habilitation = null;
 
   public function isAdresseLogementDifferente() {
       return false;
@@ -262,7 +263,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getDestinataires() {
-        $destinataires = [$this->getEtablissementObject()->_id => ['libelle_etablissement' => "Cave particulière"]];
+        $destinataires = [];
+
+        if($this->getHabilitation() && in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $this->getHabilitation()->getActivitesHabilites())) {
+            $destinataires[$this->getEtablissementObject()->_id] = ['libelle_etablissement' => "Cave particulière"];
+        }
 
         foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATIVE) as $liaison) {
             $destinataires[$liaison->id_etablissement] = $liaison;
@@ -273,6 +278,28 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
 
         return $destinataires;
+    }
+
+    public function getDestinatairesIncomplete() {
+        $destinataires = $this->getDestinataires();
+        foreach($destinataires as $idDestinataire => $destinataire) {
+            foreach($this->getParcelles() as $parcelle) {
+                if(!is_null($parcelle->getSuperficie($idDestinataire))) {
+                    unset($destinataires[$idDestinataire]);
+                    break;
+                }
+            }
+        }
+
+        return $destinataires;
+    }
+
+    public function getHabilitation() {
+        if(is_null($this->habilitation)) {
+            $this->habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getPeriode().'-03-01');
+        }
+
+        return $this->habilitation;
     }
 
   /*** DECLARATION DOCUMENT ***/
