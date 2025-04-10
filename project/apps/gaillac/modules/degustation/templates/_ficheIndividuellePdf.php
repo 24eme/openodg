@@ -1,29 +1,10 @@
 <?php
 
-function handleIfFull($base_array, $certif)
-{
-    if (count($base_array[$certif]) == 4) {
-        echo include_partial($certif, array('lots' => $base_array[$certif]));
-    }
-}
-
-function fillArray($base_array, $certif)
-{
-    if (count($base_array[$certif]) != 4) {
-        while (count($base_array[$certif]) < 4) {
-            $base_array[$certif][] = null;
-        }
-        echo include_partial($certif, array('lots' => $base_array[$certif]));
-    }
-}
-
-?>
-
-<?php
-
-    $arr_lots['degustation/IGPficheIndividuellePdf'] = array();
-    $arr_lots['degustation/AOCficheIndividuellePdf'] = array();
-    $arr_lots['degustation/AOCficheIndividuelleMousseuxPdf'] = array();
+    $arr_lots = [];
+    $arr_lots['degustation/IGPficheIndividuellePdf'] = [];
+    $arr_lots['degustation/AOCficheIndividuellePdf'] = [];
+    $arr_lots['degustation/AOCficheIndividuelleMousseuxPdf'] = [];
+//    $arr_lots['degustation/AOCficheIndividuelleBaseMousseuxPdf'] = [];
 
     foreach ($degustation->lots as $lot) {
 
@@ -31,7 +12,9 @@ function fillArray($base_array, $certif)
         $lot_genre = $lot->getConfigProduit()->getGenre()->getLibelle();
 
         foreach ($arr_lots as $certif => $lots) {
-            handleIfFull($arr_lots, $certif);
+            if (count($arr_lots[$certif]) == 4) {
+                echo include_partial($certif, array('lots' => $arr_lots[$certif]));
+            }
         }
 
         if ($lot_certif === "AOP" && $lot_genre === "Mousseux") {
@@ -45,5 +28,10 @@ function fillArray($base_array, $certif)
     }
 
     foreach ($arr_lots as $certif => $lots) {
-        fillArray($arr_lots, $certif);
+        if (count($arr_lots[$certif]) != 4) {
+            while (count($arr_lots[$certif]) < 4) {
+                $arr_lots[$certif][] = null;
+            }
+            echo include_partial($certif, array('lots' => $arr_lots[$certif]));
+        }
     }
