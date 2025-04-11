@@ -43,6 +43,7 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
     public function getSuperficie($destinataireIdentifiant = null) {
         $superficie = $this->_get('superficie');
         if($destinataireIdentifiant) {
+            $destinataireIdentifiant = str_replace('ETABLISSEMENT-', '', $destinataireIdentifiant);
             if ($this->exist('destinations/'.$destinataireIdentifiant)) {
                 $superficie = $this->get('destinations/'.$destinataireIdentifiant.'/superficie');
             } elseif ($this->exist('destinations')) {
@@ -57,7 +58,10 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
                 $this->set('superficie', $superficie);
             }
         }
-
+        //On préserve les usages antérieurs où la superficie concernées et superficie_affectation
+        if ($this->exist('superficie_affectation')) {
+            return $this->get('superficie_affectation');
+        }
         if (! $this->getParcelleFromParcellaire()) {
             return $superficie;
         }

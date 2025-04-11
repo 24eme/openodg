@@ -42,6 +42,9 @@
 <?php endforeach; ?>
 </table>
 </div></div>
+<?php if($sf_user->isAuthenticated() && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+    <a class="btn btn-default btn-md" href="<?php  echo url_for('registrevci_ajout_mouvement', array('id' => $registre->_id)) ?>">Ajouter un mouvement</a>
+<?php endif; ?>
 <div class="row">
     <div class="col-xs-12">
         <h3>Détails du registre VCI</h3>
@@ -49,6 +52,7 @@
         <thead><tr>
             <th class="col-md-3">Produit</th>
             <th class="col-md-1">Date</th>
+            <th class="col-md-1">Origine</th>
         	  <th class="col-md-2">Lieu</th>
             <th class="col-md-1">Type de mvmt</th>
             <th class="col-md-1">Volume</th>
@@ -58,6 +62,7 @@
       <tr>
           <td><?php echo $d->produit_libelle; ?></td>
           <td><?php echo format_date($d->date); ?></td>
+          <td><?php echo $d->origine; ?></td>
           <td><?php echo $d->detail_libelle; ?></td>
           <td><?php echo RegistreVCIClient::MOUVEMENT_LIBELLE($d->mouvement_type); ?></td>
           <td class="text-right"><?php echo echoFloat($d->volume); ?></td>
