@@ -408,8 +408,16 @@ class ParcellaireClient extends acCouchdbClient {
     public function getSyntheseCepages($parcellairedoc, $filter_produit_hash = null, $filter_insee = null) {
         $synthese = array();
         foreach($parcellairedoc->getParcelles() as $p) {
-            if ($filter_produit_hash && is_string($filter_produit_hash) && strpos($p->produit_hash, $filter_produit_hash) === false) {
-                continue;
+            if ($filter_produit_hash) {
+                if (is_string($filter_produit_hash)) {
+                    if (strpos($p->produit_hash, $filter_produit_hash) === false) {
+                        continue;
+                    }
+                } else {
+                    if (!$p->produit_hash) {
+                        continue;
+                    }
+                }
             }
             if ($filter_insee && !in_array($p->code_commune, $filter_insee)) {
                 continue;

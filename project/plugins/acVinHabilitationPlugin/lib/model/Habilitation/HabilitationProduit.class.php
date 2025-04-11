@@ -62,12 +62,9 @@ class HabilitationProduit extends BaseHabilitationProduit {
       return count($this->activites);
     }
 
-    public function getActivitesHabilites($the_activite) {
+    public function getActivitesHabilites() {
         $activites = array();
         foreach ($this->activites as $key => $activite) {
-            if ($the_activite && $key != $the_activite) {
-                continue;
-            }
             if(!$activite->isHabilite()){
                 continue;
             }
