@@ -283,11 +283,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     public function getDestinatairesIncomplete() {
         $destinataires = $this->getDestinataires();
         foreach($destinataires as $idDestinataire => $destinataire) {
-            foreach($this->getParcelles() as $parcelle) {
-                if(!is_null($parcelle->getSuperficie($idDestinataire))) {
-                    unset($destinataires[$idDestinataire]);
-                    break;
-                }
+            $parcellaireCoop = ParcellaireAffectationCoopClient::getInstance()->find(ParcellaireAffectationCoopClient::getInstance()->buildId(str_replace('ETABLISSEMENT-', '', $idDestinataire), $this->getPeriode()));
+            if($parcellaireCoop && $parcellaireCoop->exist('apporteurs/ETABLISSEMENT-'.$this->identifiant.'/statuts/'.$this->getType()) && $parcellaireCoop->get('apporteurs/ETABLISSEMENT-'.$this->identifiant.'/statuts/'.$this->getType()) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT) {
+                unset($destinataires[$idDestinataire]);
             }
         }
 
