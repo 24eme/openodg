@@ -205,6 +205,12 @@ class parcellaireAffectationActions extends sfActions {
     		return sfView::SUCCESS;
     	}
 
+        if($this->coop) {
+            $coopDoc = ParcellaireAffectationCoopClient::getInstance()->find($this->coop);
+            $coopDoc->addApporteur($this->parcellaireAffectation->getEtablissementObject()->_id)->add('statuts')->add($this->parcellaireAffectation->getType(), ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT);
+            $coopDoc->save();
+        }
+
         if(count($this->destinatairesIncomplete)) {
             return $this->redirect('declaration_etablissement', $this->parcellaireAffectation->getEtablissementObject());
         }
