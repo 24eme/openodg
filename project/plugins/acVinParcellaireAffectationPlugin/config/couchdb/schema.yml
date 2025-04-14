@@ -137,6 +137,12 @@ ParcellaireAffectationCoop:
                   nb_parcelles_identifiees: { type: integer }
                   nom: { }
                   cvi: { }
+                  statuts:
+                    type: collection
+                    required: false
+                    definition:
+                      fields:
+                        '*': { }
 #PARCELLAIREINTENTIONAFFECTATION
 ParcellaireIntentionAffectation:
   definition:
