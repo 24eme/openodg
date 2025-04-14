@@ -164,10 +164,10 @@ EOF;
         $date_decision = ($data[self::CSV_DATE_DEMARRAGE]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_DEMARRAGE])[0])->format('Y-m-d') : null;
 
         $activites = [];
-        if (strpos($data[self::CSV_TYPE_OPERATEUR], 'roduction de raisins') !== false) {
+        if (strpos($data[self::CSV_TYPE_OPERATEUR], ' de raisins') !== false) {
             $activites[] = HabilitationClient::ACTIVITE_PRODUCTEUR;
         }
-        if (strpos($data[self::CSV_TYPE_OPERATEUR], 'inificateur') !== false) {
+        if (strpos($data[self::CSV_TYPE_OPERATEUR], 'inificat') !== false) {
             $activites[] = HabilitationClient::ACTIVITE_VINIFICATEUR;
         }
         if (strpos($data[self::CSV_TYPE_OPERATEUR], 'vrac') !== false) {
@@ -175,9 +175,6 @@ EOF;
         }
         if (strpos($data[self::CSV_TYPE_OPERATEUR], 'onditionne') !== false) {
             $activites[] = HabilitationClient::ACTIVITE_CONDITIONNEUR;
-        }
-        if (strpos($data[self::CSV_TYPE_OPERATEUR], 'vente') !== false) {
-            $activites[] = HabilitationClient::ACTIVITE_VENTE_A_LA_TIREUSE;
         }
 
         if($date_demande && $date_demande < $date_decision) {

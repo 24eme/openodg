@@ -21,17 +21,22 @@ class importOperateursHabilitationsAOPGaillacCsvTask extends sfBaseTask
     const CSV_TRANSACTIONS_VRAC_VENTE_ENTRE_OPERATEURS = 15;
     const CSV_MISE_EN_MARCHÉ_VRAC_A_DESTINATION_CONSOMMATEUR = 16;
     const CSV_CONDITIONNEMENT = 17;
-    const CSV_OBSERVATIONS = 18;
+    const CSV_COOOPERATIVE_COOPERATEUR = 18;
+    const CSV_OBSERVATIONS = 19;
 
 
     const hash_produit = 'certifications/AOP/genres/TRANQ/appellations/GLC';
 
     const activites = [
         self::CSV_PRODUCTEUR_DE_RAISINS => HabilitationClient::ACTIVITE_PRODUCTEUR,
-        self::CSV_PRODUCTEUR_DE_MOUTS => HabilitationClient::ACTIVITE_PRODUCTEUR,
+        self::CSV_PRODUCTEUR_DE_MOUTS => HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS,
         self::CSV_VINIFICATION => HabilitationClient::ACTIVITE_VINIFICATEUR,
         self::CSV_ACHAT_DE_VINS_EN_VRAC => HabilitationClient::ACTIVITE_VRAC,
         self::CSV_CONDITIONNEMENT => HabilitationClient::ACTIVITE_CONDITIONNEUR,
+        self::CSV_ELABORATION_DE_MOUSSEUX => HabilitationClient::ACTIVITE_ELABORATEUR,
+        self::CSV_ELEVAGE => HabilitationClient::ACTIVITE_ELEVEUR,
+        self::CSV_TRANSACTIONS_VRAC_VENTE_ENTRE_OPERATEURS => HabilitationClient::ACTIVITE_VRAC,
+        self::CSV_MISE_EN_MARCHÉ_VRAC_A_DESTINATION_CONSOMMATEUR => HabilitationClient::ACTIVITE_VRAC,
     ];
 
     const status = [
