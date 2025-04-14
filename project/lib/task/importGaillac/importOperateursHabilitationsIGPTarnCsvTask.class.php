@@ -79,31 +79,49 @@ EOF;
 
     private function importSocieteEtablissement($data, $suspendu = false)
     {
-        $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
-        $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_OPERATEUR]);
-
-        $societe = SocieteClient::getInstance()->find($newSociete->_id);
-
-        if($societe) {
-            return false;
+        $e = null;
+        if ($data[self::CSV_NOCVI]) {
+            $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_NOCVI]));
+        }
+        if (!$e && $data[self::CSV_SIRET]) {
+            $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_SIRET]));
+        }
+        if ($e) {
+            echo("Etablissement existe " . $e->_id . ", ". $data[self::CSV_NOCVI]." ".$data[self::CSV_SIRET]."\n");
+            return $e;
         }
 
-        $data = array_map('trim', $data);
+        $societe = SocieteClient::getInstance()->findBySiret(str_replace(' ', '', $data[self::CSV_SIRET]));
 
-        $societe = $newSociete;
-        $societe->statut = SocieteClient::STATUT_ACTIF;
-        $societe->siege->adresse = $data[self::CSV_ADRESSE_1] ?? null;
-        $societe->siege->adresse_complementaire = $data[self::CSV_ADRESSE_2] ?? null;
-        $societe->siege->code_postal = $data[self::CSV_CP] ?? null;
-        $societe->siege->commune = $data[self::CSV_COMMUNE] ?? null;
-        $societe->telephone_bureau = Phone::format($data[self::CSV_TEL] ?? null);
-        $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
+        if (!$societe) {
 
-        try {
-            $societe->save();
-        } catch (Exception $e) {
-            echo "$societe->_id save error :".$e->getMessage()."\n";
-            return false;
+            $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
+            $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_OPERATEUR]);
+
+            $societe = SocieteClient::getInstance()->find($newSociete->_id);
+
+            if($societe) {
+                return false;
+            }
+
+            $data = array_map('trim', $data);
+
+            $societe = $newSociete;
+            $societe->statut = SocieteClient::STATUT_ACTIF;
+            $societe->siege->adresse = $data[self::CSV_ADRESSE_1] ?? null;
+            $societe->siege->adresse_complementaire = $data[self::CSV_ADRESSE_2] ?? null;
+            $societe->siege->code_postal = $data[self::CSV_CP] ?? null;
+            $societe->siege->commune = $data[self::CSV_COMMUNE] ?? null;
+            $societe->telephone_bureau = Phone::format($data[self::CSV_TEL] ?? null);
+            $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
+
+            try {
+                $societe->save();
+            } catch (Exception $e) {
+                echo "$societe->_id save error :".$e->getMessage()."\n";
+                return false;
+            }
+
         }
 
         if (strpos($data[self::CSV_TYPE_OPERATEUR], 'Producteur et transformateur viticole') !== false) {

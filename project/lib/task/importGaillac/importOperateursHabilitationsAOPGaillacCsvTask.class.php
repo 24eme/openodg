@@ -105,6 +105,32 @@ EOF;
 
     private function importSocieteEtablissement($data, $suspendu = false)
     {
+        $e = null;
+        if ($data[self::CSV_CVI]) {
+            $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_CVI]));
+        }
+        if (!$e && $data[self::CSV_SIRET]) {
+            $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_SIRET]));
+        }
+        if ($e) {
+            echo("Etablissement existe " . $e->_id . ", ". $data[self::CSV_CVI]." ".$data[self::CSV_SIRET]."\n");
+            if ($e->region == 'IGPTARN') {
+                if ($e->num_interne) {
+                    $e->num_interne .= "|";
+                }
+                $e->num_interne .= $data[self::CSV_NUMERO_ENREGISTREMENT];
+                $e->addCommentaire("Etablissement partagé IGP - AOP (".date('d/m/Y').")");
+                $e->region = 'IGPTARN|AOCGAILLAC';
+            } else {
+                $e->region = 'AOCGAILLAC';
+            }
+            if (!isset($_ENV['DRY_RUN'])) {
+                $e->save();
+            }
+            return $e;
+        }
+
+
         $raison_sociale = $data[self::CSV_RAISON_SOCIALE];
         $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_ENREGISTREMENT]);
 
@@ -167,7 +193,10 @@ EOF;
         }
 
         $etablissement->cvi = $cvi;
-        $etablissement->commentaire = trim($data[self::CSV_OBSERVATION]) ? $data[self::CSV_OBSERVATION] : null;
+        $etablissement->num_interne = $data[self::CSV_NUMERO_ENREGISTREMENT];
+        $etablissement->commentaire = trim($data[self::CSV_OBSERVATIONS]) ? $data[self::CSV_OBSERVATIONS] : null;
+        $etablissement->region = 'AOCGAILLAC';
+
         $societe->pushAdresseTo($etablissement);
         $societe->pushContactTo($etablissement);
         if (!isset($_ENV['DRY_RUN'])) {
