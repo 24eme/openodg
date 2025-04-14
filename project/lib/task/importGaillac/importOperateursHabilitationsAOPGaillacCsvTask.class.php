@@ -128,7 +128,9 @@ EOF;
         $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
 
         try {
-            $societe->save();
+            if (!isset($_ENV['DRY_RUN'])) {
+                $societe->save();
+            }
         } catch (Exception $e) {
             echo "$societe->_id save error :".$e->getMessage()."\n";
             return false;
@@ -168,10 +170,14 @@ EOF;
         $etablissement->commentaire = trim($data[self::CSV_OBSERVATION]) ? $data[self::CSV_OBSERVATION] : null;
         $societe->pushAdresseTo($etablissement);
         $societe->pushContactTo($etablissement);
-        $etablissement->save();
+        if (!isset($_ENV['DRY_RUN'])) {
+            $etablissement->save();
+        }
 
         if($suspendu) {
-            $societe->switchStatusAndSave();
+            if (!isset($_ENV['DRY_RUN'])) {
+                $societe->switchStatusAndSave();
+            }
             $etablissement = EtablissementClient::getInstance()->find($etablissement->_id);
         }
 
@@ -215,7 +221,9 @@ EOF;
             }
         }
 
-        HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_decision, $activites, [], $statut);
+        if (!isset($_ENV['DRY_RUN'])) {
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_decision, $activites, [], $statut);
+        }
         /*
         if($suspendu) {
             HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, date('Y-m-d'), $activites, [], HabilitationClient::STATUT_RETRAIT, $data[self::CSV_OBSERVATION]);
