@@ -178,17 +178,23 @@ EOF;
         return $etablissement;
     }
 
-    const mois = ['janv.' => '01', 'févr.' => '02', 'mars' => '03', 'avr.' => '04', 'mai' => '05', 'juin' => '06', 'juil.' => '07', 'août' => '08', 'sept.' => '09', 'oct.' => '10', 'nov.' => '11', 'déc.' => '12'];
+    const mois = ['janv' => '01', 'févr' => '02', 'mars' => '03', 'avr' => '04', 'mai' => '05', 'juin' => '06', 'juil' => '07', 'août' => '08', 'sept' => '09', 'oct' => '10', 'nov' => '11', 'déc' => '12'];
 
     private function importHabilitation($etablissement, $data, $suspendu = false)
     {
         $identifiant = $etablissement->identifiant;
-        $dates = explode(" ", $data[self::CSV_DATE_DEPOT_DI]);
+        $dates = trim($data[self::CSV_DATE_DEPOT_DI]);
+        $dates = preg_replace('/([0-9][0-9]) ([0-9][0-9]) ([0-9][0-9][0-9][0-9])/', '\1\/\2\/\3', $dates);
+        $dates = explode(" ", $dates);
         $date_decision = end($dates);
-        if (preg_match('/([0-9]+)-([^-]*[a-z][^-]*)-([0-9]+)/', $date_decision, $m)) {
-            $date_decision = $m[3].'-'.self::mois[$m[2]].'-'.$m[1];
-        }elseif (preg_match('/([0-9]+)\/([0-9]+)\/([0-9]+)/', $date_decision, $m)) {
-            $date_decision = $m[3].'-'.$m[2].'-'.$m[1];
+        if (preg_match('/([0-9]+)-([^-]*[a-z][^-\.]*)\.?-([0-9][0-9][0-9][0-9])/', $date_decision, $m) && isset(self::mois[$m[2]])) {
+            $date_decision = sprintf('%04d-%02d-%02d', $m[3], self::mois[$m[2]], $m[1]);
+        }elseif (preg_match('/([0-9]+)-([^-]*[a-z][^-\.]*)\.?-([0-9][0-9])/', $date_decision, $m) && isset(self::mois[$m[2]])) {
+            $date_decision = sprintf('20%02d-%02d-%02d', $m[3], self::mois[$m[2]], $m[1]);
+        }elseif (preg_match('/([0-9]+)\/([0-9]+)\/([0-9][0-9][0-9][0-9])/', $date_decision, $m)) {
+            $date_decision = sprintf('%04d-%02d-%02d', $m[3], $m[2], $m[1]);
+        }elseif (preg_match('/^([0-9]+)\/([0-9]+)\/([0-9][0-9])$/', $date_decision, $m)) {
+            $date_decision = sprintf('20%02d-%02d-%02d', $m[3], $m[2], $m[1]);
         }else{
             echo "unsupported date format : ".$date_decision."\n";
             return;
