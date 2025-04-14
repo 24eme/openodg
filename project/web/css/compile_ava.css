@@ -8010,6 +8010,7 @@ input[type="radio"] {
   color: #ffffff;
   float: left;
   height: 82px;
+  max-width: 300px;
   line-height: 82px;
   position: relative;
   text-transform: uppercase;
