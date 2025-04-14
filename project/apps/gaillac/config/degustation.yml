@@ -1,6 +1,7 @@
 all:
   configuration:
     degustation:
+      anonymat4labo: true
       specificite_lot_pdf: true
       always_identifiant_table: true
       conformite:
