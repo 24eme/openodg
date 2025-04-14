@@ -117,6 +117,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
         if ($saveOther) {
             $this->updateLiaisonOpposee($liaison);
+            $this->save();
         }
 
         return $liaison;
