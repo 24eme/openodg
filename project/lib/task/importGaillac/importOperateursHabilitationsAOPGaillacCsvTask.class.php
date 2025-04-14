@@ -85,9 +85,22 @@ EOF;
             if ($etablissement === false) {
                 continue;
             }
-
+            $this->importLien($etablissement, $data);
             $this->importHabilitation($etablissement, $data, (bool)$options['suspendu']);
         }
+    }
+
+    private function importLien($etablissement, $data) {
+        if (!$data[self::CSV_COOOPERATIVE_COOPERATEUR]) {
+            return;
+        }
+        if ($data[self::CSV_COOOPERATIVE_COOPERATEUR] === "1") {
+            $etablissement->famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+            $etablissement->save();
+            return;
+        }
+        $coop = EtablissementClient::getInstance()->findByCVI($data[self::CSV_COOOPERATIVE_COOPERATEUR]);
+        $coop->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $etablissement, !isset($_ENV['DRY_RUN']));
     }
 
     private function importSocieteEtablissement($data, $suspendu = false)
@@ -137,6 +150,10 @@ EOF;
             if ($data[self::CSV_VINIFICATION] === "1") {
                 $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
             }
+        }
+
+        if ($data[self::CSV_COOOPERATIVE_COOPERATEUR] === "1") {
+            $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
         }
 
         $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
