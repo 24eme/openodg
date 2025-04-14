@@ -106,19 +106,17 @@ EOF;
             return false;
         }
 
-        if (strpos($data[self::CSV_TYPE_OPERATEUR], 'roducteur') !== false) {
-            if (strpos($data[self::CSV_TYPE_OPERATEUR], 'inificat') !== false) {
-                $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
-            }else{
+        if (strpos($data[self::CSV_TYPE_OPERATEUR], 'Producteur et transformateur viticole') !== false) {
+            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+        } elseif (strpos($data[self::CSV_TYPE_OPERATEUR], 'Producteur Viticole') !== false) {
                 $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
-            }
+        } elseif (strpos($data[self::CSV_TYPE_OPERATEUR], 'Transformateur viticole') !== false) {
+            $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+        } elseif (strpos($data[self::CSV_TYPE_OPERATEUR], 'Opérateur non transformateur') !== false) {
+            $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
         } else {
-            if (strpos($data[self::CSV_TYPE_OPERATEUR], 'gociant') !== false) {
-                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
-            } else {
-                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
-            }
-            //$famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+            echo "ERROR: Famille non reconnue : ".$data[self::CSV_TYPE_OPERATEUR]."\n";
+            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
         }
 
         $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
