@@ -3,7 +3,7 @@
 <?php use_helper('Date'); ?>
 
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel <?php if($parcellaireIrrigue): ?>panel-primary<?php elseif($parcellaireIrrigable && !$parcellaireIrrigable->validation): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
+    <div class="block_declaration panel <?php if($parcellaireIrrigue): ?>panel-primary panel-irrigue <?php elseif($parcellaireIrrigable && !$parcellaireIrrigable->validation): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
             <h3 class="panel-title">Déclarations d'irrigation <?php echo $periode ?></h3>
         </div>
