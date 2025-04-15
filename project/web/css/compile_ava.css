@@ -8713,7 +8713,9 @@ tr.bootstrap-switch-on {
 .block_declaration.panel-default,
 .block_declaration.panel-default > .panel-body,
 .block_declaration.panel-primary.panel-irrigue,
-.block_declaration.panel-primary.panel-irrigue > .panel-body {
+.block_declaration.panel-primary.panel-irrigue > .panel-body,
+.block_declaration.panel-primary.panel-irrigable,
+.block_declaration.panel-primary.panel-irrigable > .panel-body {
     display:flex;
     flex-direction: column;
 }
@@ -8725,7 +8727,8 @@ tr.bootstrap-switch-on {
 }
 
 .block_declaration.panel-default,
-.block_declaration.panel-primary.panel-irrigue {
+.block_declaration.panel-primary.panel-irrigue,
+.block_declaration.panel-primary.panel-irrigable {
     justify-content: space-between;
 }
 
@@ -8735,7 +8738,8 @@ tr.bootstrap-switch-on {
 }
 
 .block_declaration.panel-default > .panel-heading,
-.block_declaration.panel-primary.panel-irrigue > .panel-heading {
+.block_declaration.panel-primary.panel-irrigue > .panel-heading,
+.block_declaration.panel-primary.panel-irrigable > .panel-heading {
     margin: 0 20px;
     padding: 20px 0 10px 0;
     height: 68px;
@@ -8763,12 +8767,15 @@ tr.bootstrap-switch-on {
     margin: 1.1em 0;
 }
 
-
 .block_declaration.panel-default > .panel-body > .actions > .btn,
-.block_declaration.panel-primary.panel-irrigue > .panel-body > .actions > .btn {
+.block_declaration.panel-primary.panel-irrigue > .panel-body > .actions > .btn-default {
     padding: 10px 0;
     font-size: 13.5px;
     border-radius: 6px;
+}
+
+.block_declaration.panel-primary.panel-irrigable > .panel-body > .actions {
+    margin-top: 30px;
 }
 
 .block_declaration.panel-primary.panel-irrigue,
@@ -8781,7 +8788,8 @@ tr.bootstrap-switch-on {
     color: #2c4a48;
 }
 
-.block_declaration.panel-primary.panel-irrigue > .panel-body {
+.block_declaration.panel-primary.panel-irrigue > .panel-body,
+.block_declaration.panel-primary.panel-irrigable > .panel-body {
     height: 68%;
 }
 
