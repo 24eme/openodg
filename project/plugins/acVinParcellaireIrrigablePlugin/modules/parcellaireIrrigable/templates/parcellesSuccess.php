@@ -32,7 +32,7 @@
                     <th class="col-xs-1">N° parcelle</th>
                     <th class="col-xs-3">Cépage</th>
                     <th class="col-xs-1">Année plantat°</th>
-                    <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
+                    <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">ares</span></th>
 
                     <th class="col-xs-2 text-center">Irrigable ?</th>
                 </tr>
@@ -45,7 +45,7 @@
                     <td><?php echo $parcelle->numero_parcelle; ?></td>
                     <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
                     <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
-                    <td class="text-right"><?php echoFloatFr($parcelle->superficie, 4); ?></td>
+                    <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)); ?></td>
     				<td class="text-center"><input <?php if (array_key_exists($parcelle->getParcelleId(), $previousParcelles)): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getParcelleId() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
                 </tr>
             <?php  endforeach; ?>
