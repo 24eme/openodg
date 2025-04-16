@@ -262,7 +262,9 @@ class ParcellaireClient extends acCouchdbClient {
         $parcellesMatch = [];
 
         $selected_parcellaires = [];
-        if ($parcelle->exist('idu') && $parcelle->idu && isset($parcelles[$parcelle->idu])) {
+        $is_parcelle_from_parcellaire = method_exists($parcelle, 'exist');
+
+        if ($is_parcelle_from_parcellaire && $parcelle->exist('idu') && $parcelle->idu && isset($parcelles[$parcelle->idu])) {
             $selected_parcellaires = $parcelles[$parcelle->idu];
         }else{
             foreach($parcelles as $idu => $multip) {
@@ -271,11 +273,14 @@ class ParcellaireClient extends acCouchdbClient {
                 }
             }
         }
-
         foreach($selected_parcellaires as $p) {
             $score = 0;
-
-            if(preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($parcelle->getCepageLibelle())) == preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($p->getCepageLibelle()))) {
+            if ($is_parcelle_from_parcellaire) {
+                $cepage =  $parcelle->getCepageLibelle();
+            }else {
+                $cepage = $parcelle->cepage;
+            }
+            if(preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($cepage)) == preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($p->getCepageLibelle()))) {
                 $score += 0.25;
             }
             if(strpos($p->campagne_plantation, $parcelle->campagne_plantation) !== false) {
@@ -284,16 +289,28 @@ class ParcellaireClient extends acCouchdbClient {
             if(KeyInflector::slugify($parcelle->lieu) == KeyInflector::slugify($p->lieu)) {
                 $score += 0.25;
             }
-            if($parcelle->exist('parcelle_id') && $parcelle->_get('parcelle_id') && $parcelle->exist('superficie_parcellaire') && $p->exist('superficie_parcellaire') && abs($parcelle->_get('superficie_parcellaire') - $p->_get('superficie_parcellaire')) < 0.0001) {
+            if(KeyInflector::slugify($parcelle->commune) == KeyInflector::slugify($p->commune)) {
+                $score += 0.25;
+            }
+            if($is_parcelle_from_parcellaire && $parcelle->exist('parcelle_id') && $parcelle->_get('parcelle_id') && $parcelle->exist('superficie_parcellaire') && $p->exist('superficie_parcellaire') && abs($parcelle->_get('superficie_parcellaire') - $p->_get('superficie_parcellaire')) < 0.0001) {
                 $score += 0.10;
             }
-            if(abs($parcelle->_get('superficie') - $p->_get('superficie')) < 0.0001) {
-                $score += 0.10;
+            $s = 0;
+            if ($is_parcelle_from_parcellaire) {
+                $s = $parcelle->_get('superficie');
+            }else{
+                $s = $parcelle->superficie;
             }
-            if($parcelle->exist('parcelle_id') && $parcelle->_get('parcelle_id') && $parcelle->exist('superficie_parcellaire') && abs($parcelle->_get('superficie_parcellaire') - $p->_get('superficie')) < 0.0001) {
+            if(abs($s - $p->_get('superficie')) < 0.0001) {
+                $score += 0.25;
+            }
+
+            if($is_parcelle_from_parcellaire && $parcelle->exist('parcelle_id') && $parcelle->_get('parcelle_id') && $parcelle->exist('superficie_parcellaire') && abs($parcelle->_get('superficie_parcellaire') - $p->_get('superficie')) < 0.0001) {
                 $score += 0.05;
             }
-            if (($parcelle->idu == $p->idu) || !$parcelle->getIDU(false) && ( ($parcelle->section == $p->section) && ($parcelle->numero_parcelle == $p->numero_parcelle) && (intval($parcelle->getPrefix()) == intval($p->prefix))) ) {
+            if ($is_parcelle_from_parcellaire && ($parcelle->idu == $p->idu)) {
+                $score += 0.25;
+            }elseif ( (!$is_parcelle_from_parcellaire || !$parcelle->getIDU(false)) && ( ($parcelle->section == $p->section) && ($parcelle->numero_parcelle == $p->numero_parcelle) && (intval($parcelle->prefix == intval($p->prefix))) )) {
                 $score += 0.25;
             }
             if ($allready_selected && isset($allready_selected[$p->getParcelleId()])) {
