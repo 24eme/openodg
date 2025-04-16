@@ -184,10 +184,10 @@ class parcellaireIrrigableActions extends sfActions {
 	       	$this->parcellaireIrrigable->validateOdg();
 	    }
 
-    	$this->form = new ParcellaireIrrigableValidationForm($this->parcellaireIrrigable);
+		$this->validation = new ParcellaireIrrigableValidation($this->parcellaireIrrigable);
+		$this->form = new ParcellaireIrrigableValidationForm($this->parcellaireIrrigable, array('engagements' => $this->validation->getPoints(ParcellaireIrrigableValidation::TYPE_ENGAGEMENT)));
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
-    		$this->validation = new ParcellaireIrrigableValidation($this->parcellaireIrrigable);
     		return sfView::SUCCESS;
     	}
 
@@ -197,6 +197,13 @@ class parcellaireIrrigableActions extends sfActions {
 
     		return sfView::SUCCESS;
     	}
+
+        $documents = $this->parcellaireIrrigable->getOrAdd('documents');
+
+        foreach ($this->validation->getPoints(ParcellaireIrrigableValidation::TYPE_ENGAGEMENT) as $engagement) {
+            $document = $documents->add($engagement->getCode());
+            $document->libelle = ParcellaireIrrigableDocuments::getDocumentLibelle($document->getKey());
+        }
 
     	$this->form->save();
 

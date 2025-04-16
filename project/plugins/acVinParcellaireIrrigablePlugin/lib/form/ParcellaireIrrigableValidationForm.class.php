@@ -21,6 +21,17 @@ class ParcellaireIrrigableValidationForm extends acCouchdbObjectForm {
         $this->setWidget('observations',new bsWidgetFormTextarea(array(), array('style' => 'width: 100%;resize:none;')));
         $this->setValidator('observations',new sfValidatorString(array('required' => false)));
 
+
+        if(ParcellaireConfiguration::getInstance()->hasEngagements()) {
+            $engagements = $this->getOption('engagements');
+
+            foreach ($engagements as $engagement) {
+                $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
+                $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => true)));
+                $this->getValidator('engagement_'.$engagement->getCode())->setMessage("required", "L'engagement à ne pas irriguer est requis");
+            }
+        }
+
         $this->widgetSchema->setNameFormat('parcellaire_validation[%s]');
     }
 

@@ -30,9 +30,11 @@
             <td><?php echo $apporteur->cvi; ?></td>
             <td><span class="text-primary"><?php echo $apporteur->nom; ?></span> <span class="text-muted"><?php echo $apporteur_id; ?></span></td>
             <?php foreach(["ParcellaireAffectation" => "parcellaireaffectation", "ParcellaireManquant" => "parcellairemanquant", "ParcellaireIrrigable" => "parcellaireirrigable"] as $type => $baseurl): ?>
-            <td class="text-center <?php if($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>success text-success<?php endif; ?>">
+            <td class="text-center <?php if(in_array($apporteur->getDeclarationStatut($type), [ParcellaireAffectationCoopApporteur::STATUT_VALIDE, ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT])): ?>success text-success<?php endif; ?>">
                 <?php if($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>
                     <a class="text-success" href="<?php echo url_for($baseurl.'_visualisation', array('id' => $apporteur->getDeclaration($type)->_id, 'coop' => $parcellaireAffectationCoop->_id)) ?>">Voir la déclaration</a><br/><span class="glyphicon glyphicon-ok-sign"></span>
+                <?php elseif($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT): ?>
+                    <a class="text-success" href="<?php echo url_for($baseurl.'_edit', array('id' => $apporteur->getDeclaration($type)->_id, 'coop' => $parcellaireAffectationCoop->_id)) ?>">Modifier la déclaration</a><br/><span class="glyphicon glyphicon-ok-sign"></span> <small>Partiellement validé</small>
                 <?php elseif($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_EN_COURS): ?>
                     <a href="<?php echo url_for($baseurl.'_edit', array('id' => $apporteur->getDeclaration($type)->_id, 'coop' => $parcellaireAffectationCoop->_id)) ?>">Continuer la déclaration</a><br/><br/>
                 <?php elseif($type == ParcellaireAffectationClient::TYPE_MODEL && $apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_A_SAISIR): ?>

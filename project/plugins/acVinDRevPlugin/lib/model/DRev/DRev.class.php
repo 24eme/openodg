@@ -2256,6 +2256,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function generateUrlPiece($source = null) {
         if ($source) {
+            if ($source === $this->_id) {
+                $source = null;
+            }
             return sfContext::getInstance()->getRouting()->generate('drev_export_pdf',  ['id' => $this->_id, 'numero_dossier' => $source]);
         }
     	return sfContext::getInstance()->getRouting()->generate('drev_export_pdf', $this);

@@ -9,6 +9,7 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
     const STATUT_A_SAISIR = "A_SAISIR";
     const STATUT_EN_COURS = "EN_COURS";
     const STATUT_VALIDE = "VALIDE";
+    const STATUT_VALIDE_PARTIELLEMENT = "VALIDE_PARTIELLEMENT";
 
     public function getEtablissementId() {
 
@@ -29,8 +30,12 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
         $doc = $this->getDeclaration($type);
 
         if($doc && $doc->validation) {
-
             return self::STATUT_VALIDE;
+        }
+
+        if($doc && $this->exist('statuts/'.$type) && $this->exist('statuts/'.$type)) {
+
+            return $this->statuts->get($type);
         }
 
         if($doc) {
