@@ -99,13 +99,16 @@ abstract class DeclarationParcellaireParcelle extends ParcellaireParcelle {
         return true;
     }
 
-    public function getSuperficie() {
+    public function getSuperficie($unite = ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_HECTARE) {
         $s = $this->_get('superficie');
         $p = $this->getSuperficieParcellaire();
         if($s > $p) {
             $this->set('superficie', $p);
         }
+        if($unite == ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE) {
+            return round($this->_get('superficie') * 100, 2);
+        }
+
         return $this->_get('superficie');
     }
-
 }

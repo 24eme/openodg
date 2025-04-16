@@ -53,7 +53,7 @@
                 <th class="col-xs-1">Section /<br />N° parcelle</th>
                 <th class="col-xs-2">Cépage</th>
                 <th class="col-xs-1">Année plantat°</th>
-                <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(ha)</span></th>
+                <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
                 <th class="col-xs-1">Type de matériel</th>
                 <th class="col-xs-1">Type de ressource</th>
                 <th class="col-xs-1">Irrigation?</th>
@@ -72,7 +72,11 @@
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
                 <td><?php echo $parcelle->cepage; ?></td>
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
-                <td style="text-align: right;"><?php echoFloatFr($parcelle->superficie); ?></td>
+                <?php if (ParcellaireConfiguration::getInstance()->isAres()): ?>
+                    <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)); ?></td>
+                <?php else: ?>
+                    <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie()); ?></td>
+                <?php endif ?>
             	<td><?php echo $parcelle->materiel; ?></td>
             	<td><?php echo $parcelle->ressource; ?></td>
             	<?php if($parcelle->irrigation && (!$parcellaireIrrigue->exist('papier') || !$parcellaireIrrigue->papier)): ?>
