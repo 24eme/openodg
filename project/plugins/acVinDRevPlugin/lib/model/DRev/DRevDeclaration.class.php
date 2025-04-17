@@ -272,7 +272,7 @@ class DRevDeclaration extends BaseDRevDeclaration
         return $produits;
     }
 
-	public function getTotalVolumeRevendique(TemplateFactureCotisationCallbackParameters $produitFilter = null)
+	public function getTotalVolumeRevendique(?TemplateFactureCotisationCallbackParameters $produitFilter = null)
     {
     	$total = 0;
 
