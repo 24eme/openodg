@@ -12,10 +12,11 @@
         font-weight: bold;
     }
 </style>
+
 <br/>
 <br/>
 <table border="1" style="text-align:center;padding:10px;">
-  <tr><td>FICHE DE NON CONFORMITÉ<br/>NC<?php echo $lot->unique_id ?></td></tr>
+  <tr><td>FICHE DE NON <?php echo $lot->isLibelleAcceptable() ? 'ACCEPTABILITÉ' : 'CONFORMITÉ'?><br/>NC<?php echo $lot->unique_id ?></td></tr>
   <tr>
     <td style="width: 50%">
       <strong>Opérateur :</strong> <?php echo $etablissement->raison_sociale ?><br>
@@ -27,11 +28,11 @@
       <strong>CVI :</strong> <?php echo $etablissement->cvi ?> - <strong>N°SIRET :</strong> <?php echo $etablissement->siret ?>
     </td>
   </tr>
-  <tr><td style="width: 100%">Lot non conforme à la dégustation, <strong><?php echo $lot->getTextPassage(); ?></strong></td></tr>
+  <tr><td style="width: 100%">Lot non <?php echo $lot->isLibelleAcceptable() ? 'acceptable' : 'conforme'?> à la dégustation, <strong><?php echo $lot->getTextPassage(); ?></strong></td></tr>
   <tr><td>Commission de Dégustation réunie le : <?php echo format_date($degustation->date, "P", "fr_FR"); ?></td></tr>
 </table>
 
-<p style="text-align: center"><strong>Lot concerné par la non-conformité : <?php echo showProduitCepagesLot($lot, false) ?></strong></p>
+<p style="text-align: center"><strong>Lot concerné par la non-<?php echo $lot->isLibelleAcceptable() ? 'acceptabilité' : 'conformité'?> : <?php echo showProduitCepagesLot($lot, false) ?></strong></p>
 
 <table border="1" cellpadding=0 cellspacing=0 style="text-align: center;">
   <tr>
@@ -55,7 +56,7 @@
   <tr>
     <td>
       <strong>Description de l'anomalie (<?php echo $lot->getTextPassage(); ?>)</strong><br/><br/>
-      <strong>Gravité :</strong> <?php echo $lot->getLibellesConformites() ?><br/>
+      <strong>Gravité :</strong> <?php echo $lot->getLibelleConformite() ?><br/>
       <strong>Motif :</strong> <?php echo $lot->motif ?><br/>
       <strong>Observations constatées :</strong> <?php echo $lot->observation ?>
       <br/>
