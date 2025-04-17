@@ -25,8 +25,8 @@ th {
               <th colspan="2" style="width:20%"><small>Résultat</small></th>
             </tr>
             <tr>
-              <th><small>C</small></th>
-              <th><small>NC</small></th>
+              <th><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A' : 'C';?></small></th>
+              <th><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'NA' : 'NC';?></small></th>
             </tr>
           </thead>
           <tbody>
@@ -84,8 +84,8 @@ th {
               <th colspan="2" style="width:30%"><small>Résultat</small></th>
             </tr>
             <tr>
-              <th><small>C</small></th>
-              <th><small>NC</small></th>
+              <th><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A' : 'C';?></small></th>
+              <th><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'NA' : 'NC';?></small></th>
             </tr>
           </thead>
           <tbody>
@@ -131,8 +131,8 @@ th {
               <th style="width: 20%"><?php echo tdStart() ?><small>Produit</small></th>
               <th style="width: 5%"><?php echo tdStart() ?><small>Volume<br/>(hl)</small></th>
               <th style="width: 5%"><?php echo tdStart() ?><small>N° P</small></th>
-              <th style="width: 5%"><?php echo tdStart() ?><small>C/NC</small></th>
-              <th style="width: 20%"><?php echo tdStart() ?><small>Motif NC <br/>Observation de Conformité</small></th>
+              <th style="width: 5%"><?php echo tdStart() ?><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A/NA' : 'C/NC';?></small></th>
+              <th style="width: 20%"><?php echo tdStart() ?><small>Motif <?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'NA' : 'NC';?> <br/>Observation <?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'd\'Acceptabilité' : 'de Conformité';?></small></th>
             </tr>
           <?php $page1 = 0; $pages = 0; foreach ($lotsDegustes as $key => $lotDeguste): ?>
           <?php if ($page1 == 7 || $pages == 15): ?>
@@ -149,12 +149,17 @@ th {
               <td><small><?php echo showProduitCepagesLot($lotDeguste, false) ?></small></td>
               <td style="float:right; text-align:right;"><small><?php echo number_format($lotDeguste->volume, 2) ?> hl</small></td>
               <td><small><?php echo $lotDeguste->getTextPassage() ?></small></td>
-              <td><small><?php echo $lotDeguste->statut == Lot::STATUT_CONFORME ? "C" : "NC" ?></small></td>
+              <td><small><?php if ($lotDeguste->statut == Lot::STATUT_CONFORME):?>
+                                <?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A' : 'C'; ?>
+                            <?php else:?>
+                                <?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'NA' : 'NC'; ?>
+                        <?php endif;?>
+              </small></td>
               <td><small>
                 <?php if ($lotDeguste->getMouvement(Lot::STATUT_CONFORME)): ?>
                     <?php echo $lotDeguste->observation ?>
                 <?php else: ?>
-                    <?php echo Lot::getLibelleConformite($lotDeguste->conformite) ?> :
+                    <?php echo $lotDeguste->getLibelleConformite() ?> :
                     <?php echo $lotDeguste->motif ?>
                 <?php endif ?>
               </small></td>

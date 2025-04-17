@@ -31,6 +31,7 @@ class ImportParcellaireIrrigableManquantAixTask extends sfBaseTask
     protected $ressources;
     protected $cepages;
     protected $irrigable = null;
+    protected $manquant = null;
 
     protected function configure()
     {
@@ -63,6 +64,12 @@ EOF;
 
         $this->cepages = ConfigurationClient::getCurrent()->getCepagesAutorises();
 
+        $this->real_save = !isset($_ENV['DRY_RUN']);
+
+        $this->cpt = 0;
+        $this->cpt_warning = 0;
+        $this->cpt_error = 0;
+        $pkey = null;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ';');
 
@@ -71,14 +78,14 @@ EOF;
                 $etablissement = $this->findEtablissement($data);
                 if(!$etablissement) {
                     $this->currentEtablissementKey = '';
-                    echo "Error: Etablissement ".$data[self::CSV_CVI]." non trouvé;".implode(";", $data)."\n";
+                    // echo "Error: Etablissement ".$data[self::CSV_CVI]." non trouvé;".implode(";", $data)."\n";
                     continue;
                 }
             }
             if (!$parcellaire) {
                 $parcellaire = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
                 if (!$parcellaire) {
-                    echo "Error: pas de parcellaire pour ".$data[self::CSV_CVI]."/".$etablissement->_id."\n";
+                    // echo "Error: pas de parcellaire pour ".$data[self::CSV_CVI]."/".$etablissement->_id."\n";
                     continue;
                 }
             }
@@ -89,8 +96,8 @@ EOF;
             $p->section = $ref[0];
             $p->numero_parcelle = intval($ref[1]);
             $p->prefix = null;
-            $p->superficie = str_replace(',', '.', $data[self::CSV_SURFACE_DU_CEPAGE]);
-            $p->superficie_cadastrale = str_replace(',', '.', $data[self::CSV_SURFACE_CADASTRALE]);
+            $p->superficie = floatval(str_replace(',', '.', $data[self::CSV_SURFACE_DU_CEPAGE]));
+            $p->superficie_cadastrale = floatval(str_replace(',', '.', $data[self::CSV_SURFACE_CADASTRALE]));
             $p->cepage = str_replace(['é', 'è'], 'E', strtoupper($data[self::CSV_CEPAGE]));
             $lieu_commune = explode(' / ', strtoupper($data[self::CSV_COMMUNE]));
             $p->commune = end($lieu_commune);
@@ -98,46 +105,134 @@ EOF;
             if ($p->commune == $p->lieu) {
                 $p->lieu = null;
             }
+            $this->cpt++;
             $pt = ParcellaireClient::getInstance()->findParcelle($parcellaire, $p, 1, true);
             if ($pt) {
                 try {
                     $pt = $pt->getParcelleAffectee();
                 }catch(sfException $e) {
-                    echo "WARNING: Parcelle pas affectée à l'appellation\n";
+                    $this->cpt_warning++;
+                    // echo "WARNING: Parcelle pas affectée à l'appellation\n";
+                    // echo " -- ".$etablissement->cvi.' - - '.$p->section.' '.$p->numero_parcelle.' - '.$p->cepage.'/'.$p->campagne_plantation.' = '.$p->superficie."\n";
+                    // echo " => ".$etablissement->cvi." - - PAS de l'appellation\n";
                 }
             }
             if ( !$pt ) {
-                echo "ERROR: Parcelle pas trouvée :";
-                echo " -- ".$etablissement->cvi.' - - '.$p->section.' '.$p->numero_parcelle.' - '.$p->cepage.'/'.$p->campagne_plantation.' = '.$p->superficie."\n";
-                echo " => ".$etablissement->cvi." - - NON TROUVE\n";
-                continue;
+                $this->cpt_error++;
+                // echo "ERROR: Parcelle pas trouvée :\n";
+                // echo " -- ".$etablissement->cvi.' - - '.$p->section.' '.$p->numero_parcelle.' - '.$p->cepage.'/'.$p->campagne_plantation.' = '.$p->superficie."\n";
+                // echo " => ".$etablissement->cvi." - - NON TROUVE\n";
             } elseif ( ($p->section != $pt->section) || ($p->numero_parcelle != $pt->numero_parcelle) || ($p->cepage != $pt->cepage) || ($p->campagne_plantation != $pt->campagne_plantation) || ($p->superficie != $pt->superficie) ) {
-                echo "WARNING: Parcelle pas totalement exacte :";
-                echo " -- ".$etablissement->cvi.' - - '.$p->section.' '.$p->numero_parcelle.' - '.$p->cepage.'/'.$p->campagne_plantation.' = '.$p->superficie."\n";
-                echo " => ".$etablissement->cvi.' - - '.$pt->section.' '.$pt->numero_parcelle.' - '.$pt->cepage.'/'.$pt->campagne_plantation.' = '.$pt->superficie."\n";
+                $this->cpt_warning++;
+                // echo "WARNING: Parcelle pas totalement exacte :\n";
+                // echo " -- ".$etablissement->cvi.' - - '.$p->section.' '.$p->numero_parcelle.' - '.$p->cepage.'/'.$p->campagne_plantation.' = '.$p->superficie."\n";
+                // echo " => ".$etablissement->cvi.' - - '.$pt->section.' '.$pt->numero_parcelle.' - '.$pt->cepage.'/'.$pt->campagne_plantation.' = '.$pt->superficie."\n";
             }
             if (!$this->irrigable || $this->irrigable->identifiant != $etablissement->identifiant) {
                 if ($this->irrigable) {
-                    $this->irrigable->validate();
-                    if (!isset($_ENV['DRY_RUN'])) {
-                        $this->irrigable->save();
-                        echo "LOG: ".$this->irrigable->_id." saved\n";
-                    }else{
-                        echo "LOG: ".$this->irrigable->_id." would be saved\n";
-                    }
+                    $this->saving();
+                    $this->cpt = 0;
+                    $this->cpt_warning = 0;
+                    $this->cpt_error = 0;
                 }
                 $this->irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($etablissement->identifiant, $this->periode);
-                $this->irrigable->observations .= " - Import Aix";
+                $this->irrigable->observations .= "Import Aix";
             }
-            if ($pt->getProduitHash()) {
+            if ($pt && $pt->getProduitHash()) {
                 $produit_hash = str_replace('/declaration/', '', $pt->getProduitHash());
             }
+            if ($pt) {
+                $pkey = $pt->getKey();
+                $pkeyid = 0;
+            } else {
+                if (!$pkey) {
+                    continue;
+                }
+                $pkey = explode('-', $pkey)[0].'-X'.$pkeyid++;
+                $pt = $ptold;
+                $pt->campagne_plantation = $p->campagne_plantation;
+                $pt->section = $p->section;
+                $pt->numero_parcelle = $p->numero_parcelle;
+                $pt->prefix = $p->prefix;
+                $pt->superficie = $p->superficie;
+                $pt->superficie_cadastrale = $p->superficie_cadastrale;
+                $pt->cepage = $p->cepage;
+                $pt->commune = $p->commune;
+                $pt->lieu = $p->lieu;
+                $pt->parcelle_id = $pkey;
+            }
+            $ptold = $pt;
+
             $item = $this->irrigable->declaration->add($produit_hash);
-            $pi = $item->detail->add($pt->getKey());
-            ParcellaireClient::CopyParcelle($pi, $pt, false);
+            $pi = $item->detail->add($pkey);
+            ParcellaireClient::CopyParcelle($pi, $pt);
             $pi->materiel = "Goutte à goutte";
             $pi->ressource = "Canal de Provence";
+            $pi->superficie = $p->superficie;
             $pi->active = 1;
+
+            $pc_manquants = floatval(str_replace([' ', ' '], '', str_replace(',', '.', str_replace('%', '', $data[self::CSV_POURCENTAGE_MANQUANT]))));
+            if ($pc_manquants >= 20) {
+                if (!$this->manquant || $this->manquant->identifiant != $etablissement->identifiant) {
+                    $this->manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, $this->periode);
+                    $this->manquant->observations .= "Import Aix";
+                }
+                $item = $this->manquant->declaration->add($produit_hash);
+                $pm = $item->detail->add($pkey);
+                ParcellaireClient::CopyParcelle($pm, $pt);
+                $pm->pourcentage = $pc_manquants;
+                if (strpos($data[self::CSV_DENSITE_DE_PLANTATION], 'pieds/ha')) {
+                    $densite = trim(str_replace(' ', '', str_replace('pieds/ha', '', $data[self::CSV_DENSITE_DE_PLANTATION])));
+                }elseif (strpos($data[self::CSV_DENSITE_DE_PLANTATION], '*') !== false || strpos($data[self::CSV_DENSITE_DE_PLANTATION], 'x') !== false) {
+                    if (strpos($data[self::CSV_DENSITE_DE_PLANTATION], '*') !== false) {
+                        $d = explode('*', $data[self::CSV_DENSITE_DE_PLANTATION]);
+                    }
+                    if(strpos($data[self::CSV_DENSITE_DE_PLANTATION], 'x') !== false) {
+                        $d = explode('x', $data[self::CSV_DENSITE_DE_PLANTATION]);
+                    }
+                    $d[0] = floatval(str_replace(',', '.', trim($d[0])));
+                    $d[1] = floatval(str_replace(',', '.', trim($d[1])));
+                    if ($d[0] >= 100) {
+                        $d[0] = $d[0] / 100;
+                    }
+                    if ($d[1] >= 100) {
+                        $d[1] = $d[1] / 100;
+                    }
+                    $densite = intval(10000/($d[0] * $d[1]));
+                }else{
+                    $densite = trim(str_replace(' ', '', $data[self::CSV_DENSITE_DE_PLANTATION]));
+                    if ($densite == intval($densite)) {
+                        $densite = intval($densite);
+                    }else {
+                        $densite = intval(10000/($pt->ecart_rang / 100 * $pt->ecart_pieds / 100));
+                    }
+                }
+                $pm->densite = intval($densite);
+                $pm->active = 1;
+            }
+        }
+        $this->saving();
+    }
+
+    private function saving() {
+        if ($this->irrigable) {
+            $this->irrigable->validate();
+            if ($this->real_save) {
+                $this->irrigable->save();
+                echo "LOG: ".$this->irrigable->_id." saved ($this->cpt dont warning:$this->cpt_warning error:$this->cpt_error)\n";
+            }else{
+                echo "LOG: ".$this->irrigable->_id." would be saved ($this->cpt dont warning:$this->cpt_warning error:$this->cpt_error)\n";
+            }
+        }
+        if ($this->manquant) {
+            $this->manquant->validate();
+            if ($this->real_save) {
+                $this->manquant->save();
+                 echo "LOG: ".$this->manquant->_id." saved\n";
+            }else{
+                 echo "LOG: ".$this->manquant->_id." would be saved\n";
+            }
+            $this->manquant = null;
         }
     }
 
