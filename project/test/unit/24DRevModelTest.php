@@ -218,7 +218,6 @@ if ($nbMvtsAttendu) {
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
-    $t->pass("Test non nécessaire car la facturation n'est pas activé");
 }
 
 if (!DRevConfiguration::getInstance()->isModificativeEnabled()) {
