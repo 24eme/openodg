@@ -38,6 +38,11 @@ class DegustationLot extends BaseDegustationLot {
         return ($this->exist('conformite') && isset($libelles[$this->conformite]))? $libelles[$this->conformite] : $this->conformite;
   }
 
+  public function isLibelleAcceptable()
+  {
+      return $this->getConfigProduit()->getCertification()->libelle == "AOP";
+  }
+
   public function getNumeroTableStr() {
       if (!$this->numero_table) {
           return '';
