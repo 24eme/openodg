@@ -182,7 +182,7 @@ class parcellaireActions extends sfActions {
         header("Cache-Control: public");
         header("Expires: 0");
 
-        $ods = new ExportParcellaireControleODS($parcellaire);
+        $ods = new ExportParcellaireControleODS($parcellaire, $request->getParameter('appellation_filter', 'CDP'));
         echo $ods->create();
 
         exit;
