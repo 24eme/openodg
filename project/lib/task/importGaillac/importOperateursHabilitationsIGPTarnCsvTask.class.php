@@ -79,46 +79,62 @@ EOF;
 
     private function importSocieteEtablissement($data, $suspendu = false)
     {
-        $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
-        $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_OPERATEUR]);
-
-        $societe = SocieteClient::getInstance()->find($newSociete->_id);
-
-        if($societe) {
-            return false;
+        $e = null;
+        if ($data[self::CSV_NOCVI]) {
+            $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_NOCVI]));
+        }
+        if (!$e && $data[self::CSV_SIRET]) {
+            $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_SIRET]));
+        }
+        if ($e) {
+            echo("Etablissement existe " . $e->_id . ", ". $data[self::CSV_NOCVI]." ".$data[self::CSV_SIRET]."\n");
+            return $e;
         }
 
-        $data = array_map('trim', $data);
+        $societe = SocieteClient::getInstance()->findBySiret(str_replace(' ', '', $data[self::CSV_SIRET]));
 
-        $societe = $newSociete;
-        $societe->statut = SocieteClient::STATUT_ACTIF;
-        $societe->siege->adresse = $data[self::CSV_ADRESSE_1] ?? null;
-        $societe->siege->adresse_complementaire = $data[self::CSV_ADRESSE_2] ?? null;
-        $societe->siege->code_postal = $data[self::CSV_CP] ?? null;
-        $societe->siege->commune = $data[self::CSV_COMMUNE] ?? null;
-        $societe->telephone_bureau = Phone::format($data[self::CSV_TEL] ?? null);
-        $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
+        if (!$societe) {
 
-        try {
-            $societe->save();
-        } catch (Exception $e) {
-            echo "$societe->_id save error :".$e->getMessage()."\n";
-            return false;
+            $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
+            $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_OPERATEUR]);
+
+            $societe = SocieteClient::getInstance()->find($newSociete->_id);
+
+            if($societe) {
+                return false;
+            }
+
+            $data = array_map('trim', $data);
+
+            $societe = $newSociete;
+            $societe->statut = SocieteClient::STATUT_ACTIF;
+            $societe->siege->adresse = $data[self::CSV_ADRESSE_1] ?? null;
+            $societe->siege->adresse_complementaire = $data[self::CSV_ADRESSE_2] ?? null;
+            $societe->siege->code_postal = $data[self::CSV_CP] ?? null;
+            $societe->siege->commune = $data[self::CSV_COMMUNE] ?? null;
+            $societe->telephone_bureau = Phone::format($data[self::CSV_TEL] ?? null);
+            $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
+
+            try {
+                $societe->save();
+            } catch (Exception $e) {
+                echo "$societe->_id save error :".$e->getMessage()."\n";
+                return false;
+            }
+
         }
 
-        if (strpos($data[self::CSV_TYPE_OPERATEUR], 'roducteur') !== false) {
-            if (strpos($data[self::CSV_TYPE_OPERATEUR], 'inificat') !== false) {
-                $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
-            }else{
+        if (strpos($data[self::CSV_TYPE_OPERATEUR], 'Producteur et transformateur viticole') !== false) {
+            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+        } elseif (strpos($data[self::CSV_TYPE_OPERATEUR], 'Producteur Viticole') !== false) {
                 $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
-            }
+        } elseif (strpos($data[self::CSV_TYPE_OPERATEUR], 'Transformateur viticole') !== false) {
+            $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+        } elseif (strpos($data[self::CSV_TYPE_OPERATEUR], 'Opérateur non transformateur') !== false) {
+            $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
         } else {
-            if (strpos($data[self::CSV_TYPE_OPERATEUR], 'gociant') !== false) {
-                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
-            } else {
-                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
-            }
-            //$famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+            echo "ERROR: Famille non reconnue : ".$data[self::CSV_TYPE_OPERATEUR]."\n";
+            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
         }
 
         $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
@@ -164,10 +180,10 @@ EOF;
         $date_decision = ($data[self::CSV_DATE_DEMARRAGE]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_DEMARRAGE])[0])->format('Y-m-d') : null;
 
         $activites = [];
-        if (strpos($data[self::CSV_TYPE_OPERATEUR], 'roduction de raisins') !== false) {
+        if (strpos($data[self::CSV_TYPE_OPERATEUR], ' de raisins') !== false) {
             $activites[] = HabilitationClient::ACTIVITE_PRODUCTEUR;
         }
-        if (strpos($data[self::CSV_TYPE_OPERATEUR], 'inificateur') !== false) {
+        if (strpos($data[self::CSV_TYPE_OPERATEUR], 'inificat') !== false) {
             $activites[] = HabilitationClient::ACTIVITE_VINIFICATEUR;
         }
         if (strpos($data[self::CSV_TYPE_OPERATEUR], 'vrac') !== false) {
@@ -175,9 +191,6 @@ EOF;
         }
         if (strpos($data[self::CSV_TYPE_OPERATEUR], 'onditionne') !== false) {
             $activites[] = HabilitationClient::ACTIVITE_CONDITIONNEUR;
-        }
-        if (strpos($data[self::CSV_TYPE_OPERATEUR], 'vente') !== false) {
-            $activites[] = HabilitationClient::ACTIVITE_VENTE_A_LA_TIREUSE;
         }
 
         if($date_demande && $date_demande < $date_decision) {
