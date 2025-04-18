@@ -21,10 +21,10 @@
                 <address style="margin-bottom: 0;">
                     <?php echo $compte->getAdresse(); ?><?php echo ($compte->getAdresseComplementaire())? " ".$compte->getAdresseComplementaire() : ''; ?>
                     <span><?php echo $compte->getCodePostal(); ?></span> <?php echo $compte->getCommune(); ?>
-                    <?php if ($etablissement->region || $compte->getPays()): ?>
+                    <?php if ($etablissement->secteur || $compte->getPays()): ?>
                     <small class="text-muted">
                         (
-                        <?php if ($etablissement->region) {echo $etablissement->region; if ($compte->getPays()){echo "-";}} ?>
+                        <?php if ($etablissement->secteur) {echo $etablissement->secteur; if ($compte->getPays()){echo "-";}} ?>
                         <?php echo $compte->getPays(); ?>
                         )
                     </small>

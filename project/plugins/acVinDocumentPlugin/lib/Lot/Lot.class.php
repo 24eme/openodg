@@ -131,6 +131,16 @@ abstract class Lot extends acCouchdbDocumentTree
       self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non conformité organoleptique",
     );
 
+    public static $libellesAcceptabilites = array(
+      self::CONFORMITE_CONFORME => "Acceptable",
+      self::CONFORMITE_NONCONFORME_MINEUR => "Non acceptabilité mineure",
+      self::CONFORMITE_NONCONFORME_MAJEUR => "Non acceptabilité majeure",
+      self::CONFORMITE_NONCONFORME_GRAVE => "Non acceptabilité grave",
+      self::CONFORMITE_NONTYPICITE_CEPAGE => "Non typicité cépage",
+      self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Non acceptabilité analytique",
+      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non acceptabilité organoleptique",
+    );
+
     public static $shortLibellesConformites = array(
       self::CONFORMITE_CONFORME => "",
       self::CONFORMITE_NONCONFORME_MINEUR => "Mineure",
@@ -169,9 +179,15 @@ abstract class Lot extends acCouchdbDocumentTree
         return (isset($libelles[$statut]))? $libelles[$statut] : $statut;
     }
 
-    public static function getLibelleConformite($conformite) {
-        $libelles = self::$libellesConformites;
-        return (isset($libelles[$conformite]))? $libelles[$conformite] : $conformite;
+    public function getLibelleConformite() {
+        $libelles = $this->isLibelleAcceptable() ? self::$libellesAcceptabilites : self::$libellesConformites;
+
+        return isset($libelles[$this->conformite]) ? $libelles[$this->conformite]: $this->conformite;
+    }
+
+    public function isLibelleAcceptable()
+    {
+        return $this->getConfigProduit()->getCertification()->libelle == "AOP";
     }
 
     public function getConfigProduit() {

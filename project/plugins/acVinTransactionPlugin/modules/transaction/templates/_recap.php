@@ -6,7 +6,7 @@
 
 
         <?php if($transaction->exist('lots')): ?>
-          <h3 id="table_igp_title">Déclaration des lots <?php echo getLibelleHashRevendicableParLots(sfConfig::get('app_hash_revendicable_par_lots', 'IGP')) ?></h3>
+          <h3 id="table_igp_title">Déclaration des lots</h3>
           <?php
           $lots = $transaction->getLotsByCouleur();
           ?>

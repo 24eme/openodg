@@ -124,4 +124,8 @@ class ParcellaireAffectationClient extends acCouchdbClient {
         return 'CREMANT';
     }
 
+    public function needAffectation($identifiant, $periode) {
+        return false;
+    }
+
 }

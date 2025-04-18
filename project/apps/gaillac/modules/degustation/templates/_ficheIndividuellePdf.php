@@ -1,58 +1,37 @@
-<?php use_helper('TemplatingPDF'); ?>
-<?php use_helper('Lot') ?>
-<style>
-<?php echo style(); ?>
+<?php
 
-.td, .th {
-    border: 1px solid #000;
-}
+    $arr_lots = [];
+    $arr_lots['degustation/IGPficheIndividuellePdf'] = [];
+    $arr_lots['degustation/AOCficheIndividuellePdf'] = [];
+    $arr_lots['degustation/AOCficheIndividuelleMousseuxPdf'] = [];
+//    $arr_lots['degustation/AOCficheIndividuelleBaseMousseuxPdf'] = [];
 
-.align-right {
-    text-align: right;
-}
+    foreach ($degustation->lots as $lot) {
 
-.align-left {
-    text-align: left;
-}
+        $lot_certif = $lot->getConfigProduit()->getCertification()->getKey();
+        $lot_genre = $lot->getConfigProduit()->getGenre()->getLibelle();
 
-.align-mid {
-    text-align: center;
-}
+        foreach ($arr_lots as $certif => $lots) {
+            if (count($arr_lots[$certif]) == 4) {
+                echo include_partial($certif, array('lots' => $arr_lots[$certif]));
+            }
+        }
 
-.text-red {
-    color: red;
-}
+        if ($lot_certif === "AOP" && $lot_genre === "Mousseux") {
+            $arr_lots['degustation/AOCficheIndividuelleMousseuxPdf'][] = $lot;
+        } else if ($lot_certif === "AOP") {
+            $arr_lots['degustation/AOCficheIndividuellePdf'][] = $lot;
+        } else if ($lot_certif === "IGP") {
+            $arr_lots['degustation/IGPficheIndividuellePdf'][] = $lot;
+        }
 
-.text-huit-pt {
-    font-size: 8pt;
-}
+    }
 
-.text-dix-pt {
-    font-size: 10pt;
-}
-
-.text-six-pt {
-    font-size: 6pt;
-}
-
-.size-cepage {
-    height: 25px;
-}
-
-.size-commentaire {
-    height: 60px;
-}
-
-.fond-sombre {
-    background-color: grey;
-}
-
-.encart-nom {
-    padding: 0px;
-    margin: 0px;
-}
-
-</style>
-
-<!-- <?php echo include_partial('degustation/IGPficheIndividuellePdf', array());?> -->
-<?php echo include_partial('degustation/AOCficheIndividuellePdf', array());?>
+    foreach ($arr_lots as $certif => $lots) {
+        if (count($arr_lots[$certif]) != 4) {
+            while (count($arr_lots[$certif]) < 4) {
+                $arr_lots[$certif][] = null;
+            }
+            echo include_partial($certif, array('lots' => $arr_lots[$certif]));
+        }
+    }

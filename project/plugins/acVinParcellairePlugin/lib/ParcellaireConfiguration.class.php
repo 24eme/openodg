@@ -158,4 +158,8 @@ class ParcellaireConfiguration {
         return $this->configuration['potentiel_de_production'][$k]['regles'];
     }
 
+    public function hasEngagements() {
+        return isset($this->configuration['engagements']) && boolval($this->configuration['engagements']);
+    }
+
 }

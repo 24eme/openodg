@@ -88,7 +88,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     public function getProduitsHabilites($activite = null) {
         $produits = array();
         foreach($this->getProduits() as $produit) {
-            if(!count($produit->getActivitesHabilites($activite))) {
+            if(!$produit->isHabiliteFor($activite)) {
                 continue;
             }
 

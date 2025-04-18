@@ -14,10 +14,11 @@ class ParcellaireSecurity extends DocumentSecurity implements SecurityInterface 
         if(!is_array($droits)) {
             $droits = array($droits);
         }
-
-        foreach($this->doc->getEtablissementObject()->liaisons_operateurs as $k => $l) {
-            if (strpos($k, $this->user->getCompte()->identifiant) !== false) {
-                return true;
+        if($this->doc->getEtablissementObject()->exist("liaisons_operateurs")){
+            foreach($this->doc->getEtablissementObject()->liaisons_operateurs as $k => $l) {
+                if (strpos($k, $this->user->getCompte()->identifiant) !== false) {
+                    return true;
+                }
             }
         }
 

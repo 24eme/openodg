@@ -43,6 +43,7 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
     public function getSuperficie($destinataireIdentifiant = null) {
         $superficie = $this->_get('superficie');
         if($destinataireIdentifiant) {
+            $destinataireIdentifiant = str_replace('ETABLISSEMENT-', '', $destinataireIdentifiant);
             if ($this->exist('destinations/'.$destinataireIdentifiant)) {
                 $superficie = $this->get('destinations/'.$destinataireIdentifiant.'/superficie');
             } elseif ($this->exist('destinations')) {
