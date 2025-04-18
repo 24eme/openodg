@@ -3,8 +3,9 @@
 
 class acElasticaManager {
     protected static $_instance;
+    public $_client;
 
-    
+
     private function __construct()
     {
     }
