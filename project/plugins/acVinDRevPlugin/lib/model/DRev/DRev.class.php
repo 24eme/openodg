@@ -446,7 +446,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if (!$this->cache_document_douaniers) {
             $this->cache_document_douaniers = array();
         }
-        if (!isset($this->cache_document_douaniers[$ext])) {
+        if (!isset($this->cache_document_douaniers[$ext])||!$this->cache_document_douaniers[$ext]) {
             $this->cache_document_douaniers[$ext] = DouaneClient::getInstance()->getDocumentsDouaniers($this->getEtablissementObject(), $this->periode, $ext);
         }
         return $this->cache_document_douaniers[$ext];
