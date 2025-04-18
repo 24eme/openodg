@@ -264,6 +264,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
         $this->compte = $compte->_id;
 
+        $this->updateSecteurs();
 
         if($this->isSameAdresseThanSociete()) {
             $this->pullAdresseFrom($this->getSociete()->getMasterCompte());
@@ -297,6 +298,36 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             $societe->save();
         }
         $compte->save();
+    }
+
+    public function updateSecteurs() {
+        if (!CommunesConfiguration::getInstance()->hasSecteurs()) {
+            return;
+        }
+        $secteurs = [];
+        if ($this->exist('chais')) foreach($this->chais as $c) {
+            if (!$c->secteur) {
+                $insee = CommunesConfiguration::getInstance()->findCodeCommune($c->commune);
+                if ($insee) {
+                    $c->secteur = CommunesConfiguration::getInstance()->getSecteurFromInsee($insee);
+                    $secteurs[] = $c->secteur;
+                }
+            }
+        }
+        if(!$this->secteur) {
+            if (!$this->insee) {
+                $this->insee = CommunesConfiguration::getInstance()->findCodeCommune($this->commune);
+            }
+            if ($this->insee) {
+                $this->secteur = CommunesConfiguration::getInstance()->getSecteurFromInsee($this->insee);
+            } else {
+                $secteurs = array_unique($secteurs);
+                if (count($secteurs) == 1) {
+                    $this->secteur = $secteurs[0];
+                }
+            }
+        }
+        $this->region = null;
     }
 
     public function delete() {
