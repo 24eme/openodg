@@ -98,7 +98,7 @@ class acCouchdbJsonArrayIterator extends ArrayIterator {
         return $this->_json->get($this->key());
     }
 
-    public function key(): string|int|null {
+    public function key() {
         return $this->_json->getFieldName(parent::key());
     }
 
