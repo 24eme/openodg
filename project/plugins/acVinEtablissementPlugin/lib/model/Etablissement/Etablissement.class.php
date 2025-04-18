@@ -327,7 +327,6 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
                 }
             }
         }
-        $this->region = null;
     }
 
     public function delete() {
