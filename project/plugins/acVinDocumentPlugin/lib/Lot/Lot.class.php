@@ -185,6 +185,11 @@ abstract class Lot extends acCouchdbDocumentTree
         return isset($libelles[$this->conformite]) ? $libelles[$this->conformite]: $this->conformite;
     }
 
+    public function isLibelleAcceptable()
+    {
+        return $this->getConfigProduit()->getCertification()->libelle == "AOP";
+    }
+
     public function getConfigProduit() {
             return $this->getConfig();
     }

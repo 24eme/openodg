@@ -120,9 +120,9 @@ EOF;
                 }
                 $e->num_interne .= $data[self::CSV_NUMERO_ENREGISTREMENT];
                 $e->addCommentaire("Etablissement partagé IGP - AOP (".date('d/m/Y').")");
-                $e->region = 'IGPTARN|AOCGAILLAC';
+                $e->region = 'IGPTARN|AOPGAILLAC';
             } else {
-                $e->region = 'AOCGAILLAC';
+                $e->region = 'AOPGAILLAC';
             }
             if (!isset($_ENV['DRY_RUN'])) {
                 $e->save();
@@ -195,7 +195,7 @@ EOF;
         $etablissement->cvi = $cvi;
         $etablissement->num_interne = $data[self::CSV_NUMERO_ENREGISTREMENT];
         $etablissement->commentaire = trim($data[self::CSV_OBSERVATIONS]) ? $data[self::CSV_OBSERVATIONS] : null;
-        $etablissement->region = 'AOCGAILLAC';
+        $etablissement->region = 'AOPGAILLAC';
 
         $societe->pushAdresseTo($etablissement);
         $societe->pushContactTo($etablissement);
