@@ -2,10 +2,13 @@ import sys, os, re, pandas as pd
 from sqlalchemy import create_engine
 engine = create_engine('sqlite:///'+sys.argv[1], echo=False, encoding='iso-8859-1')
 
+numeric_cols = ['Volume', 'Superficie', 'VCI', 'Quantite', 'Prix', 'Montant', 'Surface', 'Ecart pieds', 'Ecart rang', 'Densite', 'Pourcentage']
+numeric_cols_strict = ['Valeur', 'TVA', 'Lat', 'Lon']
+
 def convert_float_columns(csv):
     for col in csv.columns:
-        if re.search("(Volume|Superficie|VCI|^Valeur$|Quantite|Prix|^TVA$|Montant|Surface|Ecart pieds|Ecart rang|Densite|Pourcentage|^Lat$|^Lon$)", col, flags=re.IGNORECASE):
-            print(col)
+        result = [col for v in numeric_cols if v in col] or [col for v in numeric_cols_strict if col in v]
+        if len(result):
             csv[col] = pd.to_numeric(csv[col].str.replace(',', '.'), errors='coerce')
 
     return csv
