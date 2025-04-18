@@ -15,21 +15,12 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
       return $this->_set('compte', $c);
     }
 
-    private $cache_master_compte = null;
     public function getMasterCompte() {
-        if (!$this->cache_master_compte) {
-            if ($this->compte) {
-                $c = CompteClient::getInstance()->find($this->compte);
-                if($c){
-                  $this->cache_master_compte = $c;
-                }else{
-                    $this->cache_master_compte = $this->getSociete()->getCompte($this->compte);
-                }
-            }else{
-                $this->cache_master_compte = $this->getSociete()->getCompte($this->getSociete()->compte_societe);
-            }
+        if ($this->compte) {
+            return CompteClient::getInstance()->find($this->compte) ?: $this->getSociete()->getCompte($this->compte);
+        } else {
+            return $this->getSociete()->getCompte($this->getSociete()->compte_societe);
         }
-        return $this->cache_master_compte;
     }
 
     public function getContact() {
