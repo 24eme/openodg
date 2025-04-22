@@ -71,7 +71,7 @@ class CsvFile
       throw new sfException('Cannot open csv file anymore');
     }
     $this->csvdata = array();
-    while (($data = fgetcsv($handler, 0, $this->separator)) !== FALSE) {
+    while (($data = fgetcsv($handler, 0, $this->separator, "\"", "\\")) !== FALSE) {
       if (!preg_match('/^#/', $data[0])) {
 		$this->csvdata[] = $data;
       }
