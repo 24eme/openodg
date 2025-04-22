@@ -76,7 +76,6 @@ $t->is($drev->get($produit_hash2)->vci->stock_final, 0, "stock final du produit 
 
 $periode_n = $periode + 1;
 $drev_n = DRevClient::getInstance()->createDoc($viti->identifiant, $periode_n);
-$drev_n->updateVCIFromPrecedente();
 $drev_n->save();
 $t->comment("Récupération du stock VCI en n : ".$drev_n->_id);
 $t->is(count($drev_n->getProduitsVci()), 1, "même nombre de produit VCI");
