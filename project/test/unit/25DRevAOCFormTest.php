@@ -14,7 +14,10 @@ if ($application == 'loire' || $application == 'nantes') {
     $has_habilitation_inao = 1;
 }
 
-$campagne = (date('Y'))."";
+$campagne = date('Y');
+if (date('m') < 10) {
+    $campagne = $campagne - 1 ;
+}
 
 //Suppression des DRev précédentes
 $drevs = array();
