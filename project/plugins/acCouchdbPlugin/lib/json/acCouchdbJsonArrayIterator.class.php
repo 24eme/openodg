@@ -71,16 +71,16 @@ class acCouchdbJsonArrayIterator extends ArrayIterator {
             throw new acCouchdbException('This iterator has no entrie');
         }
     }
-
-    public function next(): void {
+    
+    public function next() {
     	if($this->valid()){
-	    	$this->_previous = $this->key();
+	    	$this->_previous = $this->key(); 
 		    parent::next();
         } else {
             throw new acCouchdbException('This iterator has no entrie');
         }
     }
-
+    
     public function getNextSister() {
     	$this->next();
     	if($this->valid()){
@@ -93,28 +93,28 @@ class acCouchdbJsonArrayIterator extends ArrayIterator {
 	public function getPreviousSister() {
 		return ($this->_previous)? $this->_json->get($this->_previous) : null;
     }
-
-    public function current(): mixed {
+    
+    public function current() {
         return $this->_json->get($this->key());
     }
 
-    public function key(): string|int|null {
+    public function key() {
         return $this->_json->getFieldName(parent::key());
     }
-
-    public function offsetGet($index): mixed {
+ 
+    public function offsetGet($index) {
         return $this->_json->offsetGet($index);
     }
 
-    public function offsetSet($index, $newval): void {
-        $this->_json->offsetSet($index, $newval);
+    public function offsetSet($index, $newval) {
+        return $this->_json->offsetSet($index, $newval);
     }
 
-    public function  offsetExists($index): bool {
+    public function  offsetExists($index) {
         return $this->_json->offsetExists($index);
     }
 
-    public function offsetUnset($index): void {
-        $this->_json->offsetUnset($index);
+    public function offsetUnset($index) {
+        return $this->_json->offsetUnset($index);
     }
 }

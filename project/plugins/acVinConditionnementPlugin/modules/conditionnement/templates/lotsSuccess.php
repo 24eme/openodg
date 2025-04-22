@@ -4,7 +4,7 @@
 <?php include_partial('conditionnement/breadcrumb', array('conditionnement' => $conditionnement )); ?>
 <?php include_partial('conditionnement/step', array('step' => ConditionnementEtapes::ETAPE_LOTS, 'conditionnement' => $conditionnement, 'ajax' => true)) ?>
 
-    <div class="page-header"><h2>Conditionnement des Lots IGP</h2></div>
+    <div class="page-header"><h2>Conditionnement des Lots</h2></div>
 
 
 

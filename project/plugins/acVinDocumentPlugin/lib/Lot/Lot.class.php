@@ -185,6 +185,11 @@ abstract class Lot extends acCouchdbDocumentTree
         return isset($libelles[$this->conformite]) ? $libelles[$this->conformite]: $this->conformite;
     }
 
+    public function isLibelleAcceptable()
+    {
+        return $this->getConfigProduit()->getCertification()->libelle == "AOP";
+    }
+
     public function getConfigProduit() {
             return $this->getConfig();
     }
@@ -955,16 +960,17 @@ abstract class Lot extends acCouchdbDocumentTree
             }elseif ($r = RegionConfiguration::getInstance()->getOdgRegion($this->produit_hash)) {
                 $mouvement->add('region', $r);
             }
+            if (RegionConfiguration::getInstance()->hasOC()) {
+                if (strpos($this->initial_type, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE) === 0 || strpos($this->initial_type, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE) === 0) {
+                    $mouvement->add('region', Organisme::getOIRegion());
+                }
 
-            if (strpos($this->initial_type, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE) === 0 || strpos($this->initial_type, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE) === 0) {
-                $mouvement->add('region', Organisme::getOIRegion());
-            }
-
-            if (strpos($this->initial_type, TransactionClient::TYPE_MODEL) === 0) {
-                $mouvement->add('region', Organisme::getOIRegion());
-            }
-            if (strpos($this->initial_type, PMCNCClient::TYPE_MODEL) === 0) {
-                $mouvement->add('region', Organisme::getOIRegion());
+                if (strpos($this->initial_type, TransactionClient::TYPE_MODEL) === 0) {
+                    $mouvement->add('region', Organisme::getOIRegion());
+                }
+                if (strpos($this->initial_type, PMCNCClient::TYPE_MODEL) === 0) {
+                    $mouvement->add('region', Organisme::getOIRegion());
+                }
             }
         }
         return $mouvement;
