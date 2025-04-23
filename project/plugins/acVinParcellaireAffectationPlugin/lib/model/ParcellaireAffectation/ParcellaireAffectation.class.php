@@ -122,7 +122,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if (!$parcelle->affectation) {
             continue;
         }
-        if($this->findParcelle($parcelle, true, $allready_selected)) {
+        if($this->findParcelle($parcelle, 1, true, $allready_selected)) {
             continue;
         }
         $this->addParcelle($parcelle);
