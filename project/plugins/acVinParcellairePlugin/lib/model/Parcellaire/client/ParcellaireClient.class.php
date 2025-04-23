@@ -275,24 +275,32 @@ class ParcellaireClient extends acCouchdbClient {
         }
         foreach($selected_parcellaires as $p) {
             $score = 0;
+            $debug_score = [];
             if ($is_parcelle_from_parcellaire) {
                 $cepage =  $parcelle->getCepageLibelle();
             }else {
                 $cepage = $parcelle->cepage;
             }
             if(preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($cepage)) == preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($p->getCepageLibelle()))) {
+                $debug_score[] = 'libelle:+0.25';
                 $score += 0.25;
             }
             if(strpos($p->campagne_plantation, $parcelle->campagne_plantation) !== false) {
+                $debug_score[] = 'campagne_plantation:+0.25';
                 $score += 0.25;
             }
             if(KeyInflector::slugify($parcelle->lieu) == KeyInflector::slugify($p->lieu)) {
+                $debug_score[] = 'lieu:+0.25';
                 $score += 0.25;
             }
             if(KeyInflector::slugify($parcelle->commune) == KeyInflector::slugify($p->commune)) {
+                $debug_score[] = 'commune:+0.25';
                 $score += 0.25;
             }
+            $has_one_exact_superficie = false;
             if($is_parcelle_from_parcellaire && $parcelle->exist('parcelle_id') && $parcelle->_get('parcelle_id') && $parcelle->exist('superficie_parcellaire') && $p->exist('superficie_parcellaire') && abs($parcelle->_get('superficie_parcellaire') - $p->_get('superficie_parcellaire')) < 0.0001) {
+                $debug_score[] = 'superficie_parcellaire:+0.10';
+                $has_one_exact_superficie = true;
                 $score += 0.10;
             }
             $s = 0;
@@ -302,15 +310,25 @@ class ParcellaireClient extends acCouchdbClient {
                 $s = $parcelle->superficie;
             }
             if(abs($s - $p->_get('superficie')) < 0.0001) {
+                $debug_score[] = 'superficie:+0.25';
+                $has_one_exact_superficie = true;
                 $score += 0.25;
             }
 
             if($is_parcelle_from_parcellaire && $parcelle->exist('parcelle_id') && $parcelle->_get('parcelle_id') && $parcelle->exist('superficie_parcellaire') && abs($parcelle->_get('superficie_parcellaire') - $p->_get('superficie')) < 0.0001) {
+                $debug_score[] = 'superficie:+0.05';
+                $has_one_exact_superficie = true;
                 $score += 0.05;
             }
+            if (!$has_one_exact_superficie) {
+                $debug_score[] = 'no_superficie:-0.30';
+                $score -= 0.30;
+            }
             if ($is_parcelle_from_parcellaire && ($parcelle->idu == $p->idu)) {
+                $debug_score[] = 'idu:+0.25';
                 $score += 0.25;
             }elseif ( (!$is_parcelle_from_parcellaire || !$parcelle->getIDU(false)) && ( ($parcelle->section == $p->section) && ($parcelle->numero_parcelle == $p->numero_parcelle) && (intval($parcelle->prefix == intval($p->prefix))) )) {
+                $debug_score[] = 'parcelledetail:+0.25';
                 $score += 0.25;
             }
             if ($allready_selected && isset($allready_selected[$p->getParcelleId()])) {
@@ -320,7 +338,7 @@ class ParcellaireClient extends acCouchdbClient {
                 continue;
             }
 
-            $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = $p;
+            $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = ['parcelle' => $p, 'debug' => $debug_score];
             if ($allready_selected !== null) {
                 $allready_selected[$p->getParcelleId()] = $p->getParcelleId();
             }
@@ -329,13 +347,12 @@ class ParcellaireClient extends acCouchdbClient {
         krsort($parcellesMatch);
         foreach($parcellesMatch as $key => $pMatch) {
             if ($with_cepage_match) {
-                if ($pMatch->cepage != $parcelle->cepage) {
+                if ($pMatch['parcelle']->cepage != $parcelle->cepage) {
                     continue;
                 }
             }
-            return $pMatch;
+            return $pMatch['parcelle'];
         }
-
         return null;
     }
 
