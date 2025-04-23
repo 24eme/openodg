@@ -65,38 +65,46 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
 
         $acheteursGlobal = $this->parcellaire->getAcheteursByCVI();
 
-        foreach ($this->parcellaire->declaration->getProduitsCepageDetails() as $parcelle) {
-            $acheteurs = $parcelle->getAcheteursByCVI();
+        foreach ($this->parcellaire->declaration->getAppellationsOrderParcellaire() as $appellation) {
+            $details = $appellation->getDetailsSortedByParcelle();
 
-            if(!count($acheteurs) && count($acheteursGlobal) == 1) {
-                $acheteurs = $acheteursGlobal;
-            }
+            foreach ($details as $detail_parcelle) {
+                $acheteurs = $detail_parcelle->getAcheteursByCVI();
 
-            if ($cviFilter && $this->parcellaire->hasRepartitionParParcelle($parcelle->getCepage()->getKey())
-                && in_array($cviFilter, $this->parcellaire->hasRepartitionParParcelle($parcelle->getCepage()->getKey())))
-            {
-                if (! $parcelle->exist('acheteurs')
-                    || ($parcelle->exist('acheteurs') && in_array($cviFilter, $parcelle->acheteurs->toArray(true, false)) === false))
-                {
-                    continue;
+                if(!count($acheteurs) && count($acheteursGlobal) == 1) {
+                    $acheteurs = $acheteursGlobal;
                 }
 
-                $acheteur = null;
-                foreach ($acheteurs as $a) {
-                    if ($a->cvi == $cviFilter) {
-                        $acheteur = $a;
-                    }
-                }
-
-                $export .= $this->addLigne($parcelle, $acheteurs, $acheteur);
-            } else {
-                foreach($acheteurs as $acheteur) {
-                    if($cviFilter && $cviFilter != $acheteur->cvi) {
+                if (
+                    $cviFilter
+                    && $this->parcellaire->hasRepartitionParParcelle($detail_parcelle->getCepage()->getKey())
+                    && in_array($cviFilter, $this->parcellaire->hasRepartitionParParcelle($detail_parcelle->getCepage()->getKey()))
+                ) {
+                    if (
+                        ! $detail_parcelle->exist('acheteurs')
+                        || in_array($cviFilter, $detail_parcelle->acheteurs->toArray(true, false)) === false
+                    ) {
                         continue;
                     }
 
-                    $export .= $this->addLigne($parcelle, $acheteurs, $acheteur);
+                    $acheteur = null;
+                    foreach ($acheteurs as $a) {
+                        if ($a->cvi == $cviFilter) {
+                            $acheteur = $a;
+                        }
+                    }
+
+                    $export .= $this->addLigne($detail_parcelle, $acheteurs, $acheteur);
+                } else {
+                    foreach($acheteurs as $acheteur) {
+                        if($cviFilter && $cviFilter != $acheteur->cvi) {
+                            continue;
+                        }
+
+                        $export .= $this->addLigne($detail_parcelle, $acheteurs, $acheteur);
+                    }
                 }
+
             }
         }
 

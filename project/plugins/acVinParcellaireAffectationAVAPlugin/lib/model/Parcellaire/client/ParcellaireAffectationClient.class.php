@@ -14,6 +14,7 @@ class ParcellaireAffectationClient extends acCouchdbClient {
     const APPELLATION_GRDCRU = 'GRDCRU';
     const APPELLATION_COMMUNALE = 'COMMUNALE';
     const APPELLATION_LIEUDIT = 'LIEUDIT';
+    const APPELLATION_PINOTNOIRROUGE = 'PINOTNOIRROUGE';
     const APPELLATION_CREMANT = 'CREMANT';
 
     public static $appellations_libelles = array(
@@ -94,13 +95,13 @@ class ParcellaireAffectationClient extends acCouchdbClient {
 
     public function getAppellationsAndVtSgnKeys($type = self::TYPE_COUCHDB) {
         if ($type == self::TYPE_COUCHDB) {
-	        return array_merge(array(
-	            self::APPELLATION_GRDCRU => 'Grand Cru',
-	            self::APPELLATION_COMMUNALE => 'Communale',
-	            self::APPELLATION_LIEUDIT => 'Lieux dits'
-	                ),
-	            array(self::APPELLATION_VTSGN => 'VT/SGN')
-	        );
+            return [
+                self::APPELLATION_GRDCRU => 'Grand Cru',
+                self::APPELLATION_COMMUNALE => 'Communale',
+                self::APPELLATION_LIEUDIT => 'Lieux dits',
+                self::APPELLATION_PINOTNOIRROUGE => 'Alsace rouge',
+                self::APPELLATION_VTSGN => 'VT/SGN'
+            ];
         }
         return array('CREMANT' => 'Crémant');
     }
