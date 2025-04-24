@@ -76,7 +76,10 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                 <th class="col-xs-2 text-center">Commune</th>
                                 <th class="col-xs-1 text-center">Section / Numéro</th>
                                 <?php if(!is_object($appellationNode) || $appellationNode->getConfig()->hasLieuEditable()):  ?>
-                                <th class="col-xs-2 text-center">Lieu-dit</th>
+                                <th class="col-xs-2 text-center">Lieu-dit revendiqué
+                                    <p class="small text-muted" style="margin:0;">Lieu-dit cadastral</p>
+
+                                </th>
                                 <?php endif; ?>
 								<th class="col-xs-2 text-center">Cépage</th>
                                 <th class="col-xs-1 text-center">Superficie</th>
@@ -106,7 +109,10 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                     <td><?php echo $parcelle->getCommune(); ?></td>
                                     <td class="text-right"><?php echo $parcelle->getSection(); ?> <?php echo $parcelle->getNumeroParcelle(); ?></td>
                                     <?php if(!is_object($appellationNode) || $appellationNode->getConfig()->hasLieuEditable()):  ?>
-                                    <td><?php echo $parcelle->getLieuLibelle(); ?></td>
+                                        <td>
+                                            <?php echo $parcelle->getLieuLibelle() ? $parcelle->getLieuLibelle() : '<p style="margin:0;"> - </p>'; ?>
+                                            <p class="small text-muted" style="margin:0;"><?php echo $parcelle->getParcelleParcellaire()->getLieu() ?></p>
+                                        </td>
                                     <?php endif; ?>
                                     <td><?php echo $parcelle->getCepageLibelle(); ?></td>
                                     <td class="edit text-right" style="position: relative;">
