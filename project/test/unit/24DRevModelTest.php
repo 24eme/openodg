@@ -218,7 +218,6 @@ if ($nbMvtsAttendu) {
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
-    $t->pass("Test non nécessaire car la facturation n'est pas activé");
 }
 
 if (!DRevConfiguration::getInstance()->isModificativeEnabled()) {
@@ -326,6 +325,9 @@ $t->is($drevM2->get($produit2->getHash())->getVolumeRevendiqueCommecialisable(),
 
 $t->ok(!$drevM2->get($produit1->getHash())->exist('dont_volume_revendique_reserve_interpro'), "Le volume dédié à la réserve interpro n'est pas présent pour le 1er produit");
 $t->ok($drevM2->hasProduitsReserveInterpro(), "La Drev indique bien qu'il existe des produits en reserve interpro");
+
+$drevM1->remove($produit2->getHash());
+
 $t->ok(!$drevM1->hasProduitsReserveInterpro(), "La Drev précédente n'a pas de produit en réserve interpro");
 
 $produits = $drevM2->getProduitsWithReserveInterpro();

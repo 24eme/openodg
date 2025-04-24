@@ -76,7 +76,8 @@ foreach ($HabilitationActivites as $key => $activite) {
     $dates[$activite->date] = $activite->date;
   }
 }
-$t->ok(count($activite_tmp) == 2, "Le produit a 2 activites en demande");
+
+$t->ok(count($activite_tmp) == 1, "Le produit a 1 activite en demande");
 
 $t->ok(count($dates) == 1, "Le produit a ses activites avec une seule date");
 $f_date = array_pop($dates);

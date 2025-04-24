@@ -972,9 +972,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                     $res_habilitation[$cvi] = array('habilitation' => HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->tiers[$cvi]->identifiant, $this->date_depot), "habilitation_ok" => true);
                 }
                 $hab = false;
-                foreach($res_habilitation[$cvi]['habilitation']->getProduitsHabilites(HabilitationClient::ACTIVITE_PRODUCTEUR) as $h => $p) {
-                    if (strpos($hash, str_replace('/declaration/', '', $h)) !== false) {
-                        $hab = true;
+                if ($res_habilitation[$cvi]['habilitation']) {
+                    foreach($res_habilitation[$cvi]['habilitation']->getProduitsHabilites(HabilitationClient::ACTIVITE_PRODUCTEUR) as $h => $p) {
+                        if (strpos($hash, str_replace('/declaration/', '', $h)) !== false) {
+                            $hab = true;
+                        }
                     }
                 }
                 $res_habilitation[$cvi]['habilitation_ok'] = $res_habilitation[$cvi]['habilitation_ok'] && $hab;

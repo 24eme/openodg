@@ -5,6 +5,10 @@ class EtablissementForm extends acCouchdbObjectForm
 	protected $updatedValues;
 
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
+        if (!$object->getDocument() instanceof Etablissement) {
+            $object = $object->getDocument()->getEtablissementObject();
+        }
+
         parent::__construct($object, $options, $CSRFSecret);
         $this->updatedValues = array();
     }

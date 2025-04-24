@@ -66,7 +66,7 @@
 
             <section id="content" style="position: relative;" class="container">
                 <?php if(sfConfig::get('app_instance') == 'preprod' ): ?>
-                  <div><p style="color:red; text-align:center; font-weight: bold;">Preproduction (la base est succeptible d'être supprimée à tout moment)</p></div>
+                  <div><p style="color:red; text-align:center; font-weight: bold;">Preproduction (la base est susceptible d'être supprimée à tout moment)</p></div>
                 <?php endif; ?>
 
                 <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && $compte && $route instanceof InterfaceUsurpationRoute && !$sf_user->isUsurpationCompte()) : ?>

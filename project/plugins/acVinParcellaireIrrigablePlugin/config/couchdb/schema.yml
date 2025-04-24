@@ -72,6 +72,17 @@ ParcellaireIrrigable:
                               source_produit_libelle: { }
       region: { required: false }
       observations: {  }
+      documents:
+        class: ParcellaireIrrigableDocuments
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  statut: { }
+                  libelle: { }
       pieces:
         type: array_collection
         definition:

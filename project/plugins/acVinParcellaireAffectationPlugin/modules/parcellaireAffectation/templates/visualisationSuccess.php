@@ -67,7 +67,7 @@
     </div>
 
     <div class="col-xs-2 text-right">
-        <?php if ($parcellaireAffectation->validation && ParcellaireSecurity::getInstance($sf_user, $parcellaireAffectation->getRawValue())->isAuthorized(ParcellaireSecurity::DEVALIDATION)): ?>
+        <?php if (!isset($coop) && $parcellaireAffectation->validation && ParcellaireSecurity::getInstance($sf_user, $parcellaireAffectation->getRawValue())->isAuthorized(ParcellaireSecurity::DEVALIDATION)): ?>
                     <a class="btn btn-xs btn-default pull-right" href="<?php echo url_for('parcellaireaffectation_devalidation', $parcellaireAffectation) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider votre declaration d\'affectation parcellaire ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
         <?php endif; ?>
     </div>

@@ -32,14 +32,13 @@
 <table><tr><td style="width: 324px;"><?php echo 'Le ' . format_date(date('Y-m-d'), "P", "fr_FR"); ?></td></tr></table>
 <br/><br/>
 
-<table><tr><td><strong>Objet :</strong> Résultats contrôles organoleptiques <?php echo $lot->getTextPassage() ?> <strong>non conformes</strong> NC<?php echo $lot->unique_id ?></td></tr></table>
+<table><tr><td><strong>Objet :</strong> Résultats contrôles organoleptiques <?php echo $lot->getTextPassage() ?> <strong>non <?php echo $lot->isLibelleAcceptable() ? 'acceptables' : 'conformes'?></strong> NC<?php echo $lot->unique_id ?></td></tr></table>
 <br/><br/>
-
 
 <table>
   <tr><td>Madame, Monsieur,</td></tr>
   <br/>
-  <tr><td>Lors de la séance de dégustation du <strong><?php echo format_date($degustation->date, "P", "fr_FR"); ?></strong>, le lot dont les informations figurent dans la fiche de non conformité ci-jointe a été ajourné<?php echo ($lot->isSecondPassage()) ? ' pour la 2ème fois' : '' ?>.<br/></td></tr>
+  <tr><td>Lors de la séance de dégustation du <strong><?php echo format_date($degustation->date, "P", "fr_FR"); ?></strong>, le lot dont les informations figurent dans la fiche de non <?php echo $lot->isLibelleAcceptable() ? 'acceptabilité' : 'conformité'?> ci-jointe a été ajourné<?php echo ($lot->isSecondPassage()) ? ' pour la 2ème fois' : '' ?>.<br/></td></tr>
   <tr><td>Compte tenu de ce résultat, vous pouvez décider :</td></tr><br/>
   <tr><td>
     <ul>
