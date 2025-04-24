@@ -78,7 +78,7 @@
                             <?php echo abs($valeur['SV']); ?>
                         </td>
                         <td class="text-right">
-                            <?php if (isset($dr_apporteur) && $dr_apporteur): ?>
+                            <?php if ($valeur['DR'] || isset($dr_apporteur) && $dr_apporteur): ?>
                                 <?php echo abs($valeur['DR']); ?>
                             <?php else: ?>
                                 <small>DR absente</small>
