@@ -29,9 +29,15 @@
             <th>Détails</th>
         </tr>
     </thead>
-    <?php if ($tableau_comparaison = $sv->getTableauComparaisonTiersApporteurs()) : ?>
-        <?php foreach ($tableau_comparaison as $produit => $cvis): ?>
-            <?php $totalDeclarantSV = $cvis[$sv->getEtablissementObject()->getCvi()]['SV']; $totalApporteurDR = $cvis[$sv->getEtablissementObject()->getCvi()]['DR']; $diffSVDR = round($totalDeclarantSV - $totalApporteurDR, 2); ?>
+<?php
+
+    if ($tableau_comparaison = $sv->getTableauComparaisonTiersApporteurs()) :
+        foreach ($tableau_comparaison as $produit => $cvis):
+                $totalDeclarantSV = $cvis[$sv->getEtablissementObject()->getCvi()]['SV'];
+                $totalApporteurDR = $cvis[$sv->getEtablissementObject()->getCvi()]['DR'];
+                $diffSVDR = round($totalDeclarantSV - $totalApporteurDR, 2);
+
+?>
             <tbody>
                 <tr>
                     <div class="row">
@@ -78,8 +84,8 @@
                                 <small>DR absente</small>
                             <?php endif; ?>
                         </td>
-                        <td class="text-center">
-                            <?php echo abs(round($valeur['SV'] - $valeur['DR'], 2)); ?>
+                        <td class="text-right">
+                            <?php echo round($valeur['SV'] - $valeur['DR'], 2); ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
