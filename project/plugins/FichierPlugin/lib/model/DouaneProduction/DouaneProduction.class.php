@@ -1042,7 +1042,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                         continue;
                     }
                     $produit_key = $data->produit.'|'.$data->produit_libelle;
-                    if ($produit != $produit_key) {
+                    if (strpos($produit,  $produit_key) === false) {
                         continue;
                     }
                     $dr_cvi = $cvi;
