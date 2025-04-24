@@ -180,6 +180,13 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
                             $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                             $parcelle->vtsgn = 0;
                         }
+                        if($prod && $prod->getKey() == 'cepage_PN') {
+                            $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle);
+                            $parcelle = $this->addProduitParcelle("/declaration/certification/genre/appellation_PINOTNOIRROUGE/mention/lieu/couleur/cepage_PR", $CVIParcelle);
+                            $parcelle->superficie = $CVIParcelle->superficie;
+                            $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
+                            $parcelle->vtsgn = 0;
+                        }
                         $libelle = str_replace('ALSACE', 'ALSACE LIEU-DIT', $libelle);
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod) {
