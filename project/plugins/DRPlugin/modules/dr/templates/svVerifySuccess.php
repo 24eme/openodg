@@ -107,7 +107,7 @@
     </thead>
     <tbody>
 <?php $operateur_nb = 0 ; $habilitation_ok = 0 ; $etablissement_ok = 0; ?>
-<?php foreach ($sv->getHabilitationTiers() as $cvi => $hab): $e = $sv->getCachedTiersByCVI($cvi); $operateur_nb++;?>
+<?php foreach ($sv->getHabilitationTiers() as $cvi => $hab): if ($cvi == $sv->getEtablissementObject()->cvi) {continue;} $e = $sv->getCachedTiersByCVI($cvi); $operateur_nb++;?>
     <tr class="habilitation <?php echo ($hab['habilitation_ok']) ? "collapse" : ""; ?>">
         <td>
             <?php if ($e) : $etablissement_ok++ ; ?>
