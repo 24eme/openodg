@@ -3,7 +3,10 @@ all:
     habilitation:
       activites:
          PRODUCTEUR: "Producteur de raisins"
+         PRODUCTEUR_MOUTS: "Producteur de moût"
          VINIFICATEUR: "Vinificateur"
          CONDITIONNEUR: "Conditionneur"
          NEGOCIANT: "Négociant"
          VRAC: "Vrac export"
+         ELABORATEUR: "Élaboration de Mousseux"
+         ELEVEUR: "Élevage"

@@ -116,7 +116,7 @@ class DouaneCsvFile
     if (!$handler)
       throw new Exception('Cannot open csv file anymore');
     $this->csvdata = array();
-    while (($data = fgetcsv($handler, 0, $this->separator)) !== FALSE) {
+    while (($data = fgetcsv($handler, 0, $this->separator, "\"", "\\")) !== FALSE) {
       $this->csvdata[] = self::clean($data);
     }
     fclose($handler);

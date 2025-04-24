@@ -8,3 +8,9 @@ all:
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4
+  societe:
+    format_identifiant: "GAI%06d"
+  donnees_viticoles:
+    regions:
+      IGPTARN : "IGPTARN"
+      AOPGAILLAC: "AOPGAILLAC"

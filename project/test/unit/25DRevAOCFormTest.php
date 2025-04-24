@@ -14,7 +14,10 @@ if ($application == 'loire' || $application == 'nantes') {
     $has_habilitation_inao = 1;
 }
 
-$campagne = (date('Y'))."";
+$campagne = date('Y');
+if (date('m') < 10) {
+    $campagne = $campagne - 1 ;
+}
 
 //Suppression des DRev précédentes
 $drevs = array();
@@ -263,7 +266,8 @@ $drev->cleanDoc();
 $habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant, date('Ymd',strtotime("-1 days")));
 
 if (!$has_habilitation_inao) {
-$habilitation->addProduit($produit1->getConfig()->getHash())->updateHabilitation(HabilitationClient::ACTIVITE_VINIFICATEUR, null, HabilitationClient::STATUT_HABILITE);
+$prod = $habilitation->addProduit($produit1->getConfig()->getHash());
+$prod->updateHabilitation(HabilitationClient::ACTIVITE_VINIFICATEUR, null, HabilitationClient::STATUT_HABILITE);
 $habilitation->save();
 $t->ok($habilitation->isHabiliteFor($produit1->getConfig()->getHash(), HabilitationClient::ACTIVITE_VINIFICATEUR), "L'habilitation a bien enregistré la demande d'habilitation pour le produit1 (".$produit1->getLibelle().") et l'activité vinificateur (".$habilitation->_id.")");
 }

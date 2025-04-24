@@ -38,7 +38,7 @@
                 <?php echo $form['volume']->renderLabel("Volume", array('class' => "col-sm-3 control-label")); ?>
                 <div class="col-sm-3">
                     <div class="input-group">
-                        <?php echo $form['volume']->render(array("required" => true, "placeholder" => "Saisir un volume")); ?>
+                        <?php echo $form['volume']->render(array("required" => true, "placeholder" => "Saisir un volume", 'data-allow-negative' => true)); ?>
                         <div class="input-group-addon">hl</div>
                     </div>
                 </div>
