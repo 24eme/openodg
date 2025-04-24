@@ -1041,7 +1041,8 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                     if ($data->tiers_cvi != $etab_declarant->cvi && substr($data->tiers, 0, -2) != substr($etab_declarant->_id, 0, -2)) {
                         continue;
                     }
-                    if (strpos($produit, $data->produit_libelle) === false && strpos($produit, $dr->getConfiguration()->declaration->get($data->produit)->getLibelleFormat()) === false) {
+                    $produit_key = $data->produit.'|'.$data->produit_libelle;
+                    if ($produit != $produit_key) {
                         continue;
                     }
                     $dr_cvi = $cvi;
