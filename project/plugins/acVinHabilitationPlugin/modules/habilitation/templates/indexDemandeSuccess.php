@@ -5,6 +5,7 @@
 
 <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'))); ?>
 
+<h3>Liste des demandes</h3>
 <div class="row">
     <div class="col-sm-9 col-lg-10 col-xs-12">
         <table class="table table-bordered table-striped table-condensed">
@@ -54,6 +55,13 @@
     </div>
 
     <div class="col-sm-3 col-lg-2 col-xs-12">
+        <div class="list-group">
+            <a class="" href="<?php echo url_for('habilitation'); ?>">
+                <span class="glyphicon glyphicon-arrow-left"></span>
+                &nbsp;Voir les habilitations
+            </a>
+        </div>
+        <hr />
         <div class="list-group">
             <p class="text-muted"><i><?php echo $nbResultats ?> demande<?php if ($nbResultats > 1): ?>s<?php endif; ?></i></p>
         </div>
