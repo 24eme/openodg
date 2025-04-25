@@ -177,10 +177,10 @@ class parcellaireAffectationActions extends sfActions {
         if ($this->appellationNode == ParcellaireAffectationClient::APPELLATION_VTSGN) {
             $parc = array();
             foreach($this->parcellaire->get('declaration/certification/genre/appellation_ALSACEBLANC')->getDetailsSortedByParcelle(false) as $p) {
-                $parc[$p->getKey().' '.$p->superficie.' '.$p->parcelle_id.' '.$p->campagne_plantation.' '.$p->prefix] = $p;
+                $parc[$p->getParcelleIdentifiant().' '.$p->getKey().' '.$p->superficie.' '.$p->parcelle_id.' '.$p->campagne_plantation.' '.$p->prefix] = $p;
             }
             foreach($this->parcellaire->getDeclaration()->getProduitsCepageDetails(true, true) as $p) {
-                $parc[$p->getKey().' '.$p->superficie.' '.$p->parcelle_id.' '.$p->campagne_plantation.' '.$p->prefix] = $p;
+                $parc[$p->getParcelleIdentifiant().' '.$p->getKey().' '.$p->superficie.' '.$p->parcelle_id.' '.$p->campagne_plantation.' '.$p->prefix] = $p;
             }
             ksort($parc);
             $this->parcelles = array_values($parc);
