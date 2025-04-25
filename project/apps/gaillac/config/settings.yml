@@ -25,7 +25,7 @@ test:
 
 all:
   .settings:
-    enabled_modules:        [default, document, global, Email, piece, compte, compte_teledeclarant, etablissement, societe, etablissement_autocomplete, produit, drev, degustation, auth, common, declaration, fichier, habilitation, chgtdenom, facturation, generation, parcellaire, conditionnement, transaction]
+    enabled_modules:        [default, document, global, Email, piece, compte, compte_teledeclarant, etablissement, societe, etablissement_autocomplete, produit, drev, degustation, auth, common, declaration, fichier, habilitation, chgtdenom, facturation, generation, parcellaire, conditionnement, transaction, dr]
     # Form security secret (CSRF protection)
     csrf_secret:            false
 
