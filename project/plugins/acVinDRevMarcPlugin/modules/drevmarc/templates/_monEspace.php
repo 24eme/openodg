@@ -24,6 +24,9 @@
                         </p>
                 <?php endif; ?>
                     </div>
+                <div class="panel-bottom-documents  panel-bottom-documents-valide">
+                    <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'drevmarc')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+                </div>
             <?php elseif ($drevmarc): ?>
                 <div class="panel-body">
                     <p>Votre déclaration de revendication de Marc d'Alsace Gewurztraminer a été débutée pour cette année mais n'a pas été validée.</p>
@@ -35,6 +38,9 @@
                     <p>
                         <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-xs btn-danger pull-right" href="<?php echo url_for('drevmarc_delete', $drevmarc) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                     </p>
+                </div>
+                <div class="panel-bottom-documents">
+                    <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'drevmarc')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
                 </div>
             <?php elseif (!DRevMarcConfiguration::getInstance()->isOpen()): ?>
                 <div class="panel-body">
@@ -54,6 +60,9 @@
                         </p>
                     <?php endif; ?>
                 </div>
+                <div class="panel-bottom-documents">
+                    <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'drevmarc')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+                </div>
             <?php else: ?>
                 <div class="panel-body">
                     <p>Votre déclaration de revendication de Marc d'Alsace Gewurztraminer n'a pas été validée pour cette année.</p>
@@ -69,8 +78,8 @@
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
-            <div style="padding-top: 0; padding-bottom: 0;">
-                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'drevmarc')) ?>" class="btn btn-xs btn-link btn-block text-muted">Voir tous les documents</a>
+            <div class="panel-bottom-documents">
+                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'drevmarc')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
             </div>
         </div>
     <?php endif; ?>
