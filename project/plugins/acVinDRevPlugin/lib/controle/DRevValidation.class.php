@@ -142,12 +142,6 @@ class DRevValidation extends DeclarationLotsValidation
           $this->controleRevendication($produit);
           $this->controleVci($produit);
         }
-        //Point de vigilence sur habilitation
-        if (!DRevConfiguration::getInstance()->hasHabilitationINAO()) {
-            foreach($this->document->getNonHabilitationODG() as $hash => $produit) {
-                $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-            }
-        }
         $this->controleRecoltes();
 
         foreach ($this->document->getProduits() as $hash => $produit) {
