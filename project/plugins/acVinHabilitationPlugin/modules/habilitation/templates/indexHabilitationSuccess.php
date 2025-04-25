@@ -46,6 +46,13 @@
     </div>
 
     <div class="col-sm-3 col-xs-12">
+        <div class="list-group">
+            <a class="" href="<?php echo url_for('habilitation_demande'); ?>">
+                <span class="glyphicon glyphicon-arrow-right"></span>
+                &nbsp;Voir les demandes
+            </a>
+        </div>
+        <hr />
         <p class="text-muted"><i><?php echo $nbResultats ?> habilitation<?php if ($nbResultats > 1): ?>s<?php endif; ?></i></p>
         <p><a href="<?php echo url_for('habilitation_export', array('query' => $query)) ?>" class="btn btn-default btn-default-step btn-block btn-upper"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a>
         </p>
