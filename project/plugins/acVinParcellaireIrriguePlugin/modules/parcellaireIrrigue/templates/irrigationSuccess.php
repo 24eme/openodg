@@ -70,7 +70,7 @@
 			<tr class="vertical-center" id="tr_<?php $parcelle->getParcelleId();?>">
                 <td><?php echo $parcelle->lieu; ?></td>
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
-                <td><?php echo $parcelle->cepage; ?></td>
+                <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
                 <?php if (ParcellaireConfiguration::getInstance()->isAres()): ?>
                     <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)); ?></td>

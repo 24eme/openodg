@@ -7892,7 +7892,9 @@ input[type="radio"] {
   display: inline;
 }
 .block_declaration {
-  height: 255px;
+  height: 273px;
+  display:flex;
+  flex-direction: column;
 }
 .block_declaration .panel-body {
   height: 88px;
@@ -8803,4 +8805,15 @@ tr.bootstrap-switch-on {
     color: #ffffff;
     background-color: #1d302f;
     border-color: #0c1413;
+}
+
+.panel-bottom-documents {
+    background-color: #f5f5f5;
+    margin: 10px 0;
+    border-top: 1px solid #dddddd;
+}
+
+.panel-bottom-documents-valide {
+    margin: 30px 0;
+
 }

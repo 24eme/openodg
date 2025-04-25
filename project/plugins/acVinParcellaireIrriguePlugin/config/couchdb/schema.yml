@@ -14,6 +14,7 @@ ParcellaireIrrigue:
       lecture_seule: { required: false }
       signataire: { }
       papier: { required: false, type: integer }
+      region:
       declarant:
         type: collection
         class: ParcellaireIrrigueDeclarant
