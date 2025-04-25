@@ -21,3 +21,43 @@ all:
         DISTILLATEUR: 'Distillateur'
         ELEVEUR: 'Eleveur'
         PRESTATAIRE_DE_SERVICE: 'Prestataire de service'
+      demande:
+        listing: false
+        statuts:
+          DEPOT: "Dépôt"
+          RELANCE_1: "Relance n°1"
+          RELANCE_2: "Relance n°2"
+          RELANCE_3: "Relance n°3"
+          COMPLET: "Complet"
+          TRANSMIS_QUALISUD: "Transmis à QUALISUD"
+          VALIDE_QUALISUD: "Validé par QUALISUD"
+          REFUSE_QUALISUD: "Refusé par QUALISUD"
+          TRANSMIS_INAO: "Transmis à l'INAO"
+          VALIDE_INAO: "Validé par l'INAO"
+          REFUSE_INAO: "Refusé par l'INAO"
+          VALIDE: "Validé"
+          REFUSE: "Refusé"
+          ANNULE: "Annulé"
+        automatique:
+          VALIDE_QUALISUD: VALIDE
+          REFUSE_QUALISUD: REFUS
+          VALIDE_INAO: VALIDE
+          REFUSE_INAO: REFUS
+        habilitations:
+          HABILITATION:
+            COMPLET: DEMANDE_HABILITATION
+            VALIDE_QUALISUD: HABILITE
+            VALIDE_INAO: HABILITE
+            VALIDE: HABILITE
+            REFUSE: REFUS
+            ANNULE: ANNULÉ
+          RETRAIT:
+            COMPLET: DEMANDE_RETRAIT
+            VALIDE: RETRAIT
+            REFUSE: HABILITE
+            ANNULE: HABILITE
+          RESILIATION:
+            COMPLET: DEMANDE_RESILIATION
+            VALIDE: RESILIE
+            REFUSE: HABILITE
+            ANNULE: HABILITE
