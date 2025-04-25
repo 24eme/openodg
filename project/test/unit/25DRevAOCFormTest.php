@@ -266,12 +266,11 @@ $drev->cleanDoc();
 $habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant, date('Ymd',strtotime("-1 days")));
 
 if (!$has_habilitation_inao) {
-$prod = $habilitation->addProduit($produit1->getConfig()->getHash());
-$prod->updateHabilitation(HabilitationClient::ACTIVITE_VINIFICATEUR, null, HabilitationClient::STATUT_HABILITE);
+$habilitation_hash = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($produit1->getConfig())->getHash();
+$habilitation->updateHabilitation($habilitation_hash, HabilitationClient::ACTIVITE_VINIFICATEUR, null, HabilitationClient::STATUT_HABILITE);
 $habilitation->save();
-$t->ok($habilitation->isHabiliteFor($produit1->getConfig()->getHash(), HabilitationClient::ACTIVITE_VINIFICATEUR), "L'habilitation a bien enregistré la demande d'habilitation pour le produit1 (".$produit1->getLibelle().") et l'activité vinificateur (".$habilitation->_id.")");
+$t->ok($habilitation->isHabiliteFor($habilitation_hash, HabilitationClient::ACTIVITE_VINIFICATEUR), "L'habilitation a bien enregistré la demande d'habilitation pour le produit1 (".$produit1->getLibelle().") et l'activité vinificateur (".$habilitation->_id.")");
 }
-
 $produit1->getConfig()->add('attributs')->add('rendement', 55);
 $produit1->getConfig()->add('attributs')->add('rendement_conseille', 45);
 $produit1->getConfig()->add('attributs')->add('rendement_vci', 5);

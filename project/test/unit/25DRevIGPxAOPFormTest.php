@@ -1,6 +1,11 @@
 <?php
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
+if ( ! DRevConfiguration::getInstance()->hasEtapesAOC() ) {
+    $t = new lime_test(1);
+    $t->ok(true, "pass IGPxAOP");
+    return;
+}
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
