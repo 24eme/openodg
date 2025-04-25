@@ -14,6 +14,7 @@
         foreach ($arr_lots as $certif => $lots) {
             if (count($arr_lots[$certif]) == 4) {
                 echo include_partial($certif, array('lots' => $arr_lots[$certif]));
+                $arr_lots[$certif] = [];
             }
         }
 
@@ -28,6 +29,9 @@
     }
 
     foreach ($arr_lots as $certif => $lots) {
+        if (count($arr_lots[$certif]) == 0) {
+            continue;
+        }
         if (count($arr_lots[$certif]) != 4) {
             while (count($arr_lots[$certif]) < 4) {
                 $arr_lots[$certif][] = null;

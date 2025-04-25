@@ -8817,3 +8817,8 @@ tr.bootstrap-switch-on {
     margin: 30px 0;
 
 }
+
+code {
+    color: #2c4a48;
+    background-color: #e0f0d9;
+}

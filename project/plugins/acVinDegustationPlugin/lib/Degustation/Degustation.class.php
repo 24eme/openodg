@@ -143,7 +143,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $this->generateMouvementsFacturesOnNextSave = false;
 
         if ($this->etape == DegustationEtapes::ETAPE_VISUALISATION && RegionConfiguration::getInstance()->hasOdgProduits()) {
-            if ( (strpos($this->region, '|') === false) && ($this->region != Organisme::getOIRegion()) ) {
+            if ( (strpos($this->region, '|') === false) && ($this->region != Organisme::getOIRegion()) && (RegionConfiguration::getInstance()->hasOC()) ) {
                 $this->region = $this->region.'|'.Organisme::getOIRegion();
             }
             if (!$this->isValidated()) {
