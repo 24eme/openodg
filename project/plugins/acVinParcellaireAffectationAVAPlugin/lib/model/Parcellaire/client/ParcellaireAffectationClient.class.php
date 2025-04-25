@@ -22,6 +22,7 @@ class ParcellaireAffectationClient extends acCouchdbClient {
             self::APPELLATION_GRDCRU => 'Grand Cru',
             self::APPELLATION_COMMUNALE => 'Communale',
             self::APPELLATION_LIEUDIT => 'Lieux dits',
+            self::APPELLATION_PINOTNOIRROUGE => 'Alsace rouge',
             self::APPELLATION_CREMANT => 'Crémant'
                 );
 
@@ -112,7 +113,8 @@ class ParcellaireAffectationClient extends acCouchdbClient {
 	            self::APPELLATION_ALSACEBLANC => 'Alsace Blanc',
 	            self::APPELLATION_GRDCRU => 'Grand Cru',
 	            self::APPELLATION_COMMUNALE => 'Communale',
-	            self::APPELLATION_LIEUDIT => 'Lieux dits'
+                self::APPELLATION_LIEUDIT => 'Lieux dits',
+	            self::APPELLATION_PINOTNOIRROUGE => 'Alsace rouge'
 	        );
         }
         return array('CREMANT' => 'Crémant');
