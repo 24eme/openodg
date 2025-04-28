@@ -68,9 +68,9 @@
 
 <table border=0 cellspacing=0 cellpadding=0>
     <tr>
-        <td colspan="2"><b>DATE&nbsp;:&nbsp;<?php echo $lots[0]->date_commission; ?><br>JURY&nbsp;N°&nbsp;:&nbsp;<br><span class="text-blue">IGP</span></b></td>
+        <td colspan="2"><b>DATE&nbsp;:&nbsp;<?php echo $lots[0]->date_commission; ?><br>JURY&nbsp;N°&nbsp;:&nbsp;<?php echo $lots[0]->numero_table; ?><br></b></td>
         <?php foreach ($lots as $lot) :?>
-            <td class="td text-large <?php if(! $lot): ?>text-muted<?php endif;?>" colspan="3">&nbsp;N°&nbsp;échantillon&nbsp;:&nbsp;<?php if ($lot){ echo $lot->numero_anonymat;} else {echo "";} ?><br>&nbsp;Cépage&nbsp;:&nbsp;<?php if ($lot) {echo $lot->getCepagesLibelle();} else {echo "";} ?><br>&nbsp;<small><i>(si revendiqué)</i></small></td>
+            <td class="td text-large <?php if(! $lot): ?>text-muted<?php endif;?>" colspan="3">&nbsp;N°&nbsp;échantillon&nbsp;:&nbsp;<?php if ($lot){ echo $lot->numero_anonymat;} else {echo "";} ?><br>&nbsp;<?php if ($lot) {echo $lot->getProduitLibelle();} else {echo "";} ?><br>&nbsp;<small><i>(si revendiqué)</i></small></td>
         <?php endforeach;?>
     </tr>
     <tr>
