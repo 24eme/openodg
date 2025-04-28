@@ -43,7 +43,7 @@
                 </td>
                 <!-- TODO trouver l'origine concrète du débordement du tableau. La solution display:grid peut être temporaire -->
                 <td style="display:grid;"><p class="trunk-text" style="border-radius: 0.25em 0.25em 0 0; width: 100%; color:white;">
-                    <?php if ($lot->isLibelleAcceptable()) {echo str_ireplace("conform", "acceptabl", showLotStatusCartouche($mouvement->value, $sf_user->isAdminODG()));} else {echo showLotStatusCartouche($mouvement->value, $sf_user->isAdminODG());}?></p></td>
+                    <?php echo showLotStatusCartouche($mouvement->value, $sf_user->isAdminODG());?></p></td>
 
                 <td class="text-right hidden-print">
                     <a href="<?php echo $url; ?>" class="btn btn-default btn-xs<?php echo " ".$class; ?>">accéder&nbsp;<span class="glyphicon glyphicon-chevron-right <?php echo $class; ?>"></span></a>

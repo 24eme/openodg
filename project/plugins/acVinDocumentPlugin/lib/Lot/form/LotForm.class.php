@@ -114,8 +114,9 @@ class LotForm extends acCouchdbObjectForm
     public function getProduits()
     {
         $produits = array();
+        $has_all_produits = $this->all_produits || (($this->getObject()->getDocument()->type == ConditionnementClient::TYPE_MODEL) && ConditionnementConfiguration::getInstance()->hasAllProduits());
         foreach ($this->getObject()->getDocument()->getConfigProduits() as $produit) {
-            if((!$this->all_produits && !ConditionnementConfiguration::getInstance()->hasAllProduits()) && !$produit->isRevendicationParLots()) {
+            if(!$has_all_produits && !$produit->isRevendicationParLots()) {
                 continue;
             }
             if (!$produit->isActif()) {

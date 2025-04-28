@@ -1,3 +1,4 @@
+<?php use_helper('Float') ?>
 <ol class="breadcrumb">
 <?php if($sf_user->hasTeledeclaration()): ?>
   <li><a href="<?php echo url_for('parcellaire_declarant', $etablissement); ?>">Parcellaire</a></li>
@@ -8,9 +9,9 @@
   <li>Détails du Potentiel de Production</li>
 </ol>
 
-
 <h1>Potentiel de production</h1>
 <?php foreach($potentiel->getProduits() as $produit): if ($produit->hasPotentiel()): ?>
+<span class="pull-right">Caculé d'après <a href="<?php echo url_for( ($produit->parcellaire2refIsAffectation()) ? 'parcellaireaffectation_visualisation' : 'parcellaire_visualisation', $produit->getParcellaire2Ref()) ?>"><?php echo $produit->getParcellaire2Ref()->_id; ?></a></span>
 <h2><?php echo $produit->getLibelle(); ?></h2>
 <table class="table">
     <tr>
@@ -53,10 +54,12 @@
 ?>
 </table>
 
-<p>Caculé d'après <a href="<?php echo url_for( ($produit->parcellaire2refIsAffectation()) ? 'parcellaireaffectation_visualisation' : 'parcellaire_visualisation', $produit->getParcellaire2Ref()) ?>"><?php echo $produit->getParcellaire2Ref()->_id; ?></a></p>
-<h4>Encepagement : <?php echo $produit->getSuperficieEncepagement(); ?> ha</h4>
-<h4>Superficie non revendicable : <?php echo $produit->getSuperficieEncepagement() - $produit->getSuperficieMax(); ?> ha</h4>
-<h3>Potentiel : <?php echo $produit->getSuperficieMax(); ?> ha</h3>
+<h4>Résultat</h4>
+<table class="table" style="width: 30%">
+<tr><th>Encepagement</th><td class="text-right"><?php echoFloat($produit->getSuperficieEncepagement(), 4); ?> ha</td></tr>
+<tr><th>Superficie non revendicable</th><td class="text-right"><?php echoFloat($produit->getSuperficieEncepagement() - $produit->getSuperficieMax(), 4); ?> ha</td></tr>
+<tr><th>Potentiel</th><th class="text-right"><?php echoFloat($produit->getSuperficieMax(), 4); ?> ha</th></tr>
+</table>
 <hr/>
 <?php endif; ?>
 <?php endforeach; ?>

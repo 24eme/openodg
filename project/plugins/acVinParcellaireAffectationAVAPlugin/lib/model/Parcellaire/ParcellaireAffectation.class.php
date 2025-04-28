@@ -164,7 +164,7 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
                 }
                 foreach($CVIParcelle->getIsInAires() as $nom => $statut) {
                     $libelle = strtoupper($nom.' '.$CVIParcelle->getCepage());
-                    $libelle = str_replace([' A PETITS GRAINS', ' A PETITS GRAINS ROSE.'], '', str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N|G)$/', '', $libelle)));
+                    $libelle = str_replace([' A PETITS GRAINS ROSE', ' A PETITS GRAINS'], '', str_replace(['GEWURZTRAMINER', 'MUSCATS'], ['GEWURZT', 'MUSCAT'], preg_replace('/[ \.](B|RS|N|G)$/', '', $libelle)));
                     if (strpos(strtoupper($nom), 'GRAND CRU') !== false || strpos(strtoupper($nom), 'COMMUNALE') !== false) {
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod) {
@@ -176,6 +176,13 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod && $prod->hasVtsgn()) {
                             $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle);
+                            $parcelle->superficie = $CVIParcelle->superficie;
+                            $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
+                            $parcelle->vtsgn = 0;
+                        }
+                        if($prod && $prod->getKey() == 'cepage_PN') {
+                            $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle);
+                            $parcelle = $this->addProduitParcelle("/declaration/certification/genre/appellation_PINOTNOIRROUGE/mention/lieu/couleur/cepage_PR", $CVIParcelle);
                             $parcelle->superficie = $CVIParcelle->superficie;
                             $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                             $parcelle->vtsgn = 0;

@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-if ($application != 'igp13' || !DRevConfiguration::getInstance()->isModuleEnabled()) {
+if (! DRevConfiguration::getInstance()->hasEtapesAOC() && ($application != 'igp13' || !DRevConfiguration::getInstance()->isModuleEnabled())) {
     $t = new lime_test(1);
     $t->ok(true, "pass AOC");
     return;
@@ -60,6 +60,9 @@ $produitconfig1 = null;
 $produitconfig2 = null;
 $produitconfig_horsDR = null;
 foreach($config->getProduits() as $produitconfig) {
+    if (strpos($produitconfig->getHash(), '/IGP/') === false) {
+        continue;
+    }
     if(!$produitconfig->getRendement()) {
         continue;
     }

@@ -263,15 +263,15 @@ $t->is($produit1->vci->stock_final, $produit1->vci->constitue + $produit1->vci->
 
 $drev->cleanDoc();
 
-$habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant, date('Ymd',strtotime("-1 days")));
+$habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant, date('Y-m-d',strtotime("-1 days")));
 
 if (!$has_habilitation_inao) {
-$prod = $habilitation->addProduit($produit1->getConfig()->getHash());
-$prod->updateHabilitation(HabilitationClient::ACTIVITE_VINIFICATEUR, null, HabilitationClient::STATUT_HABILITE);
+//$habilitation->addProduit($produit1->getConfig()->getHash())->updateHabilitation(HabilitationClient::ACTIVITE_VINIFICATEUR, null, HabilitationClient::STATUT_HABILITE);
+$habilitation_hash = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($produit1->getConfig())->getHash();
+$habilitation->updateHabilitation($habilitation_hash, [HabilitationClient::ACTIVITE_VINIFICATEUR], null, HabilitationClient::STATUT_HABILITE);
 $habilitation->save();
-$t->ok($habilitation->isHabiliteFor($produit1->getConfig()->getHash(), HabilitationClient::ACTIVITE_VINIFICATEUR), "L'habilitation a bien enregistré la demande d'habilitation pour le produit1 (".$produit1->getLibelle().") et l'activité vinificateur (".$habilitation->_id.")");
+$t->ok($habilitation->isHabiliteFor($habilitation_hash, HabilitationClient::ACTIVITE_VINIFICATEUR), "L'habilitation a bien enregistré la demande d'habilitation pour le produit1 (".$produit1->getLibelle().") et l'activité vinificateur (".$habilitation->_id.")");
 }
-
 $produit1->getConfig()->add('attributs')->add('rendement', 55);
 $produit1->getConfig()->add('attributs')->add('rendement_conseille', 45);
 $produit1->getConfig()->add('attributs')->add('rendement_vci', 5);
@@ -306,9 +306,11 @@ $t->is($vigilances['vci_complement'], null, "Pas de point vigilance sur le compl
 
 $drevControle = clone $drev;
 if (!$has_habilitation_inao) {
-$habilitation->updateHabilitation($produit1->getConfig()->getHash(), array(HabilitationClient::ACTIVITE_VINIFICATEUR), null, HabilitationClient::STATUT_RETRAIT);
+$habilitation->updateHabilitation($habilitation_hash, array(HabilitationClient::ACTIVITE_VINIFICATEUR), null, HabilitationClient::STATUT_RETRAIT);
 $habilitation->save();
+$t->comment($habilitation->_id);
 }
+
 $produitControle1 = $drevControle->get($produit1->getHash());
 $produitControle2 = $drevControle->get($produit2->getHash());
 
@@ -338,7 +340,7 @@ $t->ok(!isset($vigilances['revendication_rendement_conseille']), "Le point de vi
 $t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le vci utilisé n'a pas été correctement réparti");
 $t->ok(isset($vigilances['vci_rendement_total']) && count($vigilances['vci_rendement_total']) == 1 && $vigilances['vci_rendement_total'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point de vigilance est levé car le stock vci final déclaré ne respecte pas le rendement total");
 if (!$has_habilitation_inao) {
-    $t->isnt($vigilances['declaration_habilitation'], null, "Des points de vigilences sur les habilitations des deux produits (un en retrait, l'autre non déclaré dans l'habilitation)");
+    $t->isnt($erreurs['drev_habilitation_odg'], null, "Des points de vigilences sur les habilitations des deux produits (un en retrait, l'autre non déclaré dans l'habilitation)");
 }
 $t->ok(count($vigilances['declaration_volume_l15']), "Point vigilance sur le respect de la ligne l15");
 $t->is(count($erreurs['declaration_volume_l15_complement']), 1, "Point bloquant sur le respect de la ligne l15");

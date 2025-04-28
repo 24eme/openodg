@@ -111,9 +111,15 @@ class DRevConfiguration extends DeclarationConfiguration {
     }
 
     public function hasEtapeSuperficie() {
+        if ($this->hasEtapesAOC()) {
+            return true;
+        }
         return isset($this->configuration['etape_superficie']) && boolval($this->configuration['etape_superficie']);
     }
 
+    public function hasEtapesAOC() {
+        return isset($this->configuration['etapes_aoc']) && boolval($this->configuration['etapes_aoc']);
+    }
 
     public function isDrDouaneRequired() {
         return isset($this->configuration['dr_douane_required']) && boolval($this->configuration['dr_douane_required']);
