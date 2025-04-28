@@ -1975,4 +1975,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function isTournee() {
             return strpos($this->_id, 'TOURNEE') !== false;
         }
+
+        public function isLibelleAcceptable()
+        {
+            return $this->getLots()[0]->isLibelleAcceptable();
+        }
 }
