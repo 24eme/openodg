@@ -17,7 +17,7 @@
                 </p>
                 <?php endif; ?>
         </div>
-        <div class="panel-bottom-documents  panel-bottom-documents-valide">
+        <div class="panel-bottom-documents  <?php if($sf_user->isAdmin()): ?>panel-bottom-documents-etape<?php endif; ?>">
             <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'intentioncremant')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
         </div>
         <?php elseif ($intentionCremant):  ?>
@@ -32,7 +32,7 @@
                 <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-xs btn-danger pull-right" href="<?php echo url_for('parcellaire_delete', $intentionCremant) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
             </p>
         </div>
-        <div class="panel-bottom-documents">
+        <div class="panel-bottom-documents panel-bottom-documents-etape">
             <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'intentioncremant')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
         </div>
         <?php elseif (!IntentionCremantConfiguration::getInstance()->isOpen()): ?>
@@ -71,7 +71,7 @@
                     </p>
                 <?php endif; ?>
         </div>
-        <div class="panel-bottom-documents">
+        <div class="panel-bottom-documents <?php if ($sf_user->isAdmin()): ?> panel-bottom-documents-etape <?php endif; ?>">
             <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'intentioncremant')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
         </div>
             <?php endif; ?>
