@@ -867,6 +867,18 @@ abstract class Lot extends acCouchdbDocumentTree
 
     }
 
+    public static function getSyntheseLibelleConfigMillesime($conf, $millesime) {
+        return $conf->getCouleur()->getLibelleCompletDR().' '.$millesime;
+    }
+
+    public function getSyntheseLibelle() {
+        $c = $this->getConfig();
+        if($this->getProduitRevendique()){
+            $c = $this->getProduitRevendique()->getConfig();
+        }
+        return self::getSyntheseLibelleConfigMillesime($c, $this->millesime);
+    }
+
     public function getUniqueId(){
         if(is_null($this->_get('unique_id'))) {
             if (!$this->campagne) {

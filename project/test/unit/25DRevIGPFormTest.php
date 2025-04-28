@@ -277,11 +277,12 @@ $t->is($mouvement->date_commission, $lot->date_commission, "Mouvement date de co
 $t->comment("Test de la synthèse des lots (visu/validation/_recap)");
 
 $synthese = $drev->summerizeProduitsLotsByCouleur();
+$synthese_libelle = $drev->lots[0]->getSyntheseLibelle();
 $t->is(count(array_keys($synthese)), 3, "On a bien toutes les couleurs de la DR en synthèse des lots + une ligne total");
-$t->ok(isset($synthese[$drev->lots[0]->getCouleurLibelle()]), "On a bien la couleur du produit 1 en synthèse des lots");
-$t->is($synthese[$drev->lots[0]->getCouleurLibelle()]['volume_lots'], 8.2, "On a le bon volume total en synthèse des lots");
-$t->is($synthese[$drev->lots[0]->getCouleurLibelle()]['volume_max'], 208.2, "On a le bon volume issu de la dr en synthèse des lots");
-$t->is($synthese[$drev->lots[0]->getCouleurLibelle()]['volume_restant'], 200, "On a le bon volume restant en synthèse des lots");
+$t->ok(isset($synthese[$synthese_libelle]), "On a bien la couleur du produit 1 en synthèse des lots");
+$t->is($synthese[$synthese_libelle]['volume_lots'], 8.2, "On a le bon volume total en synthèse des lots");
+$t->is($synthese[$synthese_libelle]['volume_max'], 208.2, "On a le bon volume issu de la dr en synthèse des lots");
+$t->is($synthese[$synthese_libelle]['volume_restant'], 200, "On a le bon volume restant en synthèse des lots");
 
 $t->comment("Historique de mouvements");
 $t->is(count($lot->getMouvements()), 3, "3 mouvements pour le lot");
