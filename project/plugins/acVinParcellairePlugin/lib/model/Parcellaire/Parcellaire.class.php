@@ -160,7 +160,7 @@ class Parcellaire extends BaseParcellaire {
         $p->add('parcelle_id', $pid);
         $p->cepage = $cepage;
         $p->campagne_plantation = $campagne_plantation;
-        $p->commune = $commune;
+        $p->commune = preg_replace('/[\n]+/', ' ', $commune);
         $p->source_produit_libelle = $source_produit_libelle;
         if($lieu){
             $lieu = strtoupper($lieu);
