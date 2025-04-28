@@ -1,6 +1,11 @@
 <?php
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
+if ( ! DRevConfiguration::getInstance()->hasEtapesAOC() ) {
+    $t = new lime_test(1);
+    $t->ok(true, "pass IGPxAOP");
+    return;
+}
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -10,7 +15,6 @@ $drev_date = $periode."-10-01";
 
 //Suppression des DRev précédentes
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
-    print_r([$k]);
     DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
     $dr = DRClient::getInstance()->find(str_replace("DREV-", "DR-", $k), acCouchdbClient::HYDRATE_JSON);
     if($dr) { DRClient::getInstance()->deleteDoc($dr); }
@@ -85,7 +89,16 @@ $t->comment("%libelle_produit_1% = ".$produitconfig_aoc->getLibelleComplet());
 $t->comment("%libelle_produit_2% = ".$produitconfig_igp->getLibelleComplet());
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
+$t->comment('Etape superficie');
+$t->ok(!DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE, $drev), "On a accès à l'étape superficie");
+$drev->addProduit($produitconfig_igp->getHash());
+if($drev->storeEtape(DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE)) {
+    $drev->save();
+}
 $t->comment("Étape lots");
+$t->ok(!DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_LOTS, $drev), "On a accès à l'étape lots");
+$t->ok(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION, $drev), "On a accès à l'étape AOC revendication");
+
 $drevConfig = DRevConfiguration::getInstance();
 $t->ok(count($drevConfig->getSpecificites()), "La configuration retourne bien des spécificités");
 $t->is($drev->getConfiguration()->_id, $config->_id, "Recupère le bon catalogue produit ($configuration_id)");
@@ -116,8 +129,11 @@ $form->save();
 $drev->validate();
 $drev->validateOdg();
 $drev->save();
+
 $t->comment($drev->_id);
 $t->is(count($drev->lots), 1, "Seulement le lot non vide est conservé");
+
+$t->is(count($drev->mouvements_lots), 1, 'Il y a bien des mouvements de lots');
 
 $drev_m01  = $drev->generateModificative();
 $drev_m01->save();
@@ -136,16 +152,18 @@ unlink($csvTmpFile);
 $drev_m01->resetAndImportFromDocumentDouanier();
 $drev_m01->save();
 $t->comment($drev_m01->_id);
-$t->is(count($drev_m01->declaration), 2, "On retrouve les deux produits dans déclaration");
-$t->ok($drev_m01->exist($produitconfig_aoc->getHash()), "le produit AOC existe");
-$t->ok($drev_m01->exist($produitconfig_igp->getHash()), "le produit IGP existe");
+$t->is(count($drev_m01->declaration), 2, "Après la DR, on retrouve les deux produits dans déclaration");
+$t->ok($drev_m01->exist($produitconfig_aoc->getHash()), "La DR a permis d'avoir le produit AOC");
+$t->ok($drev_m01->exist($produitconfig_igp->getHash()), "Le produit IGP existe toujours");
 
+$t->ok(!DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_LOTS, $drev_m01), "Après l'import de la DR, on a accès à l'étape lots");
+$t->ok(!DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION, $drev_m01), "Après l'import de la DR, on a accès à l'étape AOC revendication");
 
 $produits = $drev_m01->getProduits();
 $produit1 = current($drev_m01->get($produitconfig_aoc->getCepage()->getHash())->getProduits());
-$produit_hash1 = $produit1->getHash();
+$produit_hash1 = $produit1->getCepage()->getHash();
 next($produits);
 $produit2 = end($drev_m01->get($produitconfig_igp->getCepage()->getHash())->getProduits());
-$produit_hash2 = $produit2->getHash();
-$t->is($produit_hash1, $produitconfig_aoc->getHash(), "le premier produit est le produit AOC");
-$t->is($produit_hash2, $produitconfig_igp->getHash(), "le premier produit est le produit IGP");
+$produit_hash2 = $produit2->getCepage()->getHash();
+$t->is($produit_hash1, $produitconfig_aoc->getHash(), "Le premier produit est le produit AOC");
+$t->is($produit_hash2, $produitconfig_igp->getHash(), "Le premier produit est le produit IGP");
