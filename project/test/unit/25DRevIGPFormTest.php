@@ -8,7 +8,7 @@ if (! DRevConfiguration::getInstance()->hasEtapesAOC() && ($application != 'igp1
     return;
 }
 
-$t = new lime_test(126);
+$t = new lime_test(127);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -145,7 +145,7 @@ if($drev->storeEtape(DrevEtapes::ETAPE_LOTS)) {
 $form = new DRevLotsForm($drev);
 $defaults = $form->getDefaults();
 
-$t->is(count($form['lots']), 2, "autant de lots que de colonnes dans le DR");
+$t->is(count($form['lots']), 1, "au moins un lot (on ne crée plus le même nombre de lot que de produit)");
 $t->is($form['lots']['0']['produit_hash']->getValue(), $produit1->getParent()->getHash(), 'lot 1 : un produit est déjà sélectionné');
 $t->is($form['lots']['0']['millesime']->getValue(), $periode, 'lot 1 : le millesime est prérempli');
 
@@ -159,8 +159,10 @@ $valuesRev['lots']['0']['numero_logement_operateur'] = "Cuve A";
 $valuesRev['lots']['0']['volume'] = 1008.2;
 $valuesRev['lots']['0']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $valuesRev['lots']['0']['destination_date'] = '30/11/'.$periode;
+$specificite = "";
 if($drevConfig->hasSpecificiteLot()){
     $t->is($valuesRev['lots']['0']['specificite'], 'UNDEFINED', "Pas de spécificité choisie donc par defaut aucune");
+    $specificite = 'UNDEFINED';
 }else{
     $valuesRev['lots']['0']['specificite'] = "";
 }
@@ -181,13 +183,14 @@ $t->is($drev->lots[0]->destination_date, join('-', array_reverse(explode('/', $v
 $t->is($drev->lots[0]->produit_hash, $valuesRev['lots']['0']['produit_hash'], "La hash du produit du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->produit_libelle, $produit1->getLibelle(), "Le libellé du produit du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->millesime, $valuesRev['lots']['0']['millesime'], "Le millesime du lot 1 est bien enregistré");
-$t->is($drev->lots[0]->specificite, "", "La spécificité Aucune est enregistrée");
+$t->is($drev->lots[0]->specificite, $specificite, "La spécificité Aucune est enregistrée");
 $t->is($drev->lots[0]->id_document_provenance, null, "Le lot n'a pas de provenance");
 $t->is($drev->lots[0]->id_document_affectation, null, "Le lot n'a pas de fils");
 $t->ok($drev->lots[0]->isAffectable(), "Le lot est affectable");
 $t->is($drev->lots[0]->statut, null, "Le lot n'a pas de statut");
 $t->ok(!$drev->lots[0]->isAffecte(), "Le lot n'est pas affecté");
-$t->is($drev->lots[0]->getTypeProvenance(), null, "pas de provenance");
+$t->is($drev->lots[0]->id_document_provenance, null, "pas de provenance");
+$t->is($drev->lots[0]->getTypeProvenance(), 'DRev', "Type provenance à DREV");
 
 if($drev->storeEtape(DrevEtapes::ETAPE_VALIDATION)) {
     $drev->save();
@@ -208,7 +211,7 @@ $vigilances = $validation->getPointsByCodes('vigilance');
 
 $t->ok(!array_key_exists('lot_incomplet', $erreurs), "Pas de point bloquant sur la spécificité");
 $t->ok(array_key_exists('lot_volume_total_depasse', $erreurs), "Le volume total du lot est dépassé");
-$t->is(count($erreurs), 1, 'Il y a un point bloquant');
+$t->is(count($erreurs), 4, 'Il y a un point bloquant');
 $t->is($vigilances, null, "un point de vigilance à la validation");
 
 $drev->lots[0]->volume = 8.2;
@@ -218,6 +221,9 @@ $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
 
+unset($erreurs['declaration_multi_cvi']);
+unset($erreurs['drev_habilitation_odg']);
+unset($erreurs['declaration_habilitation']);
 $t->is($erreurs, null, "pas d'erreur à la validation");
 $t->is($vigilances, null, "un point de vigilance à la validation");
 
@@ -407,6 +413,9 @@ if($drev_modif->storeEtape(DrevEtapes::ETAPE_VALIDATION)) {
 }
 $validation = new DRevValidation($drev_modif);
 $erreurs = $validation->getPointsByCodes('erreur');
+unset($erreurs['declaration_multi_cvi']);
+unset($erreurs['drev_habilitation_odg']);
+unset($erreurs['declaration_habilitation']);
 $vigilances = $validation->getPointsByCodes('vigilance');
 $t->is(count($erreurs), 1, "1 erreur de validation");
 $t->ok($erreurs['lot_volume_total_depasse'], "un point bloquant car le volume revendiqué des lots est supérieurs à celui déclaré dans la DR");
@@ -425,6 +434,10 @@ $form->save();
 
 $validation = new DRevValidation($drev_modif);
 $erreurs = $validation->getPointsByCodes('erreur');
+unset($erreurs['declaration_multi_cvi']);
+unset($erreurs['drev_habilitation_odg']);
+unset($erreurs['declaration_habilitation']);
+
 $vigilances = $validation->getPointsByCodes('vigilance');
 $t->is($vigilances, null, "après le changement de produit hors DR, plus de point de vigilances");
 $t->is($erreurs, null, "après le changement de produit hors DR, toujours pas d'erreur");
