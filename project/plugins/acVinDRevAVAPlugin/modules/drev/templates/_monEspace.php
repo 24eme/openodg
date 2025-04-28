@@ -22,7 +22,7 @@
                     </p>
                 <?php endif; ?>
             </div>
-            <div class="panel-bottom-documents panel-bottom-documents-valide">
+            <div class="panel-bottom-documents">
                 <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'drev')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
             </div>
         <?php elseif ($drev): ?>

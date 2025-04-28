@@ -8809,14 +8809,18 @@ tr.bootstrap-switch-on {
 
 .panel-bottom-documents {
     background-color: #f5f5f5;
-    margin: 10px 0;
+    margin-top: 29px;
     border-top: 1px solid #dddddd;
 }
 
-.panel-bottom-documents-valide {
-    margin: 30px 0;
-
+.panel-bottom-documents-demarrage {
+    margin-top: -5px;
 }
+
+.panel-bottom-documents-etape {
+    margin-top: 9px;
+}
+
 
 code {
     color: #2c4a48;
