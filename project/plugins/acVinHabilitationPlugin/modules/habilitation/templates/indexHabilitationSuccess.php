@@ -36,18 +36,18 @@
         </table>
         <div class="text-center">
             <ul class="pagination" style="margin-top: 0;">
-                <li <?php if ($page - 1  < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation', array('query' =>  $query, 'page' => (($page - 1) > 0) ? $page - 1 : 1)); ?>" aria-label="Previous"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-left"></span></span></a></li>
-                <li <?php if ($page -1 < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation', array('query' =>  $query, 'page' => 1)); ?>" aria-label="Previous"><span aria-hidden="true"><small>Première page</small></span></a></li>
+                <li <?php if ($page - 1  < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation_liste', array('query' =>  $query, 'page' => (($page - 1) > 0) ? $page - 1 : 1)); ?>" aria-label="Previous"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-left"></span></span></a></li>
+                <li <?php if ($page -1 < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation_liste', array('query' =>  $query, 'page' => 1)); ?>" aria-label="Previous"><span aria-hidden="true"><small>Première page</small></span></a></li>
                 <li><span aria-hidden="true"><small>Page <?php echo $page ?> / <?php echo $nbPage ?></small></span></li>
-                <li <?php if ($page +1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation', array('query' =>  $query, 'page' => $nbPage)); ?>" aria-label="Next"><span aria-hidden="true"><small>Dernière page</small></span></a></li>
-                <li <?php if ($page + 1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation', array('query' =>  $query, 'page' =>(($page + 1) > $nbPage) ? $page : $page + 1)); ?>" aria-label="Next"><span aria-hidden="true"></span><span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                <li <?php if ($page +1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation_liste', array('query' =>  $query, 'page' => $nbPage)); ?>" aria-label="Next"><span aria-hidden="true"><small>Dernière page</small></span></a></li>
+                <li <?php if ($page + 1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation_liste', array('query' =>  $query, 'page' =>(($page + 1) > $nbPage) ? $page : $page + 1)); ?>" aria-label="Next"><span aria-hidden="true"></span><span class="glyphicon glyphicon-chevron-right"></span></a></li>
             </ul>
         </div>
     </div>
 
     <div class="col-sm-3 col-xs-12">
         <div class="list-group">
-            <a class="" href="<?php echo url_for('habilitation_demande'); ?>">
+            <a class="" href="<?php echo url_for('habilitation_demande_liste'); ?>">
                 <span class="glyphicon glyphicon-arrow-right"></span>
                 &nbsp;Voir les demandes
             </a>
@@ -58,7 +58,7 @@
         </p>
         <?php if($query && count($query) > 0): ?>
         <p>
-            <a href="<?php echo url_for('habilitation', array('query' => "0")) ?>"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
+            <a href="<?php echo url_for('habilitation_liste', array('query' => "0")) ?>"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
         </p>
         <?php endif; ?>
         <?php foreach($facets as $facetNom => $items): ?>
@@ -68,7 +68,7 @@
                 <?php $active = isset($query[$facetNom]) && $query[$facetNom] == $itemNom; ?>
                 <?php $params = is_array($query) ? $query : array(); if($active): unset($params[$facetNom]); else: $params = array_merge($params, array($facetNom => $itemNom)); endif; ?>
                 <?php if(!count($params)): $params = false; endif; ?>
-                <a href="<?php echo url_for('habilitation', array('query' => $params)) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php if($facetNom == "Statut"): ?><?php echo HabilitationClient::$statuts_libelles[$itemNom]; ?><?php elseif($facetNom == "Activité") :?><?php echo HabilitationClient::getInstance()->getLibelleActivite($itemNom); ?><?php else :?><?php echo $itemNom; ?><?php endif ?></a>
+                <a href="<?php echo url_for('habilitation_liste', array('query' => $params)) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php if($facetNom == "Statut"): ?><?php echo HabilitationClient::$statuts_libelles[$itemNom]; ?><?php elseif($facetNom == "Activité") :?><?php echo HabilitationClient::getInstance()->getLibelleActivite($itemNom); ?><?php else :?><?php echo $itemNom; ?><?php endif ?></a>
             <?php endforeach; ?>
         </div>
         <?php endforeach; ?>
