@@ -1,6 +1,9 @@
 all:
   credentials: [[ADMIN, ADMIN_ODG, habilitation, teledeclaration_drev_admin]]
 
+index:
+  credentials: [[ADMIN, ADMIN_ODG, habilitation, teledeclaration_drev_admin, stalker]]
+
 indexDemande:
   credentials: [[ADMIN, ADMIN_ODG, habilitation, teledeclaration_drev_admin, stalker]]
 
