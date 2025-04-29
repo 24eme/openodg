@@ -26,11 +26,6 @@ class importOperateursHabilitationsIGPTarnCsvTask extends sfBaseTask
 
     const hash_produit = 'certifications/IGP/genres/TRANQ/appellations/CDT';
 
-    const status = [
-        'H' => HabilitationClient::STATUT_HABILITE,
-        'HSIRE' => HabilitationClient::STATUT_DEMANDE_HABILITATION
-    ];
-
     protected function configure()
     {
         $this->addArguments(array(
@@ -175,10 +170,10 @@ EOF;
             return;
         }
 
-        if (!isset(self::status[trim(strtoupper($data[self::CSV_ETAT_PRESTATION]))])) {
+        if (strpos(trim(strtoupper($data[self::CSV_ETAT_PRESTATION])), 'H') === false ) {
             return;
         }
-        $statut = self::status[trim(strtoupper($data[self::CSV_ETAT_PRESTATION]))];
+        $statut = HabilitationClient::STATUT_HABILITE;
 
         $identifiant = $etablissement->identifiant;
         $date_demande  = ($data[self::CSV_DATE_ENGAGEMENT]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_ENGAGEMENT])[0])->format('Y-m-d') : null;
