@@ -1,10 +1,7 @@
 <ol class="breadcrumb">
     <?php if(!$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && !$sf_user->isAdmin() && ($etablissement = $sf_user->getEtablissement())): ?>
         <li><a href="<?php echo url_for('habilitation_declarant', $etablissement); ?>">Habilitations</a></li>
-    <?php elseif(!$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && !$sf_user->isAdmin()): ?>
-    <?php elseif(HabilitationConfiguration::getInstance()->isListingParDemande()): ?>
-        <li><a href="<?php echo url_for('habilitation_demande'); ?>">Habilitations</a></li>
-    <?php else : ?>
+    <?php elseif($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) || $sf_user->isAdmin()): ?>
         <li><a href="<?php echo url_for('habilitation'); ?>">Habilitations</a></li>
     <?php endif; ?>
     <?php if(isset($habilitation)): ?>
