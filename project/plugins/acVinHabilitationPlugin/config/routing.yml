@@ -1,10 +1,15 @@
-habilitation_demande:
-  url: /habilitation_demande
+habilitation:
+  url: /habilitation
+  param: { module: habilitation, action: index }
+  class: HabilitationGeneralRoute
+
+habilitation_demande_liste:
+  url: /habilitation_demande_liste
   param: { module: habilitation, action: indexDemande }
   class: HabilitationGeneralRoute
 
-habilitation:
-  url: /habilitation
+habilitation_liste:
+  url: /habilitation_liste
   param: { module: habilitation, action: indexHabilitation }
   class: HabilitationGeneralRoute
 

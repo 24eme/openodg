@@ -49,6 +49,7 @@ Ceux qui ne vous ont rien apportés cette année mais qui reste adhérent doiven
     <div class="row row-margin row-button">
         <div class="col-xs-4"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $etablissement->identifiant)); ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
+            <a href="<?php echo url_for("parcellaireaffectationcoop_exportapporteurcsv", $parcellaireAffectationCoop) ?>" class="btn btn-default">Export CSV des apporteurs</a>
         </div>
         <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider et continuer<span class="glyphicon glyphicon-chevron-right"></span></button></div>
     </div>

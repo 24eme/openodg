@@ -3261,7 +3261,7 @@
                                                                 "code": null,
                                                                 "code_produit": "3",
                                                                 "code_comptable": "70801000",
-                                                                "code_douane": "3S003",
+                                                                "code_douane": "3S003 2",
                                                                 "cepages_autorises": [
                                                                     "ABONDANCE N",
                                                                     "ABONDANT B",
@@ -4020,7 +4020,7 @@
                                                                 "code": null,
                                                                 "code_produit": "3",
                                                                 "code_comptable": "70801000",
-                                                                "code_douane": "3R003",
+                                                                "code_douane": "3R003 2",
                                                                 "cepages_autorises": [
                                                                     "ABONDANCE N",
                                                                     "ABONDANT B",
@@ -4779,7 +4779,7 @@
                                                                 "code": null,
                                                                 "code_produit": "3",
                                                                 "code_comptable": "70801000",
-                                                                "code_douane": "3B003",
+                                                                "code_douane": "3B003 2",
                                                                 "cepages_autorises": [
                                                                     "ABONDANCE N",
                                                                     "ABONDANT B",
@@ -5755,7 +5755,7 @@
                                                                 "code": null,
                                                                 "code_produit": "812",
                                                                 "code_comptable": "70801000",
-                                                                "code_douane": "3B812",
+                                                                "code_douane": "3B812 2",
                                                                 "cepages_autorises": [
                                                                     "CHARDONNAY B",
                                                                     "CHASAN B",
@@ -5791,7 +5791,7 @@
                                                                 "code": null,
                                                                 "code_produit": "812",
                                                                 "code_comptable": "70801000",
-                                                                "code_douane": "3S812",
+                                                                "code_douane": "3S812 2",
                                                                 "cepages_autorises": [
                                                                     "ALICANTE BOUSCHET N",
                                                                     "CABERNET FRANC N",
@@ -5835,7 +5835,7 @@
                                                                 "code": null,
                                                                 "code_produit": "812",
                                                                 "code_comptable": "70801000",
-                                                                "code_douane": "3R812",
+                                                                "code_douane": "3R812 2",
                                                                 "cepages_autorises": [
                                                                     "ALICANTE BOUSCHET N",
                                                                     "CABERNET FRANC N",
@@ -5879,7 +5879,7 @@
                                                                 "code": null,
                                                                 "code_produit": "812",
                                                                 "code_comptable": "70801000",
-                                                                "code_douane": "3B812",
+                                                                "code_douane": "3B812 2",
                                                                 "cepages_autorises": [
                                                                     "CHARDONNAY B",
                                                                     "CHASAN B",

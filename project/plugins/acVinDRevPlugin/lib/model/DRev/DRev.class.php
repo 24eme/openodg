@@ -63,16 +63,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     {
         $regions = [];
         foreach ($this->getProduits(null, false) as $hash => $p) {
-            $regions[] = $p->getRegion();
+            $regions[$p->getRegion()] = 1;
         }
         $docDouanier = $this->getDocumentDouanier();
         if ($docDouanier) {
             foreach ($docDouanier->getProduits() as $hash => $p) {
-                $regions[] = RegionConfiguration::getInstance()->getOdgRegion($hash);
+                $regions[RegionConfiguration::getInstance()->getOdgRegion($hash)] = 1;
             }
         }
-
-        return array_values(array_unique($regions));
+        unset($regions['']);
+        return array_keys($regions);
     }
 
     public function getProduitsWithoutLots($region = null) {
@@ -107,7 +107,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     }
                 }
             }
-            $couleur = $p->getConfig()->getCouleur()->getLibelleCompletDR().' '.$millesime;
+            $couleur = Lot::getSyntheseLibelleConfigMillesime($p->getConfig(), $millesime);
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('superficie_totale' => 0, 'superficie_revendiquee' => 0,
                                             'volume_total' => 0, 'volume_sur_place' => 0,
@@ -136,7 +136,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if(!$lot->produit_hash) {
                 continue;
             }
-            $couleur = $lot->getConfig()->getCouleur()->getLibelleCompletDR().' '.$lot->millesime;
+            $couleur = $lot->getSyntheseLibelle();
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('volume_sur_place' => 0, 'volume_total' => 0,
                                             'superficie_totale' => 0, 'superficie_revendiquee' => 0,
@@ -147,9 +147,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             $couleurs[$couleur]['appellation'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' XXX'.$lot->millesime.' Total';
             $couleurs[$couleur]['appellation_couleur'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' '.$lot->getConfig()->getCouleur()->getLibelleDR().' XXX'.$lot->millesime.' Total';
-            if($lot->getProduitRevendique()){
-                $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleCompletDR().' '.$lot->millesime;
-            }
             if ($lot->volume) {
                 $couleurs[$couleur]['volume_lots'] += $lot->volume;
                 $couleurs[$couleur]['nb_lots']++;
@@ -446,7 +443,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if (!$this->cache_document_douaniers) {
             $this->cache_document_douaniers = array();
         }
-        if (!isset($this->cache_document_douaniers[$ext])||!$this->cache_document_douaniers[$ext]) {
+        if (!isset($this->cache_document_douaniers[$ext]) || !$this->cache_document_douaniers[$ext]) {
             $this->cache_document_douaniers[$ext] = DouaneClient::getInstance()->getDocumentsDouaniers($this->getEtablissementObject(), $this->periode, $ext);
         }
         return $this->cache_document_douaniers[$ext];
@@ -2608,7 +2605,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $date);
         $nonHabilitationODG = array();
         foreach($this->getProduits() as $hash_c => $produit_c) {
-            $produit = $produit_c->getCepage();
+            $produit = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($produit_c->getConfig());
             $hash = $produit->getHash();
             if (!$habilitation || !$habilitation->isHabiliteFor($hash, HabilitationClient::ACTIVITE_VINIFICATEUR)) {
                 $nonHabilitationODG[$hash] = $produit;

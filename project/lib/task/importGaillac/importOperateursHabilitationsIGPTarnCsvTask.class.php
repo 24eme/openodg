@@ -26,11 +26,6 @@ class importOperateursHabilitationsIGPTarnCsvTask extends sfBaseTask
 
     const hash_produit = 'certifications/IGP/genres/TRANQ/appellations/CDT';
 
-    const status = [
-        'H' => HabilitationClient::STATUT_HABILITE,
-        'HSIRE' => HabilitationClient::STATUT_DEMANDE_HABILITATION
-    ];
-
     protected function configure()
     {
         $this->addArguments(array(
@@ -112,7 +107,12 @@ EOF;
             $societe->siege->adresse_complementaire = $data[self::CSV_ADRESSE_2] ?? null;
             $societe->siege->code_postal = $data[self::CSV_CP] ?? null;
             $societe->siege->commune = $data[self::CSV_COMMUNE] ?? null;
-            $societe->telephone_bureau = Phone::format($data[self::CSV_TEL] ?? null);
+            $tel = Phone::format($data[self::CSV_TEL] ?? null);
+            if ($tel && strpos($tel, '06') === 0) {
+                $societe->telephone_mobile = $tel;
+            }else{
+                $societe->telephone_bureau = $tel;
+            }
             $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
 
             try {
@@ -170,10 +170,10 @@ EOF;
             return;
         }
 
-        if (!isset(self::status[trim(strtoupper($data[self::CSV_ETAT_PRESTATION]))])) {
+        if (strpos(trim(strtoupper($data[self::CSV_ETAT_PRESTATION])), 'H') === false ) {
             return;
         }
-        $statut = self::status[trim(strtoupper($data[self::CSV_ETAT_PRESTATION]))];
+        $statut = HabilitationClient::STATUT_HABILITE;
 
         $identifiant = $etablissement->identifiant;
         $date_demande  = ($data[self::CSV_DATE_ENGAGEMENT]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_ENGAGEMENT])[0])->format('Y-m-d') : null;
