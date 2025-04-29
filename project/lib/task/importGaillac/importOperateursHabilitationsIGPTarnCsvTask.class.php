@@ -112,7 +112,12 @@ EOF;
             $societe->siege->adresse_complementaire = $data[self::CSV_ADRESSE_2] ?? null;
             $societe->siege->code_postal = $data[self::CSV_CP] ?? null;
             $societe->siege->commune = $data[self::CSV_COMMUNE] ?? null;
-            $societe->telephone_bureau = Phone::format($data[self::CSV_TEL] ?? null);
+            $tel = Phone::format($data[self::CSV_TEL] ?? null);
+            if ($tel && strpos($tel, '06') === 0) {
+                $societe->telephone_mobile = $tel;
+            }else{
+                $societe->telephone_bureau = $tel;
+            }
             $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
 
             try {
