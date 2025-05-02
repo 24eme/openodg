@@ -18,7 +18,6 @@ class DRevValidation extends DeclarationLotsValidation
         /*
          * Warning
          */
-        $this->addControle(self::TYPE_WARNING, 'declaration_habilitation', 'Vous avez déclaré du volume sans habilitation');
         $this->addControle(self::TYPE_ERROR, 'declaration_multi_cvi', "est lié à plusieurs opérateurs");
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15', 'Vous ne revendiquez pas le même volume que celui qui figure sur votre déclaration douanière en L15 (peut-être dû au complèment de VCI ou un achat)');
         $this->addControle(self::TYPE_WARNING, 'declaration_neant', "Vous n'avez déclaré aucun produit");
@@ -141,12 +140,6 @@ class DRevValidation extends DeclarationLotsValidation
         foreach ($this->document->getProduitsWithoutLots() as $hash => $produit) {
           $this->controleRevendication($produit);
           $this->controleVci($produit);
-        }
-        //Point de vigilence sur habilitation
-        if (!DRevConfiguration::getInstance()->hasHabilitationINAO()) {
-            foreach($this->document->getNonHabilitationODG() as $hash => $produit) {
-                $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-            }
         }
         $this->controleRecoltes();
 

@@ -23,6 +23,9 @@
                     </p>
             <?php endif; ?>
                 </div>
+            <div class="panel-bottom-documents <?php if (DRevSecurity::getInstance($sf_user, $travauxmarc->getRawValue())->isAuthorized(DRevMarcSecurity::DEVALIDATION)): ?>panel-bottom-documents-etape <?php endif; ?>">
+                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'travauxmarc')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+            </div>
         <?php elseif ($travauxmarc): ?>
             <div class="panel-body">
                 <p>Votre déclaration de revendication de Marc d'Alsace Gewurztraminer a été débutée pour cette année mais n'a pas été validée.</p>
@@ -34,6 +37,9 @@
                 <p>
                     <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-xs btn-danger pull-right" href="<?php echo url_for('travauxmarc_delete', $travauxmarc) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                 </p>
+            </div>
+            <div class="panel-bottom-documents panel-bottom-documents-etape">
+                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'travauxmarc')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
             </div>
         <?php elseif (!TravauxMarcConfiguration::getInstance()->isOpen()): ?>
             <div class="panel-body">
@@ -53,6 +59,9 @@
                     </p>
                 <?php endif; ?>
             </div>
+            <div class="panel-bottom-documents">
+                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'travauxmarc')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+            </div>
         <?php else: ?>
             <div class="panel-body">
                 <p>Votre déclaration d'ouverture de travaux de distillation n'a pas été validée pour cette année.</p>
@@ -66,6 +75,9 @@
                         <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('travauxmarc_create_papier', array('sf_subject' => $etablissement, 'campagne' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                     </p>
                 <?php endif; ?>
+            </div>
+            <div class="panel-bottom-documents <?php if ($sf_user->isAdmin()): ?>panel-bottom-documents-demarrage <?php endif ?>">
+                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'travauxmarc')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
             </div>
         <?php endif; ?>
     </div>

@@ -62,4 +62,9 @@ class RegionConfiguration/*** AVA ***/ {
       }
       return array_keys($this->configuration['odg']);
     }
+
+    public function getOdgHabilitationProduits($odgName) {
+
+        return [];
+    }
 }

@@ -138,7 +138,7 @@ abstract class Lot extends acCouchdbDocumentTree
       self::CONFORMITE_NONCONFORME_GRAVE => "Non acceptabilité grave",
       self::CONFORMITE_NONTYPICITE_CEPAGE => "Non typicité cépage",
       self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Non acceptabilité analytique",
-      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non acceptabilité organoleptique",
+      // self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non acceptabilité organoleptique",
     );
 
     public static $shortLibellesConformites = array(
@@ -865,6 +865,18 @@ abstract class Lot extends acCouchdbDocumentTree
 
         return $libelle;
 
+    }
+
+    public static function getSyntheseLibelleConfigMillesime($conf, $millesime) {
+        return $conf->getCouleur()->getLibelleCompletDR().' '.$millesime;
+    }
+
+    public function getSyntheseLibelle() {
+        $c = $this->getConfig();
+        if($this->getProduitRevendique()){
+            $c = $this->getProduitRevendique()->getConfig();
+        }
+        return self::getSyntheseLibelleConfigMillesime($c, $this->millesime);
     }
 
     public function getUniqueId(){

@@ -5,6 +5,7 @@ function (doc) {
   for(identifiant in doc.mouvements_lots) {
     for(key in doc.mouvements_lots[identifiant]) {
       mouvement = doc.mouvements_lots[identifiant][key];
+      if (mouvement.region)
       for(const region of mouvement.region.split('|')) {
         emit([
           region,
