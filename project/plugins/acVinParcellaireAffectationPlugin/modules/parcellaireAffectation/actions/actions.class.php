@@ -109,8 +109,11 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executeAffectations(sfWebRequest $request) {
         $this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        $this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
         $this->coop = $request->getParameter('coop');
-        $this->destinataire = $request->getParameter('destinataire', $this->parcellaireAffectation->getEtablissementObject()->_id);
+        $this->destinataires = $this->parcellaireAffectation->getDestinataires();
+        $this->destinataire = $request->getParameter('destinataire', key($this->destinataires));
+
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
 
         if ($this->coop) {
@@ -126,11 +129,8 @@ class parcellaireAffectationActions extends sfActions {
 
         $this->parcellaireAffectation->updateParcellesAffectation();
 
-    	$this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
 
 		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation, $this->destinataire);
-
-        $this->destinataires = array_merge([$this->etablissement->_id => ['libelle_etablissement' => "Cave particulière"]], $this->parcellaireAffectation->getDestinataires());
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
