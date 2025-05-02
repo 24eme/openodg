@@ -21,7 +21,7 @@
     <div id="header">
         <nav id="menu_navigation" class="navbar navbar-default container">
             <div class="navbar-header">
-              <a class="navbar-brand" style="padding: 0;padding-right: 15px;"><img style="height:50px;" src="/images/logo_<?php echo sfConfig::get('sf_app') ?>.png" /></a>
+              <a class="navbar-brand" style="padding: 0;padding-right: 15px;"><img style="height:50px;" src="/images/logo_<?php echo sfConfig::get('sf_app') === 'gaillac' ? 'aop'.sfConfig::get('sf_app') : sfConfig::get('sf_app'); ?>.png" /></a>
             </div>
         </nav>
     </div>
