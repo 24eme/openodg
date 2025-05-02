@@ -277,6 +277,17 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             $destinataires[$liaison->id_etablissement] = $liaison;
         }
 
+        foreach($this->getParcelles() as $parcelle) {
+            if(!$parcelle->exist('destinations')) {
+                continue;
+            }
+            foreach($parcelle->destinations as $destination) {
+                if(!isset($destinataires["ETABLISSEMENT-".$destination->identifiant])) {
+                    $destinataires["ETABLISSEMENT-".$destination->identifiant] = ['libelle_etablissement' => $destination->nom];
+                }
+            }
+        }
+
         return $destinataires;
     }
 
