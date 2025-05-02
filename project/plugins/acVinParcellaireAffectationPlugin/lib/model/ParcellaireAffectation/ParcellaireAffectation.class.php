@@ -139,6 +139,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if(!$previous) {
             return;
         }
+        $destinataires = $this->getDestinataires();
         foreach($previous->getParcelles() as $previousParcelle) {
             if(!$previousParcelle->isAffectee()) {
                 continue;
@@ -150,7 +151,16 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 $pMatch->superficie = $previousParcelle->superficie;
                 if($previousParcelle->exist('destinations')) {
                     $pMatch->remove('destinations');
-                    $pMatch->add('destinations', $previousParcelle->destinations);
+                    $pMatch->add('destinations');
+                    foreach($previousParcelle->destinations as $destinationIdentifiant => $destination) {
+                        if(!array_key_exists("ETABLISSEMENT-".$destinationIdentifiant, $destinataires)) {
+                            continue;
+                        }
+                        $pMatch->add('destinations')->add($destinationIdentifiant, $destination);
+                    }
+                    if(!$pMatch->superficie) {
+                        $pMatch->affectee = 0;
+                    }
                     $pMatch->updateAffectations();
                 }
             }
