@@ -2215,7 +2215,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $dossiers = $this->getNumerosDossier();
-        if (count($dossiers) == 1) {
+        if (!$this->exist('lots') || count($dossiers) == 1) {
             return array(array(
                 'identifiant' => $this->getIdentifiant(),
                 'date_depot' => $date,
