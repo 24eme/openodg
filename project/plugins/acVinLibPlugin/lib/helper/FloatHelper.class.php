@@ -43,8 +43,12 @@ class FloatHelper
             $format = "%01.0%df";
         }
 
+        if(is_null($number)) {
+            $number = 0;
+        }
+
         $int = $number;
-        $float = null;
+        $float = 0;
 
         if(count(explode(".", $number."")) >= 2) {
             list($int, $float) = explode(".", $number);

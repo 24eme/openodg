@@ -7,6 +7,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   protected $parcelles_idu = null;
   protected $previous_document = null;
   protected $etablissement = null;
+  protected $habilitation = null;
 
   public function isAdresseLogementDifferente() {
       return false;
@@ -121,7 +122,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if (!$parcelle->affectation) {
             continue;
         }
-        if($this->findParcelle($parcelle, true, $allready_selected)) {
+        if($this->findParcelle($parcelle, 1, true, $allready_selected)) {
             continue;
         }
         $this->addParcelle($parcelle);
@@ -138,6 +139,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if(!$previous) {
             return;
         }
+        $destinataires = $this->getDestinataires();
         foreach($previous->getParcelles() as $previousParcelle) {
             if(!$previousParcelle->isAffectee()) {
                 continue;
@@ -149,7 +151,16 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 $pMatch->superficie = $previousParcelle->superficie;
                 if($previousParcelle->exist('destinations')) {
                     $pMatch->remove('destinations');
-                    $pMatch->add('destinations', $previousParcelle->destinations);
+                    $pMatch->add('destinations');
+                    foreach($previousParcelle->destinations as $destinationIdentifiant => $destination) {
+                        if(!array_key_exists("ETABLISSEMENT-".$destinationIdentifiant, $destinataires)) {
+                            continue;
+                        }
+                        $pMatch->add('destinations')->add($destinationIdentifiant, $destination);
+                    }
+                    if(!$pMatch->superficie) {
+                        $pMatch->affectee = 0;
+                    }
                     $pMatch->updateAffectations();
                 }
             }
@@ -262,7 +273,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getDestinataires() {
-        $destinataires = [$this->getEtablissementObject()->_id => ['libelle_etablissement' => "Cave particulière"]];
+        $destinataires = [];
+
+        if($this->getHabilitation() && in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $this->getHabilitation()->getActivitesHabilites())) {
+            $destinataires[$this->getEtablissementObject()->_id] = ['libelle_etablissement' => "Cave particulière"];
+        }
 
         foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATIVE) as $liaison) {
             $destinataires[$liaison->id_etablissement] = $liaison;
@@ -272,7 +287,38 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             $destinataires[$liaison->id_etablissement] = $liaison;
         }
 
+        foreach($this->getParcelles() as $parcelle) {
+            if(!$parcelle->exist('destinations')) {
+                continue;
+            }
+            foreach($parcelle->destinations as $destination) {
+                if(!isset($destinataires["ETABLISSEMENT-".$destination->identifiant])) {
+                    $destinataires["ETABLISSEMENT-".$destination->identifiant] = ['libelle_etablissement' => $destination->nom];
+                }
+            }
+        }
+
         return $destinataires;
+    }
+
+    public function getDestinatairesIncomplete() {
+        $destinataires = $this->getDestinataires();
+        foreach($destinataires as $idDestinataire => $destinataire) {
+            $parcellaireCoop = ParcellaireAffectationCoopClient::getInstance()->find(ParcellaireAffectationCoopClient::getInstance()->buildId(str_replace('ETABLISSEMENT-', '', $idDestinataire), $this->getPeriode()));
+            if($parcellaireCoop && $parcellaireCoop->exist('apporteurs/ETABLISSEMENT-'.$this->identifiant.'/statuts/'.$this->getType()) && $parcellaireCoop->get('apporteurs/ETABLISSEMENT-'.$this->identifiant.'/statuts/'.$this->getType()) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT) {
+                unset($destinataires[$idDestinataire]);
+            }
+        }
+
+        return $destinataires;
+    }
+
+    public function getHabilitation() {
+        if(is_null($this->habilitation)) {
+            $this->habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getPeriode().'-03-01');
+        }
+
+        return $this->habilitation;
     }
 
   /*** DECLARATION DOCUMENT ***/
