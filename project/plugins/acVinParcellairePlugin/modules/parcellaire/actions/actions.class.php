@@ -182,7 +182,7 @@ class parcellaireActions extends sfActions {
         header("Cache-Control: public");
         header("Expires: 0");
 
-        $ods = new ExportParcellaireControleODS($parcellaire);
+        $ods = new ExportParcellaireControleODS($parcellaire, $request->getParameter('appellation_filter', 'CDP'));
         echo $ods->create();
 
         exit;
@@ -281,6 +281,7 @@ class parcellaireActions extends sfActions {
     public function executePotentieldeproduction(sfWebRequest $request) {
         $this->secureTeledeclarant();
         $this->parcellaire = $this->getRoute()->getParcellaire();
-        $this->potentiel = new PotentielProduction($this->parcellaire);
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->parcellaire);
     }
 }

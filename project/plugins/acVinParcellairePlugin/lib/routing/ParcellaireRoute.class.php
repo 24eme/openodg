@@ -1,5 +1,5 @@
 <?php
-class ParcellaireRoute extends EtablissementRoute implements InterfaceDeclarationRoute {
+class ParcellaireRoute extends EtablissementRoute implements InterfaceParcellaireRoute {
 
     protected $parcellaire = null;
 

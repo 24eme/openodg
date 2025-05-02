@@ -23,7 +23,8 @@ Etablissement:
              id_douane: {  }
              nom: {  }
              ville: {  }
-       region: {  }
+       region: { }
+       secteur: { }
        type_dr: { required: false } #deprecie
        liaisons_operateurs:
            type: collection

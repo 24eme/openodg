@@ -267,3 +267,4 @@ all:
           name: "Alsace Grand Cru Kaefferkopf"
           color: "#d10500"
           denomination_id: "01765"
+      engagements: true

@@ -83,7 +83,7 @@
                         <span class="glyphicon glyphicon-<?= ($lot->isManquement()) ? 'remove' : 'ok' ?>"></span>
                     </span>
                 </td>
-                <td><?php  echo showLotStatusCartouche($mvts[$k]->value, null, preg_match("/ème dégustation/", $mvts[$k]->value->libelle));  ?></td>
+                <td><?php echo showLotStatusCartouche($mvts[$k]->value, preg_match("/ème dégustation/", $mvts[$k]->value->libelle));  ?></td>
             <?php endif ?>
             <td class="text-right hidden-print"><a class="btn btn-xs btn-default btn-historique" href="<?php echo url_for('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]) ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></td>
         </tr>

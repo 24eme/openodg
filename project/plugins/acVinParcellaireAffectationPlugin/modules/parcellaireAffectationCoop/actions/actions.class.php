@@ -193,6 +193,32 @@ class parcellaireAffectationCoopActions extends sfActions {
         return sfView::NONE;
     }
 
+    public function executeExportapporteurcsv(sfWebRequest $request) {
+        $parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $etablissement = $this->getRoute()->getEtablissement();
+        $csv = [];
+        $csv[] = implode(";", ["Periode", "Cave cooperative CVI", "Cave cooperative nom", "Apporteur CVI", "Aporteur Nom", "Origine"]);
+        foreach($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur) {
+
+            $csv[] = implode(";", [
+                $parcellaireAffectationCoop->getPeriode(),
+                $parcellaireAffectationCoop->getEtablissementObject()->cvi,
+                $parcellaireAffectationCoop->getEtablissementObject()->nom,
+                $apporteur->cvi,
+                $apporteur->nom,
+                $apporteur->provenance,
+            ]);
+        }
+
+        $attachement = sprintf("attachment; filename=export_apporteurs_%s_%s_%s.csv", $etablissement->identifiant, $parcellaireAffectationCoop->getPeriode(), date('YmdHis'));
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition',$attachement );
+
+        $this->renderText(implode("\n", $csv));
+
+        return sfView::NONE;
+    }
+
     protected function getEtape($parcellaireAffectationCoop, $etape) {
         $parcellaireAffectationCoopEtapes = ParcellaireAffectationCoopEtapes::getInstance();
         if (!$parcellaireAffectationCoopEtapes->exist('etape')) {
