@@ -41,7 +41,7 @@
 }
 
 .size-large {
-    height: 90px;
+    height: 80px;
 }
 
 .fond-sombre {
