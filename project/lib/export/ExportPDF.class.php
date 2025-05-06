@@ -27,7 +27,7 @@ abstract class ExportPDF {
     public function getLogo()
     {
         $degustation = DegustationClient::getInstance()->find(substr($this->getFile(), strpos($this->getFile(), 'DEGUSTATION-'), 24));
-        if ($degustation->getRegion() && !strpos($degustation->getRegion(), '|')) {
+        if (isset($degustation->region) && $degustation->getRegion() && !strpos($degustation->getRegion(), '|')) {
             return 'logo_'.strtolower($degustation->getRegion()).'.jpg';
         }
         return 'logo_'.strtolower(Organisme::getCurrentOrganisme()).'.jpg';
