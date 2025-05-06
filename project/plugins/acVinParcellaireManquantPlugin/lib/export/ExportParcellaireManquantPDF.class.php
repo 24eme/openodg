@@ -84,7 +84,7 @@ class ExportParcellaireManquantPDF extends ExportPDF {
         }
     }
 
-    protected function getLogo() {
+    public function getLogo() {
         foreach($this->parcellaireManquant->getRegions()  as $r) {
             if(is_file($this->getConfig()->path_images.'logo_'.strtolower($r).'.jpg')) {
                 return 'logo_'.strtolower($r).'.jpg';
