@@ -104,10 +104,11 @@
     <tr class="align-mid">
 
         <td class="td align-right text-middle-size" colspan="2"><b>Franchise</b>&nbsp;&nbsp;</td>
-        <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Oui</td>
-        <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Limite</td>
-        <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
-
+        <?php foreach ($lots as $lot) :?>
+            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Oui</td>
+            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Limite</td>
+            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
+        <?php endforeach; ?>
     </tr>
     <tr>
         <td class="td align-right" colspan="2"><small><i>&nbsp;Préciser&nbsp;le&nbsp;type&nbsp;de&nbsp;défaut&nbsp;:&nbsp;&nbsp;&nbsp;</i></small></td>
