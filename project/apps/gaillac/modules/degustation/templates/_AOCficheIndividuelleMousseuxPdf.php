@@ -164,6 +164,14 @@
                 <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
             <?php endforeach; ?>
         </tr>
+        <tr class="align-mid">
+            <td class="td align-right text-middle-size" colspan="2"><b>Support acide</b>&nbsp;&nbsp;</td>
+            <?php foreach ($lots as $lot): ?>
+                <td class="td <?php if((! $lot) || ! stripos($lot->specificite, 'base')): ?>text-muted<?php endif;?>">Oui</td>
+                <td class="td <?php if((! $lot) || ! stripos($lot->specificite, 'base')): ?>text-muted<?php endif;?>">Limite</td>
+                <td class="td <?php if((! $lot) || ! stripos($lot->specificite, 'base')): ?>text-muted<?php endif;?>">Non</td>
+            <?php endforeach; ?>
+        </tr>
         <tr>
             <td class="td align-right size-small" colspan="2">&nbsp;<small><i>Si&nbsp;déséquilibre,&nbsp;précisez&nbsp;:&nbsp;&nbsp;&nbsp;</i></small></td>
             <?php foreach ($lots as $lot): ?>
