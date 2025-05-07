@@ -188,9 +188,9 @@
     <tr class="align-mid">
         <td class="td align-right text-middle-size" colspan="2"><b>Qualité&nbsp;des&nbsp;tanins</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot) :?>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Bon</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Moyen</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Mauvais</td>
+            <td class="td <?php if( (! $lot) || ! stripos($lot->getCouleurLibelle(), 'rouge')): ?>text-muted<?php endif;?>">Bon</td>
+            <td class="td <?php if( (! $lot) || ! stripos($lot->getCouleurLibelle(), 'rouge')): ?>text-muted<?php endif;?>">Moyen</td>
+            <td class="td <?php if( (! $lot) || ! stripos($lot->getCouleurLibelle(), 'rouge')): ?>text-muted<?php endif;?>">Mauvais</td>
         <?php endforeach; ?>
     </tr>
     <tr>
