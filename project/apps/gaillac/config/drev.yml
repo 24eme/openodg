@@ -14,4 +14,5 @@ all:
       specificites:
         bio: "bio"
         HVE: "HVE"
+        Vin de base: "Vin de base"
         autre: "Autre"
