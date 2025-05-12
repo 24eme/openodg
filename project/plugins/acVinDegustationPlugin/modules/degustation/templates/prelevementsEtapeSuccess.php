@@ -28,11 +28,11 @@
           </div>
       <?php endif; ?>
         <div class="row">
-          <div class="col-xs-12">
-            <strong>Organisation des prélèvements</strong>
-            <br/>
-            <br/>
-        </div>
+            <div class="col-xs-12">
+                <strong>Organisation des prélèvements</strong>
+                <br/>
+                <br/>
+            </div>
           <div class="col-xs-12">
               <a id="btn_pdf_fiche_tournee_prelevement" href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche tournée prélevement</a>
               <a id="btn_pdf_fiche_individuelle_lots_a_prelever" href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle des lots à prélever</a>
