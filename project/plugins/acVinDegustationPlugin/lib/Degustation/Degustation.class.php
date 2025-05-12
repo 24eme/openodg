@@ -1173,10 +1173,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 						return $cmp;
 					}
 				}
+                elseif ( $t == DegustationClient::DEGUSTATION_TRI_GENRE) {
+                    $cmp = strcmp($a_data, $b_data);
+					if ($cmp) {
+						return $cmp*-1;
+					}
+                }
 				else{
 					$cmp = strcmp($a_data, $b_data);
 					if ($cmp) {
-					return $cmp;
+						return $cmp;
 					}
 				}
 			}

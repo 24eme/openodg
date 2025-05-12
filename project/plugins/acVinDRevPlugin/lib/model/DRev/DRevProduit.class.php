@@ -252,6 +252,10 @@ class DRevProduit extends BaseDRevProduit
                 continue;
             }
 
+            if (str_replace(" déclassé", "", $chgt->origine_specificite) !== $this->denomination_complementaire) {
+                continue;
+            }
+
             $toSubstract += $chgt->origine_volume;
         }
 
