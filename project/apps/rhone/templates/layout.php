@@ -41,7 +41,7 @@
 
             <?php echo include_partial('global/header'); ?>
 
-            <?php include_partial('global/nav'); ?>
+            <?php include_component('global', 'nav'); ?>
 
             <section id="content" class="container">
                 <?php if(sfConfig::get('app_instance') == 'preprod' ): ?>
