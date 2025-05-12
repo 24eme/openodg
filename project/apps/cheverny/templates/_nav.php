@@ -1,28 +1,4 @@
-<?php $route = ($sf_request->getAttribute('sf_route')) ? $sf_request->getAttribute('sf_route')->getRawValue() : NULL; ?>
-<?php $etablissement = null ?>
-<?php $compte = null; ?>
-
-<?php if($route instanceof EtablissementRoute): ?>
-    <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $compte = $etablissement->getMasterCompte(); ?>
-<?php endif; ?>
-<?php if ($route instanceof FacturationDeclarantRoute || $route instanceof FactureRoute || $route instanceof CompteRoute): ?>
-    <?php $compte = $route->getCompte(); ?>
-    <?php $etablissement = $compte->getEtablissement(); ?>
-<?php endif; ?>
-<?php if($route instanceof SocieteRoute): ?>
-    <?php $societe = $route->getSociete(); ?>
-    <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $compte = $route->getSociete()->getMasterCompte(); ?>
-<?php endif; ?>
-
-<?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)): ?>
-    <?php $compte = $sf_user->getCompte(); ?>
-    <?php $societe = $compte->getSociete() ; if ($societe) $etablissement = $societe->getEtablissementPrincipal(); ?>
-    <?php if (!$etablissement) $etablissement = $compte->getEtablissement(); ?>
-<?php endif; ?>
-
-
+<?php $route = $route->getRawValue(); ?>
 <nav id="menu_navigation" class="navbar navbar-default container">
     <a style="position: absolute; left: -124px; z-index: 0;" href="<?php echo url_for('accueil') ?>" title="Syndicat des Vins de Cheverny | Retour à la page d'accueil">
         <img style="height: 50px;" src="/images/logo_cheverny.png" alt="Syndicat des Vins de Cheverny">
