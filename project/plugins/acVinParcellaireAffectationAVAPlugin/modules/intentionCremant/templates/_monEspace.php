@@ -17,6 +17,9 @@
                 </p>
                 <?php endif; ?>
         </div>
+        <div class="panel-bottom-documents  <?php if($sf_user->isAdmin()): ?>panel-bottom-documents-etape<?php endif; ?>">
+            <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'intentioncremant')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+        </div>
         <?php elseif ($intentionCremant):  ?>
         <div class="panel-body">
                 <p>Vous avez déjà débuté votre déclaration d'intention de production pour cette année sans la valider.</p>
@@ -28,6 +31,9 @@
             <p>
                 <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-xs btn-danger pull-right" href="<?php echo url_for('parcellaire_delete', $intentionCremant) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
             </p>
+        </div>
+        <div class="panel-bottom-documents panel-bottom-documents-etape">
+            <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'intentioncremant')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
         </div>
         <?php elseif (!IntentionCremantConfiguration::getInstance()->isOpen()): ?>
             <div class="panel-body">
@@ -47,6 +53,9 @@
                     </p>
                 <?php endif; ?>
             </div>
+            <div class="panel-bottom-documents">
+                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'intentioncremant')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+            </div>
         <?php else:  ?>
         <div class="panel-body">
                 <p>Aucune déclaration d'intention de production n'a été débutée vous concernant cette année</p>
@@ -61,6 +70,9 @@
                         <a class="btn btn-xs btn-block btn-warning pull-right" href="<?php echo url_for('intention_cremant_create_papier', array('sf_subject' => $etablissement, 'campagne' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                     </p>
                 <?php endif; ?>
+        </div>
+        <div class="panel-bottom-documents <?php if ($sf_user->isAdmin()): ?> panel-bottom-documents-etape <?php endif; ?>">
+            <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'intentioncremant')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
         </div>
             <?php endif; ?>
     </div>

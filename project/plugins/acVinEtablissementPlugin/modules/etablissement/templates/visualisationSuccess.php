@@ -92,6 +92,10 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                 <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Région : </div>
                                 <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->region; ?></div>
                                 <?php endif; ?>
+                                <?php if ($etablissement->secteur): ?>
+                                <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Secteur : </div>
+                                <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->secteur; ?></div>
+                                <?php endif; ?>
                                 <?php if ($etablissement->exist('crd_regime') && $etablissement->crd_regime): ?>
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Régime CRD : </div>
                                     <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->crd_regime; ?></div>

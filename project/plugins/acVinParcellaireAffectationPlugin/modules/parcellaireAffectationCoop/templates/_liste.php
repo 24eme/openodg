@@ -30,21 +30,24 @@
             <td><?php echo $apporteur->cvi; ?></td>
             <td><span class="text-primary"><?php echo $apporteur->nom; ?></span> <span class="text-muted"><?php echo $apporteur_id; ?></span></td>
             <?php foreach(["ParcellaireAffectation" => "parcellaireaffectation", "ParcellaireManquant" => "parcellairemanquant", "ParcellaireIrrigable" => "parcellaireirrigable"] as $type => $baseurl): ?>
-            <td class="text-center <?php if($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>success text-success<?php endif; ?>">
+            <td class="text-center <?php if(in_array($apporteur->getDeclarationStatut($type), [ParcellaireAffectationCoopApporteur::STATUT_VALIDE, ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT])): ?>success text-success<?php endif; ?>">
                 <?php if($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>
                     <a class="text-success" href="<?php echo url_for($baseurl.'_visualisation', array('id' => $apporteur->getDeclaration($type)->_id, 'coop' => $parcellaireAffectationCoop->_id)) ?>">Voir la déclaration</a><br/><span class="glyphicon glyphicon-ok-sign"></span>
+                <?php elseif($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT): ?>
+                    <a class="text-success" href="<?php echo url_for($baseurl.'_edit', array('id' => $apporteur->getDeclaration($type)->_id, 'coop' => $parcellaireAffectationCoop->_id)) ?>">Modifier la déclaration</a><br/><span class="glyphicon glyphicon-ok-sign"></span> <small>Partiellement validé</small>
                 <?php elseif($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_EN_COURS): ?>
                     <a href="<?php echo url_for($baseurl.'_edit', array('id' => $apporteur->getDeclaration($type)->_id, 'coop' => $parcellaireAffectationCoop->_id)) ?>">Continuer la déclaration</a><br/><br/>
                 <?php elseif($type == ParcellaireAffectationClient::TYPE_MODEL && $apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_A_SAISIR): ?>
                     <a class="btn_saisie_affectation_parcellaire" href="<?php echo url_for($baseurl.'_create', array('identifiant' => $apporteur->getEtablissementIdentifiant(), 'periode' => $parcellaireAffectationCoop->periode, 'coop' => $parcellaireAffectationCoop->_id)) ?>">Saisir la déclaration</a>
                     <br/>
                     <a class="btn_saisie_affectation_parcellaire text-muted" href="<?php echo url_for('parcellaireaffectationcoop_switch', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant(), "sens" => "0")) ?>">Pas cette année</a>
-                <?php elseif($type != ParcellaireAffectationClient::TYPE_MODEL && $apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_A_SAISIR && $apporteur->getDeclarationStatut(ParcellaireAffectationClient::TYPE_MODEL) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>
+                <?php elseif($type != ParcellaireAffectationClient::TYPE_MODEL && $apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_A_SAISIR && (!ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire() || $apporteur->getDeclarationStatut(ParcellaireAffectationClient::TYPE_MODEL) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE)): ?>
                     <a class="btn_saisie_affectation_parcellaire" href="<?php echo url_for($baseurl.'_create', array('identifiant' => $apporteur->getEtablissementIdentifiant(), 'periode' => $parcellaireAffectationCoop->periode, 'coop' => $parcellaireAffectationCoop->_id)) ?>">Saisir la déclaration</a>
-                    <br />
-                    <a class="btn btn-sm btn-default" href="<?php echo url_for('parcellaireaffectationcoop_'.strtolower($type).'_reconduction', ['id' => $parcellaireAffectationCoop->_id, 'apporteur' => $apporteur->getEtablissementIdentifiant()]) ?>">
+                    <?php if(ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire()): ?>
+                    <a class="btn btn-xs btn-default mt-2" href="<?php echo url_for('parcellaireaffectationcoop_'.strtolower($type).'_reconduction', ['id' => $parcellaireAffectationCoop->_id, 'apporteur' => $apporteur->getEtablissementIdentifiant()]) ?>">
                         <i class="glyphicon glyphicon-refresh"></i> Reconduire
                     </a>
+                    <?php endif; ?>
                 <?php elseif($type == ParcellaireAffectationClient::TYPE_MODEL): ?>
                     Aucune parcelle identifiée
                     <br/>

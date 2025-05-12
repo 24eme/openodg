@@ -82,7 +82,7 @@ class DRevProduit extends BaseDRevProduit
 		if($this->exist('volume_revendique_issu_mutage') && $this->volume_revendique_issu_mutage) {
 			return ($this->volume_revendique_total - $this->volume_revendique_issu_mutage);
 		}
-		return $this->volume_revendique_total;
+        return intval($this->volume_revendique_total);
 	}
 
 
@@ -249,6 +249,10 @@ class DRevProduit extends BaseDRevProduit
             $this->getDocument()->identifiant, $this->getDocument()->getPeriode()
         ) as $chgt) {
             if ($chgt->origine_produit_hash !== $this->getParent()->getHash()) {
+                continue;
+            }
+
+            if (str_replace(" déclassé", "", $chgt->origine_specificite) !== $this->denomination_complementaire) {
                 continue;
             }
 

@@ -163,6 +163,7 @@ class Parcellaire extends BaseParcellaire {
         $p->commune = $commune;
         $p->source_produit_libelle = $source_produit_libelle;
         if($lieu){
+            $lieu = preg_replace('/[\n]+/', ' ', $lieu);
             $lieu = strtoupper($lieu);
             $lieu = trim($lieu);
             $p->lieu = $lieu;

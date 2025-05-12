@@ -198,6 +198,15 @@ parcellaireaffectationcoop_recap:
   requirements:
     sf_method: [get]
 
+parcellaireaffectationcoop_exportapporteurcsv:
+  url: /parcellaire-affectation-coop/exportapporteurcsv/:id
+  param: { module: parcellaireAffectationCoop, action: exportapporteurcsv }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    ParcellaireAffectationCoop
+    type:     object
+  requirements:
+    sf_method: [get]
 
 parcellaireaffectationcoop_exportcsv:
   url: /parcellaire-affectation-coop/exportcsv/:id

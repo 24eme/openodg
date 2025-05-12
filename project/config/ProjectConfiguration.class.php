@@ -27,6 +27,11 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acVinFacturePlugin');
         $this->enablePlugins('acVinHabilitationPlugin');
         $this->enablePlugins('MandatSepaPlugin');
+        $this->enablePlugins('acVinParcellairePlugin');
+        $this->enablePlugins('acVinParcellaireIrrigablePlugin');
+        $this->enablePlugins('acVinParcellaireIrriguePlugin');
+
+
 
         if(getenv("APPLICATION") == "ava") {
             $this->enablePlugins('CompteAVAPlugin');
@@ -41,16 +46,12 @@ class ProjectConfiguration extends sfProjectConfiguration
             $this->enablePlugins('acVinTourneePlugin');
             $this->enablePlugins('acVinConstatsVTSGNPlugin');
             $this->enablePlugins('acVinRegistreVCIPlugin');
-            $this->enablePlugins('acVinParcellairePlugin');
             $this->enablePlugins('acVinParcellaireAffectationAVAPlugin');
             return;
         }
 
         $this->enablePlugins('AppPlugin');
-        $this->enablePlugins('acVinParcellairePlugin');
         $this->enablePlugins('acVinParcellaireManquantPlugin');
-        $this->enablePlugins('acVinParcellaireIrrigablePlugin');
-        $this->enablePlugins('acVinParcellaireIrriguePlugin');
         $this->enablePlugins('acVinParcellaireAffectationPlugin');
         $this->enablePlugins('acVinDRevPlugin');
         $this->enablePlugins('acVinConfigurationPlugin');

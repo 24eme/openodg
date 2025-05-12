@@ -64,10 +64,10 @@ class PotentielProductionRule {
                 $this->somme = array_sum($this->cepages_superficie);
                 $this->limit = $encepagement * $this->regle['limit'];
                 if ($this->regle['sens'] == '>=') {
-                    $this->res = ($this->somme >= $this->limit);
+                    $this->res = (round($this->somme - $this->limit, 5) >= 0);
                     $this->simple_restriction = new Simplex\Restriction(PotentielProductionRule::addemptycepage($this->cepages_superficie, $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur'), $this->regle['limit'] * -1), Simplex\Restriction::TYPE_GOE, 0);
                 }elseif ($this->regle['sens'] == '<=') {
-                    $this->res = ($this->somme <= $this->limit);
+                    $this->res = (round($this->somme - $this->limit, 5) <= 0);
                     $this->simple_restriction = new Simplex\Restriction(PotentielProductionRule::addemptycepage($this->cepages_superficie, $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur'), $this->regle['limit'] * -1), Simplex\Restriction::TYPE_LOE, 0);
                 }
                 break;

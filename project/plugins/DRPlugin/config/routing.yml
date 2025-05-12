@@ -78,3 +78,13 @@ dr_verify:
     type: object
   requirements:
     sf_method: [get]
+
+diff_verify:
+  url: /dr/visualisation/:id/verify/diff
+  param: { module: dr, action: diffVerify }
+  class: DRRoute
+  options:
+    model: DR
+    type: object
+  requirements:
+    sf_method: [get]

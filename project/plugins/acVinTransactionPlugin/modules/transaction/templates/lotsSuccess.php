@@ -5,7 +5,7 @@
 <?php include_partial('transaction/breadcrumb', array('transaction' => $transaction )); ?>
 <?php include_partial('transaction/step', array('step' => TransactionEtapes::ETAPE_LOTS, 'transaction' => $transaction, 'ajax' => true)) ?>
 
-    <div class="page-header"><h2>Lots en Vrac<?php echo getLibelleHashRevendicableParLots(sfConfig::get('app_hash_revendicable_par_lots', 'IGP')) ?></h2></div>
+    <div class="page-header"><h2>Lots en Vrac</h2></div>
 
 
 

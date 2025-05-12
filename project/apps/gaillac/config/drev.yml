@@ -5,7 +5,8 @@ all:
       mentions_complementaire: true
       import_with_mentions_complementaire: true
       validation_odg: 'auto'
-      etape_superficie: false
+      etape_superficie: true
+      etapes_aoc: true
       dr_douane_required: false
       degustation: true
       specificite_lot: true
@@ -13,5 +14,5 @@ all:
       specificites:
         bio: "bio"
         HVE: "HVE"
-        TerraVitis: "Terra Vitis"
+        Vin de base: "Vin de base"
         autre: "Autre"

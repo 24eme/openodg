@@ -143,7 +143,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $this->generateMouvementsFacturesOnNextSave = false;
 
         if ($this->etape == DegustationEtapes::ETAPE_VISUALISATION && RegionConfiguration::getInstance()->hasOdgProduits()) {
-            if ( (strpos($this->region, '|') === false) && ($this->region != Organisme::getOIRegion()) ) {
+            if ( (strpos($this->region, '|') === false) && ($this->region != Organisme::getOIRegion()) && (RegionConfiguration::getInstance()->hasOC()) ) {
                 $this->region = $this->region.'|'.Organisme::getOIRegion();
             }
             if (!$this->isValidated()) {
@@ -1173,10 +1173,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 						return $cmp;
 					}
 				}
+                elseif ( $t == DegustationClient::DEGUSTATION_TRI_GENRE) {
+                    $cmp = strcmp($a_data, $b_data);
+					if ($cmp) {
+						return $cmp*-1;
+					}
+                }
 				else{
 					$cmp = strcmp($a_data, $b_data);
 					if ($cmp) {
-					return $cmp;
+						return $cmp;
 					}
 				}
 			}
@@ -1223,6 +1229,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $degustateurs = [];
 
             $regions = array_unique(array_merge([$this->region], $this->getRegionsFromProduits()));
+            $regions = [false];
             foreach($regions as $region) {
                 $region_postfix = ($region)  ? '_'.strtolower($region) : '';
                 $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college.$region_postfix );
@@ -1973,5 +1980,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function isTournee() {
             return strpos($this->_id, 'TOURNEE') !== false;
+        }
+
+        public function isLibelleAcceptable()
+        {
+            return $this->getLots()[0]->isLibelleAcceptable();
         }
 }

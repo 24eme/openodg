@@ -13,3 +13,5 @@ all:
       email_disabled: true
       volume_seuil:
         campagne: 2022-2023
+      specificites: #la liste s'additionne avec la config globale du plugin drev
+        TerraVitis: "Terra Vitis"

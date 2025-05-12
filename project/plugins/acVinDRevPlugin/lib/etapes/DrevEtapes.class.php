@@ -98,7 +98,7 @@ class DrevEtapes extends Etapes
 			return true;
 		}
 
-		if($etape != self::ETAPE_LOTS && $etape != self::ETAPE_VALIDATION && $doc->isModificative()){
+        if( ! DRevConfiguration::getInstance()->hasEtapesAOC() && ($etape != self::ETAPE_LOTS) && ($etape != self::ETAPE_VALIDATION) && $doc->isModificative()){
 			return true;
 		}
 

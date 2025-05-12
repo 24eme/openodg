@@ -972,9 +972,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                     $res_habilitation[$cvi] = array('habilitation' => HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->tiers[$cvi]->identifiant, $this->date_depot), "habilitation_ok" => true);
                 }
                 $hab = false;
-                foreach($res_habilitation[$cvi]['habilitation']->getProduitsHabilites(HabilitationClient::ACTIVITE_PRODUCTEUR) as $h => $p) {
-                    if (strpos($hash, str_replace('/declaration/', '', $h)) !== false) {
-                        $hab = true;
+                if ($res_habilitation[$cvi]['habilitation']) {
+                    foreach($res_habilitation[$cvi]['habilitation']->getProduitsHabilites(HabilitationClient::ACTIVITE_PRODUCTEUR) as $h => $p) {
+                        if (strpos($hash, str_replace('/declaration/', '', $h)) !== false) {
+                            $hab = true;
+                        }
                     }
                 }
                 $res_habilitation[$cvi]['habilitation_ok'] = $res_habilitation[$cvi]['habilitation_ok'] && $hab;
@@ -1003,15 +1005,19 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         $etab_declarant =  $this->getEtablissementObject();
         foreach ($this->getDonnees() as $data) {
             if (($this->type == 'SV12' && $data->categorie == '15') || $this->type == 'SV11' && $data->categorie == '08') {
-                if (! isset($this->tableau_comparaison[$data->produit_libelle][$data->tiers_cvi]['SV'])) {
-                    $this->tableau_comparaison[$data->produit.'|'.$data->produit_libelle][$data->tiers_cvi]['SV'] = $data->valeur;
-                    $this->tableau_comparaison[$data->produit.'|'.$data->produit_libelle][$data->tiers_cvi]['DR'] = 0;
-                } else {
-                    $this->tableau_comparaison[$data->produit.'|'.$data->produit_libelle][$data->tiers_cvi]['SV'] += $data->valeur;
+                $produit_key = $data->produit.'|'.$data->produit_libelle;
+                if (! isset($this->tableau_comparaison[$produit_key])) {
+                    $this->tableau_comparaison[$produit_key] = [];
                 }
-                if (! isset($this->tableau_comparaison[$data->produit.'|'.$data->produit_libelle][$etab_declarant->cvi]['SV'])) {
-                    $this->tableau_comparaison[$data->produit.'|'.$data->produit_libelle][$etab_declarant->cvi]['SV'] = $produits[$data->produit]['lignes'][$data->categorie]['val'];
+                if (! isset($this->tableau_comparaison[$produit_key][$data->tiers_cvi])) {
+                    $this->tableau_comparaison[$produit_key][$data->tiers_cvi] = ['SV' => 0, 'DR' => 0];
                 }
+                $this->tableau_comparaison[$produit_key][$data->tiers_cvi]['SV'] += $data->valeur;
+
+                if (! isset($this->tableau_comparaison[$produit_key][$etab_declarant->cvi])) {
+                    $this->tableau_comparaison[$produit_key][$etab_declarant->cvi] = ['SV' => 0, 'DR' => 0];
+                }
+                $this->tableau_comparaison[$produit_key][$etab_declarant->cvi]['SV'] += $data->valeur;
             }
         }
         foreach ($this->tableau_comparaison as $produit => $cvis) {
@@ -1027,8 +1033,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                 if ($this->tiers[$cvi]) {
                     $dr = DRClient::getInstance()->find('DR-'.$this->tiers[$cvi]['identifiant'].'-'.$this->campagne);
                 }
-                if (! $dr) {
-                    $this->tableau_comparaison[$produit][$cvi]['DR'] = 0;
+                if (!$dr) {
                     continue;
                 }
                 $datas = $dr->getEnhancedDonnees();
@@ -1036,15 +1041,16 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                     if ($data->tiers_cvi != $etab_declarant->cvi && substr($data->tiers, 0, -2) != substr($etab_declarant->_id, 0, -2)) {
                         continue;
                     }
-                    if (strpos($produit, $data->produit_libelle) === false && strpos($produit, $dr->getConfiguration()->declaration->get($data->produit)->getLibelleFormat()) === false) {
+                    $produit_key = $data->produit.'|'.$data->produit_libelle;
+                    if (strpos($produit,  $produit_key) === false) {
                         continue;
                     }
+                    $dr_cvi = $cvi;
                     if ( ($this->type == 'SV12' && ($data->categorie == '06' || $data->categorie == '07')) || ($this->type == 'SV11' && $data->categorie == '08') ) {
-                        if (! isset($this->tableau_comparaison[$produit][$cvi]['DR'])) {
-                            $this->tableau_comparaison[$produit][$cvi]['DR'] = $data->valeur;
-                        } else {
-                            $this->tableau_comparaison[$produit][$cvi]['DR'] += $data->valeur;
+                        if (! isset($this->tableau_comparaison[$produit][$dr_cvi])) {
+                            $this->tableau_comparaison[$produit][$dr_cvi] = ['SV' => 0, 'DR' => 0];
                         }
+                        $this->tableau_comparaison[$produit][$dr_cvi]['DR'] += $data->valeur;
                         $totalDR += $data->valeur;
                     }
                 }

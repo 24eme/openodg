@@ -15,21 +15,12 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
       return $this->_set('compte', $c);
     }
 
-    private $cache_master_compte = null;
     public function getMasterCompte() {
-        if (!$this->cache_master_compte) {
-            if ($this->compte) {
-                $c = CompteClient::getInstance()->find($this->compte);
-                if($c){
-                  $this->cache_master_compte = $c;
-                }else{
-                    $this->cache_master_compte = $this->getSociete()->getCompte($this->compte);
-                }
-            }else{
-                $this->cache_master_compte = $this->getSociete()->getCompte($this->getSociete()->compte_societe);
-            }
+        if ($this->compte) {
+            return CompteClient::getInstance()->find($this->compte) ?: $this->getSociete()->getCompte($this->compte);
+        } else {
+            return $this->getSociete()->getCompte($this->getSociete()->compte_societe);
         }
-        return $this->cache_master_compte;
     }
 
     public function getContact() {
@@ -117,6 +108,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
         if ($saveOther) {
             $this->updateLiaisonOpposee($liaison);
+            $this->save();
         }
 
         return $liaison;
@@ -272,6 +264,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
         $this->compte = $compte->_id;
 
+        $this->updateSecteurs();
 
         if($this->isSameAdresseThanSociete()) {
             $this->pullAdresseFrom($this->getSociete()->getMasterCompte());
@@ -305,6 +298,35 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             $societe->save();
         }
         $compte->save();
+    }
+
+    public function updateSecteurs() {
+        if (!CommunesConfiguration::getInstance()->hasSecteurs()) {
+            return;
+        }
+        $secteurs = [];
+        if ($this->exist('chais')) foreach($this->chais as $c) {
+            if (!$c->secteur) {
+                $insee = CommunesConfiguration::getInstance()->findCodeCommune($c->commune);
+                if ($insee) {
+                    $c->secteur = CommunesConfiguration::getInstance()->getSecteurFromInsee($insee);
+                    $secteurs[] = $c->secteur;
+                }
+            }
+        }
+        if(!$this->secteur) {
+            if (!$this->insee) {
+                $this->insee = CommunesConfiguration::getInstance()->findCodeCommune($this->commune);
+            }
+            if ($this->insee) {
+                $this->secteur = CommunesConfiguration::getInstance()->getSecteurFromInsee($this->insee);
+            } else {
+                $secteurs = array_unique($secteurs);
+                if (count($secteurs) == 1) {
+                    $this->secteur = $secteurs[0];
+                }
+            }
+        }
     }
 
     public function delete() {
