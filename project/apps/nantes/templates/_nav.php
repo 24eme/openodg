@@ -4,11 +4,14 @@
 
 <?php if($route instanceof EtablissementRoute): ?>
     <?php $etablissement = $route->getEtablissement(); ?>
+    <?php $campagne = $route->getCampagne(); ?>
     <?php $compte = $etablissement->getMasterCompte(); ?>
 <?php endif; ?>
-<?php if ($route instanceof FacturationDeclarantRoute || $route instanceof FactureRoute || $route instanceof CompteRoute): ?>
+<?php if($route instanceof FacturationDeclarantRoute || $route instanceof FactureRoute || $route instanceof CompteRoute): ?>
     <?php $compte = $route->getCompte(); ?>
-    <?php $etablissement = $compte->getEtablissement(); ?>
+    <?php $societe = $compte->getSociete(); ?>
+    <?php $compte = $societe->getMasterCompte(); ?>
+    <?php $etablissement = $societe->getEtablissementPrincipal(); ?>
 <?php endif; ?>
 <?php if($route instanceof SocieteRoute): ?>
     <?php $societe = $route->getSociete(); ?>
@@ -16,12 +19,11 @@
     <?php $compte = $route->getSociete()->getMasterCompte(); ?>
 <?php endif; ?>
 
-<?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)): ?>
+<?php if($sf_user->isAuthenticated() && !$sf_user->isAdminODG() && !$sf_user->isStalker() && !$sf_user->hasDrevAdmin() && !$sf_user->hasHabilitation() && (!$compte || !$etablissement)): ?>
     <?php $compte = $sf_user->getCompte(); ?>
     <?php $societe = $compte->getSociete() ; if ($societe) $etablissement = $societe->getEtablissementPrincipal(); ?>
-    <?php if (!$etablissement) $etablissement = $compte->getEtablissement(); ?>
+    <?php if(!$etablissement) $etablissement = $compte->getEtablissement(); ?>
 <?php endif; ?>
-
 
 <nav id="menu_navigation" class="navbar navbar-default container">
     <a style="position: absolute; left: -60px; z-index: 0;" href="<?php echo url_for('accueil') ?>" title="Fédération des Vins de Nantes | Retour à la page d'accueil">

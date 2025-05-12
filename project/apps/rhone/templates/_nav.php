@@ -4,22 +4,26 @@
 
 <?php if($route instanceof EtablissementRoute): ?>
     <?php $etablissement = $route->getEtablissement(); ?>
+    <?php $campagne = $route->getCampagne(); ?>
     <?php $compte = $etablissement->getMasterCompte(); ?>
 <?php endif; ?>
-<?php if($route instanceof CompteRoute): ?>
+<?php if ($route instanceof FacturationDeclarantRoute || $route instanceof FactureRoute || $route instanceof CompteRoute): ?>
     <?php $compte = $route->getCompte(); ?>
-    <?php //$etablissement = $compte->getEtablissementObj(); ?>
+    <?php $societe = $compte->getSociete(); ?>
+    <?php $compte = $societe->getMasterCompte(); ?>
+    <?php $etablissement = $societe->getEtablissementPrincipal(); ?>
 <?php endif; ?>
-<?php if($route instanceof SocieteRoute): ?>
+<?php if ($route instanceof SocieteRoute): ?>
+    <?php $societe = $route->getSociete(); ?>
     <?php $etablissement = $route->getEtablissement(); ?>
     <?php $compte = $route->getSociete()->getMasterCompte(); ?>
 <?php endif; ?>
 
-<?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) &&  !$sf_user->hasCredential(myUser::CREDENTIAL_DREV_ADMIN) && !$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && !$sf_user->hasCredential(myUser::CREDENTIAL_STALKER) && (!$compte || !$etablissement)): ?>
+<?php if($sf_user->isAuthenticated() && !$sf_user->isAdminODG() && !$sf_user->isStalker() && !$sf_user->hasDrevAdmin() && !$sf_user->hasHabilitation() && (!$compte || !$etablissement)): ?>
     <?php $compte = $sf_user->getCompte(); ?>
-    <?php $etablissement = $compte->getSociete()->getEtablissementPrincipal(); ?>
+    <?php $societe = $compte->getSociete() ; if ($societe) $etablissement = $societe->getEtablissementPrincipal(); ?>
+    <?php if (!$etablissement) $etablissement = $compte->getEtablissement(); ?>
 <?php endif; ?>
-
 
 <nav id="menu_navigation" class="navbar navbar-default">
     <div class="container">
