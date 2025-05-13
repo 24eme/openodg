@@ -1173,10 +1173,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 						return $cmp;
 					}
 				}
+                elseif ( $t == DegustationClient::DEGUSTATION_TRI_GENRE) {
+                    $cmp = strcmp($a_data, $b_data);
+					if ($cmp) {
+						return $cmp*-1;
+					}
+                }
 				else{
 					$cmp = strcmp($a_data, $b_data);
 					if ($cmp) {
-					return $cmp;
+						return $cmp;
 					}
 				}
 			}
@@ -1223,7 +1229,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $degustateurs = [];
 
             $regions = array_unique(array_merge([$this->region], $this->getRegionsFromProduits()));
-            $regions = [false];
             foreach($regions as $region) {
                 $region_postfix = ($region)  ? '_'.strtolower($region) : '';
                 $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college.$region_postfix );
