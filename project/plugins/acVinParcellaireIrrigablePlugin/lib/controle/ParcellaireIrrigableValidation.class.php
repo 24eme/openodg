@@ -19,7 +19,10 @@ class ParcellaireIrrigableValidation extends DocumentValidation {
         /*
          * Error
          */
-    	$this->addControle(self::TYPE_ERROR, 'parcellaireirrigable_materiel_ressource_required', "Vous devez renseigner le matériel et la ressource de toutes vos parcelles");
+         if(! ParcellaireConfiguration::getInstance()->isSansIrrigableMaterielRessource()){
+             $this->addControle(self::TYPE_ERROR, 'parcellaireirrigable_materiel_ressource_required', "Vous devez renseigner le matériel et la ressource de toutes vos parcelles");
+         }
+
 
         /*
          * Engagements
@@ -42,7 +45,7 @@ class ParcellaireIrrigableValidation extends DocumentValidation {
         		}
         	}
         }
-        if ($missed) {
+        if ($missed && (! ParcellaireConfiguration::getInstance()->isSansIrrigableMaterielRessource())) {
         	$this->addPoint(self::TYPE_ERROR, 
         					'parcellaireirrigable_materiel_ressource_required', 
         					'<a href="' . $this->generateUrl('parcellaireirrigable_irrigations', array('id' => $this->document->_id)) . "\" class='alert-link' >Cliquer ici pour modifier la déclaration.</a>", 

@@ -162,4 +162,8 @@ class ParcellaireConfiguration {
         return isset($this->configuration['engagements']) && boolval($this->configuration['engagements']);
     }
 
+    public function isSansIrrigableMaterielRessource() {
+        return isset($this->configuration['isSansIrrigableMaterielRessource']) && boolval($this->configuration['isSansIrrigableMaterielRessource']);
+    }
+
 }

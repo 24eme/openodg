@@ -77,7 +77,12 @@
    </div>
     <div style="padding-top: 10px;" class="row row-margin row-button">
         <div class="col-xs-4">
-        	<a href="<?php echo url_for("parcellaireirrigable_irrigations", $parcellaireIrrigable) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
+            <a href=
+            <?php if(ParcellaireConfiguration::getInstance()->isSansIrrigableMaterielRessource()): ?>
+                "<?php echo url_for(ParcellaireIrrigableEtapes::getInstance()->getPreviousLink(ParcellaireIrrigableEtapes::ETAPE_VALIDATION), $parcellaireIrrigable); ?>"
+            <?php else: ?>
+                "<?php echo url_for("parcellaireirrigable_irrigations", $parcellaireIrrigable) ?>"
+            <?php endif; ?> class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
             <a href="<?php echo url_for('parcellaireirrigable_export_pdf', $parcellaireIrrigable) ?>" class="btn btn-primary">
