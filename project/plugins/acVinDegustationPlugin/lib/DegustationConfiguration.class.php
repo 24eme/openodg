@@ -120,4 +120,16 @@ class DegustationConfiguration {
     {
         return isset($this->configuration['has_degustateurs_prerempli']) && $this->configuration['has_degustateurs_prerempli'];
     }
+
+    public function hasAcceptabiliteAoc()
+    {
+        return isset($this->configuration['is_acceptable_aoc']) && $this->configuration['is_acceptable_aoc'];
+    }
+
+    public function getAcceptabiliteAoc()
+    {
+        if ($this->hasAcceptabiliteAoc()) {
+            return $this->configuration['is_acceptable_aoc'];
+        }
+    }
 }
