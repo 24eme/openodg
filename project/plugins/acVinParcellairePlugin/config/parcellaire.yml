@@ -7,6 +7,6 @@ all:
       aires:
       manquant:
         pc_min: 20
-      engagements: false
       irrigable:
+        engagements: false
         hasIrrigableMaterielRessource: true

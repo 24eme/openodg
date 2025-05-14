@@ -159,7 +159,7 @@ class ParcellaireConfiguration {
     }
 
     public function hasEngagements() {
-        return isset($this->configuration['engagements']) && boolval($this->configuration['engagements']);
+        return isset($this->configuration['irrigable']['engagements']) && boolval($this->configuration['irrigable']['engagements']);
     }
 
     public function hasIrrigableMaterielRessource() {
