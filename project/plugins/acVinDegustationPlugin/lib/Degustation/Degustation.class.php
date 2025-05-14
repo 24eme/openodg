@@ -1229,7 +1229,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $degustateurs = [];
 
             $regions = array_unique(array_merge([$this->region], $this->getRegionsFromProduits()));
-            $regions = [false];
             foreach($regions as $region) {
                 $region_postfix = ($region)  ? '_'.strtolower($region) : '';
                 $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college.$region_postfix );
@@ -1984,6 +1983,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function isLibelleAcceptable()
         {
-            return $this->getLots()[0]->isLibelleAcceptable();
+            if (DegustationConfiguration::getInstance()->hasAcceptabiliteAoc()) {
+                return DegustationConfiguration::getInstance()->getAcceptabiliteAoc();
+            }
+            return false;
         }
 }

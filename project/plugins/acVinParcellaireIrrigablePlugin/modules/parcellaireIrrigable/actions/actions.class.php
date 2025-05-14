@@ -132,7 +132,7 @@ class parcellaireIrrigableActions extends sfActions {
             return $this->redirect('declaration_etablissement', $this->parcellaireIrrigable->getEtablissementObject());
         }
 
-    	return $this->redirect('parcellaireirrigable_irrigations', $this->parcellaireIrrigable);
+        return ($next = $this->getRouteNextEtape(ParcellaireIrrigableEtapes::ETAPE_PARCELLES)) ? $this->redirect($next, $this->parcellaireIrrigable) : $this->redirect('parcellaireirrigable_validation', $this->parcellaireIrrigable);
     }
 
     public function executeIrrigations(sfWebRequest $request) {
@@ -245,6 +245,18 @@ class parcellaireIrrigableActions extends sfActions {
     		return $etape;
     	}
     	return ($parcellaireIrrigableEtapes->isLt($parcellaireIrrigableEtapes->etape, $etape)) ? $etape : $parcellaireIrrigableEtapes->etape;
+    }
+
+
+    protected function getRouteNextEtape($etape = null, $class = "ParcellaireIrrigableEtapes") {
+        $etapes = $class::getInstance();
+        $routes = $etapes->getRouteLinksHash();
+        if (!$etape) {
+            $etape = $etapes->getFirst();
+        } else {
+            $etape = $etapes->getNext($etape);
+        }
+        return (isset($routes[$etape])) ? $routes[$etape] : null;
     }
 
     protected function secure($droits, $doc) {

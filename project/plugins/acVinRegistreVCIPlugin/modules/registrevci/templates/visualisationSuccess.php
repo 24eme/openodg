@@ -42,7 +42,8 @@
 <?php endforeach; ?>
 </table>
 </div></div>
-<?php if($sf_user->isAuthenticated() && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+
+<?php if($sf_user->isAuthenticated() && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && !$registre->getEtablissementObject()->hasFamille(CompteClient::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR)) : ?>
     <a class="btn btn-default btn-md" href="<?php  echo url_for('registrevci_ajout_mouvement', array('id' => $registre->_id)) ?>">Ajouter un mouvement</a>
 <?php endif; ?>
 <div class="row">
