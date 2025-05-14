@@ -5,6 +5,8 @@ all:
       troisieme_feuille: true
       unit: "hectares"
       aires:
-    manquant:
-      pc_min: 20
-    engagements: false
+      manquant:
+        pc_min: 20
+      engagements: false
+      irrigable:
+        hasIrrigableMaterielRessource: true

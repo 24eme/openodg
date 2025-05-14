@@ -37,11 +37,13 @@ class ParcellaireIrrigableEtapes extends Etapes {
     }
 
     protected function filterItems($items) {
-        if(ParcellaireConfiguration::getInstance()->isSansIrrigableMaterielRessource()) {
+        // var_dump(ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource());exit;
+        if(ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource() == false ) {
             unset($items[self::ETAPE_IRRIGATIONS]);
         }
         return $items;
     }
+
     public function getEtapesHash() {
         return $this->filterItems(self::$etapes);
     }

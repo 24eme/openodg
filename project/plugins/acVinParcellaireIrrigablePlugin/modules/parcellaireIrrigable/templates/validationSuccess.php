@@ -78,7 +78,7 @@
     <div style="padding-top: 10px;" class="row row-margin row-button">
         <div class="col-xs-4">
             <a href=
-            <?php if(ParcellaireConfiguration::getInstance()->isSansIrrigableMaterielRessource()): ?>
+            <?php if(ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource() === false): ?>
                 "<?php echo url_for(ParcellaireIrrigableEtapes::getInstance()->getPreviousLink(ParcellaireIrrigableEtapes::ETAPE_VALIDATION), $parcellaireIrrigable); ?>"
             <?php else: ?>
                 "<?php echo url_for("parcellaireirrigable_irrigations", $parcellaireIrrigable) ?>"
