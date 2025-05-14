@@ -122,15 +122,29 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if (!$parcelle->affectation) {
             continue;
         }
-        if($this->findParcelle($parcelle, 1, true, $allready_selected)) {
+        if($parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelleByParcelleId($parcelle)) {
             continue;
         }
+        if(!$parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelle($parcelle, 1, true, $allready_selected)) {
+            continue;
+        }
+
         $this->addParcelle($parcelle);
     }
   }
 
+    public function findParcelleByParcelleId($parcelle) {
+        $p = $this->getParcelleById($parcelle->getParcelleId());
+
+        return $p && $p->cepage == $parcelle->cepage && $p->campagne_plantation == $parcelle->campagne_plantation;
+    }
+
     public function getParcelleById($id) {
         $p = $this->getParcelles();
+
+        if(!isset($p[$id])) {
+            return null;
+        }
         return $p[$id];
     }
 
