@@ -80,7 +80,7 @@
             <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource()): ?>
                 <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->materiel; ?>&nbsp;</td>
                 <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->ressource; ?>&nbsp;</td>
-            <?php endif ?>
+            <?php endif; ?>
     	</tr>
     <?php endforeach; ?>
 </table>
