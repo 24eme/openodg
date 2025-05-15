@@ -9,7 +9,7 @@
                 <th class="col-xs-2">Cépage</th>
                 <th class="col-xs-1 text-center">Année plantat°</th>
                 <th class="col-xs-2 text-right">Surf. <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
-			<?php else : ?>
+			<?php else: ?>
                 <th class="col-xs-1">Commune</th>
                 <th class="col-xs-2">Lieu-dit</th>
                 <th class="col-xs-1 text-center">Section / N° parcelle</th>
