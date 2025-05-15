@@ -45,7 +45,7 @@
         <!-- ####### PLEASE KEEP ####### -->
 
             <div id="header" class="hidden-print">
-                <?php include_partial('global/nav'); ?>
+                <?php include_component('global', 'nav'); ?>
             </div>
 
                 <section id="content" class="container">

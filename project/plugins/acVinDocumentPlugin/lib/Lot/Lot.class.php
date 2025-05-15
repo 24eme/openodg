@@ -187,7 +187,10 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isLibelleAcceptable()
     {
-        return $this->getConfigProduit()->getCertification()->libelle == "AOP";
+        if (DegustationConfiguration::getInstance()->hasAcceptabiliteAoc()) {
+            return DegustationConfiguration::getInstance()->getAcceptabiliteAoc();
+        }
+        return false;
     }
 
     public function getConfigProduit() {

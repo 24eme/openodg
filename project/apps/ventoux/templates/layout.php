@@ -47,7 +47,7 @@
             <div id="header">
                 <?php echo include_partial('global/header'); ?>
 
-                <?php include_partial('global/nav'); ?>
+                <?php include_component('global', 'nav'); ?>
             </div>
 
                 <section id="content" class="container">
