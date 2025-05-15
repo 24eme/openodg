@@ -41,7 +41,7 @@
 }
 
 .size-large {
-    height: 90px;
+    height: 85px;
 }
 
 .fond-sombre {
@@ -54,7 +54,7 @@
 }
 
 .size-moyenne {
-    height: 70px;
+    height: 55px;
 }
 
 .text-muted {
@@ -70,7 +70,7 @@
     <tr>
         <td colspan="2"><b>DATE&nbsp;:&nbsp;<?php echo format_date($lots[0]->date_commission, "dd/MM/yyyy", "fr_FR"); ?><br>JURY&nbsp;N°&nbsp;:&nbsp;<?php echo $lots[0]->numero_table; ?><br></b></td>
         <?php foreach ($lots as $lot) :?>
-            <td class="td text-large <?php if(! $lot): ?>text-muted<?php endif;?>" colspan="3">&nbsp;N°&nbsp;échantillon&nbsp;:&nbsp;<?php if ($lot){ echo $lot->numero_anonymat;} else {echo "";} ?><br>&nbsp;<?php if ($lot) {echo $lot->getProduitLibelle();} else {echo "";} ?><br>&nbsp;<small><i>(si revendiqué)</i></small></td>
+            <td class="td text-large <?php if(! $lot): ?>text-muted<?php endif;?>" colspan="3">&nbsp;N°&nbsp;échantillon&nbsp;:&nbsp;<?php if ($lot){ echo $lot->numero_anonymat;} else {echo "";} ?><br>&nbsp;<?php if ($lot) {echo $lot->getProduitLibelle();} elseif(isset($lot->cepages)) {echo $lot->getCepagesLibelle();} ?><br>&nbsp;</td>
         <?php endforeach; ?>
         </tr>
         <tr>
@@ -164,6 +164,14 @@
                 <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
             <?php endforeach; ?>
         </tr>
+        <tr class="align-mid">
+            <td class="td align-right text-middle-size" colspan="2"><b>Support acide</b>&nbsp;&nbsp;</td>
+            <?php foreach ($lots as $lot): ?>
+                <td class="td <?php if((! $lot) || ! stripos($lot->specificite, 'base')): ?>text-muted<?php endif;?>">Oui</td>
+                <td class="td <?php if((! $lot) || ! stripos($lot->specificite, 'base')): ?>text-muted<?php endif;?>">Limite</td>
+                <td class="td <?php if((! $lot) || ! stripos($lot->specificite, 'base')): ?>text-muted<?php endif;?>">Non</td>
+            <?php endforeach; ?>
+        </tr>
         <tr>
             <td class="td align-right size-small" colspan="2">&nbsp;<small><i>Si&nbsp;déséquilibre,&nbsp;précisez&nbsp;:&nbsp;&nbsp;&nbsp;</i></small></td>
             <?php foreach ($lots as $lot): ?>
@@ -185,6 +193,10 @@
             <?php endforeach; ?>
         </tr>
         <tr>
+            <td class="td text-middle-size" colspan="2">&nbsp;<b>APPRECIATION&nbsp;GENERALE</b></td>
+            <td colspan="12" class="td align-mid text-middle-size"><b><u>A:</b></u> accepté <b>; <u>AD:</u></b> accepté avec défaut(s) non rédhibitoire(s) <b>; <u>NAE</u> (vrac uniquement):</b> non accepté en l'état, présence de défaut(s) d'intensité moyenne à forte corrigeable(s) <b>; <u>NA:</u></b> non accepté, vins à défaut(s) rédhibitoire(s)</td>
+        </tr>
+        <tr>
             <td class="td align-mid text-red text-middle-size size-moyenne" colspan="2">&nbsp;<b>NOTE&nbsp;(obligatoire)</b></td>
             <td class="td align-mid" colspan="3"></td>
             <td class="td align-mid" colspan="3"></td>
@@ -198,8 +210,4 @@
             <td class="td align-mid size-large" colspan="3"></td>
             <td class="td align-mid size-large" colspan="3"></td>
         </tr>
-        <tr>
-            <td class="td align-mid text-small" colspan="14">NB : Echelle de note:  <b>A</b> = Accepté / <b>AD</b> = Accepté avec défaut / NAE (vrac) = non accepté en l'état (ex DM) /  NA =  Non accepté (ex R) refusé, vin à défaut</td>
-        </tr>
-
     </table>

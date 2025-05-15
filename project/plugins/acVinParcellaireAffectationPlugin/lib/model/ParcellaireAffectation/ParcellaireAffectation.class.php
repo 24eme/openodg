@@ -122,15 +122,29 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if (!$parcelle->affectation) {
             continue;
         }
-        if($this->findParcelle($parcelle, 1, true, $allready_selected)) {
+        if($parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelleByParcelleId($parcelle)) {
             continue;
         }
+        if(!$parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelle($parcelle, 1, true, $allready_selected)) {
+            continue;
+        }
+
         $this->addParcelle($parcelle);
     }
   }
 
+    public function findParcelleByParcelleId($parcelle) {
+        $p = $this->getParcelleById($parcelle->getParcelleId());
+
+        return $p && $p->cepage == $parcelle->cepage && $p->campagne_plantation == $parcelle->campagne_plantation;
+    }
+
     public function getParcelleById($id) {
         $p = $this->getParcelles();
+
+        if(!isset($p[$id])) {
+            return null;
+        }
         return $p[$id];
     }
 
@@ -139,6 +153,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if(!$previous) {
             return;
         }
+        $destinataires = $this->getDestinataires();
         foreach($previous->getParcelles() as $previousParcelle) {
             if(!$previousParcelle->isAffectee()) {
                 continue;
@@ -150,7 +165,16 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 $pMatch->superficie = $previousParcelle->superficie;
                 if($previousParcelle->exist('destinations')) {
                     $pMatch->remove('destinations');
-                    $pMatch->add('destinations', $previousParcelle->destinations);
+                    $pMatch->add('destinations');
+                    foreach($previousParcelle->destinations as $destinationIdentifiant => $destination) {
+                        if(!array_key_exists("ETABLISSEMENT-".$destinationIdentifiant, $destinataires)) {
+                            continue;
+                        }
+                        $pMatch->add('destinations')->add($destinationIdentifiant, $destination);
+                    }
+                    if(!$pMatch->superficie) {
+                        $pMatch->affectee = 0;
+                    }
                     $pMatch->updateAffectations();
                 }
             }
@@ -275,6 +299,17 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
         foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR) as $liaison) {
             $destinataires[$liaison->id_etablissement] = $liaison;
+        }
+
+        foreach($this->getParcelles() as $parcelle) {
+            if(!$parcelle->exist('destinations')) {
+                continue;
+            }
+            foreach($parcelle->destinations as $destination) {
+                if(!isset($destinataires["ETABLISSEMENT-".$destination->identifiant])) {
+                    $destinataires["ETABLISSEMENT-".$destination->identifiant] = ['libelle_etablissement' => $destination->nom];
+                }
+            }
         }
 
         return $destinataires;
