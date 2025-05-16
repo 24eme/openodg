@@ -6,6 +6,3 @@ all:
   elasticversion: '1.6.2'
   organisme:
     nom: "Association des viticulteurs d'Alsace"
-  parcellaire_irrigable:
-    ressources: ["Non applicable"]
-    materiels: ["Non applicable"]

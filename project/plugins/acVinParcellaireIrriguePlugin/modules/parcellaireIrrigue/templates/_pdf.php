@@ -51,14 +51,24 @@
 
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: center; width: 180px;">Lieu-dit</th>
-        <th class="th" style="text-align: center; width: 70px;">Section</th>
-        <th class="th" style="text-align: center; width: 70px;">N° p<sup>lle</sup></th>
-        <th class="th" style="text-align: center; width: 150px;">Cépage</th>
-        <th class="th" style="text-align: center; width: 80px;">Année de plantation</th>
-        <th class="th" style="text-align: center; width: 80px;">Surface</th>
-        <th class="th" style="text-align: center; width: 230px;">Type de matériel/ressource</th>
-        <th class="th" style="text-align: center; width: 80px;">Date irrigation</th>
+        <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource() === false): ?>
+            <th class="th" style="text-align: center; width: 230px;">Lieu-dit</th>
+            <th class="th" style="text-align: center; width: 90px;">Section</th>
+            <th class="th" style="text-align: center; width: 90px;">N° p<sup>lle</sup></th>
+            <th class="th" style="text-align: center; width: 200px;">Cépage</th>
+            <th class="th" style="text-align: center; width: 110px;">Année de plantation</th>
+            <th class="th" style="text-align: center; width: 110px;">Surface</th>
+            <th class="th" style="text-align: center; width: 110px;">Date irrigation</th>
+        <?php else: ?>
+            <th class="th" style="text-align: center; width: 180px;">Lieu-dit</th>
+            <th class="th" style="text-align: center; width: 70px;">Section</th>
+            <th class="th" style="text-align: center; width: 70px;">N° p<sup>lle</sup></th>
+            <th class="th" style="text-align: center; width: 150px;">Cépage</th>
+            <th class="th" style="text-align: center; width: 80px;">Année de plantation</th>
+            <th class="th" style="text-align: center; width: 80px;">Surface</th>
+            <th class="th" style="text-align: center; width: 230px;">Type de matériel/ressource</th>
+            <th class="th" style="text-align: center; width: 80px;">Date irrigation</th>
+        <?php endif; ?>
     </tr>
     <?php foreach ($parcelles as $parcelle):
             if($parcelle->irrigation):
@@ -71,7 +81,9 @@
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->cepage; ?>&nbsp;</td>
             <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->campagne_plantation; ?>&nbsp;</td>
             <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.4f", $parcelle->superficie); ?>&nbsp;<small>ha</small>&nbsp;</td>
-            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->materiel; ?>&nbsp;/&nbsp;<?php echo $parcelle->ressource; ?>&nbsp;</td>
+            <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource()): ?>
+                <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->materiel; ?>&nbsp;/&nbsp;<?php echo $parcelle->ressource; ?>&nbsp;</td>
+            <?php endif; ?>
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $date_irrigation->format('d/m/Y'); ?>&nbsp;</td>
     	</tr>
     <?php

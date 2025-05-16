@@ -364,4 +364,8 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         $this->_set('produit_hash', $h);
         return $h;
     }
+
+    public function isRealParcelleIdFromParcellaire() {
+        return $this->_get('parcelle_id') && strpos($this->_get('parcelle_id'), '-X') === false;
+    }
 }
