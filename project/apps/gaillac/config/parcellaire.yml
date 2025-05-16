@@ -4,6 +4,10 @@ all:
       show_filter_produits_configuration: false
       ecart_rangs_max: 250
       ecart_pieds_min:  80
+      affectation:
+        needs_intention: false
+        denomination_aire: "AOC Gaillac"
+        denomination_aire_hash: "certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT"
       aires:
         Gaillac:
           name: "AOC Gaillac"
