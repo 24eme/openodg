@@ -5,11 +5,11 @@ all:
       ecart_rangs_max: 250
       ecart_pieds_min:  80
       aires:
-        communes-aoc:
+        Gaillac:
           name: "AOC Gaillac"
           color: "#e58ebc"
           denomination_id: "00093"
-        communes-stevictoire:
+        Gaillac-premierescotes:
           name: "AOC Gaillac premières côtes"
           color: "#52e536"
           denomination_id: "00095"
