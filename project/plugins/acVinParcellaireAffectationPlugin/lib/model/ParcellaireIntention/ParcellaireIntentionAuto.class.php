@@ -37,8 +37,8 @@ class ParcellaireIntentionAuto extends ParcellaireIntentionAffectation {
     }
 
     public function getDenominationAireHash() {
-        return ParcellaireConfiguration::getInstance()->affectationDenominationAireHash();
+        $value = ParcellaireConfiguration::getInstance()->affectationDenominationAireHash();
+        return (is_array($value))? $value : [$value];
     }
-
 
 }
