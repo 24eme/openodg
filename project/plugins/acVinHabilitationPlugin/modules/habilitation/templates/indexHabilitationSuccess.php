@@ -48,7 +48,7 @@
     <div class="col-sm-3 col-xs-12">
         <div class="list-group">
             <a class="" href="<?php echo url_for('habilitation_demande_liste'); ?>">
-                <span class="glyphicon glyphicon-arrow-right"></span>
+                <span class="glyphicon glyphicon-new-window"></span>
                 &nbsp;Voir les demandes
             </a>
         </div>
