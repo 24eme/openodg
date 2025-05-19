@@ -42,7 +42,7 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
             $this->widgetSchema->setLabel('lieuCepage', 'Lieu-dit/cépage :');
             }
         } else {
-            $this->widgetSchema->setLabel('lieuDit', 'Lieu Dit:');
+            $this->widgetSchema->setLabel('lieuDit', 'Lieu-dit revendiqué:');
             $this->widgetSchema->setLabel('cepage', 'Cépage :');
         }
 
