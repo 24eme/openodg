@@ -418,6 +418,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if ($this->getDocument()->hasDgc()) {
             return $this->declaration->getParcellesByDgc($onlyAffectee);
         }
+        if (count($this->declaration) >= 1) {
+            return $this->declaration->getParcellesByProduit($onlyAffectee);
+        }
         return $this->declaration->getParcellesByCommune($onlyAffectee);
     }
 
