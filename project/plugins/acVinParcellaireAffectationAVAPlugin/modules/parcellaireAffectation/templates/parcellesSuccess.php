@@ -111,8 +111,8 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                     <?php if(!is_object($appellationNode) || $appellationNode->getConfig()->hasLieuEditable()):  ?>
                                         <td>
                                             <?php echo $parcelle->getLieuLibelle() ? $parcelle->getLieuLibelle() : '<p style="margin:0;"> - </p>'; ?>
-                                            <?php if($parcelle->getParcelleParcellaire()): ?>
-                                            <p class="small text-muted" style="margin:0;"><?php echo $parcelle->getParcelleParcellaire()->getLieu() ?></p>
+                                            <?php if($parcelle->getParcelleParcellaire() && strpos($parcelle->getProduitHash(), 'LIEUDIT')) : ?>
+                                                <p class="small text-muted" style="margin:0;"><?php echo $parcelle->getParcelleParcellaire()->getLieu() ?></p>
                                             <?php endif; ?>
                                         </td>
                                     <?php endif; ?>
