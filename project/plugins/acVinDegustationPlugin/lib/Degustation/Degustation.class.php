@@ -1983,6 +1983,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function isLibelleAcceptable()
         {
-            return $this->getLots()[0]->isLibelleAcceptable();
+            if (DegustationConfiguration::getInstance()->hasAcceptabiliteAoc()) {
+                return DegustationConfiguration::getInstance()->getAcceptabiliteAoc();
+            }
+            return false;
         }
 }

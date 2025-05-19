@@ -54,8 +54,10 @@
                 <th class="col-xs-2">Cépage</th>
                 <th class="col-xs-1">Année plantat°</th>
                 <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
-                <th class="col-xs-1">Type de matériel</th>
-                <th class="col-xs-1">Type de ressource</th>
+                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource()): ?>
+                    <th class="col-xs-1">Type de matériel</th>
+                    <th class="col-xs-1">Type de ressource</th>
+                <?php endif; ?>
                 <th class="col-xs-1">Irrigation?</th>
                 <th class="col-xs-2">Date de déclaration d'irrigation</th>
 
@@ -77,8 +79,10 @@
                 <?php else: ?>
                     <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie()); ?></td>
                 <?php endif ?>
-            	<td><?php echo $parcelle->materiel; ?></td>
-            	<td><?php echo $parcelle->ressource; ?></td>
+                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource() ): ?>
+                    <td><?php echo $parcelle->materiel; ?></td>
+                    <td><?php echo $parcelle->ressource; ?></td>
+                <?php endif; ?>
             	<?php if($parcelle->irrigation && (!$parcellaireIrrigue->exist('papier') || !$parcellaireIrrigue->papier)): ?>
             	<td class="text-center text-success"><span class="glyphicon glyphicon-ok-sign"></span></td>
             	<td class="text-center"><?php echo format_date($parcelle->date_irrigation, "dd/MM/yyyy", "fr_FR"); ?></td>
