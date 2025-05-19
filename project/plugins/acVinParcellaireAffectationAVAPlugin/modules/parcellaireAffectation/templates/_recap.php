@@ -29,7 +29,7 @@ if ($last) {
                             <th class="col-xs-4 text-center">Appellation</th>
                             <th class="col-xs-2 text-center">Commune</th>
                             <th class="col-xs-1 text-center">Section / Numéro</th>
-                            <th class="col-xs-2 text-center">Lieu-dit</th>
+                            <th class="col-xs-2 text-center">Lieu-dit revendiqué</th>
                             <th class="col-xs-2 text-center">Cépage</th>
                             <th class="col-xs-1 text-center">Superficie</th>
                         </tr>
