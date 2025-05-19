@@ -29,7 +29,7 @@ $libelleLieuDitCepage = "Saisissez un cépage";
         </div>
         <div class="col-xs-8">
             <?php
-            echo $form['lieuDit']->render(array("placeholder" => "Saisissez un lieu dit", "class" => "form-control select2 select2-offscreen select2permissifNoAjax",
+            echo $form['lieuDit']->render(array("placeholder" => "Saisissez un lieu-dit revendiqué", "class" => "form-control select2 select2-offscreen select2permissifNoAjax",
                 "data-choices" => json_encode($form->getLieuDetailForAutocomplete()),
                 "required" => true))
             ?>
