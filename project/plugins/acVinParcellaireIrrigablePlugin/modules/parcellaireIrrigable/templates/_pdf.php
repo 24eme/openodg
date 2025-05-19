@@ -51,14 +51,23 @@
 
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: center; width: 200px;">Lieu-dit</th>
-        <th class="th" style="text-align: center; width: 70px;">Section</th>
-        <th class="th" style="text-align: center; width: 70px;">N° parcelle</th>
-        <th class="th" style="text-align: center; width: 180px;">Cépage</th>
-        <th class="th" style="text-align: center; width: 80px;">Année de plantation</th>
-        <th class="th" style="text-align: center; width: 80px;">Surface</th>
-        <th class="th" style="text-align: center; width: 125px;">Type de matériel</th>
-        <th class="th" style="text-align: center; width: 140px;">Type de ressource</th>
+        <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource() === false): ?>
+            <th class="th" style="text-align: center; width: 280px;">Lieu-dit</th>
+            <th class="th" style="text-align: center; width: 105px;">Section</th>
+            <th class="th" style="text-align: center; width: 105px;">N° parcelle</th>
+            <th class="th" style="text-align: center; width: 235px;">Cépage</th>
+            <th class="th" style="text-align: center; width: 110px;">Année de plantation</th>
+            <th class="th" style="text-align: center; width: 110px;">Surface</th>
+        <?php else: ?>
+            <th class="th" style="text-align: center; width: 200px;">Lieu-dit</th>
+            <th class="th" style="text-align: center; width: 70px;">Section</th>
+            <th class="th" style="text-align: center; width: 70px;">N° parcelle</th>
+            <th class="th" style="text-align: center; width: 180px;">Cépage</th>
+            <th class="th" style="text-align: center; width: 80px;">Année de plantation</th>
+            <th class="th" style="text-align: center; width: 80px;">Surface</th>
+            <th class="th" style="text-align: center; width: 125px;">Type de matériel</th>
+            <th class="th" style="text-align: center; width: 140px;">Type de ressource</th>
+        <?php endif; ?>
     </tr>
     <?php foreach ($parcelles as $parcelle): ?>
     	<tr>
@@ -68,8 +77,10 @@
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->cepage; ?>&nbsp;</td>
             <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->campagne_plantation; ?>&nbsp;</td>
             <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echoFloatFr($parcelle->superficie, 4); ?>&nbsp;<small>ha</small>&nbsp;</td>
-            <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->materiel; ?>&nbsp;</td>
-            <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->ressource; ?>&nbsp;</td>
+            <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource()): ?>
+                <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->materiel; ?>&nbsp;</td>
+                <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->ressource; ?>&nbsp;</td>
+            <?php endif; ?>
     	</tr>
     <?php endforeach; ?>
 </table>

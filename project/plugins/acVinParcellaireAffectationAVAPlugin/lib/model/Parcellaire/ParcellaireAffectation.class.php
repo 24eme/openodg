@@ -297,7 +297,12 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
     }
 
     public function updateFromLastAffectation() {
+        if ($this->isIntentionCremant() && ParcellaireAffectationClient::getInstance()->find(ParcellaireAffectationClient::getInstance()->buildId($this->identifiant, $this->campagne, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT))) {
+            return;
+        }
+
         $prevParcellaire = $this->getAffectationLastCampagne();
+
         if(!$prevParcellaire) {
             return;
         }

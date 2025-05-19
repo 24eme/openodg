@@ -33,11 +33,11 @@ class ParcellaireIntentionAuto extends ParcellaireIntentionAffectation {
     }
 
     public function getDenominationAire() {
-        return "Ventoux";
+        return ParcellaireConfiguration::getInstance()->affectationDenominationAire();
     }
 
     public function getDenominationAireHash() {
-        return "certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT";
+        return ParcellaireConfiguration::getInstance()->affectationDenominationAireHash();
     }
 
 
