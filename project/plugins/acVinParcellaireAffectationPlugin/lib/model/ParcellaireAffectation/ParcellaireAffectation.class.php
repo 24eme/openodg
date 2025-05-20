@@ -418,6 +418,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if ($this->getDocument()->hasDgc()) {
             return $this->declaration->getParcellesByDgc($onlyAffectee);
         }
+        if (count($this->declaration) >= 1) {
+            return $this->declaration->getParcellesByProduit($onlyAffectee);
+        }
         return $this->declaration->getParcellesByCommune($onlyAffectee);
     }
 
@@ -478,7 +481,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function addParcelle($parcelle) {
         $this->parcelles_idu = null;
-        $produit = $this->declaration->add(str_replace('/declaration/', '', preg_replace('|/couleurs/.*$|', '', $parcelle->produit_hash)));
+        $produit = $this->declaration->add(str_replace('/declaration/', '', $parcelle->produit_hash));
         $produit->libelle = $produit->getConfig()->getLibelleComplet();
         if(get_class($parcelle) == "ParcellaireAffectationProduitDetail") {
 

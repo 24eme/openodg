@@ -49,6 +49,8 @@ class DRevValidation extends DocumentValidation {
 
         $this->addControle(self::TYPE_ERROR, 'controle_externe_vtsgn', 'Vous devez renseigner une semaine et le nombre total de lots pour le VT/SGN');
         $this->addControle(self::TYPE_ERROR, 'periodes_cuves', '13 jours doivent séparer au minimum la semaine de prélèvement du contrôle externe de celle de la dégustation conseil');
+        $this->addControle(self::TYPE_ERROR, 'periode_prelevement_controle_ext', 'La date de prélèvement du contrôle externe doit être inférieure à 2 ans');
+        $this->addControle(self::TYPE_ERROR, 'periode_prelevement_degust_conseil', 'La date de prélèvement de la dégustation conseil doit être inférieure à 1 an');
 
         $this->addControle(self::TYPE_ERROR, 'repartition_vci', 'Vous devez répartir la totalité de votre stock VCI');
         $this->addControle(self::TYPE_ERROR, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé : vous devrez impérativement détruire Stock final - Plafond VCI Hls");
@@ -361,14 +363,36 @@ class DRevValidation extends DocumentValidation {
             return;
         }
 
-        $prelevement = $this->document->prelevements->get(DRev::CUVE_ALSACE);
-        $degustation = $this->document->prelevements->get(DRev::BOUTEILLE_ALSACE);
+        $drevDate = new DateTimeImmutable($this->document->getDate());
 
-        $dateDegustationExterneMinimum = new DateTime($prelevement->date);
-        $dateDegustationExterneMinimum->modify('+ 13 day');
+        $prelevementCuveAlsace = $this->document->prelevements->get(DRev::CUVE_ALSACE);
+        $prelevementBouteilleAlsace = $this->document->prelevements->get(DRev::BOUTEILLE_ALSACE);
+        $prelevementCremant = $this->document->prelevements->get(DRev::CUVE_CREMANT);
+        $prelevementBouteilleGrdCru = $this->document->prelevements->get(DRev::BOUTEILLE_GRDCRU);
 
-        if ($prelevement->date && $degustation->date && $degustation->date < $dateDegustationExterneMinimum->format('Y-m-d')) {
-            $this->addPoint(self::TYPE_ERROR, 'periodes_cuves', sprintf("%s - %s", $degustation->libelle, $degustation->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
+        $degustConseilBouteilleAlsace = new DateTimeImmutable($prelevementCuveAlsace->date);
+        $degustConseilCremant = new DateTimeImmutable($prelevementCremant->date);
+        $controleExtCuveAlsace = new DateTimeImmutable($prelevementBouteilleAlsace->date);
+        $controleExtBouteilleGrdCru = new DateTimeImmutable($prelevementBouteilleGrdCru->date);
+
+        if ($prelevementCuveAlsace->date && $prelevementBouteilleAlsace->date < $degustConseilBouteilleAlsace->modify('+ 13 day')->format('Y-m-d')) {
+            $this->addPoint(self::TYPE_ERROR, 'periodes_cuves', sprintf("%s - %s", $prelevementBouteilleAlsace->libelle, $prelevementBouteilleAlsace->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
+        }
+
+        if ($degustConseilBouteilleAlsace->format('Y-m-d') >= $drevDate->modify('+ 1 year')->format('Y-m-d')) {
+            $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_degust_conseil', sprintf("%s - %s", $prelevementCuveAlsace->libelle, $prelevementCuveAlsace->libelle_produit), $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
+        }
+
+        if ($degustConseilCremant->format('Y-m-d') >= $drevDate->modify('+ 1 year')->format('Y-m-d')) {
+            $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_degust_conseil', sprintf("%s - %s", $prelevementCremant->libelle, $prelevementCremant->libelle_produit), $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)) . "?focus=aoc_cremant");
+        }
+
+        if ($controleExtCuveAlsace->format('Y-m-d') >= $drevDate->modify('+ 2 years')->format('Y-m-d')) {
+            $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_controle_ext', sprintf("%s - %s", $prelevementBouteilleAlsace->libelle, $prelevementBouteilleAlsace->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
+        }
+
+        if ($controleExtBouteilleGrdCru->format('Y-m-d') >= $drevDate->modify('+ 2 years')->format('Y-m-d')){
+            $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_controle_ext', sprintf("%s - %s", $prelevementBouteilleGrdCru->libelle, $prelevementBouteilleGrdCru->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_grdcru");
         }
     }
 

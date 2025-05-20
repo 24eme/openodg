@@ -49,6 +49,26 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
         return $parcelles;
     }
 
+    public function getParcellesByProduit($onlyAffectee = false) {
+        $parcelles = array();
+
+        foreach($this as $keyProduit => $produit) {
+          foreach ($produit->detail as $parcelle) {
+            $key = $parcelle->commune.' — '.$produit->libelle;
+            if ($onlyAffectee && !$parcelle->affectee) {
+                continue;
+            }
+
+            if(!isset($parcelles[$key])) {
+                $parcelles[$key] = array();
+            }
+            $parcelles[$key][$parcelle->getParcelleId()] = $parcelle;
+          }
+        }
+        ksort($parcelles);
+        return $parcelles;
+    }
+
     private $allready_seen = null;
     public function getParcelles() {
         $parcelles = array();

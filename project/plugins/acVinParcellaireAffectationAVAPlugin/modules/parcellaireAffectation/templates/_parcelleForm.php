@@ -35,6 +35,19 @@ $libelleLieuDitCepage = "Saisissez un cépage";
             ?>
         </div>
     </div>
+    <span class="error"><?php echo $form['lieuDitCadastral']->renderError() ?></span>
+    <div class="form-group row">
+        <div class="col-xs-4">
+            <?php echo $form['lieuDitCadastral']->renderLabel(); ?>
+        </div>
+        <div class="col-xs-8">
+            <?php
+            echo $form['lieuDitCadastral']->render(array("placeholder" => "Saisissez un lieu-dit cadastral", "class" => "form-control select2 select2-offscreen select2permissifNoAjax",
+                "data-choices" => json_encode($form->getLieuDetailForAutocomplete()),
+                "required" => true))
+            ?>
+        </div>
+    </div>
     <span class="error"><?php echo $form['cepage']->renderError() ?></span>
     <div class="form-group row">
         <div class="col-xs-4">
