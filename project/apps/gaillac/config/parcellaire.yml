@@ -2,3 +2,133 @@ all:
   configuration:
     parcellaire:
       show_filter_produits_configuration: false
+      ecart_rangs_max: 250
+      ecart_pieds_min:  80
+      affectation:
+        needs_intention: false
+        denomination_aire: "AOC Gaillac"
+        denomination_aire_hash: ["certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge","certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose","certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc_sec"]
+      aires:
+        Gaillac:
+          name: "AOC Gaillac"
+          color: "#e58ebc"
+          denomination_id: "00093"
+        Gaillac-premierescotes:
+          name: "AOC Gaillac premières côtes"
+          color: "#52e536"
+          denomination_id: "00095"
+      potentiel_de_production:
+        gaillac_blanc:
+          synthese_libelle: "Gaillac - Blanc"
+          filter_produit_hash: 'appellations/GLC'
+          categories:
+            cepages_principaux: ["LEN DE L'EL B", 'MAUZAC B', 'MAUZAC ROSE RS', 'MUSCADELLE B']
+            cepages_accessoires: ['ONDENC B', 'SAUVIGNON B']
+          regles:
+            -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.50
+        gaillac_rouge:
+          synthese_libelle: "Gaillac - Rouge"
+          filter_produit_hash: 'appellations/GLC'
+          categories:
+            cepages_principaux: ['DURAS N', 'FER N', 'PRUNELARD N', 'SYRAH N']
+            cepages_duras_fer_prunelard: ['DURAS N', 'FER N', 'PRUNELARD N']
+            cepages_accessoires: ['CABERNET FRANC N', 'CABERNET-SAUVIGNON N', 'GAMAY N, MERLOT N']
+          regles:
+            -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.70
+            -
+              fonction: "Nombre"
+              category: "cepages_principaux"
+              sens: ">="
+              limit: 2
+            -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_duras_fer_prunelard'
+              sens: ">="
+              limit: 0.40
+        gaillac_rose:
+          synthese_libelle: "Gaillac - Rosé"
+          filter_produit_hash: 'appellations/GLC'
+          categories:
+            cepages_principaux: ['DURAS N', 'FER N', 'PRUNELARD N', 'SYRAH N']
+            cepages_duras_fer_prunelard: ['DURAS N', 'FER N', 'PRUNELARD N']
+            cepages_accessoires: ['CABERNET FRANC N', 'CABERNET-SAUVIGNON N', 'GAMAY N, MERLOT N']
+          regles:
+            -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.70
+            -
+              fonction: "Nombre"
+              category: "cepages_principaux"
+              sens: ">="
+              limit: 2
+            -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_duras_fer_prunelard'
+              sens: ">="
+              limit: 0.40
+        gaillac_rouge_primeur:
+          synthese_libelle: "Gaillac Primeur - Rouge"
+          filter_produit_hash: 'appellations/GLC'
+          categories:
+            cepages_principaux: ['GAMAY N']
+          regles:
+            -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 1
+        gaillac_mousseux_ancestrale:
+          synthese_libelle: "Gaillac Mousseux Méthode ancestrale"
+          filter_produit_hash: 'appellations/GLC'
+          categories:
+            cepages_principaux: ['MAUZAC B', 'MAUZAC ROSE RS']
+          regles:
+            -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 1
+        gaillac_blanc_tardive:
+          synthese_libelle: "Gaillac Vendanges tardives - Blanc"
+          filter_produit_hash: 'appellations/GLC'
+          categories:
+            cepages_principaux: ["LEN DE L'EL B", "ONDENC B"]
+            cepages_secondaires: ["MAUZAC B, MAUZAC ROSE RS, MUSCADELLE B"]
+          regles:
+            -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.50
+        gaillac_blanc_tardive:
+          synthese_libelle: "Gaillac Vendanges tardives - Rosé"
+          filter_produit_hash: 'appellations/GLC'
+          categories:
+            cepages_principaux: ["LEN DE L'EL B", "ONDENC B"]
+            cepages_secondaires: ["MAUZAC B, MAUZAC ROSE RS, MUSCADELLE B"]
+          regles:
+            -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.70
+            -
+              fonction: "Nombre"
+              category: "cepages_principaux"
+              sens: ">="
+              limit: 2
+            -
+              fonction: 'SAppliqueSiProportionSomme'
+              category: 'cepages_duras_fer_prunelard'
+              sens: ">="
+              limit: 0.40

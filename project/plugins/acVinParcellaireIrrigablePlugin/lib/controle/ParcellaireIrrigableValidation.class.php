@@ -27,7 +27,7 @@ class ParcellaireIrrigableValidation extends DocumentValidation {
         /*
          * Engagements
          */
-         $this->addControle(self::TYPE_ENGAGEMENT, ParcellaireIrrigableDocuments::ENGAGEMENT_A_NE_PAS_IRRIGUER, "Je m'engage à ne pas irriguer les parcelles ayant fait l'objet d'une déclaration préalable d’affectation parcellaire en vue de la revendication potententielle de dénominations géographiques complémentaires: lieux-dits, VT/SGN, Communales, Grands Crus.");
+         $this->addControle(self::TYPE_ENGAGEMENT, ParcellaireIrrigableDocuments::ENGAGEMENT_A_NE_PAS_IRRIGUER, "Je m'engage à ne pas irriguer les parcelles ayant fait l'objet d'une déclaration préalable d’affectation parcellaire en vue de la revendication potentielle d'AOC Alsace Communale, AOC Alsace Lieu-dit, AOC Alsace Grand Cru et mentions VT/SGN.");
     }
 
     public function controle() {

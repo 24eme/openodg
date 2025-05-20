@@ -29,6 +29,7 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
         } else {
             $this->setWidget('cepage', new sfWidgetFormChoice(array('choices' => $produits)));
             $this->setWidget('lieuDit', new sfWidgetFormInput());
+            $this->setWidget('lieuDitCadastral', new sfWidgetFormInput());
         }
 
         $this->widgetSchema->setLabel('commune', 'Commune :');
@@ -42,7 +43,8 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
             $this->widgetSchema->setLabel('lieuCepage', 'Lieu-dit/cépage :');
             }
         } else {
-            $this->widgetSchema->setLabel('lieuDit', 'Lieu Dit:');
+            $this->widgetSchema->setLabel('lieuDit', 'Lieu-dit revendiqué:');
+            $this->widgetSchema->setLabel('lieuDitCadastral', 'Lieu-dit cadastral:');
             $this->widgetSchema->setLabel('cepage', 'Cépage :');
         }
 
@@ -55,6 +57,7 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
         } else {
             $this->setValidator('cepage', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)), array('required' => "Aucun cépage saisie.")));
             $this->setValidator('lieuDit', new sfValidatorString(array('required' => true)));
+            $this->setValidator('lieuDitCadastral', new sfValidatorString(array('required' => false)));
         }
 
         $this->setValidator('superficie', new sfValidatorNumber(array('required' => true, 'min' => '0.01'), array('min' => 'La superficie doit être supérieure à 0')));
