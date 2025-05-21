@@ -186,6 +186,7 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
             $entry->text = trim($lieu);
             $entries[] = $entry;
         }
+        sort($entries);
         return $entries;
     }
 
