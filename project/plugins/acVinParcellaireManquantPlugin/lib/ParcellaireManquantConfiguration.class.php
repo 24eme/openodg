@@ -12,7 +12,8 @@ class ParcellaireManquantConfiguration extends DeclarationConfiguration {
     }
 
     public function getCampagneDebutMois() {
-        return 6;
+
+        return  4;
     }
 
     public function getModuleName() {

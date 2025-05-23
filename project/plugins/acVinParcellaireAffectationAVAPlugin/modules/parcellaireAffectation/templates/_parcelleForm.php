@@ -18,7 +18,7 @@ $libelleLieuDitCepage = "Saisissez un cépage";
             </a>
         </div>
         <div class="col-xs-8">
-            <?php echo $form['lieuCepage']->render(array("placeholder" => $libelleLieuDitCepage, "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+            <?php echo $form['lieuCepage']->render() ?>
         </div>
     </div>
 <?php else: ?>
@@ -29,7 +29,20 @@ $libelleLieuDitCepage = "Saisissez un cépage";
         </div>
         <div class="col-xs-8">
             <?php
-            echo $form['lieuDit']->render(array("placeholder" => "Saisissez un lieu dit", "class" => "form-control select2 select2-offscreen select2permissifNoAjax",
+            echo $form['lieuDit']->render(array("placeholder" => "Saisissez un lieu-dit revendiqué", "class" => "form-control select2 select2-offscreen select2permissifNoAjax",
+                "data-choices" => json_encode($form->getLieuDetailForAutocomplete()),
+                "required" => true))
+            ?>
+        </div>
+    </div>
+    <span class="error"><?php echo $form['lieuDitCadastral']->renderError() ?></span>
+    <div class="form-group row">
+        <div class="col-xs-4">
+            <?php echo $form['lieuDitCadastral']->renderLabel(); ?>
+        </div>
+        <div class="col-xs-8">
+            <?php
+            echo $form['lieuDitCadastral']->render(array("placeholder" => "Saisissez un lieu-dit cadastral", "class" => "form-control select2 select2-offscreen select2permissifNoAjax",
                 "data-choices" => json_encode($form->getLieuDetailForAutocomplete()),
                 "required" => true))
             ?>
@@ -54,7 +67,7 @@ $libelleLieuDitCepage = "Saisissez un cépage";
         <?php echo $form['commune']->renderLabel(); ?>
     </div>
     <div class="col-xs-8">
-        <?php echo $form['commune']->render(array("placeholder" => "Saisissez une commune", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+        <?php echo $form['commune']->render() ?>
     </div>
 </div>
 <span class="error"><?php echo $form['section']->renderError() ?></span>
