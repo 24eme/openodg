@@ -378,7 +378,7 @@ class DRevValidation extends DocumentValidation {
         $controleExtBouteilleGrdCru = new DateTimeImmutable($prelevementBouteilleGrdCru->date);
 
 
-        if ($prelevementCuveAlsace->date && $prelevementBouteilleAlsace->date < $degustConseilCuveAlsace->modify('+ 13 day')->format('Y-m-d')) {
+        if ($prelevementCuveAlsace->date && $prelevementBouteilleAlsace->date && $prelevementBouteilleAlsace->date < $degustConseilCuveAlsace->modify('+ 13 day')->format('Y-m-d')) {
             $this->addPoint(self::TYPE_ERROR, 'periodes_cuves', sprintf("%s - %s", $prelevementBouteilleAlsace->libelle, $prelevementBouteilleAlsace->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
         }
 
