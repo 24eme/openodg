@@ -190,4 +190,20 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
         return $entries;
     }
 
+    public function getLieuCadastralForAutocomplete() {
+        $lieuCadastralDetail = array();
+        foreach ($this->getObject()->getDocument()->getParcellaire()->getDeclarationParcelles() as $libelle) {
+            $lieuCadastralDetail[] = $libelle->getLieu();
+        }
+        $entries = array();
+        foreach (array_unique($lieuCadastralDetail) as $lieuCadastral) {
+            $entry = new stdClass();
+            $entry->id = trim($lieuCadastral);
+            $entry->text = trim($lieuCadastral);
+            $entries[] = $entry;
+        }
+        sort($entries);
+        return $entries;
+    }
+
 }
