@@ -593,6 +593,7 @@ class degustationActions extends sfActions {
                 $this->produits[] = $produit_sgn;
             }
         } else {
+            $needAppellation = $this->tournee->appellation === "GRDCRU";
             foreach($this->tournee->getProduits() as $p) {
                 $produit = new stdClass();
                 $produit->hash_produit = $p->getHash();
@@ -600,7 +601,10 @@ class degustationActions extends sfActions {
                 $produit->trackby = $p->getHash();
                 $produit->libelle = $p->getLibelleLong();
                 $produit->libelle_produit = $p->getParent()->getLibelleComplet();
-                $produit->libelle_complet = $produit->libelle_produit.' '.$produit->libelle;
+                $produit->libelle_complet = $produit->libelle;
+                if ($needAppellation) {
+                    $produit->libelle_complet = $produit->libelle_produit . " " . $produit->libelle_complet;
+                }
                 $this->produits[] = $produit;
             }
         }
