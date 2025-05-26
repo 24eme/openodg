@@ -4,8 +4,7 @@ if($appellation == ParcellaireAffectationClient::APPELLATION_VTSGN){
 $libelleLieuDitCepage = "Saisissez un cépage";
 }
 ?>
-<h3>Identification du produit</h3>
-<br/>
+<h3 style="margin-bottom: 20px; margin-top: 0;">Identification du produit</h3>
 <?php if (isset($form['lieuCepage'])): ?>
     <span class="error"><?php echo $form['lieuCepage']->renderError() ?></span>
     <div class="form-group row">
@@ -59,8 +58,8 @@ $libelleLieuDitCepage = "Saisissez un cépage";
     </div>
 <?php endif; ?>
 
-<h3>Identification de la parcelle</h3>
-<br/>
+<h3 style="margin-bottom: 20px">Identification de la parcelle</h3>
+
 <span class="error"><?php echo $form['commune']->renderError() ?></span>
 <div class="form-group row">
     <div class="col-xs-4">
