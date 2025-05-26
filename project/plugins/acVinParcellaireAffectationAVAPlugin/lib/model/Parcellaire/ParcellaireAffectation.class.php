@@ -317,8 +317,10 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
                     $parcelle = $this->addProduitParcelle($prevParcelle->getProduitHash(), $prevParcelle);
                     $parcelle->superficie = $prevParcelle->superficie;
                 }
+
                 $parcelle->active = $prevParcelle->active;
                 $parcelle->vtsgn = $prevParcelle->vtsgn;
+                $parcelle->lieu = $prevParcelle->lieu;
             }
         }
     }
