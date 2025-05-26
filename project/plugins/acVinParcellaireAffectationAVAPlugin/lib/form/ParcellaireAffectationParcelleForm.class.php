@@ -63,16 +63,6 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
             $this->setValidator('lieuDitCadastral', new sfValidatorString(array('required' => false)));
         }
 
-        if(!$this->mustCreateNew()) {
-            $this->getWidget('commune')->setAttribute('class', 'form-control');
-            if(isset($this['lieuCepage'])) {
-                $this->getWidget('lieuCepage')->setAttribute('class', 'form-control');
-            }
-            foreach($this->getWidgetSchema()->getFields() as $name => $widget) {
-                $widget->setAttribute('readonly', 'readonly');
-            }
-        }
-
         $this->setWidget('superficie', new sfWidgetFormInputFloat(array('float_format' => '%01.2f')));
         $this->setValidator('superficie', new sfValidatorNumber(array('required' => true, 'min' => '0.01'), array('min' => 'La superficie doit être supérieure à 0')));
 
@@ -156,7 +146,9 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
             $lieu = $values['lieuDit'];
         }
 
-        if($this->mustCreateNew()) {
+        $isKeyModified = ($this->getObject()->getCepage()->getHash() != str_replace('-', '/', $cepage) || $this->getObject()->commune != $commune || $this->getObject()->section != $section || $this->getObject()->numero_parcelle != $numero_parcelle || $this->getObject()->lieu != $lieu);
+
+        if($this->mustCreateNew() || $isKeyModified) {
             $parcelle = $this->getObject()->getDocument()->addParcelleForAppellation($this->getAppellationNode()->getKey(), $cepage, $commune, $section, $numero_parcelle, $lieu, $dpt);
         } else {
             $parcelle = $this->getObject();
