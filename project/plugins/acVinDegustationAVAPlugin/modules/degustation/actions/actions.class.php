@@ -600,7 +600,7 @@ class degustationActions extends sfActions {
                 $produit->trackby = $p->getHash();
                 $produit->libelle = $p->getLibelleLong();
                 $produit->libelle_produit = $p->getParent()->getLibelleComplet();
-                $produit->libelle_complet = $produit->libelle;
+                $produit->libelle_complet = $produit->libelle_produit.' '.$produit->libelle;
                 $this->produits[] = $produit;
             }
         }
