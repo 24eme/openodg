@@ -74,7 +74,7 @@ class ParcellaireAffectationModificationParcelleForm extends ParcellaireAffectat
             $this->setDefault('lieuDit', $this->getObject()->lieu);
         }
 
-        if(isset($this->widgetSchema['lieuDitCadastral']) && $this->getObject()->getParcelleParcellaire() !== null) {
+        if(isset($this->widgetSchema['lieuDitCadastral']) && $this->getObject()->getLieuDitCadastral() !== null) {
             $this->setDefault('lieuDitCadastral', $this->getObject()->getLieuDitCadastral());
         }
     }
