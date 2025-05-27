@@ -154,6 +154,10 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
             $parcelle = $this->getObject();
         }
 
+        if(isset($values['lieuDitCadastral']) && $values['lieuDitCadastral'] != $parcelle->getLieuDitCadastral()) {
+            $parcelle->add('lieu_cadastral', $values['lieuDitCadastral']);
+        }
+
         $parcelle->superficie = round($values['superficie'] / 100, 4);
 
         $parcelle->active = 1;
