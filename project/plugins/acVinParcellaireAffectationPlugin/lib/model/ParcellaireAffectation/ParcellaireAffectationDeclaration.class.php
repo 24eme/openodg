@@ -50,15 +50,13 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
     }
 
     public function getParcellesByProduit($onlyAffectee = false) {
-        $parcelles = array();
-
-        foreach($this as $keyProduit => $produit) {
+         $parcelles = array();
+         foreach($this as $keyProduit => $produit) {
           foreach ($produit->detail as $parcelle) {
-            $key = $parcelle->commune.' — '.$produit->libelle;
+            $key = $produit->libelle.' — '.$parcelle->commune;
             if ($onlyAffectee && !$parcelle->affectee) {
-                continue;
-            }
-
+                 continue;
+             }
             if(!isset($parcelles[$key])) {
                 $parcelles[$key] = array();
             }
