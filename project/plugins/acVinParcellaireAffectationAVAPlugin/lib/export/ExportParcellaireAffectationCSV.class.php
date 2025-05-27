@@ -19,7 +19,7 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;Commune Parcelle;Section Parcelle;Numéro Parcelle;Lieu cadastral;Appellation;;Lieu;Cépage;Superficie;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée ou dédiée;Acheteur CVI;Acheteur Nom;Autorisation de transmission;Date de validation / récéption;Type de transmission;VTSGN\n";
+        return "Campagne;Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée ou dédiée;Acheteur CVI;Acheteur Nom;Autorisation de transmission;Date de validation / récéption;Type de transmission;VTSGN\n";
     }
 
     public function __construct($parcellaire, $header = true, $region = null) {
@@ -117,7 +117,6 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
         $export .= $parcelle->commune . ";";
         $export .= $parcelle->section . ";";
         $export .= $parcelle->numero_parcelle . ";";
-        $export .= str_replace(array('"',';'),array('',''),$parcelle->getLieuDitCadastral()) . ";";
         $export .= $parcelle->getAppellation()->getLibelle() . ";";
         $export .= str_replace(array('"',';'),array('',''),$parcelle->getLieuLibelle()) . ";";
         $export .= $parcelle->getCepageLibelle() . ";";
