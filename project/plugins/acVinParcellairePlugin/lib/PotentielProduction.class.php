@@ -11,14 +11,24 @@ class PotentielProduction {
     private $encepagement = [];
 
     public static function retrievePotentielProductionFromParcellaire(Parcellaire $parcellaire, $date = null) {
-        $affectation = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($parcellaire->identifiant, $date);
-        return new PotentielProduction($parcellaire, $affectation);
+        $client = ParcellaireAffectationClient::getInstance();
+        if (method_exists($client, "findPreviousByIdentifiantAndDate")) {
+            $affectation = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($parcellaire->identifiant, $date);
+            return new PotentielProduction($parcellaire, $affectation);
+        }
+
+        return null;
     }
 
     public static function retrievePotentielProductionFromIdentifiant($identifiant, $date = null) {
-        $parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($identifiant, $date);
-        $affectation = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($identifiant, $date);
-        return new PotentielProduction($parcellaire, $affectation);
+        $client = ParcellaireAffectationClient::getInstance();
+        if (method_exists($client, "findPreviousByIdentifiantAndDate")) {
+            $parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($identifiant, $date);
+            $affectation = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($identifiant, $date);
+            return new PotentielProduction($parcellaire, $affectation);
+        }
+
+        return null;
     }
 
     public function __construct(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null) {
@@ -49,6 +59,7 @@ class PotentielProduction {
                 $libelles['XXXXjeunes vignes'] = 'XXXXjeunes vignes';
             }
         }
+        ksort($libelles);
         return array_keys($libelles);
     }
 
@@ -61,6 +72,15 @@ class PotentielProduction {
     }
     public function getParcellaireAffectation() {
         return $this->parcellaire_affectation;
+    }
+
+    public function hasPotentiels() {
+        foreach ($this->produits as $key => $prod) {
+            if ($prod->hasPotentiel()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

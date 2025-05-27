@@ -42,7 +42,8 @@
                     <?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?>
                 </td>
                 <!-- TODO trouver l'origine concrète du débordement du tableau. La solution display:grid peut être temporaire -->
-                <td style="display:grid;"><p class="trunk-text" style="border-radius: 0.25em 0.25em 0 0; width: 100%; color:white;"><?php echo showLotStatusCartouche($mouvement->value, $sf_user->isAdminODG()); ?></p></td>
+                <td style="display:grid;"><p class="trunk-text" style="border-radius: 0.25em 0.25em 0 0; width: 100%; color:white;">
+                    <?php echo showLotStatusCartouche($mouvement->value, $sf_user->isAdminODG());?></p></td>
 
                 <td class="text-right hidden-print">
                     <a href="<?php echo $url; ?>" class="btn btn-default btn-xs<?php echo " ".$class; ?>">accéder&nbsp;<span class="glyphicon glyphicon-chevron-right <?php echo $class; ?>"></span></a>
@@ -99,6 +100,9 @@
                     <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_modification', array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $mouvement->value->lot_unique_id)) ?>">Modifier les informations du lot</a></li>
                 <?php if (class_exists('Courrier') && ($sf_user->hasCredential(AppUser::CREDENTIAL_OI) || $sf_user->isAdmin())): ?>
                     <li><a class="dropdown-item" href="<?php echo url_for('courrier_lot_creation', array('identifiant' => $lot->declarant_identifiant, 'lot_unique_id' => $mouvement->value->lot_unique_id)) ?>">Créer un courrier</a></li>
+                <?php endif; ?>
+                <?php if ($mouvement->value->statut == Lot::STATUT_CONFORME_APPEL): ?>
+                <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_from_lot', array('identifiant' => $mouvement->value->declarant_identifiant, 'lot' => $mouvement->value->document_id.':'.$mouvement->value->lot_unique_id)) ?>">Déclassement / Chgmt denom.</a></li>
                 <?php endif; ?>
                 <?php if (class_exists('Courrier') && $mouvement->value->document_type == CourrierClient::TYPE_MODEL): ?>
                     <?php if ($lot->isNonConforme()): ?>

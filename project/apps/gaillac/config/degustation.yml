@@ -1,8 +1,10 @@
 all:
   configuration:
     degustation:
+      anonymat4labo: true
       specificite_lot_pdf: true
       always_identifiant_table: true
+      is_acceptable_aoc: true
       conformite:
         - CONFORME
         - NONCONFORME_MINEUR

@@ -1,30 +1,4 @@
-<?php $route = ($sf_request->getAttribute('sf_route')) ? $sf_request->getAttribute('sf_route')->getRawValue() : NULL; ?>
-<?php $etablissement = null ?>
-<?php $compte = null; ?>
-
-<?php if($route instanceof EtablissementRoute): ?>
-    <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $campagne = $route->getCampagne(); ?>
-    <?php $compte = $etablissement->getMasterCompte(); ?>
-<?php endif; ?>
-<?php if ($route instanceof FacturationDeclarantRoute || $route instanceof FactureRoute || $route instanceof CompteRoute): ?>
-    <?php $compte = $route->getCompte(); ?>
-    <?php $societe = $compte->getSociete(); ?>
-    <?php $compte = $societe->getMasterCompte(); ?>
-    <?php $etablissement = $societe->getEtablissementPrincipal(); ?>
-<?php endif; ?>
-<?php if ($route instanceof SocieteRoute): ?>
-    <?php $societe = $route->getSociete(); ?>
-    <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $compte = $route->getSociete()->getMasterCompte(); ?>
-<?php endif; ?>
-
-<?php if($sf_user->isAuthenticated() && !$sf_user->isAdminODG() && (!$compte || !$etablissement)): ?>
-    <?php $compte = $sf_user->getCompte(); ?>
-    <?php $societe = $compte->getSociete() ; if ($societe) $etablissement = $societe->getEtablissementPrincipal(); ?>
-    <?php if (!$etablissement) $etablissement = $compte->getEtablissement(); ?>
-<?php endif; ?>
-
+<?php $route = $route->getRawValue(); ?>
 <div class="header-top">
     <div class="container">
       <div class="row">
@@ -41,8 +15,17 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
 <nav id="menu_navigation" class="navbar navbar-default container">
+        <div class="navbar-header hidden-lg hidden-md">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Afficher le menu</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="<?php echo url_for('accueil') ?>"></a>
+        </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="padding-left: 0;">
             <?php if($sf_user->isAdminODG()): ?>
             <ul class="nav navbar-nav <?php if($compte): ?>mode-operateur<?php endif; ?>" style="border: 0;">

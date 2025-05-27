@@ -2,8 +2,6 @@
     <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Télécharger...&nbsp;<span class="caret"></span></button>
     <ul class="dropdown-menu">
 <?php if($sf_user->isAdmin()): ?>
-        <li class="dropdown-header">Outils</li>
-        <li><a href="<?php echo url_for('parcellaire_potentiel_visualisation', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Potentiel de production</a></li>
         <li class="dropdown-header">Documents internes</li>
         <li><a href="<?php echo url_for('parcellaire_export_pp_ods', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le tableur du potentiel de production</a></li>
         <li><a href="<?php echo url_for('parcellaire_export_ods', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le doc de contrôle</a></li>

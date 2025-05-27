@@ -5,6 +5,7 @@ class CommunesConfiguration {
     private static $_instance = null;
     protected $communes;
     protected $communes_reverse;
+    protected $secteurs;
 
     public static function getInstance() {
         if (is_null(self::$_instance)) {
@@ -31,11 +32,19 @@ class CommunesConfiguration {
     }
 
     public function __construct() {
-        $this->communes = sfConfig::get('configuration_communes', array());
+        $this->config = sfConfig::get('configuration_communes', array());
+        $this->communes = [];
+        if (isset($this->config['insee2commune'])) {
+            $this->communes = $this->config['insee2commune'];
+        }
         if (!count($this->communes)) {
             $this->communes = self::retrieveCommunesFromCachedOpenDataWine();
         }
         $this->communes_reverse = array_flip($this->communes);
+        $this->secteurs = [];
+        if (isset($this->config['insee2secteur'])) {
+            $this->secteurs = $this->config['insee2secteur'];
+        }
     }
 
     public function getByCodeCommune() {
@@ -50,12 +59,14 @@ class CommunesConfiguration {
 
     public function findCodeCommune($commune) {
         if(!isset($this->communes_reverse[$commune])) {
-            $commune = strtoupper($commune);
-            $commune = preg_replace('/^ST /', 'SAINT ', $commune);
-            $commune = preg_replace('/[^A-Z]/', '', $commune);
+            $commune_simplified = $commune;
+            $commune_simplified = strtoupper($commune_simplified);
+            $commune_simplified = preg_replace('/^ST(E?) /', 'SAINT\1 ', $commune_simplified);
+            $commune_simplified = preg_replace('/[^A-Z]/', '', $commune_simplified);
             foreach($this->communes_reverse as $c => $v) {
                 $c = preg_replace('/[^A-Z]/', '', strtoupper($c));
-                if (strpos($c, $commune) !== false) {
+                if ( (strpos($c, $commune_simplified) !== false) || (strpos($commune_simplified, $c) !== false) ) {
+                    $this->communes_reverse[$commune] = $v;
                     return $v;
                 }
             }
@@ -63,6 +74,17 @@ class CommunesConfiguration {
         }
 
         return $this->communes_reverse[$commune];
+    }
+
+    public function hasSecteurs() {
+        return (count($this->secteurs));
+    }
+
+    public function getSecteurFromInsee($i) {
+        if (!isset($this->secteurs[$i])) {
+            return null;
+        }
+        return $this->secteurs[$i];
     }
 
 }

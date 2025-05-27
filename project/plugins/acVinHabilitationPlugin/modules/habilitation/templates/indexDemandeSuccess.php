@@ -5,8 +5,9 @@
 
 <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'))); ?>
 
+<h3>Liste des demandes</h3>
 <div class="row">
-    <div class="col-sm-9 col-lg-10 col-xs-12">
+    <div class="col-sm-9 col-xs-12">
         <table class="table table-bordered table-striped table-condensed">
             <thead>
                 <tr>
@@ -43,40 +44,47 @@
         <?php if($nbPage > 0): ?>
         <div class="text-center">
             <ul class="pagination" style="margin-top: 0;">
-                <li <?php if ($page - 1  < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation_demande', array('query' =>  $query, 'page' => (($page - 1) > 0) ? $page - 1 : 1, 'voirtout' => $voirtout*1, 'sort' => $sort)); ?>" aria-label="Previous"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-left"></span></span></a></li>
-                <li <?php if ($page -1 < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation_demande', array('query' =>  $query, 'page' => 1, 'voirtout' => $voirtout*1, 'sort' => $sort)); ?>" aria-label="Previous"><span aria-hidden="true"><small>Première page</small></span</span></a></li>
-                <li><span aria-hidden="true"><small>Page <?php echo $page ?> / <?php echo $nbPage ?></span></small></li>
-                <li <?php if ($page +1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation_demande', array('query' =>  $query, 'page' => $nbPage, 'voirtout' => $voirtout*1, 'sort' => $sort)); ?>" aria-label="Next"><span aria-hidden="true"><small>Dernière page</small></span></a></li>
-                <li <?php if ($page + 1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation_demande', array('query' =>  $query, 'page' =>(($page + 1) > $nbPage) ? $page : $page + 1, 'voirtout' => $voirtout*1, 'sort' => $sort)); ?>" aria-label="Next"><span aria-hidden="true"></span><span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                <li <?php if ($page - 1  < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation_demande_liste', array('query' =>  $query, 'page' => (($page - 1) > 0) ? $page - 1 : 1, 'voirtout' => $voirtout*1, 'sort' => $sort)); ?>" aria-label="Previous"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-left"></span></span></a></li>
+                <li <?php if ($page -1 < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation_demande_liste', array('query' =>  $query, 'page' => 1, 'voirtout' => $voirtout*1, 'sort' => $sort)); ?>" aria-label="Previous"><span aria-hidden="true"><small>Première page</small></span></a></li>
+                <li><span aria-hidden="true"><small>Page <?php echo $page ?> / <?php echo $nbPage ?></small></span></li>
+                <li <?php if ($page +1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation_demande_liste', array('query' =>  $query, 'page' => $nbPage, 'voirtout' => $voirtout*1, 'sort' => $sort)); ?>" aria-label="Next"><span aria-hidden="true"><small>Dernière page</small></span></a></li>
+                <li <?php if ($page + 1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('habilitation_demande_liste', array('query' =>  $query, 'page' =>(($page + 1) > $nbPage) ? $page : $page + 1, 'voirtout' => $voirtout*1, 'sort' => $sort)); ?>" aria-label="Next"><span aria-hidden="true"></span><span class="glyphicon glyphicon-chevron-right"></span></a></li>
             </ul>
         </div>
         <?php endif; ?>
     </div>
 
-    <div class="col-sm-3 col-lg-2 col-xs-12">
+    <div class="col-sm-3 col-lg-3 col-xs-12">
+        <div class="list-group">
+            <a class="" href="<?php echo url_for('habilitation_liste'); ?>">
+                <span class="glyphicon glyphicon-new-window"></span>
+                &nbsp;Voir les habilitations
+            </a>
+        </div>
+        <hr style="margin-bottom: 20px; margin-top: 20px;" />
         <div class="list-group">
             <p class="text-muted"><i><?php echo $nbResultats ?> demande<?php if ($nbResultats > 1): ?>s<?php endif; ?></i></p>
         </div>
         <?php if ($regionParam): ?>
         <h4>Région</h4>
         <div class="list-group">
-            <span class="list-group-item active"><span class="badge"><?php echo $nbResultats; ?></span> <?php echo str_replace('_', ' ', $regionParam); ?></a>
+            <span class="list-group-item active"><span class="badge"><?php echo $nbResultats; ?></span> <?php echo str_replace('_', ' ', $regionParam); ?></span>
         </div>
         <?php endif; ?>
         <h4>Trié par</h4>
         <div class="list-group">
             <?php foreach($sorts as $libelle => $keys): ?>
-                <a href="<?php echo url_for('habilitation_demande', array('query' => $query, 'sort' => $libelle, 'voirtout' => $voirtout*1)) ?>" class="list-group-item <?php if($sort == $libelle): ?>active<?php endif; ?>"><?php echo $libelle ?></a>
+                <a href="<?php echo url_for('habilitation_demande_liste', array('query' => $query, 'sort' => $libelle, 'voirtout' => $voirtout*1)) ?>" class="list-group-item <?php if($sort == $libelle): ?>active<?php endif; ?>"><?php echo $libelle ?></a>
             <?php endforeach; ?>
         </div>
         <div class="checkbox" style="margin-bottom: 20px;">
             <label>
-                <input data-href="<?php echo url_for('habilitation_demande', array('voirtout' => (!$voirtout)*1, 'region' => $regionParam)); ?>" id="habilitation_voirtout" <?php if($voirtout): ?>checked="checked"<?php endif; ?> type="checkbox" value="1" /> Demandes terminées
+                <input data-href="<?php echo url_for('habilitation_demande_liste', array('voirtout' => (!$voirtout)*1, 'region' => $regionParam)); ?>" id="habilitation_voirtout" <?php if($voirtout): ?>checked="checked"<?php endif; ?> type="checkbox" value="1" /> Demandes terminées
             </label>
         </div>
         <?php if($query && count($query) > 0): ?>
         <p>
-            <a href="<?php echo url_for('habilitation_demande') ?>"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
+            <a href="<?php echo url_for('habilitation_demande_liste') ?>"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
         </p>
         <?php endif; ?>
         <?php foreach($facets as $facetNom => $items): ?>
@@ -86,7 +94,7 @@
                 <?php $active = isset($query[$facetNom]) && $query[$facetNom] == $itemNom; ?>
                 <?php $params = is_array($query) ? $query : array(); if($active): unset($params[$facetNom]); else: $params = array_merge($params, array($facetNom => $itemNom)); endif; ?>
                 <?php if(!count($params)): $params = false; endif; ?>
-                <a href="<?php echo url_for('habilitation_demande', array('query' => $params, 'sort' => $sort, 'voirtout' => $voirtout*1)) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php if($facetNom == "Statut"): ?><?php echo HabilitationClient::getInstance()->getDemandeStatutLibelle($itemNom); ?><?php elseif($facetNom == "Demande"): ?><?php echo HabilitationClient::$demande_libelles[$itemNom]; ?><?php else: ?><?php echo $itemNom ?><?php endif ?></a>
+                <a href="<?php echo url_for('habilitation_demande_liste', array('query' => $params, 'sort' => $sort, 'voirtout' => $voirtout*1)) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php if($facetNom == "Statut"): ?><?php echo HabilitationClient::getInstance()->getDemandeStatutLibelle($itemNom); ?><?php elseif($facetNom == "Demande"): ?><?php echo HabilitationClient::$demande_libelles[$itemNom]; ?><?php else: ?><?php echo $itemNom ?><?php endif ?></a>
             <?php endforeach; ?>
         </div>
         <?php endforeach; ?>

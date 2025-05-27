@@ -1,8 +1,14 @@
-<?php if(strpos($etablissement->famille, 'PRODUCTEUR') === false): return; endif; ?>
+<?php
+if(
+    ! $etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR )
+    && ! $etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR)
+): return;
+endif; ?>
+
 <?php use_helper('Date'); ?>
 
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel <?php if($parcellaireIrrigue): ?>panel-primary<?php elseif($parcellaireIrrigable && !$parcellaireIrrigable->validation): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
+    <div class="block_declaration panel <?php if($parcellaireIrrigue): ?>panel-primary panel-irrigue <?php elseif($parcellaireIrrigable && !$parcellaireIrrigable->validation): ?>panel-primary panel-irrigable <?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
             <h3 class="panel-title">Déclarations d'irrigation <?php echo $periode ?></h3>
         </div>
@@ -30,7 +36,7 @@
       </div>
       <?php else:  ?>
     <div class="panel-body">
-        <p class="explications">Identifier ou mettre à jour vos parcelles<br />irrigables.</p>
+        <p class="explications">Identifier ou mettre à jour vos parcelles irrigables.<br/>&nbsp;</p>
         <div class="actions">
             <a class="btn btn-block btn-default" href="<?php echo url_for('parcellaireirrigable_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la déclaration « Irrigable »</a>
         </div>
@@ -73,7 +79,7 @@
           </div>
       <?php else:  ?>
         <div class="panel-body">
-            <p class="explications"><?php if(!$parcellaireIrrigue): ?>Identifier<?php else: ?>Mettre à jour<?php endif; ?> vos parcelles irriguées depuis votre <a href="<?php echo url_for('parcellaireirrigable_visualisation', array('sf_subject' => $parcellaireIrrigable)) ?>">déclaration d'irrigabilité <?php echo $periode; ?></a>.<br />&nbsp;</p>
+            <p class="explications"><?php if(!$parcellaireIrrigue): ?>Identifier<?php else: ?>Mettre à jour<?php endif; ?> vos parcelles irriguées depuis votre <a href="<?php echo url_for('parcellaireirrigable_visualisation', array('sf_subject' => $parcellaireIrrigable)) ?>">déclaration d'irrigabilité <?php echo $periode; ?></a>.</p>
           	<div class="actions">
                 <a class="btn btn-block btn-default" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode, 'papier' => false)) ?>"><?php if(!$parcellaireIrrigue): ?>Démarrer un « Irrigué »<?php else: ?>Visualiser et continuer l'irrigué<?php endif; ?></a>
             </div>

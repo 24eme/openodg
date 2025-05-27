@@ -1,37 +1,8 @@
-<?php
-$route = ($sf_request->getAttribute('sf_route')) ? $sf_request->getAttribute('sf_route')->getRawValue() : NULL;
-$etablissement = null;
-$compte = null;
-
-if ($route instanceof EtablissementRoute) {
-    $etablissement = $route->getEtablissement();
-    $compte = $etablissement->getMasterCompte();
-}
-if ($route instanceof FacturationDeclarantRoute || $route instanceof FactureRoute || $route instanceof CompteRoute) {
-    $compte = $route->getCompte();
-    $etablissement = $compte->getEtablissement();
-}
-if ($route instanceof SocieteRoute) {
-    $etablissement = $route->getEtablissement();
-    $societe = $route->getSociete();
-    if ($societe) {
-        $compte = $societe->getMasterCompte();
-    }
-}
-if ($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)) {
-    $etablissement = $sf_user->getEtablissement();
-}
-if ($sf_user->isAuthenticated() && !$compte && !$etablissement && !count($sf_user->getCredentials())) {
-    throw new sfError403Exception("pas de compte");
-}
-if (($compte && ($compte->statut == CompteClient::STATUT_SUSPENDU)) && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)) {
-    throw new sfError403Exception("Compte inactif");
-}
-?>
+<?php $route = $route->getRawValue(); ?>
 <nav id="menu_navigation" class="navbar navbar-default container">
         <div class="navbar-header hidden-lg hidden-md">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
+            <span class="sr-only">Afficher le menu</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>

@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
+const readline = require('readline');
 
 if(!process.env.URLSITE){
   throw "Initialisez la variable d'environnement URLSITE";
@@ -8,6 +9,19 @@ if(!process.env.URLSITE){
 const baseURL = process.env.URLSITE;
 exports.baseURL = baseURL;
 var browser;
+
+var stdin_lines;
+try {
+process.stdin.on("data", data => {
+    stdin_lines = data.toString().toUpperCase()
+})
+}catch(e){
+  stdin_lines = false;
+}
+
+if(process.env.DEBUG){
+    console.log('begin');
+}
 
 (async () => {
   try {
@@ -62,11 +76,63 @@ var browser;
       console.log("===================");
     }
 
+    await page.goto(baseURL+"/operateur/ListeOperateurR.aspx");
 
-    for (let i = 0; i < 1050; i++) {
-      let nb = i.toString();
-      await page.goto(baseURL+"/operateur/ListeOperateurR.aspx?IDENT="+nb);
-      await page.type("#tbCodeInterne", nb);
+    if (!stdin_lines) {
+
+      await page.click("#btnRech");
+      await page.waitForSelector('#gvOP');
+
+      client = await page.target().createCDPSession()
+      await client.send('Page.setDownloadBehavior', {
+        behavior: 'allow',
+        downloadPath: ".",
+      });
+      await page.click("#Button2");
+
+      xls_filename = '';
+      await page.waitForResponse((response) => {
+        if (response.status() === 200) {
+            xls_filename = response.headers()['content-disposition'];
+            xls_filename = xls_filename.replace('attachment; filename=', '');
+            if(process.env.DEBUG){
+                console.log('xls_filename: ' + xls_filename);
+            }
+            if (xls_filename.match('xls')) {
+                return true;
+            }
+        }
+        return false;
+      });
+      await page.waitForTimeout(1000);
+      await fs.rename(xls_filename, process.env.DOSSIER+'/operateurs.xlsx', (err) => {if (err) return 'ERR';});
+      if(process.env.DEBUG){
+          console.log('xls saved: ' + process.env.DOSSIER+'operateurs.xlsx (' + xls_filename + ')');
+      }
+      await browser.close();
+      if(process.env.DEBUG){
+          console.log('browser closed');
+      }
+      process.exit(0);
+      return ;
+    }
+
+    if(process.env.DEBUG){
+        console.log('stdin_lines: ');
+        console.log(stdin_lines);
+    }
+    lines = stdin_lines.split('\n');
+    for (i in lines) {
+      if (!lines[i]) {
+        continue;
+      }
+      console.log(lines[i]);
+      args = lines[i].split(";");
+      rs = args[1];
+      nb = args[0];
+      console.log("search for " + rs + "(" + nb + ")");
+      await page.$eval('#tbEnt', el => el.value = '');
+      await page.type("#tbEnt", rs);
       await page.click("#btnRech");
       let finded = false;
       try {
@@ -76,8 +142,8 @@ var browser;
       }
 
       if(!finded) {
-        await page.goto(baseURL+"/operateur/ListeOpCessation.aspx?IDENT="+nb);
-        await page.type("#tbCodeInterne", nb);
+        await page.goto(baseURL+"/operateur/ListeOpCessation.aspx");
+        await page.type("#tbEnt", rs);
         await page.click("#btnRecherche");
         try {
           await page.waitForSelector("input.icon_modif", {timeout: 1000});
@@ -87,7 +153,7 @@ var browser;
       }
 
       if(finded) {
-        console.log("finded "+nb);
+        console.log("finded "+rs);
         await page.click("input.icon_modif");
 
         let newPagePromise = new Promise(x => page.once('popup', x));
@@ -99,12 +165,18 @@ var browser;
 
         await newPage.goto(baseURL+"/operateur/Commentaire.aspx");
         fs.writeFileSync(process.env.DOSSIER+"/01_operateurs/fiches/"+nb+"_commentaires.html",await newPage.content());
+
+        await newPage.goto(baseURL+"/operateur/LstContact.aspx");
+        fs.writeFileSync(process.env.DOSSIER+"/01_operateurs/fiches/"+nb+"_contact.html",await newPage.content());
+
         await newPage.close();
+
       }
-  }
+      console.log(process.env.DOSSIER+"/01_operateurs/fiches/"+nb+"_*.html saved (" + rs + ")");
+    }
 
-
-//    await browser.close();
+    await browser.close();
+    process.exit(0);
 
 }catch (e) {
     console.log("");

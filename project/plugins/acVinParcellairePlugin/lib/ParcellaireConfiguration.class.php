@@ -85,6 +85,26 @@ class ParcellaireConfiguration {
 
     }
 
+    public function affectationDenominationAire() {
+        if(!isset($this->configuration['affectation'])) {
+            return null;
+        }
+        if(!isset($this->configuration['affectation']['denomination_aire'])) {
+            return null;
+        }
+        return $this->configuration['affectation']['denomination_aire'];
+    }
+
+    public function affectationDenominationAireHash() {
+        if(!isset($this->configuration['affectation'])) {
+            return null;
+        }
+        if(!isset($this->configuration['affectation']['denomination_aire_hash'])) {
+            return null;
+        }
+        return $this->configuration['affectation']['denomination_aire_hash'];
+    }
+
     public function isManquantMandatory() {
         if(!isset($this->configuration['manquant']) || !isset($this->configuration['manquant']['mandatory'])) {
             return false;
@@ -156,6 +176,14 @@ class ParcellaireConfiguration {
     }
     public function getGroupeRegles($k) {
         return $this->configuration['potentiel_de_production'][$k]['regles'];
+    }
+
+    public function hasEngagements() {
+        return isset($this->configuration['irrigable']['engagements']) && boolval($this->configuration['irrigable']['engagements']);
+    }
+
+    public function hasIrrigableMaterielRessource() {
+        return isset($this->configuration['irrigable']['hasIrrigableMaterielRessource']) && boolval($this->configuration['irrigable']['hasIrrigableMaterielRessource']);
     }
 
 }

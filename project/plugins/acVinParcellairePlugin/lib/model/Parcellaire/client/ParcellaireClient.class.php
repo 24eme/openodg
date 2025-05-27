@@ -262,7 +262,9 @@ class ParcellaireClient extends acCouchdbClient {
         $parcellesMatch = [];
 
         $selected_parcellaires = [];
-        if ($parcelle->exist('idu') && $parcelle->idu && isset($parcelles[$parcelle->idu])) {
+        $is_parcelle_from_parcellaire = method_exists($parcelle, 'exist');
+
+        if ($is_parcelle_from_parcellaire && $parcelle->exist('idu') && $parcelle->idu && isset($parcelles[$parcelle->idu])) {
             $selected_parcellaires = $parcelles[$parcelle->idu];
         }else{
             foreach($parcelles as $idu => $multip) {
@@ -271,29 +273,62 @@ class ParcellaireClient extends acCouchdbClient {
                 }
             }
         }
-
         foreach($selected_parcellaires as $p) {
             $score = 0;
-
-            if(preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($parcelle->getCepageLibelle())) == preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($p->getCepageLibelle()))) {
+            $debug_score = [];
+            if ($is_parcelle_from_parcellaire) {
+                $cepage =  $parcelle->getCepageLibelle();
+            }else {
+                $cepage = $parcelle->cepage;
+            }
+            if(preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($cepage)) == preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($p->getCepageLibelle()))) {
+                $debug_score[] = 'libelle:+0.25';
                 $score += 0.25;
             }
             if(strpos($p->campagne_plantation, $parcelle->campagne_plantation) !== false) {
+                $debug_score[] = 'campagne_plantation:+0.25';
                 $score += 0.25;
             }
             if(KeyInflector::slugify($parcelle->lieu) == KeyInflector::slugify($p->lieu)) {
+                $debug_score[] = 'lieu:+0.25';
                 $score += 0.25;
             }
-            if($parcelle->exist('parcelle_id') && $parcelle->_get('parcelle_id') && $parcelle->exist('superficie_parcellaire') && $p->exist('superficie_parcellaire') && abs($parcelle->_get('superficie_parcellaire') - $p->_get('superficie_parcellaire')) < 0.0001) {
+            if(KeyInflector::slugify($parcelle->commune) == KeyInflector::slugify($p->commune)) {
+                $debug_score[] = 'commune:+0.25';
+                $score += 0.25;
+            }
+            $has_one_exact_superficie = false;
+            if($is_parcelle_from_parcellaire && $parcelle->exist('parcelle_id') && $parcelle->_get('parcelle_id') && $parcelle->exist('superficie_parcellaire') && $p->exist('superficie_parcellaire') && abs($parcelle->_get('superficie_parcellaire') - $p->_get('superficie_parcellaire')) < 0.0001) {
+                $debug_score[] = 'superficie_parcellaire:+0.10';
+                $has_one_exact_superficie = true;
                 $score += 0.10;
             }
-            if(abs($parcelle->_get('superficie') - $p->_get('superficie')) < 0.0001) {
-                $score += 0.10;
+            $s = 0;
+            if ($is_parcelle_from_parcellaire) {
+                $s = $parcelle->_get('superficie');
+            }else{
+                $s = $parcelle->superficie;
             }
-            if($parcelle->exist('parcelle_id') && $parcelle->_get('parcelle_id') && $parcelle->exist('superficie_parcellaire') && abs($parcelle->_get('superficie_parcellaire') - $p->_get('superficie')) < 0.0001) {
+            if(abs($s - $p->_get('superficie')) < 0.0001) {
+                $debug_score[] = 'superficie:+0.25';
+                $has_one_exact_superficie = true;
+                $score += 0.25;
+            }
+
+            if($is_parcelle_from_parcellaire && $parcelle->exist('parcelle_id') && $parcelle->_get('parcelle_id') && $parcelle->exist('superficie_parcellaire') && abs($parcelle->_get('superficie_parcellaire') - $p->_get('superficie')) < 0.0001) {
+                $debug_score[] = 'superficie:+0.05';
+                $has_one_exact_superficie = true;
                 $score += 0.05;
             }
-            if (($parcelle->idu == $p->idu) || !$parcelle->getIDU(false) && ( ($parcelle->section == $p->section) && ($parcelle->numero_parcelle == $p->numero_parcelle) && (intval($parcelle->getPrefix()) == intval($p->prefix))) ) {
+            if (!$has_one_exact_superficie) {
+                $debug_score[] = 'no_superficie:-0.30';
+                $score -= 0.30;
+            }
+            if ($is_parcelle_from_parcellaire && ($parcelle->idu == $p->idu)) {
+                $debug_score[] = 'idu:+0.25';
+                $score += 0.25;
+            }elseif ( (!$is_parcelle_from_parcellaire || !$parcelle->getIDU(false)) && ( ($parcelle->section == $p->section) && ($parcelle->numero_parcelle == $p->numero_parcelle) && (intval($parcelle->prefix == intval($p->prefix))) )) {
+                $debug_score[] = 'parcelledetail:+0.25';
                 $score += 0.25;
             }
             if ($allready_selected && isset($allready_selected[$p->getParcelleId()])) {
@@ -303,7 +338,7 @@ class ParcellaireClient extends acCouchdbClient {
                 continue;
             }
 
-            $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = $p;
+            $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = ['parcelle' => $p, 'debug' => $debug_score];
             if ($allready_selected !== null) {
                 $allready_selected[$p->getParcelleId()] = $p->getParcelleId();
             }
@@ -312,13 +347,12 @@ class ParcellaireClient extends acCouchdbClient {
         krsort($parcellesMatch);
         foreach($parcellesMatch as $key => $pMatch) {
             if ($with_cepage_match) {
-                if ($pMatch->cepage != $parcelle->cepage) {
+                if ($pMatch['parcelle']->cepage != $parcelle->cepage) {
                     continue;
                 }
             }
-            return $pMatch;
+            return $pMatch['parcelle'];
         }
-
         return null;
     }
 
@@ -403,6 +437,39 @@ class ParcellaireClient extends acCouchdbClient {
         ksort($res);
         return $res;
 
+    }
+
+    public function getSyntheseCepages($parcellairedoc, $filter_produit_hash = null, $filter_insee = null) {
+        $synthese = array();
+        foreach($parcellairedoc->getParcelles() as $p) {
+            if ($filter_produit_hash) {
+                if (is_string($filter_produit_hash)) {
+                    if (strpos($p->produit_hash, $filter_produit_hash) === false) {
+                        continue;
+                    }
+                } else {
+                    if (!$p->produit_hash) {
+                        continue;
+                    }
+                }
+            }
+            if ($filter_insee && !in_array($p->code_commune, $filter_insee)) {
+                continue;
+            }
+            $cepage = $p->getCepage();
+            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
+                $cepage .= ' - jeunes vignes';
+            }
+            if (!isset($synthese[$cepage])) {
+                $synthese[$cepage] = array();
+                $synthese[$cepage]['superficie'] = 0;
+                $synthese[$cepage]['idus'] = [];
+            }
+            $synthese[$cepage]['superficie'] = $synthese[$cepage]['superficie'] + $p->superficie;
+            $synthese[$cepage]['idus'][$p->getParcelleId()] = $p->superficie;
+        }
+        ksort($synthese);
+        return $synthese;
     }
 
 }

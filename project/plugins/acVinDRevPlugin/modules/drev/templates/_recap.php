@@ -8,7 +8,7 @@
   </div>
 <?php endif; ?>
 
-<?php if(count($drev->getProduitsWithoutLots())): ?>
+<?php if(DRevConfiguration::getInstance()->hasEtapesAOC() || count($drev->getProduitsWithoutLots())): ?>
 <?php    include_partial('drev/recap_aop', array('drev'=>$drev, 'form' =>$form)); ?>
 <?php endif; ?>
 <?php if($drev->exist('lots')): ?>

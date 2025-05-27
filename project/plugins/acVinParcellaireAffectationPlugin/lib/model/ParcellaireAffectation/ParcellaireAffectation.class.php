@@ -7,6 +7,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   protected $parcelles_idu = null;
   protected $previous_document = null;
   protected $etablissement = null;
+  protected $habilitation = null;
 
   public function isAdresseLogementDifferente() {
       return false;
@@ -121,15 +122,29 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if (!$parcelle->affectation) {
             continue;
         }
-        if($this->findParcelle($parcelle, true, $allready_selected)) {
+        if($parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelleByParcelleId($parcelle)) {
             continue;
         }
+        if(!$parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelle($parcelle, 1, true, $allready_selected)) {
+            continue;
+        }
+
         $this->addParcelle($parcelle);
     }
   }
 
+    public function findParcelleByParcelleId($parcelle) {
+        $p = $this->getParcelleById($parcelle->getParcelleId());
+
+        return $p && $p->cepage == $parcelle->cepage && $p->campagne_plantation == $parcelle->campagne_plantation;
+    }
+
     public function getParcelleById($id) {
         $p = $this->getParcelles();
+
+        if(!isset($p[$id])) {
+            return null;
+        }
         return $p[$id];
     }
 
@@ -138,6 +153,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if(!$previous) {
             return;
         }
+        $destinataires = $this->getDestinataires();
         foreach($previous->getParcelles() as $previousParcelle) {
             if(!$previousParcelle->isAffectee()) {
                 continue;
@@ -149,7 +165,16 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 $pMatch->superficie = $previousParcelle->superficie;
                 if($previousParcelle->exist('destinations')) {
                     $pMatch->remove('destinations');
-                    $pMatch->add('destinations', $previousParcelle->destinations);
+                    $pMatch->add('destinations');
+                    foreach($previousParcelle->destinations as $destinationIdentifiant => $destination) {
+                        if(!array_key_exists("ETABLISSEMENT-".$destinationIdentifiant, $destinataires)) {
+                            continue;
+                        }
+                        $pMatch->add('destinations')->add($destinationIdentifiant, $destination);
+                    }
+                    if(!$pMatch->superficie) {
+                        $pMatch->affectee = 0;
+                    }
                     $pMatch->updateAffectations();
                 }
             }
@@ -262,7 +287,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getDestinataires() {
-        $destinataires = [$this->getEtablissementObject()->_id => ['libelle_etablissement' => "Cave particulière"]];
+        $destinataires = [];
+
+        if($this->getHabilitation() && in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $this->getHabilitation()->getActivitesHabilites())) {
+            $destinataires[$this->getEtablissementObject()->_id] = ['libelle_etablissement' => "Cave particulière"];
+        }
 
         foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATIVE) as $liaison) {
             $destinataires[$liaison->id_etablissement] = $liaison;
@@ -272,7 +301,38 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             $destinataires[$liaison->id_etablissement] = $liaison;
         }
 
+        foreach($this->getParcelles() as $parcelle) {
+            if(!$parcelle->exist('destinations')) {
+                continue;
+            }
+            foreach($parcelle->destinations as $destination) {
+                if(!isset($destinataires["ETABLISSEMENT-".$destination->identifiant])) {
+                    $destinataires["ETABLISSEMENT-".$destination->identifiant] = ['libelle_etablissement' => $destination->nom];
+                }
+            }
+        }
+
         return $destinataires;
+    }
+
+    public function getDestinatairesIncomplete() {
+        $destinataires = $this->getDestinataires();
+        foreach($destinataires as $idDestinataire => $destinataire) {
+            $parcellaireCoop = ParcellaireAffectationCoopClient::getInstance()->find(ParcellaireAffectationCoopClient::getInstance()->buildId(str_replace('ETABLISSEMENT-', '', $idDestinataire), $this->getPeriode()));
+            if($parcellaireCoop && $parcellaireCoop->exist('apporteurs/ETABLISSEMENT-'.$this->identifiant.'/statuts/'.$this->getType()) && $parcellaireCoop->get('apporteurs/ETABLISSEMENT-'.$this->identifiant.'/statuts/'.$this->getType()) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT) {
+                unset($destinataires[$idDestinataire]);
+            }
+        }
+
+        return $destinataires;
+    }
+
+    public function getHabilitation() {
+        if(is_null($this->habilitation)) {
+            $this->habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getPeriode().'-03-01');
+        }
+
+        return $this->habilitation;
     }
 
   /*** DECLARATION DOCUMENT ***/
@@ -358,6 +418,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if ($this->getDocument()->hasDgc()) {
             return $this->declaration->getParcellesByDgc($onlyAffectee);
         }
+        if (count($this->declaration) >= 1) {
+            return $this->declaration->getParcellesByProduit($onlyAffectee);
+        }
         return $this->declaration->getParcellesByCommune($onlyAffectee);
     }
 
@@ -418,7 +481,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function addParcelle($parcelle) {
         $this->parcelles_idu = null;
-        $produit = $this->declaration->add(str_replace('/declaration/', '', preg_replace('|/couleurs/.*$|', '', $parcelle->produit_hash)));
+        $produit = $this->declaration->add(str_replace('/declaration/', '', $parcelle->produit_hash));
         $produit->libelle = $produit->getConfig()->getLibelleComplet();
         if(get_class($parcelle) == "ParcellaireAffectationProduitDetail") {
 
@@ -429,6 +492,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $detail->origine_doc = $parcelle->getDocument()->_id;
         $detail->superficie = null;
         return $detail;
+    }
+
+    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null) {
+        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee);
     }
 
 }

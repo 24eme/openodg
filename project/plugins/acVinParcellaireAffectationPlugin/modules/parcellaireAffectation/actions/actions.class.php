@@ -109,8 +109,11 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executeAffectations(sfWebRequest $request) {
         $this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        $this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
         $this->coop = $request->getParameter('coop');
-        $this->destinataire = $request->getParameter('destinataire', $this->parcellaireAffectation->getEtablissementObject()->_id);
+        $this->destinataires = $this->parcellaireAffectation->getDestinataires();
+        $this->destinataire = $request->getParameter('destinataire', key($this->destinataires));
+
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
 
         if ($this->coop) {
@@ -126,11 +129,8 @@ class parcellaireAffectationActions extends sfActions {
 
         $this->parcellaireAffectation->updateParcellesAffectation();
 
-    	$this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
 
 		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation, $this->destinataire);
-
-        $this->destinataires = $this->parcellaireAffectation->getDestinataires();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -194,10 +194,26 @@ class parcellaireAffectationActions extends sfActions {
 
     	$this->form = new ParcellaireAffectationValidationForm($this->parcellaireAffectation);
 
+        $this->destinatairesIncomplete = [];
+        if($this->coop) {
+            $this->destinatairesIncomplete = $this->parcellaireAffectation->getDestinatairesIncomplete();
+            unset($this->destinatairesIncomplete["ETABLISSEMENT-".explode("-", $this->coop)[1]]);
+        }
+
     	if (!$request->isMethod(sfWebRequest::POST)) {
     		$this->validation = new ParcellaireAffectationValidation($this->parcellaireAffectation);
     		return sfView::SUCCESS;
     	}
+
+        if($this->coop) {
+            $coopDoc = ParcellaireAffectationCoopClient::getInstance()->find($this->coop);
+            $coopDoc->addApporteur($this->parcellaireAffectation->getEtablissementObject()->_id)->add('statuts')->add($this->parcellaireAffectation->getType(), ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT);
+            $coopDoc->save();
+        }
+
+        if(count($this->destinatairesIncomplete)) {
+            return $this->redirect('declaration_etablissement', $this->parcellaireAffectation->getEtablissementObject());
+        }
 
     	$this->form->bind($request->getParameter($this->form->getName()));
 

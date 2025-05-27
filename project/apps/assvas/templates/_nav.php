@@ -1,31 +1,4 @@
-<?php $route = ($sf_request->getAttribute('sf_route')) ? $sf_request->getAttribute('sf_route')->getRawValue() : NULL; ?>
-<?php $etablissement = null ?>
-<?php $compte = null; ?>
-
-<?php if($route instanceof EtablissementRoute): ?>
-    <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $campagne = $route->getCampagne(); ?>
-    <?php $compte = $etablissement->getMasterCompte(); ?>
-<?php endif; ?>
-<?php if ($route instanceof FacturationDeclarantRoute || $route instanceof FactureRoute || $route instanceof CompteRoute): ?>
-    <?php $compte = $route->getCompte(); ?>
-    <?php $societe = $compte->getSociete(); ?>
-    <?php $compte = $societe->getMasterCompte(); ?>
-    <?php $etablissement = $societe->getEtablissementPrincipal(); ?>
-<?php endif; ?>
-<?php if ($route instanceof SocieteRoute): ?>
-    <?php $societe = $route->getSociete(); ?>
-    <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $compte = $route->getSociete()->getMasterCompte(); ?>
-<?php endif; ?>
-
-<?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)): ?>
-    <?php $compte = $sf_user->getCompte(); ?>
-    <?php $societe = $compte->getSociete() ; if ($societe) $etablissement = $societe->getEtablissementPrincipal(); ?>
-    <?php if (!$etablissement) $etablissement = $compte->getEtablissement(); ?>
-<?php endif; ?>
-
-
+<?php $route = $route->getRawValue(); ?>
 <nav id="menu_navigation" class="navbar navbar-default container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed hidden-lg hidden-md" data-toggle="collapse" data-target="#menu_items_collapse" aria-expanded="false">
@@ -43,7 +16,7 @@
                     <li class="<?php if($route instanceof InterfaceParcellaireRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceParcellaireRoute): ?><?php echo url_for('parcellaire_declarant', $etablissement); ?><?php else: ?><?php echo url_for('parcellaire'); ?><?php endif; ?>">Parcellaire</a></li>
                     <li class="<?php if($route instanceof InterfaceDeclarationRoute): ?>active<?php endif; ?>  <?php if(!$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>disabled<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceDeclarationRoute): ?><?php echo url_for('declaration_etablissement', $etablissement); ?><?php else: ?><?php echo url_for('declaration'); ?><?php endif; ?>">DR / SV</a></li>
                     <li class="<?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceDocumentsRoute): ?><?php echo url_for('pieces_historique', $etablissement); ?><?php else: ?><?php echo url_for('documents'); ?><?php endif; ?>">Documents</a></li>
-                    <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceHabilitationRoute): ?><?php echo url_for('habilitation_declarant', $etablissement); ?><?php else: ?><?php echo url_for('habilitation_demande'); ?><?php endif; ?>">Habilitations</a></li>
+                    <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceHabilitationRoute): ?><?php echo url_for('habilitation_declarant', $etablissement); ?><?php else: ?><?php echo url_for('habilitation'); ?><?php endif; ?>">Habilitations</a></li>
                     <li class="<?php if($route instanceof InterfaceCompteRoute && !$route instanceof FacturationDeclarantRoute): ?>active<?php endif; ?>"><a href="<?php if($compte && !$route instanceof InterfaceCompteRoute || $route instanceof FacturationDeclarantRoute): ?><?php echo url_for('compte_visualisation', $compte); ?><?php else: ?><?php echo url_for('compte_search'); ?><?php endif; ?>">Contacts</a></li>
                 </ul>
                 <?php elseif($sf_user->isAuthenticated() && $etablissement): ?>
