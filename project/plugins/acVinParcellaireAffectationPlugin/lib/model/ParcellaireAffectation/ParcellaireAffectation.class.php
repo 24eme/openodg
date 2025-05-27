@@ -503,4 +503,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee);
     }
 
+    public function getProduits()
+    {
+        return $this->declaration->getProduits();
+    }
+
 }

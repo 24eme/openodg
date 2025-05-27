@@ -91,4 +91,14 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
             }
         }
     }
+
+    public function getProduits()
+    {
+        $produits = [];
+        foreach($this as $hash => $produit) {
+            $produits[$hash] = $produit->libelle;
+        }
+        ksort($produits);
+        return $produits;
+    }
 }
