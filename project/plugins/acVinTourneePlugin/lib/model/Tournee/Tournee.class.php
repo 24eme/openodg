@@ -105,6 +105,10 @@ class Tournee/***AVA***/ extends BaseTournee {
             return $this->getConfiguration()->declaration->certification->genre->appellation_CREMANT->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
         }
 
+        if($this->appellation == "GRDCRU") {
+            return $this->getConfiguration()->declaration->certification->genre->appellation_GRDCRU->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
+        }
+
         return $this->getConfiguration()->declaration->certification->genre->appellation_ALSACE->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 

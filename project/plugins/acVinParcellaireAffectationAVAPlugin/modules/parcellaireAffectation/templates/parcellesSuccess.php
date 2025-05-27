@@ -111,8 +111,8 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                     <?php if(!is_object($appellationNode) || $appellationNode->getConfig()->hasLieuEditable()):  ?>
                                         <td>
                                             <?php echo $parcelle->getLieuLibelle() ? $parcelle->getLieuLibelle() : '<p style="margin:0;"> - </p>'; ?>
-                                            <?php if($parcelle->getParcelleParcellaire() && strpos($parcelle->getProduitHash(), 'LIEUDIT')) : ?>
-                                                <p class="small text-muted" style="margin:0;"><?php echo $parcelle->getParcelleParcellaire()->getLieu() ?></p>
+                                            <?php if($parcelle->getLieuDitCadastral() && strpos($parcelle->getProduitHash(), 'LIEUDIT')) : ?>
+                                                <p class="small text-muted" style="margin:0;"><?php echo $parcelle->getLieuDitCadastral() ?></p>
                                             <?php endif; ?>
                                         </td>
                                     <?php endif; ?>
@@ -140,9 +140,11 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
 			<?php else: ?>
                 <p class="text-muted">Vous n'avez aucune <?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>parcelle<?php endif; ?> à affecter dans cette appellation.</p><br/>
             <?php endif; ?>
+            <?php if($sf_user->isAdmin()): ?>
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
             </div>
+            <?php endif; ?>
         </div>
     </div>
     <div class="row row-margin row-button">
