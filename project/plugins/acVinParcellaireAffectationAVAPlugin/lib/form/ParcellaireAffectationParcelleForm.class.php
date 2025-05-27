@@ -114,7 +114,7 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
     }
 
     protected function mustCreateNew() {
-        return !($this->getObject() instanceof ParcellaireAffectationCepageDetail) || $this->getObject()->getParcelleId();
+        return !$this->getObject() || !($this->getObject() instanceof ParcellaireAffectationCepageDetail) || $this->getObject()->getParcelleId();
     }
 
     protected function doUpdateObject($values) {
