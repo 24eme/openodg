@@ -145,9 +145,10 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
             $cepage = $values['cepage'];
             $lieu = $values['lieuDit'];
         }
-
-        $isKeyModified = ($this->getObject()->getCepage()->getHash() != str_replace('-', '/', $cepage) || $this->getObject()->commune != $commune || $this->getObject()->section != $section || $this->getObject()->numero_parcelle != $numero_parcelle || $this->getObject()->lieu != $lieu);
-
+        $isKeyModified = false;
+        if($this->getObject()) {
+            $isKeyModified = ($this->getObject()->getCepage()->getHash() != str_replace('-', '/', $cepage) || $this->getObject()->commune != $commune || $this->getObject()->section != $section || $this->getObject()->numero_parcelle != $numero_parcelle || $this->getObject()->lieu != $lieu);
+        }
         if($this->mustCreateNew() || $isKeyModified) {
             $parcelle = $this->getObject()->getDocument()->addParcelleForAppellation($this->getAppellationNode()->getKey(), $cepage, $commune, $section, $numero_parcelle, $lieu, $dpt);
         } else {

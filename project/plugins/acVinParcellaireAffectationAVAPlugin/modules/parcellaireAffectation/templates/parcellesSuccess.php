@@ -140,9 +140,11 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
 			<?php else: ?>
                 <p class="text-muted">Vous n'avez aucune <?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>parcelle<?php endif; ?> à affecter dans cette appellation.</p><br/>
             <?php endif; ?>
+            <?php if($sf_user->isAdmin()): ?>
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
             </div>
+            <?php endif; ?>
         </div>
     </div>
     <div class="row row-margin row-button">
