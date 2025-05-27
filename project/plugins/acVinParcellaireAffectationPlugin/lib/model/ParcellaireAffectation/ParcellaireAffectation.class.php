@@ -241,6 +241,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         foreach($todelete as $p) {
             $this->remove($p->getHash());
         }
+        foreach($this->declaration as $hash => $produit) {
+            if (!count($produit->detail)) {
+                $todelete[] = $produit;
+            }
+        }
+        foreach($todelete as $p) {
+            $this->remove($p->getHash());
+        }
     }
 
 	public function isValidee(){

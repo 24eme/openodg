@@ -29,9 +29,10 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
         foreach($parcelles as $parcelle) {
             $parcelle->desaffecter($this->destinataire);
         }
-        $this->getObject()->remove('declaration');
-        $this->getObject()->add('declaration');
         foreach ($parcelles as $pid => $parcelle) {
+            if (!isset($values[$pid])) {
+                continue;
+            }
             $items = $values[$pid];
             if (!isset($parcelles[$pid])){
                 continue;
@@ -44,6 +45,7 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
             }
             $this->getObject()->addParcelle($parcelle);
         }
+        $this->getObject()->cleanNonAffectee();
     }
 
 }
