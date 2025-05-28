@@ -368,11 +368,10 @@ class DRevValidation extends DocumentValidation {
         $prelevementBouteilleAlsace = $this->document->prelevements->get(DRev::BOUTEILLE_ALSACE);
         $controleExtBouteilleAlsace = new DateTimeImmutable($prelevementBouteilleAlsace->date);
 
-        if ($prelevementCuveAlsace->date && $prelevementBouteilleAlsace->date && $prelevementBouteilleAlsace->date < $degustConseilCuveAlsace->modify('+ 13 day')->format('Y-m-d')) {
-            $this->addPoint(self::TYPE_ERROR, 'periodes_cuves', sprintf("%s - %s", $prelevementBouteilleAlsace->libelle, $prelevementBouteilleAlsace->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
-        }
-
         if($this->document->prelevements->exist(DRev::CUVE_ALSACE)) {
+            if ($prelevementCuveAlsace->date && $prelevementBouteilleAlsace->date && $prelevementBouteilleAlsace->date < $degustConseilCuveAlsace->modify('+ 13 day')->format('Y-m-d')) {
+                $this->addPoint(self::TYPE_ERROR, 'periodes_cuves', sprintf("%s - %s", $prelevementBouteilleAlsace->libelle, $prelevementBouteilleAlsace->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
+            }
             $prelevementCuveAlsace = $this->document->prelevements->get(DRev::CUVE_ALSACE);
             $degustConseilCuveAlsace = new DateTimeImmutable($prelevementCuveAlsace->date);
             if ($degustConseilCuveAlsace->format('Y-m-d') >= $drevDate->modify('+ 1 year')->format('Y-m-d')) {
