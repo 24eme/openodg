@@ -367,13 +367,11 @@ class DRevValidation extends DocumentValidation {
 
         $prelevementCuveAlsace = $this->document->prelevements->get(DRev::CUVE_ALSACE);
         $prelevementCuveCremant = $this->document->prelevements->get(DRev::CUVE_CREMANT);
-        $prelevementCuveGrandCru = $this->document->prelevements->get(DRev::CUVE_GRDCRU);
         $prelevementBouteilleAlsace = $this->document->prelevements->get(DRev::BOUTEILLE_ALSACE);
         $prelevementBouteilleGrdCru = $this->document->prelevements->get(DRev::BOUTEILLE_GRDCRU);
 
         $degustConseilCuveAlsace = new DateTimeImmutable($prelevementCuveAlsace->date);
         $degustConseilCuveCremant = new DateTimeImmutable($prelevementCuveCremant->date);
-        $degustConseilCuveGrandCru = new DateTimeImmutable($prelevementCuveGrandCru->date);
         $controleExtBouteilleAlsace = new DateTimeImmutable($prelevementBouteilleAlsace->date);
         $controleExtBouteilleGrdCru = new DateTimeImmutable($prelevementBouteilleGrdCru->date);
 
@@ -390,8 +388,12 @@ class DRevValidation extends DocumentValidation {
             $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_degust_conseil', sprintf("%s - %s", $prelevementCuveCremant->libelle, $prelevementCuveCremant->libelle_produit), $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)) . "?focus=aoc_cremant");
         }
 
-        if ($degustConseilCuveGrandCru->format('Y-m-d') >= $drevDate->modify('+ 1 year')->format('Y-m-d')) {
-            $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_degust_conseil', sprintf("%s - %s", $prelevementCuveGrandCru->libelle, $prelevementCuveGrandCru->libelle_produit), $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)) . "?focus=aoc_grdcru");
+        if($this->document->prelevements->exist(DRev::CUVE_GRDCRU)) {
+            $prelevementCuveGrandCru = $this->document->prelevements->get(DRev::CUVE_GRDCRU);
+            $degustConseilCuveGrandCru = new DateTimeImmutable($prelevementCuveGrandCru->date);
+            if ($degustConseilCuveGrandCru->format('Y-m-d') >= $drevDate->modify('+ 1 year')->format('Y-m-d')) {
+                $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_degust_conseil', sprintf("%s - %s", $prelevementCuveGrandCru->libelle, $prelevementCuveGrandCru->libelle_produit), $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)) . "?focus=aoc_grdcru");
+            }
         }
 
         if ($controleExtBouteilleAlsace->format('Y-m-d') >= $drevDate->modify('+ 2 years')->format('Y-m-d')) {
