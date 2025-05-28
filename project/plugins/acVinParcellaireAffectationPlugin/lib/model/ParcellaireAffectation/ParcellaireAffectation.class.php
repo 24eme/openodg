@@ -241,6 +241,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         foreach($todelete as $p) {
             $this->remove($p->getHash());
         }
+        foreach($this->declaration as $hash => $produit) {
+            if (!count($produit->detail)) {
+                $todelete[] = $produit;
+            }
+        }
+        foreach($todelete as $p) {
+            $this->remove($p->getHash());
+        }
     }
 
 	public function isValidee(){
@@ -414,14 +422,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return false;
     }
 
-    public function getGroupedParcelles($onlyAffectee = false) {
+    public function getGroupedParcelles($onlyAffectee = false, $hashproduitFilter = null) {
         if ($this->getDocument()->hasDgc()) {
             return $this->declaration->getParcellesByDgc($onlyAffectee);
         }
-        if (count($this->declaration) >= 1) {
-            return $this->declaration->getParcellesByProduit($onlyAffectee);
-        }
-        return $this->declaration->getParcellesByCommune($onlyAffectee);
+        return $this->declaration->getParcellesByCommune($onlyAffectee, $hashproduitFilter);
     }
 
     public function hasDgc() {
@@ -496,6 +501,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null) {
         return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee);
+    }
+
+    public function getProduits()
+    {
+        return $this->declaration->getProduits();
     }
 
 }
