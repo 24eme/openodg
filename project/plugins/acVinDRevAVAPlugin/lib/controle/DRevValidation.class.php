@@ -369,11 +369,11 @@ class DRevValidation extends DocumentValidation {
         $controleExtBouteilleAlsace = new DateTimeImmutable($prelevementBouteilleAlsace->date);
 
         if($this->document->prelevements->exist(DRev::CUVE_ALSACE)) {
+            $prelevementCuveAlsace = $this->document->prelevements->get(DRev::CUVE_ALSACE);
+            $degustConseilCuveAlsace = new DateTimeImmutable($prelevementCuveAlsace->date);
             if ($prelevementCuveAlsace->date && $prelevementBouteilleAlsace->date && $prelevementBouteilleAlsace->date < $degustConseilCuveAlsace->modify('+ 13 day')->format('Y-m-d')) {
                 $this->addPoint(self::TYPE_ERROR, 'periodes_cuves', sprintf("%s - %s", $prelevementBouteilleAlsace->libelle, $prelevementBouteilleAlsace->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
             }
-            $prelevementCuveAlsace = $this->document->prelevements->get(DRev::CUVE_ALSACE);
-            $degustConseilCuveAlsace = new DateTimeImmutable($prelevementCuveAlsace->date);
             if ($degustConseilCuveAlsace->format('Y-m-d') >= $drevDate->modify('+ 1 year')->format('Y-m-d')) {
                 $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_degust_conseil', sprintf("%s - %s", $prelevementCuveAlsace->libelle, $prelevementCuveAlsace->libelle_produit), $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
             }
