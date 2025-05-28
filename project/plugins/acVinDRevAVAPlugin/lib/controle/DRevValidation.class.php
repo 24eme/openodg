@@ -368,13 +368,11 @@ class DRevValidation extends DocumentValidation {
         $prelevementCuveAlsace = $this->document->prelevements->get(DRev::CUVE_ALSACE);
         $prelevementCuveCremant = $this->document->prelevements->get(DRev::CUVE_CREMANT);
         $prelevementBouteilleAlsace = $this->document->prelevements->get(DRev::BOUTEILLE_ALSACE);
-        $prelevementBouteilleGrdCru = $this->document->prelevements->get(DRev::BOUTEILLE_GRDCRU);
+
 
         $degustConseilCuveAlsace = new DateTimeImmutable($prelevementCuveAlsace->date);
         $degustConseilCuveCremant = new DateTimeImmutable($prelevementCuveCremant->date);
         $controleExtBouteilleAlsace = new DateTimeImmutable($prelevementBouteilleAlsace->date);
-        $controleExtBouteilleGrdCru = new DateTimeImmutable($prelevementBouteilleGrdCru->date);
-
 
         if ($prelevementCuveAlsace->date && $prelevementBouteilleAlsace->date && $prelevementBouteilleAlsace->date < $degustConseilCuveAlsace->modify('+ 13 day')->format('Y-m-d')) {
             $this->addPoint(self::TYPE_ERROR, 'periodes_cuves', sprintf("%s - %s", $prelevementBouteilleAlsace->libelle, $prelevementBouteilleAlsace->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
@@ -400,8 +398,12 @@ class DRevValidation extends DocumentValidation {
             $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_controle_ext', sprintf("%s - %s", $prelevementBouteilleAlsace->libelle, $prelevementBouteilleAlsace->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
         }
 
-        if ($controleExtBouteilleGrdCru->format('Y-m-d') >= $drevDate->modify('+ 2 years')->format('Y-m-d')){
-            $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_controle_ext', sprintf("%s - %s", $prelevementBouteilleGrdCru->libelle, $prelevementBouteilleGrdCru->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_grdcru");
+        if($this->document->prelevements->exist(DRev::BOUTEILLE_GRDCRU)) {
+            $prelevementBouteilleGrdCru = $this->document->prelevements->get(DRev::BOUTEILLE_GRDCRU);
+            $controleExtBouteilleGrdCru = new DateTimeImmutable($prelevementBouteilleGrdCru->date);
+            if ($controleExtBouteilleGrdCru->format('Y-m-d') >= $drevDate->modify('+ 2 years')->format('Y-m-d')){
+                $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_controle_ext', sprintf("%s - %s", $prelevementBouteilleGrdCru->libelle, $prelevementBouteilleGrdCru->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_grdcru");
+            }
         }
     }
 
