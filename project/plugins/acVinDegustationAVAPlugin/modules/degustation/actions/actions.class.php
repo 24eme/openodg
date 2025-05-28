@@ -26,6 +26,7 @@ class degustationActions extends sfActions {
             'ALSACE' => array("name" => "AOC Alsace", "color" => '120,120,220', "data" => array()),
             'CREMANT' => array("name" => "AOC Crémant Alsace", "color" => '220,178,29', "data" => array()),
             'VTSGN' => array("name" => "VT / SGN", "color" => '0,220,220', "data" => array()),
+            'GRDCRU' => array("name" => "AOC Alsace Grand Cru", "color" => '99,202,104', "data" => array()),
         );
 
         foreach($this->graphs as $key => $graph) {
