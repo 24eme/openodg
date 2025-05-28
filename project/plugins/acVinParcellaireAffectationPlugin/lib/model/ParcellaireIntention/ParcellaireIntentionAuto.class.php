@@ -37,7 +37,7 @@ class ParcellaireIntentionAuto extends ParcellaireIntentionAffectation {
                 }
                 if ($nbHashes > 1) {
                     $tmp = explode('/', $hash);
-                    $lastHashData = end($tmp);
+                    $lastHashData = $tmp[11];
                     $newPid = strtoupper($lastHashData).'-'.$pid;
                 } else {
                     $newPid = $pid;
@@ -46,8 +46,8 @@ class ParcellaireIntentionAuto extends ParcellaireIntentionAffectation {
                 $node->libelle = $this->getDenominationAire();
                 $node = $node->detail->add($newPid);
                 ParcellaireClient::CopyParcelle($node, $parcelle, true);
-                $node->produit_hash = $hash;
                 $node->parcelle_id = $newPid;
+                $parcelle->produit_hash = $hash;
                 $node->affectation = 1;
             }
         }

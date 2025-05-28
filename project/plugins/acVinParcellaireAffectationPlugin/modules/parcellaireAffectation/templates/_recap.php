@@ -17,11 +17,19 @@
     </p>
 <?php endif; ?>
 
-<?php foreach ($parcellaireAffectation->getGroupedParcelles() as $dgc => $parcelles): ?>
-<?php if ($dgc): ?>
+<?php foreach ($parcellaireAffectation->getProduits() as $hash => $produit): ?>
+<?php if (count($parcellaireAffectation->getProduits()) > 1): ?>
     <div class="row">
         <div class="col-xs-12">
-            <h3>Dénomination <?php echo $dgc; ?></h3>
+            <h2><?php echo $produit; ?></h2>
+        </div>
+    </div>
+<?php endif; ?>
+<?php foreach ($parcellaireAffectation->getGroupedParcelles(false, $hash) as $group => $parcelles): ?>
+<?php if ($group): ?>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3><?php if ($parcellaireAffectation->hasDgc()): ?>Dénomination <?php endif; ?><?php echo $group; ?></h3>
         </div>
     </div>
 <?php endif; ?>
@@ -100,4 +108,5 @@
         </tr>
     </tbody>
 </table>
+<?php  endforeach; ?>
 <?php  endforeach; ?>
