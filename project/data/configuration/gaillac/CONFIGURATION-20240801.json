@@ -174,6 +174,46 @@
                                                         }
                                                     }
                                                 }
+                                            },
+                                            "PC": {
+                                                "libelle": "Premières côtes",
+                                                "format_libelle": null,
+                                                "code": null,
+                                                "code_produit": null,
+                                                "code_comptable": null,
+                                                "code_douane": null,
+                                                "departements": [
+                                                ],
+                                                "couleurs": {
+                                                    "blanc_sec": {
+                                                        "libelle": "Blanc sec",
+                                                        "format_libelle": null,
+                                                        "code": "blanc_sec",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "departements": [
+                                                        ],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": null,
+                                                                "code_comptable": "70800300",
+                                                                "code_douane": "1B129S",
+                                                                "cepages_autorises": [
+                                                                    "LEN DE L'EL B",
+                                                                    "MAUZAC B",
+                                                                    "MAUZAC ROSE RS",
+                                                                    "MUSCADELLE B",
+                                                                    "ONDENC B",
+                                                                    "SAUVIGNON B"
+                                                                ]
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     },
@@ -214,58 +254,6 @@
                                                                 "code_produit": null,
                                                                 "code_comptable": "70800300",
                                                                 "code_douane": "1B128D",
-                                                                "cepages_autorises": [
-                                                                    "LEN DE L'EL B",
-                                                                    "MAUZAC B",
-                                                                    "MAUZAC ROSE RS",
-                                                                    "MUSCADELLE B",
-                                                                    "ONDENC B",
-                                                                    "SAUVIGNON B"
-                                                                ]
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                    "PC": {
-                                        "libelle": "Premières côtes",
-                                        "format_libelle": null,
-                                        "code": "PC",
-                                        "code_produit": null,
-                                        "code_comptable": null,
-                                        "code_douane": null,
-                                        "departements": [
-                                        ],
-                                        "lieux": {
-                                            "DEFAUT": {
-                                                "libelle": null,
-                                                "format_libelle": null,
-                                                "code": null,
-                                                "code_produit": null,
-                                                "code_comptable": null,
-                                                "code_douane": null,
-                                                "departements": [
-                                                ],
-                                                "couleurs": {
-                                                    "blanc_sec": {
-                                                        "libelle": "Blanc sec",
-                                                        "format_libelle": null,
-                                                        "code": "blanc_sec",
-                                                        "code_produit": null,
-                                                        "code_comptable": null,
-                                                        "code_douane": null,
-                                                        "departements": [
-                                                        ],
-                                                        "cepages": {
-                                                            "DEFAUT": {
-                                                                "libelle": null,
-                                                                "format_libelle": null,
-                                                                "code": null,
-                                                                "code_produit": null,
-                                                                "code_comptable": "70800300",
-                                                                "code_douane": "1B129S",
                                                                 "cepages_autorises": [
                                                                     "LEN DE L'EL B",
                                                                     "MAUZAC B",
