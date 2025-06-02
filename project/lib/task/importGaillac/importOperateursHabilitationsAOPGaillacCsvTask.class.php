@@ -132,7 +132,7 @@ EOF;
 
 
         $raison_sociale = $data[self::CSV_RAISON_SOCIALE];
-        $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_ENREGISTREMENT]);
+        $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR);
 
         $societe = SocieteClient::getInstance()->find($newSociete->_id);
 
