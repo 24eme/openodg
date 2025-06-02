@@ -105,6 +105,15 @@
                                                                     "SYRAH N"
                                                                 ]
                                                             }
+                                                        },
+                                                        "attributs": {
+                                                          "rendement": null,
+                                                          "rendement_dr_l5": null,
+                                                          "rendement_dr_l15": null,
+                                                          "rendement_conseille": null,
+                                                          "rendement_dr": null,
+                                                          "rendement_vci": 5,
+                                                          "rendement_vci_total": 15
                                                         }
                                                     },
                                                     "blanc_sec": {
