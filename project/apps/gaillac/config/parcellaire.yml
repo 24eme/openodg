@@ -7,7 +7,7 @@ all:
       affectation:
         needs_intention: false
         denomination_aire: "AOC Gaillac"
-        denomination_aire_hash: "certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT"
+        denomination_aire_hash: ["certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT","certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose/cepages/DEFAUT","certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc_sec/cepages/DEFAUT"]
       aires:
         Gaillac:
           name: "AOC Gaillac"

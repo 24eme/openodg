@@ -35,7 +35,17 @@ if(isset($coop)):
 <?php
 foreach($destinataires as $id => $d):
 ?>
+    <?php
+        if (count($produits) > 1):
+            foreach ($produits as $hash => $produit):
+    ?>
+    <li role="presentation" class="<?php if($id.$hash == $destinataire.$hashproduit): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>"><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'].' - '.$produit ?></a></li>
+    <?php
+            endforeach;
+        else:
+    ?>
     <li role="presentation" class="<?php if($id == $destinataire): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>"><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'] ?></a></li>
+    <?php endif; ?>
 <?php endforeach; ?>
 </ul>
 
@@ -43,7 +53,7 @@ foreach($destinataires as $id => $d):
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     <?php $has_parcelles = false; ?>
-    <?php foreach ($parcellaireAffectation->getGroupedParcelles(false) as $group => $parcelles):?>
+    <?php foreach ($parcellaireAffectation->getGroupedParcelles(false, $hashproduit) as $group => $parcelles):?>
     <?php if ($group): ?>
         <div style="margin-bottom: 1em;" class="row">
             <div class="col-xs-6">
