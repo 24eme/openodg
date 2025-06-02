@@ -78,8 +78,11 @@ EOF;
         if ($data[self::CSV_NOCVI]) {
             $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_NOCVI]));
         }
-        if (!$e && $data[self::CSV_SIRET]) {
+        if (!$e && !$data[self::CSV_NOCVI] && $data[self::CSV_SIRET]) {
             $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_SIRET]));
+            if ($e->cvi)  {
+                $e = null;
+            }
         }
         if ($e) {
             echo("Etablissement existe " . $e->_id . ", ". $data[self::CSV_NOCVI]." ".$data[self::CSV_SIRET]."\n");
