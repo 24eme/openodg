@@ -5555,7 +5555,347 @@
                                                 ],
                                                 "couleurs": {
                                                     "blanc_doux": {
-                                                        "libelle": "Surmûris Blanc ",
+                                                        "libelle": "Surmûris Blanc",
+                                                        "format_libelle": null,
+                                                        "code": "blanc_doux",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3B812U",
+                                                                "cepages_autorises": [
+                                                                    "CHARDONNAY B",
+                                                                    "CHASAN B",
+                                                                    "COLOMBARD B",
+                                                                    "GROS MANSENG B",
+                                                                    "LEN DE L'EL B",
+                                                                    "LISTAN B",
+                                                                    "MAUZAC B",
+                                                                    "MAUZAC ROSE RS",
+                                                                    "MUSCADELLE B",
+                                                                    "ONDENC B",
+                                                                    "PETIT MANSENG B",
+                                                                    "SAUVIGNON B",
+                                                                    "SÉMILLON B",
+                                                                    "UGNI BLANC B"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "rose": {
+                                                        "libelle": "Rosé",
+                                                        "format_libelle": null,
+                                                        "code": "rose",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "departements": [
+                                                        ],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3S812",
+                                                                "cepages_autorises": [
+                                                                    "ALICANTE BOUSCHET N",
+                                                                    "CABERNET FRANC N",
+                                                                    "CABERNET SAUVIGNON N",
+                                                                    "CARIGNAN N",
+                                                                    "CINSAUT N",
+                                                                    "DURAS N",
+                                                                    "EGIODOLA N",
+                                                                    "FER SERVADOU N",
+                                                                    "GAMARET N",
+                                                                    "GAMAY DE BOUZE N",
+                                                                    "GAMAY DE CHAUDENAY N",
+                                                                    "GAMAY N",
+                                                                    "JURANÇON N",
+                                                                    "MALBEC N",
+                                                                    "MARSELAN N",
+                                                                    "MERILLE N",
+                                                                    "MERLOT N",
+                                                                    "NÉGRETTE N",
+                                                                    "PORTUGAIS BLEU N",
+                                                                    "PRUNELARD N",
+                                                                    "SYRAH N",
+                                                                    "TANNAT N"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "rouge": {
+                                                        "libelle": "Rouge",
+                                                        "format_libelle": null,
+                                                        "code": "rouge",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "departements": [
+                                                        ],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3R812",
+                                                                "cepages_autorises": [
+                                                                    "ALICANTE BOUSCHET N",
+                                                                    "CABERNET FRANC N",
+                                                                    "CABERNET SAUVIGNON N",
+                                                                    "CARIGNAN N",
+                                                                    "CINSAUT N",
+                                                                    "DURAS N",
+                                                                    "EGIODOLA N",
+                                                                    "FER SERVADOU N",
+                                                                    "GAMARET N",
+                                                                    "GAMAY DE BOUZE N",
+                                                                    "GAMAY DE CHAUDENAY N",
+                                                                    "GAMAY N",
+                                                                    "JURANÇON N",
+                                                                    "MALBEC N",
+                                                                    "MARSELAN N",
+                                                                    "MERILLE N",
+                                                                    "MERLOT N",
+                                                                    "NÉGRETTE N",
+                                                                    "PORTUGAIS BLEU N",
+                                                                    "PRUNELARD N",
+                                                                    "SYRAH N",
+                                                                    "TANNAT N"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "blanc_sec": {
+                                                        "libelle": "Blanc sec",
+                                                        "format_libelle": null,
+                                                        "code": "blanc_sec",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "departements": [
+                                                        ],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3B812",
+                                                                "cepages_autorises": [
+                                                                    "CHARDONNAY B",
+                                                                    "CHASAN B",
+                                                                    "COLOMBARD B",
+                                                                    "GROS MANSENG B",
+                                                                    "LEN DE L'EL B",
+                                                                    "LISTAN B",
+                                                                    "MAUZAC B",
+                                                                    "MAUZAC ROSE RS",
+                                                                    "MUSCADELLE B",
+                                                                    "ONDENC B",
+                                                                    "PETIT MANSENG B",
+                                                                    "SAUVIGNON B",
+                                                                    "SÉMILLON B",
+                                                                    "UGNI BLANC B"
+                                                                ]
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "CABANES": {
+                                                "libelle": "Cabanes",
+                                                "format_libelle": null,
+                                                "code": null,
+                                                "code_produit": null,
+                                                "code_comptable": null,
+                                                "code_douane": null,
+                                                "departements": [
+                                                ],
+                                                "couleurs": {
+                                                    "blanc_doux": {
+                                                        "libelle": "Surmûris Blanc",
+                                                        "format_libelle": null,
+                                                        "code": "blanc_doux",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3B812U",
+                                                                "cepages_autorises": [
+                                                                    "CHARDONNAY B",
+                                                                    "CHASAN B",
+                                                                    "COLOMBARD B",
+                                                                    "GROS MANSENG B",
+                                                                    "LEN DE L'EL B",
+                                                                    "LISTAN B",
+                                                                    "MAUZAC B",
+                                                                    "MAUZAC ROSE RS",
+                                                                    "MUSCADELLE B",
+                                                                    "ONDENC B",
+                                                                    "PETIT MANSENG B",
+                                                                    "SAUVIGNON B",
+                                                                    "SÉMILLON B",
+                                                                    "UGNI BLANC B"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "rose": {
+                                                        "libelle": "Rosé",
+                                                        "format_libelle": null,
+                                                        "code": "rose",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "departements": [
+                                                        ],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3S812",
+                                                                "cepages_autorises": [
+                                                                    "ALICANTE BOUSCHET N",
+                                                                    "CABERNET FRANC N",
+                                                                    "CABERNET SAUVIGNON N",
+                                                                    "CARIGNAN N",
+                                                                    "CINSAUT N",
+                                                                    "DURAS N",
+                                                                    "EGIODOLA N",
+                                                                    "FER SERVADOU N",
+                                                                    "GAMARET N",
+                                                                    "GAMAY DE BOUZE N",
+                                                                    "GAMAY DE CHAUDENAY N",
+                                                                    "GAMAY N",
+                                                                    "JURANÇON N",
+                                                                    "MALBEC N",
+                                                                    "MARSELAN N",
+                                                                    "MERILLE N",
+                                                                    "MERLOT N",
+                                                                    "NÉGRETTE N",
+                                                                    "PORTUGAIS BLEU N",
+                                                                    "PRUNELARD N",
+                                                                    "SYRAH N",
+                                                                    "TANNAT N"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "rouge": {
+                                                        "libelle": "Rouge",
+                                                        "format_libelle": null,
+                                                        "code": "rouge",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "departements": [
+                                                        ],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3R812",
+                                                                "cepages_autorises": [
+                                                                    "ALICANTE BOUSCHET N",
+                                                                    "CABERNET FRANC N",
+                                                                    "CABERNET SAUVIGNON N",
+                                                                    "CARIGNAN N",
+                                                                    "CINSAUT N",
+                                                                    "DURAS N",
+                                                                    "EGIODOLA N",
+                                                                    "FER SERVADOU N",
+                                                                    "GAMARET N",
+                                                                    "GAMAY DE BOUZE N",
+                                                                    "GAMAY DE CHAUDENAY N",
+                                                                    "GAMAY N",
+                                                                    "JURANÇON N",
+                                                                    "MALBEC N",
+                                                                    "MARSELAN N",
+                                                                    "MERILLE N",
+                                                                    "MERLOT N",
+                                                                    "NÉGRETTE N",
+                                                                    "PORTUGAIS BLEU N",
+                                                                    "PRUNELARD N",
+                                                                    "SYRAH N",
+                                                                    "TANNAT N"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "blanc_sec": {
+                                                        "libelle": "Blanc sec",
+                                                        "format_libelle": null,
+                                                        "code": "blanc_sec",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "departements": [
+                                                        ],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3B812",
+                                                                "cepages_autorises": [
+                                                                    "CHARDONNAY B",
+                                                                    "CHASAN B",
+                                                                    "COLOMBARD B",
+                                                                    "GROS MANSENG B",
+                                                                    "LEN DE L'EL B",
+                                                                    "LISTAN B",
+                                                                    "MAUZAC B",
+                                                                    "MAUZAC ROSE RS",
+                                                                    "MUSCADELLE B",
+                                                                    "ONDENC B",
+                                                                    "PETIT MANSENG B",
+                                                                    "SAUVIGNON B",
+                                                                    "SÉMILLON B",
+                                                                    "UGNI BLANC B"
+                                                                ]
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "CUNAC": {
+                                                "libelle": "Cunac",
+                                                "format_libelle": null,
+                                                "code": null,
+                                                "code_produit": null,
+                                                "code_comptable": null,
+                                                "code_douane": null,
+                                                "departements": [
+                                                ],
+                                                "couleurs": {
+                                                    "blanc_doux": {
+                                                        "libelle": "Surmûris Blanc",
                                                         "format_libelle": null,
                                                         "code": "blanc_doux",
                                                         "code_produit": null,
