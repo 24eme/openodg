@@ -77,8 +77,9 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                 <th class="col-xs-1 text-center">Section / Numéro</th>
                                 <?php if(!is_object($appellationNode) || $appellationNode->getConfig()->hasLieuEditable()):  ?>
                                 <th class="col-xs-2 text-center">Lieu-dit revendiqué
+                                    <?php if(strpos($appellationNode->getHash(), 'CREMANT') === null): ?>
                                     <p class="small text-muted" style="margin:0;">Lieu-dit cadastral</p>
-
+                                    <?php endif; ?>
                                 </th>
                                 <?php endif; ?>
 								<th class="col-xs-2 text-center">Cépage</th>
