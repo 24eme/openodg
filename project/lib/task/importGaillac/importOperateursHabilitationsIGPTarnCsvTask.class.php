@@ -80,7 +80,7 @@ EOF;
         }
         if (!$e && !$data[self::CSV_NOCVI] && $data[self::CSV_SIRET]) {
             $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_SIRET]));
-            if ($e->cvi)  {
+            if ($e && $e->cvi)  {
                 $e = null;
             }
         }

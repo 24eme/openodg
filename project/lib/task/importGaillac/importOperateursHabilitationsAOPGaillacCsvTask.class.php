@@ -100,7 +100,11 @@ EOF;
             return;
         }
         $coop = EtablissementClient::getInstance()->findByCVI($data[self::CSV_COOOPERATIVE_COOPERATEUR]);
-        $coop->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $etablissement, !isset($_ENV['DRY_RUN']));
+        if ($coop) {
+            $coop->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $etablissement, !isset($_ENV['DRY_RUN']));
+        }else{
+            print_r(['coop not found', $data[self::CSV_COOOPERATIVE_COOPERATEUR]]);
+        }
     }
 
     private function importSocieteEtablissement($data, $suspendu = false)
@@ -111,7 +115,7 @@ EOF;
         }
         if (!$e && !$data[self::CSV_CVI] && $data[self::CSV_SIRET]) {
             $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_SIRET]));
-            if ($e->cvi) {
+            if ($e && $e->cvi) {
                 $e = null;
             }
         }
