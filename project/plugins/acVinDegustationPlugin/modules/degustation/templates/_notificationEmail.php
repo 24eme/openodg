@@ -17,7 +17,7 @@ Au vu des documents fournis, et des résultats des contrôles analytique et orga
 <?php endif; ?>
 
 <?php if(count($lotsNonConformes)): ?>
-<?= count($lotsNonConformes) ?> <?php if(count($lotsNonConformes) == 1): ?>lot est NON <?php echo $lotsNonConformes[0]->isLibelleAcceptable() ? 'ACCEPTABLE' : 'CONFORME'; ?> et BLOQUÉ<?php else: ?>lots sont NON <?php echo $lotsNonConformes[0]->isLibelleAcceptable() ? 'ACCEPTABLES' : 'CONFORMES'; ?> et BLOQUÉS<?php endif; ?> à la commercialisation, vous pouvez télécharger <?php if(count($lotsNonConformes) > 1): ?>les courriers de chacun de ces lots<?php else: ?>le courrier de ce lot<?php endif ?> :
+<?= count($lotsNonConformes) ?> <?php if(count($lotsNonConformes) == 1): ?>lot est NON <?php echo $lotsNonConformes[0]->isLibelleAcceptable() ? 'ACCEPTABLE EN L\'ÉTAT' : 'CONFORME'; ?> et BLOQUÉ<?php else: ?>lots sont NON <?php echo $lotsNonConformes[0]->isLibelleAcceptable() ? 'ACCEPTABLES' : 'CONFORMES'; ?> et BLOQUÉS<?php endif; ?> à la commercialisation, vous pouvez télécharger <?php if(count($lotsNonConformes) > 1): ?>les courriers de chacun de ces lots<?php else: ?>le courrier de ce lot<?php endif ?> :
 
 <?php foreach($lotsNonConformes as $lotNonConforme): ?>
 - <?= trim(preg_replace("/[ ]+/", " ", (str_replace("&nbsp;", " ", strip_tags(showProduitCepagesLot($lotNonConforme)))))) . ", NON ". ($lotNonConforme->isLibelleAcceptable() ? 'ACCEPTABILITÉ' : 'CONFORMITÉ') ." de type " . $lotNonConforme->getShortLibelleConformite() ?> :
