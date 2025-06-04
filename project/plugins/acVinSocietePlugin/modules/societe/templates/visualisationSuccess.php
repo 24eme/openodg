@@ -1,6 +1,6 @@
 <?php use_helper('Compte') ?>
 <ol class="breadcrumb">
-    <?php if(!$sf_user->hasCredential('contacts')): ?>
+    <?php if(!$sf_user->hasContact()): ?>
         <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>">Contacts</a></li>
     <?php else: ?>
         <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
@@ -75,7 +75,9 @@
                 <hr />
                 <?php if ($societe->commentaire && $modifiable) : ?>
                 <h5 style="margin-bottom: 15px; margin-top: 0px;"><strong>🗣 Commentaire️</strong></h5>
-                <p>🗨️ <?php echo implode('</p><p>🗨️ ', $societe->getCommentaires()->getRawValue()); ?></p>
+                <?php foreach ($societe->getCommentaires()->getRawValue() as $commentaire): ?>
+                    <p><?php echo '🗨️ ' . htmlspecialchars_decode($societe->activateLinks($commentaire)) ?></p>
+                <?php endforeach; ?>
                 <hr />
                 <?php endif; ?>
                 <?php if (MandatSepaConfiguration::getInstance()->isActive()): ?>

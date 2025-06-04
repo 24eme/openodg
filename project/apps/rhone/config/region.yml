@@ -10,7 +10,7 @@ all:
           produits:
             - "TRANQ/appellations/CDR"
             - "TRANQ/appellations/CVG"
-          habilitation_produits: "/Beaumes de Venise/"
+          habilitation_produits: "/Côtes du Rhône/"
         BEAUMESVENISE:
           nom: "Conservatoire AOC Beaumes Venise"
           adresse: "Place du marché à coté de la poste, 84190 Beaumes-de-Venise"
@@ -52,6 +52,14 @@ all:
           produits:
             - "TRANQ/appellations/LIR"
           habilitation_produits: "/Lirac/"
+        LAUDUN:
+          nom: "Syndicat de Laudun"
+          adresse: "Espace Barbara, Place de l'église B.P. 2 30290 Laudun L'Ardoise"
+          telephone: "%app_drev_LAUDUN_telephone%"
+          email: "%app_drev_LAUDUN_email%"
+          produits:
+            - "TRANQ/appellations/LAU"
+          habilitation_produits: "/Laudun/"
         GIGONDAS:
           nom: "Syndicat de Gigondas "
           adresse: "8 rue du fond du sac, 84190 Gigondas"

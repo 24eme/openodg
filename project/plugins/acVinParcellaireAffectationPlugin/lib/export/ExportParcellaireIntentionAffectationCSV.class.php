@@ -66,7 +66,7 @@ class ExportParcellaireIntentionAffectationCSV implements InterfaceDeclarationEx
             	$this->protectStr($parcelle->campagne_plantation),
             	$this->formatFloat($parcelle->superficie),
                 $this->protectStr(strtoupper(str_replace("-", " ", $dgc))),
-            	$this->formatFloat($parcelle->superficie_affectation),
+            	$this->formatFloat($parcelle->superficie),
             	$this->doc->validation,
                 $this->protectStr($parcelle->date_affectation),
             	$mode);

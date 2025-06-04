@@ -109,7 +109,7 @@ EOF;
             $habilitationStatut.",". // Etat
             "Faux,", //demande AVPI
             $ordre.",". // Ordre
-            str_replace("_", " ", preg_replace("/_[0-9]+$/", "", $etablissement->region)).",". // Region
+            $etablissement->secteur.",".
             $societe->code_comptable_client.",".
             $etablissement->famille.",".
             $compte->date_modification.",".

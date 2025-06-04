@@ -24,7 +24,7 @@
                 <td>
                     <?= $produit['libelle'] ?>
                     <small class="pull-right text-muted">
-                        <?= round($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'], 2) ?> hl/ha
+                        <?= round(($produit['lignes']['05']['val'] - $produit['lignes']['16']['val']) / $produit['lignes']['04']['val'], 2) ?> hl/ha
                     </small>
                 </td>
                 <?php foreach ($lignesAAfficher as $l): ?>

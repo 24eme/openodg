@@ -1,7 +1,6 @@
 all:
   configuration:
     parcellaire:
-      limit_produits_configuration: false
       unit: "ares"
       aires:
         CremantAlsace:
@@ -268,3 +267,6 @@ all:
           name: "Alsace Grand Cru Kaefferkopf"
           color: "#d10500"
           denomination_id: "01765"
+      irrigable:
+        engagements: true
+        hasIrrigableMaterielRessource: false

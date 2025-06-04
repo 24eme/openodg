@@ -8,6 +8,10 @@ else
     . $(echo $0 | sed 's/[^\/]*$//')config.inc
 fi
 
+if ! test "$SYMFONYTASKOPTIONS" ; then
+    exit;
+fi
+
 DOC_TYPE=$1
 WAITSLEEP=$2
 REGION=$3

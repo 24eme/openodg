@@ -8,6 +8,7 @@ class AppUser extends sfBasicSecurityUser {
     const NAMESPACE_COMPTE = "COMPTE";
     const NAMESPACE_COMPTE_ORIGIN = "COMPTE_ORIGIN";
     const CREDENTIAL_ADMIN = "ADMIN";
+    const CREDENTIAL_ADMIN_ODG = "ADMIN_ODG";
     const CREDENTIAL_DREV_ADMIN = 'teledeclaration_drev_admin';
     const CREDENTIAL_CONDITIONNEMENT_ADMIN = 'teledeclaration_conditionnement_admin';
     const CREDENTIAL_PMC_ADMIN = 'teledeclaration_pmc_admin';
@@ -92,9 +93,12 @@ class AppUser extends sfBasicSecurityUser {
         $this->getAttributeHolder()->removeNamespace(self::NAMESPACE_COMPTE_ORIGIN);
     }
 
+    private $cache_compte = null;
     public function getCompte() {
-
-        return $this->getCompteByNamespace(self::NAMESPACE_COMPTE);
+        if (is_null($this->cache_compte)) {
+            $this->cache_compte = $this->getCompteByNamespace(self::NAMESPACE_COMPTE);
+        }
+        return $this->cache_compte;
     }
 
     public function getEtablissement() {
@@ -174,41 +178,61 @@ class AppUser extends sfBasicSecurityUser {
        return $this->hasCredential(self::CREDENTIAL_ADMIN);
     }
 
+    public function isAdminODG()
+    {
+       return $this->hasCredential(self::CREDENTIAL_ADMIN) || $this->hasCredential(self::CREDENTIAL_ADMIN_ODG);
+    }
+
+    public function hasContact() {
+        return $this->hasCredential(self::CREDENTIAL_CONTACT) || $this->isAdminODG();
+    }
+
+    public function hasHabilitation() {
+        return $this->hasCredential(AppUser::CREDENTIAL_HABILITATION)  || $this->isAdminODG();
+    }
+
+    public function hasFactureAdmin()
+    {
+       return $this->hasCredential(self::CREDENTIAL_ADMIN) || $this->hasCredential(self::CREDENTIAL_ADMIN_ODG);
+    }
+
     public function hasTeledeclaration() {
         return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION) && !$this->hasDrevAdmin() && !$this->isStalker();
     }
 
     public function hasDrevAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN) || $this->isAdmin();
+        return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN) || $this->isAdminODG();
     }
 
     public function hasChgtDenomAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_CHGTDENOM_ADMIN) || $this->isAdmin();
+        return $this->hasCredential(self::CREDENTIAL_CHGTDENOM_ADMIN) || $this->isAdminODG();
     }
 
     public function hasConditionnementAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_CONDITIONNEMENT_ADMIN) || $this->isAdmin();
+        return $this->hasCredential(self::CREDENTIAL_CONDITIONNEMENT_ADMIN) || $this->isAdminODG();
     }
 
     public function hasPMCAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_PMC_ADMIN) || $this->isAdmin();
+        return $this->hasCredential(self::CREDENTIAL_PMC_ADMIN) || $this->isAdminODG();
     }
 
     public function hasTransactionAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_TRANSACTION_ADMIN) || $this->isAdmin();
+        return $this->hasCredential(self::CREDENTIAL_TRANSACTION_ADMIN) || $this->isAdminODG();
     }
 
     public function isStalker() {
-        return $this->hasCredential(self::CREDENTIAL_STALKER);
+        return $this->hasCredential(self::CREDENTIAL_STALKER) || $this->isAdmin() || $this->isAdminODG();
     }
 
-    public function getTeledeclarationDrevRegion() {
-      if($this->hasDrevAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && RegionConfiguration::getInstance()->getOdgRegions()){
+
+    public function getRegion() {
+      if(RegionConfiguration::getInstance()->getOdgRegions() && $this->hasDrevAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion())){
         if(in_array($region, RegionConfiguration::getInstance()->getOdgRegions())){
                     return $region;
         }
       }
-      return null;
+
+      return sfConfig::get('app_region', null);
     }
 
     public function getTeledeclarationConditionnementRegion() {
@@ -233,7 +257,7 @@ class AppUser extends sfBasicSecurityUser {
 
     public function getTeledeclarationTransactionRegion() {
       $transConf = TransactionConfiguration::getInstance();
-      if($this->hasTransactionAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $condConf->getOdgRegions()){
+      if($this->hasTransactionAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $transConf->getOdgRegions()){
         if(in_array($region, $transConf->getOdgRegions())){
                     return $region;
         }

@@ -27,7 +27,7 @@
 \definecolor{vertfonce}{rgb}{0.17,0.29,0.28}
 \definecolor{vertmedium}{rgb}{0.63,0.73,0.22}
 
-\def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_site.png}
+\def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_ava.png}
 \def\LOGOCARTEMEMBRE{<?php echo sfConfig::get('sf_web_dir'); ?>/images/pdf/logo_carte_membre.jpg}
 \def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>AVOIR<?php else:?>FACTURE<?php endif; ?>}
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}

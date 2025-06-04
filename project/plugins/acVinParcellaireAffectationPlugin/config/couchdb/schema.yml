@@ -7,12 +7,13 @@ ParcellaireAffectation:
       type: { }
       campagne: { }
       identifiant: { }
+      parcellaire_origine: {}
       etape: { }
       validation: { }
       validation_odg: { }
       lecture_seule: {}
       signataire: { required: false }
-      papier: { required: false, type: integer }
+      papier: { required: false }
       declarant:
         type: collection
         class: ParcellaireAffectationDeclarant
@@ -53,7 +54,9 @@ ParcellaireAffectation:
                             fields:
                               origine_doc: { }
                               superficie: { type: float }
-                              superficie_affectation: { type: float }
+                              superficie_parcellaire: { type: float }
+                              superficie_cadastrale: { type: float, required: false } # remplacé par superficie_parcellaire à supprimer
+                              superficie_affectation: { type: float, required: false } # Déprécié mais encore utilisé à provence
                               commune: { }
                               code_commune: { }
                               section: { }
@@ -66,9 +69,27 @@ ParcellaireAffectation:
                               active: { type: integer }
                               vtsgn: { type: integer, required: false }
                               campagne_plantation: {  }
-                              affectation: { type: integer }
-                              date_affectation: {  }
+                              numero_ordre: { }
+                              affectation: { type: integer, required: false } # déprécié à supprimer
+                              date_affectation: { required: false } # déprécié à supprimer
                               affectee: { type: integer }
+                              produit_hash: { }
+                              source_produit_libelle: { }
+                              parcelle_id: { }
+                              destinations:
+                                type: collection
+                                required: false
+                                definition:
+                                  fields:
+                                    '*':
+                                      type: collection
+                                      definition:
+                                        fields:
+                                          identifiant: { }
+                                          nom: { }
+                                          cvi: { }
+                                          superficie: { }
+      region: { required: false }
       observations: {  }
       pieces:
         type: array_collection
@@ -116,6 +137,12 @@ ParcellaireAffectationCoop:
                   nb_parcelles_identifiees: { type: integer }
                   nom: { }
                   cvi: { }
+                  statuts:
+                    type: collection
+                    required: false
+                    definition:
+                      fields:
+                        '*': { }
 #PARCELLAIREINTENTIONAFFECTATION
 ParcellaireIntentionAffectation:
   definition:
@@ -125,6 +152,7 @@ ParcellaireIntentionAffectation:
       type: { }
       campagne: { }
       identifiant: { }
+      parcellaire_origine: {}
       etape: { }
       validation: { }
       validation_odg: { }
@@ -173,7 +201,9 @@ ParcellaireIntentionAffectation:
                               origine_doc: { }
                               origine_hash: { }
                               superficie: { type: float }
-                              superficie_affectation: { type: float }
+                              superficie_parcellaire: { type: float }
+                              superficie_cadastrale: { type: float, required: false } # remplacé par superficie_parcellaire à supprimer
+                              superficie_affectation: { type: float, required: false } # Déprécié mais encore utilisé à provence
                               commune: { }
                               code_commune: { }
                               section: { }
@@ -182,10 +212,14 @@ ParcellaireIntentionAffectation:
                               lieu: {  }
                               cepage: {  }
                               prefix: { }
+                              numero_ordre: { }
                               departement: { required: false }
                               active: { type: integer }
                               vtsgn: { type: integer, required: false }
                               campagne_plantation: {  }
                               affectation: { type: integer }
                               date_affectation: {  }
+                              produit_hash: { }
+                              source_produit_libelle: { }
+                              parcelle_id: { }
       observations: {  }

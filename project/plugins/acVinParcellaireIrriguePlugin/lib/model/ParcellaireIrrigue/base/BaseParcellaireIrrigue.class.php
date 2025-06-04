@@ -52,8 +52,8 @@
  * @method string setObservations()
  
  */
- 
-abstract class BaseParcellaireIrrigue extends acCouchdbDocument {
+
+abstract class BaseParcellaireIrrigue extends DeclarationParcellaire {
 
     public function getDocumentDefinitionModel() {
         return 'ParcellaireIrrigue';

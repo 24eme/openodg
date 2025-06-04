@@ -1,6 +1,6 @@
 <?php
 
-class ChgtDenomConfiguration {
+class ChgtDenomConfiguration extends DeclarationConfiguration {
 
     private static $_instance = null;
     protected $configuration;
@@ -32,6 +32,28 @@ class ChgtDenomConfiguration {
 
     public function hasSpecificiteLot(){
       return isset($this->configuration['specificite_lot']) && boolval($this->configuration['specificite_lot']);
+    }
+
+    /**
+     * Méthode pour désactiver le bloc de déclaration des changements dénomination tout en conservant la possibilité d'en faire via l'historique d'un lot
+     */
+    public function isDematEnabled() {
+        return isset($this->configuration['demat_enabled']) && boolval($this->configuration['demat_enabled']);
+    }
+
+    public function getCampagneDebutMois() {
+
+        return DRevConfiguration::getInstance()->getCampagneDebutMois();
+    }
+
+    public function getModuleName() {
+
+        return 'chgtdenom';
+    }
+
+    public function isOpen($date = null) {
+
+        return parent::isOpen($date) && $this->isDematEnabled();
     }
 
 }

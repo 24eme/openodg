@@ -69,9 +69,6 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function updateNomAAfficher() {
-        if (!$this->nom) {
-            return;
-        }
         if($this->isSocieteContact()){
             $this->nom_a_afficher = trim(sprintf('%s', $this->nom));
             return;
@@ -80,7 +77,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $this->nom_a_afficher = trim(sprintf('%s', $this->nom));
             return;
         }
-        $this->nom_a_afficher = trim(sprintf('%s %s %s', $this->civilite, $this->prenom, $this->nom));
+        $this->nom_a_afficher = preg_replace("/[ ]+/", " ", trim(sprintf('%s %s %s', $this->civilite, $this->prenom, $this->nom)));
     }
 
     public function getCodeCreation() {
@@ -194,7 +191,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
                 $this->addTag('automatique', 'teledeclaration_active');
             }
         }
-        if ($this->exist('region') && $this->region) {
+        if ($this->exist('region') && $this->region && (ConfigurationClient::getInstance()->isGiilda() || $this->region == EtablissementClient::REGION_HORS_REGION)) {
             $this->addTag('automatique', 'region_'.$this->region);
         }
 
@@ -223,7 +220,9 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $this->addTag('automatique', $this->getEtablissement()->famille);
             $this->etablissement_informations->cvi = $this->getEtablissement()->cvi;
             $this->etablissement_informations->ppm = $this->getEtablissement()->ppm;
-            $this->add('region', $this->getEtablissement()->region);
+            if ($this->getEtablissement()->region) {
+                $this->add('region', $this->getEtablissement()->region);
+            }
         } elseif ($this->isSocieteContact()) {
             $cvis = array();
             $ppms = array();
@@ -238,7 +237,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $this->etablissement_informations->ppm = implode('|', $ppms);
             if($societe->exist('region') && $societe->region) {
                 $this->add('region', $societe->region);
-            } else {
+            } elseif(count($regions)) {
                 $this->add('region', implode('|', $regions));
             }
         }else{
@@ -280,10 +279,15 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $this->addTag('automatique', 'en_alerte');
         }
 
+        $this->tags->remove('droits');
+        $this->tags->add('droits');
+
         if ($this->exist('droits')) {
             foreach ($this->droits as $droit) {
                 $this->addTag('automatique', $droit);
                 $this->addTag('automatique', preg_replace('/:.*/', '', $droit));
+                $this->addTag('droits', $droit);
+                $this->addTag('droits', preg_replace('/:.*/', '', $droit));
             }
         }
 
@@ -659,7 +663,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return Anonymization::hideIfNeeded($this->_get('email'));
     }
     public function getEmails(){
-        return explode(';',$this->email);
+        $e = array();
+        if ($this->email)  {
+            $e = explode(';',$this->email);
+        }
+        return $e;
     }
 
     public function getTelephoneDisponible() {
@@ -801,10 +809,6 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return $this->_get('region');
     }
 
-    public function getRegionViticole(){
-      return strtoupper(sfContext::getInstance()->getConfiguration()->getApplication());
-    }
-
     public function getCodeComptable(){
       return ($this->getSociete())? $this->getSociete()->getCodeComptable() : null;
     }
@@ -838,6 +842,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
 
+    public function setEmailTeledeclaration($email_teledeclaration) {
+        $this->add('teledeclaration_email', $email);
+    }
+
+
     public function hasAlternativeLogins() {
         if (!$this->exist('alternative_logins')) {
             return false;
@@ -847,5 +856,19 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             return false;
         }
         return (count($a));
+    }
+
+    public function isDuplicate() {
+        if ($this->getCompteType() == "SOCIETE") {
+            return false;
+        }
+        if ($this->getNomAAfficher() == $this->getSociete()->raison_sociale) {
+            if ($this->isSameAdresseThanSociete()) {
+                return "Identique";
+            }
+            return 'Meme raison sociale';
+        } else {
+            return false;
+        }
     }
 }

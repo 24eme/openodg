@@ -10,7 +10,7 @@ $t = new lime_test(4);
 $csv = new Csv($csvfile);
 $idu2produit = array();
 foreach ($csv->getLignes() as $l) {
-    $idu2produit[$l[ParcellaireCsvFile::CSV_FORMAT_IDU]] = $l[ParcellaireCsvFile::CSV_FORMAT_PRODUIT]. ' / '.$l[ParcellaireCsvFile::CSV_FORMAT_CEPAGE];
+    $idu2produit[$l[ParcellaireScrappedCsvFile::CSV_FORMAT_IDU]] = $l[ParcellaireScrappedCsvFile::CSV_FORMAT_PRODUIT]. ' / '.$l[ParcellaireScrappedCsvFile::CSV_FORMAT_CEPAGE];
 }
 
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');

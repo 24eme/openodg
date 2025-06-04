@@ -40,13 +40,17 @@ class HabilitationAjoutProduitForm extends acCouchdbForm
     public function getProduits()
     {
         if (!$this->produits) {
-            foreach ($this->getDocument()->getProduitsConfig() as $produit) {
+            foreach ($this->getDocument()->getProduitsConfig(date('Y-m-d')) as $produit) {
                 if ($this->getDocument()->exist($produit->getHash())) {
                   continue;
                 }
                 $this->produits[$produit->getHash()] = $produit->getLibelleComplet();
             }
         }
+        if (count($this->produits) == 1) {
+           return $this->produits;
+        }
+
         return array_merge(array('' => ''), $this->produits);
     }
 

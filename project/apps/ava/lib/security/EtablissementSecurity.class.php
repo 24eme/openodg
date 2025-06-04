@@ -1,6 +1,8 @@
 <?php
 
-class EtablissementSecurity implements SecurityInterface {
+/*** AVA ***/
+
+class EtablissementSecurity/*** AVA ***/ implements SecurityInterface {
 
     const DECLARANT_DREV = 'DECLARANT_DREV';
     const DECLARANT_PARCELLAIRE = 'DECLARANT_PARCELLAIRE';

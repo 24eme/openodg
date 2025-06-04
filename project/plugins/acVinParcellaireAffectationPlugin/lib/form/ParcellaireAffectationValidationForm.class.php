@@ -32,7 +32,7 @@ class ParcellaireAffectationValidationForm extends acCouchdbObjectForm {
         	$this->getObject()->validate();
         }
         foreach ($this->getObject()->getParcelles() as $parcelle) {
-            if ($parcelle->affectation) {
+            if ($parcelle->exist('affectation') && $parcelle->affectation) {
                 $parcelle->date_affectation = date('Y-m-d');
             }
         }

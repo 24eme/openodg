@@ -14,6 +14,7 @@ class ParcellaireAffectationClient extends acCouchdbClient {
     const APPELLATION_GRDCRU = 'GRDCRU';
     const APPELLATION_COMMUNALE = 'COMMUNALE';
     const APPELLATION_LIEUDIT = 'LIEUDIT';
+    const APPELLATION_PINOTNOIRROUGE = 'PINOTNOIRROUGE';
     const APPELLATION_CREMANT = 'CREMANT';
 
     public static $appellations_libelles = array(
@@ -21,6 +22,7 @@ class ParcellaireAffectationClient extends acCouchdbClient {
             self::APPELLATION_GRDCRU => 'Grand Cru',
             self::APPELLATION_COMMUNALE => 'Communale',
             self::APPELLATION_LIEUDIT => 'Lieux dits',
+            self::APPELLATION_PINOTNOIRROUGE => 'Alsace rouge',
             self::APPELLATION_CREMANT => 'Crémant'
                 );
 
@@ -94,13 +96,13 @@ class ParcellaireAffectationClient extends acCouchdbClient {
 
     public function getAppellationsAndVtSgnKeys($type = self::TYPE_COUCHDB) {
         if ($type == self::TYPE_COUCHDB) {
-	        return array_merge(array(
-	            self::APPELLATION_GRDCRU => 'Grand Cru',
-	            self::APPELLATION_COMMUNALE => 'Communale',
-	            self::APPELLATION_LIEUDIT => 'Lieux dits'
-	                ),
-	            array(self::APPELLATION_VTSGN => 'VT/SGN')
-	        );
+            return [
+                self::APPELLATION_GRDCRU => 'Grand Cru',
+                self::APPELLATION_COMMUNALE => 'Communale',
+                self::APPELLATION_LIEUDIT => 'Lieux dits',
+                self::APPELLATION_PINOTNOIRROUGE => 'Alsace rouge',
+                self::APPELLATION_VTSGN => 'VT/SGN'
+            ];
         }
         return array('CREMANT' => 'Crémant');
     }
@@ -111,7 +113,8 @@ class ParcellaireAffectationClient extends acCouchdbClient {
 	            self::APPELLATION_ALSACEBLANC => 'Alsace Blanc',
 	            self::APPELLATION_GRDCRU => 'Grand Cru',
 	            self::APPELLATION_COMMUNALE => 'Communale',
-	            self::APPELLATION_LIEUDIT => 'Lieux dits'
+                self::APPELLATION_LIEUDIT => 'Lieux dits',
+	            self::APPELLATION_PINOTNOIRROUGE => 'Alsace rouge'
 	        );
         }
         return array('CREMANT' => 'Crémant');
@@ -124,34 +127,8 @@ class ParcellaireAffectationClient extends acCouchdbClient {
         return 'CREMANT';
     }
 
-    public function getDateOuverture($type = self::TYPE_COUCHDB) {
-        if ($type == self::TYPE_COUCHDB) {
-            $dates = sfConfig::get('app_dates_ouverture_parcellaire');
-        } elseif ($type == self::TYPE_COUCHDB_PARCELLAIRE_CREMANT) {
-            $dates = sfConfig::get('app_dates_ouverture_parcellaire_cremant');
-        } elseif ($type == self::TYPE_COUCHDB_INTENTION_CREMANT) {
-            $dates = sfConfig::get('app_dates_ouverture_intention_cremant');
-        } else {
-        	throw new sfException("Le type de parcellaire $type n'existe pas");
-        }
-        return $dates;
-    }
-
-    public function getDateOuvertureDebut($type = self::TYPE_COUCHDB) {
-        $dates = $this->getDateOuverture($type);
-        return $dates['debut'];
-    }
-
-    public function getDateOuvertureFin($type = self::TYPE_COUCHDB) {
-        $dates = $this->getDateOuverture($type);
-        return $dates['fin'];
-    }
-
-    public function isOpen($type = self::TYPE_COUCHDB, $date = null) {
-        if (is_null($date)) {
-            $date = date('Y-m-d');
-        }
-        return $date >= $this->getDateOuvertureDebut($type) && $date <= $this->getDateOuvertureFin($type);
+    public function needAffectation($identifiant, $periode) {
+        return false;
     }
 
 }

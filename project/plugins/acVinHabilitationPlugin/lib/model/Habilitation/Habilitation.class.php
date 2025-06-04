@@ -74,19 +74,21 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $this->set('_id', $id);
     }
 
-    public function getConfiguration() {
-
-        return acCouchdbManager::getClient('Configuration')->getConfiguration($this->date);
+    public function getConfiguration($date = null) {
+        if (!$date) {
+            $date = $this->date;
+        }
+        return acCouchdbManager::getClient('Configuration')->getConfiguration($date);
     }
 
-    public function getProduitsConfig() {
-      return HabilitationClient::getinstance()->getProduitsConfig($this->getConfiguration());
+    public function getProduitsConfig($date = null) {
+      return HabilitationClient::getinstance()->getProduitsConfig($this->getConfiguration($date));
     }
 
-    public function getProduitsHabilites() {
+    public function getProduitsHabilites($activite = null) {
         $produits = array();
         foreach($this->getProduits() as $produit) {
-            if(!count($produit->getActivitesHabilites())) {
+            if(!$produit->isHabiliteFor($activite)) {
                 continue;
             }
 
@@ -100,12 +102,21 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return $this->declaration->getProduits($onlyActive);
     }
 
-    public function getProduitsByCepage($cepage) {
+    public function getProduitsByCepage($cepage, $date = null) {
+        if (!$date) {
+            $date = $this->getDate();
+        }
         $produits = array();
         foreach($this->getProduits() as $p) {
-            if (in_array($cepage, $p->getConfig()->getCepagesAutorises())) {
-                $produits[] = $p;
-                continue;
+            foreach($p->getConfig($date)->getProduits() as $c) {
+                $cepages = $c->getCepagesAutorises();
+                if($cepages instanceof acCouchdbJson) {
+                    $cepages = (array) $c->getCepagesAutorises()->toArray(true, false);
+                }
+                if (in_array($cepage, $cepages)) {
+                    $produits[] = $c;
+                    continue;
+                }
             }
         }
         return $produits;
@@ -151,27 +162,30 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function addProduit($hash, $date = null) {
         $hash = preg_replace("|/declaration/|", '', $hash);
-        if(!$this->getConfiguration()->exist('/declaration/'.$hash)){
-          return null;
+        if(!$this->getConfiguration($date)->exist('/declaration/'.$hash)){
+            return null;
         }
-        $prod = $this->getConfiguration()->get('/declaration/'.$hash);
-        $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prod);
-        $hashToAdd = preg_replace("|/declaration/|", '', $node->getHash());
-        $exist = $this->exist('declaration/'.$hashToAdd);
-        $produit = $this->add('declaration')->add($hashToAdd);
-        if(!$exist) {
+        $prod = $this->getConfiguration($date)->get('/declaration/'.$hash);
+        $produit = $this->getProduitByProduitConf($prod);
+        if(!$produit) {
             $produit_libelle = $produit->getLibelle();
             $produit->initActivites();
             if($date == $this->date || !$date) {
                 $this->addHistoriqueNewProduit($produit_libelle);
             }
             $this->declaration->reorderByConf();
-            $produit = $this->get('declaration')->get($hashToAdd);
         }
         return $produit;
     }
 
-
+    public function getProduitByProduitConf($prodconf) {
+        $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prodconf);
+        if (!$node) {
+            return null;
+        }
+        $hashToAdd = preg_replace("|/declaration/|", '', $node->getHash());
+        return $this->add('declaration')->add($hashToAdd);
+    }
 
     public function storeEtape($etape) {
         $etapeOriginal = ($this->exist('etape')) ? $this->etape : null;
@@ -301,18 +315,19 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 		}
 	}
 
-    public function isHabiliteFor($hash_produit, $activite) {
-        if(strpos($hash_produit, '/EFF/') !== false && $this->isHabiliteFor(str_replace('/EFF/', '/TRANQ/', $hash_produit), $activite))  {
-            return true;
+    public function isHabiliteFor($hash_produit, $activite, $date = null) {
+        $hash_produit = str_replace(['/declaration/', 'declaration/'], '', $hash_produit);
+        $prodconf = $this->getConfiguration($date)->get('/declaration/'.$hash_produit);
+        $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prodconf);
+        $hash_produit = preg_replace("|/declaration/|", '', $node->getHash());
+        $hash_produit = str_replace('/VDN/appellations/VDR', '/TRANQ/appellations/RTA', $hash_produit);
+        $hash_produit = str_replace(['/EFF/', '/MOU/'], '/TRANQ/', $hash_produit);
+
+        if (!$this->addProduit($hash_produit, $date)) {
+            return false;
         }
 
-        if (!$this->addProduit($hash_produit)) {
-            return false;
-        }
-        if (!$this->addProduit($hash_produit)->exist('activites')) {
-            return false;
-        }
-        return $this->addproduit($hash_produit)->isHabiliteFor($activite);
+        return $this->addProduit($hash_produit, $date)->isHabiliteFor($activite);
     }
 
   public function containHashProduit($hash) {
@@ -350,6 +365,58 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         ksort($demandes);
 
         return $demandes;
+    }
+
+    public function getActivitesHabilites() {
+        $activites = [];
+        foreach($this->getProduits() as $p) {
+            $activites = array_merge($activites, array_keys($p->getActivitesHabilites()));
+        }
+        $activites = array_unique($activites);
+        sort($activites);
+
+        return $activites;
+    }
+
+    public function getActivitesWrongHabilitation() {
+        $activites = [];
+        foreach($this->getProduits() as $p) {
+            $activites = array_merge($activites, array_keys($p->getActivitesWrongHabilitation()));
+        }
+        $activites = array_unique($activites);
+        sort($activites);
+
+        return $activites;
+    }
+
+    public function getTheoriticalFamille() {
+        $activites = $this->getActivitesHabilites();
+
+        if(!count($activites)) {
+            $activites = $this->getActivitesWrongHabilitation();
+        }
+
+        if(in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $activites) && in_array(HabilitationClient::ACTIVITE_NEGOCIANT, $activites)) {
+
+            return EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+        }
+
+        if(in_array(HabilitationClient::ACTIVITE_PRODUCTEUR, $activites) && in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $activites)) {
+
+            return EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+        }
+
+        if(in_array(HabilitationClient::ACTIVITE_NEGOCIANT, $activites)) {
+
+            return EtablissementFamilles::FAMILLE_NEGOCIANT;
+        }
+
+        if(in_array(HabilitationClient::ACTIVITE_PRODUCTEUR, $activites)) {
+
+            return EtablissementFamilles::FAMILLE_PRODUCTEUR;
+        }
+
+        return null;
     }
 
     public function save() {

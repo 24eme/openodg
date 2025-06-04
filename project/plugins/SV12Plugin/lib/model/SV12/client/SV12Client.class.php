@@ -1,11 +1,11 @@
 <?php
 
-class SV12Client extends acCouchdbClient implements DouaneClient {
+class SV12Client extends DouaneClient {
 	const TYPE_MODEL = 'SV12';
     public static function getInstance()
     {
       return acCouchdbManager::getClient("SV12");
-    }  
+    }
 
     public function findByArgs($identifiant, $annee)
     {

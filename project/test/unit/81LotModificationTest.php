@@ -22,7 +22,7 @@ function countMouvements($degustation) {
 
 $t = new lime_test(58);
 
-$annee = (date('Y')-1)."";
+$annee = "2020";
 $campagne = $annee.'-'.($annee + 1);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $degust =  CompteTagsView::getInstance()->findOneCompteByTag('automatique', 'degustateur_porteur_de_memoire');
@@ -56,7 +56,7 @@ foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdb
 foreach(TemplateFactureClient::getInstance()->findAll() as $k => $doc) {
     TemplateFactureClient::getInstance()->delete($doc);
 }
-
+$t->comment(sfConfig::get('sf_data_dir')."/configuration/".$application."/TEMPLATE-FACTURE-".$annee.".json");
 acCouchdbManager::getClient()->storeDoc(json_decode(file_get_contents(sfConfig::get('sf_data_dir')."/configuration/".$application."/TEMPLATE-FACTURE-".$annee.".json")));
 
 $template = TemplateFactureClient::getInstance()->findByCampagne($campagne);
@@ -100,6 +100,7 @@ $produit1->recolte->superficie_total = 200;
 $produit1->volume_revendique_issu_recolte = 80;
 $drev->addLot();
 $drev->lots[0]->numero_logement_operateur = '1';
+$drev->lots[0]->produit_hash = $produitconfig1->getHash();
 $drev->lots[0]->volume = 1;
 $drev->validate($dateValidation);
 $drev->validateOdg($dateValidation);
@@ -133,7 +134,9 @@ $values['numero_logement_operateur'] = "A";
 $values['millesime'] = "2021";
 $values['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $values['destination_date'] = date('d/m/Y');
-$values['specificite'] = 'bio';
+if (DRevConfiguration::getInstance()->hasSpecificiteLot()) {
+    $values['specificite'] = 'bio';
+}
 $values['cepage_0'] = 'CHENIN B';
 $values['repartition_hl_0'] = 11;
 $values['_revision'] = $lot->getDocument()->_rev;
@@ -227,7 +230,9 @@ $values['numero_logement_operateur'] = "A";
 $values['millesime'] = ($annee+2)."";
 $values['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $values['destination_date'] = date('d/m/Y');
-$values['specificite'] = 'bio';
+if (DRevConfiguration::getInstance()->hasSpecificiteLot()) {
+    $values['specificite'] = 'bio';
+}
 $values['cepage_0'] = 'CHENIN B';
 $values['repartition_hl_0'] = 11;
 $values['_revision'] = $lot->getDocument()->_rev;
@@ -254,7 +259,9 @@ $values['numero_logement_operateur'] = "A";
 $values['millesime'] = ($annee+2)."";
 $values['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $values['destination_date'] = date('d/m/Y');
-$values['specificite'] = 'bio';
+if (DRevConfiguration::getInstance()->hasSpecificiteLot()) {
+    $values['specificite'] = 'bio';
+}
 $values['cepage_0'] = 'CHENIN B';
 $values['repartition_hl_0'] = 11;
 $values['_revision'] = $lot->getDocument()->_rev;

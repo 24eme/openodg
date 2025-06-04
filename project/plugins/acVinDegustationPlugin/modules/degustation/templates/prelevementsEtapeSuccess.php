@@ -28,11 +28,11 @@
           </div>
       <?php endif; ?>
         <div class="row">
-          <div class="col-xs-12">
-            <strong>Organisation des prélèvements</strong>
-            <br/>
-            <br/>
-        </div>
+            <div class="col-xs-12">
+                <strong>Organisation des prélèvements</strong>
+                <br/>
+                <br/>
+            </div>
           <div class="col-xs-12">
               <a id="btn_pdf_fiche_tournee_prelevement" href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche tournée prélevement</a>
               <a id="btn_pdf_fiche_individuelle_lots_a_prelever" href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', $degustation) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle des lots à prélever</a>
@@ -63,12 +63,11 @@
                   </tr>
 
                 <tr>
-                    <td class="col-xs-1 text-right"><?php echo count($degustation->getLotsPrelevables()) -  count($degustation->getLotsDegustables()) - count($degustation->getLeurres()) ?></td>
+                    <td class="col-xs-1 text-right"><?php echo count($degustation->getLotsPrelevables()) -  count($degustation->getLotsPreleves()) ?></td>
                     <td>lots restant à prélever</td>
                 </tr>
                 <tr>
-                    <td class="col-xs-1 text-right"><?php echo count($degustation->getLotsDegustables()) - count($degustation->getLeurres()) ?></td>
-                    <td>lots prélevés</td>
+                    <td class="col-xs-1 text-right"><?php echo count($degustation->getLotsPreleves()) ?></td>
                 </tr>
                 <tr>
                     <td class="col-xs-1 text-right"><?php echo count($degustation->getLotsSansVolume()); ?></td>
@@ -78,6 +77,14 @@
                     <th class="col-xs-1 text-right"><?php echo count($degustation->getLots()) ?></th>
                     <th>lots au total</th>
                 </tr>
+            </table>
+        </div>
+        <div class="col-xs-3">
+            <table class="table-condensed">
+                <tr><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td></tr>
             </table>
           </div>
           <div class="col-xs-12 text-right">

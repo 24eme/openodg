@@ -1,6 +1,7 @@
 <?php use_helper('TemplatingPDF'); ?>
 <?php use_helper('Lot'); ?>
 <?php use_helper('Date'); ?>
+<?php use_helper('Float'); ?>
 
 <style>
 <?php echo style(); ?>
@@ -11,7 +12,7 @@ th {
 
 </style>
 
-  <p>TABLEAU DE SYNTHÈSE GLOBAL DES LOTS DE VIN IGP PRÉSENTÉS À LA COMMISSION :</p>
+  <p>TABLEAU DE SYNTHÈSE GLOBAL DES LOTS DE VIN PRÉSENTÉS À LA COMMISSION :</p>
   <table>
     <tr>
       <td style="width:2%"></td>
@@ -24,8 +25,8 @@ th {
               <th colspan="2" style="width:20%"><small>Résultat</small></th>
             </tr>
             <tr>
-              <th><small>C</small></th>
-              <th><small>NC</small></th>
+              <th><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A' : 'C';?></small></th>
+              <th><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'NA' : 'NC';?></small></th>
             </tr>
           </thead>
           <tbody>
@@ -38,9 +39,9 @@ th {
             <tr>
               <th><small>Volumes total (hl)</small></th>
               <?php $volumeNC = $degustation->getVolumeLotsConformesOrNot(false); $volumeC = $degustation->getVolumeLotsConformesOrNot(true) ?>
-              <td style="text-align: right"><small><?php echo $volumeNC + $volumeC ?> hl</small>&nbsp;&nbsp;</td>
-              <td style="text-align: right"><small><?php echo $volumeC ?> hl</small>&nbsp;&nbsp;</td>
-              <td style="text-align: right"><small><?php echo $volumeNC ?> hl</small>&nbsp;&nbsp;</td>
+              <td style="text-align: right"><small><?php echoFloat($volumeNC + $volumeC) ?> hl</small>&nbsp;&nbsp;</td>
+              <td style="text-align: right"><small><?php echoFloat($volumeC) ?> hl</small>&nbsp;&nbsp;</td>
+              <td style="text-align: right"><small><?php echoFloat($volumeNC) ?> hl</small>&nbsp;&nbsp;</td>
             </tr>
             <tr>
               <th><small>Nombre d'opérateurs</small></th>
@@ -73,18 +74,18 @@ th {
 <div>
   <table class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
     <tr>
-      <td style="width: 50%">Tableau des échantillons de vin IGP <?php echo $appellation ?> présentés à la commission</td>
+      <td style="width: 50%">Tableau des échantillons de <?php echo $appellation ?> présentés à la commission</td>
       <td style="width: 50%">
         <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
           <thead>
             <tr>
-              <th rowspan="2" style="width:35%"></th>
+              <th rowspan="2" style="width:30%"></th>
               <th rowspan="2" style="width:15%"><small>Synthèse</small></th>
-              <th colspan="2" style="width:20%"><small>Résultat</small></th>
+              <th colspan="2" style="width:30%"><small>Résultat</small></th>
             </tr>
             <tr>
-              <th><small>C</small></th>
-              <th><small>NC</small></th>
+              <th><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A' : 'C';?></small></th>
+              <th><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'NA' : 'NC';?></small></th>
             </tr>
           </thead>
           <tbody>
@@ -103,9 +104,9 @@ th {
             </tr>
             <tr>
               <th><small>Volumes total (hl)</small></th>
-              <td style="text-align: right"><small><?php echo $vc + $vnc ?> hl</small></td>
-              <td style="text-align: right"><small><?php echo $vc ?> hl</small></td>
-              <td style="text-align: right"><small><?php echo $vnc ?> hl</small></td>
+              <td style="text-align: right"><small><?php echoFloat($vc + $vnc) ?> hl</small></td>
+              <td style="text-align: right"><small><?php echoFloat($vc) ?> hl</small></td>
+              <td style="text-align: right"><small><?php echoFloat($vnc) ?> hl</small></td>
             </tr>
             <tr>
               <th><small>Nombre d'opérateurs</small></th>
@@ -122,16 +123,16 @@ th {
         <div>
           <table border="0.5px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;">
             <tr>
-              <th style="width: 5%"><?php echo tdStart() ?><small>N° Dossier ODG</small></th>
-              <th style="width: 5%"><?php echo tdStart() ?><small>N° Lot ODG</small></th>
+              <th style="width: 5%"><?php echo tdStart() ?><small>N° Dossier</small></th>
+              <th style="width: 5%"><?php echo tdStart() ?><small>N° Lot</small></th>
               <th style="width: 20%"><?php echo tdStart() ?><small>Opérateur/Ville/CVI</small></th>
               <th style="width: 5%"><?php echo tdStart() ?><small>N° Ano</small></th>
               <th style="width: 10%"><?php echo tdStart() ?><small>N° Logement Op</small></th>
               <th style="width: 20%"><?php echo tdStart() ?><small>Produit</small></th>
               <th style="width: 5%"><?php echo tdStart() ?><small>Volume<br/>(hl)</small></th>
               <th style="width: 5%"><?php echo tdStart() ?><small>N° P</small></th>
-              <th style="width: 5%"><?php echo tdStart() ?><small>C/NC</small></th>
-              <th style="width: 20%"><?php echo tdStart() ?><small>Motif NC <br/>Observation de Conformité</small></th>
+              <th style="width: 5%"><?php echo tdStart() ?><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A/NA' : 'C/NC';?></small></th>
+              <th style="width: 20%"><?php echo tdStart() ?><small>Motif <?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'NA' : 'NC';?> <br/>Observation <?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'd\'Acceptabilité' : 'de Conformité';?></small></th>
             </tr>
           <?php $page1 = 0; $pages = 0; foreach ($lotsDegustes as $key => $lotDeguste): ?>
           <?php if ($page1 == 7 || $pages == 15): ?>
@@ -148,12 +149,17 @@ th {
               <td><small><?php echo showProduitCepagesLot($lotDeguste, false) ?></small></td>
               <td style="float:right; text-align:right;"><small><?php echo number_format($lotDeguste->volume, 2) ?> hl</small></td>
               <td><small><?php echo $lotDeguste->getTextPassage() ?></small></td>
-              <td><small><?php echo $lotDeguste->statut == Lot::STATUT_CONFORME ? "C" : "NC" ?></small></td>
+              <td><small><?php if ($lotDeguste->statut == Lot::STATUT_CONFORME):?>
+                                <?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A' : 'C'; ?>
+                            <?php else:?>
+                                <?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'NA' : 'NC'; ?>
+                        <?php endif;?>
+              </small></td>
               <td><small>
                 <?php if ($lotDeguste->getMouvement(Lot::STATUT_CONFORME)): ?>
                     <?php echo $lotDeguste->observation ?>
                 <?php else: ?>
-                    <?php echo Lot::getLibelleConformite($lotDeguste->conformite) ?> :
+                    <?php echo $lotDeguste->getLibelleConformite() ?> :
                     <?php echo $lotDeguste->motif ?>
                 <?php endif ?>
               </small></td>

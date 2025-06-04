@@ -1,8 +1,6 @@
 all:
   configuration:
     facture:
-      ligneUnique: false
-      ligneDetailWithTitle: false
       echeances: false
       modalite_paiement: "- comptant  par virement \\ - virement en 3, 6, 8 ou 9 fois de mars à novembre \\ - prélèvement automatique en 9 fois de mars à novembre \\"
       uniq_template_prefix: "TEMPLATE-FACTURE"

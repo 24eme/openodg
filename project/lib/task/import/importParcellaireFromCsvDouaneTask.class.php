@@ -57,18 +57,15 @@ EOF;
             exit(self::EXIT_CODE_ETABLISSEMENT_INCONNU);
         }
 
-        // Créer un ParcellaireCsvFile
-        try {
-            $csv = new Csv($file);
-        } catch (Exception $e) {
-            $this->logSection('csv', $e->getMessage());
-            exit(self::EXIT_CODE_ERREUR_LECTURE);
-        }
-
         // Mettre en forme le fichier via la classe
         try {
-            $new_parcellaire = new ParcellaireCsvFile($etablissement, $csv);
-            $new_parcellaire->convert();
+            $new_parcellaire = ParcellaireClient::getInstance()->findOrCreate(
+                $etablissement->identifiant,
+                date('Y-m-d'),
+                'PRODOUANE'
+            );
+            $parcellairecsv = ParcellaireCsvFile::getInstance($new_parcellaire, $file);
+            $parcellairecsv->convert();
         } catch (Exception $e) {
             echo $e->getMessage()."\n";
             exit(self::EXIT_CODE_GENERATION_PARCELLE);
@@ -81,21 +78,21 @@ EOF;
             $old_parcelles = $old_parcellaire->getParcelles();
             $old_produits = $old_parcellaire->declaration;
 
-            $new_parcelles = $new_parcellaire->getParcellaire()->getParcelles();
-            $new_produits = $new_parcellaire->getParcellaire()->declaration;
+            $new_parcelles = $new_parcellaire->getParcelles();
+            $new_produits = $new_parcellaire->declaration;
 
             // Sauver le document si différent
             if (count($old_parcelles) !== count($new_parcelles) ||
                 count($old_produits) !== count($new_produits))
             {
                 $new_parcellaire->save();
-                echo sprintf("Sauvegarde du nouveau parcellaire (prédédent : %s) : %s",$old_parcellaire->_id,$new_parcellaire->getParcellaire()->_id)."\n";
+                echo sprintf("Sauvegarde du nouveau parcellaire (prédédent : %s) : %s",$old_parcellaire->_id,$new_parcellaire->_id)."\n";
             } else {
                 echo sprintf("Le parcellaire semble le même : %s pas de réimport",$old_parcellaire->_id)."\n";
             }
         } else {
             $new_parcellaire->save();
-            echo sprintf("Sauvegarde du nouveau parcellaire (aucun précédent) : %s",$new_parcellaire->getParcellaire()->_id)."\n";
+            echo sprintf("Sauvegarde du nouveau parcellaire (aucun précédent) : %s",$new_parcellaire->_id)."\n";
         }
     }
 }

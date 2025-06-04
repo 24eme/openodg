@@ -28,6 +28,14 @@ parcellaire_visualisation:
   requirements:
     sf_method: [get, post]
 
+parcellaire_potentiel_visualisation:
+  url: /parcellaire/potentieldeproduction/:id
+  param: { module: parcellaire, action: potentieldeproduction }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+
 parcellaire_scrape_douane:
   url: /parcellaire/scrape/:identifiant
   param: { module: parcellaire, action: scrape }

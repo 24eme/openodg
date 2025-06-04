@@ -20,14 +20,18 @@
                             Semaine à partir de laquelle le vin est prêt à être dégusté :
                             <a title="Les vins sont à présenter fermentation terminée, stabilisés et clarifiés (filtration non obligatoire)" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
                         </p>
-                        <div class="form-group <?php if ($form[DRev::CUVE_ALSACE]["date"]->hasError()): ?>has-error<?php endif; ?>">
+                        <div class="form-group <?php if ($form[DRev::CUVE_ALSACE]["date"]->hasError() || $focus == "aoc_alsace"): ?>has-error<?php endif; ?>">
                             <?php if ($form[DRev::CUVE_ALSACE]["date"]->hasError()): ?>
                                 <div class="alert alert-danger" role="alert"><?php echo $form[DRev::CUVE_ALSACE]["date"]->getError(); ?></div>
                             <?php endif; ?>
                             <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                             <div class="col-xs-7">
                                 <div class="input-group date-picker-week">
-                                    <?php echo $form[DRev::CUVE_ALSACE]["date"]->render(array("class" => "form-control")); ?>
+                                    <?php if ($focus == "aoc_alsace"): ?>
+                                        <?php echo $form[DRev::CUVE_ALSACE]["date"]->render(array("class" => "form-control", "autofocus" => "autofocus")); ?>
+                                    <?php else: ?>
+                                        <?php echo $form[DRev::CUVE_ALSACE]["date"]->render(array("class" => "form-control")); ?>
+                                    <?php endif; ?>
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </div>
@@ -45,14 +49,47 @@
                             Semaine à partir de laquelle le vin de base est prêt à être dégusté :
                             <a title="Les vins sont à présenter fermentation terminée, stabilisés et clarifiés (filtration non obligatoire)" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
                         </p>
-                        <div class="form-group <?php if ($form[DRev::CUVE_CREMANT]["date"]->hasError()): ?>has-error<?php endif; ?>">
+                        <div class="form-group <?php if ($form[DRev::CUVE_CREMANT]["date"]->hasError() || $focus == "aoc_cremant"): ?>has-error<?php endif; ?>">
                             <?php if ($form[DRev::CUVE_CREMANT]["date"]->hasError()): ?>
                                 <div class="alert alert-danger" role="alert"><?php echo $form[DRev::CUVE_CREMANT]["date"]->getError(); ?></div>
                             <?php endif; ?>
                             <?php echo $form[DRev::CUVE_CREMANT]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                             <div class="col-xs-7">
                                 <div class="input-group date-picker-week">
-                                    <?php echo $form[DRev::CUVE_CREMANT]["date"]->render(array("class" => "form-control")); ?>
+                                    <?php if ($focus == "aoc_cremant"): ?>
+                                        <?php echo $form[DRev::CUVE_CREMANT]["date"]->render(array("class" => "form-control", "autofocus" => "autofocus")); ?>
+                                    <?php else: ?>
+                                        <?php echo $form[DRev::CUVE_CREMANT]["date"]->render(array("class" => "form-control")); ?>
+                                    <?php endif ?>
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+            <?php if (isset($form[DRev::CUVE_GRDCRU])): ?>
+                <div class="row-margin">
+                    <h3>AOC Grand Cru</h3>
+                    <div class="col-xs-offset-1">
+                        <p>
+                            Semaine à partir de laquelle le vin est prêt à être dégusté :
+                            <a title="Les vins sont à présenter fermentation terminée, stabilisés et clarifiés (filtration non obligatoire)" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
+                        </p>
+                        <div class="form-group <?php if ($form[DRev::CUVE_GRDCRU]["date"]->hasError() || $focus == "aoc_grdcru"): ?>has-error<?php endif; ?>">
+                            <?php if ($form[DRev::CUVE_GRDCRU]["date"]->hasError()): ?>
+                                <div class="alert alert-danger" role="alert"><?php echo $form[DRev::CUVE_GRDCRU]["date"]->getError(); ?></div>
+                            <?php endif; ?>
+                            <?php echo $form[DRev::CUVE_GRDCRU]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
+                            <div class="col-xs-7">
+                                <div class="input-group date-picker-week">
+                                    <?php if ($focus == "aoc_grdcru"): ?>
+                                        <?php echo $form[DRev::CUVE_GRDCRU]["date"]->render(array("class" => "form-control", "autofocus" => "autofocus")); ?>
+                                    <?php else: ?>
+                                        <?php echo $form[DRev::CUVE_GRDCRU]["date"]->render(array("class" => "form-control")); ?>
+                                    <?php endif ?>
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </div>

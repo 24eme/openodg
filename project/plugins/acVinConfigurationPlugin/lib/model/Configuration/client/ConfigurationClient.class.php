@@ -257,6 +257,7 @@ class ConfigurationClient extends acCouchdbClient {
             $this->countries['inconnu'] = 'Inconnu';
             $this->countries['UE'] = 'Union Européenne';
             $this->countries['HORS_UE'] = 'Hors Union Européenne';
+            $this->countries['CW'] = 'Curaçao';
         }
 
         return $this->countries;
@@ -371,6 +372,14 @@ class ConfigurationClient extends acCouchdbClient {
 
 			return $oldHashProduit;
 		}
+
+    public function isOpenODG() {
+        return ! $this->isGiilda();
+    }
+
+    public function isGiilda() {
+        return class_exists("DRMConfiguration");
+    }
 
 }
 

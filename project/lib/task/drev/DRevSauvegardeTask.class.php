@@ -65,10 +65,11 @@ EOF;
         if ($drev->exist('_attachments')) {
         	$sauvegarde->add('_attachments');
 
-	        umask(0002);
+	        umask(0);
 	        $cache_dir = sfConfig::get('sf_cache_dir') . '/dr';
 	        if (!file_exists($cache_dir)) {
-	        	mkdir($cache_dir);
+	        	mkdir($cache_dir, 02775);
+	        	chmod($cache_dir, 02775);
 	        }
 	        file_put_contents($cache_dir . "/DR.csv", $drev->getAttachmentUri('DR.csv'));
 	        $sauvegarde->storeAttachment($cache_dir . "/DR.csv", "text/csv");

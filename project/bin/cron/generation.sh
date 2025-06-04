@@ -17,7 +17,7 @@ fi
 
 LOCK_FILE=/tmp/cron_generation_pdf.$COUCHBASE.pid
 
-if test -e $LOCK_FILE ; then
+if test -e $LOCK_FILE || ! test "$SYMFONYTASKOPTIONS" ; then
 exit 1;
 fi
 

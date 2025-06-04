@@ -3,11 +3,16 @@ all:
     degustation:
       specificite_lot_pdf: false
       colleges:
-        degustateur_technicien: "Technicien"
-        degustateur_porteur_de_memoire: "Porteur de mémoire"
-        degustateur_usager_du_produit: "Usager du produit"
+        degustateur_technicien: "Techniciens"
+        degustateur_porteur_de_memoire: "Porteurs de mémoire"
+        degustateur_usager_du_produit: "Usagers du produit"
+      nb_etiquettes: 3
       anonymat4labo: false
       notation: true
       anonymisation_manuelle: false
       conformite: []
       typicite_cepage: true
+      tournee_autonome: false
+      has_notification : false
+      anonymisation_format: %s%02d
+      has_degustateurs_prerempli: false

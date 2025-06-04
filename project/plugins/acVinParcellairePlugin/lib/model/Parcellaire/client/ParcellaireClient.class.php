@@ -26,23 +26,6 @@ class ParcellaireClient extends acCouchdbClient {
     }
 
     /**
-     * Créé un nouveau document de type Parcellaire
-     *
-     * @param string $identifiant L'identifiant etablissement du parcellaire
-     * @param string La date de campagne du parcellaire
-     * @param string Le type de document
-     *
-     * @return Le document créé
-     */
-    public function createDoc($identifiant, $campagne, $type = self::TYPE_COUCHDB)
-    {
-        $parcellaire = new Parcellaire();
-        $parcellaire->initDoc($identifiant, $campagne, $type);
-
-        return $parcellaire;
-    }
-
-    /**
      * Recherche une entrée dans les documents existants
      *
      * @param string $identifiant L'identifiant etablissement du parcellaire
@@ -67,12 +50,13 @@ class ParcellaireClient extends acCouchdbClient {
     public function scrapeParcellaireCSV($cvi, $scrappe = true, $contextInstance = null)
     {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        $scrapydocs = ProdouaneScrappyClient::getDocumentPath($contextInstance);
+
         $status = 0;
-        if ($scrappe) {
+        if ($scrappe && is_file(ProdouaneScrappyClient::getScrapyBin().'/download_parcellaire.sh')) {
             $status = ProdouaneScrappyClient::exec("download_parcellaire.sh", "$cvi", $output);
         }
 
+        $scrapydocs = ProdouaneScrappyClient::getDocumentPath($contextInstance);
         $file = $scrapydocs.'/parcellaire-'.$cvi.'.csv';
 
         if (empty($file)) {
@@ -80,7 +64,6 @@ class ParcellaireClient extends acCouchdbClient {
         }
         if ($status != 0) {
             $contextInstance->getLogger()->info("scrapeParcellaireCSV() : retour du scrap problématique : $status");
-            throw new sfException(end($output));
         }
 
         return $file;
@@ -130,79 +113,75 @@ class ParcellaireClient extends acCouchdbClient {
     public function saveParcellaire(Etablissement $etablissement, Array &$errors, $contextInstance = null, $scrapping = true)
     {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        $fileCsv = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/parcellaire-'.$etablissement->cvi.'.csv';
+        $cvi = $etablissement->cvi;
 
-        $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $scrapping, $contextInstance);
+        $fileCsv = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/parcellaire-'.$cvi.'.csv';
+
+        $fileCsv = $this->scrapeParcellaireCSV($cvi, $scrapping, $contextInstance);
         $filePdf = str_replace('.csv', '-parcellaire.pdf', $fileCsv);
 
         $lastParcellaire = $this->getLast($etablissement->identifiant);
         if($filePdf && is_file($filePdf) && $lastParcellaire && $lastParcellaire->hasParcellairePDF() && md5_file($filePdf) == $lastParcellaire->getParcellairePDFMd5()) {
 
-            throw new Exception("Aucune nouvelle vesion du PDF trouvée (il se peut que le parcellaire de cet opérateur ne soit pas accessible sur prodouane)");
+            throw new Exception("Aucune nouvelle version du PDF trouvée (il se peut que le parcellaire de cet opérateur ne soit pas accessible sur prodouane)");
         }
 
-        $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
-        $returncsv = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
+        $parcellaire = ParcellaireClient::getInstance()->findOrCreate(
+            $etablissement->identifiant,
+            date('Y-m-d'),
+            'PRODOUANE'
+        );
+
+        $return = false;
+        if (is_file($filePdf)) {
+            $parcellaire->storeAttachment($filePdf, 'application/pdf', "import-cadastre-$cvi-parcelles.pdf");
+            $parcellaire->save();
+            $return = true;
+        }else{
+            $errors['pdf'] = 'Pas de PDF issu du scrapping trouvé';
+        }
+
+        $returncsv = false;
+        if (is_file($fileCsv)) {
+            $parcellaire->storeAttachment($fileCsv, 'text/csv', "import-cadastre-$cvi-parcelles.csv");
+            $parcellaire->save();
+            $returncsv = true;
+        }else{
+            $errors['csv'] = 'Pas de CSV issu du scrapping trouvé ('.$fileCsv.')';
+        }
+
+        $this->loadParcellaireCSV($parcellaire);
+        $parcellaire->save();
 
         if ($returncsv) {
-            $fileJson = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/cadastre-'.$etablissement->cvi.'-parcelles.json';
+            $fileJson = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/cadastre-'.$cvi.'-parcelles.json';
             if($scrapping) {
-                $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi, $contextInstance);
+                $fileJson = $this->scrapeParcellaireJSON($cvi, $contextInstance);
             }
-            $this->saveParcellaireGeoJson($etablissement, $fileJson, $errors['json']);
+            if (is_file($fileJson)) {
+                $parcellaire->storeAttachment($fileJson, 'text/json', "import-cadastre-$cvi-parcelles.json");
+                $parcellaire->save();
+            }
         }
         return $return || $returncsv;
     }
 
-    public function saveParcellaireGeoJson($etablissement, $path, &$error, $contextInstance = null){
+    public function loadParcellaireCSV(Parcellaire $parcellaire, $contextInstance = null) {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         try {
-
-            $parcellaire = new ParcellaireJsonFile($etablissement, $path, $contextInstance);
-
-            $parcellaire->save();
-
+            $parcellairecsv = ParcellaireCsvFile::getInstance($parcellaire);
+            $parcellairecsv->convert();
         } catch (Exception $e) {
-            $error = "Une erreur lors de la sauvgarde ".$e->getMessage();
-            $contextInstance->getLogger()->info("saveParcellaireGeoJson() : exception ".$e->getMessage());
-            return false;
-        }
-
-        return true;
-
-    }
-
-    public function saveParcellaireCSV(Etablissement $etablissement, $path, &$error, $contextInstance = null){
-        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        try {
-            $csv = new Csv($path);
-            $parcellaire = new ParcellaireCsvFile($etablissement, $csv, $contextInstance);
-            $parcellaire->convert();
-
-        } catch (Exception $e) {
-            $contextInstance->getLogger()->info("saveParcellaireCSV() : exception ".$e->getMessage());
+            $contextInstance->getLogger()->info("loadParcellaireCSV() : exception ".$e->getMessage());
+            if (sfConfig::get('sf_environment') == 'dev') {
+                throw $e;
+            }
             $error = $e->getMessage();
             return false;
         }
 
-        $parcellaire->save();
-
+        $parcellairecsv->save();
         return true;
-    }
-
-    public function saveParcellairePDF(Etablissement $etablissement, $file, &$error, $contextInstance = null) {
-        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-
-        if (!is_file($file) || empty($file)) {
-            $message = "Le fichier PDF des parcelles ($file) n'existe pas ou est vide.";
-            $contextInstance->getLogger()->info("saveParcellairePDF: error: ".$message);
-            return false;
-        }
-
-        $this->findOrCreateDocPDF($etablissement->identifiant, date('Y-m-d'), 'PRODOUANE', $file, $etablissement->cvi);
-
-        return $file;
-
     }
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
@@ -220,7 +199,7 @@ class ParcellaireClient extends acCouchdbClient {
         if (! $date) {
             $date = date('Ymd');
         }
-        $parcellaire = $this->getLast($identifiant);
+        $parcellaire = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
         if ($parcellaire && $parcellaire->date == $date) {
             return $parcellaire;
         }
@@ -228,41 +207,6 @@ class ParcellaireClient extends acCouchdbClient {
         $parcellaire->initDoc($identifiant, $date);
         $parcellaire->source = $source;
 
-        return $parcellaire;
-    }
-
-    public function findOrCreateDocPDF($identifiant, $date = null, $source = null, $path=null, $cvi = null, $type = self::TYPE_COUCHDB) {
-        if (! $date) {
-            $date = date('Ymd');
-        }
-        $parcellaire = $this->getLast($identifiant);
-
-        if (!$parcellaire || $parcellaire->date != $date) {
-            $parcellaire = $this->findOrCreate($identifiant, $date, $source, $type);
-        }
-
-        if($path){
-            $parcellaire->storeAttachment($path, 'application/pdf', "import-cadastre-$cvi-parcelles.pdf");
-            $parcellaire->save();
-        }
-        return $parcellaire;
-
-    }
-
-    public function findOrCreateDocJson($identifiant, $date = null, $source = null, $path=null, $cvi = null, $type = self::TYPE_COUCHDB) {
-        if (! $date) {
-            $date = date('Ymd');
-        }
-        $parcellaire = $this->getLast($identifiant);
-
-        if (!$parcellaire || $parcellaire->date != $date) {
-            $parcellaire = $this->findOrCreate($identifiant, $date, $source, $type);
-        }
-
-        if($path){
-            $parcellaire->storeAttachment($path, 'text/json', "import-cadastre-$cvi-parcelles.json");
-            $parcellaire->save();
-        }
         return $parcellaire;
     }
 
@@ -275,6 +219,12 @@ class ParcellaireClient extends acCouchdbClient {
         end($h);
         $doc = $h[key($h)];
         return $doc;
+    }
+
+    public function getLastByCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $date = ConfigurationClient::getInstance()->getCampagneVinicole()->getDateFinByCampagne($campagne);
+
+        return $this->findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate);
     }
 
     public function getLast($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
@@ -306,13 +256,15 @@ class ParcellaireClient extends acCouchdbClient {
 
     }
 
-    public static function findParcelle($parcellaire, $parcelle, $scoreMin = 1, $with_cepage_match = false) {
+    public static function findParcelle($parcellaire, $parcelle, $scoreMin = 1, $with_cepage_match = false, &$allready_selected = null) {
         $parcelles = $parcellaire->getParcellesByIdu();
 
         $parcellesMatch = [];
 
         $selected_parcellaires = [];
-        if ($parcelle->exist('idu') && $parcelle->idu) {
+        $is_parcelle_from_parcellaire = method_exists($parcelle, 'exist');
+
+        if ($is_parcelle_from_parcellaire && $parcelle->exist('idu') && $parcelle->idu && isset($parcelles[$parcelle->idu])) {
             $selected_parcellaires = $parcelles[$parcelle->idu];
         }else{
             foreach($parcelles as $idu => $multip) {
@@ -321,45 +273,203 @@ class ParcellaireClient extends acCouchdbClient {
                 }
             }
         }
-
         foreach($selected_parcellaires as $p) {
             $score = 0;
+            $debug_score = [];
+            if ($is_parcelle_from_parcellaire) {
+                $cepage =  $parcelle->getCepageLibelle();
+            }else {
+                $cepage = $parcelle->cepage;
+            }
+            if(preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($cepage)) == preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($p->getCepageLibelle()))) {
+                $debug_score[] = 'libelle:+0.25';
+                $score += 0.25;
+            }
+            if(strpos($p->campagne_plantation, $parcelle->campagne_plantation) !== false) {
+                $debug_score[] = 'campagne_plantation:+0.25';
+                $score += 0.25;
+            }
+            if(KeyInflector::slugify($parcelle->lieu) == KeyInflector::slugify($p->lieu)) {
+                $debug_score[] = 'lieu:+0.25';
+                $score += 0.25;
+            }
+            if(KeyInflector::slugify($parcelle->commune) == KeyInflector::slugify($p->commune)) {
+                $debug_score[] = 'commune:+0.25';
+                $score += 0.25;
+            }
+            $has_one_exact_superficie = false;
+            if($is_parcelle_from_parcellaire && $parcelle->exist('parcelle_id') && $parcelle->_get('parcelle_id') && $parcelle->exist('superficie_parcellaire') && $p->exist('superficie_parcellaire') && abs($parcelle->_get('superficie_parcellaire') - $p->_get('superficie_parcellaire')) < 0.0001) {
+                $debug_score[] = 'superficie_parcellaire:+0.10';
+                $has_one_exact_superficie = true;
+                $score += 0.10;
+            }
+            $s = 0;
+            if ($is_parcelle_from_parcellaire) {
+                $s = $parcelle->_get('superficie');
+            }else{
+                $s = $parcelle->superficie;
+            }
+            if(abs($s - $p->_get('superficie')) < 0.0001) {
+                $debug_score[] = 'superficie:+0.25';
+                $has_one_exact_superficie = true;
+                $score += 0.25;
+            }
 
-            if(strtolower($parcelle->getCepageLibelle()) == strtolower($p->getCepageLibelle())) {
+            if($is_parcelle_from_parcellaire && $parcelle->exist('parcelle_id') && $parcelle->_get('parcelle_id') && $parcelle->exist('superficie_parcellaire') && abs($parcelle->_get('superficie_parcellaire') - $p->_get('superficie')) < 0.0001) {
+                $debug_score[] = 'superficie:+0.05';
+                $has_one_exact_superficie = true;
+                $score += 0.05;
+            }
+            if (!$has_one_exact_superficie) {
+                $debug_score[] = 'no_superficie:-0.30';
+                $score -= 0.30;
+            }
+            if ($is_parcelle_from_parcellaire && ($parcelle->idu == $p->idu)) {
+                $debug_score[] = 'idu:+0.25';
+                $score += 0.25;
+            }elseif ( (!$is_parcelle_from_parcellaire || !$parcelle->getIDU(false)) && ( ($parcelle->section == $p->section) && ($parcelle->numero_parcelle == $p->numero_parcelle) && (intval($parcelle->prefix == intval($p->prefix))) )) {
+                $debug_score[] = 'parcelledetail:+0.25';
                 $score += 0.25;
             }
-            if($parcelle->campagne_plantation == $p->campagne_plantation) {
-                $score += 0.25;
+            if ($allready_selected && isset($allready_selected[$p->getParcelleId()])) {
+                continue;
             }
-            if(strtoupper($parcelle->lieu) == strtoupper($p->lieu)) {
-                $score += 0.25;
-            }
-            if(abs($parcelle->getSuperficie(self::PARCELLAIRE_SUPERFICIE_UNIT_HECTARE) - $p->superficie) < 0.0001) {
-                $score += 0.25;
-            }
-            if (!$parcelle->getIDU(false) && ($parcelle->section == $p->section) && ($parcelle->numero_parcelle == $p->numero_parcelle) && (intval($parcelle->getPrefix()) == intval($p->prefix)) ) {
-                $score += 0.25;
-            }
-
             if($score < $scoreMin) {
                 continue;
             }
 
-            $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = $p;
+            $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = ['parcelle' => $p, 'debug' => $debug_score];
+            if ($allready_selected !== null) {
+                $allready_selected[$p->getParcelleId()] = $p->getParcelleId();
+            }
         }
 
         krsort($parcellesMatch);
-
         foreach($parcellesMatch as $key => $pMatch) {
             if ($with_cepage_match) {
-                if ($pMatch->cepage != $parcelle->cepage) {
+                if ($pMatch['parcelle']->cepage != $parcelle->cepage) {
                     continue;
                 }
             }
-            return $pMatch;
+            return $pMatch['parcelle'];
         }
-
         return null;
+    }
+
+    public static function parcelleSplitIDU($parcelle) {
+        if (!$parcelle->idu) {
+            return;
+        }
+        $parcelle->setCodeCommune(substr($parcelle->idu, 0, 5));
+        $parcelle->setPrefix(substr($parcelle->idu, 5, 3));
+        $parcelle->setSection(preg_replace('/^0+/', '', substr($parcelle->idu, 8, 2)));
+        $parcelle->setNumeroParcelle(preg_replace('/^0+/', '', substr($parcelle->idu, 10, 4)));
+    }
+
+    public static function CopyParcelle($p1, $p2, $withSuperficie = true) {
+        if (!$p2) {
+            throw new sfException('2d parcelle should not be empty');
+        }
+        $p1->idu = $p2->idu;
+        self::parcelleSplitIDU($p1);
+        $p1->campagne_plantation = $p2->campagne_plantation;
+        $p1->commune = $p2->commune;
+        $p1->code_commune = $p2->code_commune;
+        if($p1->exist('cepage') && $p2->exist('cepage')) {
+            $p1->cepage = $p2->cepage;
+        }
+        if ($withSuperficie) {
+            $p1->superficie = $p2->superficie;
+        }
+        if ($p1->exist('produit_hash')) {
+            $p1->produit_hash = $p2->produit_hash;
+        }
+        if($p2->exist('lieu')){
+            $p1->lieu = $p2->lieu;
+        }
+        if ($p1->exist('superficie_parcellaire')) {
+            $p1->superficie_parcellaire = $p2->getSuperficieParcellaire();
+        }
+        if ($p1->exist('superficie_cadastrale') && $p2->exist('superficie_cadastrale')) {
+            $p1->superficie_cadastrale = $p2->superficie_cadastrale;
+        }
+        if ($p1->exist('ecart_rang')) {
+            $p1->ecart_rang = $p2->ecart_rang;
+        }
+        if ($p1->exist('ecart_pieds')) {
+            $p1->ecart_pieds = $p2->ecart_pieds;
+        }
+        if ($p1->exist('mode_savoirfaire')) {
+            $p1->mode_savoirfaire = $p2->mode_savoirfaire;
+        }
+        if ($p1->exist('porte_greffe')) {
+            $p1->porte_greffe = $p2->porte_greffe;
+        }
+        $p1->parcelle_id = $p2->getParcelleId();
+        if ($p1->exist('numero_ordre')) {
+            $p1->numero_ordre = explode('-', $p1->parcelle_id)[1];
+        }
+        if (strpos($p2->getHash(), 'declaration') !== false) {
+            if (!$p1->produit_hash) {
+                $p1->produit_hash = $p2->getParent()->getParent()->getHash();
+            }
+        }
+        if ($p2->exist('source_produit_libelle') && $p2->source_produit_libelle) {
+            $p1->add('source_produit_libelle', $p2->source_produit_libelle);
+        }
+        return $p1;
+
+    }
+
+    public static function organizeParcellesByCommune($parcelles) {
+        $res = array();
+
+        foreach($parcelles as $pid => $parcelle) {
+            if(!isset($res[$parcelle->commune])) {
+                $res[$parcelle->commune] = array();
+            }
+            $res[$parcelle->commune][$parcelle->getParcelleId()] = $parcelle;
+        }
+        foreach ($res as $key => $parcelleByCommune) {
+            uasort($parcelleByCommune, "ParcellaireClient::sortParcellesForCommune");
+            $res[$key] = $parcelleByCommune;
+        }
+        ksort($res);
+        return $res;
+
+    }
+
+    public function getSyntheseCepages($parcellairedoc, $filter_produit_hash = null, $filter_insee = null) {
+        $synthese = array();
+        foreach($parcellairedoc->getParcelles() as $p) {
+            if ($filter_produit_hash) {
+                if (is_string($filter_produit_hash)) {
+                    if (strpos($p->produit_hash, $filter_produit_hash) === false) {
+                        continue;
+                    }
+                } else {
+                    if (!$p->produit_hash) {
+                        continue;
+                    }
+                }
+            }
+            if ($filter_insee && !in_array($p->code_commune, $filter_insee)) {
+                continue;
+            }
+            $cepage = $p->getCepage();
+            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
+                $cepage .= ' - jeunes vignes';
+            }
+            if (!isset($synthese[$cepage])) {
+                $synthese[$cepage] = array();
+                $synthese[$cepage]['superficie'] = 0;
+                $synthese[$cepage]['idus'] = [];
+            }
+            $synthese[$cepage]['superficie'] = $synthese[$cepage]['superficie'] + $p->superficie;
+            $synthese[$cepage]['idus'][$p->getParcelleId()] = $p->superficie;
+        }
+        ksort($synthese);
+        return $synthese;
     }
 
 }

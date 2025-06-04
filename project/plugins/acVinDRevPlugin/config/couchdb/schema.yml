@@ -222,6 +222,7 @@ DRev:
                         categorie: {  }
                         type: {  }
                         campagne: {  }
+                        region: { required: false }
       mouvements_lots:
         type: collection
         definition:
@@ -256,6 +257,8 @@ DRev:
                         declarant_identifiant: {  }
                         declarant_nom: {  }
                         statut: {}
+                        region: { required: false }
+      region: { required: false }
       pieces:
         type: array_collection
         definition:

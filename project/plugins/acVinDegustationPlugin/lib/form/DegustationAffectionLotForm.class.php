@@ -29,13 +29,13 @@ class DegustationAffectionLotForm extends BaseForm
     public function getDegustationChoices() {
         $degustations = array();
         if ($this->en_cours) {
-            $listeDegustations = DegustationClient::getInstance()->getHistoryEncours();
+            $listeDegustations = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON, Organisme::getCurrentRegion());
         }else{
             $listeDegustations = DegustationClient::getInstance()->getHistory(100);
         }
 
         foreach ($listeDegustations as $degustation_id => $degustation) {
-          $degustations[$degustation_id] = "Degustation du ".$degustation->date." au ".$degustation->lieu;
+          $degustations[$degustation->_id] = "Degustation du ".$degustation->date." au ".$degustation->lieu;
         }
         return $degustations;
     }
@@ -59,16 +59,6 @@ class DegustationAffectionLotForm extends BaseForm
 
         $lot = $degustation->getLot($lot->unique_id);
         $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
-        $lot->numero_table = null;
-        $lot->position = null;
-        $lot->conformite = null;
-        $lot->motif = null;
-        $lot->observation = null;
-        $lot->email_envoye = null;
-        $lot->recours_oc = null;
-        $lot->conforme_appel = null;
-        $lot->preleve = null;
-
         if ($values['preleve']  && in_array($degustation->etape,array(DegustationEtapes::ETAPE_PRELEVEMENTS,DegustationEtapes::ETAPE_TABLES,DegustationEtapes::ETAPE_ANONYMATS,DegustationEtapes::ETAPE_COMMISSION)) ){
            $lot->setIsPreleve();
         }

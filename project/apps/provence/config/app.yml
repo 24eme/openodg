@@ -4,7 +4,7 @@
 # default values
 all:
   organisme:
-    nom: "Syndicat des Vins Côtes de Provence"
+    nom: "Syndicats des Vins de Provence"
   elasticversion: '2.4.6'
   document_validation_signataire: 1
   parcellaire_irrigable:
@@ -32,11 +32,11 @@ all:
       PLATEAU_KARSTIQUE_83: "PLATEAU KARSTIQUE (83)"
       SAINTE_VICTOIRE_13: "SAINTE VICTOIRE (13)"
       SAINTE_VICTOIRE_83: "SAINTE VICTOIRE (83)"
-  communes: 
-    denominations: 
-      NDA : [83004,83033,83134,83148,83031,83063,83073,83075,83067,83092]
-      SVI : [13025,13109,13060,13072,13079,13087,13110, 83096, 83097]
-      FRE : [83028,83061,83085,83086,83099,83107,83118,83141]
-      PIE : [83033,83034,83043,83049,83054,83062,83144,83098,83091,83100,83130,83047]
-      LLO : [83019,83047,83069,83071]
+  communes:
+    denominations:
+      /declaration/certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/NDA : [83004,83033,83134,83148,83031,83063,83073,83075,83067,83092]
+      /declaration/certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/SVI : [13025,13109,13060,13072,13079,13087,13110, 83096, 83097]
+      /declaration/certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/FRE : [83028,83061,83085,83086,83099,83107,83118,83141]
+      /declaration/certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/PIE : [83033,83034,83043,83049,83054,83062,83144,83098,83091,83100,83130,83047]
+      /declaration/certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/LLO : [83019,83047,83069,83071]
   potentielproductiongenerator: "PotentielProductionProvenceGenerator"

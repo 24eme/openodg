@@ -66,7 +66,7 @@ Parcellaire:
                               lieu: { }
                               cepage: { }
                               campagne_plantation: { }
-                              numero_ordre: { required: false }
+                              numero_ordre: { }
                               departement: { required: false }
                               code_insee: { required: false }
                               ecart_rang: { type: float }
@@ -74,6 +74,41 @@ Parcellaire:
                               mode_savoirfaire: { required: false }
                               porte_greffe: { required: false }
                               prefix: { }
+                              produit_hash: { }
+                              source_produit_libelle: { }
+                              parcelle_id: { }
+
+      parcelles:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: ParcellaireParcelle
+              definition:
+                fields:
+                  superficie: { type: float }
+                  superficie_cadastrale: { type: float }
+                  commune: { }
+                  code_postal: { required: false }
+                  code_commune: { }
+                  section: { }
+                  numero_parcelle: { }
+                  idu: { }
+                  lieu: { }
+                  cepage: { }
+                  campagne_plantation: { }
+                  numero_ordre: { }
+                  departement: { required: false }
+                  code_insee: { required: false }
+                  ecart_rang: { type: float }
+                  ecart_pieds: { type: float }
+                  mode_savoirfaire: { required: false }
+                  porte_greffe: { required: false }
+                  prefix: { }
+                  produit_hash: { }
+                  source_produit_libelle: { }
+                  parcelle_id: {}
       pieces:
         type: array_collection
         definition:

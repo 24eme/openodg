@@ -34,8 +34,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return $this->_get('campagne');
     }
 
-    public function storeEmetteur($region = null) {
-        foreach (FactureConfiguration::getInstance()->getInfos($region) as $param => $value) {
+    public function storeEmetteur() {
+        foreach (FactureConfiguration::getInstance()->getInfos($this->region) as $param => $value) {
             if($this->emetteur->exist($param)){
                 $this->emetteur->$param = $value;
             }
@@ -67,11 +67,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return $this->_set('modalite_paiement', $modalitePaiement);
     }
 
-    public function constructIds($doc) {
-        if (!$doc)
-            throw new sfException('Pas de document attribué');
-        $this->region = $doc->getRegionViticole();
-        $this->identifiant = $doc->identifiant;
+    public function constructIds() {
         if(FactureConfiguration::getInstance()->deprecatedNumeroFactureIsId()){ // Pour nantes obsolète
           $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,FactureConfiguration::getInstance()->getNumeroFormat());
         }else{
@@ -207,6 +203,9 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     /** facturation par mvts **/
     public function storeLignesByMouvementsView($mouvement_agreges, $mouvements_originaux = null) {
+            if (!$mouvement_agreges->value->categorie) {
+                throw new sfException('Categorie missing in mouvement '.$mouvement->id);
+            }
             $keyLigne = str_replace("%detail_identifiant%",$mouvement_agreges->value->detail_identifiant,$mouvement_agreges->value->categorie);
             $ligne = $this->lignes->add($keyLigne);
             $ligne->libelle = $mouvement_agreges->value->type_libelle;
@@ -218,21 +217,25 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             }
 
             $quantite = 0;
-            $template = $this->getTemplate();
+            $template = $this->getTemplate(substr($mouvement_agreges->value->campagne, 0, 4));
             $code_comptable = false;
             if (!$template) {
                 throw new sfException("No template found (".$mouvement_agreges->id.")");
             }
 
-            foreach ($template->getCotisations() as $cotisName => $cotis) {
-                if($cotis->code_comptable) {
-                    $code_comptable = true;
-                    $cotisName = str_replace('%detail_identifiant%', $mouvement_agreges->value->detail_identifiant, $cotisName);
-                    if ($mouvement_agreges->value->categorie == $cotisName) {
-                        $ligne->produit_identifiant_analytique = $cotis->code_comptable;
-                        break;
-                    }
-                }
+            if (strpos($mouvement_agreges->id, 'MOUVEMENTSFACTURE') !== false) {
+              $ligne->produit_identifiant_analytique = $mouvement_agreges->value->identifiant_analytique;
+            } else {
+              foreach ($template->getCotisations() as $cotisName => $cotis) {
+                  if($cotis->code_comptable) {
+                      $code_comptable = true;
+                      $cotisName = str_replace('%detail_identifiant%', $mouvement_agreges->value->detail_identifiant, $cotisName);
+                      if ($mouvement_agreges->value->categorie == $cotisName) {
+                          $ligne->produit_identifiant_analytique = $cotis->code_comptable;
+                          break;
+                      }
+                  }
+              }
             }
             $detail = $ligne->details->add();
             $detail->prix_unitaire = $mouvement_agreges->value->taux;
@@ -315,9 +318,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return  $origines;
     }
 
-    public function storeTemplates($template) {
-        if ($template) {
-            $this->templates->add($template->_id, $template->_id);
+    public function storeTemplates(array $templates = null) {
+        if ($templates) {
+            foreach ($templates as $template) {
+                $this->templates->add($template, $template);
+            }
         }
     }
 
@@ -383,7 +388,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getTauxTva() {
-        if($this->exist('taux_tva') && $this->_get('taux_tva')){
+        if($this->exist('taux_tva') && !is_null($this->_get('taux_tva'))){
             return round($this->_get('taux_tva'),2);
         }
         $config_tva = sfConfig::get('app_tva_taux');
@@ -404,9 +409,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
         $this->updateVersementSepa();
 
-        parent::save();
+        $saved = parent::save();
 
         $this->saveDocumentsOrigine();
+
+        return $saved;
     }
 
     public function saveDocumentsOrigine() {
@@ -418,7 +425,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
     }
 
-    public function getTemplate() {
+    public function getTemplate($campagne = null) {
+        if ($campagne) {
+            foreach ($this->templates as $template_id) {
+                if (strpos($template_id, $campagne) !== false) {
+                    return TemplateFactureClient::getInstance()->find($template_id);
+                }
+            }
+        }
+
         $template_id = $this->getTemplateId();
         if ($template_id) {
             return TemplateFactureClient::getInstance()->find($template_id);
@@ -459,6 +474,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $this->versement_sepa = 1;
         }
         $this->updateVersementComptablePaiement();
+
+        if (FactureConfiguration::getInstance()->hasFacturationParRegion() && $this->region && !$this->exist('type_archive')) {
+            $this->add('type_archive', $this->type.'_'.$this->region);
+        }
 
         $this->archivage_document->preSave();
         $this->numero_odg = $this->getNumeroOdg();
@@ -511,6 +530,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $this->updateMontantPaiement();
 
         return Anonymization::hideIfNeeded($this->_get('montant_paiement'));
+    }
+
+    public function hasNonPaiement() {
+        return $this->getMontantPaiement() < $this->total_ttc;
     }
 
     public function getCodeComptableClient() {
@@ -700,15 +723,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function updateVersementComptablePaiement() {
-        if(!$this->exist('paiements') && $this->_get('montant_paiement') && $this->_get('date_paiement')) {
+        if(!$this->exist('paiements') && $this->_get('montant_paiement') && $this->_get('date_paiement') && $this->exist('reglement_paiement')) {
             $paiement = $this->add('paiements')->add();
             $paiement->montant = $this->_get('montant_paiement');
             $paiement->commentaire = $this->_get('reglement_paiement');
             $paiement->date = $this->_get('date_paiement');
             $paiement->versement_comptable = $this->versement_comptable_paiement;
             $this->remove('reglement_paiement');
-            $this->updateMontantPaiement();
         }
+        $this->updateMontantPaiement();
 
         $versement = true;
         $date = null;

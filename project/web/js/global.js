@@ -903,10 +903,18 @@
         $(this).find('input.num_int').saisieNum(false);
 
         $(this).find(".select2SubmitOnChange").on("change", function (e) {
+          if(!$(this).val()) {
+            return;
+          }
+          $(this).parents('form').submit();
+        });
+
+        $(this).find(".select2SubmitOnBlur").on("focusout", function (e) {
             if (e.val || $(this).val()) {
                 $(this).parents('form').submit();
             }
         });
+
     }
 
     $.initTableCheckbox = function() {
@@ -946,7 +954,7 @@
            table.find('.invisible').removeClass('invisible').addClass('visible');
           $(this).children('span').each(function(){ $(this).removeClass('glyphicon-eye-open');/*.addClass('glyphicon-eye-close');*/ });
           $(this).css("opacity","0.6");
-          $('#editHabilitation').hide();
+          $('#editHabilitation').disabled = true;
         }else{
           table.find('tr[data-hide="1"]').each(function(){
             $(this).hide();
@@ -957,7 +965,7 @@
           table.find('.visible').removeClass('visible').addClass('invisible');
           $(this).children('span').each(function(){ $(this).removeClass('glyphicon-eye-close').addClass('glyphicon-eye-open'); });
           $(this).css("opacity","1");
-          $('#editHabilitation').show();
+          $('#editHabilitation').disabled = false;
         }
       });
 

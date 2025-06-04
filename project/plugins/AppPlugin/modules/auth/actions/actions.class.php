@@ -43,6 +43,10 @@ class authActions extends sfActions {
     }
 
     public function executeUsurpation(sfWebRequest $request) {
+        if(!$this->getUser()->isAdminODG()) {
+            throw new sfError403Exception();
+        }
+
         $compte = CompteClient::getInstance()->find("COMPTE-".$request->getParameter('identifiant'));
         $identifiant = $compte->getSociete()->identifiant;
         if($compte->compte_type == CompteClient::TYPE_COMPTE_INTERLOCUTEUR) {

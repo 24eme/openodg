@@ -5,14 +5,14 @@ Etablissement:
        _id: {  }
        _rev: {  }
        type: {  }
-       cooperative: {}
+       cooperative: { required: false } #deprecie
        interpro: {  }
        identifiant: {  }
        id_societe: {  }
        statut: {  }
-       raisins_mouts: {  }
-       exclusion_drm: {  }
-       relance_ds: {  }
+       raisins_mouts: { required: false } #deprecie
+       exclusion_drm: { required: false } #deprecie
+       relance_ds: { required: false } #deprecie
        teledeclaration_email: {  }
        nature_inao: {  }
        mois_stock_debut: { required: false }
@@ -23,8 +23,9 @@ Etablissement:
              id_douane: {  }
              nom: {  }
              ville: {  }
-       region: {  }
-       type_dr: {  }
+       region: { }
+       secteur: { }
+       type_dr: { required: false } #deprecie
        liaisons_operateurs:
            type: collection
            definition:
@@ -60,7 +61,7 @@ Etablissement:
        no_accises: {  }
        carte_pro: {  }
        famille: {  }
-       sous_famille: {  }
+       sous_famille: { required: false  } # Non utilisé mais existant dans les documents
 
        #adresse copié du compte
        adresse: { }
@@ -69,7 +70,7 @@ Etablissement:
        commune: { }
        pays: {  }
        insee: { }
-       compte_type: { }
+       compte_type: { required: false } #A supprimer
        cedex: { required: false } #A supprimer
 
        #contact
@@ -159,104 +160,9 @@ Etablissement:
                    archive: boolean
                    lat: {  }
                    lon: {  }
+                   secteur: {}
                    attributs:
                      type: collection
                      definition:
                        fields:
                           '*': { }
-# TODO : champs à virer après le merge
-       compte_societe_saved:
-         type: collection
-         required: false
-         definition:
-           fields:
-             num_interne: {  }
-             civilite: { }
-             prenom: { }
-             nom: { }
-             nom_a_afficher: {}
-             fonction: { }
-             commentaire: { }
-             mot_de_passe: { }
-             login: { required: false }
-             date_modification: { required: false  }
-             origines:
-               type: array_collection
-               definition:
-                 fields:
-                    '*': { }
-             id_societe: { }
-             adresse_societe: {  }
-             adresse: { }
-             adresse_complementaire: { }
-             code_postal: { }
-             commune: { }
-             insee: { }
-             compte_type: { }
-             cedex: { require: false } #A supprimer
-             pays: {  }
-             email: {  }
-             telephone_perso: {  }
-             telephone_bureau: {  }
-             telephone_mobile: {  }
-             fax: {  }
-             site_internet: { }
-             nom_a_afficher: {  }
-             raison_sociale_societe: { required: false }
-             type_societe: { required: false }
-             teledeclaration_active: { required: false }
-             gecos: { required: false }
-             lat: {  }
-             lon: {  }
-             societe_informations:
-               type: collection
-               definition:
-                 fields:
-                   type: { }
-                   raison_sociale: { }
-                   adresse: {  }
-                   adresse_complementaire: {  }
-                   code_postal: {  }
-                   commune: {  }
-                   email: {  }
-                   telephone: {  }
-                   fax: {  }
-             etablissement_informations:
-               type: collection
-               definition:
-                 fields:
-                   cvi: { }
-                   ppm: { }
-             interpro: {  }
-             statut: {  }
-             groupes:
-               type: array_collection
-               definition:
-                 fields:
-                   '*':
-                     type: collection
-                     definition:
-                       fields:
-                         nom: { }
-                         fonction: { }
-             tags:
-               type: collection
-               definition:
-                 fields:
-                   '*':
-                     type: array_collection
-                     definition:
-                       fields:
-                         '*': {}
-             droits:
-               type: array_collection
-               required: false
-               definition:
-                 fields:
-                   '*': { }
-             delegation:
-               type: array_collection
-               required: false
-               definition:
-                 fields:
-                   '*': { }

@@ -4124,6 +4124,7 @@ class TCPDF {
 	 * @since 5.9.000 (2010-09-28)
 	 */
 	public function getRawCharWidth($char) {
+		$char = intval($char);
 		if ($char == 173) {
 			// SHY character will not be printed
 			return (0);

@@ -2,6 +2,15 @@
 
 class habilitationActions extends sfActions {
 
+  public function executeIndex(sfWebRequest $request)
+  {
+      if(HabilitationConfiguration::getInstance()->isListingParDemande()) {
+
+          return $this->redirect('habilitation_demande_liste');
+      }
+
+      return $this->redirect('habilitation_liste');
+  }
 
   public function executeIndexDemande(sfWebRequest $request)
   {
@@ -13,10 +22,10 @@ class habilitationActions extends sfActions {
         }
 
         $this->regionParam = $request->getParameter('region');
-        if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getTeledeclarationDrevRegion())){
+        if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getRegion())){
             $params = array();
             $params['region'] = $region;
-            return $this->redirect('habilitation_demande', $params);
+            return $this->redirect('habilitation_demande_liste', $params);
         }
 
         $regionProduitsFiltre = RegionConfiguration::getInstance()->getOdgHabilitationProduits($this->regionParam);
@@ -43,7 +52,16 @@ class habilitationActions extends sfActions {
                         }
                         );
 
-      $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+
+      if(class_exists("EtablissementChoiceForm")) {
+          $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+      }elseif(class_exists("LoginForm")) {
+        $this->form = new LoginForm();
+      }
+
+      if(!isset($this->form)) {
+          return sfView::SUCCESS;
+      }
 
       if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -76,11 +94,6 @@ class habilitationActions extends sfActions {
 
   public function executeIndexHabilitation(sfWebRequest $request)
   {
-      if(HabilitationConfiguration::getInstance()->isSuiviParDemande()) {
-
-          return $this->redirect('habilitation_demande');
-      }
-
       $this->buildSearch($request,
                         'habilitation',
                         'activites',
@@ -124,34 +137,34 @@ class habilitationActions extends sfActions {
       $form->bind($request->getParameter($form->getName()));
       if (!$form->isValid()) {
 
-          return (HabilitationConfiguration::getInstance()->isSuiviParDemande()) ? $this->redirect('habilitation_demande') : $this->redirect('habilitation');
+          return $this->redirect('habilitation');
       }
 
       return $this->redirect('habilitation_declarant', $form->getEtablissement());
   }
 
     public function executeDeclarant(sfWebRequest $request) {
-        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasHabilitation()) {
 
             throw new sfError403Exception();
         }
 
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true, 'allow_habilitation' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
         if($this->getUser()->isAdmin()) {
             $this->filtre = $request->getParameter('filtre');
-        } elseif($this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        } elseif($this->getUser()->hasHabilitation()) {
             $this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation');
         }
 
-        if($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) && !HabilitationConfiguration::getInstance()->isSuiviParDemande()) {
+        if($this->getUser()->isAdminODG() && !HabilitationConfiguration::getInstance()->isSuiviParDemande()) {
           $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
         }
 
-        if($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
+        if($this->getUser()->isAdminODG()) {
             $this->editForm = new HabilitationEditionForm($this->habilitation);
         }
 
@@ -199,7 +212,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasHabilitation()) {
 
             throw new sfError403Exception();
         }
@@ -219,7 +232,7 @@ class habilitationActions extends sfActions {
 
         if($this->getUser()->isAdmin()) {
             $this->filtre = $request->getParameter('filtre');
-        } elseif($this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        } elseif($this->getUser()->hasHabilitation()) {
             $this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation');
         }
 
@@ -227,7 +240,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeAjout(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
@@ -264,7 +277,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeEdition(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->habilitation = $this->getRoute()->getHabilitation();
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
@@ -301,7 +314,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeDemandeGlobale(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
         if($this->getUser()->isAdmin()) {
@@ -335,7 +348,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeDemandeCreation(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
         if($this->getUser()->isAdmin()) {
@@ -375,7 +388,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeDemandeEdition(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
         $this->historique = $this->habilitation->getFullHistorique();
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
@@ -430,12 +443,12 @@ class habilitationActions extends sfActions {
     }
 
     public function executeDemandeVisualisation(sfWebRequest $request) {
-        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasHabilitation()) {
 
             throw new sfError403Exception();
         }
 
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
         $this->historique = $this->habilitation->getFullHistorique();
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
@@ -447,7 +460,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeDemandeSuppressionDerniere(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
 
@@ -671,7 +684,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeCertipaqDiff(sfWebRequest $request) {
-        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasHabilitation()) {
 
             throw new sfError403Exception();
         }
@@ -683,7 +696,7 @@ class habilitationActions extends sfActions {
 
         if($this->getUser()->isAdmin()) {
             $this->filtre = $request->getParameter('filtre');
-        } elseif($this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        } elseif($this->getUser()->hasHabilitation()) {
             $this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation');
         }
         $this->error = '';

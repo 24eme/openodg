@@ -6,6 +6,7 @@ abstract class acCouchdbDocument extends acCouchdbDocumentStorable {
 
     protected $_is_new = true;
     protected $_serialize_loaded_json = null;
+    protected $_is_modified = false;
 
     public function loadFromCouchdb(stdClass $data) {
         if (!is_null($this->_serialize_loaded_json)) {
@@ -54,6 +55,8 @@ abstract class acCouchdbDocument extends acCouchdbDocumentStorable {
         $this->definitionValidation();
         if ($this->isModified()) {
             $this->doSave();
+
+            $this->_is_modified = false;
 
             return $this->storeDoc();
         }
@@ -139,10 +142,31 @@ abstract class acCouchdbDocument extends acCouchdbDocumentStorable {
         return $ret;
     }
 
-
     public function getAttachmentUri($filename) {
 
         return acCouchdbManager::getClient()->dsn().acCouchdbManager::getClient()->getAttachmentUri($this, $filename);
+    }
+
+    public function isAttachmentSameFile($filename, $file) {
+        if(self::isCompressibleFile($file)) {
+            $md5Couchdb = md5(file_get_contents($this->getAttachmentUri($filename)));
+            $md5File = md5_file($file);
+        } else {
+            $md5Couchdb = bin2hex(base64_decode(str_replace('md5-', '', $this->_attachments->get($filename)->digest)));
+            $md5File = md5_file($file);
+        }
+
+        return $md5Couchdb == $md5File;
+    }
+
+    public static function isCompressibleFile($file) {
+        // Obtenir le type MIME du fichier
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime_type = finfo_file($finfo, $file);
+        finfo_close($finfo);
+        // Vérifier si le MIME commence par "text/" ou appartient à certaines familles
+        return preg_match("#^text/#", $mime_type) ||
+               in_array($mime_type, ["application/json", "application/javascript", "application/xml", "application/xhtml+xml"]);
     }
 
     public function loadAllData() {
@@ -173,6 +197,10 @@ abstract class acCouchdbDocument extends acCouchdbDocumentStorable {
     }
 
     public function isModified() {
+        if($this->_is_modified) {
+            return true;
+        }
+
         if($this->getBigDocumentSize() > 0 && $this->_serialize_loaded_json && strlen($this->_serialize_loaded_json) > $this->getBigDocumentSize()) {
 
             return true;
@@ -193,6 +221,10 @@ abstract class acCouchdbDocument extends acCouchdbDocumentStorable {
         $final_json = new acCouchdbJsonNative($this->getData());
 
         return !$native_json->equal($final_json);
+    }
+
+    public function forceModified() {
+        $this->_is_modified = true;
     }
 
     protected function reset($document) {

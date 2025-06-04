@@ -1,10 +1,11 @@
 <?php use_helper('Date'); ?>
+<?php use_helper('Lot'); ?>
 <?php $query = ($query) ? $query->getRawValue() : $query ?>
 
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo ($regionParam)?  url_for('declaration',(array('region' => $regionParam))) : url_for('declaration'); ?>">Déclarations</a></li>
-  <?php if ($sf_user->getTeledeclarationDrevRegion()): ?>
-  <li><a href="<?php echo url_for('accueil'); ?>"><?php echo $sf_user->getTeledeclarationDrevRegion(); ?></a></li>
+  <?php if ($sf_user->getRegion()): ?>
+  <li><a href="<?php echo url_for('accueil'); ?>"><?php echo $sf_user->getRegion(); ?></a></li>
   <?php endif; ?>
 </ol>
 
@@ -36,8 +37,16 @@
                       <?php $params = array("id" => $doc->id); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
                         <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php if($doc->key[DeclarationTousView::KEY_DATE] && $doc->key[DeclarationTousView::KEY_DATE] !== true): ?><?php echo Date::francizeDate($doc->key[DeclarationTousView::KEY_DATE]); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
                         <td><?php echo $doc->key[DeclarationTousView::KEY_CAMPAGNE]; ?></td>
-                        <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo $doc->key[DeclarationTousView::KEY_TYPE]; ?></a></td>
-                        <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo Anonymization::hideIfNeeded($doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]); ?>&nbsp;<small><?php echo $doc->key[DeclarationTousView::KEY_CVI]; ?>&nbsp;(<?php echo $doc->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
+                        <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo clarifieTypeDocumentLibelle($doc->key[DeclarationTousView::KEY_TYPE]); ?></a></td>
+                        <td><a href="<?php echo url_for("declaration_doc", $params); ?>">
+                            <?php echo Anonymization::hideIfNeeded($doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]); ?>
+                            <small>
+                                <?php if ($doc->key[DeclarationTousView::KEY_CVI] !== $doc->key[DeclarationTousView::KEY_IDENTIFIANT]): ?>
+                                    <?php echo $doc->key[DeclarationTousView::KEY_CVI]; ?>
+                                <?php endif ?>
+                                (<?php echo $doc->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)
+                            </small>
+                        </a></td>
                         <td title="<?php echo $doc->key[DeclarationTousView::KEY_MODE]; ?>" data-toggle="tooltip" class="text-center">
                         <span class="<?php if($doc->key[DeclarationTousView::KEY_MODE] == DeclarationTousView::MODE_SAISIE_INTERNE): ?>glyphicon glyphicon-file
                             <?php else: ?>glyphicon glyphicon-globe<?php endif; ?>"></span>
@@ -50,8 +59,8 @@
         <div class="text-center">
             <ul class="pagination" style="margin-top: 0;">
                 <li <?php if ($page - 1  < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => (($page - 1) > 0) ? $page - 1 : 1)); ?>" aria-label="Previous"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-left"></span></span></a></li>
-                <li <?php if ($page -1 < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => 1)); ?>" aria-label="Previous"><span aria-hidden="true"><small>Première page</small></span</span></a></li>
-                <li><span aria-hidden="true"><small>Page <?php echo $page ?> / <?php echo $nbPage ?></span></small></li>
+                <li <?php if ($page -1 < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => 1)); ?>" aria-label="Previous"><span aria-hidden="true"><small>Première page</small></span></a></li>
+                <li><span aria-hidden="true"><small>Page <?php echo $page ?> / <?php echo $nbPage ?></small></span></li>
                 <li <?php if ($page +1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => $nbPage)); ?>" aria-label="Next"><span aria-hidden="true"><small>Dernière page</small></span></a></li>
                 <li <?php if ($page + 1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' =>(($page + 1) > $nbPage) ? $page : $page + 1)); ?>" aria-label="Next"><span aria-hidden="true"></span><span class="glyphicon glyphicon-chevron-right"></span></a></li>
             </ul>
@@ -68,12 +77,6 @@
             <a href="<?php echo url_for('declaration', array('query' => 0)) ?>"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
         </p>
         <?php endif; ?>
-        <?php if ($regionParam) : ?>
-        <h4>Région</h4>
-        <div class="list-group">
-            <span class="list-group-item active"><span class="badge"><?php echo $nbResultats; ?></span> <?php echo str_replace('_', ' ', $regionParam); ?></a>
-        </div>
-        <?php endif; ?>
         <?php foreach($facets as $facetNom => $items): ?>
         <h4><?php echo $facetNom; ?></h4>
         <div class="list-group">
@@ -83,9 +86,21 @@
                 <?php if(!count($params)): $params = false; endif; ?>
                 <?php if($facetNom == 'Produit'): $itemNom = $produitsLibelles[$itemNom]; endif; ?>
                 <?php $allParams=array('query' => $params); if($regionParam): $allParams=array_merge($allParams,array('region' => $regionParam)); endif;  ?>
-                <a href="<?php echo url_for('declaration', $allParams) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php echo $itemNom; ?></a>
+                <a href="<?php echo url_for('declaration', $allParams) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php echo clarifieTypeDocumentLibelle($itemNom); ?></a>
             <?php endforeach; ?>
         </div>
         <?php endforeach; ?>
+        <?php if($regionParam || RegionConfiguration::getInstance()->getOdgRegions()): ?>
+        <h4>Région</h4>
+        <div class="list-group">
+            <?php if($sf_user->isAdmin()): ?>
+            <?php foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region): ?>
+                <a href="<?php echo url_for('declaration', ['region' => $region]) ?>" class="list-group-item <?php if($region == $regionParam): ?>active<?php endif; ?>"><span class="badge"><?php if($region == $regionParam): ?><?php echo $nbResultats; ?><?php else : ?>?<?php endif; ?></span> <?php echo str_replace('_', ' ', $region); ?></a>
+            <?php endforeach; ?>
+            <?php else: ?>
+                <span class="list-group-item active"><span class="badge"><?php echo $nbResultats; ?></span> <?php echo str_replace('_', ' ', $regionParam); ?></span>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
     </div>
 </div>

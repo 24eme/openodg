@@ -64,7 +64,7 @@
                  <th class="bg-white" colspan="6"style="width:67%;"><?php echo tdStart() ?><strong>Liste des lots</strong> <small>(trié par n° de dossier et n° d'anonymat)</small></th>
               </tr>
               <tr style="line-height:13px;">
-                <th class="bg-white" style="width:7%;"><?php echo tdStart() ?><strong><small>N°Lot ODG</small></strong></th>
+                <th class="bg-white" style="width:7%;"><?php echo tdStart() ?><strong><small>N°Lot</small></strong></th>
                 <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N°Anon</small></strong></th>
                 <th class="bg-white" style="width:11%;"><?php echo tdStart() ?><strong><small>Cuve</small></strong></th>
                 <th class="bg-white" style="width:9%;"><?php echo tdStart() ?><strong><small>Volume</small></strong></th>
@@ -74,13 +74,13 @@
           <tr>
             <?php if($firstDisplay == true):
               $affiche = count($lots_operateur) - $reste;
-              if(($nb_lots_par_page - $i) > 0 && ($nb_lots_par_page - $i) < count($lots_operateur) && !$reste){
-                $reste = ($nb_lots_par_page - $i);
+              if(($nb_lots_par_page - $i) > 0 && ($nb_lots_par_page - $i) < count($lots_operateur) - $reste){
+                $reste += ($nb_lots_par_page - $i);
                 $affiche = ($nb_lots_par_page - $i);
               }
               ?>
               <td rowspan="<?php echo $affiche; ?>" style="margin-top: 10em; vertical-align: middle;"><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?><br/><span style="color:grey;"><?php echo $lot->campagne; ?></span></small></td>
-              <td rowspan="<?php echo $affiche; ?>" style="vertical-align: middle; text-align: left;"><small><?php echo $lot->getRawValue()->declarant_nom ?><br><span style="color:grey;"><?php echo $lot->declarant_identifiant;?></span></small></td>
+	      <td rowspan="<?php echo $affiche; ?>" style="vertical-align: middle; text-align: left;"><small><?php echo $lot->getRawValue()->declarant_nom ?><br><span style="color:grey;"><?php echo $lot->declarant_identifiant;?></span><?php if($lot->secteur): ?> <small style="color: #aeaeae";><?php echo $lot->secteur ?></small><?php endif; ?></small></td>
             <?php $firstDisplay= false; endif; ?>
             <td><small><?php echo $lot->numero_archive ?></small></td>
             <td><small><?php echo $lot->numero_anonymat?></small></td>

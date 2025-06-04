@@ -34,19 +34,38 @@ th {
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
         <thead>
           <tr>
-            <th style="width:35%">Nom</th>
-            <th style="width:35%">Prénom</th>
+            <th style="width:35%; text-align:left; margin-left: 1em;">Nom</th>
+            <th style="width:35%; text-align:left; margin-left: 1em;">Prénom</th>
             <th style="width:30%">Signature</th>
           </tr>
         </thead>
         <tbody>
-          <?php for( $i = 0; $i<5; $i++): ?>
-              <tr>
-                <td style="width:35%; text-align:left; margin-left: 1em;">&nbsp;<br/>&nbsp;</td>
-                <td style="width:35%; text-align:left; margin-left: 1em;"><br/></td>
-                <td style="width:30%"><br/></td>
-              </tr>
-          <?php endfor; ?>
+        <?php if (DegustationConfiguration::getInstance()->hasDegustateursPrerempli()): ?>
+            <?php foreach ($degustation->getDegustateursConfirmesTableOrFreeTable($numTab) as $id_compte => $degustateur): ?>
+                <?php $compte = CompteClient::getInstance()->find($id_compte); ?>
+                  <tr>
+                    <td class="text-left" style="width:35%; margin-left: 1em; text-align:left;"><?php echo $compte->getNom() ?></td>
+                    <td class="text-left" style="width:35%; margin-left: 1em; text-align:left;"><?php echo $compte->getPrenom() ?></td>
+                    <td style="width:30%"><small style="font-size: 4pt;"><br /><br /></small></td>
+                  </tr>
+              <?php endforeach; ?>
+            <?php $t = count($degustation->getDegustateursConfirmesTableOrFreeTable($numTab)); ?>
+            <?php for ($i = $t; $i<6; $i++): ?>
+            <tr>
+                <td class="text-center" style="width:35%; margin-left: 1em;"></td>
+                <td class="text-center" style="width:35%; margin-left: 1em;"></td>
+                <td style="width:30%"><small style="font-size: 4pt;"><br /><br /></small></td>
+            </tr>
+            <?php endfor; ?>
+        <?php else : ?>
+            <?php for ($i = 0; $i<6; $i++): ?>
+            <tr>
+                <td class="text-center" style="width:35%; margin-left: 1em;"></td>
+                <td class="text-center" style="width:35%; margin-left: 1em;"></td>
+                <td style="width:30%"><small style="font-size: 4pt;"><br /><br /></small></td>
+            </tr>
+            <?php endfor; ?>
+        <?php endif ?>
         </tbody>
       </table>
       <div></div>
@@ -98,10 +117,15 @@ th {
          <tr style="line-height:15px;">
            <td><?php echo tdStart() ?><strong><small><?php echo $lotInfo->getNumeroAnonymat() ?></small></strong></td>
            <td><?php echo tdStart() ?><small><?php echo substrUtf8(strip_tags(showOnlyProduit($lotInfo, false)), 0, 35);; ?></small><br/><small><?php echo showOnlyCepages($lotInfo, 45);?></small></td>
+           <?php if (DegustationConfiguration::getInstance()->hasTypiciteCepage()) : ?>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
            <td><?php echo tdStart() ?><span class="zap">o</span></td>
+           <?php else : ?>
+           <td><?php echo tdStart() ?><span class="zap">o</span></td>
+           <td><?php echo tdStart() ?><span class="zap">o</span></td>
+           <?php endif ?>
            <td><?php echo tdStart() ?>&nbsp;</td>
            <td><?php echo tdStart() ?>&nbsp;</td>
          </tr>

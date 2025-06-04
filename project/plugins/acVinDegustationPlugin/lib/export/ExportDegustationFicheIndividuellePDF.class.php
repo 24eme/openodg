@@ -44,22 +44,29 @@ class ExportDegustationFicheIndividuellePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = $this->degustation->getNomOrganisme();
-
-        return $titre;
+        sfApplicationConfiguration::getActive()->loadHelpers(array('Partial'));
+        try {
+            return get_partial('degustation/ficheIndividuellePdfHeader', ['degustation' => $this->degustation]);
+        } catch (Exception $e) {
+            return "Fiche individuelle de dégustation";
+        }
     }
 
-    protected function getHeaderSubtitle() {
-
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."FICHE INDIVIDUELLE DE DEGUSTATION";
-
-        return $header_subtitle;
+    protected function getHeaderSubtitle()
+    {
+        sfApplicationConfiguration::getActive()->loadHelpers(array('Partial'));
+        try {
+            return get_partial('degustation/ficheIndividuellePdfHeaderSubtitle', ['degustation' => $this->degustation]);
+        } catch (Exception $e) {
+            $header_subtitle = sprintf("\nDégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
+            $header_subtitle .= sprintf("\n%s", $this->degustation->lieu);
+            return $header_subtitle;
+        }
     }
 
 
     protected function getFooterText() {
-        $footer= sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
-        return $footer;
+        return sprintf("<br/>%s     %s - %s - %s<br/>%s    %s", Organisme::getInstance(null, 'degustation')->getNom(), Organisme::getInstance(null, 'degustation')->getAdresse(), Organisme::getInstance(null, 'degustation')->getCodePostal(), Organisme::getInstance(null, 'degustation')->getCommune(), Organisme::getInstance(null, 'degustation')->getTelephone(), Organisme::getInstance(null, 'degustation')->getEmail());
     }
 
     protected function getConfig() {

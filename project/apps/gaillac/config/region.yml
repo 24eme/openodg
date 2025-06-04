@@ -1,0 +1,21 @@
+all:
+  configuration:
+    region:
+      odg:
+        AOPGAILLAC:
+          # nom: ""
+          # adresse: ""
+          # telephone: ""
+          # email: ""
+          produits:
+            - "TRANQ/appellations/GLC"
+            - "MOU/appellations/GLC"
+          habilitation_produits: "/Gaillac/"
+        IGPTARN:
+          # nom: ""
+          # adresse: ""
+          # telephone: ""
+          # email: ""
+          produits:
+            - "TRANQ/appellations/CDT"
+          habilitation_produits: "/Côtes du Tarn/"

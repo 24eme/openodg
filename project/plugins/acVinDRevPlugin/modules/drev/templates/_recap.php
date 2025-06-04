@@ -8,11 +8,11 @@
   </div>
 <?php endif; ?>
 
-<?php if(count($drev->getProduitsWithoutLots())): ?>
+<?php if(DRevConfiguration::getInstance()->hasEtapesAOC() || count($drev->getProduitsWithoutLots())): ?>
 <?php    include_partial('drev/recap_aop', array('drev'=>$drev, 'form' =>$form)); ?>
 <?php endif; ?>
 <?php if($drev->exist('lots')): ?>
-<?php    include_partial('drev/recap_igp', array('drev'=>$drev, 'form' =>$form)); ?>
+<?php    include_partial('drev/recap_igp', array('drev'=>$drev, 'form' =>$form, 'vip2c' => $vip2c)); ?>
 <?php endif; ?>
           <?php if(count($drev->declaration->getProduitsVci())): ?>
             <h3>Gestion du VCI</h3>
@@ -46,9 +46,17 @@
                         <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'destruction') ?>"><?php if($produit->vci->destruction): ?><?php echoFloat($produit->vci->destruction) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                         <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'substitution') ?>"><?php if($produit->vci->substitution): ?><?php echoFloat($produit->vci->substitution) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                         <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'constitue') ?><?php if($produit->getRendementVci() > $produit->getConfig()->getRendementVci()): ?>text-danger<?php endif; ?>"><?php if($produit->vci->constitue): ?><?php echoFloat($produit->vci->constitue) ?> <small class="text-muted">hl</small><?php endif; ?></td>
-                        <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'stock_final') ?><?php if($produit->getRendementVciTotal() > $produit->getConfig()->getRendementVciTotal()): ?> text-danger<?php endif; ?>"><?php if($produit->vci->stock_final): ?>
-                          <?php if($produit->vci->exist('ajustement')){ echo "(+"; echoFloat($produit->vci->ajustement); echo ") "; } ?>
-                          <?php echoFloat($produit->vci->stock_final) ?> <small class="text-muted">hl</small><?php endif; ?>
+                        <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'stock_final') ?><?php if($produit->getRendementVciTotal() > $produit->getConfig()->getRendementVciTotal()): ?> text-danger<?php endif; ?>">
+                        <?php if($produit->vci->stock_final): ?>
+                          <?php if($produit->vci->exist('ajustement')):?>
+                            <?php if($produit->vci->ajustement < 0 ): ?>
+                               ( <?php echo  echoFloat($produit->vci->ajustement); ?> )
+                            <?php else: ?>
+                                (+<?php echo echoFloat($produit->vci->ajustement); ?> )
+                            <?php endif; ?>
+                            <?php endif; ?>
+                          <?php echoFloat($produit->vci->stock_final) ?> <small class="text-muted">hl</small>
+                        <?php endif; ?>
                         </td>
                       </tr>
                     <?php endforeach; ?>
@@ -60,9 +68,9 @@
                 <table class="table table-bordered table-striped">
                   <thead>
                     <tr>
-                      <th class="col-xs-6">Produit</td>
-                        <th class="col-xs-3 text-center">Volume mis en réserve</td>
-                          <th class="col-xs-3 text-center">Volume revendiqué commercialisable</td>
+                      <th class="col-xs-6">Produit</th>
+                        <th class="col-xs-3 text-center">Volume mis en réserve</th>
+                          <th class="col-xs-3 text-center">Volume revendiqué commercialisable</th>
                           </thead>
                           <tbody>
                             <?php foreach($drev->getProduitsWithReserveInterpro() as $p): ?>

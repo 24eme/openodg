@@ -78,6 +78,7 @@ $b->restart();
 
 $b->get('/etablissement/'.$etablissementIdentifiant.'/visualisation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Visualisation établissement accessible");
+//$b->resetCurrentException();
 $b->isForwardedTo('etablissement', 'visualisation');
 testVisualisationLimite($b, $societeIdentifiant, $etablissement);
 
@@ -91,15 +92,16 @@ $b->restart();
 if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     $b->get('/etablissement/'.$etablissementIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 200, "Visualisation établissement accessible");
+    $b->resetCurrentException();
     $b->isForwardedTo('etablissement', 'visualisation');
     testVisualisationLimite($b, $societeIdentifiant, $etablissement);
 } else {
     $b->get('/etablissement/'.$etablissementIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation établissement protégé");
+    $b->resetCurrentException();
 }
 
 $t->comment('En mode télédéclarant');
-
 $b->get('/logout');
 $b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_CAS', 'app_auth_rights' => array()));
 $b->restart();
@@ -115,9 +117,11 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     testVisualisationLimite($b, $societeIdentifiant, $etablissement);
     $b->get('/etablissement/'.$etablissementAnnexe->getIdentifiant().'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'un établissement d'une autre société protégée");
+    $b->resetCurrentException();
 } else {
     $b->get('/etablissement/'.$etablissementIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation établissement protégée");
+    $b->resetCurrentException();
 }
 
 function testVisualisationLimite($b, $societeIdentifiant, $etablissement) {
@@ -138,23 +142,29 @@ function testVisualisationLimite($b, $societeIdentifiant, $etablissement) {
 
     $b->get('/etablissement/'.$societeIdentifiant.'/nouveau');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page ajouter un établissement protégée");
+    $b->resetCurrentException();
 
     $b->get('/etablissement/'.$etablissement->getIdentifiant().'/modification');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de modification d'un établissement protégée");
+    $b->resetCurrentException();
 
     $b->get('/etablissement/'.$etablissement->getIdentifiant().'/switchStatus');
     $t->is($b->getResponse()->getStatuscode(), 403, "Action archiver un établissement protégé");
+    $b->resetCurrentException();
 
     $b->get('/etablissement/'.$etablissement->getIdentifiant().'/chai-ajout');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page ajouter un chai dans un établissement protégé");
+    $b->resetCurrentException();
 
     $b->get('/etablissement/'.$etablissement->getIdentifiant().'/chai-modification/0');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page modifier un chai dans un établissement protégée");
+    $b->resetCurrentException();
 
     $b->get('/etablissement/'.$etablissement->getIdentifiant().'/relation-suppression/'.$etablissement->liaisons_operateurs->getFirst()->getKey());
     $t->is($b->getResponse()->getStatuscode(), 403, "Page supprimer une relation protégée");
+    $b->resetCurrentException();
 
     $b->get('/etablissement/'.$etablissement->getIdentifiant().'/relation-ajout');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page ajouter une relation dans un établissement protégée");
-
+    $b->resetCurrentException();
 }

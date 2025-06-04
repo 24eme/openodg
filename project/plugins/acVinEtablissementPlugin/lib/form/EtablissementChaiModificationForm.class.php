@@ -23,6 +23,7 @@ class EtablissementChaiModificationForm extends acCouchdbObjectForm {
         parent::configure();
 
         $attributs = $this->getAttributs();
+        $secteurs = $this->getSecteurs();
 
         $this->setWidget('nom', new bsWidgetFormInput());
         $this->widgetSchema->setLabel('nom', 'Nom :');
@@ -47,6 +48,10 @@ class EtablissementChaiModificationForm extends acCouchdbObjectForm {
         $this->setWidget('archive', new bsWidgetFormInputCheckbox());
         $this->widgetSchema->setLabel('archive', 'Archivé :');
         $this->setValidator('archive', new sfValidatorString(array('required' => false)));
+
+        $this->setWidget('secteur', new bsWidgetFormChoice(array('choices' => array_merge(["" => ""], $secteurs))));
+        $this->widgetSchema->setLabel('secteur', 'Secteur de tournée :');
+        $this->setValidator('secteur', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($secteurs))));
 
         $this->setWidget('attributs', new sfWidgetFormChoice(array('expanded' => true, 'multiple' => true, 'choices' => $attributs)));
         $this->widgetSchema->setLabel('attributs', 'Attributs :');
@@ -84,6 +89,10 @@ class EtablissementChaiModificationForm extends acCouchdbObjectForm {
 
     public function getAttributs(){
       return EtablissementClient::$chaisAttributsLibelles;
+    }
+
+    public function getSecteurs(){
+      return EtablissementClient::getSecteurs();
     }
 
 

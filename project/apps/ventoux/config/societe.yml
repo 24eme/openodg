@@ -1,0 +1,9 @@
+all:
+  configuration:
+    societe:
+      droits:
+        "ADMIN": "Administrateur"
+        "habilitation": "Habilitation"
+        "habilitation:certipaq": "Habilitation CERTIPAQ"
+        "stalker": "Stalker"
+      visualisation_teledeclaration: true

@@ -6,9 +6,9 @@
 
 class HabilitationProduit extends BaseHabilitationProduit {
 
-    public function getConfig()
+    public function getConfig($date = null)
     {
-        return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
+        return $this->getCouchdbDocument()->getConfiguration($date)->get($this->getHash());
     }
 
     public function getChildrenNode()
@@ -65,7 +65,20 @@ class HabilitationProduit extends BaseHabilitationProduit {
     public function getActivitesHabilites() {
         $activites = array();
         foreach ($this->activites as $key => $activite) {
-            if($activite->statut != HabilitationClient::STATUT_HABILITE){
+            if(!$activite->isHabilite()){
+                continue;
+            }
+
+            $activites[$key] = $activite;
+        }
+
+        return $activites;
+    }
+
+    public function getActivitesWrongHabilitation() {
+        $activites = array();
+        foreach ($this->activites as $key => $activite) {
+            if(!$activite->isWrongHabilitation()){
                 continue;
             }
 
@@ -98,7 +111,10 @@ class HabilitationProduit extends BaseHabilitationProduit {
           $this->initActivites();
         }
         if (!$this->activites->exist($activite)) {
-          throw new sfException('activite '.$activite.' non supportée');
+            $this->initActivites();
+            if (!$this->activites->exist($activite)) {
+                throw new sfException('activite '.$activite.' non supportée');
+            }
         }
         if (!$sites || !count($sites)) {
             $a = $this->add('activites')->add($activite);

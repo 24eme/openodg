@@ -20,6 +20,10 @@ class HabilitationConfiguration {
         $this->configuration = sfConfig::get('habilitation_configuration_habilitation', array());
     }
 
+    public function isModuleEnabled() {
+        return in_array('habilitation', sfConfig::get('sf_enabled_modules'));
+    }
+
     public function getActivites() {
         if(!isset($this->configuration['activites'])) {
 
@@ -32,6 +36,15 @@ class HabilitationConfiguration {
     public function isSuiviParDemande() {
 
         return count($this->getDemandeStatuts()) > 0;
+    }
+
+    public function isListingParDemande() {
+        if(!isset($this->configuration['demande']['listing'])) {
+
+            return $this->isSuiviParDemande();
+        }
+
+        return $this->configuration['demande']['listing'];
     }
 
     public function getDemandeStatuts() {
@@ -68,7 +81,14 @@ class HabilitationConfiguration {
 
     public function getProduitAtHabilitationLevel($produit){
 
+      if (!$produit) {
+          return null;
+      }
       $produithab = $produit->getAppellation();
+      if (strpos($produithab->getHash(), '/MOU/') !== false || strpos($produithab->getHash(), '/EFF/') !== false) {
+          $h = str_replace(['/MOU/','/EFF/'], '/TRANQ/', $produithab->getHash());
+          $produithab = $produithab->getDocument()->get($h);
+      }
 
       if(!isset($this->configuration['produits'])){
         return $produithab;

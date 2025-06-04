@@ -19,7 +19,22 @@ class MouvementFacturesDocument
 
     public function generateMouvementsFactures() {
         $this->document->clearMouvementsFactures();
-        $this->document->set($this->hash, $this->document->getMouvementsFacturesCalcule());
+        $mouvements = [];
+
+        if (class_exists('RegionConfiguration') && RegionConfiguration::getInstance()->hasOdgProduits()) {
+            foreach ($this->document->getRegions() as $r) {
+                $mouvements_calcules = $this->document->getMouvementsFacturesCalcule($r);
+                if (serialize($mouvements_calcules) == serialize($mouvements)) { // Pour gérer un template de facturation identique pour 2 régions différentes
+                    continue;
+                }
+
+                $mouvements = array_merge_recursive($mouvements, $mouvements_calcules);
+            }
+        } else {
+            $mouvements = $this->document->getMouvementsFacturesCalcule();
+        }
+
+        $this->document->set($this->hash, $mouvements);
     }
 
     public function facturerMouvements() {

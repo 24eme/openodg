@@ -1,4 +1,8 @@
-<?php include_partial('parcellaireManquant/breadcrumb', array('parcellaireManquant' => $parcellaireManquant)); ?>
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireManquant]); ?>
+<?php else: ?>
+    <?php include_partial('parcellaireManquant/breadcrumb', array('parcellaireManquant' => $parcellaireManquant)); ?>
+<?php endif; ?>
 
 <?php include_partial('parcellaireManquant/step', array('step' => 'validation', 'parcellaireManquant' => $parcellaireManquant)) ?>
 <div class="page-header no-border">
@@ -12,6 +16,17 @@
 <form role="form" action="<?php echo url_for('parcellairemanquant_validation', $parcellaireManquant) ?>" method="post" id="validation-form">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
+
+    <?php if ($form->hasErrors()): ?>
+        <div class="alert alert-danger">
+            <ul>
+            <?php foreach ($form->getErrorSchema() as $key => $error): ?>
+                <?php if (strpos($key, 'engagement_') === 0) { continue; } ?>
+                <li><?php echo $error ?></li>
+            <?php endforeach ?>
+            </ul>
+        </div>
+    <?php endif ?>
 
     <?php if(isset($form["date"])): ?>
     <div class="row">
@@ -33,6 +48,8 @@
     <?php endif; ?>
 
     <?php include_partial('parcellaireManquant/recap', array('parcellaireManquant' => $parcellaireManquant)); ?>
+
+    <?php include_partial('parcellaireManquant/engagements', array('parcellaireManquant' => $parcellaireManquant, 'validation' => $validation, 'form' => $form)); ?>
 
     <div class="panel panel-default">
         <div class="panel-body">
@@ -66,6 +83,11 @@
 	<?php include_partial('parcellaireManquant/popupConfirmationValidation', array('form' => $form)); ?>
 	<?php endif; ?>
 </form>
+
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireManquant]); ?>
+<?php endif; ?>
+
 <?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
 <script type="text/javascript">
 $('#ParcellaireManquant-confirmation-validation').modal('show')

@@ -42,14 +42,17 @@ class generationActions extends sfActions {
 
     public function executeList(sfWebRequest $request)
     {
-        if (! $this->getUser()->isAdmin()) {
-            throw new sfException("Vous n'avez pas les droits d'accéder à cette page");
-        }
-
         $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_SHELL, 100);
 
         $this->tasks = [];
-        foreach(glob(sfConfig::get('sf_root_dir').'/bin/tasks/*.sh') as $script) {
+        $scripts = [];
+        foreach(glob(sfConfig::get('sf_root_dir').'/bin/tasks/global/*.sh') as $script) {
+            $scripts[] = $script;
+        }
+        foreach(glob(sfConfig::get('sf_root_dir').'/bin/tasks/'.sfConfig::get('sf_app').'/*.sh') as $script) {
+            $scripts[] = $script;
+        }
+        foreach($scripts as $script) {
             $content = fopen($script, 'r');
 
             $title = $desc = '';
@@ -76,7 +79,8 @@ class generationActions extends sfActions {
         $task->libelle = $this->tasks[$request->getParameter('task')]['title'];
         $task->arguments = [
             'bash',
-            $this->tasks[$request->getParameter('task')]['script']
+            $this->tasks[$request->getParameter('task')]['script'],
+            sfConfig::get('sf_app'),
         ];
         $task->save();
         return $this->redirect('generation_view', ['id' => $task->_id]);

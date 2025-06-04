@@ -70,7 +70,13 @@ class ConfigurationCepage extends BaseConfigurationCepage {
     }
 
     public function isCepageAutorise($cepage) {
-    	return in_array(strtoupper($cepage), array_map(function($value) { return strtoupper($value); }, $this->cepages_autorises->toArray()));
+        foreach($this->getCepagesAutorises() as $c) {
+            if(strpos(preg_replace('/[^A-Z]/', '', KeyInflector::slugify($c)), preg_replace('/[^A-Z]/', '', KeyInflector::slugify($cepage))) === false) {
+                continue;
+            }
+            return true;
+        }
+        return false;
     }
 
     public function getCorrespondanceHash() {
@@ -228,14 +234,13 @@ class ConfigurationCepage extends BaseConfigurationCepage {
     }
 
     public function getCepagesAutorises() {
+        if(!$this->hasCepagesAutorises() && $this->getCouleur()->hasCepagesAutorises()) {
+            return $this->getCouleur()->getCepagesAutorises();
+        }
         if(!$this->hasCepagesAutorises() && $this->getAppellation()->hasCepagesAutorises()) {
-
             return $this->getAppellation()->getCepagesAutorises();
         }
-
-
         if(!$this->hasCepagesAutorises() && $this->getCertification()->hasCepagesAutorises()) {
-
             return $this->getCertification()->getCepagesAutorises();
         }
 

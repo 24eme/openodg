@@ -3,10 +3,12 @@ class DRevValidation extends DeclarationLotsValidation
 {
     protected $etablissement = null;
     protected $produit_revendication_rendement = array();
+    protected $vip2c = null;
 
     public function __construct($document, $options = null)
     {
         $this->etablissement = $document->getEtablissementObject();
+        $this->vip2c = VIP2C::gatherInformations($document, $document->getPeriode());
         parent::__construct($document, $options);
         $this->noticeVigilance = true;
     }
@@ -16,7 +18,6 @@ class DRevValidation extends DeclarationLotsValidation
         /*
          * Warning
          */
-        $this->addControle(self::TYPE_WARNING, 'declaration_habilitation', 'Vous avez déclaré du volume sans habilitation');
         $this->addControle(self::TYPE_ERROR, 'declaration_multi_cvi', "est lié à plusieurs opérateurs");
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15', 'Vous ne revendiquez pas le même volume que celui qui figure sur votre déclaration douanière en L15 (peut-être dû au complèment de VCI ou un achat)');
         $this->addControle(self::TYPE_WARNING, 'declaration_neant', "Vous n'avez déclaré aucun produit");
@@ -30,6 +31,7 @@ class DRevValidation extends DeclarationLotsValidation
          */
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_volume', "Le volume revendiqué n'a pas été saisi");
         $this->addControle(self::TYPE_WARNING, 'revendication_incomplete_volume_warn', "Le volume revendiqué n'a pas été saisi");
+        $this->addControle(self::TYPE_WARNING, 'revendication_apporteur_total_warn', "Aucun volume de récolte en cave particulière a été détecté");
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_superficie', "La superficie revendiquée n'a pas été saisie");
         $this->addControle(self::TYPE_ERROR, 'revendication_rendement', "Le rendement sur le volume revendiqué n'est pas respecté");
         $this->addControle(self::TYPE_WARNING, 'revendication_rendement_warn', "Le rendement sur le volume revendiqué n'est pas respecté (peut être lié à un achat de vendange ou l'intégration de VCI stocké chez un négociant)");
@@ -47,7 +49,9 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie', 'Vous revendiquez une superficie supérieure à celle qui figure sur votre déclaration douanière en L4');
         $this->addControle(self::TYPE_WARNING, 'revendication_superficie_warn', 'Vous revendiquez une superficie supérieure à celle qui figure sur votre déclaration douanière en L4');
 
-        $this->addControle(self::TYPE_WARNING, 'dr_recolte_rendement', "Vous dépassez le rendement dans votre DR (L5)");
+        $this->addControle(self::TYPE_WARNING, 'parcellaire_affectation_superficie_sup', 'La superficie revendiquée est supérieure à celle qui figure sur votre affectation parcellaire');
+
+        $this->addControle(self::TYPE_WARNING, 'dr_recolte_rendement', "Vous dépassez le rendement dans votre DR (L15)");
         $this->addControle(self::TYPE_WARNING, 'sv12_recolte_rendement', "Vous dépassez le rendement dans votre SV12");
         $this->addControle(self::TYPE_WARNING, 'sv11_recolte_rendement', "Vous dépassez le rendement dans votre SV11");
 
@@ -87,6 +91,14 @@ class DRevValidation extends DeclarationLotsValidation
 
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VSI_DESTRUCTION, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VSI_DESTRUCTION));
 
+        foreach ($this->document->getProduitsWithoutLots() as $produit_hash => $produit) {
+            if (VIP2C::hasVolumeSeuil() && $this->document->hasDestinationVrac([$produit_hash])) {
+                $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $produit->getConfig()->getHash());
+                foreach($contrats as $k=>$v){
+                    $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
+                }
+            }
+        }
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
 
         /* Lots */
@@ -97,21 +109,28 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
 
-        foreach($this->document->getProduitsHashWithVolumeSeuil() as $produit_hash) {
-            $this->addControle(self::TYPE_ERROR, 'vip2c_pas_de_contrats_'.$produit_hash,"Depuis le millésime ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil($produit_hash)." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation or Declarvins nous informe que vous n'avez pas de contrat de vrac non soldé. Veuillez prendre contact avec Intervins Sud Est - 04 90 42 90 04.");
-            $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable_'.$produit_hash,"A partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous êtes sur le point de dépasser les ".$this->document->getVolumeRevendiqueSeuil($produit_hash)." hl qui vous a été attribués. Au delà, vous devrez avoir une preuve de commercialisation pour pouvoir revendiquer vos volumes.");
-            $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$produit_hash,"A partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil($produit_hash)." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation.");
-            $lots = []; foreach ($this->document->declaration->get($produit_hash) as $produit) { $lots[] = $produit->libelle; }
-            $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$produit_hash, "<strong>J'atteste de conditionnements,</strong> en revendiquant au-delà de mon Volume Individuel de Production Commercialisable Certifiée (VIP2C), je m'engage à fournir à Intervins Sud Est <strong>une copie du registre de conditionnement</strong> pour les lots <strong>".implode(', ', $lots)."</strong> en dépassement sur cette revendication.");
+        if(array_key_exists('produits', $this->vip2c)){
+            foreach($this->vip2c['produits'] as $produit) {
+                $this->addControle(self::TYPE_ERROR, 'vip2c_pas_de_contrats_'.$produit['hash_regex'],"Depuis le millésime ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$produit['volume_max']." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation or Declarvins nous informe que vous n'avez pas de contrat de vrac non soldé. Veuillez prendre contact avec Intervins Sud Est - 04 90 42 90 04.");
+                $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable_'.$produit['hash_regex'],"À partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous êtes sur le point de dépasser les ".$produit['volume_max']." hl qui vous ont été attribués. Au delà, vous devrez avoir une preuve de commercialisation pour pouvoir revendiquer vos volumes.");
+                $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$produit['hash_regex'],"À partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$produit['volume_max']." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation.");
 
-            $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $produit_hash);
+                $lots = [];
+                foreach ($produit['hashes'] as $produit_hash) {
+                    if ($this->document->exist($produit_hash)) {
+                        foreach ($this->document->get($produit_hash) as $lot) {
+                            $lots[] = $lot->libelle;
+                        }
+                    }
+                }
+                $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$produit['hash_regex'], "<strong>J'atteste de conditionnements,</strong> en revendiquant au-delà de mon Volume Individuel de Production Commercialisable Certifiée (VIP2C), je m'engage à fournir à Intervins Sud Est <strong>une copie du registre de conditionnement</strong> pour les lots <strong>".implode(', ', $lots)."</strong> en dépassement sur cette revendication.");
 
-            if($contrats){
-                foreach($contrats as $k=>$v){
-                    $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
+                if(array_key_exists('contrats', $produit)){
+                    foreach($produit['contrats'] as $k=>$v){
+                        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
+                    }
                 }
             }
-
         }
     }
 
@@ -122,21 +141,19 @@ class DRevValidation extends DeclarationLotsValidation
           $this->controleRevendication($produit);
           $this->controleVci($produit);
         }
-        //Point de vigilence sur habilitation
-        if (!DRevConfiguration::getInstance()->hasHabilitationINAO()) {
-            foreach($this->document->getNonHabilitationODG() as $hash => $produit) {
-                $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-            }
-        }
         $this->controleRecoltes();
 
         foreach ($this->document->getProduits() as $hash => $produit) {
           $produits[$produit->getParent()->getHash()] = $produit;
         }
         $this->controleNeant();
-        foreach($this->document->getProduitsHashWithVolumeSeuil() as $produit_hash) {
-            $this->controleVolumeSeuilDeclare($produit_hash);
+
+        if(array_key_exists('produits', $this->vip2c)){
+            foreach($this->vip2c['produits'] as $produit) {
+                $this->controleVolumeSeuilDeclare($produit);
+            }
         }
+
         $this->controleEngagementVCI();
         $this->controleEngagementSv();
         $this->controleEngagementMutage();
@@ -151,11 +168,17 @@ class DRevValidation extends DeclarationLotsValidation
 
     protected function controleNeant()
     {
-    	if(count($this->document->getProduits()) > 0) {
-    		return;
-    	}
+        $superficie = 0;
+        $volume = 0;
+        foreach($this->document->getProduits() as $p) {
+            $volume += $p->volume_revendique_total;
+            $superficie += $p->superficie_revendique;
+        }
+        if ($volume) {
+            return;
+        }
 
-        if($this->document->exist('lots') && count($this->document->lots) && !$this->document->hasDocumentDouanier()) {
+        if($this->document->exist('lots') && count($this->document->lots) && (!$this->document->hasDocumentDouanier() || $superficie)) {
     		return;
     	}
     	$this->addPoint(self::TYPE_WARNING, 'declaration_neant', '', $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
@@ -278,14 +301,37 @@ class DRevValidation extends DeclarationLotsValidation
         if ($produit->isCleanable()) {
           return;
         }
-        if($produit->getSommeProduitsCepage('superficie_revendique') === null) {
-            $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_superficie', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+        $has_point_dr = false;
+        if ($this->document->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR && !$produit->getSommeProduitsCepage('recolte/volume_sur_place')) {
+            $this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            $has_point_dr = true;
+        } elseif ($this->document->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR && !$produit->getSommeProduitsCepage('recolte/recolte_nette')) {
+            $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            $has_point_dr = true;
+        } else {
+
+            if ((round($produit->getSommeProduitsCepage('volume_revendique_issu_recolte') + $produit->getSommeProduitsCepage('vci/rafraichi'), 4)) != round($produit->getSommeProduitsCepage('recolte/recolte_nette'), 4) && round($produit->getSommeProduitsCepage('recolte/volume_total'), 4) == round($produit->getSommeProduitsCepage('recolte/volume_sur_place'), 4)) {
+                $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            }
+            if (round($produit->getVolumeRevendiqueRendement(), 4) > round($produit->getSommeProduitsCepage('recolte/recolte_nette') + $produit->getSommeProduitsCepage('vci/complement') + $produit->getSommeProduitsCepage('recolte/vsi') , 4) && round($produit->getSommeProduitsCepage('recolte/volume_total'), 4) == round($produit->getSommeProduitsCepage('recolte/volume_sur_place'), 4) && (!$this->document->exist('achat_tolerance') || !$this->document->achat_tolerance)) {
+                $this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_complement', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            }
+            if ($produit->recolte->recolte_nette && ($produit->recolte->recolte_nette + $produit->vci->complement) < ($produit->vci->substitution + $produit->vci->rafraichi)) {
+                $this->addPoint(self::TYPE_ERROR, 'vci_substitue_rafraichi', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
+            }
         }
-        if($produit->getSommeProduitsCepage('volume_revendique_issu_recolte') === null) {
-            if ($produit->getCepage()->hasDonneesRecolte()) {
-                $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-            } else {
-                $this->addPoint(self::TYPE_WARNING, 'revendication_incomplete_volume_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+        if (!$has_point_dr) {
+            if ($produit->recolte && !$produit->recolte->volume_sur_place) {
+                $this->addPoint(self::TYPE_WARNING, 'revendication_apporteur_total_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+            }elseif($produit->getSommeProduitsCepage('superficie_revendique') === null) {
+                $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_superficie', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+            }
+            if(!$produit->getSommeProduitsCepage('volume_revendique_issu_recolte')) {
+                if ($produit->getCepage()->hasDonneesRecolte()) {
+                    $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+                } else {
+                    $this->addPoint(self::TYPE_WARNING, 'revendication_incomplete_volume_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+                }
             }
         }
         if ($produit->superficie_revendique > 0 && $produit->volume_revendique_issu_recolte > 0) {
@@ -307,22 +353,6 @@ class DRevValidation extends DeclarationLotsValidation
                     $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, $produit->getLibelleComplet());
                 }
             }
-        }
-        if ($this->document->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR && !$produit->getSommeProduitsCepage('recolte/volume_sur_place')) {
-            $this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-        } elseif ($this->document->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR && !$produit->getSommeProduitsCepage('recolte/recolte_nette')) {
-            $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-        } else {
-
-	        if ((round($produit->getSommeProduitsCepage('volume_revendique_issu_recolte') + $produit->getSommeProduitsCepage('vci/rafraichi'), 4)) != round($produit->getSommeProduitsCepage('recolte/recolte_nette'), 4) && round($produit->getSommeProduitsCepage('recolte/volume_total'), 4) == round($produit->getSommeProduitsCepage('recolte/volume_sur_place'), 4)) {
-	          	$this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-	        }
-	        if (round($produit->getVolumeRevendiqueRendement(), 4) > round($produit->getSommeProduitsCepage('recolte/recolte_nette') + $produit->getSommeProduitsCepage('vci/complement') + $produit->getSommeProduitsCepage('recolte/vsi') , 4) && round($produit->getSommeProduitsCepage('recolte/volume_total'), 4) == round($produit->getSommeProduitsCepage('recolte/volume_sur_place'), 4) && (!$this->document->exist('achat_tolerance') || !$this->document->achat_tolerance)) {
-	        	$this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_complement', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-	        }
-	        if ($produit->recolte->recolte_nette && ($produit->recolte->recolte_nette + $produit->vci->complement) < ($produit->vci->substitution + $produit->vci->rafraichi)) {
-	        	$this->addPoint(self::TYPE_ERROR, 'vci_substitue_rafraichi', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
-	        }
         }
         if ( (!$produit->getSommeProduitsCepage('recolte/superficie_total') && $produit->getSommeProduitsCepage('superficie_revendique') > 0) || (round($produit->getSommeProduitsCepage('superficie_revendique'), 4) > round($produit->getSommeProduitsCepage('recolte/superficie_total'), 4)) ) {
             if ($this->document->getDocumentDouanierType() == SV12CsvFile::CSV_TYPE_SV12) {
@@ -352,7 +382,7 @@ class DRevValidation extends DeclarationLotsValidation
         if(!$produit->hasVci()) {
             return;
         }
-        if(round($produit->vci->stock_precedent, 4) != round($produit->getTotalVciUtilise(), 4)) {
+        if(round(intval($produit->vci->stock_precedent), 4) != round($produit->getTotalVciUtilise(), 4)) {
             $this->addPoint(self::TYPE_ERROR, 'vci_stock_utilise', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
         }
         if($produit->getConfig()->rendement_vci_total !== null && round($produit->getPlafondStockVci(), 4) < $produit->vci->stock_final) {
@@ -378,7 +408,7 @@ class DRevValidation extends DeclarationLotsValidation
     protected function controleHabilitationODG()
     {
         $e = EtablissementFindByCviView::getInstance()->findByCvi($this->document->declarant->cvi);
-        if(count($e) > 1) {
+        if(count($e) > 1 && ($this->document->declarant->cvi || !$this->document->declarant->ppm)) {
             $this->addPoint(self::TYPE_ERROR, 'declaration_multi_cvi', 'Le CVI '.$this->document->declarant->cvi, $this->generateUrl('compte_search', array('q' => $this->document->declarant->cvi, 'contacts_all' => 1, 'tags' => 'automatique:etablissement')) );
         }
 
@@ -449,41 +479,42 @@ class DRevValidation extends DeclarationLotsValidation
         }
     }
 
-    protected function controleVolumeSeuilDeclare($hash_produit){
+    protected function controleVolumeSeuilDeclare($produit){
         if(!$this->document->hasVolumeSeuilAndSetIfNecessary()){
             return null;
         }
 
-        if(!$this->document->declaration->exist($hash_produit)) {
-            return null;
+        if (count($produit['hashes']) === 0) {
+            return false;
         }
 
-        $produit = $this->document->declaration->get($hash_produit)->getConfig()->getLibelleComplet()." ".$this->document->getDefaultMillesime();
+        $libelle = $produit['libelle']." ".$this->document->getDefaultMillesime();
 
-        $volumeTotalSeuilDeclare = $this->document->summerizeProduitsLotsByCouleur()[$produit]['volume_lots'];
-        $volumeCommercialisableLibre = $this->document->getVolumeCommercialisableLibre($hash_produit);
-        $volumeMaxAutorise = $this->document->getVolumeRevendiqueSeuil($hash_produit);
+        $volumeTotalSeuilDeclare = $produit['volume'];
+        $volumeCommercialisableLibre = $produit['volume_max'] - ($produit['volume_max'] * 0.1);
+        $volumeMaxAutorise = $produit['volume_max'];
+
         if(($volumeCommercialisableLibre < $volumeTotalSeuilDeclare) && ($volumeTotalSeuilDeclare < $volumeMaxAutorise)) {
-            $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable_'.$hash_produit,  $produit." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
+            $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable_'.$produit['hash_regex'], $libelle." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
         } elseif($volumeMaxAutorise < $volumeTotalSeuilDeclare) {
-            if($this->document->hasDestinationConditionnement()){
-                $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$hash_produit, $produit." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
-                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$hash_produit, '', null, $hash_produit);
+            if($this->document->hasDestinationConditionnement($produit['hashes'])){
+                $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$produit['hash_regex'], $libelle." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
+                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$produit['hash_regex'], '', null, $produit['hash_regex']);
             }
-            if($this->document->hasDestionationVrac()){
-                $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $hash_produit);
+            if (VIP2C::hasVolumeSeuil() && $this->document->hasDestinationVrac($produit['hashes'])) {
+                $contrats = (array_key_exists('contrats', $produit))? $produit['contrats'] : [];
 
-                if(!$contrats){
-                    $this->addPoint(self::TYPE_ERROR,'vip2c_pas_de_contrats_'.$hash_produit, $produit,$this->generateUrl('drev_lots', array("id" => $this->document->_id)) );
-                }
-                else{
-                    $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$hash_produit, $produit." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
-                    foreach($contrats as $k=>$v){
-                        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k, $produit, null, $hash_produit);
+                if (count($contrats) === 0) {
+                    $this->addPoint(self::TYPE_ERROR,'vip2c_pas_de_contrats_'.$produit['hash_regex'], $libelle, $this->generateUrl('drev_lots', array("id" => $this->document->_id)) );
+                } else {
+                    $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$produit['hash_regex'], $libelle." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
+                    foreach($contrats as $numero => $contrat){
+                        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$numero, $libelle, null, $produit['hash_regex']);
                     }
                 }
-                if($contrats && count($contrats)>1){
-                    $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$hash_produit, $produit." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
+
+                if ($contrats && count($contrats) > 1) {
+                    $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$produit['hash_regex'], $libelle." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
                     if(sfContext::getInstance()->getUser()->hasDrevAdmin()) {
                         $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION,"");
                     }

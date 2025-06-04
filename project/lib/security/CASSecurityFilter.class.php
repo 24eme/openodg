@@ -29,7 +29,7 @@ class CASSecurityFilter extends sfBasicSecurityFilter
    {
           if (!$this->context->getUser()->isAuthenticated() && ($this->request->getParameter('ticket') || isset($_SESSION["phpCAS"]["user"]))) {
            acCas::processAuth();
-           if ($_SESSION['app_cas_origin'] == 'viticonnect') {
+           if (isset($_SESSION['app_cas_origin']) && strpos($_SESSION['app_cas_origin'],'viticonnect') !== false) {
                foreach(array('cvi', 'accises', 'siret') as $type ) {
                    foreach (explode('|', acCas::getAttribute('viticonnect_entities_all_'.$type)) as $id) {
                        $e = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSirenOrTVA($id);
@@ -38,14 +38,23 @@ class CASSecurityFilter extends sfBasicSecurityFilter
                        }
                    }
                }
-               if ($e && $e->getSociete() && $e->getSociete()->getMasterCompte()) {
+               if (class_exists("Societe") && $e && $e->getSociete() && $e->getSociete()->getMasterCompte()) {
                    $this->getContext()->getUser()->signInOrigin($e->getSociete()->getMasterCompte()->identifiant);
+               } elseif (!class_exists("Societe") &&  $e) {
+                   $this->getContext()->getUser()->signInOrigin($e->identifiant);
+               } elseif(!class_exists("Societe") && CompteClient::getInstance()->findByLogin(acCas::getUser())) {
+                    $this->getContext()->getUser()->signInOrigin(acCas::getUser());
                } else {
-                   throw new sfException('identifiant viticonnect non reconnu : '.implode(', ', acCas::getAttributes()));
+                   if (acCas::getConfig('sf_environment') == 'dev') {
+                       throw new sfException('identifiant viticonnect non reconnu : '.acCas::getUser().', '.implode(', ', acCas::getAttributes()));
+                   }
+                   $this->controller->redirect('/logout');
                }
            } else {
                $this->getContext()->getUser()->signInOrigin(acCas::getUser());
            }
+
+           return $this->controller->redirect($this->request->getUri());
        }
 
        parent::execute($filterChain);
@@ -53,7 +62,7 @@ class CASSecurityFilter extends sfBasicSecurityFilter
 
    protected function forwardToLoginAction()
    {
-       $this->controller->redirect(acCas::getConfig('app_cas_url') . '/login?service=' . $this->request->getUri());
+       $this->controller->redirect(acCas::getConfig('app_cas_url') . '/login?service=' . urlencode(preg_replace("/\?$/", '', $this->request->getUri())));
 
        throw new sfStopException();
    }

@@ -33,17 +33,17 @@ EOF;
         $compte = CompteClient::getInstance()->find($arguments['compte_id'], acCouchdbClient::HYDRATE_JSON);
 
         if(!$compte) {
-
+            echo "ERROR: Compte ".$arguments['compte_id']." not found\n";
             return;
         }
 
         if($compte->statut != 'ACTIF') {
-
+            echo "INFO: Compte ".$arguments['compte_id']." non actif\n";
             return;
         }
 
         if(AbonnementClient::getInstance()->findByIdentifiantAndDate($compte->identifiant, $this->getDateDebut($campagne), $this->getDateFin($campagne), acCouchdbClient::HYDRATE_JSON)) {
-
+            echo "INFO: Compte ".$arguments['compte_id']." abonnement existant pour cette période\n";
             return;
         }
 
@@ -62,7 +62,7 @@ EOF;
         }
 
         if(!$isCompteAbonneRevue) {
-
+            echo "INFO: Compte ".$arguments['compte_id']." n'a pas de tag abonné revue\n";
             return;
         }
 
@@ -94,13 +94,13 @@ EOF;
         }
 
         if($abo->tarif != AbonnementClient::TARIF_MEMBRE) {
-
+            echo "INFO: Compte ".$arguments['compte_id']." tarif non membre\n";
             return;
         }
 
         $abo->save();
 
-        echo "SUCCESS Création de l'abonnement ".$abo->_id."\n";
+        echo "SUCCESS Création de l'abonnement ".$abo->_id." (".$abo->_rev.")\n";
     }
 
     protected function getDateDebut($campagne) {

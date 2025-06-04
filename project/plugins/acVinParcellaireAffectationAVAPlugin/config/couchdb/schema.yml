@@ -140,12 +140,24 @@ ParcellaireAffectation:
                                                               class: ParcellaireAffectationCepageDetail
                                                               definition:
                                                                 fields:
+                                                                  origine_doc: { }
                                                                   superficie: { type: float }
+                                                                  superficie_parcellaire: { type: float }
                                                                   commune: { }
-                                                                  code_postal: { }
+                                                                  code_commune: { }
+                                                                  code_postal: { required: false }
                                                                   section: { }
                                                                   numero_parcelle: { }
-                                                                  lieu: {  }
+                                                                  idu: { }
+                                                                  origine: { required: false } # A supprimer
+                                                                  parcelle_id: { }
+                                                                  numero_ordre: { }
+                                                                  campagne_plantation: { }
+                                                                  lieu: { }
+                                                                  lieu_cadastral: { required: false }
+                                                                  produit_hash: { }
+                                                                  source_produit_libelle: { }
+                                                                  prefix: { }
                                                                   departement: {  }
                                                                   active: { type: integer }
                                                                   vtsgn: { type: integer }

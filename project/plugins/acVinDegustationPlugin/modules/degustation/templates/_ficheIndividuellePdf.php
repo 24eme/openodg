@@ -37,8 +37,12 @@
           <th class="topempty bg-white"style="width:5%; "><?php echo tdStart() ?><strong>Anon</strong></th>
           <th class="topempty bg-white" style="width:34%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
          <th colspan="4"style="width:20%;"><?php echo tdStart() ?><strong>NOTATION</strong></th>
+        <?php if (DegustationConfiguration::getInstance()->hasTypiciteCepage()) : ?>
           <th class="bg-white" colspan="2"style="width:8%;"><?php echo tdStart() ?><strong>Avis</strong></th>
           <th class="bg-white"  colspan="2"style="width:8%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
+        <?php else : ?>
+          <th class="bg-white" colspan="2"style="width:16%;"><?php echo tdStart() ?><strong>Avis</strong></th>
+        <?php endif ?>
           <th class="topempty bg-white" style="width:25%;"><strong>Motifs (si non conforme)</strong></th>
        </tr>
        <tr style="line-height:13px;">
@@ -48,10 +52,15 @@
          <th style="width:5%;"><?php echo tdStart() ?><strong><small>Olfactif<br><?php if($notation): ?>/12<?php endif ?></small></strong></th>
          <th style="width:5%;"><?php echo tdStart() ?><strong><small>Gustatif<br><?php if($notation): ?>/24<?php endif ?></small></strong></th>
          <th style="width:5%;"><?php echo tdStart() ?><strong><small>TOTAL<br><?php if($notation): ?>/48<?php endif ?></small></strong></th>
+         <?php if (DegustationConfiguration::getInstance()->hasTypiciteCepage()) : ?>
          <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
          <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
          <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
          <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
+         <?php else: ?>
+         <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
+         <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
+         <?php endif ?>
          <th class="empty bg-white"></th>
        </tr>
    <?php endif;?>
@@ -63,10 +72,15 @@
       <td><?php echo tdStart() ?></td>
       <td><?php echo tdStart() ?></td>
       <td><?php echo tdStart() ?></td>
+      <?php if (DegustationConfiguration::getInstance()->hasTypiciteCepage()) : ?>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
+      <?php else: ?>
+      <td><?php echo tdStart() ?><span class="zap">o</span></td>
+      <td><?php echo tdStart() ?><span class="zap">o</span></td>
+      <?php endif; ?>
       <td><?php echo tdStart() ?>&nbsp;</td>
     </tr>
     <?php $i++; ?>

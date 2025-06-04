@@ -4,6 +4,7 @@ class ParcellaireIrrigableClient extends acCouchdbClient {
 
       const TYPE_MODEL = "ParcellaireIrrigable";
       const TYPE_COUCHDB = "PARCELLAIREIRRIGABLE";
+      const TYPE_LIBELLE = "Déclaration d'irrigation";
 
       public static function getInstance() {
           return acCouchdbManager::getClient("parcellaireIrrigable");
@@ -71,60 +72,5 @@ class ParcellaireIrrigableClient extends acCouchdbClient {
                           ->execute($hydrate);
       }
 
-      public function getDateOuverture($type = self::TYPE_COUCHDB) {
-          if ($type == self::TYPE_COUCHDB) {
-              $dates = sfConfig::get('app_dates_ouverture_parcellaire_irrigable');
-          }
-          if (!is_array($dates) || !isset($dates['debut']) || !isset($dates['fin'])) {
-              return array('debut'=>'1900-01-01', 'fin' => '9999-12-31');
-          }
-          return $dates;
-      }
 
-
-      public function getDateOuvertureDebut($type = self::TYPE_COUCHDB) {
-          $dates = $this->getDateOuverture($type);
-          return $dates['debut'];
-      }
-
-      public function getDateOuvertureFin($type = self::TYPE_COUCHDB) {
-          $dates = $this->getDateOuverture($type);
-          return $dates['fin'];
-      }
-
-      public function isOpen($type = self::TYPE_COUCHDB, $date = null) {
-          if (is_null($date)) {
-              $date = date('Y-m-d');
-          }
-          return $date >= $this->getDateOuvertureDebut($type) && $date <= $this->getDateOuvertureFin($type);
-      }
-
-      public function getRessources($value = null)
-      {
-      	return $this->getFromConfig('ressources', $value);
-      }
-
-      public function getMateriels($value = null)
-      {
-      	return $this->getFromConfig('materiels', $value);
-      }
-
-      private function getFromConfig($type, $value = null)
-      {
-      	$items = sfConfig::get('app_parcellaire_irrigable_'.$type);
-      	$entries = array();
-      	foreach ($items as $item) {
-      		$entry = new stdClass();
-      		$entry->id = $item;
-      		$entry->text = $item;
-      		$entries[] = $entry;
-      	}
-      	if ($value) {
-      		$entry = new stdClass();
-      		$entry->id = $value;
-      		$entry->text = $value;
-      		$entries[] = $entry;
-      	}
-      	return $entries;
-      }
 }

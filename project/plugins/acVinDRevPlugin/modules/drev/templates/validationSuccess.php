@@ -13,7 +13,7 @@
     <?php if($validation->hasPoints()): ?>
         <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
-    <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
+    <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr, 'vip2c' => $vip2c)); ?>
 	<?php  if (count($validation->getEngagements()) > 0): ?>
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php elseif($sf_user->isAdmin()) : ?>
@@ -49,6 +49,10 @@
                 <span class="glyphicon-calendar glyphicon"></span>
             </div>
             </div>
+            <?php echo $form["saisie_papier"]->renderLabel("Saisie papier :", array("class" => "col-xs-3 control-label")); ?>
+            <div class="">
+            <?php echo $form["saisie_papier"]->render(array("class" => "checkbox mt-2", "placeholder" => "")); ?>
+            </div>
         </div>
 <?php elseif($drev->isTeledeclare()): ?>
 <p>DRev télédéclarée signée le <?php echo format_date($drev->getDateDepot(), "dd/MM/yyyy", "fr_FR"); ?></p>
@@ -77,5 +81,5 @@
             </button>
         </div>
     </div>
+    <?php include_partial('drev/popupConfirmationValidation', array('approuver' => true)); ?>
 </form>
-<?php include_partial('drev/popupConfirmationValidation', array('approuver' => true)); ?>

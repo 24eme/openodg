@@ -32,6 +32,7 @@ PMC:
       type_archive: { required: false }
       version: { required: false }
       numero_archive: {  }
+      region: { require: false }
       declarant:
         type: collection
         class: PMCDeclarant
@@ -84,6 +85,7 @@ PMC:
                   eleve: { }
                   statut: {}
                   adresse_logement: {}
+                  secteur: {}
                   specificite: { }
                   centilisation: { required: false }
                   affectable: { }
@@ -105,6 +107,7 @@ PMC:
             commune: { }
             code_postal: { }
             telephone: { }
+            secteur: { }
       mouvements:
         type: collection
         definition:
@@ -170,6 +173,8 @@ PMC:
                         declarant_identifiant: {  }
                         declarant_nom: {  }
                         statut: {}
+                        region: { require: false }
+      region: { require: false }
       pieces:
         type: array_collection
         definition:

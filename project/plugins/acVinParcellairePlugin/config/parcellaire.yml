@@ -1,8 +1,12 @@
 all:
   configuration:
     parcellaire:
-      limit_produits_configuration: true
+      show_filter_produits_configuration: true
+      troisieme_feuille: true
       unit: "hectares"
       aires:
-    manquant:
-      pc_min: 20
+      manquant:
+        pc_min: 20
+      irrigable:
+        engagements: false
+        hasIrrigableMaterielRessource: true

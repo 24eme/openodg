@@ -71,7 +71,15 @@
         <td class="text-right"><?php echo $detail->prix ?>&nbsp;€</td>
         <td class="text-right"><?php echo $detail->tva ?>&nbsp;€</td>
         <td><?php echo implode(",&nbsp;", $detail->docs->getRawValue()->toArray()) ?></td>
-        <td><?php echo $detail->callback ?><?php if($detail->exist('callback_parameters')): ?> <small class="text-muted"><?php echo implode(", ", $detail->callback_parameters->getRawValue()->toArray()) ?></small><?php endif; ?></td>
+        <td><?php echo $detail->callback ?>
+            <?php if($detail->exist('callback_parameters')): ?>
+                <small class="text-muted">
+                <?php foreach ($detail->callback_parameters as $cle => $parameter): ?>
+                    <span title="<?php echo $cle ?>" style="cursor:help;text-decoration:underline dotted 1px"><?php echo $parameter ?></span>
+                <?php endforeach ?>
+                </small>
+            <?php endif; ?>
+        </td>
         <td class="text-left"><?php if($detail->exist('unite')): ?><?php echo $detail->unite ?><?php endif; ?></td>
     </tr>
 <?php endforeach; ?>

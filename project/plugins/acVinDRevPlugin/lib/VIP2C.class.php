@@ -8,7 +8,52 @@ class VIP2C
     const VIP2C_COLONNE_PRODUIT = 6;
     const VIP2C_COLONNE_VOLUME = 7;
 
-    static $csv_seuil;
+    static $csv_seuil = [];
+    static $infos = [];
+
+    public static function gatherInformations($doc, $millesime)
+    {
+        if (empty(self::$infos) === false) {
+            return self::$infos;
+        }
+
+        $infosProduits = self::getInfosFromCSV($doc, $millesime);
+
+        if ($infosProduits === null) {
+            self::$infos = ['produits' => []];
+            return self::$infos;
+        }
+
+        $hashesRegex = array_column($infosProduits, 'hash_regex');
+
+        $volumes = array_fill_keys($hashesRegex, 0);
+        $hashProduits = array_fill_keys($hashesRegex, []);
+        $contrats = [];
+        foreach ($doc->getLots() as $produit) {
+            $drevHash = $produit->getConfig()->getHash();
+            foreach ($hashesRegex as $hash) {
+                if (self::isHashMatch($hash, $drevHash) === true && in_array($drevHash, $hashProduits[$hash]) === false) {
+                    $volumes[$hash] += $doc->getVolumeRevendiqueLotsMillesimeCourantByAppellations($drevHash);
+                    $hashProduits[$hash][] = $drevHash;
+                    $contrats[$hash] = self::getContratsFromAPI($doc->declarant->cvi, $millesime, $drevHash);
+                }
+            }
+        }
+
+        $infosProduits = array_map(function ($value) use ($volumes, $hashProduits, $contrats) {
+            $value['volume'] = $volumes[$value['hash_regex']];
+            $value['hashes'] = $hashProduits[$value['hash_regex']];
+            $value['contrats'] = (isset($contrats[$value['hash_regex']]))? $contrats[$value['hash_regex']] : [];
+            return $value;
+        }, $infosProduits);
+
+        $infosProduits = array_filter($infosProduits, function ($value) {
+            return count($value['hashes']) > 0;
+        });
+
+        self::$infos['produits'] = $infosProduits;
+        return self::$infos;
+    }
 
     public static function getContratsAPIURL($cvi, $millesime)
     {
@@ -19,7 +64,7 @@ class VIP2C
             return array();
         }
 
-        if ($millesime < VIP2C::getConfigMillesimeVolumeSeuil()) {
+        if ($millesime < self::getConfigMillesimeVolumeSeuil()) {
             return array();
         }
 
@@ -39,9 +84,17 @@ class VIP2C
         $content = file_get_contents($url);
 
         $result = json_decode($content,true);
+
+        if(!$result) {
+            return [];
+        }
+
         $todelete = array();
+        if ($hash_produit) {
+            $confProduit = ConfigurationClient::getInstance()->getConfiguration()->get($hash_produit);
+        }
         foreach($result as $contratid => $data) {
-            if ($hash_produit && strpos($data['produit'], $hash_produit) === false) {
+            if ($hash_produit && !self::isHashMatch($hash_produit, $data['produit']) && $confProduit->code_douane != $data['code_douane']) {
                 $todelete[] = $contratid;
             }
         }
@@ -51,13 +104,11 @@ class VIP2C
         return($result);
     }
 
-    public static function getVolumeSeuilFromCSV($cvi, $millesime){
-        if(!VIP2C::hasVolumeSeuil()){
+    public static function getInfosFromCSV($doc, $millesime){
+        if(! self::hasVolumeSeuil() || !$doc->declarant->cvi){
             return null;
         }
-        if (!$cvi) {
-          return null;
-        }
+
         $configFile = fopen(sfConfig::get('sf_root_dir')."/".sfConfig::get('app_api_contrats_fichier_csv'),"r");
 
         $volumes = array();
@@ -65,27 +116,25 @@ class VIP2C
             if ($line[self::VIP2C_COLONNE_MILLESIME] != $millesime) {
                 continue;
             }
-            if (!isset($volumes[$line[self::VIP2C_COLONNE_CVI]])) {
-                $volumes[$line[self::VIP2C_COLONNE_CVI]] = array();
+
+            if ($line[self::VIP2C_COLONNE_CVI] !== $doc->declarant->cvi) {
+                continue;
             }
-            $volumes[$line[self::VIP2C_COLONNE_CVI]][$line[self::VIP2C_COLONNE_PRODUIT]] = str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME]);
+
+            $defautHash = str_replace(['genres/|','|'], ['genres/TRANQ', 'DEFAUT'], $line[self::VIP2C_COLONNE_PRODUIT]);
+            try{
+            $volumes[] = [
+                "hash_regex"  => $line[self::VIP2C_COLONNE_PRODUIT],
+                "volume_max"  => str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME]),
+                "libelle" => $doc->getConfiguration()->declaration->get($defautHash)->getLibelleComplet()
+            ];
+            }catch(sfException $e){
+                //Cas où la hash trouvée ne fait pas partie du catalogue produit car ça concerne une autre IGP
+            }
         }
         fclose($configFile);
 
-        if (!isset($volumes[$cvi])) {
-            return null;
-        }
-        return $volumes[$cvi];
-    }
-
-    public static function getVolumeSeuilProduitFromCSV($cvi, $millesime, $hash_produit) {
-        if (!self::$csv_seuil[$millesime]) {
-            self::$csv_seuil[$millesime] = self::getVolumeSeuilFromCSV($cvi, $millesime);
-        }
-        if (!isset(self::$csv_seuil[$millesime][$hash_produit])) {
-            return null;
-        }
-        return self::$csv_seuil[$millesime][$hash_produit];
+        return $volumes;
     }
 
     public static function getConfigCampagneVolumeSeuil() {
@@ -96,16 +145,27 @@ class VIP2C
         return substr(self::getConfigCampagneVolumeSeuil(), 0, 4);
     }
 
-    public static function getProduitsHashWithVolumeSeuil($cvi, $millesime) {
-        $r = self::getVolumeSeuilFromCSV($cvi, $millesime);
-        if (!$r) {
-            return array();
-        }
-        return array_keys($r);
-    }
-
     public static function hasVolumeSeuil() {
         return DRevConfiguration::getInstance()->hasVolumeSeuil();
+    }
+
+    public static function cleanHash($hash) {
+        $from = ['/declaration/', 'declaration/'];
+        $to = ['', ''];
+
+        return str_replace($from, $to, $hash);
+    }
+
+    public static function isHashMatch($regexp, $hash) {
+        $hashes = explode('|',self::cleanHash($regexp));
+        $hashCleaned = self::cleanHash($hash);
+
+        foreach ($hashes as $h) {
+            if (strpos($hashCleaned, $h) === false) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

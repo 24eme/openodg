@@ -82,7 +82,7 @@ class DRevProduit extends BaseDRevProduit
 		if($this->exist('volume_revendique_issu_mutage') && $this->volume_revendique_issu_mutage) {
 			return ($this->volume_revendique_total - $this->volume_revendique_issu_mutage);
 		}
-		return $this->volume_revendique_total;
+        return intval($this->volume_revendique_total);
 	}
 
 
@@ -244,10 +244,25 @@ class DRevProduit extends BaseDRevProduit
 			}
 		}
 
+        $toSubstract = 0;
+        foreach (ChgtDenomClient::getInstance()->getChgtDenomProduction(
+            $this->getDocument()->identifiant, $this->getDocument()->getPeriode()
+        ) as $chgt) {
+            if ($chgt->origine_produit_hash !== $this->getParent()->getHash()) {
+                continue;
+            }
+
+            if (str_replace(" déclassé", "", $chgt->origine_specificite) !== $this->denomination_complementaire) {
+                continue;
+            }
+
+            $toSubstract += $chgt->origine_volume;
+        }
+
         if($this->vci->rafraichi + $this->vci->substitution)
-			return $this->recolte->recolte_nette - $this->vci->rafraichi - $this->vci->substitution;
+            return $this->recolte->recolte_nette - $toSubstract - $this->vci->rafraichi - $this->vci->substitution;
 		else
-			return $this->recolte->recolte_nette;
+            return $this->recolte->recolte_nette - $toSubstract;
 	}
 
 	public function getRendementVci(){
@@ -335,6 +350,10 @@ class DRevProduit extends BaseDRevProduit
 	public function hasDonneesRecolte() {
        if ($this->exist('recolte')) {
            foreach ($this->recolte as $k => $v) {
+               //Pour les apporteurs en cave coop => a des volumes mais pas de récolte pour la cave particulière
+               if (in_array($k, ['usages_industriels_total', 'volume_total', 'superficie_total', 'recolte_nette', 'vci_constitue'])) {
+                   continue;
+               }
                if ($v && $v > 0) {
                    return true;
                }
@@ -408,5 +427,10 @@ class DRevProduit extends BaseDRevProduit
     public function hasVolumeOrSuperficieRevendicables() {
         return $this->recolte->volume_sur_place || $this->volume_revendique_total || $this->superficie_revendique;
 
+    }
+
+    public function getRegion() {
+
+        return RegionConfiguration::getInstance()->getOdgRegion($this->getHash());
     }
 }

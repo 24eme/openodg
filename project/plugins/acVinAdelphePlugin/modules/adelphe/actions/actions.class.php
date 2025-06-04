@@ -89,7 +89,6 @@ class adelpheActions extends sfActions {
 
   public function executeVisualisation(sfWebRequest $request) {
       $this->adelphe = $this->getRoute()->getAdelphe();
-      $this->secureEtablissement(AdelpheSecurity::DROIT_ADELPHE, $this->adelphe->getEtablissementObject());
   }
 
   public function executeDelete(sfWebRequest $request) {
@@ -103,6 +102,7 @@ class adelpheActions extends sfActions {
   public function executeExport(sfWebRequest $request) {
     $this->forward404Unless($this->getUser()->isAdmin());
     $ids = DeclarationClient::getInstance()->getIds(AdelpheClient::TYPE_MODEL);
+    $ids = array_reverse($ids);
     $csv = ExportAdelpheCSV::getHeaderCsv();
     foreach($ids as $id) {
       $doc = AdelpheClient::getInstance()->find($id);

@@ -1,6 +1,6 @@
 <?php
 
-class PMCConfiguration {
+class PMCConfiguration extends DeclarationConfiguration {
 
     private static $_instance = null;
     protected $configuration;
@@ -28,9 +28,22 @@ class PMCConfiguration {
       return isset($this->configuration['exploitation_save']) && boolval($this->configuration['exploitation_save']);
     }
 
+    public function hasOdgProduits() {
+        if (!class_exists('RegionConfiguration')) {
+            return false;
+        }
+        return RegionConfiguration::getInstance()->hasOdgProduits();
+    }
+
     public function getOdgRegions(){
       if(!$this->hasOdgProduits()){
         return array();
+      }
+      if ($r = Organisme::getInstance()->getCurrentRegion()) {
+          $regions = RegionConfiguration::getInstance()->getOdgProduits($r);
+          if ($regions) {
+              return $regions;
+          }
       }
       return array_keys($this->configuration['odg']);
     }
@@ -100,5 +113,13 @@ class PMCConfiguration {
 
     public function hasAllProduits() {
         return isset($this->configuration['all_produits']) && ($this->configuration['all_produits']);
+    }
+
+    public function getModuleName() {
+        return 'pmc';
+    }
+
+    public function getCampagneDebutMois() {
+        return DRevConfiguration::getInstance()->getCampagneDebutMois();
     }
 }

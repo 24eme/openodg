@@ -23,7 +23,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
 
     public function getEtablissementObject() {
 
-          return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+          return $this->findEtablissementViaCache('ETABLISSEMENT-'.$this->identifiant);
     }
 
     public function getApporteursChoisis() {
@@ -38,13 +38,13 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         return $apporteurs;
     }
 
-    protected function addApporteur($id_etablissement) {
+    public function addApporteur($id_etablissement) {
         if($this->apporteurs->exist($id_etablissement)) {
 
             return $this->apporteurs->get($id_etablissement);
         }
-        $etablissement = EtablissementClient::getInstance()->find($id_etablissement, acCouchdbClient::HYDRATE_JSON);
-        if(!$etablissement) {
+        $etablissement = $this->findEtablissementViaCache($id_etablissement);
+        if(!$etablissement || !$etablissement->isActif()) {
             return;
         }
         if(!$etablissement->cvi) {
@@ -59,9 +59,27 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         return $apporteur;
     }
 
-    public function buildApporteurs($sv11){
+    private $cache_etablisssements = null;
+    private function findEtablissementViaCache($id, $e = null) {
+        if (!$this->cache_etablisssements) {
+            $this->cache_etablisssements = [];
+        }
+        if (!isset($this->cache_etablisssements[$id])) {
+            if ($e) {
+                $this->cache_etablisssements[$id] = $e;
+            }else {
+                $this->cache_etablisssements[$id] = EtablissementClient::getInstance()->find($id);
+            }
+        }
+        return $this->cache_etablisssements[$id];
+    }
+
+    public function buildApporteurs(){
+        $sv11 = SV11Client::getInstance()->find("SV11-".$this->identifiant."-".($this->getPeriode() - 1));
+
+
         $apporteurs = $this->apporteurs;
-        $sv11Apporteurs = $sv11->getApporteurs();
+        $sv11Apporteurs = $sv11 ? $sv11->getApporteurs() : [];
         $apporteursArray = array();
 
         // Depuis les liaisons
@@ -70,8 +88,9 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         }
 
         // Depuis la SV11
-        foreach($sv11Apporteurs as $idApporteur => $nom) {
-            $apporteursArray[$idApporteur] = $nom;
+        foreach($sv11Apporteurs as $idApporteur => $apporteur) {
+            $this->findEtablissementViaCache($idApporteur, $apporteur['etablissement']);
+            $apporteursArray[$idApporteur] = $apporteur['raison_sociale'];
         }
 
         asort($apporteursArray);
@@ -81,17 +100,33 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
             if(!$apporteur) {
                 continue;
             }
-            $apporteur->provenance = (array_key_exists($id, $sv11Apporteurs))? SV11Client::TYPE_MODEL : "";
+            $apporteur->provenance = (array_key_exists($id, $sv11Apporteurs))? SV11Client::TYPE_MODEL : "Contact";
+        }
+
+        $remove = [];
+        foreach($this->apporteurs as $id => $ainfo) {
+            $e = $this->findEtablissementViaCache($id);
+            if ($e->isActif()) {
+                continue;
+            }
+            $remove[] = $id;
+        }
+        foreach ($remove as $id) {
+            $this->apporteurs->remove($id);
         }
     }
 
     public function updateApporteurs() {
         foreach($this->getApporteursChoisis() as $apporteur) {
-            if($apporteur->getAffectationParcellaire()) {
+            if($apporteur->getDocument(ParcellaireAffectationClient::TYPE_MODEL)) {
                 continue;
             }
-            $apporteur->updateParcelles();
-            $apporteur->intention = ($apporteur->nb_parcelles_identifiees);
+            try {
+                $apporteur->updateParcelles();
+                $apporteur->intention = ($apporteur->nb_parcelles_identifiees);
+            }catch(sfException $e) {
+
+            }
         }
     }
 
@@ -113,7 +148,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
             if($apporteur->getEtablissementObject()->isSuspendu()) {
                 continue;
             }
-          
+
             $retires[] = $apporteur;
         }
         $ajoutes = array();
@@ -124,7 +159,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
             if(isset($liaisons[$apporteur->getEtablissementId()])) {
                 continue;
             }
-          
+
             $ajoutes[] = $apporteur;
         }
 

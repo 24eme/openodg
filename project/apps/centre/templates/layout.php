@@ -16,14 +16,14 @@
         <link rel="icon" type="image/x-icon" href="/favico_centre.ico" />
         <link rel="icon" type="image/png" href="/favico_centre.png" />
 
+        <link href="<?php echo public_path("/components/opensans/opensans.css").'?'.$gitcommit; ?>" rel="stylesheet">
         <link href="<?php echo public_path("/components/vins/vins.css").'?'.$gitcommit; ?>" rel="stylesheet">
-        <link href="<?php echo public_path("/css/compile_default.css").'?'.$gitcommit; ?>" rel="stylesheet">
+        <link href="<?php echo public_path("/css/compile_centre.css").'?'.$gitcommit; ?>" rel="stylesheet">
+        <link media="print" href="<?php echo public_path("/css/print.css").'?'.$gitcommit; ?>" type="text/css" rel="stylesheet" />
         <link href="<?php echo public_path("/js/lib/leaflet/leaflet.css").'?'.$gitcommit; ?>" rel="stylesheet">
+        <link href="<?php echo public_path("/css/style_centreloire.css").'?'.$gitcommit; ?>" type="text/css" rel="stylesheet" >
 
         <?php include_stylesheets() ?>
-
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
-        <link href="/css/style_igp.css" rel="stylesheet" type="text/css">
 
         <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
         <script type="text/javascript" src="/js/lib/device.min.js"></script>
@@ -47,12 +47,12 @@
             <div id="header">
                 <?php echo include_partial('global/header'); ?>
 
-                <?php include_partial('global/nav'); ?>
+                <?php include_component('global', 'nav'); ?>
             </div>
 
                 <section id="content" class="container">
                         <?php if(sfConfig::get('app_instance') == 'preprod' ): ?>
-                          <div><p style="color:red; text-align:center; font-weight: bold;">Preproduction (la base est succeptible d'être supprimée à tout moment)</p></div>
+                          <div><p style="color:red; text-align:center; font-weight: bold;">Preproduction (la base est susceptible d'être supprimée à tout moment)</p></div>
                         <?php endif; ?>
 
                         <?php echo $sf_content ?>

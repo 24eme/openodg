@@ -27,6 +27,7 @@ class CompteSendmailTask extends sfBaseTask
   {
     $databaseManager = new sfDatabaseManager($this->configuration);
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
+    sfContext::createInstance($this->configuration);
 
     $compte = CompteClient::getInstance()->findByIdentifiant($arguments['identifiant']);
     if(!$compte){
@@ -39,25 +40,33 @@ class CompteSendmailTask extends sfBaseTask
         return null;
     }
 
-    $body = $this->parseTemplate(file_get_contents($arguments['body_template']), $compte);
-    $subject = $arguments['subject'];
+    $message = Email::getInstance()->newMailInstance();
 
-    $message = $this->getMailer()->compose(array(Organisme::getInstance()->getEmail() => Organisme::getInstance()->getNom()), $email ,$subject, $body);
+    $regions = HabilitationClient::getInstance()->getRegionsHabilites($compte->getSociete()->getEtablissementPrincipal()->getIdentifiant());
+
+    $message->setSubject($this->parseTemplate($arguments['subject'], $compte));
+    $message->setBody($this->parseTemplate(file_get_contents($arguments['body_template']), $compte));
+    $message->setReplyTo(array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name')));
+    $message->setTo($email);
 
     $resultSend = $this->getMailer()->send($message);
-    
+
     if(!$resultSend) {
         echo "ERROR;$compte->_id ($email);Mail non envoyé\n";
         return;
     }
-    
-    echo "SUCCESS;$compte->_id ($email);Mail envoyé à ".date('Y-m-d H:i:s')."\n";
+
+    echo "SUCCESS;$compte->_id : " . $compte->nom_a_afficher . " ($email);Mail envoyé à ".date('Y-m-d H:i:s')."\n";
   }
 
     protected function parseTemplate($body, $compte){
+        if(!$compte->getCodeCreation()) {
+            throw new Exception("Pas de code de création");
+        }
+
         $login = $compte->getLogin();
         $codeCreation = $compte->getCodeCreation();
-        
+
         return str_replace(array("%login%", "%code_creation%"), array($login, $codeCreation), $body);
     }
 

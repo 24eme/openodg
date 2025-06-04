@@ -218,8 +218,8 @@ EOF;
             $etablissement->ppm = $ppm;
           }
 
-          if(count(EtablissementClient::getRegions()) == 1){
-            $regions = array_keys(EtablissementClient::getRegions());
+          if(count(EtablissementClient::getSecteurs()) == 1){
+            $regions = array_keys(EtablissementClient::getSecteurs());
             $etablissement->region = $regions[0];
           }
 
@@ -276,8 +276,8 @@ EOF;
               $etablissement->statut = SocieteClient::STATUT_SUSPENDU;
               $etablissement->nom = $rs;
 
-              if(count(EtablissementClient::getRegions()) == 1){
-                $regions = array_keys(EtablissementClient::getRegions());
+              if(count(EtablissementClient::getSecteurs()) == 1){
+                $regions = array_keys(EtablissementClient::getSecteurs());
                 $etablissement->region = $regions[0];
               }
               $etablissement->save();

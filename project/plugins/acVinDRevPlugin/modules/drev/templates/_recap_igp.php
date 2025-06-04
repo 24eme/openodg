@@ -21,12 +21,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <?php foreach ($drev->summerizeProduitsLotsByCouleur() as $couleur => $synthese) :
+                  <?php $has_sum = false; foreach ($drev->summerizeProduitsLotsByCouleur() as $couleur => $synthese) : $has_sum = true;
                       $isTotal = (strpos($couleur, 'Total') !== false);
                     ?>
                     <tr <?php if ($isTotal) { echo ' style="font-weight: bold;"'; } ?>>
                       <td>
-                          <strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $synthese['libelle']; ?></strong></a>
+                          <strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $synthese['libelle']; ?></strong>
                           <?php if (!$isTotal) : ?>
                               <small class="pull-right">&nbsp;<?php if($synthese['superficie_totale']): ?><?php echoFloat(round($synthese['volume_total'] / $synthese['superficie_totale'], 2), true); ?>&nbsp;hl/ha</small><?php endif; ?>
                           <?php endif; ?>
@@ -70,9 +70,13 @@
                       </td>
                       </tr>
                   <?php endforeach; ?>
+<?php if (!$has_sum) : ?>
+<tr><td colspan="6"><center><i>Aucun lot d'IGP n'a été revendiqué</i></center></td></tr>
+<?php endif; ?>
                 </tbody>
               </table>
 
+<?php if ($has_sum) : ?>
           <h3 id="table_igp_title">Déclaration des lots IGP</h3>
           <div class="row">
               <input type="hidden" data-placeholder="Sélectionner un produit ou un numéro de dossier" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
@@ -233,6 +237,8 @@
             </tbody>
           </table>
         <?php endif; ?>
+<?php endif; ?>
+
 <div class="row">
     <div class="col-xs-12" style="margin-bottom: 20px;">
 <?php if($drev->isValideeOdg() && $drev->isModifiable()): ?>
@@ -251,7 +257,7 @@
 </div>
         <hr/>
         <?php if($drev->hasVolumeSeuilAndSetIfNecessary()): ?>
-        <?php include_partial('drev/vip2c', array('drev' => $drev, 'form' => $form)); ?>
+        <?php include_partial('drev/vip2c', array('drev' => $drev, 'form' => $form, 'vip2c' => $vip2c)); ?>
         <hr/>
         <?php endif; ?>
 

@@ -1,7 +1,7 @@
 <div class="panel panel-default" style="margin-bottom: 10px;">
     <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-calendar"></span> Société</h3></div>
     <div class="list-group">
-        <div class="list-group-item clearfix <?php if($societe->_id == $activeObject->_id): ?>active-bordered<?php endif; ?>">
+        <div class="list-group-item clearfix <?php if($societe->_id == $activeObject->_id): ?>active-bordered<?php endif; ?> <?php if($societe->isSuspendu()): ?>transparence-xs<?php endif; ?>">
             <?php include_partial('societe/bloc', array('societe' => $societe)); ?>
         </div>
     </div>
@@ -10,7 +10,7 @@
     <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-home"></span> Établissements</h3></div>
     <div class="list-group">
         <?php foreach($etablissements as $etablissement): ?>
-            <div class="list-group-item clearfix <?php if($etablissement->_id == $activeObject->_id): ?>active-bordered<?php endif; ?>">
+            <div class="list-group-item clearfix <?php if($etablissement->_id == $activeObject->_id): ?>active-bordered<?php endif; ?> <?php if($etablissement->isSuspendu()): ?>transparence-xs<?php endif; ?>">
                 <?php include_partial('etablissement/bloc', array('etablissement' => $etablissement)); ?>
             </div>
         <?php endforeach; ?>
@@ -49,7 +49,7 @@
   }
  ?>
 <div class="carte" data-point='<?php echo json_encode($points) ?>'  style="height: 180px; border-radius: 4px; margin-bottom: 10px;"></div>
-<?php if (isset($needUpdateLatLon) && $needUpdateLatLon): ?>
+<?php if (isset($etablissement) && isset($needUpdateLatLon) && $needUpdateLatLon): ?>
     <div class="text-center panel-footer" style="margin-top: -10px; margin-bottom: 10px;">
         <a href="<?php echo url_for('etablissement_update_coordonnees_latlon', $etablissement) ?>"><i class="glyphicon glyphicon-refresh"></i> Mettre à jour les coordonnées</a>
     </div>
@@ -58,8 +58,8 @@
     <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-user"></span> Interlocuteurs</h3></div>
     <?php if(count($interlocuteurs)): ?>
     <div class="list-group">
-        <?php foreach ($interlocuteurs as $interlocuteurId => $interlorcuteur) : ?>
-            <div class="list-group-item clearfix <?php if($interlorcuteur->_id == $activeObject->_id): ?>active-bordered<?php endif; ?>">
+        <?php foreach ($interlocuteurs as $interlorcuteur) : ?>
+            <div class="list-group-item clearfix <?php if($interlorcuteur->_id == $activeObject->_id): ?>active-bordered<?php endif; ?> <?php if($interlorcuteur->isSuspendu()): ?>transparence-xs<?php endif; ?>">
                 <?php include_partial('compte/bloc', array('compte' => $interlorcuteur)); ?>
             </div>
         <?php endforeach; ?>

@@ -22,8 +22,10 @@ class importOperateurIAAOCCsvTask extends sfBaseTask
   const CSV_TYPE_DECLARATION = 18;
   const CSV_PPM = 20;
   const CSV_CODE_INTERNE = 21;
-  const CSV_STATUT = 22;
-  const CSV_ACHETEUR = 23;
+  const CSV_NEGOCIANT = 21;
+  const CSV_CAVE_COOPERATIVE = 22;
+  const CSV_CAVE_PARTICULIERE = 23;
+  const CSV_STATUT = 24;
 
   protected $date;
   protected $convert_statut;
@@ -51,6 +53,8 @@ class importOperateurIAAOCCsvTask extends sfBaseTask
     {
         $this->addArguments(array(
             new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('csv_commentaire', sfCommandArgument::OPTIONAL, "Fichier csv contenant les commentaires"),
+            new sfCommandArgument('csv_categorie', sfCommandArgument::OPTIONAL, "Fichier csv contenant les catégories/familles"),
         ));
 
         $this->addOptions(array(
@@ -72,15 +76,35 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
+        $commentaires = [];
+        if(isset($arguments['csv_commentaire'])) {
+            foreach(file($arguments['csv_commentaire']) as $line) {
+                $data = str_getcsv($line, ";");
+                if(!isset($commentaires[trim($data[0])])) {
+                    $commentaires[trim($data[0])] = null;
+                }
+                $commentaires[trim($data[0])] .= $data[1]." (par ".$data[2]." le $data[3])\n";
+            }
+        }
+
+        $categories = [];
+        if(isset($arguments['csv_categorie'])) {
+            foreach(file($arguments['csv_categorie']) as $line) {
+                $data = str_getcsv($line, ";");
+                $categories[trim($data[1])] = $data[0];
+            }
+        }
+
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ";");
-
-            $newSociete = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, preg_replace("/^ENT/", "", $data[self::CSV_IDENTIFIANT]));
-
-            $societe = SocieteClient::getInstance()->find($newSociete->_id);
-            if($societe && isset($data[self::CSV_ACHETEUR]) && $data[self::CSV_ACHETEUR]) {
-                $this->importLiaison(EtablissementClient::getInstance()->find("ETABLISSEMENT-".$societe->identifiant."01"), $data[self::CSV_ACHETEUR]);
+            $identifiant = sprintf("%06d", str_replace("ENT", "", $data[self::CSV_IDENTIFIANT]));
+            if(!$identifiant) {
+                echo "pas de numéro interne ".$line;
+                continue;
             }
+
+            $newSociete = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, $identifiant);
+            $societe = SocieteClient::getInstance()->find($newSociete->_id);
 
             if($societe) {
                 continue;
@@ -131,7 +155,28 @@ EOF;
                 continue;
             }
 
-            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+            $categorie = @$categories[trim($data[self::CSV_CODE_INTERNE])];
+
+            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
+            if(count($categories)) {
+                if(strpos($categorie, "Cave Coopérative Viticole") !== false) {
+                    $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+                } elseif(strpos($categorie, "Négociant") !== false) {
+                    $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+                } elseif(strpos($categorie, "Cave Particulière") !== false) {
+                    $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+                }
+            } else {
+                if($data[self::CSV_NEGOCIANT] == "oui") {
+                    $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+                }
+                if($data[self::CSV_CAVE_COOPERATIVE] == "oui") {
+                    $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+                }
+                if($data[self::CSV_CAVE_PARTICULIERE] == "oui") {
+                    $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+                }
+            }
 
             $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
             if(isset($data[self::CSV_STATUT]) && $data[self::CSV_STATUT] == "SUSPENDU") {
@@ -163,27 +208,14 @@ EOF;
                 $ppm = trim($data[self::CSV_PPM]);
             }
             $etablissement->cvi = $cvi;
-            $etablissement->ppm = $ppm;
-            $etablissement->num_interne = trim($data[self::CSV_CODE_INTERNE]);
+            $etablissement->ppm = strtoupper($ppm);
             $societe->pushAdresseTo($etablissement);
             $societe->pushContactTo($etablissement);
-            $etablissement->save();
-
-            if(isset($data[self::CSV_ACHETEUR]) && $data[self::CSV_ACHETEUR]) {
-                $this->importLiaison($etablissement, $data[self::CSV_ACHETEUR]);
+            if(isset($commentaires[trim($data[self::CSV_CODE_INTERNE])])) {
+                $etablissement->commentaire = $commentaires[trim($data[self::CSV_CODE_INTERNE])];
             }
+            $etablissement->save();
         }
-    }
-
-    protected function importLiaison($etablissement, $acheteur) {
-        $etablissementAcheteur = $this->identifyEtablissement($acheteur);
-        if(!$etablissementAcheteur) {
-            echo "Établissement cooperative non identifié :".$acheteur."\n";
-            return;
-        }
-
-        $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $etablissementAcheteur->_id);
-        $etablissement->save();
     }
 
     protected function identifyEtablissement($raisonSociale, $cvi = null, $codePostal = null, $hydrate = acCouchdbClient::HYDRATE_JSON) {

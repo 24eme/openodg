@@ -138,6 +138,16 @@ parcellaireaffectationcoop_apporteurs:
   requirements:
     sf_method: [get, post]
 
+parcellaireaffectationcoop_ajout_apporteurs:
+  url: /parcellaire-affectation-coop/apporteurs/:id/ajout
+  param: { module: parcellaireAffectationCoop, action: ajoutApporteurs }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 parcellaireaffectationcoop_liste:
   url: /parcellaire-affectation-coop/liste/:id
   param: { module: parcellaireAffectationCoop, action: liste }
@@ -147,16 +157,6 @@ parcellaireaffectationcoop_liste:
     type:     object
   requirements:
     sf_method: [get]
-
-parcellaireaffectationcoop_saisie:
-  url: /parcellaire-affectation-coop/saisie/:id/:apporteur
-  param: { module: parcellaireAffectationCoop, action: saisie }
-  class: ParcellaireAffectationCoopRoute
-  options:
-    model:    ParcellaireAffectationCoop
-    type:     object
-  requirements:
-    sf_method: [get, post]
 
 parcellaireaffectationcoop_switch:
   url: /parcellaire-affectation-coop/switch/:id/:apporteur/:sens
@@ -168,9 +168,19 @@ parcellaireaffectationcoop_switch:
   requirements:
     sf_method: [get]
 
-parcellaireaffectationcoop_visualisation:
-  url: /parcellaire-affectation-coop/visualisation/:id/:id_document
-  param: { module: parcellaireAffectationCoop, action: visualisation }
+parcellaireaffectationcoop_parcellairemanquant_reconduction:
+  url: /parcellaire-affectation-coop/:id/manquant/:apporteur/reconduction
+  param: { module: parcellaireAffectationCoop, action: reconductionManquant }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    ParcellaireAffectationCoop
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireaffectationcoop_parcellaireirrigable_reconduction:
+  url: /parcellaire-affectation-coop/:id/irrigable/:apporteur/reconduction
+  param: { module: parcellaireAffectationCoop, action: reconductionIrrigable }
   class: ParcellaireAffectationCoopRoute
   options:
     model:    ParcellaireAffectationCoop
@@ -188,6 +198,15 @@ parcellaireaffectationcoop_recap:
   requirements:
     sf_method: [get]
 
+parcellaireaffectationcoop_exportapporteurcsv:
+  url: /parcellaire-affectation-coop/exportapporteurcsv/:id
+  param: { module: parcellaireAffectationCoop, action: exportapporteurcsv }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    ParcellaireAffectationCoop
+    type:     object
+  requirements:
+    sf_method: [get]
 
 parcellaireaffectationcoop_exportcsv:
   url: /parcellaire-affectation-coop/exportcsv/:id

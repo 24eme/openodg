@@ -2,18 +2,18 @@
 
 class TirageClient extends acCouchdbClient {
 
-    const TYPE_MODEL = "Tirage"; 
+    const TYPE_MODEL = "Tirage";
     const TYPE_COUCHDB = "TIRAGE";
-    
+
     const MILLESIME_ASSEMBLE = "ASSEMBLE";
     const COULEUR_ROSE = 'ROSE';
     const COULEUR_BLANC = 'BLANC';
-    
+
     public static $couleurs = array(self::COULEUR_BLANC => 'Blanc', self::COULEUR_ROSE => 'Rosé');
 
     public static function getInstance()
     {
-        
+
         return acCouchdbManager::getClient("Tirage");
     }
 
@@ -69,24 +69,4 @@ class TirageClient extends acCouchdbClient {
                     ->execute($hydrate);
     }
 
-    public function getDateOuvertureDebut() {
-        $dates = sfConfig::get('app_dates_ouverture_tirage');
-
-        return $dates['debut'];
-    }
-
-    public function getDateOuvertureFin() {
-        $dates = sfConfig::get('app_dates_ouverture_tirage');
-
-        return $dates['fin'];
-    }
-
-    public function isOpen($date = null) {
-        if(is_null($date)) {
-
-            $date = date('Y-m-d');
-        }
-
-        return $date >= $this->getDateOuvertureDebut() && $date <= $this->getDateOuvertureFin(); 
-    }
 }

@@ -76,7 +76,11 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                 <th class="col-xs-2 text-center">Commune</th>
                                 <th class="col-xs-1 text-center">Section / Numéro</th>
                                 <?php if(!is_object($appellationNode) || $appellationNode->getConfig()->hasLieuEditable()):  ?>
-                                <th class="col-xs-2 text-center">Lieu-dit</th>
+                                <th class="col-xs-2 text-center">Lieu-dit revendiqué
+                                    <?php if(is_object($appellationNode) && strpos($appellationNode->getHash(), 'CREMANT') === null): ?>
+                                    <p class="small text-muted" style="margin:0;">Lieu-dit cadastral</p>
+                                    <?php endif; ?>
+                                </th>
                                 <?php endif; ?>
 								<th class="col-xs-2 text-center">Cépage</th>
                                 <th class="col-xs-1 text-center">Superficie</th>
@@ -106,11 +110,16 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                     <td><?php echo $parcelle->getCommune(); ?></td>
                                     <td class="text-right"><?php echo $parcelle->getSection(); ?> <?php echo $parcelle->getNumeroParcelle(); ?></td>
                                     <?php if(!is_object($appellationNode) || $appellationNode->getConfig()->hasLieuEditable()):  ?>
-                                    <td><?php echo $parcelle->getLieuLibelle(); ?></td>
+                                        <td>
+                                            <?php echo $parcelle->getLieuLibelle() ? $parcelle->getLieuLibelle() : '<p style="margin:0;"> - </p>'; ?>
+                                            <?php if($parcelle->getLieuDitCadastral() && strpos($parcelle->getProduitHash(), 'LIEUDIT')) : ?>
+                                                <p class="small text-muted" style="margin:0;"><?php echo $parcelle->getLieuDitCadastral() ?></p>
+                                            <?php endif; ?>
+                                        </td>
                                     <?php endif; ?>
                                     <td><?php echo $parcelle->getCepageLibelle(); ?></td>
                                     <td class="edit text-right" style="position: relative;">
-                                        <?php echoFloatFr($parcelle->getSuperficie(), 2) ?> <small class="text-muted">ares</small>
+                                        <?php echoFloatFr($parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE), 2) ?> <small class="text-muted">ares</small>
                                         <span style="position: absolute; right: -20px;">
                                         <?php if (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireAffectationClient::APPELLATION_ALSACEBLANC)): ?>
                                            <a class="btn btn-link btn-xs ajax" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" ><span class="glyphicon glyphicon-pencil"></span></a>
@@ -132,9 +141,11 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
 			<?php else: ?>
                 <p class="text-muted">Vous n'avez aucune <?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>parcelle<?php endif; ?> à affecter dans cette appellation.</p><br/>
             <?php endif; ?>
+            <?php if($sf_user->isAdmin()): ?>
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
             </div>
+            <?php endif; ?>
         </div>
     </div>
     <div class="row row-margin row-button">

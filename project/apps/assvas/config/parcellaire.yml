@@ -1,7 +1,7 @@
 all:
   configuration:
     parcellaire:
-      limit_produits_configuration: false
+      show_filter_produits_configuration: false
       aires:
         ANJOU:
             denomination_id: "00173"

@@ -5,8 +5,8 @@ Madame, Monsieur,
 Au vu des documents fournis, et des résultats des contrôles analytique et organoleptique, nous vous prions de bien vouloir trouver ci-dessous le résultat de vos lots prélevés pour la séance de dégustation du <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")) ?>.
 
 <?php if(count($lotsConformes)): ?>
-<?php if(count($lotsNonConformes) > 0 && count($lotsConformes) == 1): ?>1 de vos lots est CONFORME et APTE à la commercialisation<?php elseif(count($lotsNonConformes)): ?><?= count($lotsConformes) ?> de vos lots sont CONFORMES et APTES à la commercialisation<?php elseif(count($lotsConformes) == 1): ?>Votre lot est CONFORME et APTE à la commercialisation<?php else: ?>Vos <?= count($lotsConformes) ?> lots sont CONFORMES et APTES à la commercialisation<?php endif; ?>, vous pouvez télécharger le courrier en cliquant sur ce lien : <a href="<?php echo url_for('degustation_get_courrier_auth_conforme', [
-    'id' => $degustation->_id,
+<?php if(count($lotsNonConformes) > 0 && count($lotsConformes) == 1): ?>1 de vos lots est <?php echo $lotsConformes[0]->isLibelleAcceptable() ? 'ACCEPTABLE' : 'CONFORME'; ?> et APTE à la commercialisation<?php elseif(count($lotsNonConformes)): ?><?= count($lotsConformes) ?> de vos lots sont <?php echo $lotsConformes[0]->isLibelleAcceptable() ? 'ACCEPTABLES' : 'CONFORMES'; ?> et APTES à la commercialisation<?php elseif(count($lotsConformes) == 1): ?>Votre lot est <?php echo $lotsConformes[0]->isLibelleAcceptable() ? 'ACCEPTABLE' : 'CONFORME'; ?> et APTE à la commercialisation<?php else: ?>Vos <?= count($lotsConformes) ?> lots sont <?php echo $lotsConformes[0]->isLibelleAcceptable() ? 'ACCEPTABLES' : 'CONFORMES'; ?> et APTES à la commercialisation<?php endif; ?>, vous pouvez télécharger le courrier en cliquant sur ce lien : <a href="<?php echo url_for('degustation_get_courrier_auth_conforme_raccourci', [
+    'id' => str_replace("DEGUSTATION-", "", $degustation->_id),
     'auth' => UrlSecurity::generateAuthKey($degustation->_id, $identifiant),
     'identifiant' => $identifiant
 ], true) ?>"><?php echo url_for('degustation_get_courrier_auth_conforme_raccourci', [
@@ -17,10 +17,11 @@ Au vu des documents fournis, et des résultats des contrôles analytique et orga
 <?php endif; ?>
 
 <?php if(count($lotsNonConformes)): ?>
-<?= count($lotsNonConformes) ?> <?php if(count($lotsNonConformes) == 1): ?>lot est NON CONFORME et BLOQUÉ<?php else: ?>lots sont NON CONFORMES et BLOQUÉS<?php endif; ?> à la commercialisation, vous pouvez télécharger <?php if(count($lotsNonConformes) > 1): ?>les courriers de chacun de ces lots<?php else: ?>le courrier de ce lot<?php endif ?> :
+<?= count($lotsNonConformes) ?> <?php if(count($lotsNonConformes) == 1): ?>lot est NON <?php echo $lotsNonConformes[0]->isLibelleAcceptable() ? 'ACCEPTABLE EN L\'ÉTAT' : 'CONFORME'; ?> et BLOQUÉ<?php else: ?>lots sont NON <?php echo $lotsNonConformes[0]->isLibelleAcceptable() ? 'ACCEPTABLES' : 'CONFORMES'; ?> et BLOQUÉS<?php endif; ?> à la commercialisation, vous pouvez télécharger <?php if(count($lotsNonConformes) > 1): ?>les courriers de chacun de ces lots<?php else: ?>le courrier de ce lot<?php endif ?> :
 
 <?php foreach($lotsNonConformes as $lotNonConforme): ?>
-- <?= trim(preg_replace("/[ ]+/", " ", (str_replace("&nbsp;", " ", strip_tags(showProduitCepagesLot($lotNonConforme)))))) . ", NON CONFORMITÉ de type " . $lotNonConforme->getShortLibelleConformite() ?> : <a href="<?php echo url_for('degustation_get_courrier_auth_nonconforme_raccourci', array(
+- <?= trim(preg_replace("/[ ]+/", " ", (str_replace("&nbsp;", " ", strip_tags(showProduitCepagesLot($lotNonConforme)))))) . ", NON ". ($lotNonConforme->isLibelleAcceptable() ? 'ACCEPTABILITÉ' : 'CONFORMITÉ') ." de type " . $lotNonConforme->getShortLibelleConformite() ?> :
+<a href="<?php echo url_for('degustation_get_courrier_auth_nonconforme_raccourci', array(
     'id' => str_replace("DEGUSTATION-", "", $degustation->_id),
     'auth' => UrlSecurity::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
     'lot_dossier' => $lotNonConforme->numero_dossier,

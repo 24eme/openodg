@@ -74,6 +74,16 @@ $isSameContactThanSociete = !$isCompteSociete && $compteForm->getObject()->isSam
 
                 <?php echo $compteForm['email']->renderError(); ?>
             </div>
+            <?php if (isset($compteForm['email_teledeclaration'])): ?>
+              <div class="form-group <?php if($compteForm['email_teledeclaration']->hasError()): ?> has-error<?php endif; ?>">
+
+                  <?php echo $compteForm['email_teledeclaration']->renderLabel(null, array('class' => 'col-xs-4 control-label')); ?>
+
+                  <div class="col-xs-8"><?php echo $compteForm['email_teledeclaration']->render(); ?></div>
+
+                  <?php echo $compteForm['email_teledeclaration']->renderError(); ?>
+              </div>
+            <?php endif; ?>
             <div class="form-group">
 
                 <?php echo $compteForm['telephone_perso']->renderLabel(null, array('class' => 'col-xs-4 control-label')); ?>
@@ -124,7 +134,7 @@ $isSameContactThanSociete = !$isCompteSociete && $compteForm->getObject()->isSam
                     <div class="col-xs-12"><?php echo $compteForm['droits']->renderError(); ?></div>
                     <?php echo $compteForm['droits']->renderLabel(null, array('class' => 'col-xs-3 control-label')); ?>
                     <div class="col-xs-9"><?php echo $compteForm['droits']->render(); ?></div>
-                    <div class="col-xs-12"><?php echo $compteForm['alternative_logins']->renderError(); ?></div>
+                    <div class="col-xs-12" style="margin-top: 20px;"><?php echo $compteForm['alternative_logins']->renderError(); ?></div>
                     <?php echo $compteForm['alternative_logins']->renderLabel(null, array('class' => 'col-xs-3 control-label select2')); ?>
                     <div class="col-xs-9"><?php echo $compteForm['alternative_logins']->render(); ?></div>
                 </div>

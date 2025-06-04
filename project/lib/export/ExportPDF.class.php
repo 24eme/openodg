@@ -17,6 +17,9 @@ abstract class ExportPDF {
             $config->header_string = $this->getHeaderSubtitle();
             $config->title = $this->getTitle();
             $config->footer_text = $this->getFooterText();
+            if (method_exists($this, 'getLogo')) {
+                $config->header_logo = $this->getLogo();
+            }
             $this->printable_document = new PageablePDF($filename, $file_dir, $config);
         }
     }
@@ -47,7 +50,7 @@ abstract class ExportPDF {
     }
 
     public function removeCache() {
-        
+
         return $this->printable_document->removeCache();
     }
 
@@ -64,7 +67,7 @@ abstract class ExportPDF {
     }
 
     public function output() {
-        
+
         return $this->printable_document->output();
     }
 

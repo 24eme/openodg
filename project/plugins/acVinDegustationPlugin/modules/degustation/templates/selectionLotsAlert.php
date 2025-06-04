@@ -7,4 +7,4 @@
 
 <p class="alert alert-danger">Des lots ont été prélevés pour cette dégustation.</p>
 
-<p>Pour ajouter un lot dans cette dégustation, vous devenez donc passer par <a href="<?php echo url_for('degustation_prelevables'); ?>">l'historique du lot que vous souhaitez ajouter</a> (ou <a href="<?php echo url_for('degustation_preleve', array('id' => $degustation->_id)); ?>">retirer les prélèvements de cette dégustation</a>)</p>
+<p>Pour ajouter un lot dans cette dégustation, vous devenez donc passer par <a href="<?php echo url_for('degustation_attente'); ?>">l'historique du lot que vous souhaitez ajouter</a> (ou <a href="<?php echo url_for('degustation_preleve', array('id' => $degustation->_id)); ?>">retirer les prélèvements de cette dégustation</a>)</p>

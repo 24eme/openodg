@@ -9,7 +9,7 @@ abstract class DeclarationLotsValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'lot_incomplet', "Cette information est incomplète");
         $this->addControle(self::TYPE_WARNING, 'lot_a_completer', "Cette information pourrait être renseignée");
         $this->addControle(self::TYPE_FATAL, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
-        $this->addControle(self::TYPE_ERROR, 'declaration_habilitation', 'Vous avez déclaré du volume sans habilitation');
+        $this->addControle(self::TYPE_ERROR, 'declaration_habilitation', "Vous n'êtes pas habilité pour cette déclaration");
         /*
          * Engagement
          */
@@ -107,6 +107,10 @@ abstract class DeclarationLotsValidation extends DocumentValidation
             case DRevClient::TYPE_MODEL: $activite = HabilitationClient::ACTIVITE_VINIFICATEUR; break;
         }
 
+        $activites = HabilitationClient::getInstance()->getActivites();
+        if ($activite == HabilitationClient::ACTIVITE_VRAC && !in_array(HabilitationClient::ACTIVITE_VRAC, array_keys($activites))) {
+            return HabilitationClient::ACTIVITE_VINIFICATEUR;
+        }
         return $activite;
     }
 }

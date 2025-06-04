@@ -38,6 +38,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
         public function getDateFormat($format = 'Y-m-d') {
+            if ($this->validation) {
+                return explode('T', $this->validation)[0];
+            }
             if (!$this->date) {
                 return date($format);
             }
@@ -255,6 +258,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return null;
     }
 
+    public function getOrigineProduitLibelleAndCepages() {
+        $l = $this->getOrigineProduitLibelle();
+        if (count($this->origine_cepages)) {
+            $l .= ' (';
+            $l .= implode(', ', array_keys($this->origine_cepages->toArray()));
+            $l .= ')';
+        }
+        return $l;
+    }
+
     public function getCampagne() {
         if(is_null($this->_get('campagne'))) {
             $firstOrigineLot = $this->getFirstOrigineLot();
@@ -275,6 +288,19 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return LotsClient::getInstance()->findByUniqueId($this->identifiant, $this->changement_origine_lot_unique_id, "01");
     }
 
+    public function isFromProduction()
+    {
+        if (strpos($this->changement_origine_id_document, 'DR-') === 0) {
+            return true;
+        }
+
+        if (strpos($this->changement_origine_id_document, 'SV1') === 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function getLotOrigine() {
         if(!$this->changement_origine_id_document) {
             return false;
@@ -287,7 +313,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return null;
         }
 
-        if (!$doc->getLot($this->changement_origine_lot_unique_id)) {
+        if (method_exists($doc, 'getLot') === false || !$doc->getLot($this->changement_origine_lot_unique_id)) {
            $lot = ChgtDenomLot::freeInstance($this);
            $lot->id_document = $this->changement_origine_id_document;
            $lot->unique_id = $this->changement_origine_lot_unique_id;
@@ -350,7 +376,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $this->piece_document->generatePieces();
     	}
 
-    public function saveDocumentsDependants() {
+    public function saveDocumentsDependants()
+    {
+        if ($this->isFromProduction()) {
+            return false;
+        }
+
         foreach($this->docToSave as $docId) {
             DeclarationClient::getInstance()->findCache($docId)->save(false);
         }
@@ -385,8 +416,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $this->fillDocToSaveFromLots();
         }
         $saved = parent::save($saveDependants);
-
-        $this->saveDocumentsDependants();
+        if ($saveDependants) {
+            $this->saveDocumentsDependants();
+        }
 
         return $saved;
     }
@@ -411,7 +443,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function isTotal()
     {
-        if ($this->getLotOrigine() == null) {
+        if (!$this->getLotOrigine()) {
             return $this->changement_volume == $this->origine_volume;
         }
 
@@ -632,12 +664,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         if($this->isTotal()) {
-            if ($this->isDeclassement()) {
-                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassement total"));
-            }else{
-                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changement total : ".$this->lots[0]->getLibelle()));
+            if (!$this->isSansOrigine()) {
+                if ($this->isDeclassement()) {
+                    $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassement total"));
+                }else{
+                    $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changement total : ".$this->lots[0]->getLibelle()));
+                }
             }
-
         }else{
             if ($this->isDeclassement()) {
                 $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partie non déclassée de ".$this->lots[0]->volume." hl"));
@@ -650,6 +683,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         foreach ($this->lots as $i => $lot) {
+            if (!$lot->volume) {
+                continue;
+            }
             $lot->updateDocumentDependances();
             if ($this->isDeclassement() && ($this->isTotal() || $i == 1)) {
                 continue;
@@ -728,8 +764,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     /**** MOUVEMENTS ****/
 
-    public function getTemplateFacture() {
-        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagneByDate());
+    public function getTemplateFacture($region = null) {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagneByDate(), $region);
     }
 
     public function getMouvementsFactures() {
@@ -737,8 +773,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $this->_get('mouvements');
     }
 
-    public function getMouvementsFacturesCalcule() {
-      $templateFacture = $this->getTemplateFacture();
+    public function getMouvementsFacturesCalcule($region = null) {
+      $templateFacture = $this->getTemplateFacture($region);
       if(!$templateFacture) {
           return array();
       }
@@ -764,6 +800,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
               $rienAFacturer = false;
           }
 
+          $mouvement->campagne = $this->getCampagneByDate();
           $mouvements[$mouvement->getMD5Key()] = $mouvement;
       }
 
@@ -810,7 +847,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     /**** FIN DES MOUVEMENTS ****/
 
-    public function getFirstChgtDenomFacturable($produitFilter = null)
+    public function getFirstChgtDenomFacturable(TemplateFactureCotisationCallbackParameters $produitFilter)
     {
         if ($this->isDeclassement()) {
           return;
@@ -819,7 +856,17 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $this->getFirstChgtDenomOrDeclassementFacturable($produitFilter);
     }
 
-    public function getFirstChgtDenomOrDeclassementFacturable($produitFilter = null)
+    public function getNbLots(TemplateFactureCotisationCallbackParameters $produitFilter) {
+        if ($this->validation_odg) {
+            return 0;
+        }
+        if (!$this->matchFilter($produitFilter)) {
+            return 0;
+        }
+        return 1;
+    }
+
+    public function getFirstChgtDenomOrDeclassementFacturable(TemplateFactureCotisationCallbackParameters $produitFilter)
     {
 
       $chgtdenoms = ChgtDenomClient::getInstance()->getHistoryCampagne(
@@ -839,36 +886,42 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return $first !== false && $first == $this->_id;
     }
 
-    public function getSecondChgtDenomOrDeclassementFacturable($produitFilter = null)
+    public function getSecondChgtDenomOrDeclassementFacturable(TemplateFactureCotisationCallbackParameters $produitFilter)
     {
         return !$this->getFirstChgtDenomOrDeclassementFacturable($produitFilter);
     }
 
-    public function matchFilter($produitFilter = null, $chgtdenom = null)
+    public function matchFilter(TemplateFactureCotisationCallbackParameters $produitFilter = null, $chgtdenom = null)
     {
         if ($chgtdenom === null) {
             $chgtdenom = $this;
         }
 
-        $match = true;
-        $filters = ($produitFilter)? explode(" AND ", $produitFilter) : [];
+        if ($produitFilter === null) {
+            $produitFilter = [];
+        }
 
-        foreach ($filters as $filter) {
-            if (strpos($filter, 'appellations') !== false) {
+        $match = true;
+
+        foreach ($produitFilter->getParameters() as $type => $filter) {
+            if ($type === 'appellations') {
                 // filtre sur produit
                 $match = $match && $this->produitFilter($filter, $chgtdenom);
-            } elseif (strpos($filter, '/millesime/courant') !== false) {
+            } elseif ($type === 'millesime') {
                 // filtre sur millesime
                 $isMillesimeCourant = ($this->changement_millesime == substr($this->getCampagneByDate(),0, 4));
                 if(strpos($filter, 'NOT') !== false) {
                     $isMillesimeCourant = !$isMillesimeCourant;
                 }
                 $match = $match && $isMillesimeCourant;
-            } elseif (strpos($filter, 'origine') !== false) {
+            } elseif ($type === 'origine') {
                 $match = $match && $this->origineFilter($filter);
-            } else {
+            } elseif ($type === 'famille') {
                 // filtre sur famille
                 $match = $match && $this->isDeclarantFamille($filter);
+            } elseif ($type === 'campagne') {
+                // filtre campagnes suivantes
+                $match = $match && $this->sameCampagneFilter($filter);
             }
         }
 
@@ -890,7 +943,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return true;
     }
 
-    public function getVolumeFacturable($filter = null)
+    public function getVolumeFacturable(TemplateFactureCotisationCallbackParameters $filter)
     {
         if ($this->matchFilter($filter) === false) {
             return;
@@ -949,6 +1002,23 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $found;
     }
 
+    private function sameCampagneFilter($filter)
+    {
+        $not = strpos($filter, 'NOT') === 0;
+
+        $c = substr($this->changement_origine_lot_unique_id, 0, 4) + 1;
+        $dateLimite = new DateTimeImmutable($c."-07-31");
+        $dateValidation = new DateTimeImmutable($this->validation);
+
+        $result = $dateLimite > $dateValidation;
+
+        if ($not) {
+            $result = ! $result;
+        }
+
+        return $result;
+    }
+
     public function getBigDocumentSize() {
 
         return -1;
@@ -959,8 +1029,40 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return false;
     }
 
-    public function getVolumeSeuil()
+    public function getVolumeSeuil($produits)
     {
-        return VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->changement_millesime, str_replace('/declaration/', '', $this->changement_produit_hash));
+        foreach ($produits as $produit) {
+            if (VIP2C::isHashMatch($produit['hash_regex'], $this->changement_produit_hash)) {
+                return $produit['volume_max'];
+            }
+        }
+
+        return 0;
+    }
+
+    public function addDonneesForProduction(DouaneProduction $doc)
+    {
+        if ($this->isFromProduction() === false) {
+            return null;
+        }
+
+        $hash = str_replace('/declaration/', '', $this->origine_produit_hash);
+        if ($doc->getConfiguration()->declaration->exist($hash) === false) {
+            return null;
+        }
+
+        $doc->add('donnees');
+        $item = $doc->get('donnees')->add();
+
+        $item->produit = $hash;
+        $item->produit_libelle = $this->origine_produit_libelle;
+        $item->complement = $this->origine_specificite;
+        $item->categorie = "15";
+        $item->categorie_libelle = "Vol. de vin avec AO/IGP avec/sans cépage dans la limite du rdt autorisé";
+        $item->valeur = - $this->origine_volume;
+    }
+
+    public function isSansOrigine() {
+        return ! ($this->lots[0]->id_document_provenance);
     }
 }

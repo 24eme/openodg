@@ -14,12 +14,17 @@ class conditionnementActions extends sfActions {
         $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date, $isAdmin);
         try {
             $conditionnement->save();
+            return $this->redirect('conditionnement_edit', $conditionnement);
         }catch(couchException $e) {
             $this->getUser()->setFlash("warning", "Il existe déjà une déclaration de conditionnement aujourd'hui");
-            return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $campagne));
         }
+        try {
+            $conditionnement = ConditionnementClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $date, $isAdmin);
+            return $this->redirect('conditionnement_visualisation', $conditionnement);
+        }catch(couchException $e) {
+        }
+        return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $campagne));
 
-        return $this->redirect('conditionnement_edit', $conditionnement);
     }
 
     public function executeEdit(sfWebRequest $request) {
@@ -345,7 +350,7 @@ class conditionnementActions extends sfActions {
     }
 
     public function executePDF(sfWebRequest $request) {
-        $conditionnement = $this->getRoute()->getConditionnement();
+        $conditionnement = $this->getRoute()->getConditionnement(['allow_habilitation' => true, 'allow_stalker' => true]);
         $this->secure(ConditionnementSecurity::PDF, $conditionnement);
         $this->document = new ExportConditionnementPdf($conditionnement, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));

@@ -341,7 +341,7 @@ $t->is($habilitationLast->historique[count($habilitationLast->historique) - 1]->
 
 $t->comment("Split des demandes");
 
-$date = (new DateTime("-1 day"))->format('Y-m-d');
+$date = date('Y-m-d');
 
 $demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, "HABILITATION", $produitConfig2->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR, HabilitationClient::ACTIVITE_PRODUCTEUR, HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR), null, "DEPOT", $date, null, "Testeur", true);
 

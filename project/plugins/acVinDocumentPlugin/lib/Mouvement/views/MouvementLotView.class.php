@@ -9,6 +9,7 @@ class MouvementLotView extends acCouchdbView
     const KEY_DOCUMENT_ORDRE = 4;
     const KEY_DOC_ID = 5;
     const KEY_DETAIL = 6;
+    const KEY_REGION = 7;
 
     public static function getInstance() {
 
@@ -57,46 +58,30 @@ class MouvementLotView extends acCouchdbView
         return $mvt;
     }
 
-    public function getAffecteSourceAvantMoi($lot)
-    {
-        if((get_class($lot) == 'stdClass' && isset($lot->leurre) && $lot->leurre) || (get_class($lot) != 'stdClass' && $lot->isLeurre())) {
-            return array();
-        }
-        $mouvements = $this->client
-                           ->startkey([
-                               Lot::STATUT_AFFECTE_SRC,
-                               $lot->declarant_identifiant,
-                               $lot->campagne,
-                               $lot->unique_id,
-                           ])
-                           ->endkey([
-                               Lot::STATUT_AFFECTE_SRC,
-                               $lot->declarant_identifiant,
-                               $lot->campagne,
-                               $lot->unique_id,
-                               array()
-                           ])
-                           ->getView($this->design, $this->view);
-         $mvts_rows = array();
-         $document_id = null;
-         if (get_class($lot) != 'stdClass') {
-             $document_id = $lot->getDocument()->_id;
-         }elseif (isset($lot->document_id)) {
-             $document_id = $lot->document_id;
-         }
-         foreach($mouvements->rows as $r) {
-             if ($document_id && ($r->id == $document_id)) {
-                 break;
-             }
-             $mvts_rows[] = $r;
-         }
-         return $mvts_rows;
-     }
-
     public function getNombreAffecteSourceAvantMoi($lot)
     {
-        return count($this->getAffecteSourceAvantMoi($lot));
-    }
+        $history = LotsClient::getInstance()->getHistory($lot->declarant_identifiant, $lot->unique_id);
+        $nb = 0;
+        foreach($history as $h) {
+            if(!in_array($h->value->statut, [Lot::STATUT_AFFECTE_SRC, Lot::STATUT_AFFECTABLE, Lot::STATUT_AFFECTABLE_PRELEVE])) {
+                continue;
+            }
+            if ($h->value->document_type == 'ChgtDenom') {
+                continue;
+            }
+            if ($h->value->document_ordre >= $lot->document_ordre) {
+                continue;
+            }
+            if ($h->value->statut == Lot::STATUT_CONFORME) {
+                $nb = 0;
+                continue;
+            }
+            $nb++;
+         }
+
+         return $nb;
+     }
+
 
     public function find($identifiant, $query, $first = true) {
         $mvts = $this->getMouvements($identifiant, $query);
@@ -112,21 +97,30 @@ class MouvementLotView extends acCouchdbView
     }
 
     public function getMouvements($identifiant, $query) {
-        $statut = null;
+        $statuts = null;
         if(isset($query['statut'])) {
-            $statut = $query['statut'];
+            $statuts = $query['statut'];
         }
         unset($query['statut']);
-        $mouvements = MouvementLotView::getInstance()->getByIdentifiant($identifiant, $statut);
+        if(!is_array($statuts)) {
+            $statuts = [$statuts];
+        }
+
+        $mouvements = [];
+
+        foreach($statuts as $statut) {
+            $mouvements = array_merge($mouvements, MouvementLotView::getInstance()->getByIdentifiant($identifiant, $statut)->rows);
+        }
 
         if (isset($query["numero_logement_operateur"])) {
-            $query["numero_logement_operateur"] = KeyInflector::slugify(str_replace(" ", "", $query["numero_logement_operateur"]));
+            $query["numero_logement_operateur_slug"] = KeyInflector::slugify(str_replace(" ", "", preg_replace("/[\-,+]*/", "", $query["numero_logement_operateur"])));
+            unset($query["numero_logement_operateur"]);
         }
 
         $res_mouvements = array();
-        foreach ($mouvements->rows as $mouvement) {
+        foreach ($mouvements as $mouvement) {
 
-            $mouvement->value->numero_logement_operateur = KeyInflector::slugify(str_replace(" ", "",$mouvement->value->numero_logement_operateur));
+            $mouvement->value->numero_logement_operateur_slug = KeyInflector::slugify(str_replace(" ", "",preg_replace("/[\-,+]*/", "", $mouvement->value->numero_logement_operateur)));
 
             $match = true;
             foreach($query as $key => $value) {
@@ -139,6 +133,8 @@ class MouvementLotView extends acCouchdbView
             if(!$match) {
                 continue;
             }
+
+            unset($mouvement->value->numero_logement_operateur_slug);
 
             $res_mouvements[] = $mouvement->value;
         }

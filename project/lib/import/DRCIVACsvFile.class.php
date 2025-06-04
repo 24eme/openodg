@@ -24,10 +24,12 @@ class DRCIVACsvFile extends CIVACsvFile
 
     public static function getHashProduitByLine($line) {
 
-        $hashProduit = $line[self::CSV_HASH];
-        $hashProduit = preg_replace("/(mentionVT|mentionSGN)/", "mention", $hashProduit);
-        $hashProduit = preg_replace('|/recolte.|', '/declaration/', $hashProduit);
-        $hashProduit = preg_replace("|/detail/.+$|", "", $hashProduit);
+        $hashProduit = isset($line[self::CSV_HASH]) ? $line[self::CSV_HASH] : '';
+        if ($hashProduit) {
+            $hashProduit = preg_replace("/(mentionVT|mentionSGN)/", "mention", $hashProduit);
+            $hashProduit = preg_replace('|/recolte.|', '/declaration/', $hashProduit);
+            $hashProduit = preg_replace("|/detail/.+$|", "", $hashProduit);
+        }
         return $hashProduit;
     }
 

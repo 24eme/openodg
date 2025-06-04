@@ -26,8 +26,8 @@ class ExportParcellaireManquantPDF extends ExportPDF {
        }
 
        $unite = 0;
-       $uniteParPage = 23;
-       $uniteTableau = 3;
+       $uniteParPage = 22;
+       $uniteTableau = 4;
        $uniteLigne = 1;
        $uniteTableauCommentaire = 2;
        $uniteTableauLigne = 0.75;
@@ -84,8 +84,17 @@ class ExportParcellaireManquantPDF extends ExportPDF {
         }
     }
 
+    public function getLogo() {
+        foreach($this->parcellaireManquant->getRegions()  as $r) {
+            if(is_file($this->getConfig()->path_images.'logo_'.strtolower($r).'.jpg')) {
+                return 'logo_'.strtolower($r).'.jpg';
+            }
+        }
+        return 'logo_'.strtolower(Organisme::getCurrentOrganisme()).'.jpg';
+    }
+
     protected function getHeaderTitle() {
-        return sprintf("Déclaration de pieds manquants %s", $this->parcellaireManquant->campagne."-".(intval($this->parcellaireManquant->campagne) + 1));
+        return sprintf("Déclaration de pieds manquants %s", $this->parcellaireManquant->campagne);
     }
 
     protected function getHeaderSubtitle() {

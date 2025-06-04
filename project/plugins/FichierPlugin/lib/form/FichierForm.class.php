@@ -7,7 +7,7 @@ class FichierForm extends BaseForm
 	public function __construct($fichier, $defaults = array(), $options = array(), $CSRFSecret = null)
 	{
 		$this->fichier = $fichier;
-		if (!$this->fichier->isNew()) {
+		if ($this->fichier && !$this->fichier->isNew()) {
 			$defaults['libelle'] = $this->fichier->getLibelle();
 			$defaults['categorie'] = $this->fichier->getCategorie();
 			$defaults['date_depot'] = $this->fichier->getDateDepotFormat();
@@ -29,7 +29,7 @@ class FichierForm extends BaseForm
      		'date_depot' => new sfWidgetFormInput(array(), array("data-date-defaultDate" => date('Y-m-d'))),
      		'visibilite' => new sfWidgetFormInputCheckbox()
      	));
-     	$fileRequired = ($this->fichier->isNew())? true : false;
+     	$fileRequired = (!$this->fichier || $this->fichier->isNew())? true : false;
      	$this->setValidators(array(
      		'file' => new sfValidatorFile(array('required' => $fileRequired, 'path' => sfConfig::get('sf_cache_dir'))),
      		'libelle' => new sfValidatorString(array('required' => true)),
@@ -57,6 +57,11 @@ class FichierForm extends BaseForm
 
 		return array_merge(array("" => "Fichier"), FichierClient::getInstance()->getCategories());
 	}
+
+    public function getFichier() {
+
+        return $this->fichier;
+    }
 
     public function save() {
 
@@ -92,7 +97,7 @@ class FichierForm extends BaseForm
 	    	}
     		unlink($file->getSavedName());
     	}
-
+        $this->fichier->constructId();
     	$this->fichier->save();
     	return $this->fichier;
     }

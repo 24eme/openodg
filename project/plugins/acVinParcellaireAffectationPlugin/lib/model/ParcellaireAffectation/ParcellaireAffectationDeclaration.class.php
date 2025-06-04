@@ -6,10 +6,10 @@
 
 class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclaration {
 
-    public function getParcellesByCommune($onlyAffectee = false) {
+    public function getParcellesByCommune($onlyAffectee = true, $hashproduitFilter = null) {
         $parcelles = array();
 
-        foreach($this->getParcelles() as $hash => $parcelle) {
+        foreach($this->getParcelles($hashproduitFilter) as $hash => $parcelle) {
             if ($onlyAffectee && !$parcelle->affectee) {
                 continue;
             }
@@ -28,8 +28,10 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
 
         foreach($this as $keyProduit => $produit) {
           foreach ($produit->detail as $parcelle) {
-            $key = str_replace(" ", "-", $parcelle->getDgcLibelle());
-
+            if(!$parcelle->getDgc()) {
+                continue;
+            }
+            $key = $parcelle->getDgcLibelle();
             if ($onlyAffectee && !$parcelle->affectee) {
                 continue;
             }
@@ -37,21 +39,44 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
             if(!isset($parcelles[$key])) {
                 $parcelles[$key] = array();
             }
-            $parcelles[$key][$parcelle->commune.$parcelle->section.sprintf('%06d', $parcelle->numero_parcelle).$parcelle->getHash()] = $parcelle;
+            $parcelles[$key][$parcelle->getParcelleId()] = $parcelle;
+          }
+        }
+        ksort($parcelles);
+        foreach(array_keys($parcelles) as $k) {
+            ksort($parcelles[$k]);
+        }
+        return $parcelles;
+    }
+
+    public function getParcellesByProduit($onlyAffectee = false) {
+         $parcelles = array();
+         foreach($this as $keyProduit => $produit) {
+          foreach ($produit->detail as $parcelle) {
+            $key = $produit->libelle.' — '.$parcelle->commune;
+            if ($onlyAffectee && !$parcelle->affectee) {
+                 continue;
+             }
+            if(!isset($parcelles[$key])) {
+                $parcelles[$key] = array();
+            }
+            $parcelles[$key][$parcelle->getParcelleId()] = $parcelle;
           }
         }
         ksort($parcelles);
         return $parcelles;
     }
 
-    public function getParcelles() {
+    public function getParcelles($hashproduitFilter = null) {
         $parcelles = array();
-        foreach($this as $produit) {
+        foreach($this as $keyProduit => $produit) {
+            if ($hashproduitFilter && $keyProduit != $hashproduitFilter) {
+                continue;
+            }
             foreach ($produit->detail as $parcelle) {
-                $parcelles[$parcelle->getHash()] = $parcelle;
+                $parcelles[$parcelle->getParcelleId()] = $parcelle;
             }
         }
-
         return $parcelles;
     }
 
@@ -65,5 +90,15 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
 
             }
         }
+    }
+
+    public function getProduits()
+    {
+        $produits = [];
+        foreach($this as $hash => $produit) {
+            $produits[$hash] = $produit->libelle;
+        }
+        ksort($produits);
+        return $produits;
     }
 }

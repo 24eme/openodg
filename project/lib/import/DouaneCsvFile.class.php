@@ -39,7 +39,7 @@ class DouaneCsvFile
   const CSV_FAMILLE_LIGNE_CALCULEE = 34;
   const CSV_LABEL_CALCULEE = 35;
 
-  const CSV_ENTETES = '#Type;Campagne;Identifiant;CVI;Raison Sociale;Code Commune;Commune;Bailleur Nom;Bailleur PPM;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Complement;Code;Categorie;Valeur;CVI Tiers;Valeur Motif / Raison Sociale Tiers;Code Commune Tiers;Commune Tiers;Id Colonne;Organisme;Hash produit;Last DRev id if exist;Last DRev id with produit filter if exist;Doc Id;Famille calculee;Millesime;Famille ligne calculee;label calculee'."\n";
+  const CSV_ENTETES = '#Type;Campagne;Identifiant;CVI;Raison Sociale;Code Commune;Commune;Bailleur Nom;Bailleur PPM;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Complement;Code;Categorie;Valeur;CVI Tiers;Valeur Motif / Raison Sociale Tiers;Code Commune Tiers;Commune Tiers;Id Colonne;Organisme;Hash produit;Last DRev id if exist;Last DRev id with produit filter if exist;Doc Id;Famille calculee;Millesime;Famille ligne calculee;label calculee;habilitation statut'."\n";
 
   protected $file = null;
   protected $separator = null;
@@ -116,7 +116,7 @@ class DouaneCsvFile
     if (!$handler)
       throw new Exception('Cannot open csv file anymore');
     $this->csvdata = array();
-    while (($data = fgetcsv($handler, 0, $this->separator)) !== FALSE) {
+    while (($data = fgetcsv($handler, 0, $this->separator, "\"", "\\")) !== FALSE) {
       $this->csvdata[] = self::clean($data);
     }
     fclose($handler);
@@ -140,4 +140,87 @@ class DouaneCsvFile
 
       return null;
   }
+
+  public static function convertToDiffableArray($csv, $full = false) {
+      $tab = array();
+      foreach($csv as $ligne ) {
+          if ( ! $ligne[DouaneCsvFile::CSV_PRODUIT_APPELLATION]) {
+              continue;
+          }
+          foreach($ligne as $id => $col) {
+              if ( (! $full) && ($id != DouaneCsvFile::CSV_VALEUR)) {
+                  continue;
+              }
+              if ($id >= DouaneCsvFile::CSV_COLONNE_ID) {
+                  continue;
+              }
+              $prekey = str_replace('"', '', $ligne[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT]);
+              $delimiter = ' ';
+              $prekey = strtolower(trim(preg_replace('/[\s-]+/', $delimiter, preg_replace('/[^A-Za-z0-9-]+/', $delimiter, preg_replace('/[&]/', 'and', preg_replace('/[\']/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $prekey))))), $delimiter));
+              $key = str_replace('"', '', sprintf("%s-%s-%s/%s %s/%s/%d",
+                              $ligne[DouaneCsvFile::CSV_TYPE], $ligne[DouaneCsvFile::CSV_RECOLTANT_CVI], $ligne[DouaneCsvFile::CSV_CAMPAGNE],
+                              $ligne[DouaneCsvFile::CSV_PRODUIT_INAO], $prekey,
+                              $ligne[DouaneCsvFile::CSV_LIGNE_CODE],
+                              $id));
+              $key = preg_replace('/ +/', ' ', $key);
+              $col = str_replace('"', '', $col);
+              if (preg_match('/^[0-9,]+$/', $col)) {
+                  $col = sprintf('%.04f', str_replace(',', '.', $col));
+              }
+              $tab[$key] = $col;
+          }
+      }
+      ksort($tab);
+      return $tab;
+  }
+
+
+    public static function getDocumentDouanierType($etablissement)
+    {
+        if($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR || $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
+            return DRCsvFile::CSV_TYPE_DR;
+        }
+
+        if($etablissement->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) {
+            return SV11CsvFile::CSV_TYPE_SV11;
+        }
+
+        if($etablissement->famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR || $etablissement->famille == EtablissementFamilles::FAMILLE_NEGOCIANT) {
+            return SV12CsvFile::CSV_TYPE_SV12;
+        }
+        return null;
+    }
+
+    public static function getDiffWithScrapyFile(DouaneProduction $f, array & $old, array & $new, $full = false)
+    {
+        $etablissement = $f->getEtablissementObject();
+        $ddType = DouaneCsvFile::getDocumentDouanierType($etablissement);
+        $csvfile = null;
+
+        $fichiers = FichierClient::getInstance()->getScrapyFiles($etablissement, strtolower($ddType), $f->campagne);
+        foreach($fichiers as $fic) {
+            $infos = pathinfo($fic);
+            $extension = (isset($infos['extension']) && $infos['extension'])? strtolower($infos['extension']): null;
+            switch (strtolower($extension)) {
+                case 'xls':
+                    $csvfile = Fichier::convertXlsFile($fic);
+                    break;
+                case 'csv':
+                    $csvfile = $fic;
+                    break;
+            }
+        }
+        $diff = [];
+        if ($csvfile) {
+            $fichier = DouaneImportCsvFile::getNewInstanceFromType(DouaneImportCsvFile::getTypeFromFile($csvfile), $csvfile, null, null, $etablissement->cvi);
+            $temp = tempnam(sys_get_temp_dir(), 'production_');
+            file_put_contents($temp, $fichier->convert());
+            $csv2 = new CsvFile($temp);
+            $old = DouaneCsvFile::convertToDiffableArray($f->getCsv(), $full);
+            $new = DouaneCsvFile::convertToDiffableArray($csv2->getCsv(), $full);
+            $diff = array_merge(array_diff_assoc( $old, $new ), array_diff_assoc( $new, $old ));
+            unlink($temp);
+        }
+        return $diff;
+    }
 }

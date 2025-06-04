@@ -1,7 +1,7 @@
 all:
   configuration:
     parcellaire:
-      ecart_pieds_max: 25000
+      ecart_rangs_max: 250
       aires:
         communes-aoc:
           name: "AOC Cheverny"

@@ -21,6 +21,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_CONFORME_APPEL = "12_CONFORME_APPEL";
     const STATUT_NONCONFORME_LEVEE = "15_NONCONFORME_LEVEE";
     const STATUT_ANNULE = "03_ANNULE";
+    const STATUT_PRELEVE_EN_ATTENTE = "03_PRELEVE_EN_ATTENTE";
 
     const STATUT_CHANGE = "CHANGE";
 
@@ -31,11 +32,14 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_CHANGE_DEST = "01_CHANGE_DEST";
 
     const STATUT_REVENDIQUE = "01_REVENDIQUE";
+    const STATUT_DECLARE = "01_DECLARE";
     const STATUT_ENLEVE = "01_ENLEVE";
     const STATUT_CONDITIONNE = "01_CONDITIONNE";
     const STATUT_REVENDICATION_SUPPRIMEE = "01_REVENDICATION_SUPPRIMEE";
     const STATUT_NONAFFECTABLE = "09_NON_AFFECTABLE";
+    const STATUT_NONAFFECTABLE_EN_ATTENTE = 'X9_NON_AFFECTABLE';
     const STATUT_AFFECTABLE = "09_AFFECTABLE_ENATTENTE";
+    const STATUT_AFFECTABLE_PRELEVE = "09_AFFECTABLE_PRELEVE_ENATTENTE";
 
     const STATUT_CHANGE_SRC = "99_CHANGE_SRC";
     const STATUT_CHANGEABLE = "00_CHANGEABLE";
@@ -43,12 +47,17 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_DECLASSE_OLD = "10_DECLASSE";
 
     const CONFORMITE_CONFORME = "CONFORME";
+    const CONFORMITE_NONCONFORME_PREFIX = "NON";
     const CONFORMITE_NONCONFORME_MINEUR = "NONCONFORME_MINEUR";
     const CONFORMITE_NONCONFORME_MAJEUR = "NONCONFORME_MAJEUR";
     const CONFORMITE_NONCONFORME_GRAVE = "NONCONFORME_GRAVE";
     const CONFORMITE_NONCONFORME_ANALYTIQUE = "NONCONFORME_ANALYTIQUE";
     const CONFORMITE_NONCONFORME_ORGANOLEPTIQUE = "NONCONFORME_ORGANOLEPTIQUE";
     const CONFORMITE_NONTYPICITE_CEPAGE = "NONTYPICITE_CEPAGE";
+
+    const STATUT_NOTIFICATION_COURRIER_OLD = "20_NOTIFICATION_COURRIER";
+    const STATUT_NOTIFICATION_COURRIER = "02_NOTIFICATION_COURRIER";
+
 
     const SPECIFICITE_UNDEFINED = "UNDEFINED";
     const SPECIFICITE_PRIMEUR = "Primeur";
@@ -79,18 +88,25 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_ELEVAGE_EN_ATTENTE => 'En élevage',
         self::STATUT_ELEVE => 'Fin de l\'élevage',
 
-        self::STATUT_MANQUEMENT_EN_ATTENTE => 'Manquement en attente',
+        self::STATUT_MANQUEMENT_EN_ATTENTE => 'Non conformité en attente',
 
         self::STATUT_REVENDIQUE => 'Revendiqué',
+        self::STATUT_DECLARE => 'Déclaré',
         self::STATUT_ENLEVE => 'Enlevé',
         self::STATUT_CONDITIONNE => 'Conditionné',
         self::STATUT_REVENDICATION_SUPPRIMEE => 'Revendication supprimée',
         self::STATUT_NONAFFECTABLE => 'Réputé conforme',
+        self::STATUT_NONAFFECTABLE_EN_ATTENTE => 'Réputé conforme',
         self::STATUT_AFFECTABLE => 'Affectable',
+        self::STATUT_AFFECTABLE_PRELEVE => 'Affectable prelevé',
+
+        self::STATUT_NOTIFICATION_COURRIER => 'Courrier de notification',
+        self::STATUT_NOTIFICATION_COURRIER_OLD => 'Courrier de notification',
     );
 
     public static $statut2label = array(
             Lot::STATUT_REVENDIQUE => "success",
+            Lot::STATUT_DECLARE => "success",
             Lot::STATUT_CONFORME => "success",
             Lot::STATUT_PRELEVE => "success",
             Lot::STATUT_NONCONFORME => "danger",
@@ -112,7 +128,17 @@ abstract class Lot extends acCouchdbDocumentTree
       self::CONFORMITE_NONCONFORME_GRAVE => "Non conformité grave",
       self::CONFORMITE_NONTYPICITE_CEPAGE => "Non typicité cépage",
       self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Non conformité analytique",
-      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non conformité organoléptique",
+      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non conformité organoleptique",
+    );
+
+    public static $libellesAcceptabilites = array(
+      self::CONFORMITE_CONFORME => "Acceptable",
+      self::CONFORMITE_NONCONFORME_MINEUR => "Non acceptabilité mineure",
+      self::CONFORMITE_NONCONFORME_MAJEUR => "Non acceptabilité majeure",
+      self::CONFORMITE_NONCONFORME_GRAVE => "Non acceptabilité grave",
+      self::CONFORMITE_NONTYPICITE_CEPAGE => "Non typicité cépage",
+      self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Non acceptabilité analytique",
+      // self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non acceptabilité organoleptique",
     );
 
     public static $shortLibellesConformites = array(
@@ -122,7 +148,7 @@ abstract class Lot extends acCouchdbDocumentTree
       self::CONFORMITE_NONCONFORME_GRAVE => "Grave",
       self::CONFORMITE_NONTYPICITE_CEPAGE => "Typ. cép.",
       self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Analytique",
-      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Organoléptique",
+      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Organoleptique",
     );
 
     public static $nonConformites = array(
@@ -153,9 +179,18 @@ abstract class Lot extends acCouchdbDocumentTree
         return (isset($libelles[$statut]))? $libelles[$statut] : $statut;
     }
 
-    public static function getLibelleConformite($conformite) {
-        $libelles = self::$libellesConformites;
-        return (isset($libelles[$conformite]))? $libelles[$conformite] : $conformite;
+    public function getLibelleConformite() {
+        $libelles = $this->isLibelleAcceptable() ? self::$libellesAcceptabilites : self::$libellesConformites;
+
+        return isset($libelles[$this->conformite]) ? $libelles[$this->conformite]: $this->conformite;
+    }
+
+    public function isLibelleAcceptable()
+    {
+        if (DegustationConfiguration::getInstance()->hasAcceptabiliteAoc()) {
+            return DegustationConfiguration::getInstance()->getAcceptabiliteAoc();
+        }
+        return false;
     }
 
     public function getConfigProduit() {
@@ -170,10 +205,10 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getEtablissement(){
-        if(!$this->identifiant){
+        if(!$this->exist('declarant_identifiant') || !$this->declarant_identifiant){
             return null;
         }
-        return EtablissementClient::getInstance()->find($this->identifiant);
+        return EtablissementClient::getInstance()->find($this->declarant_identifiant);
     }
 
     public function getDefaults() {
@@ -271,7 +306,10 @@ abstract class Lot extends acCouchdbDocumentTree
              return $this->position;
          }
          if (!$this->getConfig()||$type == DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT) {
-           $numero= intval(substr($this->numero_anonymat, 1));
+           $numero = (string) $this->numero_anonymat;
+           if ((string) intval($numero) !== $numero) {
+               $numero = intval(substr($numero, 1));
+           }
            return $numero;
          }
         if ($type == DegustationClient::DEGUSTATION_TRI_APPELLATION) {
@@ -283,17 +321,25 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($type == DegustationClient::DEGUSTATION_TRI_GENRE) {
             return $this->getConfig()->getGenre()->getKey();
         }
+        if ($type == DegustationClient::DEGUSTATION_TRI_LIEU) {
+            return $this->getConfig()->getLieu()->getKey();
+        }
         if ($type == DegustationClient::DEGUSTATION_TRI_CEPAGE) {
             return $this->getCepagesLibelle();
         }
         if ($type == DegustationClient::DEGUSTATION_TRI_PRODUIT) {
             return $this->_get('produit_hash').$this->_get('details');
         }
+        if ($type == DegustationClient::DEGUSTATION_TRI_OPERATEUR) {
+            return $this->_get('declarant_nom');
+        }
         throw new sfException('unknown type of value : '.$type);
     }
 
     public function isCleanable() {
-
+        if (!$this->produit_hash) {
+            return true;
+        }
         return $this->isEmpty();
     }
 
@@ -332,6 +378,13 @@ abstract class Lot extends acCouchdbDocumentTree
         }
 
         return $this->_get('date_commission');
+    }
+
+    public function getDateCommissionFormat($format = 'd/m/Y') {
+        if($this->date_commission && preg_match("/(\d{4}\-\d{2}-\d{2})/", $this->date_commission, $m)){
+          return Date::francizeDate(DateTime::createFromFormat('Y-m-d', $m[1])->format($format));
+        }
+        throw new sfException('wrong date_commission format : '.$this->date_commission);
     }
 
     public function getDocOrigine(){
@@ -390,6 +443,7 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($iselevage) {
             $this->elevage = false;
             $this->eleve = $date;
+            $this->affectable = true;
         }else{
             $this->elevage = true;
             $this->eleve = null;
@@ -398,6 +452,10 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isPreleve(){
         return $this->preleve !== null;
+    }
+
+    public function isDiffere(){
+        return ($this->isPreleve() && $this->statut == self::STATUT_PRELEVE_EN_ATTENTE);
     }
 
     public function isLeurre()
@@ -461,6 +519,10 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->getNombrePassage() > 1;
     }
 
+    public function isLotEnRecours() {
+        return ($this->statut == self::STATUT_RECOURS_OC);
+    }
+
     public function isRedegustationDejaConforme() {
         foreach(LotsClient::getInstance()->getHistory($this->declarant_identifiant, $this->unique_id) as $mvt){
             if (in_array($mvt->key[MouvementLotHistoryView::KEY_STATUT], [Lot::STATUT_CONFORME, Lot::STATUT_NONAFFECTABLE]) && $mvt->key[MouvementLotHistoryView::KEY_ORIGINE_DOCUMENT_ID] != $this->getDocument()->_id) {
@@ -468,6 +530,15 @@ abstract class Lot extends acCouchdbDocumentTree
             }
         }
         return false;
+    }
+
+    public function getRegionOrigine() {
+        $originelot = LotsClient::getInstance()->findByUniqueId($this->declarant_identifiant, $this->unique_id, 1);
+        if ($originelot && $originelot->exist('region') && $originelot->region) {
+            return $originelot->region;
+        }
+        $originedoc = ($originelot) ? FichierClient::getInstance()->find($originelot->id_document) : null;
+        return ($originedoc) ? $originedoc->region : null;
     }
 
     public function hasSpecificitePassage()
@@ -488,15 +559,22 @@ abstract class Lot extends acCouchdbDocumentTree
             return $this->nbPassage;
         }
 
-        $lotProvenance = $this->getLotProvenance();
-        if (!$lotProvenance) {
-            $this->nbPassage = 0;
-            return $this->nbPassage;
-        }
-
-        $this->nbPassage = MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lotProvenance) + 1;
+        $this->nbPassage = MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($this);
 
         return $this->nbPassage;
+    }
+
+    public static function generateTextePassageMouvement($nb)
+    {
+        if (!$nb) {
+            return null;
+        }
+        $detail = sprintf("%dme passage", $nb);
+        if ($nb == 1) {
+            $detail = "1er passage";
+        }
+
+        return $detail;
     }
 
     public static function generateTextePassage($lot, $nb)
@@ -759,8 +837,14 @@ abstract class Lot extends acCouchdbDocumentTree
     {
         if ($this->id_document_provenance) {
             return substr(strtok($this->id_document_provenance, '-'), 0, 4);
+        } elseif ($this->initial_type) {
+            return $this->initial_type;
         }
         return '';
+    }
+
+    public function getDocumentProvenance() {
+        return DeclarationClient::getInstance()->find($this->id_document_provenance);
     }
 
     abstract public function getMouvementFreeInstance();
@@ -784,6 +868,18 @@ abstract class Lot extends acCouchdbDocumentTree
 
         return $libelle;
 
+    }
+
+    public static function getSyntheseLibelleConfigMillesime($conf, $millesime) {
+        return $conf->getCouleur()->getLibelleCompletDR().' '.$millesime;
+    }
+
+    public function getSyntheseLibelle() {
+        $c = $this->getConfig();
+        if($this->getProduitRevendique()){
+            $c = $this->getProduitRevendique()->getConfig();
+        }
+        return self::getSyntheseLibelleConfigMillesime($c, $this->millesime);
     }
 
     public function getUniqueId(){
@@ -841,11 +937,17 @@ abstract class Lot extends acCouchdbDocumentTree
         }else{
             $mouvement->numero_archive = substr($this->numero_archive, 0, -1);
         }
-        $mouvement->date_commission = $this->date_commission;
+        if (isset($this->date_commission)) {
+            $mouvement->date_commission = $this->date_commission;
+        }elseif (strpos(DegustationClient::TYPE_COUCHDB, $this->id_document) === 0) {
+            $mouvement->date_commission = explode(' ', $this->getDocument()->date)[0];
+        }
         $mouvement->libelle = $this->getLibelle();
         $mouvement->detail = $detail;
         $mouvement->volume = $this->volume;
-        $mouvement->version = $this->getVersion();
+        if (isset($this->version)) {
+            $mouvement->version = $this->getVersion();
+        }
         $mouvement->document_ordre = $this->getDocumentOrdre();
         $mouvement->document_type = $this->getDocumentType();
         $mouvement->document_id = $this->getDocument()->_id;
@@ -856,20 +958,43 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->declarant_nom = $this->declarant_nom;
         $mouvement->campagne = $this->getCampagne();
         $mouvement->statut = $statut;
-        if ($this->exist('email_envoye')) {
+
+        if($this->getDocument() instanceof Degustation && $this->getDocument()->isValidatedOI()) {
+            $mouvement->date_notification = $this->getDocument()->validation_oi;
+        }
+        if ($this->exist('email_envoye') && $this->email_envoye) {
             $mouvement->date_notification = $this->email_envoye;
         }
-        if ($this->exist('date_notification')) {
+        if ($this->exist('date_notification') && $this->date_notification) {
             $mouvement->date_notification = $this->date_notification;
         }
 
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            if ($this->getDocument()->exist('region') && $this->getDocument()->region && (strpos($this->getDocument()->region, '|') == false)) {
+                $mouvement->add('region', $this->getDocument()->region);
+            }elseif ($r = RegionConfiguration::getInstance()->getOdgRegion($this->produit_hash)) {
+                $mouvement->add('region', $r);
+            }
+            if (RegionConfiguration::getInstance()->hasOC()) {
+                if (strpos($this->initial_type, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE) === 0 || strpos($this->initial_type, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE) === 0) {
+                    $mouvement->add('region', Organisme::getOIRegion());
+                }
+
+                if (strpos($this->initial_type, TransactionClient::TYPE_MODEL) === 0) {
+                    $mouvement->add('region', Organisme::getOIRegion());
+                }
+                if (strpos($this->initial_type, PMCNCClient::TYPE_MODEL) === 0) {
+                    $mouvement->add('region', Organisme::getOIRegion());
+                }
+            }
+        }
         return $mouvement;
     }
 
     public function getMouvements() {
         if (!$this->cache_mouvements) {
             $this->cache_mouvements = array();
-            $mvts = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($this->declarant_identifiant, $this->unique_id, $this->document_ordre);
+            $mvts = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($this->declarant_identifiant, $this->unique_id, null, $this->document_ordre);
             foreach($mvts->rows as $r) {
                 $this->cache_mouvements[] = $r->value;
             }
@@ -950,9 +1075,9 @@ abstract class Lot extends acCouchdbDocumentTree
             $this->id_document_provenance = null;
         }
 
-        if(!$this->getDocument() instanceof Degustation && $lotAffectation && $lotAffectation->date_commission) {
+        if(!$this->date_commission && !$this->getDocument() instanceof Degustation && $lotAffectation && $lotAffectation->date_commission) {
             $this->date_commission = $lotAffectation->date_commission;
-        } elseif (!$this->getDocument() instanceof Degustation && $lotProvenance && $lotProvenance->date_commission) {
+        } elseif (!$this->date_commission && !$this->getDocument() instanceof Degustation && $lotProvenance && $lotProvenance->date_commission) {
             $this->date_commission = $lotProvenance->date_commission;
         } elseif($this->getDocument()->getDateCommission()) {
             $this->date_commission = $this->getDocument()->getDateCommission();
@@ -975,9 +1100,19 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getDocumentOrdreCalcule() {
         $i = 0;
-        foreach(LotsClient::getInstance()->getDocumentsIdsByDate($this->declarant_identifiant, $this->unique_id) as $id) {
+        $ids = LotsClient::getInstance()->getDocumentsIdsByDate($this->declarant_identifiant, $this->unique_id);
+
+        $filteredIDs = [];
+
+        foreach($ids as $id) {
+            $id = preg_replace("/-M[0-9]+$/", "", $id);
+            if (in_array($id, $filteredIDs)) {
+                continue;
+            }
+            $filteredIDs[] = $id;
+
             $i++;
-            if(preg_replace("/-M[0-9]+$/", "", $id) != preg_replace("/-M[0-9]+$/", "", $this->getDocument()->_id)) {
+            if($id != preg_replace("/-M[0-9]+$/", "", $this->getDocument()->_id)) {
                 continue;
             }
 
@@ -994,16 +1129,16 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isAffectable() {
 
-        return !$this->isAffecte() && $this->exist('affectable') && $this->affectable && ($this->volume);
+        return !$this->isAffecte() && $this->exist('affectable') && $this->affectable && (!$this->id_document_affectation || !preg_match('/^(TOURNEE)/', $this->id_document_affectation));
     }
 
     public function isAffecte() {
-        return ($this->id_document_affectation) && preg_match('/^DEGUST/', $this->id_document_affectation);
+        return ($this->id_document_affectation) && preg_match('/^(DEGUSTATION|TOURNEE)/', $this->id_document_affectation);
     }
 
     public function isChange() {
 
-        return ($this->id_document_affectation) && preg_match('/^CHGTDENOM/', $this->id_document_affectation);
+        return ($this->id_document_affectation) && preg_match('/^CHGTDENOM|PMCNC/', $this->id_document_affectation);
     }
 
     public function getDestinationShort()
@@ -1049,6 +1184,16 @@ abstract class Lot extends acCouchdbDocumentTree
             $this->statut = Lot::STATUT_NONAFFECTABLE;
             return;
         }
+
+        if (!$this->id_document_affectation && $this->affectable) {
+            $this->statut = Lot::STATUT_AFFECTABLE;
+            return;
+        }
+
+        if (!$this->id_document_affectation && !$this->affectable) {
+            $this->statut = Lot::STATUT_NONAFFECTABLE;
+            return;
+        }
     }
 
     public function getAdresseLogement() {
@@ -1063,19 +1208,16 @@ abstract class Lot extends acCouchdbDocumentTree
         if (strpos($this->getAdresseLogement(), '—') === false) {
             return null;
         }
-        return explode('—', $this->getAdresseLogement());
+        return array_map(function($a) { return trim($a); }, explode('—', $this->getAdresseLogement()));
     }
 
     private function explodeLogement() {
-        $adresse_total = $this->getAdresseLogement();
         $s = $this->splitLogementIfHasSeparator();
-        if ($s) {
-            $adresse_total = $s[1];
-        }
-        if (preg_match('/^(.*) ([0-9][0-9AB][0-9][0-9][0-9]) ([^0-9]*)$/', $adresse_total, $m)) {
+        if (!$s && preg_match('/^(.*) ([0-9][0-9AB][0-9][0-9][0-9]) ([^0-9]*)$/', $this->getAdresseLogement(), $m)) {
             return $m;
         }
-        return array($adresse_total, $adresse_total, '', '');
+
+        return $s;
     }
 
     public function getLogementNom() {
@@ -1088,26 +1230,24 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getLogementCommune() {
         $r = $this->explodeLogement();
-        if ($r && $r[3]) {
-            return $r[3];
+
+        if ($r && $r[2]) {
+            return preg_replace('/^[^ ]* /', '', $r[2]);
         }
-        $s = $this->splitLogementIfHasSeparator();
-        //Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé from ebf4944ef4e21bd523aeeb4cdf854e7e
-        if ($s && isset($s[3]) && preg_match('/^[0-9][0-9AB][0-9]{3}$/', $s[2])) {
-            return $s[3];
-        }
+
+
+        /* Déprécié */ $s = $this->splitLogementIfHasSeparator(); if ($s && isset($s[3]) && preg_match('/^[0-9][0-9AB][0-9]{3}$/', $s[2])) { return $s[3]; } //- Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé from ebf4944ef4e21bd523aeeb4cdf854e7e
+
         return $this->getEtablissement()->commune;
     }
     public function getLogementCodePostal() {
         $r = $this->explodeLogement();
         if ($r && $r[2]) {
-            return $r[2];
+            return preg_replace('/ .*$/', '', $r[2]);
         }
-        $s = $this->splitLogementIfHasSeparator();
-        //Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé from ebf4944ef4e21bd523aeeb4cdf854e7e
-        if ($s && isset($s[2]) && preg_match('/^[0-9][0-9AB][0-9]{3}$/', $s[2])) {
-            return $s[2];
-        }
+
+        /* Déprécié */ $s = $this->splitLogementIfHasSeparator(); if ($s && isset($s[2]) && preg_match('/^[0-9][0-9AB][0-9]{3}$/', $s[2])) { return $s[2]; }  //- Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé from ebf4944ef4e21bd523aeeb4cdf854e7e
+
         return $this->getEtablissement()->code_postal;
 
     }
@@ -1151,6 +1291,57 @@ abstract class Lot extends acCouchdbDocumentTree
 		if (!$hab) {
 			return false;
 		}
-		return $hab->isHabiliteFor($this->getProduitHash(), $activite);
+		return $hab->isHabiliteFor($this->getProduitHash(), $activite, $this->document->date);
 	}
+
+    public function getRegion() {
+        return RegionConfiguration::getInstance()->getOdgRegion($this->getProduitHash());
+    }
+
+    public function setPrelevementHeure($h) {
+        if (strpos($this->id_document_provenance, TourneeClient::TYPE_COUCHDB) !== 0 && strpos($this->id_document, TourneeClient::TYPE_COUCHDB) !== 0) {
+            throw new sfException('setPrelevementHeure ne devrait être appelée que pour les tournées ('.$this->unique_id.')');
+        }
+        return $this->setPrelevementDatetime($this->getDocument()->getDateFormat('Y-m-d').' '.$h);
+    }
+
+    public function setPreleve($d){
+        if ($d && $this->exist('prelevement_datetime') && $this->prelevement_datetime) {
+            return $this->_set('preleve', preg_replace('/ .*/', '', $this->prelevement_datetime));
+        }
+        return $this->_set('preleve', $d);
+    }
+
+    public function getPrelevementHeure() {
+        return $this->getPrelevementFormat('H:i');
+    }
+
+    public function getPreleveFormat($format = 'd/m/Y') {
+        if (!$this->preleve) {
+            return ;
+        }
+        return date($format, strtotime($this->preleve));
+    }
+
+    public function getPrelevementFormat($format = 'd/m/Y H:i') {
+        if (!$this->prelevement_datetime) {
+            return ;
+        }
+        return date($format, strtotime($this->prelevement_datetime));
+    }
+
+    public function getPrelevementDatetime() {
+        if (!$this->_get('prelevement_datetime') && $this->preleve && preg_match('/\d+-\d+-\d+/', $this->preleve)) {
+            $this->prelevement_datetime = $this->preleve.' 00:00';
+        }
+        return $this->_get('prelevement_datetime');
+    }
+
+    public function isNCODG() {
+        return $this->hasSpecificitePassage() && $this->getRegionOrigine() !== 'OIVC' && $this->initial_type != TourneeClient::TYPE_TOURNEE_LOT_NC_OI;
+    }
+
+    public function isNCOI() {
+        return ($this->initial_type == TourneeClient::TYPE_TOURNEE_LOT_NC_OI) || ($this->hasSpecificitePassage() && $this->getRegionOrigine() === 'OIVC');
+    }
 }

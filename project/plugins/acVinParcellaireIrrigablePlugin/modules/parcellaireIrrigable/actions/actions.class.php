@@ -4,10 +4,10 @@ class parcellaireIrrigableActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
     	$etablissement = $this->getRoute()->getEtablissement();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
-
         $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() * 1);
         $parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->createDocFromPrevious($etablissement->identifiant, $periode);
+        $this->secure(ParcellaireSecurity::EDITION, $parcellaireIrrigable);
+
         $parcellaireIrrigable->save();
 
         return $this->redirect('parcellaireirrigable_edit', $parcellaireIrrigable);
@@ -33,6 +33,11 @@ class parcellaireIrrigableActions extends sfActions {
     		return $this->redirect('parcellaireirrigable_' . $parcellaireIrrigable->etape, $parcellaireIrrigable);
     	}
 
+        if($request->getParameter('coop')) {
+
+            return $this->redirect('parcellaireirrigable_parcelles', $parcellaireIrrigable);
+        }
+
     	return $this->redirect('parcellaireirrigable_exploitation', $parcellaireIrrigable);
     }
     public function executeDelete(sfWebRequest $request) {
@@ -43,7 +48,7 @@ class parcellaireIrrigableActions extends sfActions {
     	$parcellaireIrrigable->delete();
     	$this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
-        return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => ($parcellaireIrrigable->periode - 1).'-'.$parcellaireIrrigable->periode));
+        return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $parcellaireIrrigable->campagne));
     }
 
     public function executeDevalidation(sfWebRequest $request) {
@@ -64,6 +69,7 @@ class parcellaireIrrigableActions extends sfActions {
 
     public function executeExploitation(sfWebRequest $request) {
     	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+        $this->coop = $request->getParameter('coop');
     	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireIrrigable);
 
     	if($this->parcellaireIrrigable->storeEtape($this->getEtape($this->parcellaireIrrigable, ParcellaireIrrigableEtapes::ETAPE_EXPLOITATION))) {
@@ -106,6 +112,7 @@ class parcellaireIrrigableActions extends sfActions {
 
     public function executeParcelles(sfWebRequest $request) {
     	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+        $this->coop = $request->getParameter('coop');
     	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireIrrigable);
 
     	if($this->parcellaireIrrigable->storeEtape($this->getEtape($this->parcellaireIrrigable, ParcellaireIrrigableEtapes::ETAPE_PARCELLES))) {
@@ -118,21 +125,19 @@ class parcellaireIrrigableActions extends sfActions {
 
     		return sfView::SUCCESS;
     	}
-
-    	$this->parcellaireIrrigable->addParcellesFromParcellaire($request->getPostParameter('parcelles', array()));
-
+    	$this->parcellaireIrrigable->setParcellesFromParcellaire($request->getPostParameter('parcelles', array()));
     	$this->parcellaireIrrigable->save();
-
         if($request->getParameter('saveandquit')) {
 
             return $this->redirect('declaration_etablissement', $this->parcellaireIrrigable->getEtablissementObject());
         }
 
-    	return $this->redirect('parcellaireirrigable_irrigations', $this->parcellaireIrrigable);
+        return ($next = $this->getRouteNextEtape(ParcellaireIrrigableEtapes::ETAPE_PARCELLES)) ? $this->redirect($next, $this->parcellaireIrrigable) : $this->redirect('parcellaireirrigable_validation', $this->parcellaireIrrigable);
     }
 
     public function executeIrrigations(sfWebRequest $request) {
     	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+        $this->coop = $request->getParameter('coop');
     	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireIrrigable);
 
     	if($this->parcellaireIrrigable->storeEtape($this->getEtape($this->parcellaireIrrigable, ParcellaireIrrigableEtapes::ETAPE_IRRIGATIONS))) {
@@ -168,6 +173,7 @@ class parcellaireIrrigableActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
     	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+        $this->coop = $request->getParameter('coop');
     	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireIrrigable);
 
     	if($this->parcellaireIrrigable->storeEtape($this->getEtape($this->parcellaireIrrigable, ParcellaireIrrigableEtapes::ETAPE_VALIDATION))) {
@@ -178,10 +184,10 @@ class parcellaireIrrigableActions extends sfActions {
 	       	$this->parcellaireIrrigable->validateOdg();
 	    }
 
-    	$this->form = new ParcellaireIrrigableValidationForm($this->parcellaireIrrigable);
+		$this->validation = new ParcellaireIrrigableValidation($this->parcellaireIrrigable);
+		$this->form = new ParcellaireIrrigableValidationForm($this->parcellaireIrrigable, array('engagements' => $this->validation->getPoints(ParcellaireIrrigableValidation::TYPE_ENGAGEMENT)));
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
-    		$this->validation = new ParcellaireIrrigableValidation($this->parcellaireIrrigable);
     		return sfView::SUCCESS;
     	}
 
@@ -192,6 +198,13 @@ class parcellaireIrrigableActions extends sfActions {
     		return sfView::SUCCESS;
     	}
 
+        $documents = $this->parcellaireIrrigable->getOrAdd('documents');
+
+        foreach ($this->validation->getPoints(ParcellaireIrrigableValidation::TYPE_ENGAGEMENT) as $engagement) {
+            $document = $documents->add($engagement->getCode());
+            $document->libelle = ParcellaireIrrigableDocuments::getDocumentLibelle($document->getKey());
+        }
+
     	$this->form->save();
 
     	$this->getUser()->setFlash("notice", "Vos parcelles irrigables ont bien été enregistrées");
@@ -200,7 +213,7 @@ class parcellaireIrrigableActions extends sfActions {
 
     public function executePDF(sfWebRequest $request) {
     	set_time_limit(180);
-    	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+        $this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable(['allow_habilitation' => true, 'allow_stalker' => true]);
     	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireIrrigable);
 
 
@@ -221,6 +234,7 @@ class parcellaireIrrigableActions extends sfActions {
 
     public function executeVisualisation(sfWebRequest $request) {
     	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+        $this->coop = $request->getParameter('coop');
     	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireIrrigable);
     }
 
@@ -231,6 +245,18 @@ class parcellaireIrrigableActions extends sfActions {
     		return $etape;
     	}
     	return ($parcellaireIrrigableEtapes->isLt($parcellaireIrrigableEtapes->etape, $etape)) ? $etape : $parcellaireIrrigableEtapes->etape;
+    }
+
+
+    protected function getRouteNextEtape($etape = null, $class = "ParcellaireIrrigableEtapes") {
+        $etapes = $class::getInstance();
+        $routes = $etapes->getRouteLinksHash();
+        if (!$etape) {
+            $etape = $etapes->getFirst();
+        } else {
+            $etape = $etapes->getNext($etape);
+        }
+        return (isset($routes[$etape])) ? $routes[$etape] : null;
     }
 
     protected function secure($droits, $doc) {

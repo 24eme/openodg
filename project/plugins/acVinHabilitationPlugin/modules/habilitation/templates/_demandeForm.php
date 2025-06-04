@@ -54,7 +54,6 @@
                     </label>
                 </div>
             <?php endforeach; ?>
-        </ul>
     </div>
 </div>
 <hr />
@@ -65,8 +64,8 @@
         <div class="col-xs-4 text-right control-label">
             Produits :
         </div>
-        <div class="col-xs-6">
-            <p class="form-control-static"><?php echo $produit->libelle; ?></p>
+        <div class="col-xs-6 form-control-static">
+            <?php echo $produit->libelle; ?>
         </div>
     </div>
     <div class="row form-group">
@@ -92,8 +91,7 @@
         <div class="col-xs-4 text-right control-label">
             Site :
         </div>
-        <div class="col-xs-6">
-            <p class="form-control-static">
+        <div class="col-xs-6 form-control-static">
     <?php if ($demande->exist('sites')): ?>
         <?php foreach($demande->sites as $k => $c): ?>
             <?php echo $c; ?>
@@ -101,30 +99,25 @@
     <?php else: ?>
             Principal
     <?php endif; ?>
-            </p>
         </div>
     </div>
     <div class="row form-group">
         <div class="col-xs-4 text-right control-label">
             Produit :
         </div>
-        <div class="col-xs-6">
-            <p class="form-control-static">
-                <?php echo $demande->getProduitLibelle(); ?>
-            </p>
+        <div class="col-xs-6 form-control-static">
+            <?php echo $demande->getProduitLibelle(); ?>
         </div>
     </div>
     <div id="bloc_activite_info" class="row form-group">
         <div class="col-xs-4 text-right control-label">
             Activites :
         </div>
-        <div class="col-xs-6">
-            <p class="form-control-static">
-                <?php echo implode(", ", $demande->getActivitesLibelle()->getRawValue()); ?> <?php if(count($demande->getActivitesLibelle()) > 1): ?>
-                <?php if(isset($form['activites'])): ?>
-                <small><a id="btn_demande_separer" onclick="if(!confirm('Étes vous sûr de vouloir séparer les activités de cette demande ?')) { return false; } document.getElementById('bloc_activite_division').classList.remove('hidden'); document.getElementById('bloc_activite_info').classList.add('hidden'); return false;" href="" style="opacity: 0.6;" class="small">Séparer</a></small><?php endif; ?>
-                <?php endif; ?>
-            </p>
+        <div class="col-xs-6 form-control-static">
+            <?php echo implode(", ", $demande->getActivitesLibelle()->getRawValue()); ?> <?php if(count($demande->getActivitesLibelle()) > 1): ?>
+            <?php if(isset($form['activites'])): ?>
+            <small><a id="btn_demande_separer" onclick="if(!confirm('Étes vous sûr de vouloir séparer les activités de cette demande ?')) { return false; } document.getElementById('bloc_activite_division').classList.remove('hidden'); document.getElementById('bloc_activite_info').classList.add('hidden'); return false;" href="" style="opacity: 0.6;" class="small">Séparer</a></small><?php endif; ?>
+            <?php endif; ?>
         </div>
     </div>
     <?php if(isset($form['activites'])): ?>
@@ -132,7 +125,7 @@
         <div class="col-xs-4 text-right control-label">
             Activités :
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-6 form-control-static">
             <span class="text-danger"><?php echo $form['activites']->renderError() ?></span>
             <?php $activitesWidget = $form['activites']; ?>
                 <?php foreach($activitesWidget->getWidget()->getChoices() as $key => $option): ?>

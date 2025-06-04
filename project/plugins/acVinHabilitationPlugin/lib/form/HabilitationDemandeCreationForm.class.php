@@ -10,6 +10,14 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
 
         $demandes = $this->getDemandes();
         $produits = $this->getProduits();
+        $region = Organisme::getCurrentRegion();
+        if ($region) {
+            foreach($this->getProduits() as $hash_produit => $libelle) {
+                if(!RegionConfiguration::getInstance()->isHashProduitInRegion($region, $hash_produit)) {
+                    unset($produits[$hash_produit]);
+                }
+            }
+        }
         $activites = $this->getActivites();
         $sites = $this->getSites();
 
@@ -41,7 +49,7 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
     public function getProduits()
     {
         $produits = array();
-        foreach ($this->getDocument()->getProduitsConfig() as $produit) {
+        foreach ($this->getDocument()->getProduitsConfig(date('Y-m-d')) as $produit) {
             $produits[$produit->getHash()] = $produit->getLibelleComplet();
         }
         return array_merge(array('' => ''), $produits);
@@ -56,9 +64,11 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
         $sites = array(self::SITE_PRINCIPAL => 'Site principal');
         if ($this->getDocument()->getEtablissementObject()->exist('chais')) {
             foreach($this->getDocument()->getEtablissementObject()->chais as $id => $c) {
-                $sites['SITE_'.$id] = ($avec_prefix) ? 'Site secondaire : '.$c['nom'] : $c['nom'];
-                if (!$c['commune']) {
-                    $sites['SITE_'.$id] .= $c['commune'];
+                $sites['SITE_'.$id] = ($avec_prefix) ? 'Site secondaire : ' : '';
+                if($c->exist('nom') && $c['nom']) {
+                    $sites['SITE_'.$id] .= $c['nom'];
+                } else {
+                    $sites['SITE_'.$id] .= $c['adresse'] . ' ' . $c['code_postal'] . ' ' . $c['commune'];
                 }
             }
         }

@@ -2,7 +2,7 @@
 $types_liaisons = EtablissementClient::getTypesLiaisons();
 ?>
 <ol class="breadcrumb">
-    <?php if(!$sf_user->hasCredential('contacts')): ?>
+    <?php if(!$sf_user->hasContact()): ?>
         <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>">Contacts</a></li>
     <?php else: ?>
         <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
@@ -92,6 +92,10 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                 <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Région : </div>
                                 <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->region; ?></div>
                                 <?php endif; ?>
+                                <?php if ($etablissement->secteur): ?>
+                                <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Secteur : </div>
+                                <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->secteur; ?></div>
+                                <?php endif; ?>
                                 <?php if ($etablissement->exist('crd_regime') && $etablissement->crd_regime): ?>
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Régime CRD : </div>
                                     <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->crd_regime; ?></div>
@@ -141,7 +145,11 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                     <td><strong><?php echo Anonymization::hideIfNeeded($chai->nom); ?></strong><br /><?php echo Anonymization::hideIfNeeded($chai->adresse); ?><br />
                                     <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
                                     <td><?php echo implode("<br />", array_values($chai->getRawValue()->attributs->toArray(true, false))) ?></td>
-                                    <td><?php if($chai->partage): ?>Partagé<br /><?php endif; ?><?php if($chai->archive): ?>Archivé<?php endif; ?></td>
+                                    <td>
+                                        <?php if($chai->secteur): ?>Secteur <?php echo $chai->secteur ?><br /><?php endif; ?>
+                                        <?php if($chai->partage): ?>Partagé<br /><?php endif; ?>
+                                        <?php if($chai->archive): ?>Archivé<?php endif; ?>
+                                    </td>
                                     <?php if($modifiable): ?>
                                     <td class="text-center"><a href="<?php echo url_for("etablissement_edition_chai", array('identifiant' => $etablissement->identifiant, 'num' => $num)); ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
                                     <?php endif; ?>
@@ -201,7 +209,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                 </td>
                                 <td><?php echo 'ID : '.str_replace('ETABLISSEMENT-','',$liaison->id_etablissement); echo ($liaison->cvi)? '<br/>CVI : '.$liaison->cvi : ''; ?><?php echo ($liaison->cvi && $liaison->ppm)? "<br/>" : ""; echo ($liaison->ppm)? 'PPM : '.$liaison->ppm : ''; ?></td>
                                 <?php if($modifiable): ?>
-                                <td class="text-center"><a onclick="return confirm('Étes vous sûr de vouloir supprimer la relations ?')" href="<?php echo url_for("etablissement_suppression_relation", array('identifiant' => $etablissement->identifiant, 'key' => $liaison->getKey())); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                <td class="text-center"><a onclick="return confirm('Etes vous sûr de vouloir supprimer la relation ?')" href="<?php echo url_for("etablissement_suppression_relation", array('identifiant' => $etablissement->identifiant, 'key' => $liaison->getKey())); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span></a></td>
                                 <?php endif; ?>
                             </tr>
                         <?php endforeach; ?>

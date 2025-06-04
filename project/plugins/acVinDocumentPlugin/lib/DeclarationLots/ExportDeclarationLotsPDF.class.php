@@ -11,11 +11,6 @@ class ExportDeclarationLotsPDF extends ExportPDF {
         }
 
         parent::__construct($type, $use_cache, $file_dir, $filename);
-        if($this->printable_document->getPdf()){
-          $this->printable_document->getPdf()->setPrintHeader(true);
-          $this->printable_document->getPdf()->setPrintFooter(true);
-        }
-
 
     }
 

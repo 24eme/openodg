@@ -21,6 +21,8 @@
                 <a id="btn_degustation_fiche_tables_echantillons_par_dossier_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_dossier_pdf', $degustation) ?>">triées par Numéro de dossier</a>
                 -
                 <a id="btn_degustation_fiche_tables_echantillons_par_raison_sociale_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_raison_sociale_pdf', $degustation) ?>">triées par Raison sociale</a>
+                -
+                <a id="btn_degustation_fiche_tables_echantillons_par_tournee_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_tournee_pdf', $degustation) ?>">triées par Tournée</a>
                 )
             </li>
             <li class="list-group-item">
@@ -32,7 +34,7 @@
             </li>
         </ul>
 
-        <h4>Présences et notations de la commissions</h4>
+        <h4>Présences et notations de la commission</h4>
         <ul class="list-group">
             <li class="list-group-item"><a id="btn_pdf_presence_degustateurs" href="<?php echo url_for('degustation_fiche_presence_degustateurs_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Feuille de présence des dégustateurs</a></li>
             <li class="list-group-item"><a id="btn_pdf_fiche_individuelle_degustateurs" href="<?php echo url_for('degustation_fiche_individuelle_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle de dégustation</a></li>

@@ -96,6 +96,10 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
+         if (! class_exists('ParcellaireManquantClient')) {
+            return sprintf("Parcellaire Irrigable %s", $this->parcellaireIrrigable->campagne);
+         }
+
         return sprintf("Parcellaire Irrigable %s", $this->parcellaireIrrigable->campagne."-".(intval($this->parcellaireIrrigable->campagne) + 1));
     }
 
@@ -104,21 +108,24 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
         $header_subtitle .= "\n\n";
 
         if (!$this->parcellaireIrrigable->isPapier()) {
-            if ($this->parcellaireIrrigable->validation) {
+            if (!$this->parcellaireIrrigable->validation) {
+                $header_subtitle .= sprintf("Exemplaire brouilllon");
+            }elseif($this->parcellaireIrrigable->isAuto()) {
                 $date = new DateTime($this->parcellaireIrrigable->validation);
-
+                $header_subtitle .= sprintf("Générée automatiquement le %s", $date->format('d/m/Y'));
+            }elseif($this->parcellaireIrrigable->isPapier()) {
+                $date = new DateTime($this->parcellaireIrrigable->validation);
+                $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
+            }else {
+                 $date = new DateTime($this->parcellaireIrrigable->validation);
                 $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'), $this->parcellaireIrrigable->signataire);
                 if($this->parcellaireIrrigable->exist('signataire') && $this->parcellaireIrrigable->signataire) {
                     $header_subtitle .= " par " . $this->parcellaireIrrigable->signataire;
                 }
-            }else{
-                $header_subtitle .= sprintf("Exemplaire brouilllon");
             }
         }
 
         if ($this->parcellaireIrrigable->isPapier() && $this->parcellaireIrrigable->validation && $this->parcellaireIrrigable->validation !== true) {
-            $date = new DateTime($this->parcellaireIrrigable->validation);
-            $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
         }
 
         return $header_subtitle;

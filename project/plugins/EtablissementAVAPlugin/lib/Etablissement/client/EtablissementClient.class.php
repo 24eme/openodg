@@ -4,8 +4,8 @@
 
 class EtablissementClient extends acCouchdbClient {
 
-    const REGION_HORS_CVO = 'REGION_HORS_CVO';
-    const REGION_CVO = 'REGION_CVO';
+    const REGION_HORS_REGION = 'REGION_HORS_REGION';
+    const REGION_IS_REGION = 'REGION_IS_REGION';
     const TYPE_MODEL = "Etablissement";
     const TYPE_COUCHDB = "ETABLISSEMENT";
 
@@ -17,6 +17,15 @@ class EtablissementClient extends acCouchdbClient {
     const FAMILLE_METTEUR_EN_MARCHE = CompteClient::ATTRIBUT_ETABLISSEMENT_METTEUR_EN_MARCHE;
     const FAMILLE_NEGOCIANT = CompteClient::ATTRIBUT_ETABLISSEMENT_NEGOCIANT;
     const FAMILLE_CAVE_COOPERATIVE = CompteClient::ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE;
+
+    const CHAI_ATTRIBUT_VINIFICATION = "VINIFICATION";
+    const CHAI_ATTRIBUT_CONDITIONNEMENT = "CONDITIONNEMENT";
+    const CHAI_ATTRIBUT_STOCKAGE = "STOCKAGE";
+    const CHAI_ATTRIBUT_STOCKAGE_VRAC = "STOCKAGE_VRAC";
+    const CHAI_ATTRIBUT_STOCKAGE_VCI = "STOCKAGE_VCI";
+    const CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE = "STOCKAGE_VIN_CONDITIONNE";
+    const CHAI_ATTRIBUT_DGC = "DGC";
+    const CHAI_ATTRIBUT_APPORT = "APPORT";
 
     const STATUT_INSCRIT = 'INSCRIT';
 
@@ -112,6 +121,11 @@ class EtablissementClient extends acCouchdbClient {
             }
             return $this->find($data['etablissement']);
         }
+
+        if($this->findByCvi($cvi_or_accise_or_ppm)) {
+            return $this->findByCvi($cvi_or_accise_or_ppm);
+        }
+
         return null;
     }
 
@@ -143,6 +157,6 @@ class EtablissementClient extends acCouchdbClient {
     }
 
     public static function getRegionsWithoutHorsInterLoire() {
-        return array(self::REGION_CVO => self::REGION_CVO);
+        return array(self::REGION_IS_REGION => self::REGION_IS_REGION);
     }
 }

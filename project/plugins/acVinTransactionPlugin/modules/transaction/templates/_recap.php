@@ -1,11 +1,12 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Version') ?>
 <?php use_helper('Lot') ?>
+<?php use_helper('Declaration') ?>
 <?php use_javascript('hamza_style.js'); ?>
 
 
         <?php if($transaction->exist('lots')): ?>
-          <h3 id="table_igp_title">Déclaration des lots IGP</h3>
+          <h3 id="table_igp_title">Déclaration des lots</h3>
           <?php
           $lots = $transaction->getLotsByCouleur();
           ?>
@@ -28,9 +29,9 @@
               <tr>
               <?php if($transaction->isValidee()): ?>
                 <th class="col-xs-1"> Numéro Lot ODG</th>
-                <th class="col-xs-1"> Numéro Lot Opérateur</th>
+                <th class="col-xs-1"> Identifiant Lot Opérateur</th>
               <?php else: ?>
-                <th class="col-xs-1"> Numéro Lot Opérateur</th>
+                <th class="col-xs-1"> Identifiant Lot Opérateur</th>
               <?php endif; ?>
                 <th class="text-center col-xs-3">Produit (millesime)</th>
                 <th class="text-center col-xs-2">Pays</th>

@@ -11,7 +11,7 @@ ParcellaireIrrigable:
       validation: { }
       validation_odg: { }
       signataire: { }
-      papier: { required: false, type: integer }
+      papier: { required: false }
       declarant:
         type: collection
         class: ParcellaireIrrigableDeclarant
@@ -51,11 +51,13 @@ ParcellaireIrrigable:
                           definition:
                             fields:
                               superficie: { type: float }
+                              superficie_parcellaire: { type: float }
                               commune: { }
                               code_commune: { }
                               prefix: { }
                               section: { }
                               numero_parcelle: { }
+                              numero_ordre: { }
                               idu: { }
                               lieu: {  }
                               cepage: {  }
@@ -65,7 +67,22 @@ ParcellaireIrrigable:
                               campagne_plantation: {  }
                               materiel: {  }
                               ressource: {  }
+                              produit_hash: { }
+                              parcelle_id: { }
+                              source_produit_libelle: { }
+      region: { required: false }
       observations: {  }
+      documents:
+        class: ParcellaireIrrigableDocuments
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  statut: { }
+                  libelle: { }
       pieces:
         type: array_collection
         definition:

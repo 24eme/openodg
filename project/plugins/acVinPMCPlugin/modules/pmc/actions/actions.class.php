@@ -5,19 +5,21 @@ class pmcActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
-        $isAdmin = $this->getUser()->isAdmin();
+        $isAdmin = $this->getUser()->isAdminODG();
+
         if (!$isAdmin) {
             $this->secureEtablissement(EtablissementSecurity::DECLARANT_PMC, $etablissement);
         }
-        $date = $request->getParameter("date", date('YmdHis'));
-        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent());
 
-        if (PMCClient::getInstance()->findBrouillon($this->etablissement->identifiant, $campagne)) {
+        $date = $request->getParameter("date");
+        $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent());
+
+        if (PMCClient::getInstance()->findBrouillon($etablissement->identifiant, $periode)) {
             $this->getUser()->setFlash("warning", "Il existe déjà une déclaration de mise en circulation non terminée");
-            return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $campagne));
+            return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'periode' => $periode));
         }
 
-        $pmc = PMCClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date, $isAdmin);
+        $pmc = PMCClient::getInstance()->createDoc($etablissement->identifiant, $periode, $date, $isAdmin);
         $pmc->save();
 
         return $this->redirect('pmc_edit', $pmc);
@@ -48,7 +50,7 @@ class pmcActions extends sfActions {
 
     public function executeDevalidation(sfWebRequest $request) {
         $pmc = $this->getRoute()->getPMC();
-        if (!$this->getUser()->isAdmin()) {
+        if (!$this->getUser()->isAdminODG()) {
           $this->secure(PMCSecurity::DEVALIDATION , $pmc);
         }
 
@@ -63,6 +65,7 @@ class pmcActions extends sfActions {
             $lot->validation_odg = null;
           }
         }
+        $pmc->remove('mouvements_lots');
         $pmc->add('etape', null);
         $pmc->devalidate();
         $pmc->save();
@@ -119,7 +122,7 @@ class pmcActions extends sfActions {
     {
         $this->pmc = $this->getRoute()->getPMC();
         $this->secure(PMCSecurity::EDITION, $this->pmc);
-        $this->isAdmin = $this->getUser()->isAdmin();
+        $this->isAdmin = $this->getUser()->isAdminODG();
 
         $has = false;
         if(count($this->pmc->getLots())){
@@ -129,11 +132,12 @@ class pmcActions extends sfActions {
         if($this->pmc->storeEtape($this->getEtape($this->pmc, PMCEtapes::ETAPE_LOTS))) {
             $this->pmc->save();
         }
-
-        if (count($this->pmc->getLots()) == 0 || current(array_reverse($this->pmc->getLots()->toArray()))->produit_hash != null || $request->getParameter('submit') == "add") {
+        $options = array();
+        if (count($this->pmc->getLots()) == 0 || $request->getParameter('submit') == "add") {
+            $options['addrequest'] = true;
             $this->pmc->addLot();
         }
-        $this->form = new PMCLotsForm($this->pmc);
+        $this->form = new PMCLotsForm($this->pmc, array(), $options);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -183,24 +187,22 @@ class pmcActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->pmc = $this->getRoute()->getPMC();
         $this->secure(PMCSecurity::EDITION, $this->pmc);
-        $this->isAdmin = $this->getUser()->isAdmin();
-
+        $this->isAdmin = $this->getUser()->hasPMCAdmin();
         if ($this->pmc->validation) {
             return $this->redirect('pmc_visualisation', $this->pmc);
         }
 
         if($this->pmc->storeEtape($this->getEtape($this->pmc, PMCEtapes::ETAPE_VALIDATION))) {
             $this->pmc->save();
+            return $this->redirect('pmc_validation', $this->pmc);
         }
 
         $this->pmc->cleanDoc();
 
         $this->validation = new PMCValidation($this->pmc);
-
         $this->form = new PMCValidationForm($this->pmc, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(PMCValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-
             return sfView::SUCCESS;
         }
 
@@ -255,6 +257,11 @@ class pmcActions extends sfActions {
             $this->pmc->save();
         }
 
+        if ($this->getUser()->hasPMCAdmin() && $this->pmc->getType() === PMCNCClient::TYPE_MODEL) {
+            $this->pmc->validateOdg();
+            $this->pmc->save();
+        }
+
         //Email::getInstance()->sendPMCValidation($this->pmc);
 
         return $this->redirect('pmc_confirmation', $this->pmc);
@@ -267,13 +274,6 @@ class pmcActions extends sfActions {
 
         $this->pmc->validateOdg(null,$this->regionParam);
         $this->pmc->save();
-
-        $mother = $this->pmc->getMother();
-        while ($mother) {
-            $mother->validateOdg(null, $this->regionParam);
-            $mother->save();
-            $mother = $mother->getMother();
-        }
 
         if($this->pmc->validation_odg) {
             $this->getUser()->setFlash("notice", "La déclaration a été approuvée.");
@@ -297,7 +297,7 @@ class pmcActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->pmc = $this->getRoute()->getPMC();
         $this->secure(PMCSecurity::VISUALISATION, $this->pmc);
-        $this->isAdmin = $this->getUser()->isAdmin();
+        $this->isAdmin = $this->getUser()->isAdminODG();
 
         $this->service = $request->getParameter('service');
 
@@ -347,7 +347,7 @@ class pmcActions extends sfActions {
     }
 
     public function executePDF(sfWebRequest $request) {
-        $pmc = $this->getRoute()->getPMC();
+        $pmc = $this->getRoute()->getPMC(['allow_habilitation' => true, 'allow_stalker' => true]);
         $this->secure(PMCSecurity::PDF, $pmc);
         $this->document = new ExportPMCPDF($pmc, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));

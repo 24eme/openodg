@@ -48,15 +48,15 @@ class SocieteClient extends acCouchdbClient {
     }
 
     private function findByField($field, $siret) {
-        $index = acElasticaManager::getType('SOCIETE');
-        $elasticaQueryString = new acElasticaQueryQueryString();
-        $elasticaQueryString->setDefaultOperator('AND');
-        $elasticaQueryString->setQuery(sprintf("doc.$field:%s", $siret));
-        $q = new acElasticaQuery();
-        $q->setQuery($elasticaQueryString);
-        $q->setLimit(1);
-
         try {
+            $index = acElasticaManager::getType('SOCIETE');
+            $elasticaQueryString = new acElasticaQueryQueryString();
+            $elasticaQueryString->setDefaultOperator('AND');
+            $elasticaQueryString->setQuery(sprintf("doc.$field:%s", $siret));
+            $q = new acElasticaQuery();
+            $q->setQuery($elasticaQueryString);
+            $q->setLimit(1);
+
             $res = $index->search($q);
 
             foreach ($res->getResults() as $er) {
@@ -176,23 +176,6 @@ class SocieteClient extends acCouchdbClient {
 
     public function findByIdentifiantSociete($identifiant) {
         return $this->find($this->getId($identifiant));
-    }
-
-    public function getInterlocuteursWithOrdre($identifiant, $withSuspendus) {
-        $contactsArr = $this->findByIdentifiantSociete($identifiant)->getInterlocuteursWithOrdre();
-        $result = array();
-        foreach ($contactsArr as $id => $value) {
-            $compte = CompteClient::getInstance()->find($id);
-            if ($withSuspendus) {
-                $result[] = $compte;
-            } else {
-
-                if ($compte->statut != SocieteClient::STATUT_SUSPENDU) {
-                    $result[] = $compte;
-                }
-            }
-        }
-        return $result;
     }
 
     public static function getSocieteTypes() {

@@ -26,22 +26,23 @@ class ChgtDenomValidationForm extends acCouchdbForm
             $this->setValidator('validation', new sfValidatorDate(['date_output' => 'c', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true, 'with_time' => false]));
             $this->widgetSchema->setLabel('validation', "Date de validation");
         }
-
-        foreach ($this->getOption('engagements') as $engagement) {
-            $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
-            if (strpos($engagement->getCode(), '_OUEX_') !== false) {
-                $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => false)));
-            } elseif (strpos($engagement->getCode(), '_OU_') !== false) {
-                $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => false)));
-            } else {
-                $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => true)));
+        if(!$this->getDocument()->validation) {
+            foreach ($this->getOption('engagements') as $engagement) {
+                $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
+                if (strpos($engagement->getCode(), '_OUEX_') !== false) {
+                    $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => false)));
+                } elseif (strpos($engagement->getCode(), '_OU_') !== false) {
+                    $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => false)));
+                } else {
+                    $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => true)));
+                }
             }
-        }
 
-        if ($this->getDocument()->exist('documents')) {
-            foreach($this->getDocument()->documents as $k => $v) {
-                if (isset($this->widgetSchema['engagement_'.$k])) {
-                    $this->setDefault('engagement_'.$k, 1);
+            if ($this->getDocument()->exist('documents')) {
+                foreach($this->getDocument()->documents as $k => $v) {
+                    if (isset($this->widgetSchema['engagement_'.$k])) {
+                        $this->setDefault('engagement_'.$k, 1);
+                    }
                 }
             }
         }
@@ -107,7 +108,7 @@ class ChgtDenomValidationForm extends acCouchdbForm
           }
        }
 
-      if (count($this->getOption('engagements'))) {
+      if (!$this->getDocument()->validation && count($this->getOption('engagements'))) {
           $this->getDocument()->remove('documents');
           $documents = $this->getDocument()->getOrAdd('documents');
 

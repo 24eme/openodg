@@ -113,35 +113,13 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
     }
 
-    public function addParcelle($cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
-
-        $key = $this->calculkey($cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu, $numero_ordre);
-
-        if($this->detail->exist($key) && $strictNumOrdre) {
-          return null;
-        }
-        $nbSameParcelle = $this->getDocument()->countSameParcelle($commune,$prefix,$section,$numero_parcelle,$lieu, $this->getHash(), $cepage, $campagne_plantation);
-        if(is_null($numero_ordre) && !$strictNumOrdre && $nbSameParcelle) {
-           $numero_ordre = $nbSameParcelle;
-           $key = $this->calculkey($cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu, $numero_ordre);
-        }
-
-
-        $detail = $this->detail->add($key);
-        $detail->cepage = $cepage;
-        $detail->prefix = $prefix;
-        $detail->campagne_plantation = $campagne_plantation;
-        $detail->commune = $commune;
-        $detail->code_commune = CommunesConfiguration::getInstance()->findCodeCommune($detail->commune);
-        $detail->section = $section;
-        $detail->numero_parcelle = $numero_parcelle;
-        $detail->add('numero_ordre', $numero_ordre);
-        if($lieu){
-            $lieu = strtoupper($lieu);
-        }
-        $detail->lieu = trim($lieu);
-
-        return $detail;
+    public function affecteParcelle($p) {
+        $k = $p->getParcelleId();
+        $detail = $this->detail->add($k);
+        $detail->produit_hash = $this->getHash();
+        $r = ParcellaireClient::CopyParcelle($detail, $p, true);
+        $detail->produit_hash = $this->getHash();
+        return $r;
     }
 
     public function isAffectee($lieu = null) {
@@ -176,19 +154,8 @@ class ParcellaireProduit extends BaseParcellaireProduit {
       return $total;
     }
 
-    public function calculkey($cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu, $numero_ordre){
-        if($prefix) {
-            $section = $prefix.$section;
-        }
-        $key = $cepage.'-'.$campagne_plantation.'-'.$commune . '-' . $section . '-' . $numero_parcelle.'-'.sprintf('%02d',$numero_ordre);
-        if ($lieu) {
-            $key.= '-' . $lieu;
-        }
-        return KeyInflector::slugify($key);
-    }
-
     public function isRealProduit() {
-        return $this->getHash() != ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH;
+        return ($this->getConfig()) != null;
     }
 
 }

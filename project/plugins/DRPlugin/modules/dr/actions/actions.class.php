@@ -7,12 +7,14 @@ class drActions extends sfActions
         $this->dr = $this->getRoute()->getDR();
         $this->configuration = ConfigurationClient::getInstance()->getCurrent();
         $this->validation = new DRValidation($this->dr, ['configuration' => $this->configuration]);
+
+        $this->chgtsProd = ChgtDenomClient::getInstance()->getChgtDenomProduction($this->dr->identifiant, $this->dr->campagne);
     }
 
     public function executeApprobation(sfWebRequest $request)
     {
         $this->dr = $this->getRoute()->getDR();
-        if (! $this->getUser()->isAdmin()) {
+        if (! $this->getUser()->isAdminODG()) {
             return $this->forwardSecure();
         }
         $this->configuration = ConfigurationClient::getInstance()->getCurrent();
@@ -32,7 +34,7 @@ class drActions extends sfActions
     {
         $this->dr = $this->getRoute()->getDR();
 
-        if (! $this->getUser()->isAdmin()) {
+        if (! $this->getUser()->isAdminODG()) {
             return $this->forwardSecure();
         }
 
@@ -50,7 +52,7 @@ class drActions extends sfActions
     {
         $this->dr = $this->getRoute()->getDR();
 
-        if (! $this->getUser()->isAdmin()) {
+        if (! $this->getUser()->isAdminODG()) {
             return $this->forwardSecure();
         }
 
@@ -68,7 +70,7 @@ class drActions extends sfActions
     {
         $dr = $this->getRoute()->getDR();
 
-        if (! $this->getUser()->isAdmin()) {
+        if (! $this->getUser()->isAdminODG()) {
             return $this->forwardSecure();
         }
         if ($dr->exist('validation_odg') && $dr->validation_odg) {
@@ -107,6 +109,26 @@ class drActions extends sfActions
             return $this->redirect('dr_visualisation', $sv);
         }
         return $this->redirect('declaration_etablissement', array('identifiant' => $identifiant, 'campagne' => $campagne));
+    }
+
+    public function executeSvVerify(sfWebRequest $request) {
+        $this->sv = $this->getRoute()->getDR();
+        if ($this->sv->type == 'DR') {
+            throw new sfException('Dédié aux SV');
+        }
+    }
+
+    public function executeDrVerify(sfWebRequest $request) {
+        $this->dr = $this->getRoute()->getDR();
+        $this->tableau_comparaison = $this->dr->getTableauComparaisonDrDap();
+    }
+
+    public function executeDiffVerify(sfWebRequest $request) {
+        $this->dr = $this->getRoute()->getDR();
+        $this->old = [];
+        $this->new = [];
+        $this->diff = DouaneCsvFile::getDiffWithScrapyFile($this->dr, $this->old, $this->new, $request->getParameter('full'));
+        $this->keys = array_unique(array_merge(array_keys($this->old), array_keys($this->new)));
     }
 
 }

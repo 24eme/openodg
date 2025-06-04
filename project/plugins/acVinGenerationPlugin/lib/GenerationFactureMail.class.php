@@ -7,34 +7,7 @@ class GenerationFactureMail extends GenerationAbstract {
     public function generateMailForADocumentId($id) {
         $facture = FactureClient::getInstance()->find($id);
 
-        if ($facture->isTelechargee()) {
-            return;
-        }
-
-        if(!$facture->getSociete()->getEmailCompta()) {
-            echo $facture->getSociete()->_id."\n";
-            return;
-        }
-
-        $message = Swift_Message::newInstance()
-         ->setFrom(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')))
-         ->setTo($facture->getSociete()->getEmailCompta())
-         ->setSubject(self::getSujet($facture->getNumeroOdg()))
-         ->setBody($this->getPartial("facturation/email", array('id' => $id)));
-
-         if(Organisme::getInstance()->getEmailFacturation()) {
-            $message->setReplyTo(Organisme::getInstance()->getEmailFacturation());
-         }
-
-        return $message;
-    }
-
-    public static function getPartial($templateName, $vars = null) {
-        sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
-
-        $vars = null !== $vars ? $vars : array();
-
-        return get_partial($templateName, $vars);
+        return Email::getInstance()->getMessageFacture($facture);
     }
 
     public static function getSujet($numero) {
@@ -49,7 +22,7 @@ class GenerationFactureMail extends GenerationAbstract {
 
     public static function getActionDescription() {
 
-        return "Sujet : ".self::getSujet("XXXXXXX")."\n\n".self::getPartial("facturation/email", array('id' => 'FACTURE-XXXXXX-XXXXXXXXXX'));
+        return "Sujet : ".self::getSujet("XXXXXXX")."\n\n".Email::getInstance()->getPartial("facturation/email", array('id' => 'FACTURE-XXXXXX-XXXXXXXXXX'));
     }
 
     public function getMailer() {
@@ -90,7 +63,7 @@ class GenerationFactureMail extends GenerationAbstract {
         $fp = fopen($this->getLogPath(), 'a');
 
         if($header) {
-            fputcsv($fp, array("Date", "Numéro de facture", "Identifiant Opérateur", "Raison sociale", "Email", "Statut", "Commentaire", "Facture ID"));
+            fputcsv($fp, array("Date", "Numéro de facture", "Identifiant Opérateur", "Raison sociale", "Email", "Statut", "Commentaire", "Facture ID", "Lien de téléchargement"));
         }
 
         fputcsv($fp, $this->getLog($factureId, $statut, $commentaire, $date));
@@ -104,8 +77,14 @@ class GenerationFactureMail extends GenerationAbstract {
         }
 
         $facture = FactureClient::getInstance()->find($factureId);
+	$email = null;
+        if(!class_exists("SocieteClient")) {
+            $email = $facture->getCompte()->email;
+        } else {
+            $email = $facture->getSociete()->getEmailCompta();
+        }
 
-        return array($date, $facture->getNumeroOdg(), $facture->identifiant, $facture->declarant->raison_sociale, $facture->getSociete()->getEmailCompta(), $statut, $commentaire, $facture->_id);
+        return array($date, $facture->getNumeroOdg(), $facture->identifiant, $facture->declarant->raison_sociale, $email, $statut, $commentaire, $facture->_id, ProjectConfiguration::getAppRouting()->generate('piece_public_view', array('doc_id' => $facture->_id, 'auth' => UrlSecurity::generateAuthKey($facture->_id)), true));
     }
 
     public function generate() {
@@ -118,11 +97,10 @@ class GenerationFactureMail extends GenerationAbstract {
         $sleepSecond = 2;
         $i = 0;
         foreach($this->generation->getMasterGeneration()->documents as $factureId) {
-            $mail = $this->generateMailForADocumentId($factureId);
-
-            if(!$mail && in_array($factureId, $factureDejaEnvoye)) {
+            if(in_array($factureId, $factureDejaEnvoye)) {
                 continue;
             }
+            $mail = $this->generateMailForADocumentId($factureId);
 
             if(!$mail) {
                 $this->addLog($factureId, "PAS_DE_MAIL", "generateMailForADocumentId n'a pas retourné de mail");

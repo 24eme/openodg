@@ -3,10 +3,12 @@
 class DegustationResultatsForm extends acCouchdbObjectForm {
 
   private $numero_table = null;
+  private $degustation = null;
 
   public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null)
   {
     $this->numero_table = $options['numero_table'];
+    $this->degustation = $object;
 
     parent::__construct($object, $options, $CSRFSecret);
   }
@@ -67,6 +69,9 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
     protected function getConformites()
     {
         $configurationConformite = DegustationConfiguration::getInstance()->getConformites();
+        if ($this->getDegustation()->isLibelleAcceptable()) {
+            return Lot::$libellesAcceptabilites;
+        }
         return array_filter(Lot::$libellesConformites, function ($k) use ($configurationConformite) {
             return in_array($k, $configurationConformite);
         }, ARRAY_FILTER_USE_KEY);
@@ -75,6 +80,11 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
     protected function doSave($con = NULL) {
         $this->updateObject();
         $this->object->getCouchdbDocument()->save(false);
+    }
+
+    protected function getDegustation()
+    {
+        return $this->degustation;
     }
 
 }

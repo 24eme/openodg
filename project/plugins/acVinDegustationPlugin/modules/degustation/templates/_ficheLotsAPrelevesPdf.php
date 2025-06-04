@@ -10,26 +10,25 @@ th {
 }
 
 </style>
-      <table>
-        <tr>
-          <td style="width:20%;"></td>
-          <td style="width:30%;">Préleveur :</td>
-          <td style="width:30%">Date d'édition : <?php echo $date_edition;?></td>
-          <td style="width:20%;"></td>
-        </tr>
-      </table>
-      <table>
-        <tr style="line-height: 25em; height:25em;">
-          <td style="text-align: center"><?php echo "Nombre total d'opérateurs : ".count($etablissements)." - Nombre total de lots à Prélever : ".$nbLotTotal; ?></td>
-        </tr>
-      </table>
     <?php $ligne = 1; $table_header = true;
     foreach($lots as $key_lots => $lotsDossier):
-        $key_etablissement = explode('/', $key_lots)[1];
+        $key_etablissement = explode('/', $key_lots)[2];
         $etablissement = $etablissements[$key_etablissement];
         foreach ($lotsDossier as $numDossier => $lots) :
-            $lot = $lots[0]->getRawValue();
-            $adresse = $lot->adresse_logement;
+            foreach ($lots as $num => $lot_indiv) {
+                $display[$lot_indiv->adresse_logement][] = $lot_indiv;
+            }
+        endforeach;
+    endforeach;
+    ?>
+
+    <?php
+        foreach ($display as $adresse => $lots) :
+        $lot = $lots[0]->getRawValue();
+        $dossiers = [];
+        foreach ($lots as $num => $lot) {
+            $dossiers[] = $lot->numero_dossier;
+        }
     ?>
     <?php if ($ligne % 15 == 0 ) : $table_header = true; ?>
       </table>
@@ -39,31 +38,31 @@ th {
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
         <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
-          <th class="topempty bg-white"style="width:30%;"><?php echo tdStart() ?><strong>Coordonnées</strong></th>
-          <th class="topempty bg-white"style="width:25%;"><?php echo tdStart() ?><strong>Dossier /<br/> Nombre Lots</strong></th>
-          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Laboratoire /<br/> Commentaire</strong></th>
-          <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
+          <th class="topempty bg-white"style="width:30%;"><?php echo tdStart() ?><strong>Lieu de prélèvement /<br/>Coordonnées</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Dossier /<br/> Nombre Lots</strong></th>
+          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Laboratoire /<br/> Commentaire</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
         </tr>
     <?php endif;?>
          <tr style="line-height:17px;">
-           <td><?php echo tdStart() ?><strong><small><?php echo $etablissement->raison_sociale; ?></small></strong></td>
+           <td><?php echo tdStart() ?><strong><small><?php echo $etablissements[$lot->declarant_identifiant]->raison_sociale; ?></small></strong></td>
            <td>
              <small><?php
               if($lot->hasLogement()):
-                if ($lot->getLogementNom() != $etablissement->raison_sociale) {
-                    echo substrUtf8($lot->getLogementNom(), 0, 32).'<br/>';
-                }?>
+                if ($lot->getLogementNom() != $etablissements[$lot->declarant_identifiant]->raison_sociale) {
+                    echo substrUtf8($lot->getLogementNom(), 0, 32);
+                }?><br/>
                 <?php echo substrUtf8($lot->getLogementAdresse(), 0, 32).'<br/>'.substrUtf8($lot->getLogementCodePostal().' '.$lot->getLogementCommune(), 0, 32).'<br/>'; ?>
               <?php else: ?>
-                <?php echo  $etablissement->adresse.'<br/>'.$etablissement->code_postal.' '.$etablissement->commune.'<br/>'; ?>
+                <?php echo  '<br/>'.$etablissements[$lot->declarant_identifiant]->adresse.'<br/>'.$etablissements[$lot->declarant_identifiant]->code_postal.' '.$etablissements[$lot->declarant_identifiant]->commune.'<br/>'; ?>
               <?php endif; ?>
-             <?php echo ($etablissement->telephone_bureau) ? $etablissement->telephone_bureau : '' ?>
-             <?php echo ($etablissement->telephone_bureau && $etablissement->telephone_mobile) ? ' / ' : ''; ?>
-             <?php echo ($etablissement->telephone_mobile) ? $etablissement->telephone_mobile : '' ?>
+             <?php echo ($etablissements[$lot->declarant_identifiant]->telephone_bureau) ? $etablissements[$lot->declarant_identifiant]->telephone_bureau : '' ?>
+             <?php echo ($etablissements[$lot->declarant_identifiant]->telephone_bureau && $etablissements[$lot->declarant_identifiant]->telephone_mobile) ? ' / ' : ''; ?>
+             <?php echo ($etablissements[$lot->declarant_identifiant]->telephone_mobile) ? $etablissements[$lot->declarant_identifiant]->telephone_mobile : '' ?>
             </small>
           </td>
           <td><?php echo tdStart() ?>
-            <?php echo $numDossier; ?><br/>
+            <?php foreach (array_unique($dossiers) as $num) : echo $num.' '; endforeach; ?><br/>
             <small>
             <?php
                 echo count($lots)." lot";
@@ -71,10 +70,9 @@ th {
             ?>
           </small>
           </td>
-          <td><small><br/><?php echo $etablissement->getLaboLibelle(); ?></small></td>
-          <td></td>
+          <td><small><br/><?php echo $etablissements[$lot->declarant_identifiant]->getLaboLibelle(); ?></small></td>
+          <td><br/><?php echo $lot->getPrelevementFormat() ?></td>
          </tr>
          <?php $ligne++; ?>
-      <?php endforeach; ?>
-   <?php endforeach; ?>
+     <?php endforeach; ?>
       </table>

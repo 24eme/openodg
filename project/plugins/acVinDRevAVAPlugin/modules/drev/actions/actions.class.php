@@ -1,6 +1,6 @@
 <?php
 
-class /***AVA***/drevActions extends sfActions {
+class drevActions/***AVA***/ extends sfActions {
 
     public function executePushDR(sfWebRequest $request) {
         $this->url = $request->getParameter('url');
@@ -103,11 +103,13 @@ class /***AVA***/drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        umask(0002);
+        umask(0);
         $cache_dir = sfConfig::get('sf_cache_dir') . '/dr';
         if (!file_exists($cache_dir)) {
-            mkdir($cache_dir);
+            mkdir($cache_dir, 02775);
+            chmod($cache_dir, 02775);
         }
+        chmod($cache_dir, 02775);
 
         if (!$request->getParameter('csv') || !$request->getParameter('pdf')) {
 
@@ -451,6 +453,8 @@ class /***AVA***/drevActions extends sfActions {
     public function executeDegustationConseil(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
+
+        $this->focus = $request->getParameter("focus");
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_DEGUSTATION))) {
             $this->drev->save();

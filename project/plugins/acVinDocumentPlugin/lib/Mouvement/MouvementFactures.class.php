@@ -7,6 +7,7 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
 
     public function createFromCotisationAndDoc($cotisation,$doc) {
         $this->fillFromCotisation($cotisation);
+        $this->replaceLibelle(['detail_libelle', 'type_libelle', 'categorie', 'type_hash'], '%millesime%', $doc->getPeriode());
         $this->facture = 0;
         $this->facturable = 1;
         if($doc->exist('version')) {
@@ -28,6 +29,10 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
         if($doc->exist('campagne')) {
             $this->campagne = $doc->campagne;
         }
+
+        if ($cotisation->getConfigCollection()->getDocument()->exist('region')) {
+            $this->add('region', $cotisation->getConfigCollection()->getDocument()->getRegion());
+        }
     }
 
     public function fillFromCotisation($cotisation) {
@@ -40,6 +45,13 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
         $this->tva = $cotisation->getTva();
         if($cotisation->getUnite()) {
             $this->add('unite', $cotisation->getUnite());
+        }
+    }
+
+    public function replaceLibelle($cles, $to_replace, $by)
+    {
+        foreach ($cles as &$cle) {
+            $this->$cle = str_replace($to_replace, $by, $this->$cle);
         }
     }
 
@@ -63,8 +75,13 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
     }
 
     public function getMD5Key() {
-        $key = $this->getDocument()->identifiant . $this->produit_hash . $this->type_hash . $this->detail_identifiant;
-        $key.= uniqid();
+        $key  = $this->getDocument()->_id . $this->getDocument()->getIdentifiant();
+        $key .= $this->produit_hash . $this->categorie . $this->type_hash . $this->type_libelle;
+        $key .= $this->detail_identifiant.$this->date;
+        if ($this->exist('region')) {
+            $key.= $this->region;
+        }
+        $key .= $this->getDocument()->validation_odg;
 
         return md5($key);
     }

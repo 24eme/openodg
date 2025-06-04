@@ -18,10 +18,19 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $has_volume_cave_lignes = array();
         $familles_lignes = array();
         $max_ligne = 0;
+
+        $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
+        if ($this->etablissement && !$this->etablissement->isActif()) {
+            return;
+        }
+
         foreach ($csv as $key => $values) {
             $ligneid = explode('-', $values[0])[0];
             if ($ligneid == "6" || $ligneid == '7') {
                 for($i = 2 ; $i < count($values); $i++) {
+                    if (!isset($has_volume_nego_lignes[$i])) {
+                        $has_volume_nego_lignes[$i] = false;
+                    }
                     $has_volume_nego_lignes[$i] |= boolval($values[$i]);
                     $has_volume_nego += boolval($values[$i]);
                 }
@@ -47,13 +56,10 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         }
         $famille = $this->getFamilleCalculeeFromLigneDouane($has_volume_cave, $has_volume_coop, $has_volume_nego);
 
-        $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
-	      if ($this->etablissement && !$this->etablissement->isActif()) {
-		        return;
-        }
         $doc = array();
         $produits = array();
         $hashes = array();
+        $produits_obj = array();
         $ppm = ($this->etablissement)? $this->etablissement->ppm : null;
         $baillage = array();
         $exploitant = array();
@@ -95,10 +101,12 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         					$produit = $this->configuration->findProductByCodeDouane($values[$i]);
         					if (!$produit) {
         						$produits[$i] = array(null, null, null, null, null, null, null);
-                    $hashes[$i] = '';
+                                $hashes[$i] = '';
+                                $produits_obj[$i] = null;
         					} else {
         						$produits[$i] = array($produit->getCertification()->getKey(), $produit->getGenre()->getKey(), $produit->getAppellation()->getKey(), $produit->getMention()->getKey(), $produit->getLieu()->getKey(), $produit->getCouleur()->getKey(), $produit->getCepage()->getKey());
-                    $hashes[$i] = $produit->getHash();
+                                $hashes[$i] = $produit->getHash();
+                                $produits_obj[$i] = $produit;
         					}
         					$produits[$i][] = $values[$i];
         				}
@@ -258,7 +266,9 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
           $colExtraIds .= ';'.substr($this->campagne, 0, 4);
           $colExtraIds .= ';'.$familles_lignes[$k];
           $colExtraIds .= ';'.implode('|', DouaneImportCsvFile::extractLabels($p[9]));
+          $colExtraIds .= ';'.$this->getHabilitationStatus(HabilitationClient::ACTIVITE_PRODUCTEUR, $produits_obj[$k]);
 
+          $has_L6 = in_array("06", array_column($exploitant[$k], 0));
 	        foreach ($exploitant[$k] as $sk => $e) {
                 $eOrigin = null;
                 if($e[0] == 4) {
@@ -267,8 +277,12 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
                     $eOrigin[1] = "Superificie de récolte originale";
                 }
                 $ratio_bailleur = null;
-                if(!$ratio_bailleur && isset($ratios_bailleur["15"][$k]) && $ratios_bailleur["15"][$k]) {
-                    $ratio_bailleur = $ratios_bailleur["15"][$k];
+                $ligne_calcul_ratio = "15";
+                if ($has_L6) {
+                    $ligne_calcul_ratio = "05";
+                }
+                if(!$ratio_bailleur && isset($ratios_bailleur[$ligne_calcul_ratio][$k]) && $ratios_bailleur[$ligne_calcul_ratio][$k]) {
+                    $ratio_bailleur = $ratios_bailleur[$ligne_calcul_ratio][$k];
                 }
                 if(($e[0] == 4) && isset($baillage[$k])) {
                     $superficieInitiale = (float) (str_replace(",", ".", $e[2]));

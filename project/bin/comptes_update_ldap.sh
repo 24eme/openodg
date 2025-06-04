@@ -17,7 +17,7 @@ else
     SEQ="/tmp/compte_update_ldap_"$1".seq"
 fi
 
-if test -f $LOCK ; then
+if test -f $LOCK  || ! test "$SYMFONYTASKOPTIONS"; then
     exit 1
 fi
 touch $LOCK

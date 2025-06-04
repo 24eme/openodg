@@ -94,6 +94,54 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         return $chgtdenom;
     }
 
+    public function createDocFromProduction($doc, $hash, $complement = null)
+    {
+        $chgtdenom = new ChgtDenom();
+        $chgtdenom->identifiant = $doc->identifiant;
+        $chgtdenom->campagne = $doc->getCampagneReelle();
+        $chgtdenom->changement_origine_id_document = $doc->_id;
+        $chgtdenom->date = (new DateTime())->format('Y-m-d H:i:s');
+        $chgtdenom->add('papier', 1);
+
+        $chgtdenom->changement_type = self::CHANGEMENT_TYPE_DECLASSEMENT;
+        $chgtdenom->changement_numero_logement_operateur = "Déclassé depuis le document douanier";
+        $chgtdenom->origine_numero_logement_operateur = "Déclassé depuis le document douanier";
+        $chgtdenom->origine_millesime = $doc->campagne;
+        $chgtdenom->origine_produit_hash = "/declaration/".$hash;
+        $chgtdenom->origine_produit_libelle = $chgtdenom->getDocument()->getConfigProduits()[
+            $chgtdenom->origine_produit_hash
+        ]->getLibelleComplet();
+        $chgtdenom->origine_specificite = $complement === null ? "déclassé" : $complement . " déclassé";
+
+        $chgtdenom->storeDeclarant();
+        $chgtdenom->constructId();
+
+        return $chgtdenom;
+    }
+
+    public function getChgtDenomProduction($identifiant, $campagne)
+    {
+        $chgts = [];
+
+        foreach ($this->getHistory($identifiant) as $chgt) {
+            if (in_array(strtok($chgt->changement_origine_id_document, '-'), ['DR', 'SV11', 'SV12']) === false) {
+                continue;
+            }
+
+            if (strpos($chgt->changement_origine_id_document, '-'.$campagne) === false) {
+                continue;
+            }
+
+            if ($chgt->isValideeOdg() === false) {
+                continue;
+            }
+
+            $chgts[] = $chgt;
+        }
+
+        return $chgts;
+    }
+
     public function findFacturable($identifiant, $campagne) {
 
       // TODO : A retirer : aujourd'hui on bypass les Chgts Denom facturables pour optimiser la page de facturation

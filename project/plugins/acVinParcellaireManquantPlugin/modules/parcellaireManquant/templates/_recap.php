@@ -35,7 +35,7 @@ foreach ($parcellaireManquant->declaration->getParcellesByCommune() as $commune 
 <tfooter>
     <tr>
         <th colspan="5">Total superficie</th>
-        <th class="text-right"><?php echoFloat($somme_superficie, 4); ?></th>
+        <th class="text-right"><?php echoFloatFr($somme_superficie, 4); ?></th>
         <th colspan="2">&nbsp;</th>
     <tr>
 <tfooter>

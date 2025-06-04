@@ -9,6 +9,8 @@
 <p>Vous pouvez mettre à jour la liste compléte de tous vos adhérents. <br /><br />
 Ceux qui ne vous ont rien apportés cette année mais qui reste adhérent doivent resté cochés.</p>
 
+<a class="btn btn-secondary" href="<?php echo url_for("parcellaireaffectationcoop_ajout_apporteurs", $parcellaireAffectationCoop); ?>">Ajouter un apporteur</a>
+
 <form action="" method="post" class="form-horizontal">
     <table class="table table-condensed table-striped table-bordered">
         <tr>
@@ -37,7 +39,7 @@ Ceux qui ne vous ont rien apportés cette année mais qui reste adhérent doiven
                 <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->cvi; ?>
             </td>
             <td class="">
-                <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->nom; ?>
+                <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->nom; ?> <span class="text-muted"><?php echo $idApporteur; ?></span>
             </td>
 
         </tr>
@@ -47,6 +49,7 @@ Ceux qui ne vous ont rien apportés cette année mais qui reste adhérent doiven
     <div class="row row-margin row-button">
         <div class="col-xs-4"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $etablissement->identifiant)); ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
+            <a href="<?php echo url_for("parcellaireaffectationcoop_exportapporteurcsv", $parcellaireAffectationCoop) ?>" class="btn btn-default">Export CSV des apporteurs</a>
         </div>
         <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider et continuer<span class="glyphicon glyphicon-chevron-right"></span></button></div>
     </div>

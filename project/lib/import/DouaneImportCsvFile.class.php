@@ -7,7 +7,14 @@ class DouaneImportCsvFile {
     protected $campagne = null;
     protected $configuration = null;
 
-    public function __construct($filePath, $doc = null, $drev_produit_filter = null) {
+    public $cvi = '';
+    public $drev_produit_filter = '';
+    public $etablissement = null;
+    public $identifiant = null;
+    public $raison_sociale = '';
+    public $commune = '';
+
+    public function __construct($filePath, $doc = null, $drev_produit_filter = null, $cvi = null) {
         $this->filePath = $filePath;
         $this->doc = $doc;
         $this->configuration = ConfigurationClient::getConfiguration();
@@ -17,6 +24,9 @@ class DouaneImportCsvFile {
             $this->campagne = ConfigurationClient::getInstance()->buildCampagne(date('Y-m-d'));
         }
         $this->cvi = null;
+        if ($cvi) {
+            $this->cvi = $cvi;
+        }
         $this->drev_produit_filter = $drev_produit_filter;
         set_time_limit(30000);
     }
@@ -36,14 +46,14 @@ class DouaneImportCsvFile {
     	return str_replace(';', ' - ', preg_replace('/^ */', '', preg_replace('/ *$/', '', str_replace(array("\r", "\r\n", "\n"), ' ', html_entity_decode($val)))));
     }
 
-    public static function getNewInstanceFromType($type, $file, $doc = null, $drev_produit_filter = null)  {
+    public static function getNewInstanceFromType($type, $file, $doc = null, $drev_produit_filter = null, $cvi = null)  {
         switch ($type) {
             case 'DR':
-                return new DRDouaneCsvFile($file, $doc, $drev_produit_filter);
+                return new DRDouaneCsvFile($file, $doc, $drev_produit_filter, $cvi);
             case 'SV11':
-                return new SV11DouaneCsvFile($file, $doc, $drev_produit_filter);
+                return new SV11DouaneCsvFile($file, $doc, $drev_produit_filter, $cvi);
             case 'SV12':
-                return new SV12DouaneCsvFile($file, $doc, $drev_produit_filter);
+                return new SV12DouaneCsvFile($file, $doc, $drev_produit_filter, $cvi);
         }
 
         return null;
@@ -163,6 +173,7 @@ class DouaneImportCsvFile {
                     $p[] = substr($this->campagne, 0, 4);
                     $p[] = $donnee->colonne_famille;
                     $p[] = implode('|', DouaneImportCsvFile::extractLabels($p[11]));
+                    $p[] = $this->getHabilitationStatus(($this->getCsvType() == 'DR') ? HabilitationClient::ACTIVITE_PRODUCTEUR : HabilitationClient::ACTIVITE_VINIFICATEUR, $produit);
                     $produits[] = $p;
                 }
             }
@@ -176,10 +187,17 @@ class DouaneImportCsvFile {
         return $csv;
     }
 
-    public function getRelatedDrev() {
+    public function loadEtablissement() {
+        if ($this->etablissement && $this->identifiant) {
+            return;
+        }
         $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
         $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
-        return DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->campagne);
+    }
+
+    public function getRelatedDrev() {
+        $this->loadEtablissement();
+        return DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->campagne, $this->drev_produit_filter);
     }
 
     public static function extractLabels($mentionComplementaire) {
@@ -190,7 +208,7 @@ class DouaneImportCsvFile {
 
         if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(conversion|conv|convertion|cab|reconversion|c3|ciii)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_CONVERSION_BIO] = DRevClient::DENOMINATION_CONVERSION_BIO;
-        } elseif(DRevConfiguration::getInstance()->hasDenominationBiodynamie() && $mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(biodinami|demeter|bio-dynami)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+        } elseif(DRevConfiguration::getInstance()->hasDenominationBiodynamie() && $mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(biodinami|biodynami|demeter|bio-dynami)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIODYNAMIE] = DRevClient::DENOMINATION_BIODYNAMIE;
         } elseif($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(ab|bio|biologique|BIOLOGIQUE|FR-BIO-[0-9]+)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIO] = DRevClient::DENOMINATION_BIO;
@@ -218,6 +236,19 @@ class DouaneImportCsvFile {
         ksort($labels);
 
         return $labels;
+    }
+    private $habilitation = null;
+    public function getHabilitationStatus($activite, $prodconfobj) {
+        if (!$this->doc) {
+            return;
+        }
+        if (!$this->habilitation) {
+            $this->habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->doc->getEtablissementObject()->identifiant, $this->doc->date_depot);
+        }
+        $ph = ($this->habilitation && $prodconfobj) ? $this->habilitation->getProduitByProduitConf($prodconfobj) : null;
+        $pa = ($ph && $ph->activites->exist($activite) ) ? $ph->activites->get($activite) : null;
+        $default_hab_status = ($ph) ? 'PAS PRODUCTEUR' : 'SANS HABILITATION';
+        return ($pa && $pa->statut) ? $pa->statut : $default_hab_status;
     }
 
 }

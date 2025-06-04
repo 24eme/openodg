@@ -10,6 +10,10 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         return $this->getParent();
     }
 
+    public function getProduitHash() {
+        return $this->getParent()->getParent()->getHash();
+    }
+
     public function getChildrenNode() {
         return $this->getMentions();
     }
@@ -23,56 +27,19 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         return $this->getCepage()->getAcheteursNode($this->lieu);
     }
 
-    public function getCampagnePlantation() {
-        if ($this->exist('campagne_plantation')) {
-            return $this->_get('campagne_plantation');
+    public function getSuperficieParcellaire() {
+        if (!$this->_get('superficie_parcellaire')) {
+            $this->_set('superficie_parcellaire', $this->_get('superficie'));
         }
-        if (preg_match('/[A-Z]-([12][0-9][0-9][0-9]-[12][0-9][0-9][0-9])-[A-Z]/', $this->getKey(), $m)) {
-            return $m[1];
-        }
-        return null;
+        return $this->_get('superficie_parcellaire');
     }
 
-    public function getCodeCommune($guess = false) {
-        if ($this->exist('code_commune')) {
-            return $this->_get('code_commune');
+    public function getSuperficie($unite = ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_HECTARE) {
+        if($unite == ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE) {
+            return round($this->_get('superficie') * 100, 2);
         }
-        if (!$guess) {
-            return null;
-        }
-        return substr($this->getIDU(true), 0, 5);
-    }
 
-    public function getPrefix($guess = false) {
-        if ($this->exist('prefix')) {
-            return $this->_get('prefix');
-        }
-        if (!$guess) {
-            return null;
-        }
-        return str_replace('0', '', substr($this->getIDU($guess), 5, 3));
-    }
-
-    public function getIDU($guess = null) {
-        if ($this->exist('idu')) {
-            return $this->_get('idu');
-        }
-        if ($guess) {
-            $p = $this->getParcelleParcellaire();
-            if ($p) {
-                return $p->idu;
-            }
-            return null;
-        }
-        //return sprintf('%05s%03s%02s%04s', $this->code_commune, $this->prefix, $this->section, $this->numero_parcelle);
-        return null;
-    }
-
-    public function getSuperficie($unit = null) {
-        if (!$unit || $unit == ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE) {
-            return $this->_get('superficie');
-        }
-        return $this->_get('superficie') / 100;
+        return $this->_get('superficie');
     }
 
     public function getAcheteursCepageByCVI() {
@@ -197,6 +164,17 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         return $this->_get('lieu');
     }
 
+    public function getLieuDitCadastral() {
+        if($this->exist('lieu_cadastral')) {
+
+            return $this->_get('lieu_cadastral');
+        }
+        if(!$this->getParcelleParcellaire()) {
+            return null;
+        }
+        return $this->getParcelleParcellaire()->getLieu();
+    }
+
     public function cleanNode() {
         if(!$this->hasMultipleAcheteur()) {
             $this->remove('acheteurs');
@@ -249,27 +227,12 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         return  $l;
     }
 
-    public function getSectionNumero() {
-
-        return $this->section.preg_replace('/^0+/', '', $this->numero_parcelle);
-    }
-
-    public function setSection($section) {
-
-        return $this->_set('section', preg_replace('/^0*/', '', $section));
-    }
-
-    public function getSection() {
-
-        return preg_replace('/^0*/', '', $this->_get('section'));
-    }
-
     public function getParcelleParcellaire() {
-        $parcellaire = $this->getDocument()->getParcellaire();
-        if ($parcellaire->exist($this->getAppellation()->getHash()) && $parcellaire->get($this->getAppellation()->getHash())->detail->exist($this->getKey())) {
-            return $parcellaire->get($this->getAppellation()->getHash())->detail->get($this->getKey());
+        $p = $this->getDocument()->getParcellaire()->getDeclarationParcelles();
+        if (!isset($p[$this->getParcelleId()])) {
+            return null;
         }
-        return ParcellaireClient::findParcelle($parcellaire, $this, 0.5);
+        return $p[$this->getParcelleId()];
     }
 
 }

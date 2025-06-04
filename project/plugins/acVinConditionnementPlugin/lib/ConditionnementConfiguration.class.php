@@ -1,6 +1,6 @@
 <?php
 
-class ConditionnementConfiguration {
+class ConditionnementConfiguration extends DeclarationConfiguration {
 
     private static $_instance = null;
     protected $configuration;
@@ -100,5 +100,15 @@ class ConditionnementConfiguration {
 
     public function hasAllProduits() {
         return isset($this->configuration['all_produits']) && ($this->configuration['all_produits']);
+    }
+
+    public function getCampagneDebutMois() {
+
+        return DRevConfiguration::getInstance()->getCampagneDebutMois();
+    }
+
+    public function getModuleName() {
+
+        return 'conditionnement';
     }
 }

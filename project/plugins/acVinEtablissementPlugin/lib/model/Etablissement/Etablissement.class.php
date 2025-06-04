@@ -2,72 +2,13 @@
 
 class Etablissement extends BaseEtablissement implements InterfaceCompteGenerique {
 
-    protected $_interpro = null;
     protected $droit = null;
     protected $societe = null;
 
-    /**
-     * @return _Compte
-     */
-    public function getInterproObject() {
-        if (is_null($this->_interpro)) {
-            $this->_interpro = InterproClient::getInstance()->find($this->interpro);
-        }
-
-        return $this->_interpro;
-    }
-
     public function constructId() {
         $this->set('_id', 'ETABLISSEMENT-' . $this->identifiant);
-        if ($this->isViticulteur()) {
-            $this->raisins_mouts = is_null($this->raisins_mouts) ? EtablissementClient::RAISINS_MOUTS_NON : $this->raisins_mouts;
-            $this->exclusion_drm = is_null($this->exclusion_drm) ? EtablissementClient::EXCLUSION_DRM_NON : $this->exclusion_drm;
-            $this->type_dr = is_null($this->type_dr) ? EtablissementClient::TYPE_DR_DRM : $this->type_dr;
-        }
-
-        if ($this->isViticulteur() || $this->isNegociant()) {
-            $this->relance_ds = is_null($this->relance_ds) ? EtablissementClient::RELANCE_DS_OUI : $this->relance_ds;
-        }
 
         $this->statut = is_null($this->statut) ? EtablissementClient::STATUT_ACTIF : $this->statut;
-    }
-
-    public function setRelanceDS($value) {
-        if (!($this->isViticulteur() || $this->isNegociant())) {
-            throw new sfException("Le champs 'relance_ds' n'est valable que pour les viticulteurs ou les négociants");
-        }
-
-        $this->_set('relance_ds', $value);
-    }
-
-    public function setExclusionDRM($value) {
-        if (!($this->isViticulteur())) {
-            throw new sfException("Le champs 'exclusion_drm' n'est valable que pour les viticulteurs");
-        }
-
-        $this->_set('exclusion_drm', $value);
-    }
-
-    public function setRaisinsMouts($value) {
-        if (!($this->isViticulteur())) {
-            throw new sfException("Le champs 'raisins_mouts' n'est valable que pour les viticulteurs");
-        }
-
-        $this->_set('raisins_mouts', $value);
-    }
-
-    public function setTypeDR($value) {
-        if (!($this->isViticulteur())) {
-            throw new sfException("Le champs 'type_dr' n'est valable que pour les viticulteurs");
-        }
-
-        $this->_set('type_dr', $value);
-    }
-
-    public function getAllDRM() {
-        return acCouchdbManager::getClient()->startkey(array($this->identifiant, null))
-                        ->endkey(array($this->identifiant, null))
-                        ->getView("drm", "all");
     }
 
     public function setCompte($c) {
@@ -75,14 +16,11 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     }
 
     public function getMasterCompte() {
-      if ($this->compte) {
-          $c = CompteClient::getInstance()->find($this->compte);
-          if($c){
-            return $c;
-          }
-          return $this->getSociete()->getCompte($this->compte);
-      }
-      return $this->getSociete()->getCompte($this->getSociete()->compte_societe);
+        if ($this->compte) {
+            return CompteClient::getInstance()->find($this->compte) ?: $this->getSociete()->getCompte($this->compte);
+        } else {
+            return $this->getSociete()->getCompte($this->getSociete()->compte_societe);
+        }
     }
 
     public function getContact() {
@@ -170,6 +108,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
         if ($saveOther) {
             $this->updateLiaisonOpposee($liaison);
+            $this->save();
         }
 
         return $liaison;
@@ -294,12 +233,8 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $this->getDroit()->has($droit);
     }
 
-    public function getDroits() {
-        return EtablissementFamilles::getDroitsByFamilleAndSousFamille($this->famille, $this->sous_famille);
-    }
-
     public function isInterpro() {
-        return ($this->region != EtablissementClient::REGION_HORS_CVO);
+        return ($this->region != EtablissementClient::REGION_HORS_REGION);
     }
 
     protected function initFamille() {
@@ -329,6 +264,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
         $this->compte = $compte->_id;
 
+        $this->updateSecteurs();
 
         if($this->isSameAdresseThanSociete()) {
             $this->pullAdresseFrom($this->getSociete()->getMasterCompte());
@@ -340,7 +276,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $this->raison_sociale = $societe->raison_sociale;
         $this->siret = $societe->siret;
         $this->interpro = "INTERPRO-declaration";
-        if(class_exists("VracConfiguration") && VracConfiguration::getInstance()->getRegionDepartement() !== false) {
+        if(ConfigurationClient::getInstance()->isGiilda() && VracConfiguration::getInstance()->getRegionDepartement() !== false) {
             $this->region = EtablissementClient::getInstance()->calculRegion($this);
         }
 
@@ -349,6 +285,11 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
           $needSocieteSave = true;
           $societe->addEtablissement($this);
         }
+
+        if($compte->region != $this->region) {
+            $needSocieteSave = true;
+        }
+
         parent::save();
 
         $this->getMasterCompte()->setStatut($this->getStatut());
@@ -357,6 +298,35 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             $societe->save();
         }
         $compte->save();
+    }
+
+    public function updateSecteurs() {
+        if (!CommunesConfiguration::getInstance()->hasSecteurs()) {
+            return;
+        }
+        $secteurs = [];
+        if ($this->exist('chais')) foreach($this->chais as $c) {
+            if (!$c->secteur) {
+                $insee = CommunesConfiguration::getInstance()->findCodeCommune($c->commune);
+                if ($insee) {
+                    $c->secteur = CommunesConfiguration::getInstance()->getSecteurFromInsee($insee);
+                    $secteurs[] = $c->secteur;
+                }
+            }
+        }
+        if(!$this->secteur) {
+            if (!$this->insee) {
+                $this->insee = CommunesConfiguration::getInstance()->findCodeCommune($this->commune);
+            }
+            if ($this->insee) {
+                $this->secteur = CommunesConfiguration::getInstance()->getSecteurFromInsee($this->insee);
+            } else {
+                $secteurs = array_unique($secteurs);
+                if (count($secteurs) == 1) {
+                    $this->secteur = $secteurs[0];
+                }
+            }
+        }
     }
 
     public function delete() {
@@ -374,9 +344,12 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
 
     public function setIdSociete($id) {
-        $soc = SocieteClient::getInstance()->findSingleton($id);
-        if (!$soc)
-            throw new sfException("$id n'est pas une société connue");
+        if (!isset($_ENV['DRY_RUN'])) {
+            $soc = SocieteClient::getInstance()->findSingleton($id);
+            if (!$soc) {
+                throw new sfException("$id n'est pas une société connue");
+            }
+        }
         $this->_set("id_societe", $id);
     }
 
@@ -428,6 +401,9 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $a;
     }
     public function getEmails(){
+        if (!$this->email) {
+            return array();
+        }
         return explode(';',$this->email);
     }
 
@@ -585,6 +561,21 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $liaisons;
     }
 
+    public function hasCooperateur($cvi)
+    {
+        if (! $this->hasFamille(EtablissementFamilles::FAMILLE_COOPERATIVE)) {
+            return false;
+        }
+
+        $cooperateurs = $this->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR);
+
+        $cooperateurs = array_map(function ($cooperateur) {
+            return is_object($cooperateur) ? $cooperateur->cvi : $cooperateur['cvi'];
+        }, $cooperateurs);
+
+        return in_array($cvi, $cooperateurs);
+    }
+
     public function getLaboLibelle() {
         $labos = $this->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_LABO);
         if (!count($labos)) {
@@ -601,6 +592,34 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         });
 
         return $liaisonsOperateurs;
+    }
+
+    public function getAllChais() {
+        $chais = [];
+        if (!$this->exist('chais')) return $chais;
+        foreach ($this->chais as $key => $chai) {
+            $chais[$key] = (string)$chai;
+        }
+        return $chais;
+    }
+
+    public function getChai($key) {
+        if (!$this->exist('chais')) return null;
+        if (!is_numeric($key)) return null;
+        if (!$this->chais->exist($key)) return null;
+        return $this->chais->get($key);
+    }
+
+    public function getKeyChai($infos) {
+        if (!$this->exist('chais')) return null;
+        foreach ($this->chais as $key => $chai) {
+            if ($infos->nom == $chai->nom &&
+    			$infos->adresse == $chai->adresse &&
+    			$infos->commune == $chai->commune &&
+                $infos->code_postal = $chai->code_postal
+            ) return $key;
+        }
+        return null;
     }
 
 }

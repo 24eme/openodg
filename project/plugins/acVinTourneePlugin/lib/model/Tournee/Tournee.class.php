@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Model for Tournee
+ * Classe tournée de l'AVA
  *
  */
-class Tournee extends BaseTournee {
+class Tournee/***AVA***/ extends BaseTournee {
 
     protected $degustations_object = array();
 
@@ -103,6 +103,10 @@ class Tournee extends BaseTournee {
 
         if($this->appellation == "CREMANT") {
             return $this->getConfiguration()->declaration->certification->genre->appellation_CREMANT->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
+        }
+
+        if($this->appellation == "GRDCRU") {
+            return $this->getConfiguration()->declaration->certification->genre->appellation_GRDCRU->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
         }
 
         return $this->getConfiguration()->declaration->certification->genre->appellation_ALSACE->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);

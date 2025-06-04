@@ -25,7 +25,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
            preg_match('/nomination/i', $csvFile->getCsv()[0][1]) &&
            preg_match('/CVI/i', $csvFile->getCsv()[0][3]) &&
            preg_match('/raisin/i', $csvFile->getCsv()[0][5]) &&
-           preg_match('/MOUTS/i', $csvFile->getCsv()[0][6])
+           (preg_match('/MOUTS/i', $csvFile->getCsv()[0][6]) || preg_match('/moûts/i', $csvFile->getCsv()[0][6]))
           ) {
 
             return "CsvVendanges";
@@ -59,6 +59,9 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         foreach ($csv as $key => $values) {
             if($key == 0) {
                 $libellesLigne = $values;
+                continue;
+            }
+            if (count($values) < 9) {
                 continue;
             }
             $values[12] = VarManipulator::floatize($values[9]) + VarManipulator::floatize($values[10]);
@@ -102,6 +105,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = substr($this->campagne, 0, 4);
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
                 $produit[] = implode('|', DouaneImportCsvFile::extractLabels($values[2]));
+                $produit[] = $this->getHabilitationStatus(HabilitationClient::ACTIVITE_VINIFICATEUR, $p);
                 $produits[] = $produit;
             }
             $cpt++;
@@ -214,6 +218,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = substr($this->campagne, 0, 4);
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
                 $produit[] = implode('|', DouaneImportCsvFile::extractLabels($values[7]));
+                $produit[] = $this->getHabilitationStatus(HabilitationClient::ACTIVITE_VINIFICATEUR, $p);
 	        			$produits[] = $produit;
                     }
                     $cpt++;

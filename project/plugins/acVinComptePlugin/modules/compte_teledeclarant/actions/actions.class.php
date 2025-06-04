@@ -93,7 +93,7 @@ class compte_teledeclarantActions extends sfActions {
 
                 $message = $this->getMailer()->composeAndSend(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $emailCible, "Confirmation de création de votre compte", $this->getPartial('compte_teledeclarant/creationEmail', array('compte' => $this->compte)));
 
-                if ($this->form->hasUpdatedValues()) {
+                if ($this->form->hasUpdatedValues() && $this->compte->getSociete()->getEtablissementPrincipal()) {
                     Email::getInstance()->sendNotificationModificationsExploitation($this->compte->getSociete()->getEtablissementPrincipal(), $this->form->getUpdatedValues());
                 }
 
@@ -162,7 +162,7 @@ class compte_teledeclarantActions extends sfActions {
                 $compte = $this->form->save();
 
                 $societe = $compte->getSociete();
-                $lien = $this->generateUrl("compte_teledeclarant_mot_de_passe_oublie_login", array("login" => $societe->identifiant, "mdp" => str_replace("{OUBLIE}", "", $compte->mot_de_passe)), true);
+                $lien = $this->generateUrl("compte_teledeclarant_mot_de_passe_oublie_login", array("login" => $compte->login, "mdp" => str_replace("{OUBLIE}", "", $compte->mot_de_passe)), true);
                 $emailCible = $compte->getTeledeclarationEmail();
                 if (!$emailCible) {
                     $emailCible = $compte->getEmail();

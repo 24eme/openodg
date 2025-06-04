@@ -23,14 +23,9 @@ class commonActions extends sfActions {
             return $this->redirect('tournee_agent_accueil');
         }
 
-        if ($this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
+        if ($this->getUser()->hasContact()) {
 
             return $this->redirect('compte_search');
-        }
-
-        if ($this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && HabilitationConfiguration::getInstance()->isSuiviParDemande()) {
-
-            return $this->redirect('habilitation_demande');
         }
 
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {

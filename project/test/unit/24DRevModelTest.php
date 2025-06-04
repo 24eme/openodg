@@ -2,9 +2,14 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(56);
-
 $igp13 = ($application == 'igp13');
+
+if (!DRevConfiguration::getInstance()->isModuleEnabled()) {
+    $t = new lime_test();
+    $t->pass('no drev for '.$application);
+    return;
+}
+$t = new lime_test(33 + 23 * (DRevConfiguration::getInstance()->isModificativeEnabled()));
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -151,7 +156,7 @@ $t->comment("Validation");
 $date = date('c');
 $drev->validate($date);
 if (DRevConfiguration::getInstance()->hasValidationOdgRegion()) {
-    foreach(DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+    foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region) {
         $drev->validateOdg($date, $region);
     }
 }else {
@@ -182,13 +187,17 @@ $drev->devalidate();
 $t->is($drev->validation, NULL, "La DRev n'est plus validée");
 
 $drev->validate();
+$drev->validateOdg();
 $drev->save();
 
-
+$region = null;
+if ($drev->getRegions()) {
+    $region = $drev->getRegions()[0];
+}
 $nbMvtsAttendu = 0;
 if(FactureConfiguration::getInstance()->isActive()) {
-    $template = $drev->getTemplateFacture();
-    $t->isnt($drev->getTemplateFacture(), null, "getTemplateFacture de la DRev doit retourner un template de facture pour la campagne ".$drev->campagne." (pour pouvoir avoir des mouvements)");
+    $template = $drev->getTemplateFacture($region);
+    $t->isnt($template, null, "getTemplateFacture de la DRev doit retourner un template de facture pour la campagne ".$drev->campagne." (pour pouvoir avoir des mouvements)");
     $drev->generateMouvementsFactures();
     $mouvements = $drev->mouvements->add($viti->identifiant);
     foreach ($template->cotisations as $type => $cot) {
@@ -209,12 +218,16 @@ if ($nbMvtsAttendu) {
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
-    $t->pass("Test non nécessaire car la facturation n'est pas activé");
+}
+
+if (!DRevConfiguration::getInstance()->isModificativeEnabled()) {
+    return;
 }
 
 $t->comment("Génération d'une modificatrice");
 
 $drevM1 = $drev->generateModificative();
+$drevM1->declaration = $drev->declaration;
 $drevM1->save();
 
 $t->is($drevM1->_id, $drev->_id."-M01", "L'id de la drev est ".$drev->_id."-M01");
@@ -243,6 +256,7 @@ if (DRevConfiguration::getInstance()->isRevendicationParLots()) {
 
 $drevM1->save();
 $drevM1->validate();
+$drevM1->validateOdg();
 $drevM1->generateMouvementsFactures();
 $drevM1->save();
 
@@ -269,6 +283,7 @@ $produit2->getConfig()->add('attributs')->add('rendement_reserve_interpro_min', 
 $produit2->getConfig()->clearStorage();
 
 $drevM2 = $drevM1->generateModificative();
+$drevM2->declaration = $drevM1->declaration;
 $drevM2->save();
 $produit2M2 = $drevM2->get($produit2->getHash());
 $produit2M2->volume_revendique_total = $produit2M2->superficie_revendique * 50 + 5;
@@ -310,6 +325,9 @@ $t->is($drevM2->get($produit2->getHash())->getVolumeRevendiqueCommecialisable(),
 
 $t->ok(!$drevM2->get($produit1->getHash())->exist('dont_volume_revendique_reserve_interpro'), "Le volume dédié à la réserve interpro n'est pas présent pour le 1er produit");
 $t->ok($drevM2->hasProduitsReserveInterpro(), "La Drev indique bien qu'il existe des produits en reserve interpro");
+
+$drevM1->remove($produit2->getHash());
+
 $t->ok(!$drevM1->hasProduitsReserveInterpro(), "La Drev précédente n'a pas de produit en réserve interpro");
 
 $produits = $drevM2->getProduitsWithReserveInterpro();

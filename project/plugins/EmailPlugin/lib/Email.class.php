@@ -59,24 +59,20 @@ class Email {
 
             return array();
         }
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
         $subject = 'Validation de votre Déclaration de Revendication';
         $body = $this->getBodyFromPartial('send_drev_validation', array('drev' => $drev));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setReplyTo(array(Organisme::getInstance()->getEmail()))
                 ->setSubject($subject)
-                ->setBody($body)
-                ->setContentType('text/plain');
+                ->setBody($body);
 
         return array($message);
     }
 
     public function getMessagesDRevValidationNotificationSyndicats($drev) {
         $messages = array();
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $odgs = sfConfig::get('drev_configuration_drev', []);
         foreach ($drev->declaration->getSyndicats() as $syndicat) {
             $infos = RegionConfiguration::getInstance()->getOdgRegionInfos($syndicat);
@@ -93,13 +89,11 @@ class Email {
             }
             $subject = 'Validation de la Déclaration de Revendication de ' . $drev->declarant->raison_sociale;
             $to = !is_array($email_syndicat) ? array($email_syndicat) : $email_syndicat;
-            $message = Swift_Message::newInstance()
-                ->setFrom($from)
+            $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setReplyTo(array(Organisme::getInstance()->getEmail()))
                 ->setSubject($subject)
-                ->setBody($body)
-                ->setContentType('text/plain');
+                ->setBody($body);
 
             $messages[] = $message;
         }
@@ -121,17 +115,14 @@ class Email {
         $pdf->generate();
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
 
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
-        $subject = 'Validation définitive de votre Déclaration de Revendication';
+        $subject = 'Validation de votre Déclaration de Revendication';
         $body = $this->getBodyFromPartial('send_drev_confirmee', array('drev' => $drev));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setReplyTo(array(Organisme::getInstance()->getEmail()))
                 ->setSubject($subject)
                 ->setBody($body)
-                ->setContentType('text/plain')
                 ->attach($pdfAttachment);
 
         return array($message);
@@ -147,17 +138,14 @@ class Email {
             return array();
         }
 
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
         $subject = 'Réception de votre Déclaration de Revendication';
         $body = $this->getBodyFromPartial('send_drev_confirmee_papier', array('drev' => $drev));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setReplyTo(array(Organisme::getInstance()->getEmail()))
                 ->setSubject($subject)
-                ->setBody($body)
-                ->setContentType('text/plain');
+                ->setBody($body);
 
         return array($message);
     }
@@ -181,15 +169,12 @@ class Email {
             $subject = "2ème Rappel - Documents à envoyer pour la validation définitive de votre déclaration de Revendication";
         }
 
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
         $body = $this->getBodyFromPartial($partial, array('drev' => $drev));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setSubject($subject)
-                ->setBody($body)
-                ->setContentType('text/plain');
+                ->setBody($body);
 
         return $this->getMailer()->send($message);
     }
@@ -200,16 +185,13 @@ class Email {
             return;
         }
 
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drevmarc->declarant->email);
         $subject = "Validation de votre Déclaration de Revendication Marc d'Alsace Gewurztraminer";
         $body = $this->getBodyFromPartial('send_drevmarc_validation', array('drevmarc' => $drevmarc));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setSubject($subject)
-                ->setBody($body)
-                ->setContentType('text/plain');
+                ->setBody($body);
 
         return $this->getMailer()->send($message);
     }
@@ -225,16 +207,13 @@ class Email {
         $pdf->generate();
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
 
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drevmarc->declarant->email);
         $subject = "Validation définitive de votre Déclaration de Revendication Marc d'Alsace Gewurztraminer";
         $body = $this->getBodyFromPartial('send_drevmarc_confirmee', array('drevmarc' => $drevmarc));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setSubject($subject)
                 ->setBody($body)
-                ->setContentType('text/plain')
                 ->attach($pdfAttachment);
 
         return $this->getMailer()->send($message);
@@ -246,16 +225,13 @@ class Email {
             return;
         }
 
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($travauxmarc->declarant->email);
         $subject = "Validation de votre déclaration d'ouverture des travaux de distillation";
         $body = $this->getBodyFromPartial('send_travauxmarc_validation', array('travauxmarc' => $travauxmarc));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setSubject($subject)
-                ->setBody($body)
-                ->setContentType('text/plain');
+                ->setBody($body);
 
         return $this->getMailer()->send($message);
     }
@@ -271,16 +247,13 @@ class Email {
         $pdf->generate();
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
 
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($travauxmarc->declarant->email);
         $subject = "Validation définitive de votre déclaration d'ouverture des travaux de distillation";
         $body = $this->getBodyFromPartial('send_travauxmarc_confirmee', array('travauxmarc' => $travauxmarc));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setSubject($subject)
                 ->setBody($body)
-                ->setContentType('text/plain')
                 ->attach($pdfAttachment);
 
         return $this->getMailer()->send($message);
@@ -300,7 +273,6 @@ class Email {
         $pdf->generate();
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
 
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($parcellaire->declarant->email);
         $titre = ($parcellaire->isIntentionCremant())? 'intention de production' : 'affectation parcellaire';
         $complement = '';
@@ -313,12 +285,10 @@ class Email {
         }
         $subject = sprintf("Validation de votre déclaration d'$titre%s", $complement);
         $body = $this->getBodyFromPartial('send_parcellaire_validation', array('parcellaire' => $parcellaire));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setSubject($subject)
                 ->setBody($body)
-                ->setContentType('text/plain')
                 ->attach($pdfAttachment)
                 ->attach($csvAttachment);
 
@@ -340,7 +310,6 @@ class Email {
         $pdf->generate();
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
 
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         $to = array($acheteur->email);
         $titre = ($parcellaire->isIntentionCremant())? 'intention de production' : 'affectation parcellaire';
@@ -354,13 +323,11 @@ class Email {
         }
         $subject = sprintf("Déclaration d'$titre%s de %s", $complement, $parcellaire->declarant->nom);
         $body = $this->getBodyFromPartial('send_parcellaire_acheteur', array('parcellaire' => $parcellaire));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setReplyTo($reply_to)
                 ->setSubject($subject)
                 ->setBody($body)
-                ->setContentType('text/plain')
                 ->attach($csvAttachment)
                 ->attach($pdfAttachment);
 
@@ -368,7 +335,6 @@ class Email {
     }
 
     public function sendDegustationOperateursMails($degustation) {
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($degustation->operateurs as $key => $operateur) {
             $to = $operateur->email;
@@ -382,7 +348,7 @@ class Email {
             }
 
             $message = Swift_Message::newInstance()
-                    ->setFrom($from)
+                    ->setFrom($this->getFrom())
                     ->setReplyTo($reply_to)
                     ->setTo($to)
                     ->setSubject($subject)
@@ -394,7 +360,6 @@ class Email {
     }
 
     public function sendDegustationDegustateursMails($degustation) {
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($degustation->degustateurs as $types_degustateur => $comptes) {
             foreach ($comptes as $id_compte => $degustateur_node) {
@@ -409,12 +374,12 @@ class Email {
                 }
 
                 $message = Swift_Message::newInstance()
-                        ->setFrom($from)
+                        ->setFrom($this->getFrom())
                         ->setReplyTo($reply_to)
                         ->setTo($to)
                         ->setSubject($subject)
-                        ->setBody($body)
-                        ->setContentType('text/plain');
+                        ->setBody($body);
+
                 $this->getMailer()->send($message);
             }
         }
@@ -423,7 +388,6 @@ class Email {
     }
 
     public function sendDegustationNoteCourrier($courrier) {
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($courrier->prelevements as $prelevement) {
             if (!is_null($prelevement->courrier_envoye)) {
@@ -439,7 +403,7 @@ class Email {
             $to = $courrier->operateur->email;
 
             $message = Swift_Message::newInstance()
-                    ->setFrom($from)
+                    ->setFrom($this->getFrom())
                     ->setReplyTo($reply_to)
                     ->setTo($to)
                     ->setSubject($subject)
@@ -451,7 +415,7 @@ class Email {
             $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
             $message->attach($pdfAttachment);
 
-            $message->setContentType('text/plain');
+            $message;
             if ($this->getMailer()->send($message)) {
                 $prelevement->courrier_envoye = date('Y-m-d');
             }
@@ -461,26 +425,23 @@ class Email {
     }
 
     public function sendPriseDeRendezvousMails(Rendezvous $rendezvous) {
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         $to = sfConfig::get('app_email_plugin_to_notification');
         $subject = "Nouvelle prise de rendez-vous pour " . $rendezvous->raison_sociale . " le " . $rendezvous->getDateHeureFr();
 
         $body = $this->getBodyFromPartial('send_notification_prise_rendezvous', array('rendezvous' => $rendezvous));
 
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setReplyTo($reply_to)
                 ->setTo($to)
                 ->setSubject($subject)
                 ->setBody($body);
 
-        $message->setContentType('text/plain');
+        $message;
         $this->getMailer()->send($message);
     }
 
     public function sendConstatApprouveMail(Constats $constats, $constatNode) {
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         $to = $constats->email;
         $subject = "Constat VT/SGN du " . ucfirst(format_date($constatNode->date_signature, "P", "fr_FR"));
@@ -491,8 +452,7 @@ class Email {
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
 
         $body = $this->getBodyFromPartial('send_constat_approuve', array('constats' => $constats, 'constat' => $constatNode));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setReplyTo($reply_to)
                 ->setTo($to)
                 ->setBcc(sfConfig::get('app_email_plugin_to_notification'))
@@ -501,7 +461,7 @@ class Email {
 
         $message->attach($pdfAttachment);
 
-        $message->setContentType('text/plain');
+        $message;
         $this->getMailer()->send($message);
     }
 
@@ -516,16 +476,13 @@ class Email {
         $pdf->generate();
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
 
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($tirage->declarant->email);
         $subject = "Validation de votre déclaration de tirage de Crémant d'Alsace";
         $body = $this->getBodyFromPartial('send_tirage_validation', array('tirage' => $tirage));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setSubject($subject)
                 ->setBody($body)
-                ->setContentType('text/plain')
                 ->attach($pdfAttachment);
         return $this->getMailer()->send($message);
     }
@@ -541,34 +498,27 @@ class Email {
         $pdf->generate();
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
 
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($tirage->declarant->email);
         $subject = "Validation définitive de votre Déclaration de Tirage de Crémant d'Alsace";
         $body = $this->getBodyFromPartial('send_tirage_confirmee', array('tirage' => $tirage));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setSubject($subject)
                 ->setBody($body)
-                ->setContentType('text/plain')
                 ->attach($pdfAttachment);
 
         return $this->getMailer()->send($message);
     }
 
     public function sendNotificationModificationsExploitation($etablissement, $updatedValues) {
-
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = sfConfig::get('app_email_plugin_to_notification');
 
         $subject = "Modification des informations d'exploitation";
         $body = $this->getBodyFromPartial('send_notification_modifications_exploitation', array('etablissement' => $etablissement, 'updatedValues' => $updatedValues));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setSubject($subject)
-                ->setBody($body)
-                ->setContentType('text/plain');
+                ->setBody($body);
 
         return $this->getMailer()->send($message);
     }
@@ -584,7 +534,6 @@ class Email {
     }
 
     public function sendConfirmationDegustateurMail($degustation, $id_compte, $college_key) {
-      $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
       $reply_to = Organisme::getInstance(null, 'degustation')->getEmail();
 
       $compte = CompteClient::getInstance()->find($id_compte);
@@ -604,19 +553,17 @@ class Email {
       }
 
       $message = Swift_Message::newInstance()
-              ->setFrom($from)
+              ->setFrom($this->getFrom())
               ->setReplyTo($reply_to)
               ->setTo($to)
               ->setCc($reply_to)
               ->setSubject($subject)
-              ->setBody($body)
-              ->setContentType('text/plain');
+              ->setBody($body);
 
       return $this->getMailer()->send($message);
     }
 
     public function sendActionDegustateurAuthMail($degustation, $degustateur, $action) {
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = Organisme::getInstance(null, 'degustation')->getEmail();
 
         $degust_nom = explode(' —', $degustateur->libelle)[0];
@@ -630,12 +577,10 @@ class Email {
         $body .= ($action) ? "OUI" : 'NON';
         $body .= "\n\n";
 
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
+        $message = $this->newMailInstance()
                 ->setTo($to)
                 ->setSubject($subject)
-                ->setBody($body)
-                ->setContentType('text/plain');
+                ->setBody($body);
 
         return $this->getMailer()->send($message);
     }
@@ -645,7 +590,7 @@ class Email {
           return false;
       }
       $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
-      $to = array($drev->declarant->email);
+      $to = array($adelphe->declarant->email);
       $subject = 'Validation de votre Déclaration Adelphe';
       $body = $this->getBodyFromPartial('send_adelphe_validation', array('adelphe' => $adelphe));
       $message = Swift_Message::newInstance()
@@ -658,6 +603,29 @@ class Email {
       return $this->getMailer()->send($message);
     }
 
+    public function getMessageFacture($facture) {
+        $email = null;
+        if(!class_exists("SocieteClient")) {
+            $email = $facture->getCompte()->email;
+        } else {
+            $email = $facture->getSociete()->getEmailCompta();
+        }
+
+        if(!$email) {
+            return;
+        }
+
+        $message = $this->newMailInstance()
+         ->setTo($email)
+         ->setSubject(GenerationFactureMail::getSujet($facture->getNumeroOdg()))
+         ->setBody($this->getPartial("facturation/email", array('id' => $facture->_id)));
+
+         if(Organisme::getInstance()->getEmailFacturation()) {
+            $message->setReplyTo(Organisme::getInstance()->getEmailFacturation());
+         }
+
+         return $message;
+    }
 
     protected function getMailer() {
         return $this->_context->getMailer();
@@ -681,4 +649,15 @@ class Email {
         return get_partial($templateName, $vars);
     }
 
+    public function getFrom() {
+
+        return array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+    }
+
+    public function newMailInstance() {
+
+        return Swift_Message::newInstance()
+                        ->setFrom($this->getFrom())
+                        ->setContentType('text/plain');
+    }
 }

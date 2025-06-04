@@ -2,7 +2,7 @@ all:
   configuration:
     parcellaire:
       manquant:
-        pc_min: 15
+        pc_min: 20
       affectation:
         needs_intention: false
       aires:
@@ -153,7 +153,11 @@ all:
 #        HermitagePaille:
 #          name: "Hermitage Paille"
 #          color: "#37474F"
-#          denomination_id: 
+#          denomination_id:
+        Laudun:
+          name: "Laudun"
+          color: "#C07490"
+          denomination_id: "01349"
         Lirac:
           name: "Lirac"
           color: "#EF5350"
@@ -190,3 +194,106 @@ all:
           name: "Vinsobres"
           color: "#9CCC65"
           denomination_id: "02770"
+      potentiel_de_production:
+        CotesduRhone_rouge:
+          synthese_libelle: "Côtes du Rhône - Rouge"
+          filter_produit_hash: 'appellations/CDR'
+          categories:
+            cepages_principaux: ['GRENACHE N', 'SYRAH N', 'MOURVEDRE N']
+            cepages_accessoires: ['BOURBOULENC B', 'BRUN ARGENTÉ N', 'CAMARÈSE N', 'VACCARÈSE N', 'CALADOC N', 'CARIGNAN N', 'CINSAUT N', 'CLAIRETTE B', 'CLAIRETTE ROSE RS', 'COUNOISE N', 'COUSTON N', 'GRENACHE BLANC B', 'GRENACHE GRIS G', 'MARSANNE B', 'MARSELAN N', 'MUSCARDIN N', 'PIQUEPOUL BLANC B', 'PIQUEPOUL NOIR N', 'ROUSSANNE B', 'TERRET NOIR N', 'UGNI BLANC B', 'VIOGNIER B']
+            cepages_varietedinteret: ['CARIGNAN BLANC B', 'FLORÉAL B', 'ROLLE B', 'VIDOC N']
+            cepage_grenache: ['GRENACHE N']
+            cepages_mourvedre_syrah: ['MOURVÈDRE N', 'SYRAH N']
+            cepages_caladoc_couston_marselan: ['CALADOC N', 'COUSTON N', 'MARSELAN N']
+            cepages_blancs: ['BOURBOULENC B', 'CLAIRETTE B', 'MARSANNE B', 'ROUSSANNE B', 'VIOGNIER B', 'FLORÉAL B', 'ROLLE B', 'GRENACHE BLANC B', 'PIQUEPOUL BLANC B', 'UGNI BLANC B', 'CARIGNAN BLANC B']
+          regles:
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_couleur"
+              sens: "<="
+              limit: 1
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_principaux"
+              sens: ">="
+              limit: 0.7
+            -
+              fonction: "ProportionSomme"
+              category: "cepage_grenache"
+              sens: ">="
+              limit: 0.3
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_mourvedre_syrah"
+              sens: ">="
+              limit: 0.2
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_caladoc_couston_marselan"
+              sens: "<="
+              limit: 0.1
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_blancs"
+              sens: "<="
+              limit: 0.05
+        CotesduRhone_rose:
+          synthese_libelle: "Côtes du Rhône - Rosé"
+          filter_produit_hash: 'appellations/CDR'
+          categories:
+            cepages_principaux: ['GRENACHE N', 'SYRAH N', 'MOURVEDRE N']
+            cepages_accessoires: ['BOURBOULENC B', 'BRUN ARGENTÉ N', 'CAMARÈSE N', 'VACCARÈSE N', 'CALADOC N', 'CARIGNAN N', 'CINSAUT N', 'CLAIRETTE B', 'CLAIRETTE ROSE RS', 'COUNOISE N', 'COUSTON N', 'GRENACHE BLANC B', 'GRENACHE GRIS G', 'MARSANNE B', 'MARSELAN N', 'MUSCARDIN N', 'PIQUEPOUL BLANC B', 'PIQUEPOUL NOIR N', 'ROUSSANNE B', 'TERRET NOIR N', 'UGNI BLANC B', 'VIOGNIER B']
+            cepages_varietedinteret: ['CARIGNAN BLANC B', 'FLORÉAL B', 'ROLLE B', 'VIDOC N']
+            cepage_grenache: ['GRENACHE N']
+            cepages_mourvedre_syrah: ['MOURVÈDRE N', 'SYRAH N']
+            cepages_caladoc_couston_marselan: ['CALADOC N', 'COUSTON N', 'MARSELAN N']
+            cepages_blancs: ['BOURBOULENC B', 'CLAIRETTE B', 'MARSANNE B', 'ROUSSANNE B', 'VIOGNIER B', 'FLORÉAL B', 'ROLLE B', 'GRENACHE BLANC B', 'PIQUEPOUL BLANC B', 'UGNI BLANC B', 'CARIGNAN BLANC B']
+          regles:
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_couleur"
+              sens: "<="
+              limit: 1
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_principaux"
+              sens: ">="
+              limit: 0.7
+            -
+              fonction: "ProportionSomme"
+              category: "cepage_grenache"
+              sens: ">="
+              limit: 0.3
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_mourvedre_syrah"
+              sens: ">="
+              limit: 0.2
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_caladoc_couston_marselan"
+              sens: "<="
+              limit: 0.1
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_blancs"
+              sens: "<="
+              limit: 0.2
+        CotesduRhone_blanc:
+          synthese_libelle: "Côtes du Rhône - Blanc"
+          filter_produit_hash: 'appellations/CDR'
+          categories:
+            cepages_principaux: ['BOURBOULENC B', 'CLAIRETTE B', 'GRENACHE BLANC B', 'MARSANNE B', 'ROUSSANNE B', 'VIOGNIER B']
+            cepages_accessoires: ['CLAIRETTE ROSE RS', 'GRENACHE GRIS G', 'PIQUEPOUL BLANC B', 'UGNI BLANC B']
+            cepages_varietedinteret: ['CARIGNAN BLANC B', 'FLORÉAL B', 'ROLLE B']
+          regles:
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_couleur"
+              sens: "<="
+              limit: 1
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_principaux"
+              sens: ">="
+              limit: 0.8

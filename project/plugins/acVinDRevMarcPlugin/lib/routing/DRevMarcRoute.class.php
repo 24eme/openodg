@@ -25,7 +25,7 @@ class DRevMarcRoute extends EtablissementRoute implements InterfaceDeclarationRo
         return $this->drevMarc;
     }
 
-    public function getEtablissement() {
+    public function getEtablissement($parameters = null) {
 
         return $this->getDRevMarc()->getEtablissementObject();
     }

@@ -40,6 +40,7 @@ foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdb
 
 $year = (date('Y') - 1)."";
 $periode = $year;
+$doc_date = $year.'-09-10';
 $date = $year.'-10-10 10:10:10';
 
 //Début des tests
@@ -56,6 +57,8 @@ foreach($produits as $produit) {
         continue;
     }
     $drev->addProduit($produit->getHash());
+    $lot = $drev->addLot();
+    $lot->produit_hash = $produit->getHash();
     $nbProduit++;
     if ($nbProduit == 3) {
       break;
@@ -70,17 +73,16 @@ $lot->volume = 50;
 $lot->affectable = true;
 $lot->specificite = 'Ma fausse 2ème dégustation';
 $lot->cepages = array('CABERNET' => 25, 'PINOT' => 25);
-
 $lot->destination_type = null;
 $lot->destination_date = ($periode+1).'-'.sprintf("%02d", 1).'-'.sprintf("%02d", 1);
 $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
 $i++;
 }
-$drev->validate($date);
+$drev->validate($doc_date);
 $drev->lots[2]->affectable = false;
 $drev->lots[2]->millesime = "2015";
 $drev->add('date_commission', $drev->getDateValidation('Y-m-d'));
-$drev->validateOdg($date);
+$drev->validateOdg($doc_date);
 $drev->save();
 
 $t->is(count($drev->lots), 3, "3 lots ont automatiquement été créés");
@@ -99,7 +101,7 @@ $t->ok(!$drev->lots[2]->isChange(), "Le lot changeable dans la DREV n'est pas is
 $t->ok(!$drev->hasLotsUtilises(), "La drev n'a pas de lots utilisés");
 
 
-$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+$lotsPrelevables = DegustationClient::getInstance()->getLotsEnAttente(null);
 $t->is(count($lotsPrelevables), 2, "2 mouvements de lot prelevables ont été générés");
 $lots = array();
 $t->is(count(ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant, null)), 3, "Les 3 lots sont cheageable");
@@ -120,7 +122,7 @@ $lotFromDrev = array_shift($lots);
 $date = $year.'-12-10 10:10:10';
 
 $chgtDenomFromDrev = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $lotFromDrev, $date, null);
-$chgtDenomFromDrev->validate();
+$chgtDenomFromDrev->validate($doc_date);
 $chgtDenomFromDrev->save();
 $t->comment($chgtDenomFromDrev->_id);
 
@@ -137,9 +139,9 @@ $t->is($chgtDenomFromDrev->changement_affectable, $lotFromDrev->affectable, "L'a
 
 $chgtDenomFromDrev->changement_produit_hash = $drev->lots[1]->produit_hash;
 $chgtDenomFromDrev->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
-$chgtDenomFromDrev->validate();
+$chgtDenomFromDrev->validate($doc_date);
 $chgtDenomFromDrev->changement_affectable = false;
-$chgtDenomFromDrev->validateOdg();
+$chgtDenomFromDrev->validateOdg($doc_date);
 $chgtDenomFromDrev->save();
 
 $t->is($chgtDenomFromDrev->changement_origine_id_document, $drev->_id, "Le changement a bien comme document d'origine ".$drev->_id);
@@ -202,9 +204,9 @@ $t->ok(!$chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_CHANGE_SRC), "Le l
 $t->ok(!$chgtDenomFromDrev->hasLotsUtilises(), "La déclaration n'a pas de lots utilisés");
 
 $chgtDenomFromDrev->devalidate();
-$chgtDenomFromDrev->validate();
+$chgtDenomFromDrev->validate($doc_date);
 $chgtDenomFromDrev->changement_affectable = true;
-$chgtDenomFromDrev->validateOdg();
+$chgtDenomFromDrev->validateOdg($doc_date);
 $chgtDenomFromDrev->save();
 $t->is($chgtDenomFromDrev->lots[0]->affectable, false, "Le lot d'origine du chgt pas affectable");
 $t->is($chgtDenomFromDrev->lots[1]->affectable, true, "Le lot du chgt est affectable");
@@ -223,8 +225,8 @@ $chgtDenomFromDrev->devalidate();
 
 $chgtDenomFromDrev->changement_produit_hash = null;
 $chgtDenomFromDrev->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
-$chgtDenomFromDrev->validate();
-$chgtDenomFromDrev->validateOdg();
+$chgtDenomFromDrev->validate($doc_date);
+$chgtDenomFromDrev->validateOdg($doc_date);
 $chgtDenomFromDrev->save();
 
 $t->is($chgtDenomFromDrev->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Le type est déclassement");
@@ -244,8 +246,8 @@ $chgtDenomFromDrev->devalidate();
 $chgtDenomFromDrev->changement_produit_hash = $lotFromDrev->produit_hash;
 $chgtDenomFromDrev->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
 $chgtDenomFromDrev->changement_affectable = true;
-$chgtDenomFromDrev->validate();
-$chgtDenomFromDrev->validateOdg();
+$chgtDenomFromDrev->validate($doc_date);
+$chgtDenomFromDrev->validateOdg($doc_date);
 $chgtDenomFromDrev->save();
 $t->is(count($chgtDenomFromDrev->lots), 2, "Le changement total produit 2 lots");
 $t->is($chgtDenomFromDrev->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Le type est redevenu un changement de denom");
@@ -270,8 +272,8 @@ $chgtDenomDeChgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identif
 $chgtDenomDeChgtDenom->save();
 $chgtDenomDeChgtDenom->changement_produit_hash = $lotFromDrev->produit_hash;
 $chgtDenomDeChgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
-$chgtDenomDeChgtDenom->validate();
-$chgtDenomDeChgtDenom->validateOdg();
+$chgtDenomDeChgtDenom->validate($doc_date);
+$chgtDenomDeChgtDenom->validateOdg($doc_date);
 $chgtDenomDeChgtDenom->save();
 
 $chgtDenomFromDrev = ChgtDenomClient::getInstance()->find($chgtDenomFromDrev->_id);
@@ -303,7 +305,7 @@ $t->is(count($lots), 3, "3 lots disponibles au changement de denomination (celui
 
 $t->comment("Test via une desgustation");
 
-$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+$lotsPrelevables = DegustationClient::getInstance()->getLotsEnAttente(null);
 $t->is(count($lotsPrelevables), 3, "3 lots en attentes de dégustation");
 
 $degustation = new Degustation();
@@ -353,8 +355,8 @@ $chgtDenom->changement_cepages = array('CABERNET' => $volume);
 $chgtDenom->changement_produit_hash = $lotFromDegustConforme->produit_hash;
 $chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
 $chgtDenom->changement_numero_logement_operateur = "2(ex1)";
-$chgtDenom->validate();
-$chgtDenom->validateOdg();
+$chgtDenom->validate($doc_date);
+$chgtDenom->validateOdg($doc_date);
 $chgtDenom->save();
 
 $t->is(count($chgtDenom->lots), 2, "1 seul lot généré");
@@ -392,8 +394,8 @@ $t->ok($lotFromChgmtRes->getMouvement(Lot::STATUT_NONAFFECTABLE), "statut du lot
 $t->ok(!$lotFromChgmtRes->getMouvement(Lot::STATUT_NONCONFORME), "pas de mouvement du lot non conforme");
 
 $degustProvenance = $lotFromChgmtOrig->getLotProvenance();
-$t->is($degustProvenance->getDocument()->_id, $degustation->_id, 'la provenance du chgt est bien la dégustation '.$degustation->_id);
-$t->ok($degustProvenance->getMouvement(Lot::STATUT_CHANGE_SRC), "statut du lot de la degust à 'revendiqué changé'");
+$t->ok($degustProvenance && ($degustProvenance->getDocument()->_id == $degustation->_id), 'la provenance du chgt est bien la dégustation '.$degustation->_id);
+$t->ok($degustProvenance && $degustProvenance->getMouvement(Lot::STATUT_CHANGE_SRC), "statut du lot de la degust à 'revendiqué changé'");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
@@ -406,8 +408,8 @@ $chgtDenom->changement_volume = 20;
 $chgtDenom->changement_cepages = array('CABERNET' => 10, 'PINOT' => 10);
 $chgtDenom->changement_numero_logement_operateur = "2(ex1)";
 $chgtDenom->changement_affectable = true;
-$chgtDenom->validate();
-$chgtDenom->validateOdg();
+$chgtDenom->validate($doc_date);
+$chgtDenom->validateOdg($doc_date);
 $chgtDenom->save();
 
 $t->is($chgtDenom->changement_origine_id_document, $degustation->_id, "Le changement a bien comme origine ".$degustation->_id);
@@ -458,9 +460,9 @@ $t->is($chgtDenom->lots->get(1)->isRedegustationDejaConforme(), true, "Le lot es
 
 $t->comment("Gestion de l'affectation du lot changé");
 $chgtDenom->devalidate();
-$chgtDenom->validate();
+$chgtDenom->validate($doc_date);
 $chgtDenom->changement_affectable = false;
-$chgtDenom->validateOdg();
+$chgtDenom->validateOdg($doc_date);
 $chgtDenom->save();
 $t->is($chgtDenom->changement_affectable, false, "Le changement n'est plus affectable car changement_affectable = false");
 $t->is($chgtDenom->lots[1]->affectable, false, "Le lot changé n'est plus affectable car changement_affectable = false");
@@ -468,9 +470,9 @@ $t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_NONAFFECTABLE), "Mouve
 $t->ok(!$chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_AFFECTABLE), "Mouvement lot changé affectable car changement_affectable = false");
 
 $chgtDenom->devalidate();
-$chgtDenom->validate();
+$chgtDenom->validate($doc_date);
 $chgtDenom->changement_affectable = true;
-$chgtDenom->validateOdg();
+$chgtDenom->validateOdg($doc_date);
 $chgtDenom->save();
 $t->is($chgtDenom->changement_affectable, true, "Le changement n'est plus affectable car changement_affectable = true");
 $t->is($chgtDenom->lots[1]->affectable, true, "Le lot changé n'est plus affectable car changement_affectable = true");
@@ -500,8 +502,8 @@ $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
 $chgtDenom->changement_volume = $volume;
 $chgtDenom->changement_specificite = "HVE";
 $chgtDenom->changement_affectable = true;
-$chgtDenom->validate();
-$chgtDenom->validateOdg();
+$chgtDenom->validate($doc_date);
+$chgtDenom->validateOdg($doc_date);
 $chgtDenom->save();
 
 $t->ok($chgtDenom->isTotal(), "Le changement qui a un volume identique est bien un changement total");
@@ -524,8 +526,8 @@ $chgtDenom->setLotOrigine($lotFromDegust);
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
 $chgtDenom->changement_volume = 10;
 $chgtDenom->origine_numero_logement_operateur = "2 (ex1)";
-$chgtDenom->validate();
-$chgtDenom->validateOdg();
+$chgtDenom->validate($doc_date);
+$chgtDenom->validateOdg($doc_date);
 $chgtDenom->save();
 
 $chgtDenom->devalidate();
@@ -540,8 +542,8 @@ $t->is($chgtDenom->origine_produit_hash, $lotFromDegust->produit_hash, "l'origin
 
 $t->is(count($chgtDenom->lots), 0, "Le changement n'ayant été approuvé, il ne continet pas de lot");
 
-$chgtDenom->validate();
-$chgtDenom->validateOdg();
+$chgtDenom->validate($doc_date);
+$chgtDenom->validateOdg($doc_date);
 $chgtDenom->save();
 
 $t->is(count($chgtDenom->lots), 1, "Pour un déclassement partiel n'a qu'un seul lot");
@@ -588,8 +590,8 @@ $chgtDenom->changement_specificite = "HVE";
 $chgtDenom->generateLots();
 
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un déclassement total n'a pas de logement editable");
-$chgtDenom->validate();
-$chgtDenom->validateOdg();
+$chgtDenom->validate($doc_date);
+$chgtDenom->validateOdg($doc_date);
 $chgtDenom->save();
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un déclassement total après validation n'a pas de logement editable");
 
@@ -604,8 +606,8 @@ $chgtDenom->generateLots();
 
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un chgt denom total n'est pas editable");
 $t->is($chgtDenom->lots->get(1)->isLogementEditable(), true, "Le lot résultant d'un chgt denom total est editable");
-$chgtDenom->validate();
-$chgtDenom->validateOdg();
+$chgtDenom->validate($doc_date);
+$chgtDenom->validateOdg($doc_date);
 $chgtDenom->save();
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un chgt denom total après validation n'a pas de logement editable");
 
@@ -619,8 +621,8 @@ $chgtDenom->generateLots();
 
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), true, "Le lot d'origine d'un chgt denom partiel a un logement editable");
 $t->is($chgtDenom->lots->get(1)->isLogementEditable(), true, "Le lot resultant d'un chgt denom partiel a un logement editable");
-$chgtDenom->validate();
-$chgtDenom->validateOdg();
+$chgtDenom->validate($doc_date);
+$chgtDenom->validateOdg($doc_date);
 $chgtDenom->save();
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un chgt denom total après validation n'a pas de logement editable");
 $t->is($chgtDenom->lots->get(1)->isLogementEditable(), false, "Le lot d'origine d'un chgt denom total après validation n'a pas de logement editable");
@@ -656,8 +658,8 @@ $form->save();
 $chgtDenom = ChgtDenomClient::getInstance()->find($chgtdenom_sanslot_id);
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
 $chgtDenom->changement_volume = 12;
-$chgtDenom->validate($periode.'-05-01');
-$chgtDenom->validateOdg($periode.'-05-01');
+$chgtDenom->validate($periode.'-12-01');
+$chgtDenom->validateOdg($periode.'-12-01');
 $chgtDenom->save();
 
 $t->ok($chgtDenom->isValidee(), "Le changement est validé");
@@ -706,8 +708,8 @@ $chgtDenomFromDrev->changement_volume = 50;
 $chgtDenomFromDrev->changement_produit_hash = $lot->produit_hash;
 $chgtDenomFromDrev->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
 $chgtDenomFromDrev->changement_date_commission = $dateLotchange;
-$chgtDenomFromDrev->validate();
-$chgtDenomFromDrev->validateOdg();
+$chgtDenomFromDrev->validate($doc_date);
+$chgtDenomFromDrev->validateOdg($doc_date);
 $chgtDenomFromDrev->save();
 
 $drevM01 = DRevClient::getInstance()->find($drevM01->_id);
@@ -739,8 +741,8 @@ $chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $lotD
 $chgtDenom->changement_volume = 25;
 $chgtDenom->changement_produit_hash = $lot->produit_hash;
 $chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
-$chgtDenom->validate();
-$chgtDenom->validateOdg();
+$chgtDenom->validate($doc_date);
+$chgtDenom->validateOdg($doc_date);
 $chgtDenom->save();
 
 $drevM01 = DRevClient::getInstance()->find($drevM01->_id);

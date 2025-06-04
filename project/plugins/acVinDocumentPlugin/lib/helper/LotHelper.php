@@ -3,7 +3,10 @@
 function showOnlyProduit($lot, $show_always_specificite = true, $tag = 'small')
 {
 
-  $text = $lot->produit_libelle." <".$tag.">";
+  $text = $lot->produit_libelle." ";
+  if($tag) {
+      $text .= "<".$tag.">";
+  }
   $text .= ($lot->millesime) ? $lot->millesime : "";
   if ($show_always_specificite || DegustationConfiguration::getInstance()->hasSpecificiteLotPdf()) {
       if($lot->specificite && $lot->specificite !== Lot::SPECIFICITE_UNDEFINED){
@@ -15,12 +18,15 @@ function showOnlyProduit($lot, $show_always_specificite = true, $tag = 'small')
       }
   }
 
-  $text .= "</".$tag.">";
-  return $text;
+  if($tag) {
+      $text .= "</".$tag.">";
+  }
+  return trim($text);
 }
 
 function showProduitCepagesLot($lot, $show_always_specificite = true, $tagSmall = 'small')
-{   $text = "";
+{
+    $text = "";
     $text .= showOnlyProduit($lot, $show_always_specificite, $tagSmall);
     $text .= showOnlyCepages($lot, null, $tagSmall);
     return $text;
@@ -28,7 +34,10 @@ function showProduitCepagesLot($lot, $show_always_specificite = true, $tagSmall 
 
 function showOnlyCepages($lot, $maxcars = null, $tag = 'small') {
   $text = '';
-  $html = " <".$tag." class='text-muted'>";
+  $html = "";
+  if($tag) {
+      $html = " <".$tag." class='text-muted'>";
+  }
   if ($lot instanceof stdClass) {
     $total = $lot->volume;
     foreach ($lot->cepages as $cepage => $hl) {
@@ -42,14 +51,16 @@ function showOnlyCepages($lot, $maxcars = null, $tag = 'small') {
         $text .= $lot->details;
     }
   }
-  if (!$text) {
+  if (!$text && $tag) {
     return " <".$tag.">&nbsp;</".$tag.">";
   }
   if ($maxcars) {
       $text = substrUtf8($text, 0, $maxcars);
   }
   $html .= $text;
-  $html .= "</".$tag.">";
+  if($tag) {
+      $html .= "</".$tag.">";
+  }
   return $html;
 }
 
@@ -68,7 +79,7 @@ function getUrlEtapeFromMvtLot($mvtLot)
 
     switch ($mvtLot->value->statut) {
         case Lot::STATUT_MANQUEMENT_EN_ATTENTE:
-            return url_for('degustation_manquements');
+            return url_for('degustation_nonconformites');
 
         case Lot::STATUT_NONCONFORME :
         case Lot::STATUT_CONFORME :
@@ -114,7 +125,7 @@ function pictoDegustable($lot) {
     return '<span title="Réputé conforme" style="opacity: 0.5;" class="text-muted glyphicon glyphicon-ok"></span>';
 }
 
-function showLotStatusCartouche($lot_ou_mvt_value) {
+function showLotStatusCartouche($lot_ou_mvt_value, $with_details = true) {
     $statut = $lot_ou_mvt_value->statut;
     $detail = null;
     if(isset($lot_ou_mvt_value->detail)) {
@@ -143,17 +154,23 @@ function showLotStatusCartouche($lot_ou_mvt_value) {
         $text .= Lot::$libellesStatuts[$statut];
     }
     $text .= '</span>';
-    if($detail) {
+    if($detail && $with_details) {
         $text .= "<span data-toggle=\"tooltip\" data-html=\"true\" title=\"$detail\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-".$labelClass."'>".$detail."</span>";
+    }
+    if (isset($lot_ou_mvt_value->region) && $lot_ou_mvt_value->region === "AOPGAILLAC") {
+        $text = str_ireplace("conform", "acceptabl", $text);
     }
     return $text;
 }
 
-function showLotPublicStatusCartouche($mvt_value) {
+function showLotPublicStatusCartouche($mvt_value, $with_details = true) {
     if (MouvementLotHistoryView::isWaitingLotNotification($mvt_value)) {
         return "<span data-toggle=\"tooltip\" data-html=\"true\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-default'>En attente de contrôle</span>";
     }
-    return showLotStatusCartouche($mvt_value);
+    if (strpos($mvt_value->detail, ' anon') !== false) {
+        $mvt_value->detail = '';
+    }
+    return showLotStatusCartouche($mvt_value, $with_details);
 }
 function showSummerizedLotPublicStatusCartouche($mvt_value) {
     if (MouvementLotHistoryView::isWaitingLotNotification($mvt_value)) {
@@ -163,4 +180,10 @@ function showSummerizedLotPublicStatusCartouche($mvt_value) {
 
 function substrUtf8($str, $offset, $length) {
   return utf8_encode(substr(utf8_decode($str), $offset, $length));
+}
+
+function clarifieTypeDocumentLibelle($type) {
+    $result = str_replace('Transaction', 'VracExport', $type);
+    $result = str_replace('TRANSACTION', 'VRAC_EXPORT', $result);
+    return $result;
 }

@@ -49,7 +49,7 @@
             <header id="header" class="container <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) || $sf_params->get('modeMobile')): ?>hidden-xs hidden-sm<?php endif; ?>" role="banner">
                 <div id="logo">
                     <a href="<?php echo url_for('accueil') ?>" title="AVA - Association des viticulteurs d'alsace | Retour à la page d'accueil">
-                        <img src="/images/logo_site.png" alt="AVA - Association des viticulteurs d'alsace" />
+                        <img src="/images/logo_ava.png" alt="AVA - Association des viticulteurs d'alsace" />
                     </a>
                 </div>
                 <h1 id="header_titre" class="sr-only">Portail de l'association<br /> des viticulteurs d'alsace</h1>
@@ -95,7 +95,7 @@
 
             <section id="content" class="container">
               <?php if(sfConfig::get('app_instance') == 'preprod' ): ?>
-                <div><p style="color:red; text-align:center; font-weight: bold;">Preproduction (la base est succeptible d'être supprimée à tout moment)</p></div>
+                <div><p style="color:red; text-align:center; font-weight: bold;">Preproduction (la base est susceptible d'être supprimée à tout moment)</p></div>
               <?php endif; ?>
                 <div style="margin-bottom: 20px;"></div>
                 <?php echo $sf_content ?>

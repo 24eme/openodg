@@ -9,30 +9,31 @@ class ParcellaireIntentionAffectationClient extends acCouchdbClient {
           return acCouchdbManager::getClient("parcellaireIntentionAffectation");
       }
 
-      public function createDoc($identifiant, $periode, $papier = false, $date = null, $type = self::TYPE_COUCHDB) {
+      public function createDoc($identifiant, $periode, $papier = false, $date = null) {
       	if (!$date) {
           $date = date('Y-m-d');
         }
-        return $this->createOrGetDocFromIdentifiantAndDate($identifiant, $periode, $papier, $date, $type);
+        return $this->createOrGetDocFromIdentifiantAndDate($identifiant, $periode, $papier, $date);
       }
 
-      public function createOrGetDocFromIdentifiantAndDate($identifiant, $periode, $papier = false, $date = null, $type = self::TYPE_COUCHDB)
+      public function createOrGetDocFromIdentifiantAndDate($identifiant, $periode, $papier = false, $date = null)
       {
           $doc_found = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
           if ($doc_found && $doc_found->date === $date) {
+              $doc_found->cleanNonAffectee();
               return $doc_found;
           }
           if (!$doc_found) {
 	          $parcellaireIntentionAffectation = new ParcellaireIntentionAffectation();
-	          $parcellaireIntentionAffectation->initDoc($identifiant, $periode, $date, $type);
+	          $parcellaireIntentionAffectation->initDoc($identifiant, $periode, $date);
               $parcellaireIntentionAffectation->storeDeclarant();
-              $parcellaireIntentionAffectation->storeParcelles();
 	          $parcellaireIntentionAffectation->add('papier', 1);
           } else {
               $doc_found->date = $date;
               $parcellaireIntentionAffectation = clone $doc_found;
-              $parcellaireIntentionAffectation->initDoc($identifiant, $periode, $date, $type);
+              $parcellaireIntentionAffectation->initDoc($identifiant, $periode, $date);
               $parcellaireIntentionAffectation->updateParcelles();
+              $parcellaireIntentionAffectation->cleanNonAffectee();
           }
           //$parcellaireIntentionAffectation->save();
           return $parcellaireIntentionAffectation;

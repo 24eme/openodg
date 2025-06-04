@@ -23,6 +23,7 @@ class GenerationClient extends acCouchdbClient {
     const HISTORY_VALUES_SOMME = 2;
     const HISTORY_VALUES_STATUT = 3;
     const HISTORY_VALUES_LIBELLE = 4;
+    const HISTORY_VALUES_REGION = 5;
     const GENERATION_STATUT_ENATTENTE = "EN ATTENTE";
     const GENERATION_STATUT_ENCOURS = "EN COURS";
     const GENERATION_STATUT_GENERE = "GENERE";
@@ -41,7 +42,7 @@ class GenerationClient extends acCouchdbClient {
         return 'GENERATION-' . $type_document . '-' . $date;
     }
 
-    public function findHistory($limit = 10) {
+    public function findHistory($limit = 10, $region = null) {
         $rows = acCouchdbManager::getClient()
         ->limit($limit)
         ->descending(true)
@@ -53,21 +54,28 @@ class GenerationClient extends acCouchdbClient {
         return $rows;
     }
 
-    public function findHistoryWithType($types, $limit = 100) {
+    public function findHistoryWithType($types, $limit = 100, $region = null) {
         if(!is_array($types)) {
             $types = array($types);
         }
 
         $rows = array();
-
         foreach($types as $type) {
-            $rows = array_merge($rows, acCouchdbManager::getClient()
+            foreach( acCouchdbManager::getClient()
                         ->startkey(array($type, array()))
                         ->endkey(array($type))
                         ->descending(true)
-                        ->limit($limit)
+                        ->limit($limit * 10)
                         ->getView("generation", "history")
-                        ->rows);
+                        ->rows as $r ) {
+                            if ($region && $r->value[self::HISTORY_VALUES_REGION] != $region) {
+                                continue;
+                            }
+                            $rows[] = $r;
+                            if (count($rows) > $limit) {
+                                break;
+                            }
+                        }
         }
 
         uasort($rows, "GenerationClient::sortHistoryByDate");

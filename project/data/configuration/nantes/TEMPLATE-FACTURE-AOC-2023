@@ -1,0 +1,160 @@
+{
+  "_id": "TEMPLATE-FACTURE-AOC-2023",
+  "type": "TemplateFacture",
+  "campagne": 2023,
+  "template": "AOC",
+  "libelle": "2023 - AOC Vins de Nantes",
+  "docs": [
+    "DRev"
+  ],
+  "cotisations": {
+    "00_odg_forfait": {
+      "fallback": true,
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation ODG Forfait",
+      "code_comptable": "706000",
+      "details": {
+        "00_forfait": {
+          "modele": "CotisationFixe",
+          "callback": null,
+          "prix": 180,
+          "tva": 0,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ]
+        }
+      }
+    },
+    "01_odg": {
+      "minimum": 180,
+      "minimum_fallback": "00_odg_forfait",
+      "modele": "CotisationsCollection",
+      "libelle": "Cotisation ODG",
+      "code_comptable": "706000",
+      "details": {
+        "00_superficie": {
+          "modele": "CotisationVariable",
+          "prix": 25,
+          "tva": 0,
+          "libelle": "Superficie",
+          "complement_libelle": "",
+          "unite": "ha",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getSuperficieFromDR"
+        },
+        "01_volume": {
+          "modele": "CotisationVariable",
+          "prix": 1.8,
+          "tva": 0,
+          "libelle": "Volume",
+          "complement_libelle": "",
+          "unite": "hl",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeVinifiableFromDR",
+          "callback_parameters": {
+            "appellations": "lieux/DEFAUT"
+          }
+        },
+        "02_volumecru": {
+          "modele": "CotisationVariable",
+          "prix": 5,
+          "tva": 0,
+          "libelle": "Volume DGC",
+          "complement_libelle": "",
+          "unite": "hl",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeVinifiableFromDR",
+          "callback_parameters": {
+            "appellations": "NOT lieux/DEFAUT"
+          }
+        },
+        "03_vci": {
+          "modele": "CotisationVariable",
+          "prix": 1.8,
+          "tva": 0,
+          "libelle": "VCI",
+          "complement_libelle": "",
+          "unite": "hl",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getTotalVolumeRevendiqueVCI"
+        }
+      }
+    },
+    "02_valorisation": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation valorisation",
+      "code_comptable": "706000",
+      "details": {
+        "00_superficie": {
+          "modele": "CotisationVariable",
+          "prix": 25,
+          "tva": 0.2,
+          "libelle": "Superficie",
+          "complement_libelle": "",
+          "unite": "ha",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getSuperficieFromDR"
+        },
+        "01_volume": {
+          "modele": "CotisationVariable",
+          "prix": 2.3,
+          "tva": 0.2,
+          "libelle": "Volume",
+          "complement_libelle": "",
+          "unite": "hl",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeVinifiableFromDR"
+        },
+        "02_vci": {
+          "modele": "CotisationVariable",
+          "prix": 2.3,
+          "tva": 0.2,
+          "libelle": "VCI",
+          "complement_libelle": "",
+          "unite": "hl",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getTotalVolumeRevendiqueVCI"
+        }
+      }
+    },
+    "03_inao": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Droits I.N.A.O. (Art. 34, Loi 88/11/93 du 29/12/1988)",
+      "code_comptable": "706000",
+      "details": {
+        "00_volume": {
+          "modele": "CotisationVariable",
+          "prix": 0.15,
+          "tva": 0,
+          "libelle": "",
+          "complement_libelle": "",
+          "unite": "hl",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getTotalVolumeRevendique"
+        }
+      }
+    }
+  }
+}

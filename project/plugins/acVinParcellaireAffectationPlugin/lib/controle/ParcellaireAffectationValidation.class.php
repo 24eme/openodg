@@ -11,10 +11,29 @@ class ParcellaireAffectationValidation extends DocumentValidation {
     }
 
     public function configure() {
-
+        $this->addControle(self::TYPE_WARNING, 'superficie_douane_depassee', "La superficie affectée est supérieure à celle de votre déclaration douanière");
+        $this->addControle(self::TYPE_WARNING, 'sans_appellation_syndicat', "Produits gérés par le syndicat");
     }
 
     public function controle() {
+        $appellationGeree = false;
+        $appellations = ConfigurationClient::getCurrent()->getProduits();
+        foreach ($this->document->getParcelles() as $parcelle) {
+            if ($parcelle->getConfig() && $parcelle->getConfig()->getAppellation()->getKey() != Configuration::DEFAULT_KEY) {
+                $appellationGeree = true;
+            }
 
+            if (! $parcelle->affectee) {
+                continue;
+            }
+
+            if ($parcelle->getSuperficieParcellaire() < $parcelle->superficie) {
+                $this->addPoint(self::TYPE_WARNING, 'superficie_douane_depassee', "La parcelle <strong>$parcelle->section / $parcelle->numero_parcelle</strong> ($parcelle->superficie ha) dépasse celle de votre parcellaire (".$parcelle->getSuperficieParcellaire()." ha)");
+            }
+        }
+
+        if ($appellationGeree === false) {
+            $this->addPoint(self::TYPE_WARNING, 'sans_appellation_syndicat', "Aucune parcelle n'a de produit géré par le syndicat");
+        }
     }
 }

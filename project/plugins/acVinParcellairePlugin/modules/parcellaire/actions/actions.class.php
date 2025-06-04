@@ -69,7 +69,6 @@ class parcellaireActions extends sfActions {
     {
         $this->secureTeledeclarant();
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $parcellaire_client = ParcellaireClient::getInstance();
         $this->noscrape = $request->getParameter('noscrape', false);
 
         try {
@@ -79,10 +78,13 @@ class parcellaireActions extends sfActions {
 
             $msg = '';
 
-            if (! $parcellaire_client->saveParcellaire($this->etablissement, $errors, null, !($this->noscrape)) ) {
+            if (! ParcellaireClient::getInstance()->saveParcellaire($this->etablissement, $errors, null, !($this->noscrape)) ) {
                 $msg = $errors['csv'].'\n'.$errors['json'];
             }
         } catch (Exception $e) {
+            if (sfConfig::get('sf_environment') == 'dev') {
+                throw $e;
+            }
             $msg = $e->getMessage();
         }
 
@@ -180,7 +182,7 @@ class parcellaireActions extends sfActions {
         header("Cache-Control: public");
         header("Expires: 0");
 
-        $ods = new ExportParcellaireControleODS($parcellaire);
+        $ods = new ExportParcellaireControleODS($parcellaire, $request->getParameter('appellation_filter', 'CDP'));
         echo $ods->create();
 
         exit;
@@ -274,5 +276,12 @@ class parcellaireActions extends sfActions {
         if(!$this->getUser()->isAdmin() && !$this->getUser()->isStalker() && (!class_exists("SocieteConfiguration") || !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration())) {
             throw new sfError403Exception();
         }
+    }
+
+    public function executePotentieldeproduction(sfWebRequest $request) {
+        $this->secureTeledeclarant();
+        $this->parcellaire = $this->getRoute()->getParcellaire();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->parcellaire);
     }
 }

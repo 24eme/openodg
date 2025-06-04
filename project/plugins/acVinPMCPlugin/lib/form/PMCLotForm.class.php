@@ -11,10 +11,19 @@ class PMCLotForm extends TransactionLotForm
         $this->setWidget('engagement_8515', new sfWidgetFormInputCheckbox());
         $this->setValidator('engagement_8515', new sfValidatorBoolean());
 
-        for($i = 0; $i < self::NBCEPAGES; $i++) {
-            unset($this['cepage_'.$i]);
-            unset($this['repartition_'.$i]);
+        if ($this->getObject()->getDocument()->getType() === PMCNCClient::TYPE_MODEL) {
+            unset($this->widgetSchema['produit_hash']);
+            unset($this->validatorSchema['produit_hash']);
+            unset($this->widgetSchema['millesime']);
+            unset($this->validatorSchema['millesime']);
+            unset($this->widgetSchema['engagement_8515']);
+            unset($this->validatorSchema['engagement_8515']);
         }
+
+        unset($this->widgetSchema['specificite']);
+        unset($this->validatorSchema['specificite']);
+        $this->setWidget('specificite', new bsWidgetFormInput(array(), array()));
+        $this->setValidator('specificite', new sfValidatorString(array('required' => false)));
 
         $this->widgetSchema->setNameFormat('[%s]');
     }
@@ -26,6 +35,11 @@ class PMCLotForm extends TransactionLotForm
     }
 
     public function doUpdateObject($values) {
+        if ($this->getObject()->getDocument()->getType() === PMCNCClient::TYPE_MODEL) {
+            $values['produit_hash'] = $this->getObject()->getDocument()->getLotOrigine()->produit_hash;
+            $values['produit_libelle'] = $this->getObject()->getDocument()->getLotOrigine()->produit_libelle;
+            $values['millesime'] = $this->getObject()->getDocument()->getLotOrigine()->millesime;
+        }
         parent::doUpdateObject($values);
 
         if (!empty($values['date_degustation_voulue'])) {
@@ -33,16 +47,27 @@ class PMCLotForm extends TransactionLotForm
         }
     }
 
-    public function getProduits()
+    public function getProduits($filter_hash = null)
     {
         $produits = [];
 
-        foreach ($this->getObject()->getDocument()->getConfigProduits() as $produit) {
-            if ($produit->isActif() === false) {
-                continue;
-            }
+        foreach($this->getObject()->getDocument()->getHabilitation()->getProduits() as $appellation) {
+            $appellationConfig = $appellation->getConfig();
+            foreach($appellationConfig->getProduitsAll() as $produitConfig) {
+                if ($produitConfig->isActif() === false) {
+                    continue;
+                }
 
-            $produits[$produit->getHash()] = $produit->getLibelleComplet();
+                if ($filter_hash && $filter_hash !== $produitConfig->getHash()) {
+                    continue;
+                }
+
+                $produits[$produitConfig->getHash()] = $produitConfig->getLibelleComplet();
+            }
+        }
+
+        if ($filter_hash) {
+            return $produits;
         }
 
         return array_merge(['' => ''], $produits);

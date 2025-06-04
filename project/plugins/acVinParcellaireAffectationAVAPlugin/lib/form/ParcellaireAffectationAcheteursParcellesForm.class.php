@@ -42,7 +42,7 @@ class ParcellaireAffectationAcheteursParcellesForm extends ParcellaireAffectatio
 
                 $this->setWidget($parcelle->getHash(), new sfWidgetFormChoice(array('choices' => $this->getAcheteurs(), 'multiple' => true, 'expanded' => true)));
                 $this->setValidator($parcelle->getHash(), new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));
-                $this->getWidget($parcelle->getHash())->setLabel("Parcelle n° ". $parcelle->section. "/".$parcelle->numero_parcelle . " à ".$parcelle->commune. " de ".$parcelle->getSuperficie()." ares");
+                $this->getWidget($parcelle->getHash())->setLabel("Parcelle n° ". $parcelle->section. "/".$parcelle->numero_parcelle . " à ".$parcelle->commune. " de ".$parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)." ares");
             }
         }
 

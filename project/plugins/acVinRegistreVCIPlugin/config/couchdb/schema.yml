@@ -50,6 +50,7 @@ RegistreVCI:
                               rafraichi: { type: float }
                               constitue: { type: float }
                               stock_final: { type: float }
+      region: { required: false }
       lignes:
         type: array_collection
         definition:
@@ -67,6 +68,7 @@ RegistreVCI:
                   mouvement_type: {}
                   volume: {}
                   stock_resultant: {}
+                  origine: {  }
       mouvements:
         type: collection
         definition:

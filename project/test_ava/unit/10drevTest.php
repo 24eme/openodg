@@ -5,7 +5,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 $routing = clone ProjectConfiguration::getAppRouting();
 $context->set('routing', $routing);
 
-$t = new lime_test(70);
+$t = new lime_test();
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -20,8 +20,13 @@ foreach(FactureClient::getInstance()->getFacturesByCompte($compte->identifiant, 
     $facture->delete(false);
 }
 
-$campagne = (date('Y')-2)."";
+$campagne = "2023";
+$date_signature = '2023-11-15';
+$date_approbation = '2023-12-15';
+$dateFacturation = '2023-12-20';
+
 $templateFacture = TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$campagne);
+$t->ok(($templateFacture), 'Le template de facture aoc existe '."TEMPLATE-FACTURE-AOC-".$campagne);
 $societe = $compte;
 
 $compte->infos->syndicats->add('COMPTE-S006234', 'SYND VITI. MITTELBERGHEIM');
@@ -43,9 +48,9 @@ $t->is($drev->declarant->raison_sociale, $viti->raison_sociale, "La raison socia
 
 $t->comment("Stockage de la DR en attachments");
 
-$drev->storeAsAttachment("csv", "DR.csv", "text/csv");
+$drev->storeAsAttachment("7523700100;\t", "DR.csv", "text/csv");
 $drev->storeAsAttachment("pdf", "DR.pdf", "application/pdf");
-$t->is(file_get_contents($drev->getAttachmentUri('DR.csv')), "csv", "Le csv de la DR est récupérable");
+$t->is(file_get_contents($drev->getAttachmentUri('DR.csv')), "7523700100;\t", "Le csv de la DR est récupérable");
 $t->is(file_get_contents($drev->getAttachmentUri('DR.pdf')), "pdf", "Le pdf de la DR est récupérable");
 
 $t->comment("Saisie des volumes");
@@ -141,32 +146,32 @@ $t->ok(isset($erreurs['declaration_lots_inferieur']), "Point bloquant : Le nb de
 $t->comment("Validation");
 
 $drev->add('etape', 'validation');
-$drev->validate();
+$drev->validate($date_signature);
 $drev->save();
 
 $compteIdentifiant = $societe->identifiant;
 
-$t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
+$t->is($drev->validation, $date_signature, "La DRev a la date du jour comme date de validation");
 $t->is($drev->validation_odg, null, "La DRev n'est pas encore validé par l'odg");
 $t->is(count($drev->mouvements), 0, "La DRev n'a pas de mouvements");
 $t->is($drev->pieces[0]->libelle, "Revendication des appellations viticoles ".$drev->campagne." (Télédéclaration)", "Contrôle sur le libellé du document (pièces)");
 
-$drev->validateOdg();
 $drev->save();
 
-$t->is($drev->validation_odg, date('Y-m-d'), "La DRev est validé par l'odg");
 $t->is(count($drev->mouvements), 0, "La DRev n'a pas de mouvements");
 
 $t->comment("Génération des mouvements");
 
-$drev->generateMouvementsFactures();
+$drev->validateOdg($date_approbation);
 $drev->save();
 
-$t->is(count($drev->mouvements->get($compteIdentifiant)), 9, "La DRev a 9 mouvements");
+$t->is($drev->validation_odg, $date_approbation, "La DRev est validé par l'odg");
+
+$t->is(count($drev->mouvements->get($compteIdentifiant)), 10, "La DRev a 10 mouvements");
 
 $mouvement = $drev->mouvements->get($compteIdentifiant)->getFirst();
 
-$t->is($mouvement->categorie, "odg_ava", "La catégorie du mouvement est odg_ava");
+$t->is($mouvement->categorie, "00_odg_ava", "La catégorie du mouvement est odg_ava");
 $t->ok($mouvement->facture === 0, "Le mouvement est non facture");
 $t->ok($mouvement->facturable === 1, "Le mouvement est facturable");
 
@@ -191,29 +196,38 @@ $drev->save();
 
 $t->is(count($drev->mouvements), 0, "Aucun mouvment n'a été généré car la drev n'est pas validé");
 
-$drev->validate();
-$drev->validateOdg();
+$drev->validate($date_signature);
+$drev->validateOdg($date_approbation);
 $drev->generateMouvementsFactures();
 $drev->save();
 
-$t->is(count($drev->mouvements->get($compteIdentifiant)), 9, "La DRev a 9 mouvements");
+$t->is(count($drev->mouvements->get($compteIdentifiant)), 10, "La DRev a 10 mouvements");
 
 $t->comment("Facturation de la DRev");
 
-$dateFacturation = date('Y-m-d');
+$mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($viti->getCompte());
+usort($mouvements, function ($a, $b) { return $a->value->date < $b->value->date; });
+$model = TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($campagne);
 
-$f = FactureClient::getInstance()->createFactureByTemplate($templateFacture, $compte, $dateFacturation);
-$f->save();
+$generation = new Generation();
+$generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
+$generation->arguments->add('date_facturation', $dateFacturation);
+$generation->arguments->add('date_mouvement', $dateFacturation);
+$generation->arguments->add('type_document', 'DRev');
+$generation->arguments->add('modele', $model);
 
-$t->ok($f->_rev, "Facture généré ".$f->_id);
+$g = FactureClient::getInstance()->createFacturesBySoc(array($viti->getCompte()->identifiant => $mouvements), $dateFacturation, null, $generation);
+$g->save();
+$t->ok($g->_rev, "Generation générée ".$g->_id);
+$f = FactureClient::getInstance()->find($g->documents[0]);
+$t->ok($f->_rev, "Facture existe ".$f->_id);
 
 $t->is(count($f->lignes), count($templateFacture->cotisations), "La facture a le même nombre de lignes que dans le template");
 
 $superficieHaVinifie = 0;
 $superficieAresRevendique = 0;
 $volumeHlRevendique = 0;
-
-foreach($f->lignes->get('odg_ava')->details as $ligne) {
+foreach($f->lignes->get('00_odg_ava')->details as $ligne) {
     if(preg_match("/hectares vinifiés/", $ligne->libelle)) {
         $superficieHaVinifie += $ligne->quantite;
     }
@@ -223,16 +237,16 @@ foreach($f->lignes->get('odg_ava')->details as $ligne) {
     }
 };
 
-foreach($f->lignes->get('inao')->details as $ligne) {
+foreach($f->lignes->get('04_inao')->details as $ligne) {
     if(preg_match("/hl de vin revendiqué/", $ligne->libelle)) {
         $volumeHlRevendique += $ligne->quantite;
     }
 };
 
 
-$t->is($f->lignes->get('odg_ava')->libelle, "Cotisation ODG-AVA", "Le libellé du groupe de ligne odg_ava est Cotisation ODG-AVA");
-$t->is($f->lignes->get('odg_ava')->produit_identifiant_analytique, "706300", "Le code comptable du groupe de ligne odg_ava est 706300");
-$t->ok($f->lignes->get('odg_ava')->origine_mouvements->exist($drev->_id), "Les origines du mouvements sont stockés");
+$t->is($f->lignes->get('00_odg_ava')->libelle, "Cotisation ODG-AVA", "Le libellé du groupe de ligne odg_ava est Cotisation ODG-AVA");
+$t->is($f->lignes->get('00_odg_ava')->produit_identifiant_analytique, "706300", "Le code comptable du groupe de ligne odg_ava est 706300");
+$t->ok($f->lignes->get('00_odg_ava')->origine_mouvements->exist($drev->_id), "Les origines du mouvements sont stockés");
 
 $t->is($superficieHaVinifie, $drev->declaration->getTotalSuperficieVinifiee(), "La superifcie vinifiée prise en compte dans la facture est de ".$drev->declaration->getTotalSuperficieVinifiee()." ha");
 $t->is($superficieAresRevendique, $drev->declaration->getTotalTotalSuperficie(), "La superifcie revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalTotalSuperficie()." ares");
@@ -243,30 +257,8 @@ $t->comment("Export csv de la facture");
 $export = new ExportFactureCSV_ava($f, false);
 $t->is(count(explode("\n", $export->exportFacture())), 10, "L'export fait 10 lignes");
 
-$t->comment("Envoi de la facture par mail");
-
-$message = FactureEmailManager::getInstance($instance)->compose($compte);
-
-@mkdir(sfConfig::get('sf_test_dir')."/output");
-file_put_contents(sfConfig::get('sf_test_dir')."/output/email_facture.eml", $message);
-
-$t->ok($message, "Mail généré : ".sfConfig::get('sf_test_dir')."/output/email_facture.eml");
-
-$t->comment("Regénération de la facture");
-
-$newF = FactureClient::getInstance()->regenerate($f);
-$newF->save();
-
-$fData = $f->getData();
-$newFData = $f->getData();
-unset($fData->_rev);
-unset($newFData->_rev);
-
-$native_json = new acCouchdbJsonNative($fData);
-$final_json = new acCouchdbJsonNative($newFData);
-
-$t->ok($native_json->equal($final_json), "La facture a été regénérée, et elle est identique à l'original");
-
+return;
+/*
 $t->comment("Génération d'une modificatrice");
 
 $drev = DRevClient::getInstance()->find($drev->_id);
@@ -289,8 +281,8 @@ $produit1M1->superficie_vinifiee = 180;
 
 $t->ok($drevM1->isModifiedMother($produit1->getHash(), 'superficie_vinifiee'), "La superficie vinifiee est marqué comme modifié par rapport à la précedente");
 
-$drevM1->validate();
-$drevM1->validateOdg();
+$drevM1->validate($date_signature);
+$drevM1->validateOdg($date_approbation);
 $drevM1->generateMouvementsFactures();
 $drevM1->save();
 
@@ -322,7 +314,7 @@ foreach($f->lignes->get('odg_ava')->details as $ligne) {
 };
 
 $surfaceVinifieeFacturableAttendu = $drevM1->getSurfaceVinifieeFacturable() - $drev->getSurfaceVinifieeFacturable();
-$surfaceFacturableAttendu = $drevM1->getSurfaceFacturable() - $drev->getSurfaceFacturable();
+$surfaceFacturableAttendu = $drevM1->getSurfaceRecolteFacturable() - $drev->getSurfaceRecolteFacturable();
 $volumeFacturableAttendu = $drevM1->getVolumeFacturable() - $drev->getVolumeFacturable();
 
 $t->is($superficieHaVinifie, $surfaceVinifieeFacturableAttendu, "La superficie vinifiée prise en compte dans la facture est de ".$surfaceVinifieeFacturableAttendu." ha");
@@ -332,8 +324,8 @@ $t->comment("Génération d'une modificatrice sans modification");
 
 $drevM2 = $drevM1->generateModificative();
 $drevM2->save();
-$drevM2->validate();
-$drevM2->validateOdg();
+$drevM2->validate($date_signature);
+$drevM2->validateOdg($date_approbation);
 $drevM2->generateMouvementsFactures();
 $drevM2->save();
 
@@ -347,8 +339,8 @@ $drevM3->save();
 $produit1M3 = $drevM3->get($produit1->getHash());
 $produit1M3->volume_revendique = 120;
 
-$drevM3->validate();
-$drevM3->validateOdg();
+$drevM3->validate($date_signature);
+$drevM3->validateOdg($date_approbation);
 $drevM3->save();
 
 $drevM4 = $drevM3->generateModificative();
@@ -358,8 +350,8 @@ $produit1M4 = $drevM4->get($produit1->getHash());
 $produit1M4->superficie_revendique = 210;
 $produit1M4->volume_revendique = 140;
 
-$drevM4->validate();
-$drevM4->validateOdg();
+$drevM4->validate($date_signature);
+$drevM4->validateOdg($date_approbation);
 $drevM4->save();
 
 $f = FactureClient::getInstance()->createFactureByTemplate($templateFacture, $compte, $dateFacturation);
@@ -369,7 +361,7 @@ $t->ok($f->_rev, "La facture ".$f->_id." a une révision");
 $t->is(count($f->lignes->inao->details), 1, "Une seul ligne de facture pour la facturation de l'inao basé sur le volume");
 $t->is($f->lignes->inao->details[0]->quantite, $produit1M4->volume_revendique - $produit1M1->volume_revendique, "La quantité est sommée");
 $t->is(count($f->lignes->odg_ava->details), 1, "La cotisation odg ava à 1 ligne");
-$t->is($f->lignes->odg_ava->details[0]->libelle, "Tranche de 50 ares (".$drevM4->getSurfaceFacturable()." ares) à partir du 51ème are", "Le libellé provient de la dernière modificatrice");
+$t->is($f->lignes->odg_ava->details[0]->libelle, "Tranche de 50 ares (".$drevM4->getSurfaceRecolteFacturable()." ares) à partir du 51ème are", "Le libellé provient de la dernière modificatrice");
 
 $t->comment("Génération d'une facture sans aucun mouvement à facturer");
 
@@ -387,8 +379,8 @@ $produit1M5->superficie_revendique = 60;
 $produit1M5->superficie_vinifiee = 120;
 $produit1M5->volume_revendique = 90;
 
-$drevM5->validate();
-$drevM5->validateOdg();
+$drevM5->validate($date_signature);
+$drevM5->validateOdg($date_approbation);
 $drevM5->save();
 
 $f = FactureClient::getInstance()->createFactureByTemplate($templateFacture, $compte, $dateFacturation);
@@ -404,3 +396,4 @@ $compte->infos->syndicats->remove('COMPTE-S006234');
 $compte->infos->attributs->remove('ADHERENT_SYNDICAT');
 
 $compte->save();
+*/

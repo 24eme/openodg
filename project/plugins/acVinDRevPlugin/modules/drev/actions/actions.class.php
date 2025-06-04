@@ -127,6 +127,9 @@ class drevActions extends sfActions {
     	$this->drev = $this->getRoute()->getDRev();
     	$this->secure(DRevSecurity::EDITION, $this->drev);
 
+        if ($this->drev->hasDocumentDouanier()) {
+            return $this->redirect('drev_revendication_superficie', $this->drev);
+        }
         try {
             $imported = $this->drev->resetAndImportFromDocumentDouanier();
         } catch (Exception $e) {
@@ -196,13 +199,15 @@ class drevActions extends sfActions {
         	return $this->redirect('drev_revendication_superficie', $this->drev);
         }
 
-        $this->form->save();
-
         try {
+            $this->form->save();
             if (!$this->drev->resetAndImportFromDocumentDouanier()) {
                 throw new sfException("Mauvais format");
             }
         } catch(Exception $e) {
+            if($this->form->getFichier()) {
+                $this->form->getFichier()->delete();
+            }
 
             $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus ('.$e->getMessage().').';
 
@@ -326,11 +331,9 @@ class drevActions extends sfActions {
         }
 
         if (!count($this->drev->declaration)) {
-            $drev_previous = DRevClient::getInstance()->find(sprintf("DREV-%s-%s", $this->drev->identifiant, $this->drev->periode - 1));
-            if($drev_previous) {
-                  $this->drev->updateFromDRev($drev_previous);
-            }
+            $this->drev->resetAndImportFromDocumentDouanier();
         }
+
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE))) {
             $this->drev->save();
         }
@@ -398,7 +401,7 @@ class drevActions extends sfActions {
             $has = true;
         }
 
-        if(!$has && !count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative() && DrevConfiguration::getInstance()->isDrDouaneRequired()) {
+        if(!$has && !count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative() && count($this->drev->declaration)) {
 
             return $this->redirect('drev_revendication', $this->drev);
         }
@@ -643,6 +646,8 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
         $this->isAdmin = $this->getUser()->isAdmin();
 
+        $this->vip2c = VIP2C::gatherInformations($this->drev, $this->drev->getPeriode());
+
         if ($this->needDrDouane()) {
 
         	return $this->redirect('drev_dr_upload', $this->drev);
@@ -713,7 +718,7 @@ class drevActions extends sfActions {
         }
 
         if($this->getUser()->hasDrevAdmin() && $this->drev->isPapier()) {
-            $this->drev->validateOdg();
+            $this->drev->validateOdg(null, $this->getUser()->getRegion());
             $this->drev->cleanLots();
             $this->drev->save();
 
@@ -729,7 +734,7 @@ class drevActions extends sfActions {
         }
 
         if($this->getUser()->hasDrevAdmin()){
-          $this->drev->validateOdg();
+          $this->drev->validateOdg(null, $this->getUser()->getRegion());
           $this->drev->save();
           $this->getUser()->setFlash("notice", "La déclaration de revendication a été validée et approuvée");
 
@@ -752,6 +757,9 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(array(DRevSecurity::VALIDATION_ADMIN), $this->drev);
         $this->regionParam = $request->getParameter('region',null);
+        if (!$this->regionParam && $this->getUser()->getRegion()) {
+            $this->regionParam = $this->getUser()->getRegion();
+        }
 
         $service = $request->getParameter("service", null);
         $params = array('sf_subject' => $this->drev, 'service' => $service);
@@ -840,16 +848,8 @@ class drevActions extends sfActions {
     public function executeVip2c(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $drev);
-        $vip2c = array();
-        $vip2c['declarvins_api_url'] = VIP2C::getContratsAPIURL($drev->declarant->cvi, $drev->campagne);
-        $vip2c['declarvins_api_contrats'] = VIP2C::getContratsFromAPI($drev->declarant->cvi, $drev->campagne);
-        $vip2c['volumes'] = array();
-        foreach ($drev->getProduitsHashWithVolumeSeuil() as $produit_hash) {
-            $vip2c['volumes'][$produit_hash] = array();
-            $vip2c['volumes'][$produit_hash]['revendique'] = $drev->getVolumeRevendiqueLots($drev->declaration->get($produit_hash)->getConfig()->getHash());
-            $vip2c['volumes'][$produit_hash]['seuil'] = $drev->getVolumeRevendiqueSeuil($produit_hash);
-        }
-        header('Content-type: text/json');
+        $vip2c = VIP2C::gatherInformations($drev, $drev->getPeriode());
+        header('Content-Type: application/json');
         echo json_encode($vip2c);
         exit;
     }
@@ -858,7 +858,7 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
 
-        $this->isAdmin = $this->getUser()->isAdmin();
+        $this->isAdmin = $this->getUser()->isAdminODG();
         $this->service = $request->getParameter('service');
         if (!$this->drev->validation) {
             $this->drev->cleanDoc();
@@ -866,18 +866,22 @@ class drevActions extends sfActions {
 
         $documents = $this->drev->getOrAdd('documents');
         $this->regionParam = $request->getParameter('region',null);
-        if (!$this->regionParam && $this->getUser()->getCompte() && $this->getUser()->getCompte()->exist('region')) {
-            $this->regionParam = $this->getUser()->getCompte()->region;
+        if (!$this->regionParam && $this->getUser()->getRegion()) {
+            $this->regionParam = $this->getUser()->getRegion();
         }
+
+        $this->vip2c = VIP2C::gatherInformations($this->drev, $this->drev->getPeriode());
+
         $this->form = null;
         if($this->getUser()->hasDrevAdmin() || $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);
             $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
         }
 
-        if($this->getUser()->isAdmin()) {
+        if($this->isAdmin) {
             $this->drevCommentaireValidationForm = new DRevCommentaireValidationForm($this->drev);
         }
+        $this->drev->declaration->cleanNode();
 
         $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->periode);
 
@@ -950,7 +954,7 @@ class drevActions extends sfActions {
     }
 
     public function executePDF(sfWebRequest $request) {
-        $drev = $this->getRoute()->getDRev();
+        $drev = $this->getRoute()->getDRev(['allow_habilitation' => true, 'allow_stalker' => true]);
         $this->secure(DRevSecurity::PDF, $drev);
 
         if (!$drev->validation) {
@@ -1003,16 +1007,16 @@ class drevActions extends sfActions {
     public function executeDocumentDouanier(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
 
-        $fileContent = file_get_contents($drev->getDocumentDouanier('pdf'));
+        $fileContent = file_get_contents($drev->getDocumentDouanierFile('pdf'));
         $extension = 'pdf';
 
         if(!$fileContent) {
-            $fileContent = file_get_contents($drev->getDocumentDouanier('xls'));
+            $fileContent = file_get_contents($drev->getDocumentDouanierFile('xls'));
             $extension = 'xls';
         }
 
         if(!$fileContent) {
-            $fileContent = file_get_contents($drev->getDocumentDouanier('csv'));
+            $fileContent = file_get_contents($drev->getDocumentDouanierFile('csv'));
             $extension = 'csv';
         }
 
@@ -1052,9 +1056,7 @@ class drevActions extends sfActions {
 
     protected function secure($droits, $doc) {
         if ($droits == DRevSecurity::EDITION) {
-            if ($doc && $doc->validation) {
-                return $this->forwardSecure();
-            }
+            return $this->forward404Unless($doc && !$doc->validation);
         }
         if (!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
 

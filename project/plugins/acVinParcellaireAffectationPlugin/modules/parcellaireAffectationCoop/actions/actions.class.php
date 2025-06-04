@@ -68,6 +68,37 @@ class parcellaireAffectationCoopActions extends sfActions {
         return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
     }
 
+    public function executeAjoutApporteurs(sfWebRequest $request) {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+
+        $this->form = new ParcellaireAffectationCoopAjoutApporteursForm($this->parcellaireAffectationCoop);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+    		return sfView::SUCCESS;
+    	}
+        $this->form->bind($request->getParameter($this->form->getName()));
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $etablissement = EtablissementClient::getInstance()->findByCvi($this->form->getValues()['cviApporteur']);
+        if (! $etablissement) {
+            $this->getUser()->setFlash("error", "Le CVI est invalide.");
+            return $this->redirect('parcellaireaffectationcoop_ajout_apporteurs', $this->parcellaireAffectationCoop);
+        } elseif ((in_array($etablissement->_id, $this->parcellaireAffectationCoop->getApporteursChoisis()))) {
+            $this->getUser()->setFlash("error", "Cet apporteur est déjà dans la liste.");
+            return $this->redirect('parcellaireaffectationcoop_ajout_apporteurs', $this->parcellaireAffectationCoop);
+        } else {
+            $this->parcellaireAffectationCoop->addApporteur($etablissement->_id);
+            $this->getUser()->setFlash("success", "Apporteur ajouté avec succès.");
+            $this->parcellaireAffectationCoop->save();
+        }
+        return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
+    }
+
     public function executeListe(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
@@ -87,49 +118,41 @@ class parcellaireAffectationCoopActions extends sfActions {
         return $this->redirect('parcellaireaffectationcoop_liste', array('sf_subject' => $this->parcellaireAffectationCoop));
     }
 
-    public function executeSaisie(sfWebRequest $request) {
+    public function executeReconductionManquant(sfWebRequest $request)
+    {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->apporteur = $request->getParameter('apporteur');
 
-        $this->parcellaireAffectation = ParcellaireAffectationClient::getInstance()->findOrCreate($request->getParameter('apporteur'), substr($this->parcellaireAffectationCoop->campagne, 0, 4));
-        $this->parcellaireAffectation->updateParcellesAffectation();
-        if($this->parcellaireAffectation->isValidee()) {
+        $doc = ParcellaireManquantClient::getInstance()->createDoc($this->apporteur, $this->parcellaireAffectationCoop->periode);
 
-            return $this->redirect('parcellaireaffectationcoop_visualisation', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireAffectation->_id));
+        if ($last = ParcellaireManquantClient::getInstance()->getLast($this->apporteur)) {
+            $parcellesids = array_keys($last->getParcelles());
+            $doc->setParcellesFromParcellaire($parcellesids);
         }
 
-		$this->form = new ParcellaireAffectationCoopSaisieForm($this->parcellaireAffectation, $this->etablissement);
+        $doc->validate();
+        $doc->validateOdg();
+        $doc->save();
 
-        if (!$request->isMethod(sfWebRequest::POST)) {
-
-        	return sfView::SUCCESS;
-        }
-
-        $this->form->bind($request->getParameter($this->form->getName()));
-
-        if (!$this->form->isValid()) {
-
-        	return sfView::SUCCESS;
-        }
-
-        $this->form->save();
-
-        if(array_key_exists('retour', $_POST)) {
-            $this->parcellaireAffectation->signataire = null;
-        } else {
-            $this->parcellaireAffectation->validate();
-            $this->parcellaireAffectation->validateOdg();
-        }
-
-        $this->parcellaireAffectation->save();
         return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
     }
 
-    public function executeVisualisation(sfWebRequest $request) {
+    public function executeReconductionIrrigable(sfWebRequest $request)
+    {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->apporteur = $request->getParameter('apporteur');
 
-        $this->parcellaireAffectation = ParcellaireAffectationClient::getInstance()->find($request->getParameter('id_document'));
+        $doc = ParcellaireIrrigableClient::getInstance()->createDoc($this->apporteur, $this->parcellaireAffectationCoop->periode);
+        if ($last = ParcellaireIrrigableClient::getInstance()->getLast($this->apporteur)) {
+            $parcellesids = array_keys($last->getParcelles());
+            $doc->setParcellesFromParcellaire($parcellesids);
+        }
+
+        $doc->validate();
+        $doc->validateOdg();
+        $doc->save();
+
+        return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
     }
 
     public function executeRecap(sfWebRequest $request) {
@@ -148,7 +171,7 @@ class parcellaireAffectationCoopActions extends sfActions {
 
         $header = true;
         foreach($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur) {
-            $doc = $apporteur->getAffectationParcellaire(acCouchdbClient::HYDRATE_DOCUMENT);
+            $doc = $apporteur->getDeclaration(ParcellaireAffectationClient::TYPE_MODEL, acCouchdbClient::HYDRATE_DOCUMENT);
             if(!$doc) {
                 continue;
             }
@@ -166,6 +189,32 @@ class parcellaireAffectationCoopActions extends sfActions {
         $attachement = sprintf("attachment; filename=export_affectation_parcellaire_%s_%s_%s.csv", $etablissement->identifiant, $parcellaireAffectationCoop->getPeriode(), date('YmdHis'));
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition',$attachement );
+
+        return sfView::NONE;
+    }
+
+    public function executeExportapporteurcsv(sfWebRequest $request) {
+        $parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $etablissement = $this->getRoute()->getEtablissement();
+        $csv = [];
+        $csv[] = implode(";", ["Periode", "Cave cooperative CVI", "Cave cooperative nom", "Apporteur CVI", "Aporteur Nom", "Origine"]);
+        foreach($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur) {
+
+            $csv[] = implode(";", [
+                $parcellaireAffectationCoop->getPeriode(),
+                $parcellaireAffectationCoop->getEtablissementObject()->cvi,
+                $parcellaireAffectationCoop->getEtablissementObject()->nom,
+                $apporteur->cvi,
+                $apporteur->nom,
+                $apporteur->provenance,
+            ]);
+        }
+
+        $attachement = sprintf("attachment; filename=export_apporteurs_%s_%s_%s.csv", $etablissement->identifiant, $parcellaireAffectationCoop->getPeriode(), date('YmdHis'));
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition',$attachement );
+
+        $this->renderText(implode("\n", $csv));
 
         return sfView::NONE;
     }
