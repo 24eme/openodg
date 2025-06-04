@@ -105,6 +105,15 @@
                                                                     "SYRAH N"
                                                                 ]
                                                             }
+                                                        },
+                                                        "attributs": {
+                                                          "rendement": null,
+                                                          "rendement_dr_l5": null,
+                                                          "rendement_dr_l15": null,
+                                                          "rendement_conseille": null,
+                                                          "rendement_dr": null,
+                                                          "rendement_vci": 5,
+                                                          "rendement_vci_total": 15
                                                         }
                                                     },
                                                     "blanc_sec": {
@@ -130,7 +139,7 @@
                                                                     "MAUZAC ROSE RS",
                                                                     "MUSCADELLE B",
                                                                     "ONDENC B",
-                                                                    "SAUVIGNON B ",
+                                                                    "SAUVIGNON B",
                                                                     null
                                                                 ]
                                                             }
@@ -153,6 +162,46 @@
                                                                 "code_produit": null,
                                                                 "code_comptable": "70800300",
                                                                 "code_douane": "1B128D",
+                                                                "cepages_autorises": [
+                                                                    "LEN DE L'EL B",
+                                                                    "MAUZAC B",
+                                                                    "MAUZAC ROSE RS",
+                                                                    "MUSCADELLE B",
+                                                                    "ONDENC B",
+                                                                    "SAUVIGNON B"
+                                                                ]
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "PC": {
+                                                "libelle": "Premières côtes",
+                                                "format_libelle": null,
+                                                "code": null,
+                                                "code_produit": null,
+                                                "code_comptable": null,
+                                                "code_douane": null,
+                                                "departements": [
+                                                ],
+                                                "couleurs": {
+                                                    "blanc_sec": {
+                                                        "libelle": "Blanc sec",
+                                                        "format_libelle": null,
+                                                        "code": "blanc_sec",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "departements": [
+                                                        ],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": null,
+                                                                "code_comptable": "70800300",
+                                                                "code_douane": "1B129S",
                                                                 "cepages_autorises": [
                                                                     "LEN DE L'EL B",
                                                                     "MAUZAC B",
@@ -205,58 +254,6 @@
                                                                 "code_produit": null,
                                                                 "code_comptable": "70800300",
                                                                 "code_douane": "1B128D",
-                                                                "cepages_autorises": [
-                                                                    "LEN DE L'EL B",
-                                                                    "MAUZAC B",
-                                                                    "MAUZAC ROSE RS",
-                                                                    "MUSCADELLE B",
-                                                                    "ONDENC B",
-                                                                    "SAUVIGNON B"
-                                                                ]
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                    "PC": {
-                                        "libelle": "Premières côtes",
-                                        "format_libelle": null,
-                                        "code": "PC",
-                                        "code_produit": null,
-                                        "code_comptable": null,
-                                        "code_douane": null,
-                                        "departements": [
-                                        ],
-                                        "lieux": {
-                                            "DEFAUT": {
-                                                "libelle": null,
-                                                "format_libelle": null,
-                                                "code": null,
-                                                "code_produit": null,
-                                                "code_comptable": null,
-                                                "code_douane": null,
-                                                "departements": [
-                                                ],
-                                                "couleurs": {
-                                                    "blanc_sec": {
-                                                        "libelle": "Blanc sec",
-                                                        "format_libelle": null,
-                                                        "code": "blanc_sec",
-                                                        "code_produit": null,
-                                                        "code_comptable": null,
-                                                        "code_douane": null,
-                                                        "departements": [
-                                                        ],
-                                                        "cepages": {
-                                                            "DEFAUT": {
-                                                                "libelle": null,
-                                                                "format_libelle": null,
-                                                                "code": null,
-                                                                "code_produit": null,
-                                                                "code_comptable": "70800300",
-                                                                "code_douane": "1B129S",
                                                                 "cepages_autorises": [
                                                                     "LEN DE L'EL B",
                                                                     "MAUZAC B",
@@ -345,7 +342,7 @@
                                                                     "MAUZAC ROSE RS",
                                                                     "MUSCADELLE B",
                                                                     "ONDENC B",
-                                                                    "SAUVIGNON B ",
+                                                                    "SAUVIGNON B",
                                                                     null
                                                                 ]
                                                             }
@@ -668,7 +665,7 @@
                                                                     "CABERNET FRANC N",
                                                                     "CABERNET MALBEC4 N",
                                                                     "CALABRE B",
-                                                                    "CALABRESE NERO N ",
+                                                                    "CALABRESE NERO N",
                                                                     "CALADOC N",
                                                                     "CALITOR BLANC B",
                                                                     "CALITOR GRIS G",
@@ -742,7 +739,7 @@
                                                                     "CORINTHE B",
                                                                     "CORINTHE N",
                                                                     "CORNALLIN N",
-                                                                    "CORNICHON BLANC ",
+                                                                    "CORNICHON BLANC",
                                                                     "CORNICHON VIOLET N",
                                                                     "CORVINA VERONESE N",
                                                                     "CORVINONE VERONESE",
@@ -757,7 +754,7 @@
                                                                     "COURBU NOIR N",
                                                                     "COUSTON N",
                                                                     "CRAVEIRO N",
-                                                                    "CRIMSON SEEDLESS ",
+                                                                    "CRIMSON SEEDLESS",
                                                                     "CROATINA N",
                                                                     "CROUCHEN B",
                                                                     "CUNNINGHAM RS",
@@ -813,7 +810,7 @@
                                                                     "FERCAL",
                                                                     "FERNAO PIRES B",
                                                                     "FERRADOU N",
-                                                                    "FETEASCA ALBA B ",
+                                                                    "FETEASCA ALBA B",
                                                                     "FETEASCA NEAGRA",
                                                                     "FEUNATE N",
                                                                     "FINDLING B",
@@ -1016,7 +1013,7 @@
                                                                     "MUSCAT CENDRE B",
                                                                     "MUSCAT DE SAUMUR",
                                                                     "MUSCAT G CALMETTE",
-                                                                    "MUSCAT G CALMETTE ",
+                                                                    "MUSCAT G CALMETTE",
                                                                     "MUSCAT HAMBOURG N",
                                                                     "MUSCAT HAMBOURG N",
                                                                     "MUSCAT LIERVAL",
@@ -1075,7 +1072,7 @@
                                                                     "PERRATON DIV. N",
                                                                     "PERRATON DIVERS",
                                                                     "PERSAN N",
-                                                                    "PETIT BECLAN N ",
+                                                                    "PETIT BECLAN N",
                                                                     "PETIT BOUSCHET N",
                                                                     "PETIT COURBU B",
                                                                     "PETIT MANSENG B",
@@ -1427,7 +1424,7 @@
                                                                     "CABERNET FRANC N",
                                                                     "CABERNET MALBEC4 N",
                                                                     "CALABRE B",
-                                                                    "CALABRESE NERO N ",
+                                                                    "CALABRESE NERO N",
                                                                     "CALADOC N",
                                                                     "CALITOR BLANC B",
                                                                     "CALITOR GRIS G",
@@ -1501,7 +1498,7 @@
                                                                     "CORINTHE B",
                                                                     "CORINTHE N",
                                                                     "CORNALLIN N",
-                                                                    "CORNICHON BLANC ",
+                                                                    "CORNICHON BLANC",
                                                                     "CORNICHON VIOLET N",
                                                                     "CORVINA VERONESE N",
                                                                     "CORVINONE VERONESE",
@@ -1516,7 +1513,7 @@
                                                                     "COURBU NOIR N",
                                                                     "COUSTON N",
                                                                     "CRAVEIRO N",
-                                                                    "CRIMSON SEEDLESS ",
+                                                                    "CRIMSON SEEDLESS",
                                                                     "CROATINA N",
                                                                     "CROUCHEN B",
                                                                     "CUNNINGHAM RS",
@@ -1572,7 +1569,7 @@
                                                                     "FERCAL",
                                                                     "FERNAO PIRES B",
                                                                     "FERRADOU N",
-                                                                    "FETEASCA ALBA B ",
+                                                                    "FETEASCA ALBA B",
                                                                     "FETEASCA NEAGRA",
                                                                     "FEUNATE N",
                                                                     "FINDLING B",
@@ -1775,7 +1772,7 @@
                                                                     "MUSCAT CENDRE B",
                                                                     "MUSCAT DE SAUMUR",
                                                                     "MUSCAT G CALMETTE",
-                                                                    "MUSCAT G CALMETTE ",
+                                                                    "MUSCAT G CALMETTE",
                                                                     "MUSCAT HAMBOURG N",
                                                                     "MUSCAT HAMBOURG N",
                                                                     "MUSCAT LIERVAL",
@@ -1834,7 +1831,7 @@
                                                                     "PERRATON DIV. N",
                                                                     "PERRATON DIVERS",
                                                                     "PERSAN N",
-                                                                    "PETIT BECLAN N ",
+                                                                    "PETIT BECLAN N",
                                                                     "PETIT BOUSCHET N",
                                                                     "PETIT COURBU B",
                                                                     "PETIT MANSENG B",
@@ -2186,7 +2183,7 @@
                                                                     "CABERNET FRANC N",
                                                                     "CABERNET MALBEC4 N",
                                                                     "CALABRE B",
-                                                                    "CALABRESE NERO N ",
+                                                                    "CALABRESE NERO N",
                                                                     "CALADOC N",
                                                                     "CALITOR BLANC B",
                                                                     "CALITOR GRIS G",
@@ -2260,7 +2257,7 @@
                                                                     "CORINTHE B",
                                                                     "CORINTHE N",
                                                                     "CORNALLIN N",
-                                                                    "CORNICHON BLANC ",
+                                                                    "CORNICHON BLANC",
                                                                     "CORNICHON VIOLET N",
                                                                     "CORVINA VERONESE N",
                                                                     "CORVINONE VERONESE",
@@ -2275,7 +2272,7 @@
                                                                     "COURBU NOIR N",
                                                                     "COUSTON N",
                                                                     "CRAVEIRO N",
-                                                                    "CRIMSON SEEDLESS ",
+                                                                    "CRIMSON SEEDLESS",
                                                                     "CROATINA N",
                                                                     "CROUCHEN B",
                                                                     "CUNNINGHAM RS",
@@ -2331,7 +2328,7 @@
                                                                     "FERCAL",
                                                                     "FERNAO PIRES B",
                                                                     "FERRADOU N",
-                                                                    "FETEASCA ALBA B ",
+                                                                    "FETEASCA ALBA B",
                                                                     "FETEASCA NEAGRA",
                                                                     "FEUNATE N",
                                                                     "FINDLING B",
@@ -2534,7 +2531,7 @@
                                                                     "MUSCAT CENDRE B",
                                                                     "MUSCAT DE SAUMUR",
                                                                     "MUSCAT G CALMETTE",
-                                                                    "MUSCAT G CALMETTE ",
+                                                                    "MUSCAT G CALMETTE",
                                                                     "MUSCAT HAMBOURG N",
                                                                     "MUSCAT HAMBOURG N",
                                                                     "MUSCAT LIERVAL",
@@ -2593,7 +2590,7 @@
                                                                     "PERRATON DIV. N",
                                                                     "PERRATON DIVERS",
                                                                     "PERSAN N",
-                                                                    "PETIT BECLAN N ",
+                                                                    "PETIT BECLAN N",
                                                                     "PETIT BOUSCHET N",
                                                                     "PETIT COURBU B",
                                                                     "PETIT MANSENG B",
@@ -3371,7 +3368,7 @@
                                                                     "CABERNET FRANC N",
                                                                     "CABERNET MALBEC4 N",
                                                                     "CALABRE B",
-                                                                    "CALABRESE NERO N ",
+                                                                    "CALABRESE NERO N",
                                                                     "CALADOC N",
                                                                     "CALITOR BLANC B",
                                                                     "CALITOR GRIS G",
@@ -3445,7 +3442,7 @@
                                                                     "CORINTHE B",
                                                                     "CORINTHE N",
                                                                     "CORNALLIN N",
-                                                                    "CORNICHON BLANC ",
+                                                                    "CORNICHON BLANC",
                                                                     "CORNICHON VIOLET N",
                                                                     "CORVINA VERONESE N",
                                                                     "CORVINONE VERONESE",
@@ -3460,7 +3457,7 @@
                                                                     "COURBU NOIR N",
                                                                     "COUSTON N",
                                                                     "CRAVEIRO N",
-                                                                    "CRIMSON SEEDLESS ",
+                                                                    "CRIMSON SEEDLESS",
                                                                     "CROATINA N",
                                                                     "CROUCHEN B",
                                                                     "CUNNINGHAM RS",
@@ -3516,7 +3513,7 @@
                                                                     "FERCAL",
                                                                     "FERNAO PIRES B",
                                                                     "FERRADOU N",
-                                                                    "FETEASCA ALBA B ",
+                                                                    "FETEASCA ALBA B",
                                                                     "FETEASCA NEAGRA",
                                                                     "FEUNATE N",
                                                                     "FINDLING B",
@@ -3719,7 +3716,7 @@
                                                                     "MUSCAT CENDRE B",
                                                                     "MUSCAT DE SAUMUR",
                                                                     "MUSCAT G CALMETTE",
-                                                                    "MUSCAT G CALMETTE ",
+                                                                    "MUSCAT G CALMETTE",
                                                                     "MUSCAT HAMBOURG N",
                                                                     "MUSCAT HAMBOURG N",
                                                                     "MUSCAT LIERVAL",
@@ -3778,7 +3775,7 @@
                                                                     "PERRATON DIV. N",
                                                                     "PERRATON DIVERS",
                                                                     "PERSAN N",
-                                                                    "PETIT BECLAN N ",
+                                                                    "PETIT BECLAN N",
                                                                     "PETIT BOUSCHET N",
                                                                     "PETIT COURBU B",
                                                                     "PETIT MANSENG B",
@@ -4130,7 +4127,7 @@
                                                                     "CABERNET FRANC N",
                                                                     "CABERNET MALBEC4 N",
                                                                     "CALABRE B",
-                                                                    "CALABRESE NERO N ",
+                                                                    "CALABRESE NERO N",
                                                                     "CALADOC N",
                                                                     "CALITOR BLANC B",
                                                                     "CALITOR GRIS G",
@@ -4204,7 +4201,7 @@
                                                                     "CORINTHE B",
                                                                     "CORINTHE N",
                                                                     "CORNALLIN N",
-                                                                    "CORNICHON BLANC ",
+                                                                    "CORNICHON BLANC",
                                                                     "CORNICHON VIOLET N",
                                                                     "CORVINA VERONESE N",
                                                                     "CORVINONE VERONESE",
@@ -4219,7 +4216,7 @@
                                                                     "COURBU NOIR N",
                                                                     "COUSTON N",
                                                                     "CRAVEIRO N",
-                                                                    "CRIMSON SEEDLESS ",
+                                                                    "CRIMSON SEEDLESS",
                                                                     "CROATINA N",
                                                                     "CROUCHEN B",
                                                                     "CUNNINGHAM RS",
@@ -4275,7 +4272,7 @@
                                                                     "FERCAL",
                                                                     "FERNAO PIRES B",
                                                                     "FERRADOU N",
-                                                                    "FETEASCA ALBA B ",
+                                                                    "FETEASCA ALBA B",
                                                                     "FETEASCA NEAGRA",
                                                                     "FEUNATE N",
                                                                     "FINDLING B",
@@ -4478,7 +4475,7 @@
                                                                     "MUSCAT CENDRE B",
                                                                     "MUSCAT DE SAUMUR",
                                                                     "MUSCAT G CALMETTE",
-                                                                    "MUSCAT G CALMETTE ",
+                                                                    "MUSCAT G CALMETTE",
                                                                     "MUSCAT HAMBOURG N",
                                                                     "MUSCAT HAMBOURG N",
                                                                     "MUSCAT LIERVAL",
@@ -4537,7 +4534,7 @@
                                                                     "PERRATON DIV. N",
                                                                     "PERRATON DIVERS",
                                                                     "PERSAN N",
-                                                                    "PETIT BECLAN N ",
+                                                                    "PETIT BECLAN N",
                                                                     "PETIT BOUSCHET N",
                                                                     "PETIT COURBU B",
                                                                     "PETIT MANSENG B",
@@ -4889,7 +4886,7 @@
                                                                     "CABERNET FRANC N",
                                                                     "CABERNET MALBEC4 N",
                                                                     "CALABRE B",
-                                                                    "CALABRESE NERO N ",
+                                                                    "CALABRESE NERO N",
                                                                     "CALADOC N",
                                                                     "CALITOR BLANC B",
                                                                     "CALITOR GRIS G",
@@ -4963,7 +4960,7 @@
                                                                     "CORINTHE B",
                                                                     "CORINTHE N",
                                                                     "CORNALLIN N",
-                                                                    "CORNICHON BLANC ",
+                                                                    "CORNICHON BLANC",
                                                                     "CORNICHON VIOLET N",
                                                                     "CORVINA VERONESE N",
                                                                     "CORVINONE VERONESE",
@@ -4978,7 +4975,7 @@
                                                                     "COURBU NOIR N",
                                                                     "COUSTON N",
                                                                     "CRAVEIRO N",
-                                                                    "CRIMSON SEEDLESS ",
+                                                                    "CRIMSON SEEDLESS",
                                                                     "CROATINA N",
                                                                     "CROUCHEN B",
                                                                     "CUNNINGHAM RS",
@@ -5034,7 +5031,7 @@
                                                                     "FERCAL",
                                                                     "FERNAO PIRES B",
                                                                     "FERRADOU N",
-                                                                    "FETEASCA ALBA B ",
+                                                                    "FETEASCA ALBA B",
                                                                     "FETEASCA NEAGRA",
                                                                     "FEUNATE N",
                                                                     "FINDLING B",
@@ -5237,7 +5234,7 @@
                                                                     "MUSCAT CENDRE B",
                                                                     "MUSCAT DE SAUMUR",
                                                                     "MUSCAT G CALMETTE",
-                                                                    "MUSCAT G CALMETTE ",
+                                                                    "MUSCAT G CALMETTE",
                                                                     "MUSCAT HAMBOURG N",
                                                                     "MUSCAT HAMBOURG N",
                                                                     "MUSCAT LIERVAL",
@@ -5296,7 +5293,7 @@
                                                                     "PERRATON DIV. N",
                                                                     "PERRATON DIVERS",
                                                                     "PERSAN N",
-                                                                    "PETIT BECLAN N ",
+                                                                    "PETIT BECLAN N",
                                                                     "PETIT BOUSCHET N",
                                                                     "PETIT COURBU B",
                                                                     "PETIT MANSENG B",
@@ -5558,7 +5555,347 @@
                                                 ],
                                                 "couleurs": {
                                                     "blanc_doux": {
-                                                        "libelle": "Surmûris Blanc ",
+                                                        "libelle": "Surmûris Blanc",
+                                                        "format_libelle": null,
+                                                        "code": "blanc_doux",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3B812U",
+                                                                "cepages_autorises": [
+                                                                    "CHARDONNAY B",
+                                                                    "CHASAN B",
+                                                                    "COLOMBARD B",
+                                                                    "GROS MANSENG B",
+                                                                    "LEN DE L'EL B",
+                                                                    "LISTAN B",
+                                                                    "MAUZAC B",
+                                                                    "MAUZAC ROSE RS",
+                                                                    "MUSCADELLE B",
+                                                                    "ONDENC B",
+                                                                    "PETIT MANSENG B",
+                                                                    "SAUVIGNON B",
+                                                                    "SÉMILLON B",
+                                                                    "UGNI BLANC B"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "rose": {
+                                                        "libelle": "Rosé",
+                                                        "format_libelle": null,
+                                                        "code": "rose",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "departements": [
+                                                        ],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3S812",
+                                                                "cepages_autorises": [
+                                                                    "ALICANTE BOUSCHET N",
+                                                                    "CABERNET FRANC N",
+                                                                    "CABERNET SAUVIGNON N",
+                                                                    "CARIGNAN N",
+                                                                    "CINSAUT N",
+                                                                    "DURAS N",
+                                                                    "EGIODOLA N",
+                                                                    "FER SERVADOU N",
+                                                                    "GAMARET N",
+                                                                    "GAMAY DE BOUZE N",
+                                                                    "GAMAY DE CHAUDENAY N",
+                                                                    "GAMAY N",
+                                                                    "JURANÇON N",
+                                                                    "MALBEC N",
+                                                                    "MARSELAN N",
+                                                                    "MERILLE N",
+                                                                    "MERLOT N",
+                                                                    "NÉGRETTE N",
+                                                                    "PORTUGAIS BLEU N",
+                                                                    "PRUNELARD N",
+                                                                    "SYRAH N",
+                                                                    "TANNAT N"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "rouge": {
+                                                        "libelle": "Rouge",
+                                                        "format_libelle": null,
+                                                        "code": "rouge",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "departements": [
+                                                        ],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3R812",
+                                                                "cepages_autorises": [
+                                                                    "ALICANTE BOUSCHET N",
+                                                                    "CABERNET FRANC N",
+                                                                    "CABERNET SAUVIGNON N",
+                                                                    "CARIGNAN N",
+                                                                    "CINSAUT N",
+                                                                    "DURAS N",
+                                                                    "EGIODOLA N",
+                                                                    "FER SERVADOU N",
+                                                                    "GAMARET N",
+                                                                    "GAMAY DE BOUZE N",
+                                                                    "GAMAY DE CHAUDENAY N",
+                                                                    "GAMAY N",
+                                                                    "JURANÇON N",
+                                                                    "MALBEC N",
+                                                                    "MARSELAN N",
+                                                                    "MERILLE N",
+                                                                    "MERLOT N",
+                                                                    "NÉGRETTE N",
+                                                                    "PORTUGAIS BLEU N",
+                                                                    "PRUNELARD N",
+                                                                    "SYRAH N",
+                                                                    "TANNAT N"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "blanc_sec": {
+                                                        "libelle": "Blanc sec",
+                                                        "format_libelle": null,
+                                                        "code": "blanc_sec",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "departements": [
+                                                        ],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3B812",
+                                                                "cepages_autorises": [
+                                                                    "CHARDONNAY B",
+                                                                    "CHASAN B",
+                                                                    "COLOMBARD B",
+                                                                    "GROS MANSENG B",
+                                                                    "LEN DE L'EL B",
+                                                                    "LISTAN B",
+                                                                    "MAUZAC B",
+                                                                    "MAUZAC ROSE RS",
+                                                                    "MUSCADELLE B",
+                                                                    "ONDENC B",
+                                                                    "PETIT MANSENG B",
+                                                                    "SAUVIGNON B",
+                                                                    "SÉMILLON B",
+                                                                    "UGNI BLANC B"
+                                                                ]
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "CABANES": {
+                                                "libelle": "Cabanes",
+                                                "format_libelle": null,
+                                                "code": null,
+                                                "code_produit": null,
+                                                "code_comptable": null,
+                                                "code_douane": null,
+                                                "departements": [
+                                                ],
+                                                "couleurs": {
+                                                    "blanc_doux": {
+                                                        "libelle": "Surmûris Blanc",
+                                                        "format_libelle": null,
+                                                        "code": "blanc_doux",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3B812U",
+                                                                "cepages_autorises": [
+                                                                    "CHARDONNAY B",
+                                                                    "CHASAN B",
+                                                                    "COLOMBARD B",
+                                                                    "GROS MANSENG B",
+                                                                    "LEN DE L'EL B",
+                                                                    "LISTAN B",
+                                                                    "MAUZAC B",
+                                                                    "MAUZAC ROSE RS",
+                                                                    "MUSCADELLE B",
+                                                                    "ONDENC B",
+                                                                    "PETIT MANSENG B",
+                                                                    "SAUVIGNON B",
+                                                                    "SÉMILLON B",
+                                                                    "UGNI BLANC B"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "rose": {
+                                                        "libelle": "Rosé",
+                                                        "format_libelle": null,
+                                                        "code": "rose",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "departements": [
+                                                        ],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3S812",
+                                                                "cepages_autorises": [
+                                                                    "ALICANTE BOUSCHET N",
+                                                                    "CABERNET FRANC N",
+                                                                    "CABERNET SAUVIGNON N",
+                                                                    "CARIGNAN N",
+                                                                    "CINSAUT N",
+                                                                    "DURAS N",
+                                                                    "EGIODOLA N",
+                                                                    "FER SERVADOU N",
+                                                                    "GAMARET N",
+                                                                    "GAMAY DE BOUZE N",
+                                                                    "GAMAY DE CHAUDENAY N",
+                                                                    "GAMAY N",
+                                                                    "JURANÇON N",
+                                                                    "MALBEC N",
+                                                                    "MARSELAN N",
+                                                                    "MERILLE N",
+                                                                    "MERLOT N",
+                                                                    "NÉGRETTE N",
+                                                                    "PORTUGAIS BLEU N",
+                                                                    "PRUNELARD N",
+                                                                    "SYRAH N",
+                                                                    "TANNAT N"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "rouge": {
+                                                        "libelle": "Rouge",
+                                                        "format_libelle": null,
+                                                        "code": "rouge",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "departements": [
+                                                        ],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3R812",
+                                                                "cepages_autorises": [
+                                                                    "ALICANTE BOUSCHET N",
+                                                                    "CABERNET FRANC N",
+                                                                    "CABERNET SAUVIGNON N",
+                                                                    "CARIGNAN N",
+                                                                    "CINSAUT N",
+                                                                    "DURAS N",
+                                                                    "EGIODOLA N",
+                                                                    "FER SERVADOU N",
+                                                                    "GAMARET N",
+                                                                    "GAMAY DE BOUZE N",
+                                                                    "GAMAY DE CHAUDENAY N",
+                                                                    "GAMAY N",
+                                                                    "JURANÇON N",
+                                                                    "MALBEC N",
+                                                                    "MARSELAN N",
+                                                                    "MERILLE N",
+                                                                    "MERLOT N",
+                                                                    "NÉGRETTE N",
+                                                                    "PORTUGAIS BLEU N",
+                                                                    "PRUNELARD N",
+                                                                    "SYRAH N",
+                                                                    "TANNAT N"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "blanc_sec": {
+                                                        "libelle": "Blanc sec",
+                                                        "format_libelle": null,
+                                                        "code": "blanc_sec",
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "departements": [
+                                                        ],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": null,
+                                                                "format_libelle": null,
+                                                                "code": null,
+                                                                "code_produit": "812",
+                                                                "code_comptable": "70801000",
+                                                                "code_douane": "3B812",
+                                                                "cepages_autorises": [
+                                                                    "CHARDONNAY B",
+                                                                    "CHASAN B",
+                                                                    "COLOMBARD B",
+                                                                    "GROS MANSENG B",
+                                                                    "LEN DE L'EL B",
+                                                                    "LISTAN B",
+                                                                    "MAUZAC B",
+                                                                    "MAUZAC ROSE RS",
+                                                                    "MUSCADELLE B",
+                                                                    "ONDENC B",
+                                                                    "PETIT MANSENG B",
+                                                                    "SAUVIGNON B",
+                                                                    "SÉMILLON B",
+                                                                    "UGNI BLANC B"
+                                                                ]
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "CUNAC": {
+                                                "libelle": "Cunac",
+                                                "format_libelle": null,
+                                                "code": null,
+                                                "code_produit": null,
+                                                "code_comptable": null,
+                                                "code_douane": null,
+                                                "departements": [
+                                                ],
+                                                "couleurs": {
+                                                    "blanc_doux": {
+                                                        "libelle": "Surmûris Blanc",
                                                         "format_libelle": null,
                                                         "code": "blanc_doux",
                                                         "code_produit": null,
