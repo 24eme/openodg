@@ -89,6 +89,14 @@ class Configuration extends BaseConfiguration {
                     return $produit;
                 }
             }
+            foreach($this->getProduits() as $produit) {
+                $libelleProduitSlugify = self::slugifyProduitLibelle($produit->getLibelleFormat());
+                if(strpos($libelleProduitSlugify, $libelleSlugify) !== false) {
+                    $this->identifyLibelleProduct[$libelle] = $produit;
+
+                    return $produit;
+                }
+            }
         }
 
         return false;

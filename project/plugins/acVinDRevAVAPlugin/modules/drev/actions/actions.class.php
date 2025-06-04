@@ -454,6 +454,8 @@ class drevActions/***AVA***/ extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
+        $this->focus = $request->getParameter("focus");
+
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_DEGUSTATION))) {
             $this->drev->save();
         }

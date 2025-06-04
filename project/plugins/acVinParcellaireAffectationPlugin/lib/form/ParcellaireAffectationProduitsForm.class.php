@@ -3,10 +3,11 @@
 class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
 
     protected $destinataire = null;
+    protected $hashproduitFilter = null;
 
-    public function __construct(acCouchdbJson $object, $destinataire, $options = array(), $CSRFSecret = null) {
+    public function __construct(acCouchdbJson $object, $destinataire, $hashproduitFilter, $options = array(), $CSRFSecret = null) {
         $this->destinataire = EtablissementClient::getInstance()->find($destinataire);
-
+        $this->hashproduitFilter = $hashproduitFilter;
         parent::__construct($object, $options, $CSRFSecret);
     }
 
@@ -19,7 +20,7 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
     }
 
     public function getParcelles() {
-        return $this->getObject()->getParcelles();
+        return $this->getObject()->getParcelles($this->hashproduitFilter);
     }
 
     protected function doUpdateObject($values) {
@@ -28,9 +29,10 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
         foreach($parcelles as $parcelle) {
             $parcelle->desaffecter($this->destinataire);
         }
-        $this->getObject()->remove('declaration');
-        $this->getObject()->add('declaration');
         foreach ($parcelles as $pid => $parcelle) {
+            if (!isset($values[$pid])) {
+                continue;
+            }
             $items = $values[$pid];
             if (!isset($parcelles[$pid])){
                 continue;
@@ -43,6 +45,7 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
             }
             $this->getObject()->addParcelle($parcelle);
         }
+        $this->getObject()->cleanNonAffectee();
     }
 
 }

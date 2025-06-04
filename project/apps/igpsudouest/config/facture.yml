@@ -1,0 +1,9 @@
+all:
+  configuration:
+    facture:
+      echeances: false
+      modalite_paiement: "- comptant par virement ou chèque \\"
+      uniq_template_prefix: "TEMPLATE-FACTURE"
+      paiements: true
+      export_type: "isa"
+      liste_dernier_exercice: true

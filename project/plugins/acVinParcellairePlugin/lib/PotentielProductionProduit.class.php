@@ -12,12 +12,12 @@ class PotentielProductionProduit {
     private $potentiel_production;
     private $synthese = null;
 
-    public function __construct(PotentielProduction $p, $libelle) {
+    public function __construct(PotentielProduction $p, $parcellaire_produit_libelle) {
         $this->potentiel_production = $p;
-        $this->libelle = $libelle;
+        $this->libelle = $parcellaire_produit_libelle;
         foreach (ParcellaireConfiguration::getInstance()->getPotentielGroupes() as $groupe_key) {
-            $produit_libelle = ParcellaireConfiguration::getInstance()->getGroupeSyntheseLibelle($groupe_key);
-            if ($produit_libelle != $libelle) {
+            $conf_produit_libelle = ParcellaireConfiguration::getInstance()->getGroupeSyntheseLibelle($groupe_key);
+            if (strpos($conf_produit_libelle, $parcellaire_produit_libelle) === false) {
                 continue;
             }
             $this->key = $groupe_key;
