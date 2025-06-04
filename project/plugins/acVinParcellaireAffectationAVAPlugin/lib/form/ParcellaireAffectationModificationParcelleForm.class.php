@@ -39,6 +39,23 @@ class ParcellaireAffectationModificationParcelleForm extends ParcellaireAffectat
             $entry->text = trim($lieu);
             $entries[] = $entry;
         }
+        sort($entries);
+        return $entries;
+    }
+
+    public function getLieuCadastralForAutocomplete() {
+        $lieuCadastralDetail = array();
+        foreach ($this->getObject()->getDocument()->getParcellaire()->getDeclarationParcelles() as $libelle) {
+            $lieuCadastralDetail[] = $libelle->getLieu();
+        }
+        $entries = array();
+        foreach (array_unique($lieuCadastralDetail) as $lieuCadastral) {
+            $entry = new stdClass();
+            $entry->id = trim($lieuCadastral);
+            $entry->text = trim($lieuCadastral);
+            $entries[] = $entry;
+        }
+        sort($entries);
         return $entries;
     }
 
@@ -55,6 +72,10 @@ class ParcellaireAffectationModificationParcelleForm extends ParcellaireAffectat
 
         if(isset($this->widgetSchema['lieuDit'])) {
             $this->setDefault('lieuDit', $this->getObject()->lieu);
+        }
+
+        if(isset($this->widgetSchema['lieuDitCadastral']) && $this->getObject()->getLieuDitCadastral() !== null) {
+            $this->setDefault('lieuDitCadastral', $this->getObject()->getLieuDitCadastral());
         }
     }
 
