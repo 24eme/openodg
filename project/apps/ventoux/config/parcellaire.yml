@@ -8,6 +8,8 @@ all:
         pc_min: 20
       affectation:
         needs_intention: false
+        denomination_aire: "Ventoux"
+        denomination_aire_hash: "certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT"
       aires:
         Ventoux:
           name: "Ventoux"

@@ -237,9 +237,9 @@ class Parcellaire extends BaseParcellaire {
         return $this->parcelles_idu;
     }
 
-    public function findParcelle($parcelle, $scoreMin = 1, &$allready_selected = null) {
+    public function findParcelle($parcelle, $scoreMin = 1, $with_cepage_match = false, &$allready_selected = null) {
 
-        return ParcellaireClient::findParcelle($this, $parcelle, $scoreMin, $allready_selected);
+        return ParcellaireClient::findParcelle($this, $parcelle, $scoreMin, $with_cepage_match, $allready_selected);
     }
 
     public function getDateFr() {

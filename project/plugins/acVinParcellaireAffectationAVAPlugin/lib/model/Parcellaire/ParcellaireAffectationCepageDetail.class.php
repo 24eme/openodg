@@ -164,6 +164,17 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         return $this->_get('lieu');
     }
 
+    public function getLieuDitCadastral() {
+        if($this->exist('lieu_cadastral')) {
+
+            return $this->_get('lieu_cadastral');
+        }
+        if(!$this->getParcelleParcellaire()) {
+            return null;
+        }
+        return $this->getParcelleParcellaire()->getLieu();
+    }
+
     public function cleanNode() {
         if(!$this->hasMultipleAcheteur()) {
             $this->remove('acheteurs');

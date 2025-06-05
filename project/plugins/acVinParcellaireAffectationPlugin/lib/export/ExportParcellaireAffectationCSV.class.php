@@ -5,16 +5,18 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
     protected $doc = null;
     protected $header = false;
     protected $region = null;
+    protected $destination = null;
 
     public static function getHeaderCsv() {
 
         return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Dénomination complémentaire;Surface identifiée;Destination identifiant;Destination nom;Destination CVI;Destination superficie;Signataire;Date de validation;Type de declaration;Pseudo production id;doc id\n";
     }
 
-    public function __construct($doc, $header = true, $region = null) {
+    public function __construct($doc, $header = true, $region = null, $destinationIdentifiant = null) {
         $this->doc = $doc;
         $this->header = $header;
         $this->region = $region;
+        $this->destinationIdentifiant = $destinationIdentifiant;
     }
 
     public function getFileName() {
@@ -59,6 +61,9 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
             }
 
             foreach ($destinations as $destination) {
+                if($this->destinationIdentifiant && $this->destinationIdentifiant != $destination->identifiant) {
+                    continue;
+                }
             	$configProduit = $parcelle->getProduit()->getConfig();
 
             	$certification = $configProduit->getCertification()->getKey();

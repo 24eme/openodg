@@ -6,10 +6,10 @@
 
 class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclaration {
 
-    public function getParcellesByCommune($onlyAffectee = true) {
+    public function getParcellesByCommune($onlyAffectee = true, $hashproduitFilter = null) {
         $parcelles = array();
 
-        foreach($this->getParcelles() as $hash => $parcelle) {
+        foreach($this->getParcelles($hashproduitFilter) as $hash => $parcelle) {
             if ($onlyAffectee && !$parcelle->affectee) {
                 continue;
             }
@@ -49,15 +49,34 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
         return $parcelles;
     }
 
-    private $allready_seen = null;
-    public function getParcelles() {
+    public function getParcellesByProduit($onlyAffectee = false) {
+         $parcelles = array();
+         foreach($this as $keyProduit => $produit) {
+          foreach ($produit->detail as $parcelle) {
+            $key = $produit->libelle.' — '.$parcelle->commune;
+            if ($onlyAffectee && !$parcelle->affectee) {
+                 continue;
+             }
+            if(!isset($parcelles[$key])) {
+                $parcelles[$key] = array();
+            }
+            $parcelles[$key][$parcelle->getParcelleId()] = $parcelle;
+          }
+        }
+        ksort($parcelles);
+        return $parcelles;
+    }
+
+    public function getParcelles($hashproduitFilter = null) {
         $parcelles = array();
-        foreach($this as $produit) {
+        foreach($this as $keyProduit => $produit) {
+            if ($hashproduitFilter && $keyProduit != $hashproduitFilter) {
+                continue;
+            }
             foreach ($produit->detail as $parcelle) {
                 $parcelles[$parcelle->getParcelleId()] = $parcelle;
             }
         }
-
         return $parcelles;
     }
 
@@ -71,5 +90,15 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
 
             }
         }
+    }
+
+    public function getProduits()
+    {
+        $produits = [];
+        foreach($this as $hash => $produit) {
+            $produits[$hash] = $produit->libelle;
+        }
+        ksort($produits);
+        return $produits;
     }
 }

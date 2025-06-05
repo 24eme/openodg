@@ -1,4 +1,9 @@
-<?php if(! $etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR )): return; endif; ?>
+<?php
+if(
+    ! $etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR )
+    && ! $etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR)
+): return;
+endif; ?>
 
 <?php use_helper('Date'); ?>
 
