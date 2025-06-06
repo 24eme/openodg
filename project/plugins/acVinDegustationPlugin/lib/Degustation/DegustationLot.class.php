@@ -25,7 +25,7 @@ class DegustationLot extends BaseDegustationLot {
   }
 
   public function isConforme(){
-      return $this->exist('conformite') && ($this->conformite == Lot::CONFORMITE_CONFORME);
+      return $this->exist('conformite') && ($this->conformite == Lot::CONFORMITE_CONFORME || $this->conformite == Lot::CONFORMITE_CONFORME_DEFAUT);
   }
 
   public function isConformeObs(){
