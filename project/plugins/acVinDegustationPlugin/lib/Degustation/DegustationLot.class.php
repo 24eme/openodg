@@ -118,7 +118,7 @@ class DegustationLot extends BaseDegustationLot {
         $this->setMotif($motif);
         $this->setObservation($observation);
 
-        if ($conformite === Lot::CONFORMITE_CONFORME) {
+        if ($conformite === Lot::CONFORMITE_CONFORME || $conformite === Lot::CONFORMITE_CONFORME_DEFAUT) {
             $this->statut = Lot::STATUT_CONFORME;
         } else {
             $this->statut = Lot::STATUT_NONCONFORME;
