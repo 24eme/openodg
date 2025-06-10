@@ -179,10 +179,20 @@ class PotentielProductionRule {
     }
 
     public static function getNewRectrition($ratio, $sens, $limit) {
+        if (isset($_GET['verbose'])) {
+            echo "<pre>";
+            print_r(['new restriction', "ratio" => $ratio, "sens" => ($sens == self::TYPE_LOE) ? 'LOE' : 'GOE', 'limit' => $limit]);
+            echo "</pre>";
+        }
         return new Simplex\Restriction($ratio, $sens, $limit);
     }
 
     public static function createTask($default_ratio) {
+        if (isset($_GET['verbose'])) {
+            echo "<pre>";
+            print_r(['new task', 'ratio' => $default_ratio]);
+            echo "</pre>";
+        }
         return new Simplex\Task(new Simplex\Func($default_ratio));
     }
 
