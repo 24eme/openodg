@@ -13,6 +13,9 @@ class PotentielProductionRule {
     private $simple_restriction = null;
     private $potentiel_production_produit;
 
+    const TYPE_GOE = Simplex\Restriction::TYPE_GOE;
+    const TYPE_LOE = Simplex\Restriction::TYPE_LOE;
+
     public function __construct(PotentielProductionProduit $p, $regle) {
         $this->potentiel_production_produit = $p;
 
@@ -65,10 +68,26 @@ class PotentielProductionRule {
                 $this->limit = $encepagement * $this->regle['limit'];
                 if ($this->regle['sens'] == '>=') {
                     $this->res = (round($this->somme - $this->limit, 5) >= 0);
-                    $this->simple_restriction = new Simplex\Restriction(PotentielProductionRule::addemptycepage($this->cepages_superficie, $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur'), $this->regle['limit'] * -1), Simplex\Restriction::TYPE_GOE, 0);
+                    if ($this->regle['limit'] == 1)  {
+                        $ratio = $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur');
+                        foreach (array_keys($this->cepages_superficie) as $k) {
+                            $ratio[$k] = 0;
+                        }
+                        $this->simple_restriction = self::getNewRectrition($ratio, self::TYPE_LOE, 0);
+                    } else {
+                        $this->simple_restriction = self::getNewRectrition(PotentielProductionRule::addemptycepage($this->cepages_superficie, $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur'), $this->regle['limit'] * -1), self::TYPE_GOE, 0);
+                    }
                 }elseif ($this->regle['sens'] == '<=') {
                     $this->res = (round($this->somme - $this->limit, 5) <= 0);
-                    $this->simple_restriction = new Simplex\Restriction(PotentielProductionRule::addemptycepage($this->cepages_superficie, $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur'), $this->regle['limit'] * -1), Simplex\Restriction::TYPE_LOE, 0);
+                    if ($this->regle['limit'] == 1)  {
+                        $ratio = $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur');
+                        foreach (array_keys($this->cepages_superficie) as $k) {
+                            $ratio[$k] = 0;
+                        }
+                        $this->simple_restriction = self::getNewRectrition($ratio, self::TYPE_GOE, 0);
+                    } else {
+                        $this->simple_restriction = self::getNewRectrition(PotentielProductionRule::addemptycepage($this->cepages_superficie, $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur'), $this->regle['limit'] * -1), self::TYPE_LOE, 0);
+                    }
                 }
                 break;
             case 'ProportionChaque':
@@ -82,10 +101,10 @@ class PotentielProductionRule {
                     $this->somme .= $this->cepages_superficie[$c].'|';
                     if ($this->regle['sens'] == '>=') {
                         $this->res &= ($this->cepages_superficie[$c] >=  $this->limit);
-                        $this->simple_restriction = new Simplex\Restriction(PotentielProductionRule::addemptycepage([$c => $this->cepages_superficie[$c]], $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur'), $this->regle['limit'] * -1), Simplex\Restriction::TYPE_GOE, 0);
+                        $this->simple_restriction = self::getNewRectrition(PotentielProductionRule::addemptycepage([$c => $this->cepages_superficie[$c]], $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur'), $this->regle['limit'] * -1), Simplex\Restriction::TYPE_GOE, 0);
                     }elseif ($this->regle['sens'] == '<=') {
                         $this->res &= ($this->cepages_superficie[$c] <=  $this->limit);
-                        $this->simple_restriction = new Simplex\Restriction(PotentielProductionRule::addemptycepage([$c => $this->cepages_superficie[$c]], $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur'), $this->regle['limit'] * -1), Simplex\Restriction::TYPE_LOE, 0);
+                        $this->simple_restriction = self::getNewRectrition(PotentielProductionRule::addemptycepage([$c => $this->cepages_superficie[$c]], $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur'), $this->regle['limit'] * -1), Simplex\Restriction::TYPE_LOE, 0);
                     }
                 }
                 break;
@@ -157,6 +176,14 @@ class PotentielProductionRule {
         }
         ksort($original);
         return $original;
+    }
+
+    public static function getNewRectrition($ratio, $sens, $limit) {
+        return new Simplex\Restriction($ratio, $sens, $limit);
+    }
+
+    public static function createTask($default_ratio) {
+        return new Simplex\Task(new Simplex\Func($default_ratio));
     }
 
 }
