@@ -38,7 +38,7 @@ class ExportParcellaireControleODS extends ExportGenericParcellaireODS {
                     '%%OPERATEUR' => $parcellaire->declarant['raison_sociale'],
                     '%%SIRET' => $parcellaire->declarant['siret'],
                     '%%COMMUNE' => $detail->commune,
-                    '%%LIEU_DIT' => $detail->lieu,
+                    '%%LIEU_DIT' => "<![CDATA[".$detail->lieu."]]>",
                     '%%ID_PCV' =>  $id_pcv,
                     '%%CONTENANCE_CADASTRALE' => $detail->getSuperficieCadastrale(),
                     '%%SUPERFICIE' => $detail->getSuperficie(),

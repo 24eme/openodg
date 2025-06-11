@@ -178,7 +178,7 @@ class parcellaireAffectationCoopActions extends sfActions {
             if(!$doc->isValidee()) {
                 continue;
             }
-            $export = new ExportParcellaireAffectationCSV($doc, $header);
+            $export = new ExportParcellaireAffectationCSV($doc, $header, null, $parcellaireAffectationCoop->identifiant);
             $this->renderText($export->export());
             $header = false;
         }

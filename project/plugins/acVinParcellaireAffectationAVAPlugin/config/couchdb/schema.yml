@@ -154,6 +154,7 @@ ParcellaireAffectation:
                                                                   numero_ordre: { }
                                                                   campagne_plantation: { }
                                                                   lieu: { }
+                                                                  lieu_cadastral: { required: false }
                                                                   produit_hash: { }
                                                                   source_produit_libelle: { }
                                                                   prefix: { }

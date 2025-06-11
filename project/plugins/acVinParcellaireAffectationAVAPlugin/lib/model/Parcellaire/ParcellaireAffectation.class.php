@@ -297,7 +297,12 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
     }
 
     public function updateFromLastAffectation() {
+        if ($this->isIntentionCremant() && ParcellaireAffectationClient::getInstance()->find(ParcellaireAffectationClient::getInstance()->buildId($this->identifiant, $this->campagne, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT))) {
+            return;
+        }
+
         $prevParcellaire = $this->getAffectationLastCampagne();
+
         if(!$prevParcellaire) {
             return;
         }
@@ -312,8 +317,10 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
                     $parcelle = $this->addProduitParcelle($prevParcelle->getProduitHash(), $prevParcelle);
                     $parcelle->superficie = $prevParcelle->superficie;
                 }
+
                 $parcelle->active = $prevParcelle->active;
                 $parcelle->vtsgn = $prevParcelle->vtsgn;
+                $parcelle->lieu = $prevParcelle->lieu;
             }
         }
     }
@@ -443,8 +450,9 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
 
         $produit = $this->addProduit($hash);
 
-        $detail = $produit->detail->add($parcelleKey);
-
+        $i = 0;
+        while($produit->detail->exist($parcelleKey.sprintf('-%02d', $i))) { $i++; }
+        $detail = $produit->detail->add($parcelleKey.sprintf('-%02d', $i));
         $detail->commune = $commune;
         $detail->section = $section;
         $detail->numero_parcelle = $numero_parcelle;

@@ -85,6 +85,26 @@ class ParcellaireConfiguration {
 
     }
 
+    public function affectationDenominationAire() {
+        if(!isset($this->configuration['affectation'])) {
+            return null;
+        }
+        if(!isset($this->configuration['affectation']['denomination_aire'])) {
+            return null;
+        }
+        return $this->configuration['affectation']['denomination_aire'];
+    }
+
+    public function affectationDenominationAireHash() {
+        if(!isset($this->configuration['affectation'])) {
+            return null;
+        }
+        if(!isset($this->configuration['affectation']['denomination_aire_hash'])) {
+            return null;
+        }
+        return $this->configuration['affectation']['denomination_aire_hash'];
+    }
+
     public function isManquantMandatory() {
         if(!isset($this->configuration['manquant']) || !isset($this->configuration['manquant']['mandatory'])) {
             return false;

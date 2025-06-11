@@ -100,7 +100,11 @@ EOF;
             return;
         }
         $coop = EtablissementClient::getInstance()->findByCVI($data[self::CSV_COOOPERATIVE_COOPERATEUR]);
-        $coop->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $etablissement, !isset($_ENV['DRY_RUN']));
+        if ($coop) {
+            $coop->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR, $etablissement, !isset($_ENV['DRY_RUN']));
+        }else{
+            print_r(['coop not found', $data[self::CSV_COOOPERATIVE_COOPERATEUR]]);
+        }
     }
 
     private function importSocieteEtablissement($data, $suspendu = false)
@@ -109,8 +113,11 @@ EOF;
         if ($data[self::CSV_CVI]) {
             $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_CVI]));
         }
-        if (!$e && $data[self::CSV_SIRET]) {
+        if (!$e && !$data[self::CSV_CVI] && $data[self::CSV_SIRET]) {
             $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_SIRET]));
+            if ($e && $e->cvi) {
+                $e = null;
+            }
         }
         if ($e) {
             echo("Etablissement existe " . $e->_id . ", ". $data[self::CSV_CVI]." ".$data[self::CSV_SIRET]."\n");
@@ -130,36 +137,38 @@ EOF;
             return $e;
         }
 
-
         $raison_sociale = $data[self::CSV_RAISON_SOCIALE];
-        $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_ENREGISTREMENT]);
-
-        $societe = SocieteClient::getInstance()->find($newSociete->_id);
-
-        if($societe) {
-            return false;
+        $societe = null;
+        if ($data[self::CSV_SIRET]) {
+            $societe = SocieteClient::getInstance()->findBySiretOrTVA(str_replace(' ', '', $data[self::CSV_SIRET]));
+        }
+        if (!$societe) {
+            $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR);
+            $societe = SocieteClient::getInstance()->find($newSociete->_id);
         }
 
-        $data = array_map('trim', $data);
 
-        $societe = $newSociete;
-        $societe->statut = SocieteClient::STATUT_ACTIF;
-        $societe->siege->adresse = $data[self::CSV_ADRESSE_1] ?? null;
-        $societe->siege->adresse_complementaire = $data[self::CSV_ADRESSE_2] ?? null;
-        $societe->siege->code_postal = $data[self::CSV_CODE_POSTAL] ?? null;
-        $societe->siege->commune = $data[self::CSV_COMMUNE] ?? null;
-        //$societe->telephone_bureau = Phone::format($data[self::CSV_TELEPHONE] ?? null);
-        //$societe->telephone_mobile = Phone::format($data[self::CSV_PORTABLE] ?? null);
-        //$societe->email = KeyInflector::unaccent($data[self::CSV_EMAIL] ?? null);
-        $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
+        if(!$societe) {
+            $data = array_map('trim', $data);
+            $societe = $newSociete;
+            $societe->statut = SocieteClient::STATUT_ACTIF;
+            $societe->siege->adresse = $data[self::CSV_ADRESSE_1] ?? null;
+            $societe->siege->adresse_complementaire = $data[self::CSV_ADRESSE_2] ?? null;
+            $societe->siege->code_postal = $data[self::CSV_CODE_POSTAL] ?? null;
+            $societe->siege->commune = $data[self::CSV_COMMUNE] ?? null;
+            //$societe->telephone_bureau = Phone::format($data[self::CSV_TELEPHONE] ?? null);
+            //$societe->telephone_mobile = Phone::format($data[self::CSV_PORTABLE] ?? null);
+            //$societe->email = KeyInflector::unaccent($data[self::CSV_EMAIL] ?? null);
+            $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
 
-        try {
-            if (!isset($_ENV['DRY_RUN'])) {
-                $societe->save();
+            try {
+                if (!isset($_ENV['DRY_RUN'])) {
+                    $societe->save();
+                }
+            } catch (Exception $e) {
+                echo "$societe->_id save error :".$e->getMessage()."\n";
+                return false;
             }
-        } catch (Exception $e) {
-            echo "$societe->_id save error :".$e->getMessage()."\n";
-            return false;
         }
 
         $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;

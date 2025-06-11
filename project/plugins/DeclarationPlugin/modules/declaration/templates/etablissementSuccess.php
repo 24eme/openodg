@@ -21,7 +21,7 @@
                 <option value="">Courante</option>
                 <?php
                     $campagne_current = intval(ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent());
-                    $campagne_debut = (date('m') > 5 && date('m') < 8) ? intval(ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrentNext()) : $campagne_current;
+                    $campagne_debut = (date('m') >= 5 && date('m') <= 7) ? intval(ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrentNext()) : $campagne_current;
                     for($i=$campagne_debut; $i > $campagne_current - $nb_campagne ; $i--):
                  ?>
                     <option <?php if(isset($periode) && $periode == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i.'-'.($i + 1) ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>

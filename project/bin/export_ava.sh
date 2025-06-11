@@ -100,3 +100,11 @@ rm $EXPORTDIR/bilan_vci.csv.part
 php symfony declaration:engagements $SYMFONYTASKOPTIONS > $EXPORTDIR/engagements.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/engagements.csv.part > $EXPORTDIR/engagements.csv
 rm $EXPORTDIR/engagements.csv.part
+
+mkdir $EXPORTDIR/archives 2> /dev/null
+zip $EXPORTDIR/archives/"$(date +%Y%m%d).daily.zip" $EXPORTDIR/*.csv
+cp $EXPORTDIR/archives/"$(date +%Y%m%d).daily.zip" $EXPORTDIR/archives/"$(date +%Y%m.sem%W).weekly.zip"
+cp $EXPORTDIR/archives/"$(date +%Y%m%d).daily.zip" $EXPORTDIR/archives/"$(date +%Y%m).monthly.zip"
+find $EXPORTDIR/archives/ -name "*.daily.zip" -type f -mtime +7 -delete
+find $EXPORTDIR/archives/ -name "*.weekly.zip" -type f -mtime +29 -delete
+find $EXPORTDIR/archives/ -name "*.monthly.zip" -type f -mtime +94 -delete

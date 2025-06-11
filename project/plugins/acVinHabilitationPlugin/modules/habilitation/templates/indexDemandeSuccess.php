@@ -57,7 +57,7 @@
     <div class="col-sm-3 col-lg-3 col-xs-12">
         <div class="list-group">
             <a class="" href="<?php echo url_for('habilitation_liste'); ?>">
-                <span class="glyphicon glyphicon-arrow-left"></span>
+                <span class="glyphicon glyphicon-new-window"></span>
                 &nbsp;Voir les habilitations
             </a>
         </div>

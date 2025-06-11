@@ -55,6 +55,10 @@ abstract class Lot extends acCouchdbDocumentTree
     const CONFORMITE_NONCONFORME_ORGANOLEPTIQUE = "NONCONFORME_ORGANOLEPTIQUE";
     const CONFORMITE_NONTYPICITE_CEPAGE = "NONTYPICITE_CEPAGE";
 
+    const CONFORMITE_CONFORME_DEFAUT = "ACCEPTÉ AVEC DÉFAUT";
+    const CONFORMITE_NONCONFORME_ETAT = "NON ACCEPTÉ EN L'ÉTAT"; //uniquement vins en vrac AOP
+    const CONFORMITE_NONCONFORME = "NON ACCEPTÉ";
+
     const STATUT_NOTIFICATION_COURRIER_OLD = "20_NOTIFICATION_COURRIER";
     const STATUT_NOTIFICATION_COURRIER = "02_NOTIFICATION_COURRIER";
 
@@ -132,12 +136,10 @@ abstract class Lot extends acCouchdbDocumentTree
     );
 
     public static $libellesAcceptabilites = array(
-      self::CONFORMITE_CONFORME => "Acceptable",
-      self::CONFORMITE_NONCONFORME_MINEUR => "Non acceptabilité mineure",
-      self::CONFORMITE_NONCONFORME_MAJEUR => "Non acceptabilité majeure",
-      self::CONFORMITE_NONCONFORME_GRAVE => "Non acceptabilité grave",
-      self::CONFORMITE_NONTYPICITE_CEPAGE => "Non typicité cépage",
-      self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Non acceptabilité analytique",
+      self::CONFORMITE_CONFORME => "Accepté",
+      self::CONFORMITE_CONFORME_DEFAUT => "Accepté avec défaut",
+      self::CONFORMITE_NONCONFORME_ETAT => "Non accepté en l'état",
+      self::CONFORMITE_NONCONFORME => "Non accepté",
       // self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non acceptabilité organoleptique",
     );
 
