@@ -41,7 +41,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
   }
 
   public function getDenominationAire() {
-      return "AOC Sainte-Victoire";
+      return "AOC CdP Sainte-Victoire";
   }
 
   public function updateIntentionFromParcellaireAndLieux() {
