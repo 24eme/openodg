@@ -8850,3 +8850,9 @@ code {
     color: #2c4a48;
     background-color: #e0f0d9;
 }
+
+.modal-demande {
+    hr {
+      margin: 20px auto 15px;
+    }
+}

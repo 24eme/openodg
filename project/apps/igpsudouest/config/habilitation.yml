@@ -7,3 +7,4 @@ all:
          CONDITIONNEUR: "Conditionneur"
          NEGOCIANT: "Négociant"
          VRAC: "Vrac export"
+         ELEVEUR: "Éleveur"

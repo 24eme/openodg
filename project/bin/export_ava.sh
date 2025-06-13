@@ -103,7 +103,7 @@ rm $EXPORTDIR/engagements.csv.part
 
 mkdir $EXPORTDIR/archives 2> /dev/null
 zip $EXPORTDIR/archives/"$(date +%Y%m%d).daily.zip" $EXPORTDIR/*.csv
-cp $EXPORTDIR/archives/"$(date +%Y%m%d).daily.zip" $EXPORTDIR/archives/"$(date +%Y%m_%W).weekly.zip"
+cp $EXPORTDIR/archives/"$(date +%Y%m%d).daily.zip" $EXPORTDIR/archives/"$(date +%Y%m.sem%W).weekly.zip"
 cp $EXPORTDIR/archives/"$(date +%Y%m%d).daily.zip" $EXPORTDIR/archives/"$(date +%Y%m).monthly.zip"
 find $EXPORTDIR/archives/ -name "*.daily.zip" -type f -mtime +7 -delete
 find $EXPORTDIR/archives/ -name "*.weekly.zip" -type f -mtime +29 -delete

@@ -494,7 +494,7 @@
             if ($(value).parent('label').find('.badge').length) {
                 nb_lot = parseInt($(value).parent('label').find('.badge').html());
             }
-            var item = $('#recap_cepages .btn-default[data-cepage="' + $(value).val() + '"] .badge');
+            var item = $('#recap_cepages .btn-default[data-cepage="' + $(value).val().replace(/.*_cepage/, 'cepage') + '"] .badge');
 
             item.html(parseInt(item.html()) + nb_lot);
             nb_lot_total = nb_lot_total + nb_lot;
