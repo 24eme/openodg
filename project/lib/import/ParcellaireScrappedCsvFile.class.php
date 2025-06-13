@@ -153,6 +153,7 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
             $libelle = preg_replace('/ SYL$/', ' SYLVANER', $libelle);
             $libelle = preg_replace('/COTES? TARN/', 'COTES DU TARN', $libelle);
             $libelle = preg_replace('/rougeE/i', 'rouge', $libelle);
+            $libelle = preg_replace('/[éèêë]/i', 'E', $libelle);
 
 
             $produit = $configuration->identifyProductByLibelle($libelle);
