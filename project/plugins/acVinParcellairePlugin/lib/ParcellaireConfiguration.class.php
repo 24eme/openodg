@@ -186,4 +186,20 @@ class ParcellaireConfiguration {
         return isset($this->configuration['irrigable']['hasIrrigableMaterielRessource']) && boolval($this->configuration['irrigable']['hasIrrigableMaterielRessource']);
     }
 
+
+    public function hasJeunesVignes() {
+        return isset($this->configuration['jeunesVignes']);
+    }
+
+    public function getAnneeJeunesVignesVtsgn() {
+        return $this->configuration['jeunesVignes']['vtsgn'];
+    }
+
+    public function getAnneeJeunesVignesGrdCruCommunalLieuDit() {
+        return $this->configuration['jeunesVignes']['grdcru_communale_lieudit'];
+    }
+
+    public function getAnneeJeunesVignesCremant() {
+        return $this->configuration['jeunesVignes']['alsace_cremant'];
+    }
 }
