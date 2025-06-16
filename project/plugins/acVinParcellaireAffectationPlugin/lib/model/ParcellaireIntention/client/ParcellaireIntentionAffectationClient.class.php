@@ -20,7 +20,6 @@ class ParcellaireIntentionAffectationClient extends acCouchdbClient {
       {
           $doc_found = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
           if ($doc_found && $doc_found->date === $date) {
-              $doc_found->cleanNonAffectee();
               return $doc_found;
           }
           if (!$doc_found) {
@@ -32,10 +31,8 @@ class ParcellaireIntentionAffectationClient extends acCouchdbClient {
               $doc_found->date = $date;
               $parcellaireIntentionAffectation = clone $doc_found;
               $parcellaireIntentionAffectation->initDoc($identifiant, $periode, $date);
-              $parcellaireIntentionAffectation->updateParcelles();
-              $parcellaireIntentionAffectation->cleanNonAffectee();
           }
-          //$parcellaireIntentionAffectation->save();
+
           return $parcellaireIntentionAffectation;
       }
 
