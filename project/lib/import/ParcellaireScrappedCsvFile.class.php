@@ -145,6 +145,9 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
                     $libelle = 'ALSACE-COMMUNALE-BERGHEIM-BLANC-GEWURZT';
                     break;
             }
+            $libelle = str_replace(['ô', 'Ô', 'ö', 'Ö'],  'O', $libelle);
+            $libelle = str_replace(['é','è','ê', 'ë', 'É','È','Ê', 'Ë'], 'E', $libelle);
+
             $libelle = preg_replace('/.*GRAND CRU/', 'AOC ALSACE GRAND CRU', $libelle);
             $libelle = preg_replace('/ GEWU?$/', ' GEWURZT', $libelle);
             $libelle = preg_replace('/ RIE$/', ' RIESLING', $libelle);
@@ -153,7 +156,6 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
             $libelle = preg_replace('/ SYL$/', ' SYLVANER', $libelle);
             $libelle = preg_replace('/COTES? TARN/', 'COTES DU TARN', $libelle);
             $libelle = preg_replace('/rougeE/i', 'rouge', $libelle);
-            $libelle = preg_replace('/[éèêë]/i', 'E', $libelle);
 
 
             $produit = $configuration->identifyProductByLibelle($libelle);
