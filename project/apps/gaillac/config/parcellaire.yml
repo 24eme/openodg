@@ -26,7 +26,7 @@ all:
             cepages_accessoires: ['ONDENC B', 'SAUVIGNON B']
           regles:
             -
-              fonction: 'SAppliqueSiProportionSomme'
+              fonction: 'ProportionSomme'
               category: 'cepages_principaux'
               sens: ">="
               limit: 0.50
@@ -39,7 +39,7 @@ all:
             cepages_accessoires: ['CABERNET FRANC N', 'CABERNET-SAUVIGNON N', 'GAMAY N, MERLOT N']
           regles:
             -
-              fonction: 'SAppliqueSiProportionSomme'
+              fonction: 'ProportionSomme'
               category: 'cepages_principaux'
               sens: ">="
               limit: 0.70
@@ -49,7 +49,7 @@ all:
               sens: ">="
               limit: 2
             -
-              fonction: 'SAppliqueSiProportionSomme'
+              fonction: 'ProportionSomme'
               category: 'cepages_duras_fer_prunelard'
               sens: ">="
               limit: 0.40
@@ -62,7 +62,7 @@ all:
             cepages_accessoires: ['CABERNET FRANC N', 'CABERNET-SAUVIGNON N', 'GAMAY N, MERLOT N']
           regles:
             -
-              fonction: 'SAppliqueSiProportionSomme'
+              fonction: 'ProportionSomme'
               category: 'cepages_principaux'
               sens: ">="
               limit: 0.70
@@ -72,7 +72,7 @@ all:
               sens: ">="
               limit: 2
             -
-              fonction: 'SAppliqueSiProportionSomme'
+              fonction: 'ProportionSomme'
               category: 'cepages_duras_fer_prunelard'
               sens: ">="
               limit: 0.40
@@ -83,7 +83,7 @@ all:
             cepages_principaux: ['GAMAY N']
           regles:
             -
-              fonction: 'SAppliqueSiProportionSomme'
+              fonction: 'ProportionSomme'
               category: 'cepages_principaux'
               sens: ">="
               limit: 1
@@ -94,7 +94,7 @@ all:
             cepages_principaux: ['MAUZAC B', 'MAUZAC ROSE RS']
           regles:
             -
-              fonction: 'SAppliqueSiProportionSomme'
+              fonction: 'ProportionSomme'
               category: 'cepages_principaux'
               sens: ">="
               limit: 1
@@ -106,29 +106,7 @@ all:
             cepages_secondaires: ["MAUZAC B, MAUZAC ROSE RS, MUSCADELLE B"]
           regles:
             -
-              fonction: 'SAppliqueSiProportionSomme'
+              fonction: 'ProportionSomme'
               category: 'cepages_principaux'
               sens: ">="
               limit: 0.50
-        gaillac_blanc_tardive:
-          synthese_libelle: "Gaillac Vendanges tardives - Rosé"
-          filter_produit_hash: 'appellations/GLC'
-          categories:
-            cepages_principaux: ["LEN DE L'EL B", "ONDENC B"]
-            cepages_secondaires: ["MAUZAC B, MAUZAC ROSE RS, MUSCADELLE B"]
-          regles:
-            -
-              fonction: 'SAppliqueSiProportionSomme'
-              category: 'cepages_principaux'
-              sens: ">="
-              limit: 0.70
-            -
-              fonction: "Nombre"
-              category: "cepages_principaux"
-              sens: ">="
-              limit: 2
-            -
-              fonction: 'SAppliqueSiProportionSomme'
-              category: 'cepages_duras_fer_prunelard'
-              sens: ">="
-              limit: 0.40

@@ -66,7 +66,9 @@ class PotentielProductionProduit {
                         continue;
                     }
                     $this->cepages_par_categories['cepages_couleur'][$k] = $superficies['superficie_max'];
-                    $this->superficie_encepagement += $superficies['superficie_max'];
+                    if (isset($this->cepages_par_categories['cepages_couleur'][$k])) {
+                        $this->superficie_encepagement += $superficies['superficie_max'];
+                    }
                 }
             }
         }
@@ -85,10 +87,21 @@ class PotentielProductionProduit {
         $potentiel_has_desactive = false;
         $potentiel_sans_blocant = true;
 
-        $task = new Simplex\Task(new Simplex\Func(PotentielProductionRule::addemptycepage($this->cepages_par_categories['cepages_couleur'], $this->cepages_par_categories['cepages_couleur'])));
+        $task = PotentielProductionRule::createTask(PotentielProductionRule::addemptycepage($this->cepages_par_categories['cepages_couleur'], $this->cepages_par_categories['cepages_couleur']));
 
         $is_all_ok = true;
+        if (isset($_GET['verbose'])) {
+            echo "<pre>";
+            echo "règle ".$this->key.":\n";
+            echo "=============================\n";
+            echo "</pre>";
+        }
         foreach(ParcellaireConfiguration::getInstance()->getGroupeRegles($this->key) as $regle) {
+            if (isset($_GET['verbose'])) {
+                echo "<pre>";
+                print_r($regle);
+                echo "</pre>";
+            }
             $pprule = new PotentielProductionRule($this, $regle);
             $this->addRule($pprule);
             $simplex = $pprule->getSimplexRestriction();
@@ -105,7 +118,7 @@ class PotentielProductionProduit {
         }
         foreach(array_keys($this->cepages_superficie) as $c) {
             if ($this->cepages_superficie[$c]) {
-                $task->addRestriction(new Simplex\Restriction(PotentielProductionRule::addemptycepage([$c => $this->cepages_superficie[$c]], $this->cepages_superficie), Simplex\Restriction::TYPE_LOE, $this->cepages_superficie[$c]));
+                $task->addRestriction(PotentielProductionRule::getNewRectrition(PotentielProductionRule::addemptycepage([$c => $this->cepages_superficie[$c]], $this->cepages_superficie), PotentielProductionRule::TYPE_LOE, $this->cepages_superficie[$c]));
             }
         }
 
@@ -117,14 +130,32 @@ class PotentielProductionProduit {
             if ($solution) {
                 $optimum = $solver->getSolutionValue($solution);
                 $this->superficie_max = round($optimum->toFloat(), 5);
+                if (isset($_GET['verbose'])) {
+                    echo "<pre>";
+                    echo "solution optimum: ".$this->superficie_max."\n";
+                    echo "</pre>";
+                }
             } else {
                 $printer = new Simplex\Printer;
-                $printer->printSolution($solver);
+                if (isset($_GET['verbose'])) {
+                        echo "<pre>";
+                        echo "Impossible : pas de solution\n";
+                        echo "solution:\n";
+                        $printer->printSolution($solver);
+                        echo "solver:\n";
+                        $printer->printSolver($solver);
+                        echo "</pre>";
+                }
                 $this->superficie_max = "IMPOSSIBLE";
             }
         }
         if (!$potentiel_sans_blocant) {
             $this->superficie_max = "IMPOSSIBLE";
+            if (isset($_GET['verbose'])) {
+                echo "<pre>";
+                echo "Impossible : car potentiel blocant\n";
+                echo "</pre>";
+            }
         }
         if ($potentiel_has_desactive) {
             $this->superficie_max = round(array_sum($this->cepages_superficie), 5);
