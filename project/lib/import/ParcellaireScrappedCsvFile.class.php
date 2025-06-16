@@ -40,12 +40,15 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
 
             if (!isset($is_old_format)) {
                 if ($parcelle[self::CSV_FORMAT_ORIGINE] != 'Origine' && $parcelle[self::CSV_FORMAT_ORIGINE] != 'PRODOUANE' && $parcelle[self::CSV_FORMAT_ORIGINE] != 'INAO') {
+                    $header = $this->file->getHeaders();
                     if( preg_match('/nom/i', $header[self::CSV_FORMAT_CVI]) ) {
                         $is_old_format = 2;
                     }elseif( preg_match('/siret/i', $header[self::CSV_FORMAT_CVI]) ) {
                         $is_old_format = 1;
                     }elseif( preg_match('/cvi/i', $header[self::CSV_FORMAT_CVI]) ) {
                         $is_old_format = 0;
+                    }else{
+                        throw new sfException("unknow header cvi: ".$header[self::CSV_FORMAT_CVI]);
                     }
                 }else{
                     $this->parcellaire->source = $parcelle[self::CSV_FORMAT_ORIGINE];
@@ -198,17 +201,15 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
                 $new_parcelle = $this->parcellaire->affecteParcelleToHashProduit($hash, $new_parcelle);
             }
 
-            if (!$new_parcelle) {
-                $this->contextInstance->getLogger()->info("La parcelle non créée ".$parcelle[self::CSV_FORMAT_IDU - $is_old_format]);
-            } elseif (! $this->check($new_parcelle)) {
             if ($this->contextInstance) {
-                $this->contextInstance->getLogger()->info("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");
-            }
-            }else{
-            if ($this->contextInstance) {
-                $this->contextInstance->getLogger()->info("Parcelle de ".$new_parcelle->getKey()." ajouté");
-            }
-	    }
+                if (!$new_parcelle) {
+                    $this->contextInstance->getLogger()->info("La parcelle non créée ".$parcelle[self::CSV_FORMAT_IDU - $is_old_format]);
+                } elseif (! $this->check($new_parcelle)) {
+                    $this->contextInstance->getLogger()->info("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");
+                }else{
+                    $this->contextInstance->getLogger()->info("Parcelle de ".$new_parcelle->getKey()." ajouté");
+                }
+	        }
         }
     }
 
