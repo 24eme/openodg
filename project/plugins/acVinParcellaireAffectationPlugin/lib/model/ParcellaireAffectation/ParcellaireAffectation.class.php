@@ -176,6 +176,8 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                         $pMatch->affectee = 0;
                     }
                     $pMatch->updateAffectations();
+                } elseif(count($destinataires)) {
+                    $pMatch->affecter($previousParcelle->superficie, current($destinataires)->getEtablissement());
                 }
             }
         }
