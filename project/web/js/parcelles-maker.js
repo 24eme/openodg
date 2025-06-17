@@ -16,7 +16,7 @@ var map = new L.map('map');
 map.scrollWheelZoom.disable();
 map.on('click', function(e) { if(e.target && e.target.feature) { return; } clearParcelleSelected() });
 
-L.tileLayer('https://wmts.geopf.fr/wmts?'+
+L.tileLayer('https://data.geopf.fr/wmts?'+
         '&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM'+
         '&LAYER={ignLayer}&STYLE={style}&FORMAT={format}'+
         '&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',

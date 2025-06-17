@@ -1,0 +1,13 @@
+all:
+  configuration:
+    degustation:
+      anonymat4labo: true
+      conformite:
+        - CONFORME
+        - NONCONFORME_MINEUR
+        - NONCONFORME_MAJEUR
+        - NONCONFORME_GRAVE
+        - NONTYPICITE_CEPAGE
+        - NONCONFORME_ANALYTIQUE
+      has_notification: true
+      always_identifiant_table: true

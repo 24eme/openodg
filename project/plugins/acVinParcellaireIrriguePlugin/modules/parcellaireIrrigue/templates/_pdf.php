@@ -46,6 +46,7 @@
 <?php endif; ?>
 
 <?php foreach($parcellesByCommune as $commune => $parcelles): ?>
+<?php if (count($parcelles) === 0): continue; endif ?>
 <br />
 <div><span class="h3">&nbsp;<?php echo $commune; ?>&nbsp;</span></div>
 

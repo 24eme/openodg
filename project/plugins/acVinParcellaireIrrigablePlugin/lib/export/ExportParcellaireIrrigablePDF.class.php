@@ -96,6 +96,10 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
+         if (! class_exists('ParcellaireManquantClient')) {
+            return sprintf("Parcellaire Irrigable %s", $this->parcellaireIrrigable->campagne);
+         }
+
         return sprintf("Parcellaire Irrigable %s", $this->parcellaireIrrigable->campagne."-".(intval($this->parcellaireIrrigable->campagne) + 1));
     }
 

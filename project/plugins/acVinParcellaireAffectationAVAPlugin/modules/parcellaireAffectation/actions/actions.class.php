@@ -260,14 +260,14 @@ class parcellaireAffectationActions extends sfActions {
         $parcelleKey = $request->getParameter('parcelle');
 
         preg_match('/^(.*)-detail-(.*)$/', $parcelleKey, $parcelleKeyMatches);
-        $detail = $this->parcellaire->get(str_replace('-', '/', $parcelleKeyMatches[1]))->detail->get($parcelleKeyMatches[2]);
+        $this->parcelle = $this->parcellaire->get(str_replace('-', '/', $parcelleKeyMatches[1]))->detail->get($parcelleKeyMatches[2]);
 
-        if (!$detail) {
+        if (!$this->parcelle) {
 
             return $this->forward404(sprintf("Le détail n'existe pas"));
         }
 
-        $this->form = new ParcellaireAffectationModificationParcelleForm($detail);
+        $this->form = new ParcellaireAffectationModificationParcelleForm($this->parcelle);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
