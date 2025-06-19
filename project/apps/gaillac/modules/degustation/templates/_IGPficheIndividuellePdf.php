@@ -1,4 +1,5 @@
 <?php use_helper('TemplatingPDF'); ?>
+<?php use_helper('Date'); ?>
 <?php use_helper('Lot') ?>
 <style>
 <?php echo style(); ?>
@@ -232,7 +233,7 @@
         <?php endforeach; ?>
     </tr>
     <tr>
-        <td class="td align-mid text-middle-size text-red" colspan="2">&nbsp;<b>C&nbsp;-&nbsp;NCMI&nbsp;-&nbsp;NCMa&nbsp;-&nbsp;NCG&nbsp;</b></td>
+        <td class="td align-mid text-middle-size" colspan="2">&nbsp;<b>C&nbsp;-&nbsp;NCMI&nbsp;-&nbsp;NCMa&nbsp;-&nbsp;NCG&nbsp;</b></td>
         <td class="td align-mid" colspan="3"></td>
         <td class="td align-mid" colspan="3"></td>
         <td class="td align-mid" colspan="3"></td>
