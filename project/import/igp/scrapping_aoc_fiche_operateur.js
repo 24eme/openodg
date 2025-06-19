@@ -124,8 +124,15 @@ if(process.env.DEBUG){
       var args = lines[i].split(";");
       var rs = args[1];
       var nb = args[0];
-      var cvi = args[2];
-      var siret = args[3];
+      var cvi = args[2].replaceAll(' ', '');
+      var siret = args[3].replaceAll(' ', '');
+
+      if (cvi.length != 10) {
+        cvi = '';
+      }
+      if (siret.length != 14) {
+	siret = '';
+      }
 
       if (fs.existsSync(process.env.DOSSIER+"/01_operateurs/fiches/"+nb+"_contact.html")) {
         console.log("file contact.html exists for " + rs + "(" + nb + ")");
@@ -143,8 +150,12 @@ if(process.env.DEBUG){
       await page.$eval('#tbEnt', el => el.value = '');
       await page.$eval('#tbCVI', el => el.value = '');
       await page.$eval('#tbSiret', el => el.value = '');
-      await page.type("#tbCVI", cvi);
-      await page.type("#tbSiret", siret);
+      if (!cvi && !siret) {
+         await page.type("#tbEnt", rs);
+      }else{
+         await page.type("#tbCVI", cvi);
+         await page.type("#tbSiret", siret);
+      }
       await page.click("#btnRech");
       let finded = false;
       try {
