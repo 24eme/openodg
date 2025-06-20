@@ -47,7 +47,13 @@
         echo "<td>".$rule->getSomme()."</td>";
         echo "<td>".$rule->getSens()." ".$rule->getLimit()."</td>";
         echo "<td>";
-        echo ($rule->getResult()) ? 'OK' : 'Non';
+        if ($rule->getResult()) {
+            echo "OK";
+        }elseif(!$rule->isBlockingRule()) {
+            echo "LIMIT";
+        }else{
+            echo "NON";
+        }
         echo "</td>";
         echo "</tr>";
     }
