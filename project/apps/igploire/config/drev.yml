@@ -9,5 +9,9 @@ all:
       degustation: true
       specificite_lot: true
       engagement_pdf: true
-      specificites: #la liste s'additionne avec la config globale du plugin drev
+      specificites:
+        bio: "bio"
+        HVE: "HVE"
+        primeur: "primeur"
+        autre: "Autre"
         TerraVitis: "Terra Vitis"
