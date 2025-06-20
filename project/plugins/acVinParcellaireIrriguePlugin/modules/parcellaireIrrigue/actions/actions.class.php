@@ -81,5 +81,11 @@ class parcellaireIrrigueActions extends sfActions {
         return $this->renderText($this->document->output());
     }
 
+    public function executePDFLast(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
 
+        $this->parcellaireIrrigue = ParcellaireIrrigueClient::getInstance()->getLast($this->etablissement->identifiant, $request->getParameter('periode'));
+
+        return $this->redirect('parcellaireirrigue_export_pdf', $this->parcellaireIrrigue);
+    }
 }
