@@ -39,17 +39,22 @@ class importOperateursHabilitationsIGPSudOuestCsvTask extends sfBaseTask
 
 
     private $habilitation_activite = [
-        "Achat et vente de vin en vrac" => HabilitationClient::ACTIVITE_VRAC,
-        "Conditionnement" => HabilitationClient::ACTIVITE_CONDITIONNEUR,
-        "Elevage" => HabilitationClient::ACTIVITE_ELEVEUR,
-        "Négociant" => HabilitationClient::ACTIVITE_NEGOCIANT,
-        "Production de raisin" => HabilitationClient::ACTIVITE_PRODUCTEUR,
-        "Vinification" => HabilitationClient::ACTIVITE_VINIFICATEUR,
+        "Achat et vente de vin en vrac" => [HabilitationClient::ACTIVITE_VRAC],
+        "Conditionnement" => [HabilitationClient::ACTIVITE_CONDITIONNEUR],
+        "Elevage" => [HabilitationClient::ACTIVITE_ELEVEUR],
+        "Négociant" => [HabilitationClient::ACTIVITE_NEGOCIANT],
+        "Production de raisin" => [HabilitationClient::ACTIVITE_PRODUCTEUR],
+        "Vinification" => [HabilitationClient::ACTIVITE_VINIFICATEUR],
+        "Négociant conditionneur" => [HabilitationClient::ACTIVITE_NEGOCIANT, HabilitationClient::ACTIVITE_CONDITIONNEUR],
+        "Vinificateur conditionneur" => [HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_CONDITIONNEUR],
+        "Apporteur au négoce vinificateur" => [HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS],
+        "Négociant vrac" => [HabilitationClient::ACTIVITE_NEGOCIANT, HabilitationClient::ACTIVITE_VRAC],
     ];
 
     private $habilitation_statut = [
         "Habilitation" => HabilitationClient::STATUT_HABILITE,
-        "Retrait" => HabilitationClient::STATUT_RETRAIT
+        "Retrait" => HabilitationClient::STATUT_RETRAIT,
+        "Habilitation en cours" => HabilitationClient::STATUT_DEMANDE_HABILITATION,
     ];
 
     protected function configure()
@@ -202,7 +207,10 @@ EOF;
         $identifiant = $etablissement->identifiant;
         $hash_produit = $this->habilitation_hash_produits[$data[self::CSV_HABILITATION_PRODUIT]];
         $date_decision = '2000-01-01';
-        $activites = [$this->habilitation_activite[$data[self::CSV_HABILITATION_ACTIVITE]]];
+        $activites = $this->habilitation_activite[$data[self::CSV_HABILITATION_ACTIVITE]];
+        if (!strlen($data[self::CSV_HABILITATION_STATUT]) < 3) {
+            return;
+        }
         $statut = $this->habilitation_statut[$data[self::CSV_HABILITATION_STATUT]];
 
         $hab = HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, $hash_produit, $date_decision, $activites, [], $statut);
