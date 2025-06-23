@@ -62,7 +62,7 @@
       "code_comptable": "70610200",
       "details": {
         "forfait": {
-          "modele": "CotisationFixe",
+          "modele": "Cotisation",
           "prix": 30,
           "tva": 0,
           "unite": "",
