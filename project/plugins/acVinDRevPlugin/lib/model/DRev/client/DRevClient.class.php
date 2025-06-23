@@ -275,7 +275,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
                 $filter = preg_replace("/^NOT /", "", $filter, -1, $exclude);
                 $e = $this->getCachedEtablissement($lot->declarant_identifiant);
                 $res = false;
-                foreach($afilter as explode('|', $filter)) {
+                $filters = explode('|', $filter);
+                foreach($afilter as $filters) {
                     $res = $res || ($e->secteur && $e->secteur == $afilter);
                 }
                 if ($exclude) {
