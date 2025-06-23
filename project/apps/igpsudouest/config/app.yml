@@ -18,5 +18,10 @@ all:
       ARIEGE: "ARIEGE"
       AVEYRON: "AVEYRON"
       CANTAL: "CANTAL"
-
+      HAUTE-GARONNE: "HAUTE-GARONNE"
+      LANDES: "LANDES"
+      LOT: "LOT"
+      LOT-ET-GARONNE: "LOT-ET-GARONNE"
+      PYRENEES-ATLANTIQUE: "PYRENEES-ATLANTIQUE"
+      TARN-ET-GARONNE: "TARN-ET-GARONNE"
   etiquettes: "70x36" #Impression en taille rélle

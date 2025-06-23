@@ -48,6 +48,7 @@ class importOperateursHabilitationsIGPSudOuestCsvTask extends sfBaseTask
         "Négociant conditionneur" => [HabilitationClient::ACTIVITE_NEGOCIANT, HabilitationClient::ACTIVITE_CONDITIONNEUR],
         "Vinificateur conditionneur" => [HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_CONDITIONNEUR],
         "Apporteur au négoce vinificateur" => [HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS],
+        "Apporteur en cave coopérative" => [HabilitationClient::ACTIVITE_PRODUCTEUR],
         "Négociant vrac" => [HabilitationClient::ACTIVITE_NEGOCIANT, HabilitationClient::ACTIVITE_VRAC],
     ];
 
@@ -208,7 +209,7 @@ EOF;
         $hash_produit = $this->habilitation_hash_produits[$data[self::CSV_HABILITATION_PRODUIT]];
         $date_decision = '2000-01-01';
         $activites = $this->habilitation_activite[$data[self::CSV_HABILITATION_ACTIVITE]];
-        if (!strlen($data[self::CSV_HABILITATION_STATUT]) < 3) {
+        if (strlen($data[self::CSV_HABILITATION_STATUT]) < 3) {
             return;
         }
         $statut = $this->habilitation_statut[$data[self::CSV_HABILITATION_STATUT]];
