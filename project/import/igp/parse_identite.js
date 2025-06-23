@@ -19,10 +19,28 @@ if (adresse) {
 }
 codepostal = $(trs[19]).find('input').prop('value').trim();
 ville = $(trs[21]).find('span').first().text().trim();
-tel = $('#ctl00_ContentPlaceHolder1_tbTel').prop('value');
-fax = $('#ctl00_ContentPlaceHolder1_tbFax').prop('value');
-portable = $('#ctl00_ContentPlaceHolder1_tbPortable').prop('value');
-courriel = $('#ctl00_ContentPlaceHolder1_tbCourriel').prop('value');
+tel = $('#ctl00_ContentPlaceHolder1_tbTel').prop('value') + '';
+if (tel) {
+  tel = tel.replace('__.__.__.__.__', '').replace(/\n/, ' ').replace(/\s\s*/, ' ').trim();
+}else{
+  tel = '';
+}
+fax = $('#ctl00_ContentPlaceHolder1_tbFax').prop('value') + '';
+if (fax) {
+  fax = fax.replace('__.__.__.__.__', '').replace(/\n/, ' ').replace(/\s\s*/, ' ').trim();
+}else{
+  fax = '';
+}
+portable = $('#ctl00_ContentPlaceHolder1_tbPortable').prop('value') + '';
+if (portable) {
+  portable = portable.replace('__.__.__.__.__', '').replace(/\n/, ' ').replace(/\s\s*/, ' ').trim();
+}else{
+  portable = '';
+}
+courriel = '';
+if ( $('#ctl00_ContentPlaceHolder1_tbCourriel').hasOwnProperty('value') ) {
+courriel = $('#ctl00_ContentPlaceHolder1_tbCourriel').prop('value').replace(';', ' ');
+}
 
 habilitations = []
 
@@ -39,12 +57,19 @@ $('#ctl00_ContentPlaceHolder1_gvSitesStockages tr').each( (stk_idx, s) => {
   if (!$(tds[1]).text()) {
     return;
   }
+
+  codepostalville = $(tds[3]).text().trim().replace("\n", ' ').replace(/\s\s*/, ' ');
+  codepostal = codepostalville.replace(/ .*/, '');
+  ville = codepostalville.replace(/^[0-9]* /, '');
+  tels = $(tds[4]).text().trim().replace("\n", ' ').replace(/\s\s*/, ' ');
+
   habilitations.push(['CHAIS', ent,
-                      $(tds[0]).text().trim().replace("\n", ' ').replace(/\s\s*/, ' '),
-                      $(tds[1]).text().trim().replace("\n", ' ').replace(/\s\s*/, ' '),
-                      $(tds[2]).text().trim().replace("\n", ' ').replace(/\s\s*/, ' '),
-                      $(tds[3]).text().trim().replace("\n", ' ').replace(/\s\s*/, ' '),
-                      $(tds[4]).text().trim().replace("\n", ' ').replace(/\s\s*/, ' ')
+                      $(tds[0]).text().replaceAll("\n", ' ').replace(/\s\s*/, ' ').trim(), // CSV_CHAIS_ACTIVITE
+                      $(tds[1]).text().replaceAll("\n", ' ').replace(/\s\s*/, ' ').trim(), //CSV_CHAIS_SITE
+                      $(tds[2]).text().replaceAll("\n", ' ').replace(/\s\s*/, ' ').trim(), // CSV_CHAIS_ADRESSE
+                      codepostal.replaceAll("\n", ' ').replace(/\s\s*/, ' ').trim(), // CSV_CHAIS_CODEPOSTAL
+                      ville.replaceAll("\n", ' ').replace(/\s\s*/, ' ').trim(), //CSV_CHAIS_VILLE
+                      tels.replaceAll("\n", ' ').replace(/\s\s*/, ' ').trim() // CSV_CHAIS_TEL
                     ]);
 });
 
