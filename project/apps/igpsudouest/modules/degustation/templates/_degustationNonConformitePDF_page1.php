@@ -40,12 +40,14 @@
   <tr><td>Madame, Monsieur,</td></tr>
   <br/>
   <tr><td>Lors de la séance de dégustation du <strong><?php echo format_date($degustation->date, "P", "fr_FR"); ?></strong>, le lot dont les informations figurent dans la fiche de non conformité ci-jointe a été ajourné<?php echo ($lot->isSecondPassage()) ? ' pour la 2ème fois' : '' ?>.<br/></td></tr>
-  <tr><td>Compte tenu de ce résultat, vous pouvez décider :</td></tr><br/>
+  <tr><td>Compte tenu de ce résultat, <?php if ($lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE){echo "il en résulte que <strong>ce lot est bloqué et ne peut être expédié ou conditionné en vin IGP.</strong> Vous";}else{echo "vous";}?> pouvez décider :</td></tr><br/>
   <tr><td>
     <ul>
       <li>Soit d’abandonner volontairement la dénomination correspondante en nous communiquant par mail ou courrier, une déclaration de déclassement au moyen de la fiche jointe.</li><br/>
       <?php if ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR): ?>
       <li>Soit de vous opposer aux conclusions de ce contrôle. Dans ce cas, ainsi que le prévoit le plan de contrôle de l'IGP, vous êtes dans l'obligation de transmettre le dossier à l'organisme de contrôle/d'inspection qui diligentera un nouveau contrôle entièrement à votre charge. <?php if (Organisme::getInstance(null, 'degustation')->getOi()): ?><strong>(<?php echo Organisme::getInstance(null, 'degustation')->getOi() ?>)</strong><?php endif ?></li>
+      <?php elseif ($lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE): ?>
+      <li>Soit de mener un <strong>ultime contrôle qui peut être effectué en externe par l'organisme certificateur QUALISUD.</strong></li>
       <?php else: ?>
       <li>Soit d’exécuter l’action corrective recommandée dans la fiche de non-conformité ci jointe. Dans cette hypothèse, votre vin pourra être soumis à une deuxième dégustation après que nous ayons procédé à un nouveau prélèvement. Notez qu’après travail le vin concerné par la deuxième présentation peut être relogé&nbsp;:
         <ul>
@@ -60,7 +62,7 @@
 </table><br/><br/>
 
 <table>
-<tr><td>Dans tous les cas, il vous appartient de nous retourner, par courrier ou par mail la fiche de non conformité ci-jointe, datée et signée avec la mention de votre décision :&nbsp;<strong>Demande de déclassement ou <?php echo ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR) ? 'Nouveau contrôle OC/OI' : 'Nouvelle présentation' ?></strong>.<br/><br/></td></tr><br/>
+<tr><td>Dans tous les cas, il vous appartient de nous retourner, par courrier ou par mail la fiche de non conformité ci-jointe, datée et signée avec la mention de votre décision :&nbsp;<strong>Demande de déclassement</strong> ou <strong><?php echo ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR) ? 'Nouveau contrôle OC/OI' : 'Nouvelle présentation' ?></strong>.<br/><br/></td></tr><br/>
   <tr><td>Nous vous prions de croire, Madame, Monsieur, en l’expression de nos sentiments les meilleurs.</td></tr><br/>
   <tr><td>Pour toute information supplémentaire, merci de nous contacter.</td></tr><br/>
 </table>
