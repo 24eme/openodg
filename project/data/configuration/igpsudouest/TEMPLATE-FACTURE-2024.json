@@ -25,7 +25,10 @@
           "docs": [
             "DRev"
           ],
-          "callback": "hasVolumeRevendiqueLots"
+          "callback": "hasVolumeRevendiqueLots",
+          "callback_parameters": {
+            "appellations": "/appellations/COT"
+          }
         }
       }
     },
