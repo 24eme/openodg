@@ -245,9 +245,15 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $match;
     }
 
+    private $etablissements = [];
+    private function getCachedEtablissement($id) {
+        if (array_key_exists($id, $this->etablissements) === false) {
+            $this->etablissements[$id] = EtablissementClient::getInstance()->find($id);
+        }
+    }
+
     public function matchFilterLot($lot, TemplateFactureCotisationCallbackParameters $produitFilter = null)
     {
-        $etablissements = [];
         $match = true;
 
         if ($produitFilter === null) {
@@ -265,15 +271,23 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
                 // On gère que l'option (NOT)? /deja/CONFORME pour le moment
                 // Pas NONCONFORME
                 $match = $match && $this->matchFilterConformite($lot, $filter);
+            } elseif ($type === 'secteur') {
+                $filter = preg_replace("/^NOT /", "", $filter, -1, $exclude);
+                $e = $this->getCachedEtablissement($lot->declarant_identifiant);
+                $res = false;
+                foreach($afilter as explode('|', $filter)) {
+                    $res = $res || ($e->secteur && $e->secteur == $afilter);
+                }
+                if ($exclude) {
+                    $res = !$res;
+                }
+                $match = $match && $res;
             } elseif ($type === 'region') {
                 $region = str_replace('/region/', '', $filter);
                 $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->getProduitHash());
             } elseif($type === 'famille') {
-                if (array_key_exists($lot->declarant_identifiant, $etablissements) === false) {
-                    $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->find($lot->declarant_identifiant);
-                }
-
-                $match = $match && $this->matchFilterFamille($etablissements[$lot->declarant_identifiant]->famille, $filter);
+                $e = $this->getCachedEtablissement($lot->declarant_identifiant);
+                $match = $match && $this->matchFilterFamille($e->famille, $filter);
             }
         }
 
