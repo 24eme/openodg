@@ -159,16 +159,15 @@ class declarationActions extends sfActions {
 
     public function executeExport(sfWebRequest $request) {
 
-        $this->regionParam = null;
-        if($this->getUser() && $this->getUser()->getRegion()){
-          $this->regionParam = $this->getUser()->getRegion();
-        }
-
-        if($this->regionParam){
-          $regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($this->regionParam);
-          if($regionRadixProduits){
-            $request->setParameter('produits-filtre',$regionRadixProduits);
-          }
+        $this->regionParam = $request->getParameter('region',null);
+        if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getRegion())){
+            $regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($region);
+            if($regionRadixProduits){
+                $params = $request->getGetParameters();
+                $params['region'] = $region;
+                unset($params['query']['region']);
+                return $this->redirect('declaration_export', $params);
+            }
         }
 
         $this->buildSearch($request);
