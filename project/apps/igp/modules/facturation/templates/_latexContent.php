@@ -210,12 +210,14 @@
 \arrayrulecolor{vertclair}
 \begin{tabular}{m{2.1cm}|>{\raggedleft}m{3.8cm}|>{\raggedleft}m{2.2cm}|}
   \hhline{|~|-|-}
-  & \cellcolor{verttresclair} \textbf{TOTAL HT} & \textbf{\FACTURETOTALHT~€} \tabularnewline
   <?php if ($displayTva): ?>
+  & \cellcolor{verttresclair} \textbf{TOTAL HT} & \textbf{\FACTURETOTALHT~€} \tabularnewline
       \hhline{|~|-|-}
       & \cellcolor{verttresclair} \textbf{TOTAL TVA 20\%}  & \textbf{\FACTURETOTALTVA~€} \tabularnewline
       \hhline{|~|-|-}
       & \cellcolor{verttresclair} \textbf{TOTAL TTC}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
+  <?php else: ?>
+      & \cellcolor{verttresclair} \textbf{TOTAL} & \textbf{\FACTURETOTALHT~€} \tabularnewline
   <?php endif;?>
   \hhline{|~|-|-}
   & \cellcolor{verttresclair} \textbf{SOMME DUE}  & \textbf{<?php echo formatFloat($facture->total_ttc - $facture->montant_paiement, ','); ?>~€} \tabularnewline
