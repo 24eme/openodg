@@ -14,4 +14,9 @@ all:
   donnees_viticoles:
     regions:
       IGPSUDOUEST: "IGPSUDOUEST"
+    secteurs:
+      ARIEGE: "ARIEGE"
+      AVEYRON: "AVEYRON"
+      CANTAL: "CANTAL"
+
   etiquettes: "70x36" #Impression en taille rélle

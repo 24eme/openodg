@@ -16,7 +16,3 @@ all:
       send_email_operateur: true
       send_to_innovagro: false
       specificites:
-        bio: "bio"
-        HVE: "HVE"
-        primeur: "primeur"
-        autre: "Autre"
