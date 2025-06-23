@@ -209,7 +209,7 @@ EOF;
         $hash_produit = $this->habilitation_hash_produits[$data[self::CSV_HABILITATION_PRODUIT]];
         $date_decision = '2000-01-01';
         $activites = $this->habilitation_activite[$data[self::CSV_HABILITATION_ACTIVITE]];
-        if (!strlen($data[self::CSV_HABILITATION_STATUT]) < 3) {
+        if (strlen($data[self::CSV_HABILITATION_STATUT]) < 3) {
             return;
         }
         $statut = $this->habilitation_statut[$data[self::CSV_HABILITATION_STATUT]];
