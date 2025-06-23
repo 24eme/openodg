@@ -1,6 +1,7 @@
 <?php use_helper('Date'); ?>
 <?php use_helper('Lot'); ?>
-<?php $query = ($query) ? $query->getRawValue() : $query ?>
+<?php $query = ($query) ? $query->getRawValue() : $query; ?>
+<?php if($regionParam && is_array($query)): $query=array_merge($query,array('region' => $regionParam)); endif;  ?>
 
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo ($regionParam)?  url_for('declaration',(array('region' => $regionParam))) : url_for('declaration'); ?>">Déclarations</a></li>
@@ -85,8 +86,7 @@
                 <?php $params = is_array($query) ? $query : array(); if($active): unset($params[$facetNom]); else: $params = array_merge($params, array($facetNom => $itemNom)); endif; ?>
                 <?php if(!count($params)): $params = false; endif; ?>
                 <?php if($facetNom == 'Produit'): $itemNom = $produitsLibelles[$itemNom]; endif; ?>
-                <?php $allParams=array('query' => $params); if($regionParam): $allParams=array_merge($allParams,array('region' => $regionParam)); endif;  ?>
-                <a href="<?php echo url_for('declaration', $allParams) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php echo clarifieTypeDocumentLibelle($itemNom); ?></a>
+                <a href="<?php echo url_for('declaration', $params) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php echo clarifieTypeDocumentLibelle($itemNom); ?></a>
             <?php endforeach; ?>
         </div>
         <?php endforeach; ?>
