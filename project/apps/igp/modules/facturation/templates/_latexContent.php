@@ -169,13 +169,13 @@
           <?php if ($displayTva): ?>
           >{\raggedleft}m{1.9cm}|>{\raggedleft}m{2.2cm}|
           <?php else: ?>
-          >{\raggedleft}m{4.1cm}|
+          >{\raggedleft}m{4.4cm}|
           <?php endif; ?>}
           \hline
           \rowcolor{verttresclair} \textbf{Désignation} & \multicolumn{1}{c|}{\textbf{Prix~uni.}} & \multicolumn{1}{c|}{\textbf{Quantité}}<?php
           echo $displayTva
               ? ' & \multicolumn{1}{c|}{\textbf{TVA}} & \multicolumn{1}{c|}{\textbf{Total HT}}'
-              : ' & \multicolumn{1}{c|}{\textbf{Total HT}}';
+              : ' & \multicolumn{1}{c|}{\textbf{Total}}';
           ?>
 
           \tabularnewline
@@ -214,9 +214,9 @@
   <?php if ($displayTva): ?>
       \hhline{|~|-|-}
       & \cellcolor{verttresclair} \textbf{TOTAL TVA 20\%}  & \textbf{\FACTURETOTALTVA~€} \tabularnewline
+      \hhline{|~|-|-}
+      & \cellcolor{verttresclair} \textbf{TOTAL TTC}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
   <?php endif;?>
-  \hhline{|~|-|-}
-  & \cellcolor{verttresclair} \textbf{TOTAL TTC}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
   \hhline{|~|-|-}
   & \cellcolor{verttresclair} \textbf{SOMME DUE}  & \textbf{<?php echo formatFloat($facture->total_ttc - $facture->montant_paiement, ','); ?>~€} \tabularnewline
   \hhline{|~|-|-}
