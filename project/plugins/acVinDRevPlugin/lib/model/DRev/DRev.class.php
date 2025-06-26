@@ -1357,6 +1357,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function updateAddressCurrentLots(){
       foreach($this->getCurrentLots() as $lot) {
         $lot->adresse_logement = $this->constructAdresseLogement();
+        if ($lot->exist('secteur')) {
+            $lot->secteur = $this->getSecteur();
+        }
       }
     }
 
@@ -1382,7 +1385,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
-     }
+    }
+
+    public function getSecteur()
+    {
+        $retSecteur = $this->getEtablissementObject()->secteur;
+        if ($this->isAdresseLogementDifferente()) {
+            $retSecteur = $this->chais->secteur;
+        }
+        return $retSecteur;
+    }
 
 	protected function doSave() {
         foreach ($this->declaration->getProduits() as $key => $produit) {
