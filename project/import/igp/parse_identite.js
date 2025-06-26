@@ -7,6 +7,7 @@ const readFileLinesSync = path => fs.readFileSync(path, 'UTF8').toString().split
 
 emails = {};
 tvas = {}
+ccomptables = {}
 
 if (process.argv[3]) {
   lines = readFileLinesSync(process.argv[3]);
@@ -19,6 +20,9 @@ if (process.argv[3]) {
       }
       if (t[8]) {
         tvas[siren] = t[8];
+      }
+      if (t[0]) {
+        ccomptables[siren] = t[0];
       }
     }
   });
@@ -86,13 +90,18 @@ if (!courriel && emails[siren]) {
 if (!courriel && emails[cvi]) {
   courriel = emails[cvi];
 }
+code_copmtable = '';
+if (ccomptables[siren]) {
+  code_copmtable = ccomptables[siren];
+}
+
 
 $('#ctl00_ContentPlaceHolder1_gvlstHabOp tr').each( (h_idx, h) => {
   tds = $(h).find('td');
   if (!$(tds[1]).text()) {
     return;
   }
-  habilitations.push(['HABILITATION', ent, raisonsociale, nomentreprise, siret, cvi, ppm, accise, tva, adresse, codepostal, ville, tel, fax, portable, courriel, $(tds[1]).text(), $(tds[0]).text(), $(tds[2]).text()]);
+  habilitations.push(['HABILITATION', ent, raisonsociale, nomentreprise, siret, cvi, ppm, accise, tva, adresse, codepostal, ville, tel, fax, portable, courriel, $(tds[1]).text(), $(tds[0]).text(), $(tds[2]).text(), code_copmtable]);
 });
 
 $('#ctl00_ContentPlaceHolder1_gvSitesStockages tr').each( (stk_idx, s) => {
