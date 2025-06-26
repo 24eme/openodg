@@ -247,9 +247,11 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     private $etablissements = [];
     private function getCachedEtablissement($id) {
+        $id = 'ETABLISSEMENT-'.str_replace('ETABLISSEMENT-', '', $id);
         if (array_key_exists($id, $this->etablissements) === false) {
             $this->etablissements[$id] = EtablissementClient::getInstance()->find($id);
         }
+        return $this->etablissements[$id];
     }
 
     public function matchFilterLot($lot, TemplateFactureCotisationCallbackParameters $produitFilter = null)
@@ -276,7 +278,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
                 $e = $this->getCachedEtablissement($lot->declarant_identifiant);
                 $res = false;
                 $filters = explode('|', $filter);
-                foreach($afilter as $filters) {
+                foreach($filters as $afilter) {
                     $res = $res || ($e->secteur && $e->secteur == $afilter);
                 }
                 if ($exclude) {
