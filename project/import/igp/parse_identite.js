@@ -2,6 +2,38 @@ var fs = require('fs');
 var fileHTML = process.argv[2];
 const cheerio = require('cheerio');
 const $ = cheerio.load(fs.readFileSync(fileHTML));
+const readFileLinesSync = path => fs.readFileSync(path, 'UTF8').toString().split('\n');
+
+
+emails = {};
+tvas = {}
+
+if (process.argv[3]) {
+  lines = readFileLinesSync(process.argv[3]);
+  lines.forEach(function(e){
+    t = e.split(";");
+    if (t[7]) {
+      siren = t[7].substring(0, 9);
+      if (t[6]) {
+        emails[siren] = t[6];
+      }
+      if (t[8]) {
+        tvas[siren] = t[8];
+      }
+    }
+  });
+}
+
+
+if (process.argv[4]) {
+  lines = readFileLinesSync(process.argv[4]);
+  lines.forEach(function(e){
+    t = e.split(";");
+    if (t[15] && t[7]) {
+      emails[t[7]] = t[15];
+    }
+  });
+}
 
 ent = fileHTML.replace(/.*ENT/, 'ENT').replace('_identite.html', '');
 
@@ -43,6 +75,17 @@ courriel = $('#ctl00_ContentPlaceHolder1_tbCourriel').prop('value').replace(';',
 }
 
 habilitations = []
+
+siren = siret.substring(0, 9)
+if (!tva && tvas[siren]) {
+  tva = tvas[siren];
+}
+if (!courriel && emails[siren]) {
+  courriel = emails[siren];
+}
+if (!courriel && emails[cvi]) {
+  courriel = emails[cvi];
+}
 
 $('#ctl00_ContentPlaceHolder1_gvlstHabOp tr').each( (h_idx, h) => {
   tds = $(h).find('td');
