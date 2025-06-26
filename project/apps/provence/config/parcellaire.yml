@@ -12,30 +12,30 @@ all:
           name: "AOC CdP Sainte-Victoire"
           color: "#52e536"
           denomination_id: "01702"
-        communes-frejus:
-          name: "AOC CdP Fréjus"
-          color: "#52e536"
-          denomination_id: "01739"
-        communes-lalonde:
-          name: "AOC CdP la Londe"
-          color: "#52e536"
-          denomination_id: "01839"
-        communes-pierrefeu:
-          name: "AOC CdP Pierrefeu"
-          color: "#52e536"
-          denomination_id: "02531"
-        communes-notredamedesAnges:
-          name: "AOC CdP Notre-Dame des Anges"
-          color: "#52e536"
-          denomination_id: "02858"
-        communes-cap:
-          name: "AOC Coteaux d'Aix en provence"
-          color: "#fcd9c7"
-          denomination_id: "01380"
-        communes-cvp:
-          name: "AOC Coteaux Varois en provence"
-          color: "#efc868"
-          denomination_id: "01707"
+        # communes-frejus:
+        #   name: "AOC CdP Fréjus"
+        #   color: "#52e536"
+        #   denomination_id: "01739"
+        # communes-lalonde:
+        #   name: "AOC CdP la Londe"
+        #   color: "#52e536"
+        #   denomination_id: "01839"
+        # communes-pierrefeu:
+        #   name: "AOC CdP Pierrefeu"
+        #   color: "#52e536"
+        #   denomination_id: "02531"
+        # communes-notredamedesAnges:
+        #   name: "AOC CdP Notre-Dame des Anges"
+        #   color: "#52e536"
+        #   denomination_id: "02858"
+        # communes-cap:
+        #   name: "AOC Coteaux d'Aix en provence"
+        #   color: "#fcd9c7"
+        #   denomination_id: "01380"
+        # communes-cvp:
+        #   name: "AOC Coteaux Varois en provence"
+        #   color: "#efc868"
+        #   denomination_id: "01707"
       potentiel_de_production:
         cdp_rouge:
           synthese_libelle: "Côtes de Provence - Rouge"

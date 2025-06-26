@@ -60,7 +60,7 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
         } else {
             $this->setValidator('cepage', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)), array('required' => "Aucun cépage saisie.")));
             $this->setValidator('lieuDit', new sfValidatorString(array('required' => true)));
-            $this->setValidator('lieuDitCadastral', new sfValidatorString(array('required' => false)));
+            $this->setValidator('lieuDitCadastral', new sfValidatorString(array('required' => true)));
         }
 
         $this->setWidget('superficie', new sfWidgetFormInputFloat(array('float_format' => '%01.2f')));

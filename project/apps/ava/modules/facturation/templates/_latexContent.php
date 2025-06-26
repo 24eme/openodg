@@ -145,7 +145,7 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 }
 \end{center}
 	\vspace{1mm}
-    <?php if(in_array(DRevClient::TYPE_COUCHDB, $facture->getOrigineTypes()->getRawValue())): ?>
+    <?php if(($facture->hasArgument('carte_membre') && $facture->getArgument('carte_membre')) ||  (!$facture->hasArgument('carte_membre') && in_array(DRevClient::TYPE_COUCHDB, $facture->getOrigineTypes()->getRawValue()))): ?>
     \begin{imgminipage}{0.5\textwidth}
     \begin{beamerframe}
 		\begin{center}

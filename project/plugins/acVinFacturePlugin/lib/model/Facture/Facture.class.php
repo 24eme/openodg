@@ -767,4 +767,14 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
         $this->versement_sepa = $versement_sepa;
     }
+
+    public function hasArgument($argument) {
+
+        return $this->arguments->exist($argument);
+    }
+
+    public function getArgument($argument) {
+
+        return $this->arguments->get($argument);
+    }
 }

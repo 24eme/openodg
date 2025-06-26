@@ -69,7 +69,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   }
 
   public function getParcellaire2Reference() {
-      $intention = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant, $this->periode + 1);
+      $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
       if (!$intention) {
           $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
           if (!count($intention->declaration)) {
@@ -176,6 +176,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                         $pMatch->affectee = 0;
                     }
                     $pMatch->updateAffectations();
+                } elseif(count($destinataires) && is_object(current($destinataires))) {
+
+                    $pMatch->affecter($previousParcelle->superficie, current($destinataires)->getEtablissement());
                 }
             }
         }

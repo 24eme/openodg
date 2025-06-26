@@ -318,8 +318,11 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             if (!$this->insee) {
                 $this->insee = CommunesConfiguration::getInstance()->findCodeCommune($this->commune);
             }
+            if (!$this->insee && $this->cvi) {
+                $this->insee = substr($this->cvi, 0, 5);
+            }
             if ($this->insee) {
-                $this->secteur = CommunesConfiguration::getInstance()->getSecteurFromInsee($this->insee);
+                $this->secteur = CommunesConfiguration::getInstance()->getSecteurFromInsee($this->insee, $this->code_postal);
             } else {
                 $secteurs = array_unique($secteurs);
                 if (count($secteurs) == 1) {
