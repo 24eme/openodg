@@ -490,11 +490,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         $produitExclude = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
 
-        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produit->produit)) {
+        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produit)) {
 
             return false;
         }
-        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produit->produit)) {
+        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produit)) {
 
             return false;
         }
