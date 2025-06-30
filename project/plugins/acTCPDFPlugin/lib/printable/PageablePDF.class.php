@@ -97,8 +97,10 @@ class PageablePDF extends PageableOutput {
     }
 
     public function addPage($html) {
-        $this->pdf->AddPage();
-        $this->pdf->writeHTML($html);
+        if (strlen((string)$html) > 1) {
+            $this->pdf->AddPage();
+            $this->pdf->writeHTML($html);
+        }
     }
 
     public function generate($use_cache = false) {

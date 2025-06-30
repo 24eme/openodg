@@ -1391,7 +1391,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     {
         $retSecteur = $this->getEtablissementObject()->secteur;
         if ($this->isAdresseLogementDifferente()) {
-            $retSecteur = $this->chais->secteur;
+            if ($this->exist('chais') && $this->chais->exist('secteur')) {
+                $retSecteur = $this->chais->secteur;
+            }
         }
         return $retSecteur;
     }

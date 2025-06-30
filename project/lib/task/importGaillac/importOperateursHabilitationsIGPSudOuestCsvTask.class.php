@@ -21,6 +21,7 @@ class importOperateursHabilitationsIGPSudOuestCsvTask extends sfBaseTask
     const CSV_HABILITATION_PRODUIT = 16;
     const CSV_HABILITATION_ACTIVITE = 17;
     const CSV_HABILITATION_STATUT = 18;
+    const CSV_HABILITATION_CODECOMPTABLE = 19;
     const CSV_CHAIS_ACTIVITE = 2;
     const CSV_CHAIS_SITE = 3;
     const CSV_CHAIS_ADRESSE = 4;
@@ -164,6 +165,7 @@ EOF;
             $societe->fax = Phone::format($data[self::CSV_HABILITATION_FAX] ?? null);
             $societe->telephone_mobile = Phone::format($data[self::CSV_HABILITATION_PORTABLE] ?? null);
             $societe->email = KeyInflector::unaccent($data[self::CSV_HABILITATION_COURRIEL] ?? null);
+            $societe->code_comptable_client = trim($data[self::CSV_HABILITATION_CODECOMPTABLE]);
 
             try {
                 $societe->save();
