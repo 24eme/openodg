@@ -10,6 +10,7 @@ all:
       anonymat4labo: false
       notation: true
       anonymisation_manuelle: false
+      tournees_par_secteur: false
       conformite: []
       typicite_cepage: true
       tournee_autonome: false
