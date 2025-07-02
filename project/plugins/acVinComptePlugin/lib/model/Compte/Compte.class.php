@@ -291,6 +291,13 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             }
         }
 
+        $this->tags->remove('relations');
+        if ($this->isEtablissementContact()) {
+            foreach($this->getEtablissement()->liaisons_operateurs as $liaison) {
+                $this->addTag('relations', EtablissementClient::getTypesLiaisons()[$liaison->type_liaison]);
+            }
+        }
+
         $this->updateTagsGroupes();
 
         parent::save();
