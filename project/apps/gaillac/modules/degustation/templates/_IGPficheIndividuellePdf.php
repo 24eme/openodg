@@ -87,7 +87,7 @@
         <?php endforeach; ?>
     </tr>
     <tr class="align-mid">
-        <td class="td align-right text-middle-size" colspan="2"><b>Nuance&nbsp;brune/marron</b>&nbsp;&nbsp;</td>
+        <td class="td align-right text-middle-size" colspan="2"><b>Nuance&nbsp;brune/marron **</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot): ?>
             <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Oui</td>
             <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Limite</td>
@@ -249,5 +249,5 @@
 
 </table>
 <div>
-    <small><i>* Rayer la mention inutile</i></small>
+    <small><i>* Rayer la mention inutile</i></small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i>** Brune pour les vins rouges, marron pour les vins blancs
 </div>
