@@ -306,12 +306,14 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
         if(!$prevParcellaire) {
             return;
         }
-
         foreach($prevParcellaire->declaration->getAppellations() as $appellation) {
             foreach($appellation->getParcelles() as $prevParcelle) {
                 $parcelle = null;
                 if($this->exist($appellation->getHash())) {
                     $parcelle = $this->get($appellation->getHash())->findParcelle($prevParcelle);
+                }
+                if(!$parcelle && $prevParcelle->isRealParcelleIdFromParcellaire()) {
+                    continue;
                 }
                 if(!$parcelle) {
                     $parcelle = $this->addProduitParcelle($prevParcelle->getProduitHash(), $prevParcelle);

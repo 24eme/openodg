@@ -148,6 +148,7 @@ DRev:
                   eleve: { }
                   statut: { }
                   adresse_logement: {}
+                  secteur: {}
                   specificite: { }
                   affectable: { }
                   document_ordre: {}

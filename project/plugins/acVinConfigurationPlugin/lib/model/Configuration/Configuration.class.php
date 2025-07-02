@@ -62,7 +62,7 @@ class Configuration extends BaseConfiguration {
 
     public static function slugifyProduitLibelle($s) {
         $s = strtolower($s);
-        $s = str_replace('comté', 'cmt', $s);
+        $s = str_replace(['é','è', 'ê', 'ë'], 'e', $s);
         $s = preg_replace('/(s|s$)/', '', $s);
         $s = preg_replace("/[ ]+/", " ", $s);
         $s = trim($s);
@@ -91,7 +91,7 @@ class Configuration extends BaseConfiguration {
             }
             foreach($this->getProduits() as $produit) {
                 $libelleProduitSlugify = self::slugifyProduitLibelle($produit->getLibelleFormat());
-                if(strpos($libelleProduitSlugify, $libelleSlugify) !== false) {
+                if(strpos($libelleProduitSlugify, $libelleSlugify) !== false || strpos($libelleSlugify, $libelleProduitSlugify) !== false) {
                     $this->identifyLibelleProduct[$libelle] = $produit;
 
                     return $produit;

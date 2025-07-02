@@ -21,11 +21,11 @@ all:
           ANNULE: "Annulé"
         automatique:
           COMPLET: TRANSMIS_OC
+          VALIDE_OC: VALIDE
         habilitations:
           HABILITATION:
             COMPLET: DEMANDE_HABILITATION
             TRANSMIS_OC: DEMANDE_HABILITATION
-            VALIDE_OC: HABILITE
             VALIDE: HABILITE
             REFUSE: REFUS
             ANNULE: ANNULÉ

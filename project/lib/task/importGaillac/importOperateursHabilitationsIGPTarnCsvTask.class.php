@@ -95,7 +95,7 @@ EOF;
         if (!$societe) {
 
             $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
-            $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_OPERATEUR]);
+            $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR);
 
             $societe = SocieteClient::getInstance()->find($newSociete->_id);
 

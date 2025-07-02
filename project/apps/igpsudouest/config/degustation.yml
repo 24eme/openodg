@@ -11,3 +11,4 @@ all:
         - NONCONFORME_ANALYTIQUE
       has_notification: true
       always_identifiant_table: true
+      tournees_par_secteur: true
