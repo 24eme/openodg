@@ -911,9 +911,8 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
     public function getTiers($include_non_reconnu = false, $relation_voulue = null, $hydrate = acCouchdbClient::HYDRATE_JSON): array {
         $cvis = array();
-        foreach($this->getCsv() as $data) {
-            $cvi = $data[DouaneCsvFile::CSV_TIERS_CVI];
-            $cvi = str_replace('"', '', $cvi);
+        foreach($this->getDonnees() as $data) {
+            $cvi = str_replace('"', '', $data->tiers_cvi);
             if(!$cvi) {
                 continue;
             }
@@ -922,18 +921,18 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             }
             if ($relation_voulue != null &&
                     $relation_voulue == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR &&
-                        (! ($data[DouaneCsvFile::CSV_LIGNE_CODE] === "06" ||
-                            $data[DouaneCsvFile::CSV_LIGNE_CODE] === "07"))) {
+                        (! ($data->categorie === "06" ||
+                            $data->categorie === "07"))) {
                 continue;
             }
             if ($relation_voulue != null &&
                     $relation_voulue == EtablissementFamilles::FAMILLE_COOPERATIVE &&
-                        (! ($data[DouaneCsvFile::CSV_LIGNE_CODE] === "09"))) {
+                        (! ($data->code === "09"))) {
                 continue;
             }
             $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
             if(!$etablissement) {
-                $cvis[$cvi] = $data[DouaneCsvFile::CSV_TIERS_LIBELLE];
+                $cvis[$cvi] = $data->tiers_raison_sociale;
                 continue;
             }
 

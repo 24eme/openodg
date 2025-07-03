@@ -90,9 +90,6 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $liaison->libelle_etablissement = $etablissement->nom;
 
         $libellesTypeRelation = EtablissementClient::getTypesLiaisons();
-        $compte = $this->getMasterCompte();
-        $compte->addTag('relations',$libellesTypeRelation[$type]);
-        $compte->save();
 
         if($etablissement->exist('ppm') && $etablissement->ppm){
           $liaison->ppm = $etablissement->ppm;
@@ -165,9 +162,6 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             $etablissement->save();
         }
 
-        $compte = $this->getMasterCompte();
-        $compte->removeTags('manuel', array($liaison->type_liaison));
-        $compte->save();
         $this->liaisons_operateurs->remove($key);
 
     }
