@@ -135,7 +135,7 @@ class ParcellaireAffectationValidation extends DocumentValidation {
             if ($produitDetailValue->vtsgn && $date_plantation && ($date_plantation->diff($dateDebutCampagne)->y <= $jeunesVignesVtsgn)) {
                 $this->addPoint(self::TYPE_ERROR, 'jeunes_vignes_vtsgn', '<a href="' . $this->generateUrl('parcellaire_parcelles', array(
                     'id' => $this->document->_id,
-                    'appellation' => preg_replace('/appellation_/', '', $produitDetailValue->getAppellation()->getKey()),
+                    'appellation' => preg_replace('/appellation_/', '', ParcellaireAffectationClient::APPELLATION_VTSGN),
                     'attention' => $produitDetailValue->getHashForKey())) . "\" class='alert-link' >Parcelle " . $produitDetailValue->section . ' ' . $produitDetailValue->numero_parcelle . ' à ' . $produitDetailValue->commune . " </a>"
                     , '');
             }
