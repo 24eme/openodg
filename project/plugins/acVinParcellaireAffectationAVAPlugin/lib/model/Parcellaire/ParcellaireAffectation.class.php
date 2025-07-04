@@ -323,6 +323,10 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
                 $parcelle->active = $prevParcelle->active;
                 $parcelle->vtsgn = $prevParcelle->vtsgn;
                 $parcelle->lieu = $prevParcelle->lieu;
+
+                if ($prevParcelle->exist('lieu_cadastral')) {
+                    $parcelle->add('lieu_cadastral', $prevParcelle->lieu_cadastral);
+                }
             }
         }
     }

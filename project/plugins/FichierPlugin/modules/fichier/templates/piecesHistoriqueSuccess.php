@@ -9,7 +9,7 @@
     <h2 style="margin-top: 0; margin-bottom: 20px;">Historique des documents</h2>
     <?php //ATTENTION DUPLIQUÉ pour la version desktop plus bas ?>
     <div class="visible-xs col-xs-6">
-    <?php if ($sf_user->isAdmin() || $sf_user->hasHabilitation()): ?>
+    <?php if ($sf_user->isAdminODG() || $sf_user->hasHabilitation()): ?>
     <a style="margin-bottom: 20px;" class="btn btn-block btn-sm btn-default" href="<?php echo url_for('upload_fichier', $etablissement) ?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un document</a>
     <?php endif; ?>
     </div>
@@ -74,7 +74,7 @@
                         <?php if (Piece::isPieceEditable($document->id, $sf_user->isAdminODG())): ?>
                 			<a href="<?php echo url_for('edit_fichier', array('id' => $document->id)) ?>"><span class="glyphicon glyphicon-user"></span></a>
                 		<?php endif; ?>
-                		<?php if ((!$sf_user->hasHabilitation() || $sf_user->isAdmin()) && $urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
+                        <?php if ((!$sf_user->hasHabilitation() || $sf_user->isAdminODG()) && $urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
                             <a href="<?php echo $urlVisu ?>" style="margin: 0 5px;" data-toggle-second="tooltip" title="Modifier le document"><span class="glyphicon glyphicon-edit"></span></a>
                 		<?php endif; ?>
                         <?php if($document->value[PieceAllView::VALUES_FICHIERS] && count($document->value[PieceAllView::VALUES_FICHIERS]) > 1): ?>
@@ -108,7 +108,7 @@
     <div class="col-sm-3 col-xs-12 page-sidebar">
     <?php //ATTENTION DUPLIQUÉ pour la version mobile plus haut ?>
     <div class="hidden-xs">
-    <?php if ($sf_user->isAdmin() || $sf_user->hasHabilitation()): ?>
+    <?php if ($sf_user->isAdminODG() || $sf_user->hasHabilitation()): ?>
     <a style="margin-bottom: 20px;" class="btn btn-block btn-sm btn-default" href="<?php echo url_for('upload_fichier', $etablissement) ?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un document</a>
     <?php endif; ?>
     <form>
