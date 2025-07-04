@@ -10,7 +10,7 @@ endif; ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if($parcellaireIrrigue): ?>panel-primary panel-irrigue <?php elseif($parcellaireIrrigable && !$parcellaireIrrigable->validation): ?>panel-primary panel-irrigable <?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">Déclarations d'irrigation <?php echo $periode ?></h3>
+            <h3 class="panel-title">Parcelles irrigables / irriguées<?php echo $periode ?></h3>
         </div>
 <?php if (!$parcellaireIrrigable): ?>
     <?php if (!ParcellaireIrrigableConfiguration::getInstance()->isOpen()): ?>
@@ -36,7 +36,7 @@ endif; ?>
       </div>
       <?php else:  ?>
     <div class="panel-body">
-        <p class="explications">Identifier ou mettre à jour vos parcelles irrigables.<br/>&nbsp;</p>
+        <p class="explications">Identifier ou mettre à jour vos parcelles irrigables avant déclarer vos parcelles irriguées <?php echo $periode ?>.</p>
         <div class="actions">
             <a class="btn btn-block btn-default" href="<?php echo url_for('parcellaireirrigable_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la déclaration « Irrigable »</a>
         </div>
