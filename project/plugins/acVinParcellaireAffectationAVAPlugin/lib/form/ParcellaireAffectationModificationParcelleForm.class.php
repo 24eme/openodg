@@ -45,9 +45,15 @@ class ParcellaireAffectationModificationParcelleForm extends ParcellaireAffectat
 
     public function getLieuCadastralForAutocomplete() {
         $lieuCadastralDetail = array();
+
+        if ($this->getObject()->getLieuDitCadastral()) {
+            $lieuCadastralDetail[] = $this->getObject()->getLieuDitCadastral();
+        }
+
         foreach ($this->getObject()->getDocument()->getParcellaire()->getDeclarationParcelles() as $libelle) {
             $lieuCadastralDetail[] = $libelle->getLieu();
         }
+
         $entries = array();
         foreach (array_unique($lieuCadastralDetail) as $lieuCadastral) {
             $entry = new stdClass();
