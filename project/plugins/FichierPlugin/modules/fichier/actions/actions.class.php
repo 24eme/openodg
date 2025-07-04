@@ -110,7 +110,7 @@ class fichierActions extends sfActions
     public function executeUpload(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement(['allow_habilitation' => true]);
 
-		if($request->getParameter('fichier_id') && !$this->getUser()->isAdmin()) {
+        if($request->getParameter('fichier_id') && !$this->getUser()->isAdminODG()) {
 
 			throw new sfError403Exception();
 		}
@@ -124,9 +124,9 @@ class fichierActions extends sfActions
 
 		$categories = null;
 
-		if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_OI)) {
+        if(!$this->getUser()->isAdminODG() && $this->getUser()->hasCredential(myUser::CREDENTIAL_OI)) {
 			$categories = array(FichierClient::CATEGORIE_OI => FichierClient::CATEGORIE_OI);
-		}else if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
+        }else if(!$this->getUser()->isAdminODG() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
 			$categories = array(FichierClient::CATEGORIE_IDENTIFICATION => FichierClient::CATEGORIE_IDENTIFICATION);
 		}
 
