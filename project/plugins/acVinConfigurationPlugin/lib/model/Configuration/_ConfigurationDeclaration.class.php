@@ -1043,6 +1043,14 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $couleurs;
     }
 
+    public function hasLieu() {
+        return false;
+    }
+
+    public function hasCouleur() {
+        return false;
+    }
+
     public function hasLieuEditable() {
 
         return $this->getAppellation()->hasLieuEditable();

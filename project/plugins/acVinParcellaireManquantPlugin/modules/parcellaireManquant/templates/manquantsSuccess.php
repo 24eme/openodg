@@ -10,6 +10,7 @@
 <div>
     <h2>Pieds morts ou manquants sur votre exploitation</h2>
     <p class="pt-3">Merci d'indiquer la densité et le % de pied manquant</p>
+    <?php if(!ParcellaireConfiguration::getInstance()->isManquantAllPourcentageAllowed()): ?>
     <div class="alert alert-info">
         <div style="display: inline-block; margin-right: 1rem;">
             <p><span class="glyphicon glyphicon-info-sign"></span></p>
@@ -18,6 +19,7 @@
             Il n'est pas nécessaire d'indiquer les parcelles avec moins de <?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>% de pieds manquants.<br/>Si vous n'avez aucune parcelle concernée, vous pouvez aller directement à la <a href="<?php echo url_for('parcellairemanquant_validation', $parcellaireManquant) ?>">validation</a>.
         </div>
     </div>
+    <?php endif; ?>
 </div>
 
 <form action="<?php echo url_for("parcellairemanquant_manquants", $parcellaireManquant) ?>" method="post" class="form-inline">

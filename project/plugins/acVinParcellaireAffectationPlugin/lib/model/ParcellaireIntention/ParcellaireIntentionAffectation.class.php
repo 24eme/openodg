@@ -35,6 +35,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
   }
 
   public function updateParcelles() {
+      $this->updateIntentionFromParcellaireAndLieux();
       foreach($this->declaration->getParcelles() as $p) {
           $p->updateFromParcellaire();
       }

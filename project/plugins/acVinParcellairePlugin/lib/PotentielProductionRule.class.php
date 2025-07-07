@@ -79,15 +79,7 @@ class PotentielProductionRule {
                     }
                 }elseif ($this->regle['sens'] == '<=') {
                     $this->res = (round($this->somme - $this->limit, 5) <= 0);
-                    if ($this->regle['limit'] == 1)  {
-                        $ratio = $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur');
-                        foreach (array_keys($this->cepages_superficie) as $k) {
-                            $ratio[$k] = 0;
-                        }
-                        $this->simple_restriction = self::getNewRectrition($ratio, self::TYPE_GOE, 0);
-                    } else {
-                        $this->simple_restriction = self::getNewRectrition(PotentielProductionRule::addemptycepage($this->cepages_superficie, $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur'), $this->regle['limit'] * -1), self::TYPE_LOE, 0);
-                    }
+                    $this->simple_restriction = self::getNewRectrition(PotentielProductionRule::addemptycepage($this->cepages_superficie, $this->potentiel_production_produit->getCepagesFromCategorie('cepages_couleur'), $this->regle['limit'] * -1), self::TYPE_LOE, 0);
                 }
                 break;
             case 'ProportionChaque':

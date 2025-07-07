@@ -17,7 +17,7 @@ class PotentielProductionProduit {
         $this->libelle = $parcellaire_produit_libelle;
         foreach (ParcellaireConfiguration::getInstance()->getPotentielGroupes() as $groupe_key) {
             $conf_produit_libelle = ParcellaireConfiguration::getInstance()->getGroupeSyntheseLibelle($groupe_key);
-            if (strpos($conf_produit_libelle, $parcellaire_produit_libelle) === false) {
+            if (strpos($conf_produit_libelle, $parcellaire_produit_libelle) === false && strpos($parcellaire_produit_libelle, $conf_produit_libelle) === false) {
                 continue;
             }
             $this->key = $groupe_key;

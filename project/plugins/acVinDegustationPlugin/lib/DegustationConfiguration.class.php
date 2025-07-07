@@ -66,6 +66,11 @@ class DegustationConfiguration {
         return $lieux;
     }
 
+    public function isTourneesParSecteur()
+    {
+        return $this->configuration['tournees_par_secteur'] === true;
+    }
+
     public function isAnonymisationManuelle()
     {
         return $this->configuration['anonymisation_manuelle'] === true;
