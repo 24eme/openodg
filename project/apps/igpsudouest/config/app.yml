@@ -10,7 +10,7 @@ all:
     default_decimal_format: 2
     max_decimal_authorized: 4
   societe:
-    format_identifiant: "VSO%06d"
+    format_identifiant: "FRS%06d"
   donnees_viticoles:
     regions:
       IGPSUDOUEST: "IGPSUDOUEST"
@@ -18,5 +18,10 @@ all:
       ARIEGE: "ARIEGE"
       AVEYRON: "AVEYRON"
       CANTAL: "CANTAL"
-
+      HAUTE-GARONNE: "HAUTE-GARONNE"
+      LANDES: "LANDES"
+      LOT: "LOT"
+      LOT-ET-GARONNE: "LOT-ET-GARONNE"
+      PYRENEES-ATLANTIQUE: "PYRENEES-ATLANTIQUE"
+      TARN-ET-GARONNE: "TARN-ET-GARONNE"
   etiquettes: "70x36" #Impression en taille rélle

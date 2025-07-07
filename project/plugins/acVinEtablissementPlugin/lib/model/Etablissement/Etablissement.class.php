@@ -90,9 +90,6 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $liaison->libelle_etablissement = $etablissement->nom;
 
         $libellesTypeRelation = EtablissementClient::getTypesLiaisons();
-        $compte = $this->getMasterCompte();
-        $compte->addTag('relations',$libellesTypeRelation[$type]);
-        $compte->save();
 
         if($etablissement->exist('ppm') && $etablissement->ppm){
           $liaison->ppm = $etablissement->ppm;
@@ -165,9 +162,6 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             $etablissement->save();
         }
 
-        $compte = $this->getMasterCompte();
-        $compte->removeTags('manuel', array($liaison->type_liaison));
-        $compte->save();
         $this->liaisons_operateurs->remove($key);
 
     }
@@ -318,8 +312,11 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             if (!$this->insee) {
                 $this->insee = CommunesConfiguration::getInstance()->findCodeCommune($this->commune);
             }
+            if (!$this->insee && $this->cvi) {
+                $this->insee = substr($this->cvi, 0, 5);
+            }
             if ($this->insee) {
-                $this->secteur = CommunesConfiguration::getInstance()->getSecteurFromInsee($this->insee);
+                $this->secteur = CommunesConfiguration::getInstance()->getSecteurFromInsee($this->insee, $this->code_postal);
             } else {
                 $secteurs = array_unique($secteurs);
                 if (count($secteurs) == 1) {

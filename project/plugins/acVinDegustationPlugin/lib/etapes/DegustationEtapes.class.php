@@ -8,7 +8,6 @@ class DegustationEtapes extends Etapes {
     const ETAPE_PRELEVEMENTS = 'PRELEVEMENTS';
     const ETAPE_ORGANISATION = 'ORGANISATION';
     const ETAPE_TOURNEES = 'TOURNEES';
-    const ETAPE_PRELEVEMENT_MANUEL = 'PRELEVEMENT_MANUEL';
     const ETAPE_ANONYMISATION_MANUELLE = 'ANONYMISATION_MANUELLE';
     const ETAPE_TABLES = 'TABLES';
     const ETAPE_ANONYMATS = 'ANONYMATS';
@@ -73,7 +72,6 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_CONVOCATIONS => 'degustation_convocations',
         self::ETAPE_ORGANISATION => 'degustation_organisation_etape',
         self::ETAPE_TOURNEES => 'degustation_tournees_etape',
-        self::ETAPE_PRELEVEMENT_MANUEL => 'degustation_prelevements_manuel_etape',
         self::ETAPE_PRELEVEMENTS => 'degustation_preleve',
         self::ETAPE_ANONYMISATION_MANUELLE => 'degustation_anonymats_etape',
         self::ETAPE_TABLES => 'degustation_tables_etape',
@@ -118,11 +116,13 @@ class DegustationEtapes extends Etapes {
 
     protected function filter($items)
     {
+        if(!DegustationConfiguration::getInstance()->isTourneesParSecteur()) {
+            unset($items[self::ETAPE_ORGANISATION]);
+        }
+
         if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
             unset($items[self::ETAPE_ANONYMATS]);
-            unset($items[self::ETAPE_PRELEVEMENT_MANUEL]);
         } else {
-            unset($items[self::ETAPE_ORGANISATION]);
             unset($items[self::ETAPE_ANONYMISATION_MANUELLE]);
         }
 

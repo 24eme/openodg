@@ -1,7 +1,6 @@
 <?php use_helper('Date'); ?>
 <?php use_helper('Lot'); ?>
 <?php $query = ($query) ? $query->getRawValue() : $query; ?>
-<?php if($regionParam && is_array($query)): $query=array_merge($query,array('region' => $regionParam)); endif;  ?>
 
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo ($regionParam)?  url_for('declaration',(array('region' => $regionParam))) : url_for('declaration'); ?>">Déclarations</a></li>
@@ -71,7 +70,8 @@
 
     <div class="col-sm-3 col-xs-12">
         <p class="text-muted"><i><?php echo $nbResultats ?> déclaration<?php if ($nbResultats > 1): ?>s<?php endif; ?></i></p>
-        <p><a href="<?php echo url_for('declaration_export', array('query' => $query)) ?>" class="btn btn-default btn-default-step btn-block btn-upper"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a>
+        <?php $allParams=array('query' => $query); if($regionParam): $allParams=array_merge($allParams,array('region' => $regionParam)); endif;  ?>
+        <p><a href="<?php echo url_for('declaration_export', $allParams) ?>" class="btn btn-default btn-default-step btn-block btn-upper"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a>
         </p>
         <?php if($query && count($query) > 0): ?>
         <p>
@@ -86,7 +86,8 @@
                 <?php $params = is_array($query) ? $query : array(); if($active): unset($params[$facetNom]); else: $params = array_merge($params, array($facetNom => $itemNom)); endif; ?>
                 <?php if(!count($params)): $params = false; endif; ?>
                 <?php if($facetNom == 'Produit'): $itemNom = $produitsLibelles[$itemNom]; endif; ?>
-                <a href="<?php echo url_for('declaration', $params) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php echo clarifieTypeDocumentLibelle($itemNom); ?></a>
+                <?php $allParams=array('query' => $params); if($regionParam): $allParams=array_merge($allParams,array('region' => $regionParam)); endif;  ?>
+                <a href="<?php echo url_for('declaration', $allParams) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php echo clarifieTypeDocumentLibelle($itemNom); ?></a>
             <?php endforeach; ?>
         </div>
         <?php endforeach; ?>
@@ -95,7 +96,7 @@
         <div class="list-group">
             <?php if($sf_user->isAdmin()): ?>
             <?php foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region): ?>
-                <a href="<?php echo url_for('declaration', ['region' => $region]) ?>" class="list-group-item <?php if($region == $regionParam): ?>active<?php endif; ?>"><span class="badge"><?php if($region == $regionParam): ?><?php echo $nbResultats; ?><?php else : ?>?<?php endif; ?></span> <?php echo str_replace('_', ' ', $region); ?></a>
+                <a href="<?php echo url_for('declaration', ['query' => $query, 'region' => $region]) ?>" class="list-group-item <?php if($region == $regionParam): ?>active<?php endif; ?>"><span class="badge"><?php if($region == $regionParam): ?><?php echo $nbResultats; ?><?php else : ?>?<?php endif; ?></span> <?php echo str_replace('_', ' ', $region); ?></a>
             <?php endforeach; ?>
             <?php else: ?>
                 <span class="list-group-item active"><span class="badge"><?php echo $nbResultats; ?></span> <?php echo str_replace('_', ' ', $regionParam); ?></span>
