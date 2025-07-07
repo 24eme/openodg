@@ -46,6 +46,10 @@ class ConfigurationCouleur extends BaseConfigurationCouleur {
     	return (count($this->cepages) > 1 || (count($this->cepages) == 1 && $this->cepages->getFirst()->getKey() != Configuration::DEFAULT_KEY));
     }
 
+    public function hasCouleur() {
+        return true;
+    }
+
     public function setDonneesCsv($datas) {
       parent::setDonneesCsv($datas);
 
