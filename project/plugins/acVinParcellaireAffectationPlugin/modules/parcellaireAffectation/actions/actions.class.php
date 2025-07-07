@@ -109,8 +109,11 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executeAffectations(sfWebRequest $request) {
         $this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        $this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
         $this->coop = $request->getParameter('coop');
-        $this->destinataire = $request->getParameter('destinataire', $this->parcellaireAffectation->getEtablissementObject()->_id);
+        $this->destinataires = $this->parcellaireAffectation->getDestinataires();
+        $this->destinataire = $request->getParameter('destinataire', key($this->destinataires));
+
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
 
         if ($this->coop) {
@@ -126,11 +129,12 @@ class parcellaireAffectationActions extends sfActions {
 
         $this->parcellaireAffectation->updateParcellesAffectation();
 
-    	$this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
 
-		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation, $this->destinataire);
+        $this->produits = $this->parcellaireAffectation->getProduits();
+        $this->hashproduit = $request->getParameter('hashproduit', (count($this->produits) > 1)? array_key_first($this->produits) : null);
 
-        $this->destinataires = array_merge([$this->etablissement->_id => ['libelle_etablissement' => "Cave particulière"]], $this->parcellaireAffectation->getDestinataires());
+
+		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation, $this->destinataire, $this->hashproduit);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -172,7 +176,23 @@ class parcellaireAffectationActions extends sfActions {
         }
 
         if($request->getParameter('previous')) {
+
+            if ($this->hashproduit) {
+                $produits = array_keys($this->produits);
+                $current = array_search($this->hashproduit, $produits);
+                if ($prev = $produits[$current - 1] ?? null) {
+                    return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $dId, 'hashproduit' => $prev]);
+                }
+            }
             $this->redirect('parcellaireaffectation_exploitation', ['sf_subject' => $this->parcellaireAffectation]);
+        }
+
+        if ($this->hashproduit) {
+            $produits = array_keys($this->produits);
+            $current = array_search($this->hashproduit, $produits);
+            if ($next = $produits[$current + 1] ?? null) {
+                return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $previous, 'hashproduit' => $next]);
+            }
         }
 
         return $this->redirect('parcellaireaffectation_validation', ['sf_subject' => $this->parcellaireAffectation]);

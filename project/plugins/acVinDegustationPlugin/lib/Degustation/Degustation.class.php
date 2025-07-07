@@ -46,6 +46,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return array_unique($regions);
 	}
 
+    public function getRegionsFromLotsDegustables()
+    {
+        $regions = [];
+        foreach($this->getLotsDegustables() as $lot) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($lot->produit_hash);
+        }
+
+        return array_unique($regions);
+    }
+
     public function getDateFormat($format = 'Y-m-d') {
         if (!$this->date) {
             return date($format);
@@ -1173,10 +1183,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 						return $cmp;
 					}
 				}
+                elseif ( $t == DegustationClient::DEGUSTATION_TRI_GENRE) {
+                    $cmp = strcmp($a_data, $b_data);
+					if ($cmp) {
+						return $cmp*-1;
+					}
+                }
 				else{
 					$cmp = strcmp($a_data, $b_data);
 					if ($cmp) {
-					return $cmp;
+						return $cmp;
 					}
 				}
 			}
@@ -1223,7 +1239,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $degustateurs = [];
 
             $regions = array_unique(array_merge([$this->region], $this->getRegionsFromProduits()));
-            $regions = [false];
             foreach($regions as $region) {
                 $region_postfix = ($region)  ? '_'.strtolower($region) : '';
                 $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college.$region_postfix );
@@ -1978,6 +1993,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function isLibelleAcceptable()
         {
-            return $this->getLots()[0]->isLibelleAcceptable();
+            if (DegustationConfiguration::getInstance()->hasAcceptabiliteAoc()) {
+                return DegustationConfiguration::getInstance()->getAcceptabiliteAoc();
+            }
+            return false;
         }
 }

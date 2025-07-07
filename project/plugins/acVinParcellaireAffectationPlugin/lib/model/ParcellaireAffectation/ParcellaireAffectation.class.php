@@ -69,7 +69,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   }
 
   public function getParcellaire2Reference() {
-      $intention = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant, $this->periode + 1);
+      $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
       if (!$intention) {
           $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
           if (!count($intention->declaration)) {
@@ -122,15 +122,29 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if (!$parcelle->affectation) {
             continue;
         }
-        if($this->findParcelle($parcelle, 1, true, $allready_selected)) {
+        if($parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelleByParcelleId($parcelle)) {
             continue;
         }
+        if(!$parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelle($parcelle, 1, true, $allready_selected)) {
+            continue;
+        }
+
         $this->addParcelle($parcelle);
     }
   }
 
+    public function findParcelleByParcelleId($parcelle) {
+        $p = $this->getParcelleById($parcelle->getParcelleId());
+
+        return $p && $p->cepage == $parcelle->cepage && $p->campagne_plantation == $parcelle->campagne_plantation;
+    }
+
     public function getParcelleById($id) {
         $p = $this->getParcelles();
+
+        if(!isset($p[$id])) {
+            return null;
+        }
         return $p[$id];
     }
 
@@ -162,6 +176,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                         $pMatch->affectee = 0;
                     }
                     $pMatch->updateAffectations();
+                } elseif(count($destinataires) && is_object(current($destinataires))) {
+
+                    $pMatch->affecter($previousParcelle->superficie, current($destinataires)->getEtablissement());
                 }
             }
         }
@@ -223,6 +240,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 continue;
             }
             $todelete[] = $p;
+        }
+        foreach($todelete as $p) {
+            $this->remove($p->getHash());
+        }
+        foreach($this->declaration as $hash => $produit) {
+            if (!count($produit->detail)) {
+                $todelete[] = $produit;
+            }
         }
         foreach($todelete as $p) {
             $this->remove($p->getHash());
@@ -400,11 +425,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return false;
     }
 
-    public function getGroupedParcelles($onlyAffectee = false) {
+    public function getGroupedParcelles($onlyAffectee = false, $hashproduitFilter = null) {
         if ($this->getDocument()->hasDgc()) {
             return $this->declaration->getParcellesByDgc($onlyAffectee);
         }
-        return $this->declaration->getParcellesByCommune($onlyAffectee);
+        return $this->declaration->getParcellesByCommune($onlyAffectee, $hashproduitFilter);
     }
 
     public function hasDgc() {
@@ -464,7 +489,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function addParcelle($parcelle) {
         $this->parcelles_idu = null;
-        $produit = $this->declaration->add(str_replace('/declaration/', '', preg_replace('|/couleurs/.*$|', '', $parcelle->produit_hash)));
+        $produit = $this->declaration->add(str_replace('/declaration/', '', $parcelle->produit_hash));
         $produit->libelle = $produit->getConfig()->getLibelleComplet();
         if(get_class($parcelle) == "ParcellaireAffectationProduitDetail") {
 
@@ -479,6 +504,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null) {
         return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee);
+    }
+
+    public function getProduits()
+    {
+        return $this->declaration->getProduits();
     }
 
 }

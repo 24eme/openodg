@@ -77,8 +77,9 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                 <th class="col-xs-1 text-center">Section / Numéro</th>
                                 <?php if(!is_object($appellationNode) || $appellationNode->getConfig()->hasLieuEditable()):  ?>
                                 <th class="col-xs-2 text-center">Lieu-dit revendiqué
+                                    <?php if(is_object($appellationNode) && strpos($appellationNode->getHash(), 'CREMANT') === null): ?>
                                     <p class="small text-muted" style="margin:0;">Lieu-dit cadastral</p>
-
+                                    <?php endif; ?>
                                 </th>
                                 <?php endif; ?>
 								<th class="col-xs-2 text-center">Cépage</th>
@@ -92,7 +93,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                 $attention_ret = ($attention && ($attention == $parcelle->getHashForKey()));
                                 $erreur_ret = ($erreur && ($erreur == $parcelle->getHashForKey()));
                                 $class = ($erreur_ret || $attention_ret) ? 'error_field_to_focused' : '';
-                                $styleErr = ($attention_ret) ? 'style="border-style: solid; border-width: 1px; border-color: darkorange;"' : "";
+                                $styleErr = ($attention_ret) ? 'style="border-style: solid; border-width: 0.2em; border-color: darkorange;"' : "";
                                 $styleWar = ($erreur_ret) ? 'style="border-style: solid; border-width: 1px; border-color: darkred;"' : "";
                                 ?>
                                 <tr <?php echo $styleErr . $styleWar; ?> >
@@ -111,8 +112,8 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                     <?php if(!is_object($appellationNode) || $appellationNode->getConfig()->hasLieuEditable()):  ?>
                                         <td>
                                             <?php echo $parcelle->getLieuLibelle() ? $parcelle->getLieuLibelle() : '<p style="margin:0;"> - </p>'; ?>
-                                            <?php if($parcelle->getParcelleParcellaire()): ?>
-                                            <p class="small text-muted" style="margin:0;"><?php echo $parcelle->getParcelleParcellaire()->getLieu() ?></p>
+                                            <?php if($parcelle->getLieuDitCadastral() && strpos($parcelle->getProduitHash(), 'LIEUDIT')) : ?>
+                                                <p class="small text-muted" style="margin:0;"><?php echo $parcelle->getLieuDitCadastral() ?></p>
                                             <?php endif; ?>
                                         </td>
                                     <?php endif; ?>
@@ -140,9 +141,11 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
 			<?php else: ?>
                 <p class="text-muted">Vous n'avez aucune <?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>parcelle<?php endif; ?> à affecter dans cette appellation.</p><br/>
             <?php endif; ?>
+            <?php if($sf_user->isAdmin()): ?>
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
             </div>
+            <?php endif; ?>
         </div>
     </div>
     <div class="row row-margin row-button">

@@ -24,7 +24,8 @@ class importOperateursHabilitationsIGPTarnCsvTask extends sfBaseTask
     const CSV_GROUPEMENT = 19;
     const CSV_PORTEUR_DEMARCHE = 20;
 
-    const hash_produit = 'certifications/IGP/genres/TRANQ/appellations/CDT';
+    const hash_produit_cdt = 'certifications/IGP/genres/TRANQ/appellations/CDT';
+    const hash_produit_cmt = 'certifications/IGP/genres/TRANQ/appellations/CMT';
 
     protected function configure()
     {
@@ -78,8 +79,11 @@ EOF;
         if ($data[self::CSV_NOCVI]) {
             $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_NOCVI]));
         }
-        if (!$e && $data[self::CSV_SIRET]) {
+        if (!$e && !$data[self::CSV_NOCVI] && $data[self::CSV_SIRET]) {
             $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_SIRET]));
+            if ($e && $e->cvi)  {
+                $e = null;
+            }
         }
         if ($e) {
             echo("Etablissement existe " . $e->_id . ", ". $data[self::CSV_NOCVI]." ".$data[self::CSV_SIRET]."\n");
@@ -91,7 +95,7 @@ EOF;
         if (!$societe) {
 
             $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
-            $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_OPERATEUR]);
+            $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR);
 
             $societe = SocieteClient::getInstance()->find($newSociete->_id);
 
@@ -193,14 +197,20 @@ EOF;
             $activites[] = HabilitationClient::ACTIVITE_CONDITIONNEUR;
         }
 
-        if($date_demande && $date_demande < $date_decision) {
-            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_demande, $activites, [], HabilitationClient::STATUT_DEMANDE_HABILITATION, "Cheptel numéro : ".$data[self::CSV_NOCHEPTEL]);
+        if ($data[self::CSV_NOCDC] == 'IGV02') {
+            $hash = self::hash_produit_cmt;
+        }else{
+            $hash = self::hash_produit_cdt;
         }
 
-        HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_decision, $activites, [], $statut);
+        if($date_demande && $date_demande < $date_decision) {
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, $hash, $date_demande, $activites, [], HabilitationClient::STATUT_DEMANDE_HABILITATION, "Cheptel numéro : ".$data[self::CSV_NOCHEPTEL]);
+        }
+
+        HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, $hash, $date_decision, $activites, [], $statut);
 
         if($suspendu) {
-            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, date('Y-m-d'), $activites, [], HabilitationClient::STATUT_RETRAIT);
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, $hash, date('Y-m-d'), $activites, [], HabilitationClient::STATUT_RETRAIT);
         }
     }
 }

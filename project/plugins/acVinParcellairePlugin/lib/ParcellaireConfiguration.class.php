@@ -85,6 +85,26 @@ class ParcellaireConfiguration {
 
     }
 
+    public function affectationDenominationAire() {
+        if(!isset($this->configuration['affectation'])) {
+            return null;
+        }
+        if(!isset($this->configuration['affectation']['denomination_aire'])) {
+            return null;
+        }
+        return $this->configuration['affectation']['denomination_aire'];
+    }
+
+    public function affectationDenominationAireHash() {
+        if(!isset($this->configuration['affectation'])) {
+            return null;
+        }
+        if(!isset($this->configuration['affectation']['denomination_aire_hash'])) {
+            return null;
+        }
+        return $this->configuration['affectation']['denomination_aire_hash'];
+    }
+
     public function isManquantMandatory() {
         if(!isset($this->configuration['manquant']) || !isset($this->configuration['manquant']['mandatory'])) {
             return false;
@@ -97,6 +117,11 @@ class ParcellaireConfiguration {
             return 20;
         }
         return $this->configuration['manquant']['pc_min'];
+    }
+
+    public function isManquantAllPourcentageAllowed() {
+
+        return isset($this->configuration['manquant']) && isset($this->configuration['manquant']['all_pourcentage_allowed']) && $this->configuration['manquant']['all_pourcentage_allowed'];
     }
 
     public function getEcartRangsMax() {
@@ -159,7 +184,27 @@ class ParcellaireConfiguration {
     }
 
     public function hasEngagements() {
-        return isset($this->configuration['engagements']) && boolval($this->configuration['engagements']);
+        return isset($this->configuration['irrigable']['engagements']) && boolval($this->configuration['irrigable']['engagements']);
     }
 
+    public function hasIrrigableMaterielRessource() {
+        return isset($this->configuration['irrigable']['hasIrrigableMaterielRessource']) && boolval($this->configuration['irrigable']['hasIrrigableMaterielRessource']);
+    }
+
+
+    public function hasJeunesVignes() {
+        return isset($this->configuration['jeunesVignes']);
+    }
+
+    public function getAnneeJeunesVignesVtsgn() {
+        return $this->configuration['jeunesVignes']['vtsgn'];
+    }
+
+    public function getAnneeJeunesVignesGrdCruCommunalLieuDit() {
+        return $this->configuration['jeunesVignes']['grdcru_communale_lieudit'];
+    }
+
+    public function getAnneeJeunesVignesCremant() {
+        return $this->configuration['jeunesVignes']['alsace_cremant'];
+    }
 }

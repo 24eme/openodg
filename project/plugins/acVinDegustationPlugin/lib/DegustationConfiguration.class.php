@@ -66,6 +66,11 @@ class DegustationConfiguration {
         return $lieux;
     }
 
+    public function isTourneesParSecteur()
+    {
+        return $this->configuration['tournees_par_secteur'] === true;
+    }
+
     public function isAnonymisationManuelle()
     {
         return $this->configuration['anonymisation_manuelle'] === true;
@@ -119,5 +124,17 @@ class DegustationConfiguration {
     public function hasDegustateursPrerempli()
     {
         return isset($this->configuration['has_degustateurs_prerempli']) && $this->configuration['has_degustateurs_prerempli'];
+    }
+
+    public function hasAcceptabiliteAoc()
+    {
+        return isset($this->configuration['is_acceptable_aoc']) && $this->configuration['is_acceptable_aoc'];
+    }
+
+    public function getAcceptabiliteAoc()
+    {
+        if ($this->hasAcceptabiliteAoc()) {
+            return $this->configuration['is_acceptable_aoc'];
+        }
     }
 }
