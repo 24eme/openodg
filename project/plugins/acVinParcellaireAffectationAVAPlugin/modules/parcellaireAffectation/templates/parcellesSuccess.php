@@ -93,7 +93,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                 $attention_ret = ($attention && ($attention == $parcelle->getHashForKey()));
                                 $erreur_ret = ($erreur && ($erreur == $parcelle->getHashForKey()));
                                 $class = ($erreur_ret || $attention_ret) ? 'error_field_to_focused' : '';
-                                $styleErr = ($attention_ret) ? 'style="border-style: solid; border-width: 1px; border-color: darkorange;"' : "";
+                                $styleErr = ($attention_ret) ? 'style="border-style: solid; border-width: 0.2em; border-color: darkorange;"' : "";
                                 $styleWar = ($erreur_ret) ? 'style="border-style: solid; border-width: 1px; border-color: darkred;"' : "";
                                 ?>
                                 <tr <?php echo $styleErr . $styleWar; ?> >

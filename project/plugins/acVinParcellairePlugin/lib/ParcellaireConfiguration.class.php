@@ -119,6 +119,11 @@ class ParcellaireConfiguration {
         return $this->configuration['manquant']['pc_min'];
     }
 
+    public function isManquantAllPourcentageAllowed() {
+
+        return isset($this->configuration['manquant']) && isset($this->configuration['manquant']['all_pourcentage_allowed']) && $this->configuration['manquant']['all_pourcentage_allowed'];
+    }
+
     public function getEcartRangsMax() {
         if(!isset($this->configuration['ecart_rangs_max'])) {
             return null;
@@ -186,4 +191,20 @@ class ParcellaireConfiguration {
         return isset($this->configuration['irrigable']['hasIrrigableMaterielRessource']) && boolval($this->configuration['irrigable']['hasIrrigableMaterielRessource']);
     }
 
+
+    public function hasJeunesVignes() {
+        return isset($this->configuration['jeunesVignes']);
+    }
+
+    public function getAnneeJeunesVignesVtsgn() {
+        return $this->configuration['jeunesVignes']['vtsgn'];
+    }
+
+    public function getAnneeJeunesVignesGrdCruCommunalLieuDit() {
+        return $this->configuration['jeunesVignes']['grdcru_communale_lieudit'];
+    }
+
+    public function getAnneeJeunesVignesCremant() {
+        return $this->configuration['jeunesVignes']['alsace_cremant'];
+    }
 }

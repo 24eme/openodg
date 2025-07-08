@@ -50,14 +50,15 @@
     <th style="width: 10%">Volume<br/>(hl)</th>
     <th style="width: 20%">Observation</th>
   </tr>
-    <?php $totalVolume = 0 ?>
+    <?php $totalVolume = 0; ?>
+    <?php $nombreObs = 0; ?>
     <?php foreach($lots as $lot): ?>
     <tr>
       <td><?php echo $lot->numero_dossier ?> / <?php echo $lot->numero_archive ?></td>
       <td><?php echo $lot->numero_logement_operateur?></td>
       <td><?php echo showProduitCepagesLot($lot, false) ?></td>
       <td style="text-align:right;"><?php echo sprintf("%.2f", $lot->volume); ?></td>
-      <td><?php echo $lot->observation ?></td>
+      <td><?php echo $lot->observation; if (strlen($lot->observation) > 0){$nombreObs += 1;} ?></td>
     </tr>
     <?php $totalVolume = $totalVolume + $lot->volume; ?>
     <?php endforeach; ?>
@@ -75,7 +76,16 @@
 
 <br/>
 <br/>
-
+<?php if ($nombreObs > 0): ?>
+    <table>
+      <tr><td>Il en résulte <?php echo count($lots) > 1 ? "qu'au moins <strong>un de vos lot" : "que <strong>votre lot"?> fait l'objet d'un <u>avertissement</u></strong> car il a été jugé "acceptable".</td></tr>
+      <br/>
+      <tr><td><strong><?php echo $nombreObs > 1 ? "Ces lots peuvent être commercalisés" : "Ce lot peut être commercialisé"; ?> en IGP Comté Tolosan, mais nous vous invitons à prendre en compte les remarques formulées avant toute transaction ou conditionnement.</strong></td></tr>
+    </table>
+<?php endif; ?>
+<br/>
+<br/>
+<br/>
 <table>
   <tr>
     <td>Veuillez accepter, Madame, Monsieur, nos plus sincères et cordiales salutations.</td>

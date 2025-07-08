@@ -198,6 +198,10 @@ class degustationActions extends sfActions {
             return $this->redirect('degustation_visualisation', $this->degustation);
         }
 
+        if (DegustationConfiguration::getInstance()->isTourneesParSecteur()) {
+            return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_PRELEVEMENTS), $this->degustation);
+        }
+
         return $this->redirect('degustation_prelevements_etape', $this->degustation);
     }
 
@@ -410,7 +414,7 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
 
-        if (!DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+        if (!DegustationConfiguration::getInstance()->isTourneesParSecteur()) {
             return $this->redirect('degustation_prelevements_etape', array('sf_subject' => $this->degustation));
         }
 
@@ -478,7 +482,7 @@ class degustationActions extends sfActions {
 
     public function executeAnonymatsEtape(sfWebRequest $request) {
         if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
-            $this->forward('degustation', 'anonymisationManuelle');
+            return $this->forward('degustation', 'anonymisationManuelle');
         }
 
         $this->degustation = $this->getRoute()->getDegustation();
@@ -607,6 +611,10 @@ class degustationActions extends sfActions {
 
         $this->redirectIfIsAnonymized();
 
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TABLES))) {
+            $this->degustation->save(false);
+        }
+
         if(!$request->getParameter('numero_table')) {
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1));
         }
@@ -686,6 +694,11 @@ class degustationActions extends sfActions {
     public function executeAnonymisationManuelle(sfWebRequest $request)
     {
         $this->degustation = $this->getRoute()->getDegustation();
+
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_ANONYMISATION_MANUELLE))) {
+            $this->degustation->save(false);
+        }
+
         $this->form = new DegustationAnonymisationManuelleForm($this->degustation);
         $this->tri = $this->degustation->tri;
         $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation);

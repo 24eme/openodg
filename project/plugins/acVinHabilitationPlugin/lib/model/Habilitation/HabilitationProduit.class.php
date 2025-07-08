@@ -133,6 +133,10 @@ class HabilitationProduit extends BaseHabilitationProduit {
             return false;
         }
         foreach($this->activites as $a) {
+            if ($activite === null && $a->isHabilite()) {
+                return true;
+            }
+
             if(strpos($a->activite, $activite) !==  0) {
                 continue;
             }

@@ -3,6 +3,7 @@ all:
     degustation:
       nb_etiquettes: 4
       anonymisation_manuelle: true
+      tournees_par_secteur: true
       typicite_cepage: false
       conformite:
         - CONFORME

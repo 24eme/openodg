@@ -10,6 +10,7 @@
 <div>
     <h2>Parcelles de votre exploitation</h2>
     <p class="pt-3">Merci d'indiquer vos parcelles ayant des pieds manquants ou morts en cliquant sur la ligne de la parcelle concernée.</p>
+    <?php if(!ParcellaireConfiguration::getInstance()->isManquantAllPourcentageAllowed()): ?>
     <div class="alert alert-info">
         <p style="margin:10px 0;">
             <span class="glyphicon glyphicon-info-sign"></span> Il n'est pas nécessaire d'indiquer les parcelles avec moins de <?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>% de pieds manquants.
@@ -19,6 +20,7 @@
             </a>
         </p>
     </div>
+    <?php endif; ?>
 </div>
 
 <form action="<?php echo url_for("parcellairemanquant_parcelles", $parcellaireManquant) ?>" method="post" class="form-horizontal">
@@ -45,7 +47,7 @@
                     <th class="col-xs-1 text-center">Année plantat°</th>
                     <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
 
-                    <th class="col-xs-2 text-center">Pieds morts ou manquants ? <span class="text-muted">(si&nbsp;+&nbsp;de&nbsp;<?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>%)</span></th>
+                    <th class="col-xs-2 text-center">Pieds morts ou manquants ?<?php if(!ParcellaireConfiguration::getInstance()->isManquantAllPourcentageAllowed()): ?><span class="text-muted">(si&nbsp;+&nbsp;de&nbsp;<?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>%)</span><?php endif; ?></th>
                 </tr>
     		</thead>
     		<tbody>

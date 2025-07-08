@@ -1,20 +1,18 @@
-const puppeteer = require('puppeteer');
-const fs = require('fs');
-const readline = require('readline');
+import puppeteer from 'puppeteer';
+import fs from 'fs';
+import readline from 'readline';
+import {setTimeout} from "node:timers/promises";
 
 if(!process.env.URLSITE){
   throw "Initialisez la variable d'environnement URLSITE";
 }
 
 const baseURL = process.env.URLSITE;
-exports.baseURL = baseURL;
 var browser;
 
 var stdin_lines;
 try {
-process.stdin.on("data", data => {
-    stdin_lines = data.toString().toUpperCase()
-})
+  stdin_lines = fs.readFileSync(process.env.PATHOPERATOR).toString();
 }catch(e){
   stdin_lines = false;
 }
@@ -104,7 +102,7 @@ if(process.env.DEBUG){
         }
         return false;
       });
-      await page.waitForTimeout(1000);
+      await setTimeout(1000);
       await fs.rename(xls_filename, process.env.DOSSIER+'/operateurs.xlsx', (err) => {if (err) return 'ERR';});
       if(process.env.DEBUG){
           console.log('xls saved: ' + process.env.DOSSIER+'operateurs.xlsx (' + xls_filename + ')');
@@ -117,22 +115,47 @@ if(process.env.DEBUG){
       return ;
     }
 
-    if(process.env.DEBUG){
-        console.log('stdin_lines: ');
-        console.log(stdin_lines);
-    }
-    lines = stdin_lines.split('\n');
-    for (i in lines) {
+    var lines = stdin_lines.split('\n');
+    for (var i in lines) {
       if (!lines[i]) {
         continue;
       }
       console.log(lines[i]);
-      args = lines[i].split(";");
-      rs = args[1];
-      nb = args[0];
+      var args = lines[i].split(";");
+      var rs = args[1];
+      var nb = args[0];
+      var cvi = args[2].replaceAll(' ', '');
+      var siret = args[3].replaceAll(' ', '');
+
+      if (cvi.length != 10) {
+        cvi = '';
+      }
+      if (siret.length != 14) {
+	siret = '';
+      }
+
+      if (fs.existsSync(process.env.DOSSIER+"/01_operateurs/fiches/"+nb+"_contact.html")) {
+        console.log("file contact.html exists for " + rs + "(" + nb + ")");
+        continue;
+      }
+
+      if (!cvi && !siret) {
+        console.log(rs + " (" + nb + ") has no cvi or siret");
+      }
+
+      await page.goto(baseURL+"/operateur/ListeOperateurR.aspx");
+      page.waitForSelector("#tbCVI", {timeout: 1000});
+
       console.log("search for " + rs + "(" + nb + ")");
       await page.$eval('#tbEnt', el => el.value = '');
-      await page.type("#tbEnt", rs);
+      await page.$eval('#tbCVI', el => el.value = '');
+      await page.$eval('#tbSiret', el => el.value = '');
+      if (!cvi && !siret) {
+         await page.type("#tbEnt", rs);
+      }else{
+         await page.type("#tbCVI", cvi);
+         await page.type("#tbSiret", siret);
+      }
       await page.click("#btnRech");
       let finded = false;
       try {
@@ -159,14 +182,16 @@ if(process.env.DEBUG){
         let newPagePromise = new Promise(x => page.once('popup', x));
         let newPage = await newPagePromise;           // declare new tab /window,
 
-        await page.waitForTimeout(1500);
+        await setTimeout(1500);
 
         fs.writeFileSync(process.env.DOSSIER+"/01_operateurs/fiches/"+nb+"_identite.html",await newPage.content());
 
         await newPage.goto(baseURL+"/operateur/Commentaire.aspx");
+        await setTimeout(1500);
         fs.writeFileSync(process.env.DOSSIER+"/01_operateurs/fiches/"+nb+"_commentaires.html",await newPage.content());
 
         await newPage.goto(baseURL+"/operateur/LstContact.aspx");
+        await setTimeout(1500);
         fs.writeFileSync(process.env.DOSSIER+"/01_operateurs/fiches/"+nb+"_contact.html",await newPage.content());
 
         await newPage.close();
