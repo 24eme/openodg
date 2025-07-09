@@ -46,7 +46,6 @@ class ParcellaireIntentionAuto extends ParcellaireIntentionAffectation {
                 $node->libelle = $this->getDenominationAire();
                 $node = $node->detail->add($newPid);
                 ParcellaireClient::CopyParcelle($node, $parcelle, true);
-                $node->parcelle_id = $newPid;
                 $parcelle->produit_hash = $hash;
                 $node->affectation = 1;
             }

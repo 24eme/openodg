@@ -491,11 +491,15 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $this->parcelles_idu = null;
         $produit = $this->declaration->add(str_replace('/declaration/', '', $parcelle->produit_hash));
         $produit->libelle = $produit->getConfig()->getLibelleComplet();
+        $pkey = $parcelle->getKey();
+        if (strpos($pkey, $parcelle->getParcelleId()) === false) {
+            $pkey = $parcelle->getParcelleId();
+        }
         if(get_class($parcelle) == "ParcellaireAffectationProduitDetail") {
 
-            return $produit->detail->add($parcelle->getParcelleId(), $parcelle);
+            return $produit->detail->add($pkey, $parcelle);
         }
-        $detail = $produit->detail->add($parcelle->getParcelleId());
+        $detail = $produit->detail->add($pkey);
         ParcellaireClient::CopyParcelle($detail, $parcelle, $parcelle->getDocument()->getType() !== 'Parcellaire');
         $detail->origine_doc = $parcelle->getDocument()->_id;
         $detail->superficie = null;
