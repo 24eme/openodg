@@ -27,6 +27,11 @@ all:
           regles:
             -
               fonction: 'ProportionSomme'
+              category: 'cepages_couleur'
+              sens: ">="
+              limit: 1
+            -
+              fonction: 'ProportionSomme'
               category: 'cepages_principaux'
               sens: ">="
               limit: 0.50
@@ -38,6 +43,11 @@ all:
             cepages_duras_fer_prunelard: ['DURAS N', 'FER N', 'PRUNELARD N']
             cepages_accessoires: ['CABERNET FRANC N', 'CABERNET-SAUVIGNON N', 'GAMAY N, MERLOT N']
           regles:
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_couleur'
+              sens: ">="
+              limit: 1
             -
               fonction: 'ProportionSomme'
               category: 'cepages_principaux'
@@ -63,6 +73,11 @@ all:
           regles:
             -
               fonction: 'ProportionSomme'
+              category: 'cepages_couleur'
+              sens: ">="
+              limit: 1
+            -
+              fonction: 'ProportionSomme'
               category: 'cepages_principaux'
               sens: ">="
               limit: 0.70
@@ -84,6 +99,11 @@ all:
           regles:
             -
               fonction: 'ProportionSomme'
+              category: 'cepages_couleur'
+              sens: ">="
+              limit: 1
+            -
+              fonction: 'ProportionSomme'
               category: 'cepages_principaux'
               sens: ">="
               limit: 1
@@ -93,6 +113,11 @@ all:
           categories:
             cepages_principaux: ['MAUZAC B', 'MAUZAC ROSE RS']
           regles:
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_couleur'
+              sens: ">="
+              limit: 1
             -
               fonction: 'ProportionSomme'
               category: 'cepages_principaux'
@@ -105,6 +130,11 @@ all:
             cepages_principaux: ["LEN DE L'EL B", "ONDENC B"]
             cepages_secondaires: ["MAUZAC B, MAUZAC ROSE RS, MUSCADELLE B"]
           regles:
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_couleur'
+              sens: ">="
+              limit: 1
             -
               fonction: 'ProportionSomme'
               category: 'cepages_principaux'
