@@ -53,7 +53,7 @@
                     </p>
                 <?php endif; ?>
             </div>
-            <div class="panel-bottom-documents">
+            <div class="panel-bottom-documents <?php if(date('Y-m-d') > IntentionCremantConfiguration::getInstance()->getDateOuvertureFin()): ?> panel-bottom-documents-demarrage <?php endif; ?>">
                 <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'intentioncremant')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
             </div>
         <?php else:  ?>
