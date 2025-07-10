@@ -944,7 +944,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function getTri() {
             $tri = $this->_get('tri');
             if (!$tri) {
-                $tri = 'Couleur|Appellation|Cépage';
+                $tri = 'Genre|Couleur|Appellation|Millesime|Cépage';
                 $this->_set('tri', $tri);
             }
             return $tri;
@@ -1183,7 +1183,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 						return $cmp;
 					}
 				}
-                elseif ( $t == DegustationClient::DEGUSTATION_TRI_GENRE) {
+                elseif ( $t == DegustationClient::DEGUSTATION_TRI_GENRE || $t == DegustationClient::DEGUSTATION_TRI_MILLESIME) {
                     $cmp = strcmp($a_data, $b_data);
 					if ($cmp) {
 						return $cmp*-1;
