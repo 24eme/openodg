@@ -90,9 +90,6 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $liaison->libelle_etablissement = $etablissement->nom;
 
         $libellesTypeRelation = EtablissementClient::getTypesLiaisons();
-        $compte = $this->getMasterCompte();
-        $compte->addTag('relations',$libellesTypeRelation[$type]);
-        $compte->save();
 
         if($etablissement->exist('ppm') && $etablissement->ppm){
           $liaison->ppm = $etablissement->ppm;
@@ -165,9 +162,6 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             $etablissement->save();
         }
 
-        $compte = $this->getMasterCompte();
-        $compte->removeTags('manuel', array($liaison->type_liaison));
-        $compte->save();
         $this->liaisons_operateurs->remove($key);
 
     }
@@ -290,6 +284,14 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             $needSocieteSave = true;
         }
 
+        $compte->tags->remove('secteur');
+        $compte->tags->add('secteur');
+
+        if (count(EtablissementClient::getSecteurs()) && $this->getSecteurs()) {
+            foreach ($this->getSecteurs() as $secteur) {
+                $compte->addTag('secteur', $secteur);
+            }
+        }
         parent::save();
 
         $this->getMasterCompte()->setStatut($this->getStatut());
@@ -298,6 +300,22 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             $societe->save();
         }
         $compte->save();
+    }
+
+    public function getSecteurs()
+    {
+        $secteurs = [];
+        if ($this->secteur) {
+            $secteurs[] = $this->secteur;
+        }
+        if ($this->exist('chais')) {
+            foreach ($this->chais as $chais => $infos) {
+                if ($infos->secteur) {
+                    $secteurs[] = $infos->secteur;
+                }
+            }
+        }
+        return array_unique($secteurs);
     }
 
     public function updateSecteurs() {
@@ -318,8 +336,11 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             if (!$this->insee) {
                 $this->insee = CommunesConfiguration::getInstance()->findCodeCommune($this->commune);
             }
+            if (!$this->insee && $this->cvi) {
+                $this->insee = substr($this->cvi, 0, 5);
+            }
             if ($this->insee) {
-                $this->secteur = CommunesConfiguration::getInstance()->getSecteurFromInsee($this->insee);
+                $this->secteur = CommunesConfiguration::getInstance()->getSecteurFromInsee($this->insee, $this->code_postal);
             } else {
                 $secteurs = array_unique($secteurs);
                 if (count($secteurs) == 1) {

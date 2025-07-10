@@ -119,6 +119,11 @@ class ParcellaireConfiguration {
         return $this->configuration['manquant']['pc_min'];
     }
 
+    public function isManquantAllPourcentageAllowed() {
+
+        return isset($this->configuration['manquant']) && isset($this->configuration['manquant']['all_pourcentage_allowed']) && $this->configuration['manquant']['all_pourcentage_allowed'];
+    }
+
     public function getEcartRangsMax() {
         if(!isset($this->configuration['ecart_rangs_max'])) {
             return null;

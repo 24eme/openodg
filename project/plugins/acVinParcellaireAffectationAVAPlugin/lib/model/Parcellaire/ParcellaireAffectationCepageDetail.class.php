@@ -235,4 +235,8 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         return $p[$this->getParcelleId()];
     }
 
+    public function isRealParcelleIdFromParcellaire() {
+        return $this->_get('parcelle_id') && strpos($this->_get('parcelle_id'), '-X') === false;
+    }
+
 }

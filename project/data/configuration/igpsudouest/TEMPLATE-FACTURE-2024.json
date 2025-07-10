@@ -1,0 +1,81 @@
+{
+  "_id": "TEMPLATE-FACTURE-2024",
+  "type": "TemplateFacture",
+  "campagne": 2024,
+  "template": "IGP",
+  "libelle": "2024 - IGP",
+  "docs": [
+    "DRev",
+    "Degustation"
+  ],
+  "cotisations": {
+    "00_forfait": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Adhésion syndicat",
+      "code_comptable": "75600000",
+      "details": {
+        "forfait": {
+          "modele": "CotisationFixe",
+          "prix": 10,
+          "tva": 0,
+          "libelle": "annuelle",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "hasVolumeRevendiqueLots",
+          "callback_parameters": {
+            "secteur": "NOT LANDES|LOT|LOT-ET-GARONNE"
+          }
+        }
+      }
+    },
+    "55_%detail_identifiant%_20_COT_revendicationLotCOT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Volumes",
+      "code_comptable": "70610000",
+      "details": {
+        "revendication": {
+          "modele": "CotisationVariable",
+          "prix": 0.525,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "IGP Comté Tolosan - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": {
+            "secteur": "NOT LANDES|LOT|LOT-ET-GARONNE"
+          }
+        }
+      }
+    },
+    "77_%detail_identifiant%_20_COT_redegustationCOT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Seconde dégustation IGP Comté Tolosan",
+      "code_comptable": "70610200",
+      "details": {
+        "forfait": {
+          "modele": "Cotisation",
+          "prix": 30,
+          "tva": 0,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "- %detail_identifiant%",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsFacturesLotRedeguste",
+          "callback_parameters": {
+            "secteur": "NOT LANDES|LOT|LOT-ET-GARONNE"
+          }
+        }
+      }
+    }
+  }
+}

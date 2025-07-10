@@ -137,21 +137,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
   }
 
-    public function findParcelleByParcelleId($parcelle) {
-        $p = $this->getParcelleById($parcelle->getParcelleId());
-
-        return $p && $p->cepage == $parcelle->cepage && $p->campagne_plantation == $parcelle->campagne_plantation;
-    }
-
-    public function getParcelleById($id) {
-        $p = $this->getParcelles();
-
-        if(!isset($p[$id])) {
-            return null;
-        }
-        return $p[$id];
-    }
-
     public function recoverPreviousParcelles() {
         $previous = $this->getPreviousDocument();
         if(!$previous) {
