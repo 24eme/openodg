@@ -22,6 +22,7 @@ all:
           filter_produit_hash: 'appellations/GLC'
           hash_produit_affectation: 'certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc_sec/cepages/DEFAUT'
           denomination_aire: "AOC Gaillac"
+          parcellaire2reference: 'ParcellaireAffectation'
           categories:
             cepages_principaux: ["LEN DE L'EL B", 'MAUZAC B', 'MAUZAC ROSE RS', 'MUSCADELLE B']
             cepages_accessoires: ['ONDENC B', 'SAUVIGNON B']
@@ -41,6 +42,7 @@ all:
           filter_produit_hash: 'appellations/GLC'
           hash_produit_affectation: 'certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT'
           denomination_aire: "AOC Gaillac"
+          parcellaire2reference: 'ParcellaireAffectation'
           categories:
             cepages_principaux: ['DURAS N', 'FER N', 'PRUNELARD N', 'SYRAH N']
             cepages_duras_fer_prunelard: ['DURAS N', 'FER N', 'PRUNELARD N']
@@ -71,6 +73,7 @@ all:
           filter_produit_hash: 'appellations/GLC'
           hash_produit_affectation: 'certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose/cepages/DEFAUT'
           denomination_aire: "AOC Gaillac"
+          parcellaire2reference: 'ParcellaireAffectation'
           categories:
             cepages_principaux: ['DURAS N', 'FER N', 'PRUNELARD N', 'SYRAH N']
             cepages_duras_fer_prunelard: ['DURAS N', 'FER N', 'PRUNELARD N']
@@ -101,6 +104,7 @@ all:
           filter_produit_hash: 'appellations/GLC'
           hash_produit_affectation: 'certifications/AOP/genres/TRANQ/appellations/GLC/mentions/PM/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT'
           denomination_aire: "AOC Gaillac"
+          parcellaire2reference: 'ParcellaireAffectation'
           categories:
             cepages_principaux: ['GAMAY N']
           regles:
@@ -119,6 +123,7 @@ all:
           filter_produit_hash: 'appellations/GLC'
           hash_produit_affectation: 'certifications/AOP/genres/MOU/appellations/GLC/mentions/MA/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT'
           denomination_aire: "AOC Gaillac"
+          parcellaire2reference: 'ParcellaireAffectation'
           categories:
             cepages_principaux: ['MAUZAC B', 'MAUZAC ROSE RS']
           regles:
@@ -137,6 +142,7 @@ all:
           filter_produit_hash: 'appellations/GLC'
           hash_produit_affectation: 'certifications/AOP/genres/VAPTE/appellations/GLC/mentions/VT/lieux/DEFAUT/couleurs/blanc_doux/cepages/DEFAUT'
           denomination_aire: "AOC Gaillac"
+          parcellaire2reference: 'ParcellaireAffectation'
           categories:
             cepages_principaux: ["LEN DE L'EL B", "ONDENC B"]
             cepages_secondaires: ["MAUZAC B, MAUZAC ROSE RS, MUSCADELLE B"]
