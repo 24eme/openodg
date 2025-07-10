@@ -329,6 +329,13 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $this->_get('parcelle_id');
     }
 
+    public function getParcelleKeyId() {
+        if (strpos($this->getKey(), $this->getParcelleId()) !== false) {
+            return $this->getKey();
+        }
+        return $this->getParcelleId();
+    }
+
     public function getTheoriticalDgs() {
         $communesDenominations = sfConfig::get('app_communes_denominations');
         $dgcs = [];

@@ -13,6 +13,8 @@ $periode = (date('Y')-1)."";
 $campagne = $periode."-".($periode + 1);
 $drev_date = $periode."-10-01";
 
+$should_have_mouvements = (TemplateFactureClient::getInstance()->findAll());
+
 //Suppression des DRev précédentes
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));

@@ -182,6 +182,9 @@ class ParcellaireConfiguration {
     public function getGroupeRegles($k) {
         return $this->configuration['potentiel_de_production'][$k]['regles'];
     }
+    public function getHashProduitAffectation($k) {
+        return $this->configuration['potentiel_de_production'][$k]['hash_produit_affectation'];
+    }
 
     public function hasEngagements() {
         return isset($this->configuration['irrigable']['engagements']) && boolval($this->configuration['irrigable']['engagements']);
