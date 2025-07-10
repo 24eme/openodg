@@ -10,11 +10,14 @@ class PotentielProduction {
     private $potentiel_de_production = [];
     private $encepagement = [];
 
+    private static $parcellaires = [];
+    private static $affectations = [];
+
     public static function retrievePotentielProductionFromParcellaire(Parcellaire $parcellaire, $date = null) {
         $client = ParcellaireAffectationClient::getInstance();
         if (method_exists($client, "findPreviousByIdentifiantAndDate")) {
             $affectation = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($parcellaire->identifiant, $date);
-            return new PotentielProduction($parcellaire, $affectation);
+            return PotentielProduction::cacheCreatePotentielProduction($parcellaire, $affectation);
         }
 
         return null;
@@ -25,13 +28,31 @@ class PotentielProduction {
         if (method_exists($client, "findPreviousByIdentifiantAndDate")) {
             $parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($identifiant, $date);
             $affectation = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($identifiant, $date);
-            return new PotentielProduction($parcellaire, $affectation);
+            return PotentielProduction::cacheCreatePotentielProduction($parcellaire, $affectation);
         }
 
         return null;
     }
 
-    public function __construct(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null) {
+    public static function cacheCreatePotentielProduction(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null) {
+
+        self::$parcellaires[$parcellaire->_id] = $parcellaire;
+        if ($affectation) {
+            self::$affectations[$affectation->_id] = $affectation;
+        }
+        return CacheFunction::cache('model', "PotentielProduction::createPotentielProduction", array($parcellaire->_id, ($affectation) ? $affectation->_id : null));
+    }
+
+    public static function createPotentielProduction($parcellaire_id, $affectation_id) {
+        $parcellaire = self::$parcellaires[$parcellaire_id];
+        $affectation = null;
+        if ($affectation_id) {
+            $affectation = self::$affectations[$affectation_id];
+        }
+        return new PotentielProduction($parcellaire, $affectation);
+    }
+
+    private function __construct(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null) {
         $this->parcellaire = $parcellaire;
         $this->parcellaire_affectation = $affectation;
 
@@ -81,6 +102,17 @@ class PotentielProduction {
             }
         }
         return false;
+    }
+
+    public function getProduitsFromParcelleId($pid)
+    {
+        $hash_produits = [];
+        foreach ($this->produits as $key => $prod) {
+            if ($prod->hasPotentiel() && $prod->hasParcelleId($pid) && $prod->getHashProduitAffectation()) {
+                $hash_produits[] = $prod->getHashProduitAffectation();
+            }
+        }
+        return $hash_produits;
     }
 
 }

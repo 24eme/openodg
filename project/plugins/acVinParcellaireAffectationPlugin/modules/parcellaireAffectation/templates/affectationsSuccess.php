@@ -39,7 +39,9 @@ foreach($destinataires as $id => $d):
         if (count($produits) > 1):
             foreach ($produits as $hash => $produit):
     ?>
-    <li role="presentation" class="<?php if($id.$hash == $destinataire.$hashproduit): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>"><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'].' - '.$produit ?></a></li>
+    <li role="presentation" class="<?php if($id.$hash == $destinataire.$hashproduit): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>"><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php
+    echo ($d['libelle_etablissement'] != 'Cave particulière') ? $d['libelle_etablissement'].' - ' : '';
+    echo $produit; ?></a></li>
     <?php
             endforeach;
         else:
@@ -85,9 +87,9 @@ foreach($destinataires as $id => $d):
       $parcelles = $parcelles->getRawValue();
       ksort($parcelles);
     		foreach ($parcelles as $parcelle):
-    		if (isset($form[$parcelle->getParcelleId()])):
+            if (isset($form[$parcelle->getParcelleKeyId()])):
     	?>
-    		<tr class="vertical-center" id="tr_<?php echo $parcelle->getKey();?>">
+    		<tr class="vertical-center" id="tr_<?php echo $parcelle->getParcelleKeyId();?>">
     			<td><?php echo $parcelle->commune; ?></td>
                 <td><?php echo $parcelle->lieu; ?></td>
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
@@ -95,13 +97,13 @@ foreach($destinataires as $id => $d):
                 <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
                 <td class="text-right"><?php echoFloatFr($parcelle->getSuperficieParcellaire(),4); ?></td>
                 <td class="text-right edit">
-                    <?php echo $form[$parcelle->getParcelleId()]['superficie']->render(); ?>
+                    <?php echo $form[$parcelle->getParcelleKeyId()]['superficie']->render(); ?>
                 </td>
             	<td class="text-center">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$parcelle->getParcelleId()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $form[$parcelle->getParcelleId()]['affectee']->renderError() ?>
+                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$parcelle->getParcelleKeyId()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
+                    	<?php echo $form[$parcelle->getParcelleKeyId()]['affectee']->renderError() ?>
                         <div class="col-xs-12">
-    		            	<?php echo $form[$parcelle->getParcelleId()]['affectee']->render(array('class' => "bsswitch test", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+    		            	<?php echo $form[$parcelle->getParcelleKeyId()]['affectee']->render(array('class' => "bsswitch test", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                         </div>
                     </div>
             	</td>

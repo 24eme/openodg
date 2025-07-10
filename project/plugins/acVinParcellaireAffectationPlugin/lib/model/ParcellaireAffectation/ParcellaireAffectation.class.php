@@ -68,15 +68,19 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       return preg_replace('/-.*/', '', $this->campagne);
   }
 
+  private $cache_parcellaire2ref = null;
   public function getParcellaire2Reference() {
-      $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
-      if (!$intention) {
+      if (!$cache_parcellaire2ref) {
           $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
-          if (!count($intention->declaration)) {
-              $intention = null;
+          if (!$intention) {
+              $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
+              if (!count($intention->declaration)) {
+                  $intention = null;
+              }
           }
+          $this->cache_parcellaire2ref = $intention;
       }
-      return $intention;
+      return $this->cache_parcellaire2ref;
   }
 
   public function getPreviousDocument() {
