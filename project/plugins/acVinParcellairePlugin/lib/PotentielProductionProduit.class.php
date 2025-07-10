@@ -229,6 +229,9 @@ class PotentielProductionProduit {
         $filter_produit_hash = ParcellaireConfiguration::getInstance()->getGroupeFilterProduitHash($this->key);
         $filter_insee = ParcellaireConfiguration::getInstance()->getGroupeFilterINSEE($this->key);
         $parcellaire2ref = $this->getParcellaire2Ref();
+        if ($parcellaire2ref->type == ParcellaireAffectationClient::TYPE_MODEL && ParcellaireConfiguration::getInstance()->getHashProduitAffectation($this->key)) {
+            $filter_produit_hash = ParcellaireConfiguration::getInstance()->getHashProduitAffectation($this->key);
+        }
         $this->synthese = self::cacheSynthese($parcellaire2ref, $filter_produit_hash, $filter_insee);
     }
 

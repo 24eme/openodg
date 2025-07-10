@@ -36,11 +36,11 @@ class PotentielProduction {
 
     public static function cacheCreatePotentielProduction(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null) {
 
-        self::$parcellaires[$parcellaire->_id] = $parcellaire;
+        self::$parcellaires[$parcellaire->_id.$parcellaire->_rev] = $parcellaire;
         if ($affectation) {
-            self::$affectations[$affectation->_id] = $affectation;
+            self::$affectations[$affectation->_id.$affectation->_rev] = $affectation;
         }
-        return CacheFunction::cache('model', "PotentielProduction::createPotentielProduction", array($parcellaire->_id, ($affectation) ? $affectation->_id : null));
+        return CacheFunction::cache('model', "PotentielProduction::createPotentielProduction", array($parcellaire->_id.$parcellaire->_rev, ($affectation) ? $affectation->_id.$affectation->_rev : null));
     }
 
     public static function createPotentielProduction($parcellaire_id, $affectation_id) {
