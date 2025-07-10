@@ -34,12 +34,15 @@ class PotentielProductionProduit {
 
     public function initEncepagement() {
         $this->cepages_par_categories = [];
+        $this->parcelles_par_categories = [];
         if ($this->key) {
             foreach (ParcellaireConfiguration::getInstance()->getGroupeCategories($this->key) as $category_key => $category_cepages) {
                 $this->cepages_par_categories[$category_key] = [];
+                $this->parcelles_par_categories[$category_key] = [];
                 foreach($category_cepages as $c) {
                     if (isset($this->synthese[$this->libelle]) && isset($this->synthese[$this->libelle]['Cepage'][$c])) {
                         $this->cepages_par_categories[$category_key][$c] = $this->synthese[$this->libelle]['Cepage'][$c]['superficie_max'];
+                        $this->parcelles_par_categories[$category_key] = array_merge($this->parcelles_par_categories[$category_key], $this->synthese[$this->libelle]['Cepage'][$c]['parcelles_id']);
                     }
                 }
             }
@@ -288,10 +291,12 @@ class PotentielProductionProduit {
                 if (!isset($synthese[$libelle]['Cepage'][$cepage])) {
                     $synthese[$libelle]['Cepage'][$cepage] = array();
                     $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] = 0;
+                    $synthese[$libelle]['Cepage'][$cepage]['parcelles_id'] = [];
                 }
                 $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] += $p->superficie;
                 if (strpos($cepage, '- jeunes vignes') === false) {
                     $synthese[$libelle]['Total']['Total']['superficie_max'] += $p->superficie;
+                    $synthese[$libelle]['Cepage'][$cepage]['parcelles_id'][] = $p->getParcelleId();
                 }
             }
         }
@@ -310,5 +315,24 @@ class PotentielProductionProduit {
 
     }
 
+    private $cache_parcelles = null;
+    public function getParcelleId() {
+        if (!$this->cache_parcelles) {
+            $this->cache_parcelles = [];
+            foreach($this->parcelles_par_categories as $libelle => $parcelles) {
+                $this->cache_parcelles = array_merge($this->cache_parcelles, $parcelles);
+            }
+            $this->cache_parcelles = array_unique($this->cache_parcelles);
+        }
+        return $this->cache_parcelles;
+    }
+
+    public function hasParcelleId($pid) {
+        return in_array($pid, $this->getParcelleId());
+    }
+
+    public function getHashProduitAffectation() {
+        return ParcellaireConfiguration::getInstance()->getHashProduitAffectation($this->key);
+    }
 
 }

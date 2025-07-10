@@ -16,6 +16,12 @@
     Les parcelles dont l'identifiant est mis en valeur pourrait rencontrer de conformité avec votre parcellaire CVI.
     </p>
 <?php endif; ?>
+<?php foreach ($parcellaireAffectation->getProblemPortentiel() as $produit => $limit ): ?>
+    <p class="alert alert-warning">
+    Le potentiel de production n'est pas respecté pour <?php echo $produit; ?>. Au vu de la sélection de vos parcelles, vous ne pouvez pas produire sur plus de <?php echo $limit; ?> ha.
+    </p>
+<?php endforeach; ?>
+
 
 <?php foreach ($parcellaireAffectation->getProduits() as $hash => $produit): ?>
 <?php if (count($parcellaireAffectation->getProduits()) > 1): ?>
