@@ -476,6 +476,17 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return false;
     }
 
+    public function getProblemPortentiel() {
+        $pot = PotentielProduction::cacheCreatePotentielProduction($this->parcellaire, $this);
+        $ret = [];
+        foreach($pot->getProduits() as $prod) {
+            if ($prod->hasPotentiel() && $prod->hasLimit()) {
+                $ret[$prod->getLibelle()] = $prod->getSuperficieMax();
+            }
+        }
+        return $ret;
+    }
+
     public function addParcelle($parcelle) {
         $this->parcelles_idu = null;
         $produit = $this->declaration->add(str_replace('/declaration/', '', $parcelle->produit_hash));
