@@ -730,7 +730,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     /**** PIECES ****/
     public function getAllPieces() {
       $lot = $this->getLotOrigine();
-      $libelle = ($this->isDeclassement())? 'Déclassement' : 'Changement de dénomination';
+      if ($this->isDeclassement()) {
+          $libelle = 'Déclassement';
+      } elseif ($this->isRepli()) {
+          $libelle = 'Repli';
+      } else {
+          $libelle = 'Changement de dénomination';
+      }
       $libelle .= ($this->isTotal())? '' : ' partiel';
       $libelle .= ' n° '.$this->numero_archive.' -';
       $libelle .= ' lot de '.$this->origine_produit_libelle.' '.$this->origine_millesime;
