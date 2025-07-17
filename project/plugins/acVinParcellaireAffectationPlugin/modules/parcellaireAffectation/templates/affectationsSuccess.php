@@ -39,9 +39,13 @@ foreach($destinataires as $id => $d):
         if (count($produits) > 1):
             foreach ($produits as $hash => $produit):
     ?>
-    <li role="presentation" class="<?php if($id.$hash == $destinataire.$hashproduit): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>"><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php
-    echo ($d['libelle_etablissement'] != 'Cave particulière') ? $d['libelle_etablissement'].' - ' : '';
-    echo $produit; ?></a></li>
+    <li role="presentation" class="<?php if($id.$hash == $destinataire.$hashproduit): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>">
+        <a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]) ?>">
+            <?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php
+            echo ($d['libelle_etablissement'] != 'Cave particulière') ? $d['libelle_etablissement'].' - ' : '';
+            echo $produit; ?>
+        </a>
+    </li>
     <?php
             endforeach;
         else:
@@ -121,7 +125,28 @@ foreach($destinataires as $id => $d):
         </tbody>
     </table>
     <?php endforeach; ?>
-    <?php if (!$has_parcelles): ?>
+    <?php
+    if ($has_parcelles):
+        $superficie_potentielle = $parcellaireAffectation->getPotentielForHash($hashproduit);
+        if ($superficie_potentielle):
+    ?>
+        <h3>Synthèse des parcelles affectées</h3>
+        <table id="synthese-total" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
+                <tr>
+                    <td class="col-xs-9 text-right">Superficie potentielle max</td>
+                    <td class="col-xs-1 text-right" id="superficie_potentielle"><?php echo $superficie_potentielle; ?></td>
+                    <td class="col-xs-1 text-right"></td>
+                    <td class="col-xs-1"></td>
+                </tr>
+                <tr class="total">
+                    <td class="col-xs-9 text-right"><strong>Total effecté</strong></td>
+                    <td class="col-xs-1 text-right"></td>
+                    <td class="col-xs-1 text-right"></td>
+                    <td class="col-xs-1"></td>
+                </tr>
+        </table>
+<?php endif; ?>
+    <?php else: ?>
         <p class="m-5"><i>Pas de parcelles affectables trouvées</i></p>
     <?php endif; ?>
     <script>
@@ -138,6 +163,24 @@ foreach($destinataires as $id => $d):
                 })
                 table.querySelector('tr.commune-total td:nth-child(0n+2)').innerText = parseFloat(superficie, 4).toFixed(4)
                 table.querySelector('tr.commune-total td:nth-child(0n+3)').innerText = checked
+                let total_superficie = 0;
+                let total_checked = 0;
+                document.querySelectorAll('tr.commune-total td:nth-child(0n+2)').forEach(function(td) {
+                    total_superficie += parseFloat(td.innerText);
+                });
+                document.querySelectorAll('tr.commune-total td:nth-child(0n+3)').forEach(function(td) {
+                    total_checked += parseInt(td.innerText);
+                });
+                document.querySelector('#synthese-total tr.total td:nth-child(0n+2)').innerText = total_superficie;
+                document.querySelector('#synthese-total tr.total td:nth-child(0n+3)').innerText = total_checked;
+
+                if (total_superficie > parseFloat(document.querySelector('#superficie_potentielle').innerText)) {
+                    $('#synthese-total').addClass("alert alert-danger");
+                    $('#synthese-total').removeClass("alert alert-success");
+                }else{
+                    $('#synthese-total').removeClass("alert alert-danger");
+                    $('#synthese-total').addClass("alert alert-success");
+                }
             };
 
             (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
