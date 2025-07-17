@@ -184,6 +184,10 @@ class Organisme
         return 'images/logo_'.strtolower($this->region).'.png';
     }
 
+    public function getJoinedLogoWebPathForTeledeclaration($regions) {
+        return 'images/logo_teledeclaration'.$regions[0].'_'.$regions[1]'.png';
+    }
+
     public function getLogoPdfPath() {
         return sfConfig::get('sf_web_dir')."/".$this->getLogoPdfWebPath();
     }
