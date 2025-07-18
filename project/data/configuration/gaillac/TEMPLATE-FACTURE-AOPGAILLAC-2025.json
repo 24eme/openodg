@@ -1,10 +1,10 @@
 {
-  "_id": "TEMPLATE-FACTURE-AOPGAILLAC-2005",
-  "_rev": "1-e02cfaaf0b13d798f2667d63567aed2f",
+  "_id": "TEMPLATE-FACTURE-AOPGAILLAC-2025",
+  "_rev": "3-12d229c264e0740ebcc3ed7acae5d846",
   "type": "TemplateFacture",
   "region": "AOPGAILLAC",
-  "campagne": 2005,
-  "libelle": "2005 - AOP Gaillac",
+  "campagne": 2025,
+  "libelle": "2025 - AOP Gaillac",
   "docs": [
     "DRev"
   ],
@@ -41,7 +41,7 @@
           "prix": 10,
           "tva": 0.2,
           "unite": "ha",
-          "libelle": "",
+          "libelle": "surface",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -62,7 +62,7 @@
           "prix": 1.35,
           "tva": 0,
           "unite": "hl",
-          "libelle": "Volume",
+          "libelle": "volume",
           "complement_libelle": "",
           "docs": [
             "DRev"
