@@ -335,6 +335,9 @@ class PotentielProductionProduit {
     }
 
     public function getHashProduitAffectation() {
+        if (!$this->key) {
+            return null;
+        }
         return ParcellaireConfiguration::getInstance()->getHashProduitAffectation($this->key);
     }
 
