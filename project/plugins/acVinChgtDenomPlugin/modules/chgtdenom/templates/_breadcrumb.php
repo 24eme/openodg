@@ -6,8 +6,10 @@
   <?php if($chgtDenom->exist('declarant')): ?>
   <li><a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $chgtDenom->identifiant)); ?>"><?php echo $chgtDenom->declarant->getNom() ?> (<?php echo $chgtDenom->identifiant ?> - <?php echo $chgtDenom->declarant->cvi ?>)</a></li>
   <li class="active"><a href="">
-<?php if ($chgtDenom->isDeclassement()): ?>
+<?php if ($chgtDenom->isDeclassement()):?>
       Déclassement
+<?php elseif ($chgtDenom->isRepli()): ?>
+      Repli
 <?php else: ?>
       Changement de dénomination
 <?php endif; ?>

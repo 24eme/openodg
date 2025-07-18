@@ -124,18 +124,24 @@ class ParcellaireAffectationValidation extends DocumentValidation {
     protected function controleErrorJeunesVignes() {
 
         $dateDebutCampagne = new DateTime(ConfigurationClient::getInstance()->getCampagneManager()->getDateDebutByCampagne($this->document->getCampagne()));
+        $dateDebutCampagne->setTime(0, 0);
+
         $jeunesVignesVtsgn = ParcellaireConfiguration::getInstance()->getAnneeJeunesVignesVtsgn();
         $jeunesVignesGrdCruCommuLieuDit = ParcellaireConfiguration::getInstance()->getAnneeJeunesVignesGrdCruCommunalLieuDit();
         $jeunesVignesCremant = ParcellaireConfiguration::getInstance()->getAnneeJeunesVignesCremant();
 
         foreach ($this->document->declaration->getProduitsCepageDetails() as $produitDetailKey => $produitDetailValue ) {
-            $annee_plantation = substr($produitDetailValue->campagne_plantation, 5, 4);
-            $date_plantation = DateTimeImmutable::createFromFormat('Y-m-d', $annee_plantation . '-07-31');
+            if(!$produitDetailValue->campagne_plantation) {
+                continue;
+            }
+            $annee_plantation = substr($produitDetailValue->campagne_plantation, 0, 4);
+            $date_plantation = DateTimeImmutable::createFromFormat('Y-m-d', $annee_plantation . '-08-01');
+            $date_plantation->setTime(0, 0);
 
             if ($produitDetailValue->vtsgn && $date_plantation && ($date_plantation->diff($dateDebutCampagne)->y <= $jeunesVignesVtsgn)) {
                 $this->addPoint(self::TYPE_ERROR, 'jeunes_vignes_vtsgn', '<a href="' . $this->generateUrl('parcellaire_parcelles', array(
                     'id' => $this->document->_id,
-                    'appellation' => preg_replace('/appellation_/', '', $produitDetailValue->getAppellation()->getKey()),
+                    'appellation' => preg_replace('/appellation_/', '', ParcellaireAffectationClient::APPELLATION_VTSGN),
                     'attention' => $produitDetailValue->getHashForKey())) . "\" class='alert-link' >Parcelle " . $produitDetailValue->section . ' ' . $produitDetailValue->numero_parcelle . ' à ' . $produitDetailValue->commune . " </a>"
                     , '');
             }

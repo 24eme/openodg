@@ -36,6 +36,8 @@ all:
         #   name: "AOC Coteaux Varois en provence"
         #   color: "#efc868"
         #   denomination_id: "01707"
+      manquant:
+        all_pourcentage_allowed: true
       potentiel_de_production:
         cdp_rouge:
           synthese_libelle: "Côtes de Provence - Rouge"

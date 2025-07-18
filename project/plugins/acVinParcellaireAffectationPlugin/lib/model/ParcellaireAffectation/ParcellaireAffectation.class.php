@@ -68,15 +68,19 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       return preg_replace('/-.*/', '', $this->campagne);
   }
 
+  private $cache_parcellaire2ref = null;
   public function getParcellaire2Reference() {
-      $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
-      if (!$intention) {
+      if (!$cache_parcellaire2ref) {
           $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
-          if (!count($intention->declaration)) {
-              $intention = null;
+          if (!$intention) {
+              $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
+              if (!count($intention->declaration)) {
+                  $intention = null;
+              }
           }
+          $this->cache_parcellaire2ref = $intention;
       }
-      return $intention;
+      return $this->cache_parcellaire2ref;
   }
 
   public function getPreviousDocument() {
@@ -132,21 +136,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $this->addParcelle($parcelle);
     }
   }
-
-    public function findParcelleByParcelleId($parcelle) {
-        $p = $this->getParcelleById($parcelle->getParcelleId());
-
-        return $p && $p->cepage == $parcelle->cepage && $p->campagne_plantation == $parcelle->campagne_plantation;
-    }
-
-    public function getParcelleById($id) {
-        $p = $this->getParcelles();
-
-        if(!isset($p[$id])) {
-            return null;
-        }
-        return $p[$id];
-    }
 
     public function recoverPreviousParcelles() {
         $previous = $this->getPreviousDocument();
@@ -487,15 +476,30 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return false;
     }
 
+    public function getProblemPortentiel() {
+        $pot = PotentielProduction::cacheCreatePotentielProduction($this->parcellaire, $this);
+        $ret = [];
+        foreach($pot->getProduits() as $prod) {
+            if ($prod->hasPotentiel() && $prod->hasLimit()) {
+                $ret[$prod->getLibelle()] = $prod->getSuperficieMax();
+            }
+        }
+        return $ret;
+    }
+
     public function addParcelle($parcelle) {
         $this->parcelles_idu = null;
         $produit = $this->declaration->add(str_replace('/declaration/', '', $parcelle->produit_hash));
         $produit->libelle = $produit->getConfig()->getLibelleComplet();
+        $pkey = $parcelle->getKey();
+        if (strpos($pkey, $parcelle->getParcelleId()) === false) {
+            $pkey = $parcelle->getParcelleId();
+        }
         if(get_class($parcelle) == "ParcellaireAffectationProduitDetail") {
 
-            return $produit->detail->add($parcelle->getParcelleId(), $parcelle);
+            return $produit->detail->add($pkey, $parcelle);
         }
-        $detail = $produit->detail->add($parcelle->getParcelleId());
+        $detail = $produit->detail->add($pkey);
         ParcellaireClient::CopyParcelle($detail, $parcelle, $parcelle->getDocument()->getType() !== 'Parcellaire');
         $detail->origine_doc = $parcelle->getDocument()->_id;
         $detail->superficie = null;

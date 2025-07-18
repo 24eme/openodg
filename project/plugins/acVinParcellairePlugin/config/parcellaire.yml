@@ -6,6 +6,7 @@ all:
       unit: "hectares"
       aires:
       manquant:
+        all_pourcentage_allowed: false
         pc_min: 20
       irrigable:
         engagements: false
