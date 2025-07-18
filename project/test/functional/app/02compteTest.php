@@ -73,7 +73,7 @@ $b->isForwardedTo('compte', 'visualisation');
 testVisualisationLimite($b, $societeIdentifiant, $compte);
 
 $b->get('/compte/'.$compteAutre->getIdentifiant().'/visualisation');
-$t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'un interlocuteur d'une société \"AUTRE\" protégée");
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation d'un interlocuteur d'une société \"AUTRE\" autorisé");
 $b->resetCurrentException();
 
 $t->comment('En mode habilitation');
