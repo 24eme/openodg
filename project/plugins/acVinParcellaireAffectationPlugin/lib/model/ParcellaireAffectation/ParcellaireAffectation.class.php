@@ -515,7 +515,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $detail = $produit->detail->add($pkey);
         ParcellaireClient::CopyParcelle($detail, $parcelle, $parcelle->getDocument()->getType() !== 'Parcellaire');
         $detail->origine_doc = $parcelle->getDocument()->_id;
-        $detail->superficie = null;
         return $detail;
     }
 
