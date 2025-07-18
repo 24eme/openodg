@@ -40,7 +40,7 @@
           "prix": 10,
           "tva": 0.2,
           "unite": "ha",
-          "libelle": "surface",
+          "libelle": "",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -61,7 +61,7 @@
           "prix": 1.35,
           "tva": 0,
           "unite": "hl",
-          "libelle": "volume",
+          "libelle": "Volume",
           "complement_libelle": "",
           "docs": [
             "DRev"
