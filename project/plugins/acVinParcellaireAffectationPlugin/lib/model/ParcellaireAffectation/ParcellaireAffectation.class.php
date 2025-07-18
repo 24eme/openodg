@@ -70,7 +70,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
   private $cache_parcellaire2ref = null;
   public function getParcellaire2Reference() {
-      if (!$cache_parcellaire2ref) {
+      if (!$this->cache_parcellaire2ref) {
           $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
           if (!$intention) {
               $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
