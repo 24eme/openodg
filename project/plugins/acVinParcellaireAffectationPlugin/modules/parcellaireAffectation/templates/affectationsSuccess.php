@@ -135,8 +135,7 @@ foreach($destinataires as $id => $d):
                 <tr>
                     <td class="col-xs-9 text-right">Superficie potentielle max</td>
                     <td class="col-xs-1 text-right" id="superficie_potentielle"><?php echo $superficie_potentielle; ?></td>
-                    <td class="col-xs-1 text-right"></td>
-                    <td class="col-xs-1"></td>
+                    <td class="col-xs-2 text-center" colspan="2"> (<a href="<?php echo url_for('parcellaire_potentiel_visualisation', array('id' => $parcellaireAffectation->getParcellaire()->_id)); ?>">détail du potentiel</a>) </td>
                 </tr>
                 <tr class="total">
                     <td class="col-xs-9 text-right"><strong>Total effecté</strong></td>
@@ -171,7 +170,7 @@ foreach($destinataires as $id => $d):
                 document.querySelectorAll('tr.commune-total td:nth-child(0n+3)').forEach(function(td) {
                     total_checked += parseInt(td.innerText);
                 });
-                document.querySelector('#synthese-total tr.total td:nth-child(0n+2)').innerText = total_superficie;
+                document.querySelector('#synthese-total tr.total td:nth-child(0n+2)').innerText = total_superficie.toFixed(4);
                 document.querySelector('#synthese-total tr.total td:nth-child(0n+3)').innerText = total_checked;
 
                 if (total_superficie > parseFloat(document.querySelector('#superficie_potentielle').innerText)) {
