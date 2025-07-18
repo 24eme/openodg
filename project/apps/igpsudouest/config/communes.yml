@@ -352,8 +352,7 @@ all:
         82190: VERDUN-SUR-GARONNE
         82193: VIGUERON
       insee2secteur:
-        06158: "ALPES MARITIMES	"
-        09122: "ARIEGE"
+        09000: "ARIEGE"
         12066: "AVEYRON"
         12070: "AVEYRON"
         12076: "AVEYRON"
@@ -367,6 +366,7 @@ all:
         15113: "CANTAL"
         15119: "CANTAL"
         15127: "CANTAL"
+        24000: "DORDOGNE"
         31038: "HAUTE-GARONNE"
         31052: "HAUTE-GARONNE"
         31065: "HAUTE-GARONNE"
@@ -391,6 +391,10 @@ all:
         31583: "HAUTE-GARONNE"
         31584: "HAUTE-GARONNE"
         31587: "HAUTE-GARONNE"
+        32000: "GERS"
+        33000: "GIRONDE"
+        34000: "HERAULT"
+        44000: "LOIRE-ATLANTIQUE"
         40013: "LANDES"
         40016: "LANDES"
         40024: "LANDES"
@@ -616,6 +620,7 @@ all:
         64455: "PYRENEES-ATLANTIQUE"
         64486: "PYRENEES-ATLANTIQUE"
         64534: "PYRENEES-ATLANTIQUE"
+        65000: "HAUTES-PYRENEES"
         81271: "TARN"
         82002: "TARN-ET-GARONNE"
         82008: "TARN-ET-GARONNE"
