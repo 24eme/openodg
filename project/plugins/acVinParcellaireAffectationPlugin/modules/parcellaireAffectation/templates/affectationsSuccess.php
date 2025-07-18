@@ -127,7 +127,7 @@ foreach($destinataires as $id => $d):
     <?php endforeach; ?>
     <?php
     if ($has_parcelles):
-        $superficie_potentielle = $parcellaireAffectation->getPotentielForHash($hashproduit);
+        $superficie_potentielle = $parcellaireAffectation->getTheoriticalPotentielForHash($hashproduit);
         if ($superficie_potentielle):
     ?>
         <h3>Synthèse des parcelles affectées</h3>

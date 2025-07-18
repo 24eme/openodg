@@ -487,8 +487,8 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $ret;
     }
 
-    public function getPotentielForHash($hash) {
-        $pot = PotentielProduction::cacheCreatePotentielProduction($this->parcellaire, $this);
+    public function getTheoriticalPotentielForHash($hash) {
+        $pot = PotentielProduction::cacheCreatePotentielProduction($this->parcellaire);
         foreach($pot->getProduits() as $prod) {
             if (!$prod->getHashProduitAffectation() == $hash) {
                 continue;
