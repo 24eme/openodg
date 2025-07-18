@@ -2227,38 +2227,36 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }else{
             return array();
         }
-
         $dossiers = $this->getNumerosDossier();
-        if (!$this->exist('lots') || count($dossiers) == 1) {
-            return array(array(
+        $pieces = array();
+        foreach($dossiers as $d) {
+            $lot_date = $date;
+            foreach ($this->lots as $l) {
+                if ($l->numero_dossier == $d)  {
+                    $lot_date = $l->date;
+                    continue;
+                }
+            }
+            $pieces[] = array(
+                'identifiant' => $this->getIdentifiant(),
+                'date_depot' => $lot_date,
+                'libelle' => 'Revendication n°'.$d.' - '.$this->periode.' '.$complement,
+                'mime' => Piece::MIME_PDF,
+                'visibilite' => 1,
+                'source' => $d
+            );
+        }
+        if(!count($pieces)) {
+            $pieces[] = [
                 'identifiant' => $this->getIdentifiant(),
                 'date_depot' => $date,
                 'libelle' => 'Revendication '.$this->periode.' '.$complement,
                 'mime' => Piece::MIME_PDF,
                 'visibilite' => 1,
                 'source' => $this->_id
-            ));
-        }else{
-            $pieces = array();
-            foreach($dossiers as $d) {
-                $lot_date = $date;
-                foreach ($this->lots as $l) {
-                    if ($l->numero_dossier == $d)  {
-                        $lot_date = $l->date;
-                        continue;
-                    }
-                }
-                $pieces[] = array(
-                    'identifiant' => $this->getIdentifiant(),
-                    'date_depot' => $lot_date,
-                    'libelle' => 'Revendication n°'.$d.' - '.$this->periode.' '.$complement,
-                    'mime' => Piece::MIME_PDF,
-                    'visibilite' => 1,
-                    'source' => $d
-                );
-            }
-            return $pieces;
+            ];
         }
+        return $pieces;
     }
 
     public function generatePieces() {
