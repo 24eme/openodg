@@ -889,3 +889,4 @@ all:
         82190: "TARN-ET-GARONNE"
         82193: "TARN-ET-GARONNE"
         82194: "TARN-ET-GARONNE"
+      secteur_auto: true
