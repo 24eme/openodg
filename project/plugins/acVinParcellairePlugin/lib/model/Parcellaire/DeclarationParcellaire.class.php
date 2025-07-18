@@ -16,10 +16,10 @@ class DeclarationParcellaire extends acCouchdbDocument {
     public function getParcelles($hashproduitFilter = null) {
         $parcelles = [];
         if ($this->declaration && count($this->declaration)) foreach ($this->declaration->getParcelles($hashproduitFilter) as $p) {
-            if (isset($parcelles[$p->getParcelleId()])) {
-                throw new sfException('parcelleid '.$p->getParcelleId().' already exists');
+            if (isset($parcelles[$p->getParcelleKeyId()])) {
+                throw new sfException('parcelleid '.$p->getParcelleKeyId().' already exists');
             }
-            $parcelles[$p->getParcelleId()] = $p;
+            $parcelles[$p->getParcelleKeyId()] = $p;
         }
         return $parcelles;
     }
@@ -151,6 +151,25 @@ class DeclarationParcellaire extends acCouchdbDocument {
                 $d->affectee = 1;
             }
         }
+    }
+
+    public function getParcelleById($id) {
+        $p = $this->getParcelles();
+
+        if(!isset($p[$id])) {
+            return null;
+        }
+        return $p[$id];
+    }
+
+    public function findParcelleByParcelleId($parcelle) {
+        $p = $this->getParcelleById($parcelle->getParcelleId());
+
+        if($p && $p->cepage == $parcelle->cepage && $p->campagne_plantation == $parcelle->campagne_plantation) {
+            return $p;
+        }
+
+        return null;
     }
 
     public function findParcelle($parcelle, $scoreMin = 1, $with_cepage_match = false, &$allready_selected = null) {

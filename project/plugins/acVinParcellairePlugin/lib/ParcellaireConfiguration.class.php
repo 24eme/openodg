@@ -119,6 +119,11 @@ class ParcellaireConfiguration {
         return $this->configuration['manquant']['pc_min'];
     }
 
+    public function isManquantAllPourcentageAllowed() {
+
+        return isset($this->configuration['manquant']) && isset($this->configuration['manquant']['all_pourcentage_allowed']) && $this->configuration['manquant']['all_pourcentage_allowed'];
+    }
+
     public function getEcartRangsMax() {
         if(!isset($this->configuration['ecart_rangs_max'])) {
             return null;
@@ -176,6 +181,9 @@ class ParcellaireConfiguration {
     }
     public function getGroupeRegles($k) {
         return $this->configuration['potentiel_de_production'][$k]['regles'];
+    }
+    public function getHashProduitAffectation($k) {
+        return $this->configuration['potentiel_de_production'][$k]['hash_produit_affectation'];
     }
 
     public function hasEngagements() {

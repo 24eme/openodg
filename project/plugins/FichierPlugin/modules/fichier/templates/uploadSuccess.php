@@ -87,7 +87,7 @@
 				<?php echo $form['file']->render() ?>
 			</div>
 			<div class="col-xs-2">
-                <?php if($sf_user->isAdmin()): ?>
+                <?php if($sf_user->isAdminODG()): ?>
 				<button name="keep_page" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button>
                 <?php endif; ?>
 			</div>

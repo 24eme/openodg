@@ -1,0 +1,96 @@
+{
+  "_id": "TEMPLATE-FACTURE-AOPGAILLAC-2005",
+  "type": "TemplateFacture",
+  "region": "AOPGAILLAC",
+  "campagne": 2005,
+  "libelle": "2005 - AOP Gaillac",
+  "docs": [
+    "DRev"
+  ],
+  "cotisations": {
+    "00_syndicale": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation syndicale",
+      "code_comptable": "70620000",
+      "details": {
+        "00_fixe": {
+          "modele": "CotisationFixe",
+          "prix": 10,
+          "tva": 0,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": null,
+          "callback_parameters": []
+        }
+      }
+    },
+    "01_surface": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation technique",
+      "code_comptable": "70620000",
+      "details": {
+        "00_surface": {
+          "modele": "CotisationVariable",
+          "prix": 10,
+          "tva": 0.2,
+          "unite": "ha",
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getQuantiteSuperficeRecolte",
+          "callback_parameters": []
+        }
+      }
+    },
+    "02_odg": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation ODG",
+      "code_comptable": "70620000",
+      "details": {
+        "00_volume": {
+          "modele": "CotisationVariable",
+          "prix": 1.35,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "Volume",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getQuantiteVolumeRevendiqueRecolte",
+          "callback_parameters": []
+        }
+      }
+    },
+    "03_inao": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Droits INAO",
+      "code_comptable": "70610000",
+      "details": {
+        "00_recolte": {
+          "modele": "CotisationVariable",
+          "prix": 0.15,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "dû au titre de l'article L642-13 du code rural",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getQuantiteVolumeRecolteClair",
+          "callback_parameters": []
+        }
+      }
+    }
+  }
+}
