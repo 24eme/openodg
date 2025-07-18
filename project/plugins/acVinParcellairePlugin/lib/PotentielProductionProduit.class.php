@@ -219,7 +219,7 @@ class PotentielProductionProduit {
     }
 
     public function getParcellaire2Ref() {
-        if (ParcellaireConfiguration::getInstance()->affectationIsParcellaire2Reference($this->key)) {
+        if (ParcellaireConfiguration::getInstance()->affectationIsParcellaire2Reference($this->key) && $this->potentiel_production->getParcellaireAffectation()) {
             return $this->potentiel_production->getParcellaireAffectation();
         }
         return $parcellaire2ref = $this->potentiel_production->getParcellaire();
