@@ -50,8 +50,8 @@ class PotentielProductionProduit {
         $this->cepages_par_categories['cepages_couleur'] = [];
         $this->cepages_par_categories['cepages_toutes_couleurs'] = [];
         $this->superficie_encepagement = 0;
-        foreach($this->synthese as $this->synthese_libelle => $this->synthese_couleur) {
-            foreach($this->synthese_couleur as $cepages) {
+        foreach($this->synthese as $synthese_libelle => $synthese_couleur) {
+            foreach($synthese_couleur as $cepages) {
                 foreach($cepages as $k => $superficies) {
                     if ($k == 'Total') {
                         continue;
@@ -65,7 +65,7 @@ class PotentielProductionProduit {
                     if (!isset($this->cepages_par_categories['cepages_toutes_couleurs'][$k])) {
                         $this->cepages_par_categories['cepages_toutes_couleurs'][$k] = $superficies['superficie_max'];
                     }
-                    if ($this->synthese_libelle != $this->libelle) {
+                    if ($synthese_libelle != $this->libelle) {
                         continue;
                     }
                     $this->cepages_par_categories['cepages_couleur'][$k] = $superficies['superficie_max'];
@@ -219,7 +219,7 @@ class PotentielProductionProduit {
     }
 
     public function getParcellaire2Ref() {
-        if (ParcellaireConfiguration::getInstance()->affectationIsParcellaire2Reference($this->key)) {
+        if (ParcellaireConfiguration::getInstance()->affectationIsParcellaire2Reference($this->key) && $this->potentiel_production->getParcellaireAffectation()) {
             return $this->potentiel_production->getParcellaireAffectation();
         }
         return $parcellaire2ref = $this->potentiel_production->getParcellaire();
@@ -229,6 +229,9 @@ class PotentielProductionProduit {
         $filter_produit_hash = ParcellaireConfiguration::getInstance()->getGroupeFilterProduitHash($this->key);
         $filter_insee = ParcellaireConfiguration::getInstance()->getGroupeFilterINSEE($this->key);
         $parcellaire2ref = $this->getParcellaire2Ref();
+        if ($parcellaire2ref->type == ParcellaireAffectationClient::TYPE_MODEL && ParcellaireConfiguration::getInstance()->getHashProduitAffectation($this->key)) {
+            $filter_produit_hash = ParcellaireConfiguration::getInstance()->getHashProduitAffectation($this->key);
+        }
         $this->synthese = self::cacheSynthese($parcellaire2ref, $filter_produit_hash, $filter_insee);
     }
 
@@ -332,6 +335,9 @@ class PotentielProductionProduit {
     }
 
     public function getHashProduitAffectation() {
+        if (!$this->key) {
+            return null;
+        }
         return ParcellaireConfiguration::getInstance()->getHashProduitAffectation($this->key);
     }
 

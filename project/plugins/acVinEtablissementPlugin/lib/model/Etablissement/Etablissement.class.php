@@ -332,7 +332,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
                 }
             }
         }
-        if(!$this->secteur) {
+        if(!$this->secteur || CommunesConfiguration::getInstance()->hasSecteurAuto()) {
             if (!$this->insee) {
                 $this->insee = CommunesConfiguration::getInstance()->findCodeCommune($this->commune);
             }

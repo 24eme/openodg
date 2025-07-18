@@ -70,7 +70,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
   private $cache_parcellaire2ref = null;
   public function getParcellaire2Reference() {
-      if (!$cache_parcellaire2ref) {
+      if (!$this->cache_parcellaire2ref) {
           $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
           if (!$intention) {
               $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
@@ -487,6 +487,19 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $ret;
     }
 
+    public function getTheoriticalPotentielForHash($hash) {
+        $pot = PotentielProduction::cacheCreatePotentielProduction($this->parcellaire);
+        foreach($pot->getProduits() as $prod) {
+            if (!$prod->getHashProduitAffectation() == $hash) {
+                continue;
+            }
+            if ($prod->hasPotentiel()) {
+                return $prod->getSuperficieMax();
+            }
+        }
+        return null;
+    }
+
     public function addParcelle($parcelle) {
         $this->parcelles_idu = null;
         $produit = $this->declaration->add(str_replace('/declaration/', '', $parcelle->produit_hash));
@@ -502,7 +515,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $detail = $produit->detail->add($pkey);
         ParcellaireClient::CopyParcelle($detail, $parcelle, $parcelle->getDocument()->getType() !== 'Parcellaire');
         $detail->origine_doc = $parcelle->getDocument()->_id;
-        $detail->superficie = null;
         return $detail;
     }
 
