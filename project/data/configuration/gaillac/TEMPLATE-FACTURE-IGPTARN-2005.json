@@ -1,6 +1,6 @@
 {
   "_id": "TEMPLATE-FACTURE-IGPTARN-2005",
-  "_rev": "7-4ce92356e599c1224affeecbb2915613",
+  "_rev": "9-b88ce87c67e4a9f42decd0b798002953",
   "type": "TemplateFacture",
   "region": "IGPTARN",
   "campagne": 2005,
@@ -27,8 +27,8 @@
           ],
           "callback": "hasVolumeRevendiqueLots",
           "callback_parameters": {
-            "famille": "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE",
-            "appellations": "/appellations/CDT"
+            "appellations": "/appellations/CDT",
+            "famille": "NOT NEGOCIANT,COOPERATIVE"
           }
         }
       }
@@ -51,8 +51,8 @@
           ],
           "callback": "hasVolumeRevendiqueLots",
           "callback_parameters": {
-            "famille": "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE",
-            "appellations": "/appellations/CMT"
+            "appellations": "/appellations/CMT",
+            "famille": "NOT NEGOCIANT,COOPERATIVE"
           }
         }
       }
@@ -75,7 +75,8 @@
           ],
           "callback": "getNbApporteursPlusOneFromDouane",
           "callback_parameters": {
-            "appellations": "/appellations/CDT"
+            "appellations": "/appellations/CDT",
+            "famille": "NEGOCIANT,COOPERATIVE"
           }
         }
       }
@@ -98,7 +99,8 @@
           ],
           "callback": "getNbApporteursPlusOneFromDouane",
           "callback_parameters": {
-            "appellations": "/appellations/CMT"
+            "appellations": "/appellations/CMT",
+            "famille": "NEGOCIANT,COOPERATIVE"
           }
         }
       }
