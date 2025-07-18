@@ -131,6 +131,9 @@ class ParcellaireAffectationValidation extends DocumentValidation {
         $jeunesVignesCremant = ParcellaireConfiguration::getInstance()->getAnneeJeunesVignesCremant();
 
         foreach ($this->document->declaration->getProduitsCepageDetails() as $produitDetailKey => $produitDetailValue ) {
+            if(!$produitDetailValue->campagne_plantation) {
+                continue;
+            }
             $annee_plantation = substr($produitDetailValue->campagne_plantation, 0, 4);
             $date_plantation = DateTimeImmutable::createFromFormat('Y-m-d', $annee_plantation . '-08-01');
             $date_plantation->setTime(0, 0);
