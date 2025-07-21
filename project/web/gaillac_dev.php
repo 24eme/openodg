@@ -9,4 +9,21 @@ if (!in_array(@$_SERVER["REMOTE_ADDR"], sfConfig::get("app_debug_authorized_ip",
   die('You ('.$_SERVER['REMOTE_ADDR'].') are not allowed to access this file. Check '.basename(__FILE__).' for more information.');
 }
 
-sfContext::createInstance($configuration)->dispatch();
+$context = sfContext::createInstance($configuration);
+
+if (sfConfig::has('app_redirect_domain_DEFAUT')) {
+    $user = sfContext::getInstance()->getUser()->getCompteOrigin();
+    $path = $context->getRequest()->getPathInfo();
+
+    if (sfConfig::has('app_redirect_domain_'.$user->identifiant)) {
+        if (sfConfig::get('app_redirect_domain_'.$user->identifiant)) {
+            header('Location: http://'.sfConfig::get('app_redirect_domain_'.$user->identifiant).$path);
+            exit;
+        }
+    } else {
+        header('Location: http://'.sfConfig::get('app_redirect_domain_DEFAUT').$path);
+        exit;
+    }
+}
+
+$context->dispatch();
