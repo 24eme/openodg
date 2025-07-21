@@ -8,7 +8,7 @@
     "DRev"
   ],
   "cotisations": {
-    "00_syndicale": {
+    "00_%detail_identifiant%_syndicaleGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation syndicale",
@@ -19,17 +19,44 @@
           "prix": 10,
           "tva": 0,
           "unite": "",
-          "libelle": "",
+          "libelle": "AOP Gaillac - %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "DRev"
           ],
-          "callback": null,
-          "callback_parameters": []
+          "callback": "getVolumeFacturable",
+          "callback_parameters": {
+            "famille": "NOT NEGOCIANT,COOPERATIVE",
+            "appellations": "/appellations/GLC"
+          }
         }
       }
     },
-    "01_surface": {
+    "01_%detail_identifiant%_00_GLC_cotisationSyndicaleApporteursGLC": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation",
+      "code_comptable": "75101000",
+      "details": {
+        "forfait": {
+          "modele": "CotisationVariable",
+          "prix": 10,
+          "tva": 0,
+          "unite": null,
+          "libelle": "syndicale annuelle AOP Gaillac - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getNbApporteursPlusOneFromDouane",
+          "callback_parameters": {
+            "famille": "NEGOCIANT,COOPERATIVE",
+            "appellations": "/appellations/GLC"
+          }
+        }
+      }
+    },
+    "02_%detail_identifiant%_surfaceGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation technique",
@@ -38,19 +65,21 @@
         "00_surface": {
           "modele": "CotisationVariable",
           "prix": 10,
-          "tva": 0.2,
+          "tva": 0,
           "unite": "ha",
-          "libelle": "",
+          "libelle": "surface AOP Gaillac - %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "DRev"
           ],
-          "callback": "getQuantiteSuperficeRecolte",
-          "callback_parameters": []
+          "callback": "getVolumeFacturable",
+          "callback_parameters": {
+            "appellations": "/appellations/GLC"
+          }
         }
       }
     },
-    "02_odg": {
+    "03_%detail_identifiant_odgGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation ODG",
@@ -61,17 +90,19 @@
           "prix": 1.35,
           "tva": 0,
           "unite": "hl",
-          "libelle": "Volume",
+          "libelle": "volume AOP Gaillac - %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "DRev"
           ],
-          "callback": "getQuantiteVolumeRevendiqueRecolte",
-          "callback_parameters": []
+          "callback": "getVolumeFacturable",
+          "callback_parameters": {
+            "appellations": "/appellations/GLC"
+          }
         }
       }
     },
-    "03_inao": {
+    "04_%detail_identifiant%_inaoGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Droits INAO",
@@ -82,13 +113,15 @@
           "prix": 0.15,
           "tva": 0,
           "unite": "hl",
-          "libelle": "dû au titre de l'article L642-13 du code rural",
+          "libelle": "AOP Gaillac - %detail_identifiant%",
           "complement_libelle": "",
           "docs": [
             "DRev"
           ],
-          "callback": "getQuantiteVolumeRecolteClair",
-          "callback_parameters": []
+          "callback": "getVolumeFacturable",
+          "callback_parameters": {
+            "appellations": "/appellations/GLC"
+          }
         }
       }
     }

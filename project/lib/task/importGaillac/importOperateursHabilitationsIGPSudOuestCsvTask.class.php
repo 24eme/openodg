@@ -63,6 +63,7 @@ class importOperateursHabilitationsIGPSudOuestCsvTask extends sfBaseTask
     {
         $this->addArguments(array(
             new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('csvemail', sfCommandArgument::REQUIRED, "Fichier csv pour les mail"),
         ));
 
         $this->addOptions(array(
@@ -80,12 +81,29 @@ EOF;
     }
 
     private $etablissements = [];
+    private $id2emails = [];
 
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
+
+        if ($arguments['csvemail']) {
+            $emailfile = fopen($arguments['csvemail'], 'r');
+            while(($data = fgetcsv($emailfile, 1000, ";")) !== false) {
+                if (strpos($data[2], '@') === false) {
+                    continue;
+                }
+                if ($data[0]) {
+                    $this->id2emails[$data[0]] = $data[2];
+                }
+                if ($data[1]) {
+                    $this->id2emails[$data[1]] = $data[2];
+                }
+            }
+        }
+
 
         $csvfile = fopen($arguments['csv'], 'r');
 
@@ -142,7 +160,7 @@ EOF;
         if (!$societe) {
 
             $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_HABILITATION_RAISONSOCIALE]])));
-            $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_OPERATEUR]);
+            $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR);
 
             $societe = SocieteClient::getInstance()->find($newSociete->_id);
 
@@ -165,6 +183,22 @@ EOF;
             $societe->fax = Phone::format($data[self::CSV_HABILITATION_FAX] ?? null);
             $societe->telephone_mobile = Phone::format($data[self::CSV_HABILITATION_PORTABLE] ?? null);
             $societe->email = KeyInflector::unaccent($data[self::CSV_HABILITATION_COURRIEL] ?? null);
+            if (!$societe->email) {
+                $cvi = EtablissementClient::repairCVI($data[self::CSV_HABILITATION_CVI]);
+                if ($cvi && isset($this->id2emails[$cvi]) && $this->id2emails[$cvi]) {
+                    $societe->email = $this->id2emails[$cvi];
+                }
+                if (!$societe->email && isset($this->id2emails[$societe->siret]) && $this->id2emails[$societe->siret]) {
+                    $societe->email = $this->id2emails[$societe->siret];
+                }
+
+                if (!$societe->email && isset($this->id2emails[$societe->siret]) && $this->id2emails[$societe->siret]) {
+                    $societe->email = $this->id2emails[$societe->siret];
+                }
+                if (!$societe->email && isset($this->id2emails[$societe->no_tva_intracommunautaire]) && $this->id2emails[$societe->no_tva_intracommunautaire]) {
+                    $societe->email = $this->id2emails[$societe->no_tva_intracommunautaire];
+                }
+            }
             $societe->code_comptable_client = trim($data[self::CSV_HABILITATION_CODECOMPTABLE]);
 
             try {

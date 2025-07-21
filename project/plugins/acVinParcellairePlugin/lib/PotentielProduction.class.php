@@ -12,6 +12,7 @@ class PotentielProduction {
 
     private static $parcellaires = [];
     private static $affectations = [];
+    private static $potentiels = [];
 
     public static function retrievePotentielProductionFromParcellaire(Parcellaire $parcellaire, $date = null) {
         $client = ParcellaireAffectationClient::getInstance();
@@ -36,11 +37,18 @@ class PotentielProduction {
 
     public static function cacheCreatePotentielProduction(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null) {
 
-        self::$parcellaires[$parcellaire->_id] = $parcellaire;
+        $parcellaire_cache_id = $parcellaire->_id.$parcellaire->_rev;
+        self::$parcellaires[$parcellaire_cache_id] = $parcellaire;
         if ($affectation) {
-            self::$affectations[$affectation->_id] = $affectation;
+            self::$affectations[$affectation->_id.$affectation->_rev] = $affectation;
         }
-        return CacheFunction::cache('model', "PotentielProduction::createPotentielProduction", array($parcellaire->_id, ($affectation) ? $affectation->_id : null));
+        $affectation_cache_id = ($affectation) ? $affectation->_id.$affectation->_rev : '';
+
+        if (!isset(self::$potentiels[$parcellaire_cache_id.$affectation_cache_id])) {
+            self::$potentiels[$parcellaire_cache_id.$affectation_cache_id] = CacheFunction::cache('model', "PotentielProduction::createPotentielProduction", array($parcellaire_cache_id, $affectation_cache_id));
+        }
+
+        return self::$potentiels[$parcellaire_cache_id.$affectation_cache_id];
     }
 
     public static function createPotentielProduction($parcellaire_id, $affectation_id) {
