@@ -21,8 +21,11 @@ if ($user && sfConfig::has('app_redirect_domain_DEFAUT')) {
 
     if ($location !== null && $location !== $request->getHost()) {
         $path = $request->getPathInfo();
+        $query = parse_url($request->getUri(), PHP_URL_QUERY)
+               ? '?'.parse_url($request->getUri(), PHP_URL_QUERY)
+               : '';
 
-        header("Location: http://$location$path");
+        header("Location: http://$location$path$query");
         exit;
     }
 }
