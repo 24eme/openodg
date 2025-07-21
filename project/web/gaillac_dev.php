@@ -10,18 +10,19 @@ if (!in_array(@$_SERVER["REMOTE_ADDR"], sfConfig::get("app_debug_authorized_ip",
 }
 
 $context = sfContext::createInstance($configuration);
+$user = $context->getUser()->getCompteOrigin();
 
-if (sfConfig::has('app_redirect_domain_DEFAUT')) {
-    $user = sfContext::getInstance()->getUser()->getCompteOrigin();
-    $path = $context->getRequest()->getPathInfo();
+if ($user && sfConfig::has('app_redirect_domain_DEFAUT')) {
+    $request = $context->getRequest();
 
-    if (sfConfig::has('app_redirect_domain_'.$user->identifiant)) {
-        if (sfConfig::get('app_redirect_domain_'.$user->identifiant)) {
-            header('Location: http://'.sfConfig::get('app_redirect_domain_'.$user->identifiant).$path);
-            exit;
-        }
-    } else {
-        header('Location: http://'.sfConfig::get('app_redirect_domain_DEFAUT').$path);
+    $location = sfConfig::has('app_redirect_domain_'.$user->identifiant)
+              ? sfConfig::get('app_redirect_domain_'.$user->identifiant)
+              : sfConfig::get('app_redirect_domain_DEFAUT');
+
+    if ($location !== null && $location !== $request->getHost()) {
+        $path = $request->getPathInfo();
+
+        header("Location: http://$location$path");
         exit;
     }
 }
