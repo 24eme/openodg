@@ -4,6 +4,7 @@ all:
       prelevements: false
       mentions_complementaire: true
       import_with_mentions_complementaire: true
+      pdf_unique_region: false
       validation_odg: 'auto'
       etape_superficie: true
       etapes_aoc: true
