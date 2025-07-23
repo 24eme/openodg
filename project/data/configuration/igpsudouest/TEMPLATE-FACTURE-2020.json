@@ -1,0 +1,276 @@
+{
+  "_id": "TEMPLATE-FACTURE-2020",
+  "type": "TemplateFacture",
+  "campagne": 2020,
+  "template": "IGP",
+  "libelle": "2020 - IGP",
+  "docs": [
+    "DRev",
+    "Degustation"
+  ],
+  "cotisations": {
+    "00_forfait": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation syndicale annuelle",
+      "code_comptable": "75600000",
+      "details": {
+        "forfait": {
+          "modele": "CotisationFixe",
+          "prix": 10,
+          "tva": 0,
+          "libelle": "annuelle",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "hasVolumeRevendiqueLots",
+          "callback_parameters": {
+            "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE",
+            "famille": "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE"
+          }
+        }
+      }
+    },
+    "55_%detail_identifiant%_00_COT_revendicationLotCOT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Volumes",
+      "code_comptable": "70610000",
+      "details": {
+        "revendication": {
+          "modele": "CotisationVariable",
+          "prix": 0.525,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "IGP Comté Tolosan - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": {
+            "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE",
+            "appellations": "/appellations/COT"
+          }
+        }
+      }
+    },
+    "55_%detail_identifiant%_10_AVR_revendicationLotAVR": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Volumes",
+      "code_comptable": "70610000",
+      "details": {
+        "revendication": {
+          "modele": "CotisationVariable",
+          "prix": 0.525,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "IGP Aveyron - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": {
+            "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE",
+            "appellations": "/appellations/AVR"
+          }
+        }
+      }
+    },
+    "55_%detail_identifiant%_20_ARG_revendicationLotARG": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Volumes",
+      "code_comptable": "70610000",
+      "details": {
+        "revendication": {
+          "modele": "CotisationVariable",
+          "prix": 0.525,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "IGP Ariège - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": {
+            "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE",
+            "appellations": "/appellations/ARG"
+          }
+        }
+      }
+    },
+    "55_%detail_identifiant%_30_LVD_revendicationLotLVD": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Volumes",
+      "code_comptable": "70610000",
+      "details": {
+        "revendication": {
+          "modele": "CotisationVariable",
+          "prix": 0.525,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "IGP Lavilledieu - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": {
+            "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE",
+            "appellations": "/appellations/LVD"
+          }
+        }
+      }
+    },
+    "55_%detail_identifiant%_40_TZP_revendicationLotTZP": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Volumes",
+      "code_comptable": "70610000",
+      "details": {
+        "revendication": {
+          "modele": "CotisationVariable",
+          "prix": 0.525,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "IGP Thézac-Perricard - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": {
+            "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE",
+            "appellations": "/appellations/TZP"
+          }
+        }
+      }
+    },
+    "77_%detail_identifiant%_00_COT_redegustationCOT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Nouvelle dégustation IGP Comté Tolosan",
+      "code_comptable": "70610200",
+      "details": {
+        "forfait": {
+          "modele": "Cotisation",
+          "prix": 30,
+          "tva": 0,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "- %detail_identifiant%",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsFacturesLotRedeguste",
+          "callback_parameters": {
+            "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE",
+            "appellations": "/appellations/AVR"
+          }
+        }
+      }
+    },
+    "77_%detail_identifiant%_10_AVR_redegustationAVR": {
+        "modele": "CotisationsCollection",
+        "callback": "",
+        "libelle": "Nouvelle dégustation IGP Aveyron",
+        "code_comptable": "70610200",
+        "details": {
+          "forfait": {
+            "modele": "Cotisation",
+            "prix": 30,
+            "tva": 0,
+            "unite": "",
+            "libelle": "",
+            "complement_libelle": "- %detail_identifiant%",
+            "docs": [
+              "Degustation"
+            ],
+            "callback": "buildMouvementsFacturesLotRedeguste",
+            "callback_parameters": {
+              "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE",
+              "appellations": "/appellations/AVR"
+            }
+          }
+      }
+    },
+    "77_%detail_identifiant%_20_ARG_redegustationARG": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Nouvelle dégustation IGP Ariège",
+      "code_comptable": "70610200",
+      "details": {
+        "forfait": {
+          "modele": "Cotisation",
+          "prix": 30,
+          "tva": 0,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "- %detail_identifiant%",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsFacturesLotRedeguste",
+          "callback_parameters": {
+            "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE",
+            "appellations": "/appellations/ARG"
+          }
+        }
+        }
+    },
+    "77_%detail_identifiant%_30_LVD_redegustationLVD": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Nouvelle dégustation IGP Lavilledieu",
+      "code_comptable": "70610200",
+      "details": {
+        "forfait": {
+          "modele": "Cotisation",
+          "prix": 30,
+          "tva": 0,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "- %detail_identifiant%",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsFacturesLotRedeguste",
+          "callback_parameters": {
+            "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE",
+            "appellations": "/appellations/LVD"
+          }
+        }
+        }
+    },
+    "77_%detail_identifiant%_40_TZP_redegustationTZP": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Nouvelle dégustation IGP Thézac-Perricard",
+      "code_comptable": "70610200",
+      "details": {
+        "forfait": {
+          "modele": "Cotisation",
+          "prix": 30,
+          "tva": 0,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "- %detail_identifiant%",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsFacturesLotRedeguste",
+          "callback_parameters": {
+            "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE",
+            "appellations": "/appellations/TZP"
+          }
+        }
+        }
+    }
+  }
+}
