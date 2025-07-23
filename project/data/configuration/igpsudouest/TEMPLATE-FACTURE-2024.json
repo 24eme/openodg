@@ -26,7 +26,7 @@
           ],
           "callback": "hasVolumeRevendiqueLots",
           "callback_parameters": {
-            "secteur": "NOT LANDES|LOT|LOT-ET-GARONNE"
+            "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE"
           }
         }
       }
@@ -49,7 +49,7 @@
           ],
           "callback": "getVolumeRevendiqueNumeroDossier",
           "callback_parameters": {
-            "secteur": "NOT LANDES|LOT|LOT-ET-GARONNE"
+            "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE"
           }
         }
       }
@@ -72,7 +72,7 @@
           ],
           "callback": "buildMouvementsFacturesLotRedeguste",
           "callback_parameters": {
-            "secteur": "NOT LANDES|LOT|LOT-ET-GARONNE"
+            "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE"
           }
         }
       }
