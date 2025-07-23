@@ -89,8 +89,8 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
     /**** MOUVEMENTS ****/
 
-    public function getTemplateFacture() {
-        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
+    public function getTemplateFacture($region = null) {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne(), $region);
     }
 
     public function getMouvementsFactures() {
@@ -98,9 +98,9 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         return $this->_get('mouvements');
     }
 
-    public function getMouvementsFacturesCalcule() {
+    public function getMouvementsFacturesCalcule($region = null) {
 
-      $templateFacture = $this->getTemplateFacture();
+      $templateFacture = $this->getTemplateFacture($region);
 
       if(!$templateFacture) {
           return array();
