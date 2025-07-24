@@ -50,6 +50,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const CONFORMITE_NONCONFORME_PREFIX = "NON";
     const CONFORMITE_NONCONFORME_MINEUR = "NONCONFORME_MINEUR";
     const CONFORMITE_NONCONFORME_MAJEUR = "NONCONFORME_MAJEUR";
+    const CONFORMITE_NONCONFORME_MAJEUR_CONDITIONNÉ = "NONCONFORME_MAJEUR_CONDITIONNÉ";
     const CONFORMITE_NONCONFORME_GRAVE = "NONCONFORME_GRAVE";
     const CONFORMITE_NONCONFORME_ANALYTIQUE = "NONCONFORME_ANALYTIQUE";
     const CONFORMITE_NONCONFORME_ORGANOLEPTIQUE = "NONCONFORME_ORGANOLEPTIQUE";
@@ -129,6 +130,7 @@ abstract class Lot extends acCouchdbDocumentTree
       self::CONFORMITE_CONFORME => "Conforme",
       self::CONFORMITE_NONCONFORME_MINEUR => "Non conformité mineure",
       self::CONFORMITE_NONCONFORME_MAJEUR => "Non conformité majeure",
+      self::CONFORMITE_NONCONFORME_MAJEUR_CONDITIONNÉ => "Non conformité majeure conditionné",
       self::CONFORMITE_NONCONFORME_GRAVE => "Non conformité grave",
       self::CONFORMITE_NONTYPICITE_CEPAGE => "Non typicité cépage",
       self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Non conformité analytique",
@@ -147,6 +149,7 @@ abstract class Lot extends acCouchdbDocumentTree
       self::CONFORMITE_CONFORME => "",
       self::CONFORMITE_NONCONFORME_MINEUR => "Mineure",
       self::CONFORMITE_NONCONFORME_MAJEUR => "Majeure",
+      self::CONFORMITE_NONCONFORME_MAJEUR_CONDITIONNÉ => "Majeure conditionné",
       self::CONFORMITE_NONCONFORME_GRAVE => "Grave",
       self::CONFORMITE_NONTYPICITE_CEPAGE => "Typ. cép.",
       self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Analytique",
@@ -156,6 +159,7 @@ abstract class Lot extends acCouchdbDocumentTree
     public static $nonConformites = array(
         self::CONFORMITE_NONCONFORME_MINEUR,
         self::CONFORMITE_NONCONFORME_MAJEUR,
+        self::CONFORMITE_NONCONFORME_MAJEUR_CONDITIONNÉ,
         self::CONFORMITE_NONCONFORME_GRAVE,
         self::CONFORMITE_NONTYPICITE_CEPAGE
     );
