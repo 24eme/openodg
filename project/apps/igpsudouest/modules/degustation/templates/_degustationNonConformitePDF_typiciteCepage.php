@@ -39,8 +39,8 @@
 <table>
   <tr><td>Madame, Monsieur,</td></tr>
   <br/>
-  <tr><td>Lors de la séance de dégustation du <?php echo format_date($degustation->date, "P", "fr_FR"); ?>, le lot <?php showProduitCepagesLot($lot, false) ?> a fait l'objet d'un absence de typicité cépage revendiqué.</td></tr><br/>
-  <tr><td>Il en résulte que <strong>ce lot est conforme en IGP Comté Tolosan (sans mention de cépage), mais il ne vous est pas possible de le commercialiser en IGP Comté Tolosan - <?php foreach ($lot->cepages as $cepage) {echo $cepage.' ';}?></strong>(toute transaction, expédition ou conditionnement, impossible), le temps nécessaire à un éventuel nouveau contrôle. Nous vous invitons à soumettre ce lot à un nouveau contrôle interne, si vous souhaitez absolument revendiquer le cépage <?php foreach ($lot->cepages as $cepage) {echo $cepage.' ';}?>.</td></tr><br/>
+  <tr><td>Lors de la séance de dégustation du <?php echo format_date($degustation->date, "P", "fr_FR"); ?>, le lot <?php showProduitCepagesLot($lot, false) ?> a fait l'objet d'une absence de typicité cépage revendiqué.</td></tr><br/>
+  <tr><td>Il en résulte que <strong>ce lot est conforme en IGP Comté Tolosan (sans mention de cépage), mais il ne vous est pas possible de le commercialiser en IGP Comté Tolosan - <?php echo $lot->getCepagesLibelle(false); ?></strong> (toute transaction, expédition ou conditionnement, impossible), le temps nécessaire à un éventuel nouveau contrôle. Nous vous invitons à soumettre ce lot à un nouveau contrôle interne, si vous souhaitez absolument revendiquer le(s) cépage(s) <?php echo $lot->getCepagesLibelle(false); ?>.</td></tr><br/>
   <tr><td>N'hésitez donc pas à nous contacter dans les plus brefs délais pour tout complément d'information afin de trouver une issue favorable et rapide à la gestion de ce dossier.</td></tr>
   <tr><td>Nous nous tenons à votre disposition.</td></tr>
 </table><br/><br/>

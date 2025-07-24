@@ -4,7 +4,7 @@ all:
       specificite_lot_pdf: false
       colleges:
         degustateur_technicien: "Techniciens"
-        degustateur_porteur_de_memoire: "Porteurs de mémoire"
+        degustateur_operateur: "Opérateurs"
         degustateur_usager_du_produit: "Usagers du produit"
       nb_etiquettes: 3
       anonymat4labo: false

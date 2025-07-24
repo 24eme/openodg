@@ -48,7 +48,7 @@ class importOperateursHabilitationsIGPSudOuestCsvTask extends sfBaseTask
         "Vinification" => [HabilitationClient::ACTIVITE_VINIFICATEUR],
         "Négociant conditionneur" => [HabilitationClient::ACTIVITE_NEGOCIANT, HabilitationClient::ACTIVITE_CONDITIONNEUR],
         "Vinificateur conditionneur" => [HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_CONDITIONNEUR],
-        "Apporteur au négoce vinificateur" => [HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS],
+        "Apporteur au négoce vinificateur" => [HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_PRODUCTEUR],
         "Apporteur en cave coopérative" => [HabilitationClient::ACTIVITE_PRODUCTEUR],
         "Négociant vrac" => [HabilitationClient::ACTIVITE_NEGOCIANT, HabilitationClient::ACTIVITE_VRAC],
     ];
@@ -188,10 +188,6 @@ EOF;
                 if ($cvi && isset($this->id2emails[$cvi]) && $this->id2emails[$cvi]) {
                     $societe->email = $this->id2emails[$cvi];
                 }
-                if (!$societe->email && isset($this->id2emails[$societe->siret]) && $this->id2emails[$societe->siret]) {
-                    $societe->email = $this->id2emails[$societe->siret];
-                }
-
                 if (!$societe->email && isset($this->id2emails[$societe->siret]) && $this->id2emails[$societe->siret]) {
                     $societe->email = $this->id2emails[$societe->siret];
                 }

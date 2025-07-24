@@ -28,7 +28,7 @@
 
 <div class="input-group" style="margin-bottom: 0; position: relative;">
     <span class="input-group-addon">Filtrer le tableau</span>
-    <input id="table_filtre" type="text" class="form-control" placeholder="par date, numéro de facture, type de document, opérateur ou montants" autofocus="autofocus" />
+    <input id="table_filtre" type="text" class="form-control" placeholder="par date, numéro de facture, type de document, opérateur ou montants" autofocus="autofocus" autocomplete="off" />
     <a href="" id="btn_annuler_filtre" tabindex="-1" class="small hidden" style="z-index: 3; right: 10px; top: 10px; position: absolute; color: grey;"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></a>
 </div>
 <table class="table table-bordered table-striped table_filterable" style="border-width: 0;" id ="table_factures">
