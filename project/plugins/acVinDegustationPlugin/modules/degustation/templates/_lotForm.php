@@ -110,7 +110,7 @@
         <div class="row mb-3">
             <div class="col-md-offset-8 col-md-3 <?php if(!DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>col-md-offset-6<?php endif ?>">
                 <?php echo $form['elevage']->render() ?>
-                <?php echo $form['elevage']->renderLabel('Lot prévu en élevage') ?>
+                <?php echo $form['elevage']->renderLabel('Lot prévu en élevage') ?><a title="Si cette case est cochée, ce lot ne pourra pas être dégustable tant que vous n'aurez pas prévenu votre ODG que son élevage est terminé." data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
             </div>
         </div>
         <?php endif ?>
