@@ -191,10 +191,6 @@ EOF;
                 if (!$societe->email && isset($this->id2emails[$societe->siret]) && $this->id2emails[$societe->siret]) {
                     $societe->email = $this->id2emails[$societe->siret];
                 }
-
-                if (!$societe->email && isset($this->id2emails[$societe->siret]) && $this->id2emails[$societe->siret]) {
-                    $societe->email = $this->id2emails[$societe->siret];
-                }
                 if (!$societe->email && isset($this->id2emails[$societe->no_tva_intracommunautaire]) && $this->id2emails[$societe->no_tva_intracommunautaire]) {
                     $societe->email = $this->id2emails[$societe->no_tva_intracommunautaire];
                 }
