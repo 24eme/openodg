@@ -94,6 +94,11 @@ class DRevConfiguration extends DeclarationConfiguration {
       return isset($this->configuration['validation_odg']) && $this->configuration['validation_odg'] == 'region';
     }
 
+    public function hasNotifPourApprobation()
+    {
+        return isset($this->configuration['notif_pour_approbation']) && $this->configuration['notif_pour_approbation'];
+    }
+
     public function hasValidationOdgAutoOrRegion(){
       return $this->hasValidationOdgAuto() || $this->hasValidationOdgRegion();
     }

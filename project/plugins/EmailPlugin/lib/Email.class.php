@@ -37,9 +37,9 @@ class Email {
             return array();
         }
 
-        if(class_exists("DrevConfiguration") && !$drev->validation_odg && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+        if(class_exists("DrevConfiguration") && !$drev->validation_odg && DrevConfiguration::getInstance()->hasNotifPourApprobation()) {
 
-            return Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev);
+            return Email::getInstance()->getMessageDRevValidationNotificationSyndicat($drev);
         }
 
         if(!$drev->validation_odg) {
@@ -71,34 +71,16 @@ class Email {
         return array($message);
     }
 
-    public function getMessagesDRevValidationNotificationSyndicats($drev) {
-        $messages = array();
-        $odgs = sfConfig::get('drev_configuration_drev', []);
-        foreach ($drev->declaration->getSyndicats() as $syndicat) {
-            $infos = RegionConfiguration::getInstance()->getOdgRegionInfos($syndicat);
-            if($drev->isValidateOdgByRegion($syndicat)) {
-                continue;
-            }
-            $email_syndicat = (isset($infos['email_notification'])) ? $infos['email_notification'] : false;
-            if (!$email_syndicat) {
-                continue;
-            }
-            $body = $this->getBodyFromPartial('send_drev_validation_odg', array('drev' => $drev));
-            if(empty($body)) {
-                continue;
-            }
-            $subject = 'Validation de la Déclaration de Revendication de ' . $drev->declarant->raison_sociale;
-            $to = !is_array($email_syndicat) ? array($email_syndicat) : $email_syndicat;
-            $message = $this->newMailInstance()
-                ->setTo($to)
-                ->setReplyTo(array(Organisme::getInstance()->getEmail()))
-                ->setSubject($subject)
-                ->setBody($body);
+    public function getMessageDRevValidationNotificationSyndicat($drev) {
 
-            $messages[] = $message;
-        }
-        return $messages;
-    }
+    $body = $this->getBodyFromPartial('send_drev_validation_odg', array('drev' => $drev));
+    $subject = 'Validation de la Déclaration de Revendication de ' . $drev->declarant->raison_sociale;
+    return $this->newMailInstance()
+        ->setTo(array(Organisme::getInstance()->getEmail()))
+        ->setSubject($subject)
+        ->setBody($body);
+
+}
 
     public function getMessageDRevConfirmee($drev) {
         if(class_exists("DrevConfiguration") && !DrevConfiguration::getInstance()->isSendMailToOperateur()) {
