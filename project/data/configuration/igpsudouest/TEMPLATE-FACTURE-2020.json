@@ -13,7 +13,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation syndicale annuelle",
-      "code_comptable": "75600000",
+      "code_comptable": "70602000",
       "details": {
         "forfait": {
           "modele": "CotisationFixe",
@@ -36,7 +36,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Volumes",
-      "code_comptable": "70610000",
+      "code_comptable": "70602000",
       "details": {
         "revendication": {
           "modele": "CotisationVariable",
@@ -60,7 +60,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Volumes",
-      "code_comptable": "70610000",
+      "code_comptable": "70602000",
       "details": {
         "revendication": {
           "modele": "CotisationVariable",
@@ -84,7 +84,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Volumes",
-      "code_comptable": "70610000",
+      "code_comptable": "70602000",
       "details": {
         "revendication": {
           "modele": "CotisationVariable",
@@ -108,7 +108,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Volumes",
-      "code_comptable": "70610000",
+      "code_comptable": "70602000",
       "details": {
         "revendication": {
           "modele": "CotisationVariable",
@@ -132,7 +132,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Volumes",
-      "code_comptable": "70610000",
+      "code_comptable": "70602000",
       "details": {
         "revendication": {
           "modele": "CotisationVariable",
@@ -156,7 +156,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Nouvelle dégustation IGP Comté Tolosan",
-      "code_comptable": "70610200",
+      "code_comptable": "70602000",
       "details": {
         "forfait": {
           "modele": "Cotisation",
@@ -177,34 +177,34 @@
       }
     },
     "77_10_AVR_redegustationAVR": {
-        "modele": "CotisationsCollection",
-        "callback": "",
-        "libelle": "Nouvelle dégustation IGP Aveyron",
-        "code_comptable": "70610200",
-        "details": {
-          "forfait": {
-            "modele": "Cotisation",
-            "prix": 30,
-            "tva": 0,
-            "unite": "",
-            "libelle": "",
-            "complement_libelle": "-",
-            "docs": [
-              "Degustation"
-            ],
-            "callback": "buildMouvementsFacturesLotRedeguste",
-            "callback_parameters": {
-              "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE",
-              "appellations": "/appellations/AVR"
-            }
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Nouvelle dégustation IGP Aveyron",
+      "code_comptable": "70602000",
+      "details": {
+        "forfait": {
+          "modele": "Cotisation",
+          "prix": 30,
+          "tva": 0,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "-",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsFacturesLotRedeguste",
+          "callback_parameters": {
+            "secteur": "NOT LANDES,LOT,LOT-ET-GARONNE",
+            "appellations": "/appellations/AVR"
           }
+        }
       }
     },
     "77_20_ARG_redegustationARG": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Nouvelle dégustation IGP Ariège",
-      "code_comptable": "70610200",
+      "code_comptable": "70602000",
       "details": {
         "forfait": {
           "modele": "Cotisation",
@@ -222,13 +222,13 @@
             "appellations": "/appellations/ARG"
           }
         }
-        }
+      }
     },
     "77_30_LVD_redegustationLVD": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Nouvelle dégustation IGP Lavilledieu",
-      "code_comptable": "70610200",
+      "code_comptable": "70602000",
       "details": {
         "forfait": {
           "modele": "Cotisation",
@@ -246,13 +246,13 @@
             "appellations": "/appellations/LVD"
           }
         }
-        }
+      }
     },
     "77_40_TZP_redegustationTZP": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Nouvelle dégustation IGP Thézac-Perricard",
-      "code_comptable": "70610200",
+      "code_comptable": "70602000",
       "details": {
         "forfait": {
           "modele": "Cotisation",
@@ -270,7 +270,7 @@
             "appellations": "/appellations/TZP"
           }
         }
-        }
+      }
     }
   }
 }
