@@ -1,6 +1,5 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Lot'); ?>
-
 <style>
     table {
         font-size: 12px;
