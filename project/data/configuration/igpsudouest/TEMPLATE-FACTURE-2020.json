@@ -32,7 +32,7 @@
         }
       }
     },
-    "55_%detail_identifiant%_00_COT_revendicationLotCOT": {
+    "55_00_COT_revendicationLotCOT": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Volumes",
@@ -43,7 +43,7 @@
           "prix": 0.525,
           "tva": 0,
           "unite": "hl",
-          "libelle": "IGP Comté Tolosan - %detail_identifiant%",
+          "libelle": "IGP Comté Tolosan",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -56,7 +56,7 @@
         }
       }
     },
-    "55_%detail_identifiant%_10_AVR_revendicationLotAVR": {
+    "55_10_AVR_revendicationLotAVR": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Volumes",
@@ -67,7 +67,7 @@
           "prix": 0.525,
           "tva": 0,
           "unite": "hl",
-          "libelle": "IGP Aveyron - %detail_identifiant%",
+          "libelle": "IGP Aveyron",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -80,7 +80,7 @@
         }
       }
     },
-    "55_%detail_identifiant%_20_ARG_revendicationLotARG": {
+    "55_20_ARG_revendicationLotARG": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Volumes",
@@ -91,7 +91,7 @@
           "prix": 0.525,
           "tva": 0,
           "unite": "hl",
-          "libelle": "IGP Ariège - %detail_identifiant%",
+          "libelle": "IGP Ariège",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -104,7 +104,7 @@
         }
       }
     },
-    "55_%detail_identifiant%_30_LVD_revendicationLotLVD": {
+    "55_30_LVD_revendicationLotLVD": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Volumes",
@@ -115,7 +115,7 @@
           "prix": 0.525,
           "tva": 0,
           "unite": "hl",
-          "libelle": "IGP Lavilledieu - %detail_identifiant%",
+          "libelle": "IGP Lavilledieu",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -128,7 +128,7 @@
         }
       }
     },
-    "55_%detail_identifiant%_40_TZP_revendicationLotTZP": {
+    "55_40_TZP_revendicationLotTZP": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Volumes",
@@ -139,7 +139,7 @@
           "prix": 0.525,
           "tva": 0,
           "unite": "hl",
-          "libelle": "IGP Thézac-Perricard - %detail_identifiant%",
+          "libelle": "IGP Thézac-Perricard",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -152,7 +152,7 @@
         }
       }
     },
-    "77_%detail_identifiant%_00_COT_redegustationCOT": {
+    "77_00_COT_redegustationCOT": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Nouvelle dégustation IGP Comté Tolosan",
@@ -164,7 +164,7 @@
           "tva": 0,
           "unite": "",
           "libelle": "",
-          "complement_libelle": "- %detail_identifiant%",
+          "complement_libelle": "-",
           "docs": [
             "Degustation"
           ],
@@ -176,7 +176,7 @@
         }
       }
     },
-    "77_%detail_identifiant%_10_AVR_redegustationAVR": {
+    "77_10_AVR_redegustationAVR": {
         "modele": "CotisationsCollection",
         "callback": "",
         "libelle": "Nouvelle dégustation IGP Aveyron",
@@ -188,7 +188,7 @@
             "tva": 0,
             "unite": "",
             "libelle": "",
-            "complement_libelle": "- %detail_identifiant%",
+            "complement_libelle": "-",
             "docs": [
               "Degustation"
             ],
@@ -200,7 +200,7 @@
           }
       }
     },
-    "77_%detail_identifiant%_20_ARG_redegustationARG": {
+    "77_20_ARG_redegustationARG": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Nouvelle dégustation IGP Ariège",
@@ -212,7 +212,7 @@
           "tva": 0,
           "unite": "",
           "libelle": "",
-          "complement_libelle": "- %detail_identifiant%",
+          "complement_libelle": "-",
           "docs": [
             "Degustation"
           ],
@@ -224,7 +224,7 @@
         }
         }
     },
-    "77_%detail_identifiant%_30_LVD_redegustationLVD": {
+    "77_30_LVD_redegustationLVD": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Nouvelle dégustation IGP Lavilledieu",
@@ -236,7 +236,7 @@
           "tva": 0,
           "unite": "",
           "libelle": "",
-          "complement_libelle": "- %detail_identifiant%",
+          "complement_libelle": "-",
           "docs": [
             "Degustation"
           ],
@@ -248,7 +248,7 @@
         }
         }
     },
-    "77_%detail_identifiant%_40_TZP_redegustationTZP": {
+    "77_40_TZP_redegustationTZP": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Nouvelle dégustation IGP Thézac-Perricard",
@@ -260,7 +260,7 @@
           "tva": 0,
           "unite": "",
           "libelle": "",
-          "complement_libelle": "- %detail_identifiant%",
+          "complement_libelle": "-",
           "docs": [
             "Degustation"
           ],
