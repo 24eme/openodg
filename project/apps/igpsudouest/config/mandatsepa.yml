@@ -1,4 +1,4 @@
 all:
   mandatsepa:
     configuration:
-      is_active: true
+      is_active: false
