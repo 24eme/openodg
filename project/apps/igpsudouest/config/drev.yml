@@ -11,4 +11,3 @@ all:
       engagement_pdf: true
       specificites:
         primeur: "primeur"
-        nouveau: "nouveau"
