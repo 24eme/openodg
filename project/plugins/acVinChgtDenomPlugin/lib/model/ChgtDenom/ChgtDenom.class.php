@@ -634,6 +634,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function addCepage($cepage, $repartition) {
+        if(!$repartition) {
+            $repartition = -1;
+        }
         $this->changement_cepages->add($cepage, $repartition);
     }
 

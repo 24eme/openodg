@@ -243,12 +243,12 @@
     <div class="col-xs-12" style="margin-bottom: 20px;">
 <?php if($drev->isValideeOdg() && $drev->isModifiable()): ?>
           <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer de nouveaux lots IGP</a>
-<?php elseif(!$drev->isValideeOdg()): ?>
+<?php elseif($drev->isValidee() && !$drev->isValideeOdg()): ?>
         <div class="pull-right">
           <p class="text-danger">Des lots sont en attente d'approbation</p>
           <p>Vous ne pouvez donc pas en ajouter de nouveaux</p>
         </div>
-<?php else: ?>
+<?php elseif($drev->isValideeOdg()): ?>
         <div class="pull-right">
           <p class="text-danger">Cette DREV n'est la dernière et donc pas modifiable</p>
         </div>
