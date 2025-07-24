@@ -511,7 +511,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       }
 
       $ordre = sprintf('%02d', intval($lot->document_ordre) + 1 );
-      $lot->date = $this->date;
+      $lot->date = ($this->validation < $this->date) ? $this->validation : $this->date;
       $lot->document_ordre = $ordre;
       $lot->id_document_provenance = $this->changement_origine_id_document;
 
@@ -634,6 +634,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function addCepage($cepage, $repartition) {
+        if(!$repartition) {
+            $repartition = -1;
+        }
         $this->changement_cepages->add($cepage, $repartition);
     }
 
