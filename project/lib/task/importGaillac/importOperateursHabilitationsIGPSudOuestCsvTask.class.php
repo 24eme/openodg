@@ -48,7 +48,7 @@ class importOperateursHabilitationsIGPSudOuestCsvTask extends sfBaseTask
         "Vinification" => [HabilitationClient::ACTIVITE_VINIFICATEUR],
         "Négociant conditionneur" => [HabilitationClient::ACTIVITE_NEGOCIANT, HabilitationClient::ACTIVITE_CONDITIONNEUR],
         "Vinificateur conditionneur" => [HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_CONDITIONNEUR],
-        "Apporteur au négoce vinificateur" => [HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS],
+        "Apporteur au négoce vinificateur" => [HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_PRODUCTEUR],
         "Apporteur en cave coopérative" => [HabilitationClient::ACTIVITE_PRODUCTEUR],
         "Négociant vrac" => [HabilitationClient::ACTIVITE_NEGOCIANT, HabilitationClient::ACTIVITE_VRAC],
     ];
