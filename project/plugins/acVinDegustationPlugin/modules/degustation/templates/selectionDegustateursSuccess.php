@@ -26,30 +26,25 @@
             </div>
             <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
           </div>
-          <br/>
 
-        <p>Sélectionnez l'ensemble des <?php echo strtolower($college_libelle); ?> en vue de leurs participations à la dégustation</p>
+        <p class="mb-4">Sélectionnez l'ensemble des <?php echo strtolower($college_libelle); ?> en vue de leurs participations à la dégustation :</p>
 
-        <div class="row">
-        <div class="col-xs-12">
-          <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container=".table_college" data-hamzastyle-mininput="3" class="hamzastyle form-control">
-        </div>
-        </div>
-        <br/>
-
-
-          <?php echo $form->renderHiddenFields(); ?>
+         <?php echo $form->renderHiddenFields(); ?>
 
           <div class="bg-danger">
             <?php echo $form->renderGlobalErrors(); ?>
           </div>
+          <div class="input-group" style="margin-bottom: 0; position: relative;">
+              <span class="input-group-addon">Filtrer le tableau</span>
+              <input id="table_filtre" type="text" class="form-control" placeholder="par nom, commune, code postal, adresse, tags" autofocus="autofocus" autocomplete="off" />
+              <a href="" id="btn_annuler_filtre" tabindex="-1" class="small hidden" style="z-index: 3; right: 10px; top: 10px; position: absolute; color: grey;"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></a>
+          </div>
           <?php foreach ($form['degustateurs'] as $college => $collegeForm): ?>
-            <table id="table_college_<?php echo $college;?>" class="table table-bordered table-condensed table-striped table_college">
+            <table id="table_college_<?php echo $college;?>" class="table table-bordered table-condensed table-striped table_college table_filterable" style="border-width: 0;">
               <thead>
                 <tr>
                   <th class="col-xs-11">Membre</th>
                   <th class="col-xs-1">Sélectionner?</th>
-
                 </tr>
               </thead>
               <tbody>
@@ -59,17 +54,15 @@
                   if (!$compte) {
                       continue;
                   }
-                  $words = json_encode(array_merge(
-                    explode(' ', strtolower($compte->getNomAAfficher())), explode(' ', $compte->getAdresse()), explode(' ', $compte->getAdresseComplementaire()),
-                    [$compte->getCommune(), $compte->getCodePostal(), $compte->identifiant], $compte->getTagsDegustateur()
-                  ), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
                   ?>
-                  <tr class="vertical-center cursor-pointer hamzastyle-item" data-words='<?= $words ?>'>
+                  <tr class="vertical-center cursor-pointer searchable" data-words='<?= $words ?>'>
                     <td>
-                        <small class="text-mutted"><?php echo $compte->getLibelleWithAdresse() ?></small>
-                        <?php foreach ($compte->getTagsDegustateur() as $tag) : ?>
+                        <?php echo $compte->getLibelleWithAdresse() ?>
+                        <div class="pull-right">
+                        <?php foreach ($compte->getTagsDegustateur($college) as $tag) : ?>
                             <span class='btn btn-xs btn-default'><?= $tag ?></span>
                         <?php endforeach ?>
+                        </div>
                     </td>
                     <td class="text-center">
                       <div style="margin-bottom: 0;" class="form-group <?php if($compteForm['selectionne']->hasError()): ?>has-error<?php endif; ?>">
