@@ -577,6 +577,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return $this->total_ht < 0.0;
     }
 
+    public function hasTalonDetachable()
+    {
+        return FactureConfiguration::getInstance()->hasTalonDetachable();
+    }
+
     /*** ARCHIVAGE ***/
 
     public function getNumeroArchive() {

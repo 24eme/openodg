@@ -64,7 +64,6 @@ class Email {
         $body = $this->getBodyFromPartial('send_drev_validation', array('drev' => $drev));
         $message = $this->newMailInstance()
                 ->setTo($to)
-                ->setReplyTo(array(Organisme::getInstance()->getEmail()))
                 ->setSubject($subject)
                 ->setBody($body);
 
@@ -102,7 +101,6 @@ class Email {
         $body = $this->getBodyFromPartial('send_drev_confirmee', array('drev' => $drev));
         $message = $this->newMailInstance()
                 ->setTo($to)
-                ->setReplyTo(array(Organisme::getInstance()->getEmail()))
                 ->setSubject($subject)
                 ->setBody($body)
                 ->attach($pdfAttachment);
@@ -125,7 +123,6 @@ class Email {
         $body = $this->getBodyFromPartial('send_drev_confirmee_papier', array('drev' => $drev));
         $message = $this->newMailInstance()
                 ->setTo($to)
-                ->setReplyTo(array(Organisme::getInstance()->getEmail()))
                 ->setSubject($subject)
                 ->setBody($body);
 
@@ -292,7 +289,6 @@ class Email {
         $pdf->generate();
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
 
-        $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         $to = array($acheteur->email);
         $titre = ($parcellaire->isIntentionCremant())? 'intention de production' : 'affectation parcellaire';
         $complement = '';
@@ -307,7 +303,6 @@ class Email {
         $body = $this->getBodyFromPartial('send_parcellaire_acheteur', array('parcellaire' => $parcellaire));
         $message = $this->newMailInstance()
                 ->setTo($to)
-                ->setReplyTo($reply_to)
                 ->setSubject($subject)
                 ->setBody($body)
                 ->attach($csvAttachment)
@@ -317,21 +312,18 @@ class Email {
     }
 
     public function sendDegustationOperateursMails($degustation) {
-        $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($degustation->operateurs as $key => $operateur) {
             $to = $operateur->email;
             $subject = "Avis de passage en vue d'une dégustation conseil ODG-AVA le " . Date::francizeDate($operateur->date_prelevement);
             $body = $this->getBodyFromPartial('send_degustation_operateur', array('operateur' => $operateur));
 
             if (!$operateur->email) {
-                $to = $reply_to;
+                $to = array(Organisme::getInstance()->getEmail());
                 $subject = "[$operateur->raison_sociale : EMAIL NON ENVOYE] " . $subject;
                 $body = sprintf("/!\ L'email n'a pas pu être envoyé pour cet opérateur car il ne possède pas d'adresse email/!\\n\n%s (%s)\n\nFiche contact : %s\n\n----------------------------------\n\n%s", $operateur->raison_sociale, $operateur->cvi, $this->getAction()->generateUrl("compte_visualisation", array("id" => "COMPTE-E" . $operateur->getKey()), true), $body);
             }
 
-            $message = Swift_Message::newInstance()
-                    ->setFrom($this->getFrom())
-                    ->setReplyTo($reply_to)
+            $message = $this->newMailInstance()
                     ->setTo($to)
                     ->setSubject($subject)
                     ->setBody($body);
@@ -342,7 +334,6 @@ class Email {
     }
 
     public function sendDegustationDegustateursMails($degustation) {
-        $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($degustation->degustateurs as $types_degustateur => $comptes) {
             foreach ($comptes as $id_compte => $degustateur_node) {
                 $to = $degustateur_node->email;
@@ -350,14 +341,12 @@ class Email {
                 $body = $this->getBodyFromPartial('send_degustation_degustateur', array('degustation' => $degustation));
 
                 if (!$degustateur_node->email) {
-                    $to = $reply_to;
+                    $to = array(Organisme::getInstance()->getEmail());
                     $subject = "[$degustateur_node->nom : EMAIL NON ENVOYE] " . $subject;
                     $body = sprintf("/!\ L'email n'a pas pu être envoyé pour ce dégustateur car il ne possède pas d'adresse email/!\\n\n%s\n\nfiche contact : %s\n\n----------------------------------\n\n%s", $degustateur_node->nom, $this->getAction()->generateUrl("compte_visualisation", array("id" => $degustateur_node->getKey()), true), $body);
                 }
 
-                $message = Swift_Message::newInstance()
-                        ->setFrom($this->getFrom())
-                        ->setReplyTo($reply_to)
+                $message = $this->newMailInstance()
                         ->setTo($to)
                         ->setSubject($subject)
                         ->setBody($body);
@@ -370,7 +359,6 @@ class Email {
     }
 
     public function sendDegustationNoteCourrier($courrier) {
-        $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($courrier->prelevements as $prelevement) {
             if (!is_null($prelevement->courrier_envoye)) {
                 continue;
@@ -384,9 +372,7 @@ class Email {
             $body = $this->getBodyFromPartial('send_degustation_note_degustateur', array('degustation' => $courrier->operateur));
             $to = $courrier->operateur->email;
 
-            $message = Swift_Message::newInstance()
-                    ->setFrom($this->getFrom())
-                    ->setReplyTo($reply_to)
+            $message = $this->newMailInstance()
                     ->setTo($to)
                     ->setSubject($subject)
                     ->setBody($body);
@@ -407,14 +393,12 @@ class Email {
     }
 
     public function sendPriseDeRendezvousMails(Rendezvous $rendezvous) {
-        $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         $to = sfConfig::get('app_email_plugin_to_notification');
         $subject = "Nouvelle prise de rendez-vous pour " . $rendezvous->raison_sociale . " le " . $rendezvous->getDateHeureFr();
 
         $body = $this->getBodyFromPartial('send_notification_prise_rendezvous', array('rendezvous' => $rendezvous));
 
         $message = $this->newMailInstance()
-                ->setReplyTo($reply_to)
                 ->setTo($to)
                 ->setSubject($subject)
                 ->setBody($body);
@@ -424,7 +408,6 @@ class Email {
     }
 
     public function sendConstatApprouveMail(Constats $constats, $constatNode) {
-        $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         $to = $constats->email;
         $subject = "Constat VT/SGN du " . ucfirst(format_date($constatNode->date_signature, "P", "fr_FR"));
 
@@ -435,7 +418,6 @@ class Email {
 
         $body = $this->getBodyFromPartial('send_constat_approuve', array('constats' => $constats, 'constat' => $constatNode));
         $message = $this->newMailInstance()
-                ->setReplyTo($reply_to)
                 ->setTo($to)
                 ->setBcc(sfConfig::get('app_email_plugin_to_notification'))
                 ->setSubject($subject)
@@ -516,8 +498,6 @@ class Email {
     }
 
     public function sendConfirmationDegustateurMail($degustation, $id_compte, $college_key) {
-      $reply_to = Organisme::getInstance(null, 'degustation')->getEmail();
-
       $compte = CompteClient::getInstance()->find($id_compte);
 
       $to = $compte->email;
@@ -526,7 +506,7 @@ class Email {
       $body = $this->getBodyFromPartial('send_convocation_degustateur', array('degustation' => $degustation, 'identifiant' => $id_compte, 'college' => $college_key));
 
       if (!$compte->email) {
-          $to = $reply_to;
+          $to = Organisme::getInstance(null, 'degustation')->getEmail();
           $subject = "[$compte->nom : EMAIL NON ENVOYE] " . $subject;
           $body = sprintf("/!\ L'email n'a pas pu être envoyé pour ce dégustateur car il ne possède pas d'adresse email/!\\n\n%s\n\nfiche contact : %s\n\n----------------------------------\n\n%s", $compte->getLibelleWithAdresse(), $this->getAction()->generateUrl('compte_visualisation', array('identifiant' => $compte->identifiant), true), $body);
       } else {
@@ -534,11 +514,8 @@ class Email {
         $degustation->save(false);
       }
 
-      $message = Swift_Message::newInstance()
-              ->setFrom($this->getFrom())
-              ->setReplyTo($reply_to)
+      $message = $this->newInstance('degustation')
               ->setTo($to)
-              ->setCc($reply_to)
               ->setSubject($subject)
               ->setBody($body);
 
@@ -575,10 +552,9 @@ class Email {
       $to = array($adelphe->declarant->email);
       $subject = 'Validation de votre Déclaration Adelphe';
       $body = $this->getBodyFromPartial('send_adelphe_validation', array('adelphe' => $adelphe));
-      $message = Swift_Message::newInstance()
+      $message = $this->newMailInstance()
               ->setFrom($from)
               ->setTo($to)
-              ->setReplyTo(array(Organisme::getInstance()->getEmail()))
               ->setSubject($subject)
               ->setBody($body)
               ->setContentType('text/plain');
@@ -601,10 +577,6 @@ class Email {
          ->setTo($email)
          ->setSubject(GenerationFactureMail::getSujet($facture->getNumeroOdg()))
          ->setBody($this->getPartial("facturation/email", array('id' => $facture->_id)));
-
-         if(Organisme::getInstance()->getEmailFacturation()) {
-            $message->setReplyTo(Organisme::getInstance()->getEmailFacturation());
-         }
 
          return $message;
     }
@@ -636,10 +608,36 @@ class Email {
         return array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
     }
 
-    public function newMailInstance() {
+    public function newMailInstance($organisme_type = null) {
 
-        return Swift_Message::newInstance()
+        $email = Swift_Message::newInstance()
                         ->setFrom($this->getFrom())
                         ->setContentType('text/plain');
+
+        $reply_to = []
+        if (sfConfig::get('app_email_plugin_reply_to_adresse') {
+            $reply_to[sfConfig::get('app_email_plugin_reply_to_adresse'] = sfConfig::get('app_email_plugin_reply_to_name'));
+        }
+        if ( ! count($reply_to) || $organisme_type) {
+            if ($organisme_type) {
+                if ($organisme_type == 'facturation') {
+                   $reply_to[Organisme::getInstance()->getEmailFacturation()] = Organisme::getInstance()->getNomFacturation();
+                } else {
+                    $reply_to[Organisme::getInstance(null, $organisme_type)->getEmail()] = Organisme::getInstance(null, $organisme_type)->getNom();
+                }
+            } else {
+                $reply_to[Organisme::getInstance()->getEmail()] = Organisme::getInstance()->getNom();
+            }
+        }
+        if ( ! count($reply_to) ) {
+            $email = $emails->setReplyTo($reply_to);
+        }
+
+        if (sfConfig::get('app_email_plugin_cc_adresse')) {
+            $cc[sfConfig::get('app_email_plugin_cc_adresse'] = sfConfig::get('app_email_plugin_cc_name'));
+            $email = $emails->setCC($cc);
+        }
+
+        return $email;
     }
 }
