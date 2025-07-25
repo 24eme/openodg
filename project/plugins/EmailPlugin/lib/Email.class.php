@@ -632,6 +632,12 @@ class Email {
         if ( ! count($reply_to) ) {
             $email = $emails->setReplyTo($reply_to);
         }
+
+        if (sfConfig::get('app_email_plugin_cc_adresse')) {
+            $cc[sfConfig::get('app_email_plugin_cc_adresse'] = sfConfig::get('app_email_plugin_cc_name'));
+            $email = $emails->setCC($cc);
+        }
+
         return $email;
     }
 }
