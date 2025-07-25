@@ -1,6 +1,10 @@
 all:
   configuration:
     degustation:
+      colleges:
+        degustateur_technicien: "Techniciens"
+        degustateur_operateur: "Opérateurs"
+        degustateur_usager_du_produit: "Usagers du produit"
       anonymat4labo: true
       conformite:
         - CONFORME
