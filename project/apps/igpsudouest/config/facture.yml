@@ -2,6 +2,7 @@ all:
   configuration:
     facture:
       echeances: false
+      talon_detachable: true
       modalite_paiement: "- comptant par virement ou chèque \\"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
