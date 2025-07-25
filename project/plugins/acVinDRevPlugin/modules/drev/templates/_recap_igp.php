@@ -78,7 +78,7 @@
 <?php if ($has_sum) : ?>
           <h3 id="table_igp_title">Déclaration des lots IGP</h3>
           <div class="row">
-              <div class="col-xs-9">
+              <div class="<?php if(!$drev->validation_odg && $sf_user->isAdmin()): ?>col-xs-9<?php else: ?>col-xs-12<?php endif; ?>">
               <input type="hidden" data-placeholder="Filtrer le tableau sur un produit, un millésime ou un numéro de dossier" data-hamzastyle-container=".table_igp" class="hamzastyle mb-2" style="width: 100%; border-radius: 0;">
                 </div>
                 <?php if(!$drev->validation_odg && $sf_user->isAdmin()): ?>
