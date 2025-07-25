@@ -143,3 +143,7 @@ body {
 #map {
     border-radius: 4px;
 }
+
+.hamzastyle .select2-choices {
+    border-radius: 0;
+}

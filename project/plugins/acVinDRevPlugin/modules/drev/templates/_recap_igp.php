@@ -26,9 +26,9 @@
                     ?>
                     <tr <?php if ($isTotal) { echo ' style="font-weight: bold;"'; } ?>>
                       <td>
-                          <strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $synthese['libelle']; ?></strong>
+                          <strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $synthese['libelle']; ?></a></strong>
                           <?php if (!$isTotal) : ?>
-                              <small class="pull-right">&nbsp;<?php if($synthese['superficie_totale']): ?><?php echoFloat(round($synthese['volume_total'] / $synthese['superficie_totale'], 2), true); ?>&nbsp;hl/ha</small><?php endif; ?>
+                              <small class="pull-right">&nbsp;<?php if($synthese['superficie_totale']): ?><?php echoFloat(round($synthese['volume_total'] / $synthese['superficie_totale'], 2), true); ?>&nbsp;hl/ha<?php endif; ?></small>
                           <?php endif; ?>
                       </td>
                       <td class="text-right">
@@ -46,7 +46,6 @@
                          <?php else: ?>
                           <td></td>
                         <?php endif; ?>
-                      </td>
                       <td class="text-right">
                               <?php  if ($synthese['nb_lots'] > 0): ?>
                                   <?php if ($isTotal): ?>
@@ -79,19 +78,17 @@
 <?php if ($has_sum) : ?>
           <h3 id="table_igp_title">Déclaration des lots IGP</h3>
           <div class="row">
-              <input type="hidden" data-placeholder="Sélectionner un produit ou un numéro de dossier" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
-          </div>
-          <br/>
-          <?php if(!$drev->validation_odg && $sf_user->isAdmin()): ?>
-          <div class="row text-right">
-            <div class="col-xs-3 col-xs-offset-9">
-              <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
-            </span>
+              <div class="col-xs-9">
+              <input type="hidden" data-placeholder="Sélectionner un produit ou un numéro de dossier" data-hamzastyle-container=".table_igp" class="hamzastyle mb-2" style="width: 100%; border-radius: 0;">
+                </div>
+                <?php if(!$drev->validation_odg && $sf_user->isAdmin()): ?>
+                  <div class="col-xs-3 text-right pr-5">
+                    <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
+                  </span>
 
-            </div>
+                  </div>
+                <?php endif; ?>
           </div>
-          <br/>
-          <?php endif; ?>
           <table class="table table-bordered table-striped table_igp">
             <thead>
               <tr>
