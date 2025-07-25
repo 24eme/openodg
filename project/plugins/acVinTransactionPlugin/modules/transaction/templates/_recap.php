@@ -68,7 +68,7 @@
                         </td>
                         <td class="text-right"><?php echo $lot->pays; ?></td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
-                        <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
+                        <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::getLotDestinationsType($lot->destination_type) : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
                         <?php if ($sf_user->isAdmin()): ?>
                           <td class="text-center">
                             <?php if(isset($form['lots'])): ?>

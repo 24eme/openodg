@@ -103,7 +103,7 @@ class LotForm extends acCouchdbObjectForm
 
     public function getDestinationsType()
     {
-        return array_merge(array("" => ""), DRevClient::$lotDestinationsType);
+        return array_merge(array("" => ""), DRevClient::getLotDestinationsTypes());
     }
 
     public function getSpecificites()

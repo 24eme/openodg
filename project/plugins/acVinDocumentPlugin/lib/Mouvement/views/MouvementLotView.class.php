@@ -143,8 +143,7 @@ class MouvementLotView extends acCouchdbView
 
 
   public static function getDestinationLibelle($lot) {
-    $libelles = DRevClient::$lotDestinationsType;
-    return (isset($libelles[$lot->destination_type]))? $libelles[$lot->destination_type] : '';
+    return DRevClient::getLotDestinationsType($lot->destination_type);
   }
 
 }
