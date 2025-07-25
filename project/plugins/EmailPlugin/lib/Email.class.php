@@ -629,6 +629,9 @@ class Email {
                 $reply_to[Organisme::getInstance()->getEmail()] = Organisme::getInstance()->getNom();
             }
         }
+        if ( ! count($reply_to) ) {
+            $reply_to[sfConfig::get('app_email_plugin_from_adresse'] = sfConfig::get('app_email_plugin_from_name'));
+        }
 
         if ($reply_to){
             $email = $emails->setReplyTo($reply_to);
