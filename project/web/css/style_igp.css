@@ -63,9 +63,19 @@ body {
     color: #000;
 }
 
+.nav-step .navbar-nav li.visited.disabled a {
+    color: #ccc !important;
+}
+
 .nav-step .navbar-nav li.active a, .nav-step .navbar-nav li.active a:hover {
     background: #337ab7;
     color: #fff;
+}
+
+.nav-step ul.navbar-nav li a::before {
+  border: 1px solid;
+  line-height: 21px;
+  font-size: 12px;
 }
 
 #header header {
@@ -116,12 +126,6 @@ body {
 
 .btn {
     border-radius: 4px;
-}
-
-.nav-step ul.navbar-nav li a::before {
-  border: 1px solid;
-  line-height: 21px;
-  font-size: 12px;
 }
 
 .panel {
