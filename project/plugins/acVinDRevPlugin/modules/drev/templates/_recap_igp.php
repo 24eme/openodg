@@ -79,7 +79,7 @@
           <h3 id="table_igp_title">Déclaration des lots IGP</h3>
           <div class="row">
               <div class="col-xs-9">
-              <input type="hidden" data-placeholder="Sélectionner un produit ou un numéro de dossier" data-hamzastyle-container=".table_igp" class="hamzastyle mb-2" style="width: 100%; border-radius: 0;">
+              <input type="hidden" data-placeholder="Filtrer le tableau sur un produit, un millésime ou un numéro de dossier" data-hamzastyle-container=".table_igp" class="hamzastyle mb-2" style="width: 100%; border-radius: 0;">
                 </div>
                 <?php if(!$drev->validation_odg && $sf_user->isAdmin()): ?>
                   <div class="col-xs-3 text-right pr-5">
@@ -114,7 +114,7 @@
                   foreach ($drev->getLotsByUniqueAndDate() as $lot) :
                     $totalVolume+=$lot->volume;
                     ?>
-                    <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle, $lot->numero_dossier), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
+                    <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle, $lot->produit_libelle." ".$lot->millesime, $lot->millesime, $lot->numero_dossier), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
                       <td>
                         <?php $drevDocOrigine = $lot->getDrevDocOrigine(); ?>
                         <?php if($drevDocOrigine): ?><a class="link pull-right" href="<?php echo url_for('drev_visualisation', $drevDocOrigine); ?>"><?php endif; ?>
