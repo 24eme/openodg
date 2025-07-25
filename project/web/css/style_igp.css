@@ -15,7 +15,8 @@
 }
 
 body {
-    background-color: #fafafa;
+    background: #fafafa url('/images/bg/bg_igp.png');
+    background-position: center;
 }
 
 #menu_navigation {
