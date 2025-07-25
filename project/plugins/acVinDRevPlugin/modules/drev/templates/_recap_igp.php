@@ -250,7 +250,7 @@
         </div>
 <?php elseif($drev->isValideeOdg()): ?>
         <div class="pull-right">
-          <p class="text-danger">Cette DREV n'est la dernière et donc pas modifiable</p>
+          <p class="text-danger">Cette DREV n'est pas la dernière et donc pas modifiable</p>
         </div>
 <?php endif; ?>
     </div>

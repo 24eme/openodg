@@ -54,13 +54,6 @@
                         <?php echo $sf_content ?>
                 </section>
 
-                <footer id="footer" class="container hidden-xs hidden-sm text-center mt-5 mb-5" role="contentinfo">
-                    <nav role="navigation">
-                        <ul class="list-inline" style="font-size: 13px;">
-                        </ul>
-                    </nav>
-                </footer>
-
             <div class="alert alert-danger notification" id="ajax_form_error_notification">Une erreur est survenue</div>
             <div class="alert alert-success notification" id="ajax_form_progress_notification">Enregistrement en cours ...</div>
             <?php include_javascripts() ?>
