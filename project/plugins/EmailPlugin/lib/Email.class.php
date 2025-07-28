@@ -614,9 +614,9 @@ class Email {
                         ->setFrom($this->getFrom())
                         ->setContentType('text/plain');
 
-        $reply_to = []
-        if (sfConfig::get('app_email_plugin_reply_to_adresse') {
-            $reply_to[sfConfig::get('app_email_plugin_reply_to_adresse'] = sfConfig::get('app_email_plugin_reply_to_name'));
+        $reply_to = [];
+        if (sfConfig::get('app_email_plugin_reply_to_adresse')) {
+            $reply_to[sfConfig::get('app_email_plugin_reply_to_adresse')] = sfConfig::get('app_email_plugin_reply_to_name');
         }
         if ( ! count($reply_to) || $organisme_type) {
             if ($organisme_type) {
@@ -634,8 +634,8 @@ class Email {
         }
 
         if (sfConfig::get('app_email_plugin_cc_adresse')) {
-            $cc[sfConfig::get('app_email_plugin_cc_adresse'] = sfConfig::get('app_email_plugin_cc_name'));
-            $email = $emails->setCC($cc);
+            $cc[sfConfig::get('app_email_plugin_cc_adresse')] = sfConfig::get('app_email_plugin_cc_name');
+            $email = $emails->setCc($cc);
         }
 
         return $email;
