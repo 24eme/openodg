@@ -77,7 +77,7 @@ if ( ! $produitconfig_aop || ! $produitconfig_igp ) {
     $t->pass("no DREV AOC and IGP for ".$application);
     return;
 }
-$t = new lime_test(126);
+$t = new lime_test(32);
 
 $t->comment('campagne '.$campagne);
 $t->comment($config->_id);
@@ -175,6 +175,11 @@ $drev_m01->validate();
 $drev_m01->validateOdg();
 $drev_m01->save();
 
+$t->comment($drev_m01->_id);
+$t->is(count($drev_m01->declaration), 1, "1 produit a été revendiqué");
+$t->ok($drev_m01->exist($produitconfig_aop->getHash()), "Le produit AOC a été crée");
+$t->is($drev_m01->get($produitconfig_aop->getHash())->getFirst()->volume_revendique_total, 40, "Volume revendiqué saisie AOP a été conservé");
+
 $drev_m02 = $drev_m01->generateModificative();
 $drev_m02->save();
 
@@ -191,10 +196,13 @@ unlink($csvTmpFile);
 
 $drev_m02->resetAndImportFromDocumentDouanier();
 $drev_m02->save();
+
 $t->comment($drev_m02->_id);
 $t->is(count($drev_m02->declaration), 2, "Après la DR, on retrouve les deux produits dans déclaration");
-$t->ok($drev_m02->exist($produitconfig_aop->getHash()), "La DR a permis d'avoir le produit AOC");
-$t->ok($drev_m02->exist($produitconfig_igp->getHash()), "Le produit IGP existe toujours");
+$t->ok($drev_m02->exist($produitconfig_aop->getHash()), "Le produit AOP existe toujours");
+$t->ok($drev_m02->exist($produitconfig_igp->getHash()), "Le produit IGP a été créé");
+$t->is($drev_m02->get($produitconfig_aop->getHash())->getFirst()->volume_revendique_total, 40, "Volume revendiqué saisie AOP a été conservé");
+$t->is($drev_m02->get($produitconfig_aop->getHash())->getFirst()->recolte->volume_sur_place, 210.36, "Le volume de la DR a été importé");
 
 $t->ok(!DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_LOTS, $drev_m02), "Après l'import de la DR, on a accès à l'étape lots");
 $t->ok(!DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION, $drev_m02), "Après l'import de la DR, on a accès à l'étape AOC revendication");
@@ -207,3 +215,39 @@ $produit2 = end($drev_m02->get($produitconfig_igp->getCepage()->getHash())->getP
 $produit_hash2 = $produit2->getCepage()->getHash();
 $t->is($produit_hash1, $produitconfig_aop->getHash(), "Le premier produit est le produit AOC");
 $t->is($produit_hash2, $produitconfig_igp->getHash(), "Le premier produit est le produit IGP");
+
+$form = new DRevRevendicationForm($drev_m02, array('disabled_dr' => true));
+$valuesRev = [
+    '_revision' => $drev_m02->_rev,
+    'produits' => [$produitAop->getHash() => [ "volume_revendique_issu_recolte" => 140]]
+];
+$form->bind($valuesRev);
+$t->ok($form->isValid(), "Le formulaire est valide");
+$form->save();
+
+$drev_m02->validate();
+$drev_m02->validateOdg();
+$drev_m02->save();
+
+$t->is($drev_m02->get($produitconfig_aop->getHash())->getFirst()->volume_revendique_total, 140, "Volume revendiqué saisie AOP");
+
+try {
+    $drev_m02->resetAndImportFromDocumentDouanier();
+    $t->fail("On ne peut pas rechargé la DR d'une DRev déjà validé");
+} catch(Exception $e) {
+    $t->ok("On ne peut pas rechargé la DR d'une DRev déjà validé");
+}
+
+$t->comment("Nouvelle modificatrice avec rechargement de DR");
+
+$drev_m03 = $drev_m02->generateModificative();
+$drev_m03->save();
+
+$drev_m03->resetAndImportFromDocumentDouanier();
+
+$t->comment($drev_m03->_id);
+$t->is(count($drev_m03->declaration), 2, "Après la DR, on retrouve les deux produits dans déclaration");
+$t->ok($drev_m03->exist($produitconfig_aop->getHash()), "Le produit AOP existe toujours");
+$t->ok($drev_m03->exist($produitconfig_igp->getHash()), "Le produit IGP a été créé");
+$t->is($drev_m03->get($produitconfig_aop->getHash())->getFirst()->volume_revendique_total, 140, "Volume revendiqué saisie AOP a été conservé");
+$t->is($drev_m03->get($produitconfig_aop->getHash())->getFirst()->recolte->volume_sur_place, 210.36, "Le volume de la DR a été importé");

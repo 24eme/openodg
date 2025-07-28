@@ -641,16 +641,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function resetAndImportFromDocumentDouanier() {
       $this->declarant->famille = $this->getEtablissementObject()->famille;
 
-      if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalVolumeRevendique() > 0)  {
-          throw new sfException('Volume déjà déclaré');
-      }
-
       if(count($this->getProduitsWithoutLots()) > 0 && $this->isValidee()) {
           throw new sfException('Document validé');
       }
 
-      $this->remove('declaration');
-      $this->add('declaration');
+      if (!count($this->getProduitsWithoutLots()) > 0 || !$this->declaration->getTotalVolumeRevendique() > 0)  {
+          $this->remove('declaration');
+          $this->add('declaration');
+      }
 
       $csv = $this->getCsvFromDocumentDouanier();
       if (!$csv) {
@@ -663,11 +661,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function importCSVDouane($csv) {
-      if(count($this->declaration) > 0) {
-          return;
-      }
+        $preserveDRevSaisie = count($this->declaration) > 0;
 
-    	$todelete = array();
+        $produits_with_colonne_id = array();
         $bailleurs = array();
 
         $preserve = false;
@@ -678,6 +674,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $has_coop_l8 = false;
         $has_mout_l7 = false;
+
+        //Supprime les infos de la DR
+        foreach ($this->declaration->getProduits() as $p) {
+            if($p->exist('recolte')) {
+                $p->remove('recolte');
+            }
+        }
 
         if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
             $labelsDefault = array_fill_keys($this->getDenominationAuto(), true);
@@ -786,6 +789,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             $produit = $this->addProduit($produitConfig->getHash(), $complement, $line[DRCsvFile::CSV_COLONNE_ID]);
 
+            $produits_with_colonne_id[$produit->getHash()] = $produit->getHash();
+
             if($is_bailleur) {
                 $bailleurs[$produit->getHash()] = $produit->getHash();
             }
@@ -877,21 +882,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
         //Si on n'a pas de volume sur place
-        foreach ($this->declaration->getProduits() as $hash => $p) {
+        foreach ($produits_with_colonne_id as $hash) {
+            $p = $this->get($hash);
             if (!$p->recolte->volume_sur_place && !$p->superficie_revendique && !$p->volume_revendique_total && !$p->hasVci()) {
-    		   $todelete[$hash] = $hash;
+               $this->remove($hash);
+               unset($produits_with_colonne_id[$hash]);
                continue;
         	}
         }
 
-        foreach ($todelete as $del) {
-            $this->remove($del);
-        }
-        $todelete = array();
-
-        //Supprime les colonnes pour ne proposer qu'un aggréga par produit
-        $my_produits = $this->declaration->getProduits();
-        foreach ($my_produits as $hash => $p) {
+        foreach ($produits_with_colonne_id as $hash) {
+            $p = $this->get($hash);
             $hash_produit = $p->getParent()->getHash();
             $produit = $this->addProduit($hash_produit, $p->denomination_complementaire);
             $produitRecolte = $produit->add("recolte");
@@ -929,11 +930,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $produitRecolte->vsi += $p->recolte->vsi;
             }
 
-            $todelete[$hash] = $hash;
+            $this->remove($hash);
         }
 
-        foreach ($todelete as $del) {
-            $this->remove($del);
+        if($preserveDRevSaisie) {
+            return;
         }
 
         foreach ($this->declaration->getProduits() as $hash => $p) {
