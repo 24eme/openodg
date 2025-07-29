@@ -319,79 +319,6 @@
                             }
                           }
                         }
-                      },
-                      "PC": {
-                        "libelle": "Premières côtes",
-                        "format_libelle": null,
-                        "code": null,
-                        "code_produit": null,
-                        "code_comptable": null,
-                        "code_douane": null,
-                        "interpro": {
-                          "INTERPRO-declaration": {
-                            "labels": [],
-                            "droits": {
-                              "douane": [],
-                              "cvo": []
-                            }
-                          }
-                        },
-                        "departements": [],
-                        "couleurs": {
-                          "blanc_sec": {
-                            "libelle": "Blanc sec",
-                            "format_libelle": null,
-                            "code": "blanc_sec",
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
-                                "code_comptable": "70800300",
-                                "code_douane": "1B129S",
-                                "cepages_autorises": [
-                                  "LEN DE L'EL B",
-                                  "MAUZAC B",
-                                  "MAUZAC ROSE RS",
-                                  "MUSCADELLE B",
-                                  "ONDENC B",
-                                  "SAUVIGNON B"
-                                ],
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                }
-                              }
-                            },
-                            "attributs": {
-                              "rendement": 71,
-                              "rendement_dr_l5": null,
-                              "rendement_dr_l15": 71,
-                              "rendement_conseille": null,
-                              "rendement_dr": null,
-                              "rendement_vci": null,
-                              "rendement_vci_total": null
-                            }
-                          }
-                        }
                       }
                     }
                   },
@@ -667,7 +594,7 @@
                     "departements": [],
                     "lieux": {
                       "DEFAUT": {
-                        "libelle": "Premières côtes",
+                        "libelle": "",
                         "format_libelle": null,
                         "code": null,
                         "code_produit": null,
@@ -783,7 +710,7 @@
                 "departements": [],
                 "mentions": {
                   "DEFAUT": {
-                    "libelle": null,
+                    "libelle": "Méthode Traditionnelle",
                     "format_libelle": null,
                     "code": null,
                     "code_produit": null,
@@ -870,13 +797,67 @@
                               "rendement_vci": null,
                               "rendement_vci_total": null
                             }
+                          },
+                          "blanc_doux": {
+                            "libelle": "Blanc doux",
+                            "format_libelle": null,
+                            "code": null,
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": null,
+                                "format_libelle": null,
+                                "code": null,
+                                "code_produit": null,
+                                "code_comptable": "70800300",
+                                "code_douane": "1B128M03",
+                                "cepages_autorises": [
+                                  "LEN DE L'EL B",
+                                  "MAUZAC B",
+                                  "MAUZAC ROSE RS",
+                                  "MUSCADELLE B",
+                                  "ONDENC B",
+                                  "SAUVIGNON B"
+                                ],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "attributs": {
+                              "rendement": 71,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": 71,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
+                            }
                           }
+
                         }
                       }
                     }
                   },
                   "MA": {
-                    "libelle": "Méthode ancestrale",
+                    "libelle": "Méthode Ancestrale",
                     "format_libelle": null,
                     "code": null,
                     "code_produit": null,
@@ -1011,140 +992,6 @@
               }
             }
           },
-          "VAPTE": {
-            "libelle": "Vin Apte",
-            "format_libelle": "%c% %a% %l% %m% %co%",
-            "code": "TRANQ",
-            "code_produit": null,
-            "code_comptable": null,
-            "code_douane": null,
-            "interpro": {
-              "INTERPRO-declaration": {
-                "labels": [],
-                "droits": {
-                  "douane": [],
-                  "cvo": []
-                }
-              }
-            },
-            "departements": [],
-            "appellations": {
-              "GLC": {
-                "libelle": "Gaillac",
-                "format_libelle": null,
-                "code": "GLC",
-                "code_produit": null,
-                "code_comptable": null,
-                "code_douane": null,
-                "densite": null,
-                "interpro": {
-                  "INTERPRO-declaration": {
-                    "labels": [],
-                    "droits": {
-                      "douane": [],
-                      "cvo": []
-                    }
-                  }
-                },
-                "departements": [],
-                "mentions": {
-                  "VT": {
-                    "libelle": "Vendanges tardives",
-                    "format_libelle": "%c% %a% %l% %co% %m%",
-                    "code": "VT",
-                    "code_produit": null,
-                    "code_comptable": null,
-                    "code_douane": null,
-                    "interpro": {
-                      "INTERPRO-declaration": {
-                        "labels": [],
-                        "droits": {
-                          "douane": [],
-                          "cvo": []
-                        }
-                      }
-                    },
-                    "departements": [],
-                    "lieux": {
-                      "DEFAUT": {
-                        "libelle": null,
-                        "format_libelle": null,
-                        "code": null,
-                        "code_produit": null,
-                        "code_comptable": null,
-                        "code_douane": null,
-                        "interpro": {
-                          "INTERPRO-declaration": {
-                            "labels": [],
-                            "droits": {
-                              "douane": [],
-                              "cvo": []
-                            }
-                          }
-                        },
-                        "departements": [],
-                        "couleurs": {
-                          "blanc_doux": {
-                            "libelle": "Blanc doux",
-                            "format_libelle": null,
-                            "code": "blanc_doux",
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
-                                "code_comptable": "70800300",
-                                "code_douane": "1B128DVA",
-                                "cepages_autorises": [
-                                  "LEN DE L'EL B",
-                                  "MAUZAC B",
-                                  "MAUZAC ROSE RS",
-                                  "MUSCADELLE B",
-                                  "ONDENC B",
-                                  "SAUVIGNON B"
-                                ],
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                }
-                              }
-                            },
-                            "attributs": {
-                              "rendement": 48,
-                              "rendement_dr_l5": null,
-                              "rendement_dr_l15": 48,
-                              "rendement_conseille": null,
-                              "rendement_dr": null,
-                              "rendement_vci": null,
-                              "rendement_vci_total": null
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
           "VDB": {
             "libelle": "Vin de base",
             "format_libelle": "%c% %a% %g% %l% %m%",
@@ -1183,7 +1030,7 @@
                 "departements": [],
                 "mentions": {
                   "DEFAUT": {
-                    "libelle": null,
+                    "libelle": "Méthode Traditionnelle",
                     "format_libelle": null,
                     "code": null,
                     "code_produit": null,
@@ -1276,7 +1123,7 @@
                     }
                   },
                   "MA": {
-                    "libelle": "Méthode ancestrale",
+                    "libelle": "Méthode Ancestrale",
                     "format_libelle": null,
                     "code": null,
                     "code_produit": null,
