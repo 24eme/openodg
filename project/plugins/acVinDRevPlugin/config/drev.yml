@@ -9,6 +9,7 @@ all:
       notif_pour_approbation: false
       cgu: false
       etape_superficie: true
+      saisie_superficie_revendique: true
       dr_douane_required: true
       degustation: false
       engagement_pdf: false

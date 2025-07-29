@@ -8,6 +8,7 @@ all:
       validation_odg: 'auto'
       etape_superficie: true
       etapes_aoc: true
+      saisie_superficie_revendique: false
       dr_douane_required: false
       degustation: true
       specificite_lot: true
