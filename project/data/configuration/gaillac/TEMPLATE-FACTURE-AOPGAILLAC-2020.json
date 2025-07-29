@@ -1,9 +1,9 @@
 {
-  "_id": "TEMPLATE-FACTURE-AOPGAILLAC-2005",
+  "_id": "TEMPLATE-FACTURE-AOPGAILLAC-2020",
   "type": "TemplateFacture",
   "region": "AOPGAILLAC",
-  "campagne": 2005,
-  "libelle": "2005 - AOP Gaillac",
+  "campagne": 2020,
+  "libelle": "2020 - AOP Gaillac",
   "docs": [
     "DRev"
   ],
@@ -102,7 +102,31 @@
         }
       }
     },
-    "04_inaoGLC": {
+    "04_analyse": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Participation Frais Analyses",
+      "code_comptable": "706300",
+      "details": {
+        "00_produit_tranche": {
+          "modele": "CotisationVariable",
+          "prix": 52,
+          "tva": 0,
+          "unite": null,
+          "libelle": "Tranche(s)",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getTranchesByVolumeAndProduit",
+          "callback_parameters": {
+            "appellations": "certifications/AOP",
+            "tranche": 1500
+          }
+        }
+      }
+    },
+    "10_inaoGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Droits INAO",

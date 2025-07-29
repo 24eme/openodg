@@ -630,7 +630,7 @@
                 }
               },
               "GPC": {
-                "libelle": "Gaillac Premiere Côtes",
+                "libelle": "Gaillac Premieres Côtes",
                 "format_libelle": null,
                 "code": "GPC",
                 "code_produit": null,
@@ -4875,12 +4875,29 @@
                             "departements": [],
                             "cepages": {
                               "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
                                 "code_comptable": "70801000",
                                 "code_douane": "3S020",
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
+                                },
                                 "cepages_autorises": [
                                   "ALICANTE BOUSCHET N",
                                   "CABERNET FRANC N",
@@ -4904,15 +4921,7 @@
                                   "PRUNELARD N",
                                   "SYRAH N",
                                   "TANNAT N"
-                                ],
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                }
+                                ]
                               }
                             }
                           },
@@ -4995,10 +5004,10 @@
                             "departements": [],
                             "cepages": {
                               "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
                                 "code_comptable": "70801000",
                                 "code_douane": "3B020",
                                 "cepages_autorises": [
@@ -5024,6 +5033,15 @@
                                       "cvo": []
                                     }
                                   }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
                                 }
                               }
                             }
