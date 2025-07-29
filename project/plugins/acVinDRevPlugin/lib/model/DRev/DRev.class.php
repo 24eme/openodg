@@ -619,12 +619,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function updateDeclaration() {
         $this->resetAndImportFromDocumentDouanier();
         foreach($this->getProduitsLots() as $produit) {
-            $produit->superficie_revendique = 0;
+            $produit->superficie_revendique = $produit->recolte->superficie_total;
             $produit->volume_revendique_total = 0;
         }
         foreach ($this->getLots() as $lot) {
             $produit = $lot->getProduitRevendique();
-            $produit->superficie_revendique = $produit->recolte->superficie_total;
             $produit->volume_revendique_total += $lot->volume;
         }
     }
