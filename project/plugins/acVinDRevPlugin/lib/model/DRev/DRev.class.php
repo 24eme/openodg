@@ -619,12 +619,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function updateDeclaration() {
         $this->resetAndImportFromDocumentDouanier();
         foreach($this->getProduitsLots() as $produit) {
-            $produit->superficie_revendique = 0;
+            $produit->superficie_revendique = $produit->recolte->superficie_total;
             $produit->volume_revendique_total = 0;
         }
         foreach ($this->getLots() as $lot) {
             $produit = $lot->getProduitRevendique();
-            $produit->superficie_revendique = $produit->recolte->superficie_total;
             $produit->volume_revendique_total += $lot->volume;
         }
     }
@@ -933,7 +932,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->remove($hash);
         }
 
-        if($preserveDRevSaisie) {
+        if($preserveDRevSaisie && DrevConfiguration::getInstance()->isSaisieSuperficieRevendique()) {
             return;
         }
 
@@ -941,6 +940,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if ($p->recolte->volume_total && $p->recolte->volume_sur_place && round($p->recolte->volume_total, 4) == round($p->recolte->volume_sur_place, 4) && !in_array($p->getHash(), $bailleurs)) {
                 $p->superficie_revendique = $p->recolte->superficie_total;
             }
+        }
+
+        if($preserveDRevSaisie) {
+            return;
         }
 
         if (DRevConfiguration::getInstance()->hasDenominationAuto() && count($labelsDefault) > 1) {
