@@ -476,7 +476,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                 $match = $match && $this->matchFilterProduit($produit, $filter);
             } elseif ($type === 'region') {
                 $region = $filter;
-                $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit->produit);
+                $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit);
             } elseif($type === 'famille') {
                 $match = $match && DRevClient::getInstance()->matchFilterFamille($this->declarant->famille, $filter);
             }
