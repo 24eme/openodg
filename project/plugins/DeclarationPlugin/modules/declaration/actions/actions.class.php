@@ -240,6 +240,7 @@ class declarationActions extends sfActions {
         $region = DeclarationTousView::FILTER_KEY_DEFAULT_REGION;
         if ( class_exists("RegionConfiguration") && RegionConfiguration::getInstance()->hasOdgProduits() && $this->regionParam) {
             $region = $this->regionParam;
+            $request->setParameter('produits-filtre', RegionConfiguration::getInstance()->getOdgProduits($region));
         }
 
          if (isset($this->query['Type'])) {

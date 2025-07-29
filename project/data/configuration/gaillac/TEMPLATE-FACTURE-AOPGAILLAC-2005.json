@@ -8,7 +8,7 @@
     "DRev"
   ],
   "cotisations": {
-    "00_%detail_identifiant%_syndicaleGLC": {
+    "00_syndicaleGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation syndicale",
@@ -19,7 +19,7 @@
           "prix": 10,
           "tva": 0,
           "unite": "",
-          "libelle": "AOP Gaillac - %detail_identifiant%",
+          "libelle": "AOP Gaillac",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -32,7 +32,7 @@
         }
       }
     },
-    "01_%detail_identifiant%_00_GLC_cotisationSyndicaleApporteursGLC": {
+    "01_GLC_cotisationSyndicaleApporteursGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation",
@@ -43,7 +43,7 @@
           "prix": 10,
           "tva": 0,
           "unite": null,
-          "libelle": "syndicale annuelle AOP Gaillac - %detail_identifiant%",
+          "libelle": "syndicale annuelle AOP Gaillac",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -56,7 +56,7 @@
         }
       }
     },
-    "02_%detail_identifiant%_surfaceGLC": {
+    "02_surfaceGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation technique",
@@ -67,19 +67,19 @@
           "prix": 10,
           "tva": 0,
           "unite": "ha",
-          "libelle": "surface AOP Gaillac - %detail_identifiant%",
+          "libelle": "surface AOP Gaillac",
           "complement_libelle": "",
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeFacturable",
+          "callback": "getSurfaceFacturable",
           "callback_parameters": {
             "appellations": "/appellations/GLC"
           }
         }
       }
     },
-    "03_%detail_identifiant_odgGLC": {
+    "03_odgGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation ODG",
@@ -90,7 +90,7 @@
           "prix": 1.35,
           "tva": 0,
           "unite": "hl",
-          "libelle": "volume AOP Gaillac - %detail_identifiant%",
+          "libelle": "volume AOP Gaillac",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -102,7 +102,7 @@
         }
       }
     },
-    "04_%detail_identifiant%_inaoGLC": {
+    "04_inaoGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Droits INAO",
@@ -113,7 +113,7 @@
           "prix": 0.15,
           "tva": 0,
           "unite": "hl",
-          "libelle": "AOP Gaillac - %detail_identifiant%",
+          "libelle": "AOP Gaillac",
           "complement_libelle": "",
           "docs": [
             "DRev"

@@ -25,6 +25,7 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_WARNING, 'declaration_surface_bailleur', "Vous n'avez pas reparti votre part de surface avec le bailleur");
         $this->addControle(self::TYPE_WARNING, 'vci_complement', "Vous ne complétez pas tout votre volume malgré votre stock VCI disponible");
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', "Le volume récolté de la DR est absent ou à zéro");
+        $this->addControle(self::TYPE_WARNING, 'declaration_elevage', "Vous avez déclaré un lot en élevage. Vous devez prendre contact avec votre ODG lorsque vous souhaiterez le commercialiser.");
 
         /*
          * Error
@@ -444,6 +445,7 @@ class DRevValidation extends DeclarationLotsValidation
 
         $this->controleLotsGenerique('drev_lots');
 
+        $is_elevage = false;
         foreach ($this->document->lots as $key => $lot) {
             if($lot->hasBeenEdited()){
               continue;
@@ -462,6 +464,12 @@ class DRevValidation extends DeclarationLotsValidation
                     $this->addPoint(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr_err', $lot->getProduitLibelle(). " ( ".$lot->volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
                 }
             }
+            if ($lot->isInElevage()) {
+                $is_elevage = true;
+            }
+        }
+        if ($is_elevage) {
+            $this->addPoint(self::TYPE_WARNING, 'declaration_elevage', '');
         }
 
         $synthese = $this->document->summerizeProduitsLotsByCouleur('couleur');

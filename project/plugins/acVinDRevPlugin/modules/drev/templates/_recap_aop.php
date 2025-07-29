@@ -71,20 +71,18 @@
           </p>
         <?php endif; ?>
 <?php if (DRevConfiguration::getInstance()->hasEtapesAOC()): ?>
-<div class="row">
-    <div class="col-xs-12" style="margin-bottom: 20px;">
 <?php if($drev->isValideeOdg() && $drev->isModifiable()): ?>
-          <a onclick="return confirm('Êtes vous sûr de vouloir modifier la DREV ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Modifier la revendication</a>
-<?php elseif(!$drev->isValideeOdg()): ?>
-        <div class="pull-right">
+    <div class="text-right" style="margin-bottom: 20px;">
+          <a onclick="return confirm('Êtes vous sûr de vouloir modifier la DREV ?')" class="btn btn-primary" href="<?php echo url_for('drev_modificative', $drev) ?>">Modifier la revendication</a>
+      </div>
+<?php elseif($drev->isValidee() && !$drev->isValideeOdg()): ?>
+        <div class="text-right">
           <p class="text-danger">La DREV est en attente d'approbation</p>
           <p>Vous ne pouvez donc pas la modifier</p>
         </div>
-<?php else: ?>
-        <div class="pull-right">
-          <p class="text-danger">Cette DREV n'est la dernière et donc pas modifiable</p>
+<?php elseif($drev->isValideeOdg()): ?>
+        <div class="text-right">
+          <p class="text-danger">Cette DREV n'est pas la dernière et donc pas modifiable</p>
         </div>
 <?php endif; ?>
-    </div>
-</div>
 <?php endif; ?>

@@ -102,10 +102,6 @@ class DRevLot extends BaseDRevLot
       return $str;
     }
 
-    public function addCepage($cepage, $repartition) {
-        $this->cepages->add($cepage, $repartition);
-    }
-
     public function getNumeroLogementOperateur() {
         if(!$this->exist('numero_logement_operateur')) {
             return null;
