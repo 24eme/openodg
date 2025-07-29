@@ -1899,8 +1899,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->getQuantiteSuperficeRecolte($parameters);
     }
 
-    public function getQuantiteSuperficeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
+    public function getTranchesByVolumeAndProduit(TemplateFactureCotisationCallbackParameters $parameters) {
+        $valeur_tranche = $parameters->getParameters('tranche');
+        if ( ! ($valeur_tranche > 0) ) {
+            throw new sfException('Parametre tranche manquant');
+        }
+        $tranches = 0;
+        foreach ($this->declaration->getProduitsFilteredBy($parameters) as $produit) {
+            $tranches += ceil($produit->getTotalVolumeRevendique() / $valeur_tranche);
+        }
+        return $tranches;
+    }
 
+
+    public function getQuantiteSuperficeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
         if (DRevClient::getInstance()->matchFilterDrev($this, $parameters) === false) {
             return null;
         }

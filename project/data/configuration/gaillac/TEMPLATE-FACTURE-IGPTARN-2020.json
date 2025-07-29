@@ -1,9 +1,9 @@
 {
-  "_id": "TEMPLATE-FACTURE-IGPTARN-2005",
+  "_id": "TEMPLATE-FACTURE-IGPTARN-2020",
   "type": "TemplateFacture",
   "region": "IGPTARN",
-  "campagne": 2005,
-  "libelle": "2005 - IGP Tarn",
+  "campagne": 2020,
+  "libelle": "2020 - IGP Tarn",
   "docs": [
     "DRev"
   ],
