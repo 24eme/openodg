@@ -25,6 +25,13 @@ class TransactionLotForm extends LotForm
         $this->widgetSchema->setNameFormat('[%s]');
     }
 
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        if ($destinationdefaut = TransactionConfiguration::getInstance()->getDestinationDefaut()) {
+            $this->setDefault('pays', $destinationdefaut);
+        }
+    }
+
     public function doUpdateObject($values) {
 
         parent::doUpdateObject($values);
