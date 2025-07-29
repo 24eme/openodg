@@ -236,22 +236,21 @@
         <?php endif; ?>
 <?php endif; ?>
 
-<div class="row">
-    <div class="col-xs-12" style="margin-bottom: 20px;">
 <?php if($drev->isValideeOdg() && $drev->isModifiable()): ?>
-          <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer de nouveaux lots IGP</a>
+    <div class="text-right" style="margin-bottom: 20px;">
+          <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer de nouveaux lots IGP</a>
+     </div>
 <?php elseif($drev->isValidee() && !$drev->isValideeOdg()): ?>
-        <div class="pull-right">
+        <div class="text-right" style="margin-bottom: 20px;">
           <p class="text-danger">Des lots sont en attente d'approbation</p>
           <p>Vous ne pouvez donc pas en ajouter de nouveaux</p>
         </div>
 <?php elseif($drev->isValideeOdg()): ?>
-        <div class="pull-right">
+        <div class="text-right" style="margin-bottom: 20px;">
           <p class="text-danger">Cette DREV n'est pas la dernière et donc pas modifiable</p>
         </div>
 <?php endif; ?>
-    </div>
-</div>
+
         <hr/>
         <?php if($drev->hasVolumeSeuilAndSetIfNecessary()): ?>
         <?php include_partial('drev/vip2c', array('drev' => $drev, 'form' => $form, 'vip2c' => $vip2c)); ?>
