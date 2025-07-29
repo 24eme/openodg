@@ -18,4 +18,5 @@ all:
           # email: ""
           produits:
             - "TRANQ/appellations/CDT"
+            - "TRANQ/appellations/CMT"
           habilitation_produits: "/Côtes du Tarn/"
