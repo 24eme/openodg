@@ -10,18 +10,16 @@
     <?php echo $form->renderGlobalErrors(); ?>
 
     <?php if(isset($form["date"])): ?>
-    <div class="row">
-        <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
-            <?php if ($form["date"]->hasError()): ?>
-                <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
-            <?php endif; ?>
-            <?php echo $form["date"]->renderLabel("Date de réception du document :", array("class" => "col-xs-6 control-label")); ?>
-            <div class="col-xs-6">
-                <div class="input-group date-picker">
-                    <?php echo $form["date"]->render(array("class" => "form-control")); ?>
-                    <div class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </div>
+    <div class="<?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
+        <?php if ($form["date"]->hasError()): ?>
+            <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
+        <?php endif; ?>
+        <?php echo $form["date"]->renderLabel("Date de réception du document :", array("class" => "col-xs-6 control-label")); ?>
+        <div class="col-xs-6">
+            <div class="input-group date-picker">
+                <?php echo $form["date"]->render(array("class" => "form-control")); ?>
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
                 </div>
             </div>
         </div>
