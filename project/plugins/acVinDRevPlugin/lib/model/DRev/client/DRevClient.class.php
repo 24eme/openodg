@@ -230,13 +230,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             $filters = $filterparameters->getParameters();
         }
         foreach ($filters as $type => $filter) {
-            if ($type === 'appellations') {
-                throw new sfException('not implemented');
-            } elseif ($type === 'millesime') {
-                throw new sfException('not implemented');
-            } elseif ($type === 'deja') {
-                throw new sfException('not implemented');
-            } elseif ($type === 'region') {
+            if ($type === 'region') {
                 if ($drev->exist('region')) {
                     $region = str_replace('/region/', '', $filter);
                     $match = $match && strpos($drev->region, $region) !== false;
