@@ -5,7 +5,7 @@ all:
       mentions_complementaire: true
       import_with_mentions_complementaire: true
       pdf_unique_region: false
-      validation_odg: 'auto'
+      validation_odg: 'region'
       etape_superficie: true
       etapes_aoc: true
       dr_douane_required: false
