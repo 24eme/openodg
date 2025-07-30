@@ -37,7 +37,7 @@ class ConditionnementValidationForm extends acCouchdbForm
 
         $this->embedForm('lots', $formDegustable);
 
-        if (DRevConfiguration::getInstance()->hasDegustation() && !$this->getDocument()->validation_odg && $this->isAdmin()) {
+        if (DRevConfiguration::getInstance()->hasDegustation() && !$this->getDocument()->validation_odg) {
             $this->setWidget('date_commission', new bsWidgetFormInput(array(), array('required' => true)));
             $this->setValidator('date_commission', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
 
@@ -53,13 +53,21 @@ class ConditionnementValidationForm extends acCouchdbForm
             } else {
                 $this->setDefault('date_commission', date('d/m/Y'));
             }
-        }
 
-        if(!$this->getDocument()->validation && $this->getDocument()->isPapier()) {
-            $this->setWidget('date', new sfWidgetFormInput());
-            $this->setValidator('date', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
-            $this->getWidget('date')->setLabel("Date de réception du document");
-            $this->getValidator('date')->setMessage("required", "La date de réception du document est requise");
+            $this->setWidget('date_degustation_voulue', new bsWidgetFormInput(array(), array('required' => true)));
+            $this->setValidator('date_degustation_voulue', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
+            if ($this->getDocument()->exist('date_degustation_voulue') && $this->getDocument()->date_degustation_voulue) {
+                $this->setDefault('date_degustation_voulue', DateTime::createFromFormat('Y-m-d', $this->getDocument()->date_degustation_voulue)->format('d/m/Y'));
+            } else {
+                $this->setDefault('date_commission', date('d/m/Y'));
+            }
+
+            if(!$this->getDocument()->validation && $this->getDocument()->isPapier()) {
+                $this->setWidget('date', new sfWidgetFormInput());
+                $this->setValidator('date', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
+                $this->getWidget('date')->setLabel("Date de réception du document");
+                $this->getValidator('date')->setMessage("required", "La date de réception du document est requise");
+            }
         }
 
         $this->widgetSchema->setNameFormat('validation[%s]');
@@ -67,11 +75,10 @@ class ConditionnementValidationForm extends acCouchdbForm
 
     public function save() {
        $values = $this->getValues();
-  	   $this->getDocument()->getOrAdd("date_degustation_voulue");
-       $this->getDocument()->date_degustation_voulue = date("Y-m-d");
 
-       if (DRevConfiguration::getInstance()->hasDegustation() && $this->isAdmin()) {
+       if (DRevConfiguration::getInstance()->hasDegustation()) {
            $this->getDocument()->add('date_commission', $values['date_commission']);
+           $this->getDocument()->add('date_degustation_voulue', $values['date_degustation_voulue']);
        }
 
        if($this->isAdmin()){
