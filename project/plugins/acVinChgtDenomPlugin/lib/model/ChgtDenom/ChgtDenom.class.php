@@ -144,6 +144,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $date = date('c');
         }
         $this->validation_odg = $date;
+        if ($region) {
+            $this->add('region', $region);
+        }
         if(!$this->isFactures()){
             $this->save();
             $this->clearMouvementsFactures();
@@ -415,6 +418,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $this->generateMouvementsLots();
             $this->fillDocToSaveFromLots();
         }
+
+        if ($this->origine_produit_hash) {
+            $this->add('region', RegionConfiguration::getInstance()->getOdgRegion($this->origine_produit_hash));
+        }
+
         $saved = parent::save($saveDependants);
         if ($saveDependants) {
             $this->saveDocumentsDependants();
