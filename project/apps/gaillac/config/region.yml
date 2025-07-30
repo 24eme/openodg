@@ -10,6 +10,7 @@ all:
           produits:
             - "TRANQ/appellations/GLC"
             - "MOU/appellations/GLC"
+            - "VDB/appellations/GLC"
           habilitation_produits: "/Gaillac/"
         IGPTARN:
           # nom: ""
@@ -19,4 +20,5 @@ all:
           produits:
             - "TRANQ/appellations/CDT"
             - "TRANQ/appellations/CMT"
+            - "MOU/appellations/CMT"
           habilitation_produits: "/Côtes du Tarn/"

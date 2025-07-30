@@ -425,8 +425,14 @@ class DRevProduit extends BaseDRevProduit
 	}
 
     public function hasVolumeOrSuperficieRevendicables() {
+        if (strpos($this->getHash(), 'genres/MOU/')) {
+            $hashVDB = str_replace('genres/MOU/', 'genres/VDB/', $this->getHash());
+            if ($this->getDocument()->exist($hashVDB)) {
+                $vdn = $this->getDocument()->get($hashVDB);
+                return $vdn->hasVolumeOrSuperficieRevendicables();
+            }
+        }
         return $this->recolte->volume_sur_place || $this->volume_revendique_total || $this->superficie_revendique;
-
     }
 
     public function getRegion() {

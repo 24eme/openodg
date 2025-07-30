@@ -198,4 +198,9 @@ class DRevConfiguration extends DeclarationConfiguration {
         return isset($this->configuration['saisie_superficie_revendique']) && boolval($this->configuration['saisie_superficie_revendique']);
     }
 
+    public function hasLots()
+    {
+        return isset($this->configuration['lots']) && $this->configuration['lots'];
+    }
+
 }
