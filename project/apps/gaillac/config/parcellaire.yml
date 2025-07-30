@@ -18,7 +18,7 @@ all:
           denomination_id: "00095"
       potentiel_de_production:
         gaillac_blanc:
-          synthese_libelle: "Gaillac - Blanc"
+          synthese_libelle: "AOP Gaillac Blanc sec"
           filter_produit_hash: 'appellations/GLC'
           hash_produit_affectation: 'certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc_sec/cepages/DEFAUT'
           denomination_aire: "AOC Gaillac"
@@ -37,8 +37,68 @@ all:
               category: 'cepages_principaux'
               sens: ">="
               limit: 0.50
+        gaillac_blanc_doux:
+          synthese_libelle: "AOP Gaillac Blanc doux"
+          filter_produit_hash: 'appellations/GLC'
+          hash_produit_affectation: 'certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc_doux/cepages/DEFAUT'
+          denomination_aire: "AOC Gaillac"
+          parcellaire2reference: 'ParcellaireAffectation'
+          categories:
+            cepages_principaux: ["LEN DE L'EL B", 'MAUZAC B', 'MAUZAC ROSE RS', 'MUSCADELLE B']
+            cepages_accessoires: ['ONDENC B', 'SAUVIGNON B']
+          regles:
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_couleur'
+              sens: ">="
+              limit: 1
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.50
+        gaillac_blanc_primeur:
+          synthese_libelle: "AOP Gaillac Primeur Blanc sec"
+          filter_produit_hash: 'appellations/GLC'
+          hash_produit_affectation: 'certifications/AOP/genres/TRANQ/appellations/GLC/mentions/PM/lieux/DEFAUT/couleurs/blanc_sec/cepages/DEFAUT'
+          denomination_aire: "AOC Gaillac"
+          parcellaire2reference: 'ParcellaireAffectation'
+          categories:
+            cepages_principaux: ["LEN DE L'EL B", 'MAUZAC B', 'MAUZAC ROSE RS', 'MUSCADELLE B']
+            cepages_accessoires: ['ONDENC B', 'SAUVIGNON B']
+          regles:
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_couleur'
+              sens: ">="
+              limit: 1
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.50
+        premiere_blanc:
+          synthese_libelle: "AOP Gaillac Premieres Côtes Blanc sec"
+          filter_produit_hash: 'appellations/GLC'
+          hash_produit_affectation: 'certifications/AOP/genres/TRANQ/appellations/GPC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc_sec/cepages/DEFAUT'
+          denomination_aire: "AOC Gaillac premières côtes"
+          parcellaire2reference: 'ParcellaireAffectation'
+          categories:
+            cepages_principaux: ["LEN DE L'EL B", 'MAUZAC B', 'MAUZAC ROSE RS', 'MUSCADELLE B']
+            cepages_accessoires: ['ONDENC B', 'SAUVIGNON B']
+          regles:
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_couleur'
+              sens: ">="
+              limit: 1
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 0.50
         gaillac_rouge:
-          synthese_libelle: "Gaillac - Rouge"
+          synthese_libelle: "AOP Gaillac Rouge"
           filter_produit_hash: 'appellations/GLC'
           hash_produit_affectation: 'certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT'
           denomination_aire: "AOC Gaillac"
@@ -69,7 +129,7 @@ all:
               sens: ">="
               limit: 0.40
         gaillac_rose:
-          synthese_libelle: "Gaillac - Rosé"
+          synthese_libelle: "AOP Gaillac Rosé"
           filter_produit_hash: 'appellations/GLC'
           hash_produit_affectation: 'certifications/AOP/genres/TRANQ/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose/cepages/DEFAUT'
           denomination_aire: "AOC Gaillac"
@@ -100,7 +160,7 @@ all:
               sens: ">="
               limit: 0.40
         gaillac_rouge_primeur:
-          synthese_libelle: "Gaillac Primeur - Rouge"
+          synthese_libelle: "AOP Gaillac Primeur Rouge"
           filter_produit_hash: 'appellations/GLC'
           hash_produit_affectation: 'certifications/AOP/genres/TRANQ/appellations/GLC/mentions/PM/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT'
           denomination_aire: "AOC Gaillac"
@@ -119,7 +179,7 @@ all:
               sens: ">="
               limit: 1
         gaillac_mousseux_ancestrale:
-          synthese_libelle: "Gaillac Mousseux Méthode ancestrale"
+          synthese_libelle: "AOP Gaillac Mousseux Méthode Ancestrale"
           filter_produit_hash: 'appellations/GLC'
           hash_produit_affectation: 'certifications/AOP/genres/MOU/appellations/GLC/mentions/MA/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT'
           denomination_aire: "AOC Gaillac"
@@ -137,10 +197,48 @@ all:
               category: 'cepages_principaux'
               sens: ">="
               limit: 1
-        gaillac_blanc_tardive:
-          synthese_libelle: "Gaillac Vendanges tardives - Blanc"
+        gaillac_mousseux_ancestrale_doux:
+          synthese_libelle: "AOP Gaillac Mousseux Méthode Ancestrale Doux"
           filter_produit_hash: 'appellations/GLC'
-          hash_produit_affectation: 'certifications/AOP/genres/VAPTE/appellations/GLC/mentions/VT/lieux/DEFAUT/couleurs/blanc_doux/cepages/DEFAUT'
+          hash_produit_affectation: 'certifications/AOP/genres/MOU/appellations/GLC/mentions/MA/lieux/DEFAUT/couleurs/blanc_doux/cepages/DEFAUT'
+          denomination_aire: "AOC Gaillac"
+          parcellaire2reference: 'ParcellaireAffectation'
+          categories:
+            cepages_principaux: ['MAUZAC B', 'MAUZAC ROSE RS']
+          regles:
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_couleur'
+              sens: ">="
+              limit: 1
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 1
+        gaillac_mousseux_tranditionnel:
+          synthese_libelle: "AOP Gaillac Mousseux Méthode Traditionnelle"
+          filter_produit_hash: 'appellations/GLC'
+          hash_produit_affectation: 'certifications/AOP/genres/MOU/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT'
+          denomination_aire: "AOC Gaillac"
+          parcellaire2reference: 'ParcellaireAffectation'
+          categories:
+            cepages_principaux: ['MAUZAC B', 'MAUZAC ROSE RS']
+          regles:
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_couleur'
+              sens: ">="
+              limit: 1
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_principaux'
+              sens: ">="
+              limit: 1
+        gaillac_blanc_tardive:
+          synthese_libelle: "AOP Gaillac Blanc doux Vendanges tardives"
+          filter_produit_hash: 'appellations/GLC'
+          hash_produit_affectation: 'certifications/AOP/genres/TRANQ/appellations/GLC/mentions/VT/lieux/DEFAUT/couleurs/blanc_doux/cepages/DEFAUT'
           denomination_aire: "AOC Gaillac"
           parcellaire2reference: 'ParcellaireAffectation'
           categories:

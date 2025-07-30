@@ -196,6 +196,52 @@
         }
       }
     },
+    "35_%detail_identifiant%_00_CDT_analyseCDT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Analyse",
+      "code_comptable": "70600000",
+      "details": {
+        "revendication": {
+          "modele": "CotisationVariable",
+          "prix": 52,
+          "tva": 0,
+          "unite": null,
+          "libelle": "IGP Côtes du Tarn - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DEGUSTATION"
+          ],
+          "callback": "buildMouvementsNbLotsDegustes",
+          "callback_parameters": {
+            "appellations": "/appellations/CDT"
+          }
+        }
+      }
+    },
+    "35_%detail_identifiant%_00_CMT_analyseCMT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Analyse",
+      "code_comptable": "70600000",
+      "details": {
+        "revendication": {
+          "modele": "CotisationVariable",
+          "prix": 52,
+          "tva": 0,
+          "unite": null,
+          "libelle": "IGP Comté Tolosan - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "buildMouvementsNbLotsDegustes",
+          "callback_parameters": {
+            "appellations": "/appellations/CMT"
+          }
+        }
+      }
+    },
     "44_%detail_identifiant%_55_inaoCDT": {
       "modele": "CotisationsCollection",
       "callback": "",
