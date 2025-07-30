@@ -44,18 +44,13 @@
   <tr><td>Compte tenu de ce résultat, <?php if ($lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE){echo "il en résulte que <strong>ce lot est bloqué et ne peut être expédié ou conditionné en vin IGP.</strong> Vous";}else{echo "vous";}?> pouvez décider :</td></tr><br/>
   <tr><td>
     <ul>
-      <li>Soit d’abandonner volontairement la dénomination correspondante en nous communiquant par mail ou courrier, une déclaration de déclassement au moyen de la fiche jointe.</li><br/>
+      <li>Soit d’abandonner volontairement la dénomination correspondante, en nous adressant une déclaration de déclassement par mail ou par courrier à l’aide de la fiche jointe, ou en effectuant cette démarche en ligne via votre plateforme de télédéclaration</li><br/>
       <?php if ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE): ?>
       <li>Soit de vous opposer aux conclusions de ce contrôle. Dans ce cas, ainsi que le prévoit le plan de contrôle de l'IGP, vous êtes dans l'obligation de transmettre le dossier à l'organisme de contrôle/d'inspection qui diligentera un nouveau contrôle entièrement à votre charge. <?php if (Organisme::getInstance(null, 'degustation')->getOi()): ?><strong>(<?php echo Organisme::getInstance(null, 'degustation')->getOi() ?>)</strong><?php endif ?></li>
       <?php elseif ($lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE): ?>
       <li>Soit de mener un <strong>ultime contrôle qui peut être effectué en externe par l'organisme certificateur QUALISUD.</strong></li>
       <?php else: ?>
-      <li>Soit d’exécuter l’action corrective recommandée dans la fiche de non-conformité ci jointe. Dans cette hypothèse, votre vin pourra être soumis à une deuxième dégustation après que nous ayons procédé à un nouveau prélèvement. Notez qu’après travail le vin concerné par la deuxième présentation peut être relogé&nbsp;:
-        <ul>
-          <li>Dans la même cuve</li>
-          <li>Dans une autre cuve d’un volume inférieur ou égal au volume initial,</li>
-          <li>Dans d’autres cuves d’un volume total inférieur ou égal au volume initial.</li>
-        </ul>
+      <li>Soit de représenter votre lot en second passage. Dans cette hypothèse, votre vin sera soumis à une deuxième dégustation après que nous ayons procédé à un nouveau prélèvement.
       </li>
       <?php endif ?>
     </ul>
@@ -63,7 +58,7 @@
 </table><br/><br/>
 
 <table>
-<tr><td>Dans tous les cas, il vous appartient de nous retourner, par courrier ou par mail la fiche de non conformité ci-jointe, datée et signée avec la mention de votre décision :&nbsp;<strong>Demande de déclassement</strong> ou <strong><?php echo ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE) ? 'Nouveau contrôle OC/OI' : 'Nouvelle présentation' ?></strong>.<br/><br/></td></tr><br/>
+<tr><td>Dans tous les cas, il vous appartient de nous retourner par mail la fiche de non conformité ci-jointe, datée et signée avec la mention de votre décision :&nbsp;<strong>Demande de déclassement</strong> ou <strong><?php echo ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE) ? 'Nouveau contrôle OC/OI' : 'Nouvelle présentation' ?></strong>, ou en ligne via la plateforme de télédéclaration.<br/><br/></td></tr><br/>
   <tr><td>Nous vous prions de croire, Madame, Monsieur, en l’expression de nos sentiments les meilleurs.</td></tr><br/>
   <tr><td>Pour toute information supplémentaire, merci de nous contacter.</td></tr><br/>
 </table>

@@ -278,11 +278,17 @@ EOF;
             self::CSV_VINIFICATION => $data[self::CSV_VINIFICATION],
             self::CSV_ACHAT_DE_VINS_EN_VRAC => $data[self::CSV_ACHAT_DE_VINS_EN_VRAC],
             self::CSV_CONDITIONNEMENT => $data[self::CSV_CONDITIONNEMENT],
+            self::CSV_ELABORATION_DE_MOUSSEUX => $data[self::CSV_ELABORATION_DE_MOUSSEUX],
+            self::CSV_ELEVAGE => $data[self::CSV_ELEVAGE],
+            self::CSV_TRANSACTIONS_VRAC_VENTE_ENTRE_OPERATEURS => $data[self::CSV_TRANSACTIONS_VRAC_VENTE_ENTRE_OPERATEURS],
+            self::CSV_MISE_EN_MARCHÉ_VRAC_A_DESTINATION_CONSOMMATEUR => $data[self::CSV_MISE_EN_MARCHÉ_VRAC_A_DESTINATION_CONSOMMATEUR],
+
         ] as $key => $activite) {
             if ($activite === "1") {
-                $activites[] = self::activites[$key];
+                $activites[self::activites[$key]] = self::activites[$key];
             }
         }
+        $activites = array_keys($activites);
 
         if (!isset($_ENV['DRY_RUN'])) {
             HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, $this->hash_produit, $date_decision, $activites, [], $statut);
