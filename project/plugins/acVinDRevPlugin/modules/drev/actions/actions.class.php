@@ -96,8 +96,6 @@ class drevActions extends sfActions {
 
         $drev = $this->getRoute()->getDRev();
 
-        $this->regionParam = $request->getParameter('region', $this->getUser()->getRegion());
-
         if (!$this->getUser()->isAdmin()) {
           $this->secure(DRevSecurity::DEVALIDATION , $drev);
         }
@@ -112,7 +110,7 @@ class drevActions extends sfActions {
 
         $drev->validation = null;
         $drev->validation_odg = null;
-        foreach ($drev->getProduits($this->regionParam) as $produit) {
+        foreach ($drev->getProduits() as $produit) {
           if($produit->exist('validation_odg') && $produit->validation_odg){
             $produit->validation_odg = null;
           }
