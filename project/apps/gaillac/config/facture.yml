@@ -3,7 +3,7 @@ all:
     facture:
       echeances: false
       export_sage_width_txt: true
-      modalite_paiement: "30 jour par virement"
+      modalite_paiement: "30 jours par virement"
       uniq_template_prefix: "TEMPLATE-FACTURE-%region%"
       paiements: true
       export_type: "isa"
