@@ -14,7 +14,9 @@ all:
       specificite_lot: true
       engagement_pdf: true
       specificites:
-        bio: "bio"
+        bio: "Bio"
         HVE: "HVE"
         Vin de base: "Vin de base"
+        Demeter: "Demeter"
+        NatureEtProgres: "Nature et Progrès"
         autre: "Autre"
