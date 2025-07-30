@@ -257,7 +257,7 @@
         <hr/>
         <?php endif; ?>
 
-        <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
+        <?php if (DrevConfiguration::getInstance()->hasDegustation() && DRevConfiguration::getInstance()->hasLots()): ?>
         <h3>Contrôle IGP</h3>
         <?php if(isset($form["date_degustation_voulue"])): ?>
             <?php echo $form["date_degustation_voulue"]->renderError(); ?>
