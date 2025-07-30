@@ -117,7 +117,18 @@
 
 <?php if (DRevConfiguration::getInstance()->hasDegustation()): ?>
 <h3>Contrôle</h3>
-<p>Date de controle souhaitée (hors lots en élevage) : <?php if ($conditionnement->exist('date_degustation_voulue')): ?><?php echo $conditionnement->get('date_degustation_voulue'); ?><?php else: ?><?php echo date('d/m/Y'); ?><?php endif; ?></p>
+<?php if (isset($form['date_degustation_voulue'])): ?>
+    <?php echo $form["date_degustation_voulue"]->renderError(); ?>
+    <div class="form-group" style="margin-bottom: 20px;">
+        <?php echo $form["date_degustation_voulue"]->renderLabel("Date de contrôle souhaitée : ", array("class" => "col-xs-3 control-label")); ?>
+        <div class="input-group date-picker-week col-xs-3" style="z-index: 100px; position: relative;">
+            <?php echo $form["date_degustation_voulue"]->render(); ?>
+            <div class="input-group-addon">
+                <span class="glyphicon-calendar glyphicon"></span>
+            </div>
+        </div>
+    </div>
+<?php endif;?>
 
 <?php if(isset($form["date_commission"])): ?>
     <?php echo $form["date_commission"]->renderError(); ?>
