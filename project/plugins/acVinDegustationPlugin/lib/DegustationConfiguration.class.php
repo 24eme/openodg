@@ -137,4 +137,9 @@ class DegustationConfiguration {
             return $this->configuration['is_acceptable'][strtolower($region)];
         }
     }
+
+    public function hasDegustateurParRegion()
+    {
+        return isset($this->configuration['has_degustateur_par_region']) && $this->configuration['has_degustateur_par_region'];
+    }
 }
