@@ -15,33 +15,44 @@ all:
           DEPOT: "Dépôt"
           COMPLET: "Complet"
           ENREGISTREMENT: "Enregistrement"
-          TRANSMIS_INAO: "Transmis à QUALISUD"
-          VALIDE_INAO: "Validé par QUALISUD"
-          REFUSE_INAO: "Refusé par QUALISUD"
-          SUSPENDU_INAO: "Suspendu par QUALISUD"
+          TRANSMIS_QUALISUD: "Transmis à QUALISUD"
+          VALIDE_QUALISUD: "Validé par QUALISUD"
+          REFUSE_QUALISUD: "Refusé par QUALISUD"
+          SUSPENDU_QUALISUD: "Suspendu par QUALISUD"
+          TRANSMIS_INAO: "Transmis à l'INAO"
+          VALIDE_INAO: "Validé par l'INAO"
+          REFUSE_INAO: "Refusé par l'INAO"
+          SUSPENDU_INAO: "Suspendu par l'INAO"
           VALIDE: "Validé"
           REFUSE: "Refusé"
           ANNULE: "Annulé"
-          automatique:
-            COMPLET: ENREGISTREMENT
-            VALIDE_INAO: VALIDE
-            REFUSE_INAO: REFUSE
-            habilitations:
-              HABILITATION:
-                COMPLET: DEMANDE_HABILITATION
-                VALIDE: HABILITE
-                REFUSE: REFUS
-                ANNULE: ANNULÉ
-                SUSPENDU_INAO: SUSPENDU
-                RETRAIT:
-                  COMPLET: DEMANDE_RETRAIT
-                  VALIDE: RETRAIT
-                  REFUSE: HABILITE
-                  ANNULE: HABILITE
-                  SUSPENDU_INAO: SUSPENDU
-                  RESILIATION:
-                    COMPLET: DEMANDE_RESILIATION
-                    VALIDE: RESILIE
-                    REFUSE: HABILITE
-                    ANNULE: HABILITE
-                    SUSPENDU_INAO: SUSPENDU
+        automatique:
+          COMPLET: ENREGISTREMENT
+          VALIDE_ODG: VALIDE
+          REFUSE_ODG: REFUSE
+          VALIDE_INAO: VALIDE
+          REFUSE_INAO: REFUSE
+          VALIDE_CERTIPAQ: VALIDE
+          REFUSE_CERTIPAQ: REFUSE
+        habilitations:
+          HABILITATION:
+            COMPLET: DEMANDE_HABILITATION
+            VALIDE: HABILITE
+            REFUSE: REFUS
+            ANNULE: ANNULÉ
+            SUSPENDU_INAO: SUSPENDU
+            SUSPENDU_QUALISUD: SUSPENDU
+          RETRAIT:
+            COMPLET: DEMANDE_RETRAIT
+            VALIDE: RETRAIT
+            REFUSE: HABILITE
+            ANNULE: HABILITE
+            SUSPENDU_INAO: SUSPENDU
+            SUSPENDU_QUALISUD: SUSPENDU
+          RESILIATION:
+            COMPLET: DEMANDE_RESILIATION
+            VALIDE: RESILIE
+            REFUSE: HABILITE
+            ANNULE: HABILITE
+            SUSPENDU_INAO: SUSPENDU
+            SUSPENDU_QUALISUD: SUSPENDU

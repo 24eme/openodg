@@ -12,7 +12,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation syndicale",
-      "code_comptable": "70620000",
+      "code_comptable": "70810000",
       "details": {
         "00_fixe": {
           "modele": "CotisationFixe",
@@ -36,7 +36,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation",
-      "code_comptable": "75101000",
+      "code_comptable": "70810000",
       "details": {
         "forfait": {
           "modele": "CotisationVariable",
@@ -60,7 +60,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation technique",
-      "code_comptable": "70620000",
+      "code_comptable": "70810000",
       "details": {
         "00_surface": {
           "modele": "CotisationVariable",
@@ -83,7 +83,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation ODG",
-      "code_comptable": "70620000",
+      "code_comptable": "70810000",
       "details": {
         "00_volume": {
           "modele": "CotisationVariable",
@@ -106,7 +106,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Participation Frais Analyses",
-      "code_comptable": "706300",
+      "code_comptable": "70610000",
       "details": {
         "00_produit_tranche": {
           "modele": "CotisationVariable",
@@ -130,7 +130,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Droits INAO",
-      "code_comptable": "70610000",
+      "code_comptable": "70810000",
       "details": {
         "00_recolte": {
           "modele": "CotisationVariable",
