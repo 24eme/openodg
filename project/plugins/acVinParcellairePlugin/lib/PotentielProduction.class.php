@@ -62,7 +62,9 @@ class PotentielProduction {
 
     private function __construct(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null) {
         $this->parcellaire = $parcellaire;
-        $this->parcellaire_affectation = $affectation;
+        if($affectation && $affectation->isValidee())  {
+            $this->parcellaire_affectation = $affectation;
+        }
 
         foreach($this->getLibellesPotentielProduits() as $l => $p) {
             $ppproduit = null;
