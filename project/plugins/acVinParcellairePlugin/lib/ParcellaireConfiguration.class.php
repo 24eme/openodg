@@ -155,17 +155,30 @@ class ParcellaireConfiguration {
         }
         return array_keys($this->configuration['potentiel_de_production']);
     }
+
+    public function getGroupeKeyByProduitConf($prod) {
+        if (!$prod) {
+            return null;
+        }
+        foreach($this->configuration['potentiel_de_production'] as $k => $pp) {
+            if (strpos($prod->getHash(), $pp['produit_hash']) !== false) {
+                return $k;
+            }
+        }
+        return null;
+    }
+
     public function getGroupeSyntheseLibelle($k) {
         return $this->configuration['potentiel_de_production'][$k]['synthese_libelle'];
     }
     public function getGroupeCategories($k) {
         return $this->configuration['potentiel_de_production'][$k]['categories'];
     }
-    public function getGroupeFilterProduitHash($k) {
-        if (!isset($this->configuration['potentiel_de_production'][$k]['filter_produit_hash'])) {
+    public function getGroupeFilterParcellaireProduitHash($k) {
+        if (!isset($this->configuration['potentiel_de_production'][$k]['filter_parcellaire_produit_hash'])) {
             return null;
         }
-        return $this->configuration['potentiel_de_production'][$k]['filter_produit_hash'];
+        return $this->configuration['potentiel_de_production'][$k]['filter_parcellaire_produit_hash'];
     }
     public function getGroupeFilterINSEE($k) {
         if (!isset($this->configuration['potentiel_de_production'][$k]['filter_insee'])) {
@@ -183,7 +196,10 @@ class ParcellaireConfiguration {
         return $this->configuration['potentiel_de_production'][$k]['regles'];
     }
     public function getHashProduitAffectation($k) {
-        return $this->configuration['potentiel_de_production'][$k]['hash_produit_affectation'];
+        if (!isset($this->configuration['potentiel_de_production'][$k]['has_affectation']) || !$this->configuration['potentiel_de_production'][$k]['has_affectation']) {
+            return null;
+        }
+        return $this->configuration['potentiel_de_production'][$k]['produit_hash'];
     }
 
     public function hasEngagements() {

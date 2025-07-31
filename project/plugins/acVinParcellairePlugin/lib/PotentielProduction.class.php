@@ -64,14 +64,11 @@ class PotentielProduction {
         $this->parcellaire = $parcellaire;
         $this->parcellaire_affectation = $affectation;
 
-        foreach($this->getLibellesPotentielProduits() as $k) {
-            if (!$k) {
-                continue;
-            }
+        foreach($this->getLibellesPotentielProduits() as $l => $p) {
             $ppproduit = null;
-            $ppproduit = new PotentielProductionProduit($this, $k);
+            $ppproduit = new PotentielProductionProduit($this, $l, $p);
             if ($ppproduit && $ppproduit->hasEncepagement()) {
-                $this->produits[$k] = $ppproduit;
+                $this->produits[$l] = $ppproduit;
             }
         }
     }
@@ -82,14 +79,14 @@ class PotentielProduction {
             $cepage = $p->getCepage();
             foreach($this->parcellaire->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
                 $l = preg_replace('/ +$/', '', $prod->formatProduitLibelle("%a% %m% %l% - %co% %ce%"));
-                $libelles[$l] = $l;
+                $libelles[$l] = $prod;
             }
             if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
-                $libelles['XXXXjeunes vignes'] = 'XXXXjeunes vignes';
+                $libelles['XXXXjeunes vignes'] = null;
             }
         }
         ksort($libelles);
-        return array_keys($libelles);
+        return $libelles;
     }
 
     public function getProduits() {
