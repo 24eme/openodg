@@ -178,6 +178,28 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
     }
 
+    public function getParcellesMultiProduits() {
+        $parcelles = [];
+        foreach($this->declaration as $produit) {
+            foreach($produit->detail as $parcelle) {
+                if(!$parcelle->isAffectee()) {
+                    continue;
+                }
+                if(!isset($parcelles[$parcelle->getParcelleId()])) {
+                    $parcelles[$parcelle->getParcelleId()] = [];
+                }
+                $parcelles[$parcelle->getParcelleId()][] = $parcelle;
+            }
+        }
+        return $parcelles;
+    }
+
+    public function getParcellesMultiProduitsByParcelleId($parcelleId) {
+        $parcelles = $this->getParcellesMultiProduits();
+
+        return isset($parcelles[$parcelleId]) ? $parcelles[$parcelleId] : [];
+    }
+
   public function getConfiguration() {
 
       return ConfigurationClient::getInstance()->getConfiguration($this->periode.'-03-01');
@@ -522,6 +544,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $detail = $produit->detail->add($pkey);
         ParcellaireClient::CopyParcelle($detail, $parcelle, $parcelle->getDocument()->getType() !== 'Parcellaire');
         $detail->origine_doc = $parcelle->getDocument()->_id;
+        $detail->add('destinations');
         return $detail;
     }
 
