@@ -164,7 +164,7 @@ all:
           categories:
             cepages_principaux: ['DURAS N', 'FER N', 'PRUNELARD N', 'SYRAH N']
             cepages_duras_fer_prunelard: ['DURAS N', 'FER N', 'PRUNELARD N']
-            cepages_secondaires: ['CABERNET-SAUVIGNON N', 'GAMAY N', 'MERLOT N']
+            cepages_secondaires: ['CABERNET SAUVIGNON N', 'GAMAY N', 'MERLOT N']
             cepages_accessoires: ['CABERNET FRANC N']
           regles:
             -
