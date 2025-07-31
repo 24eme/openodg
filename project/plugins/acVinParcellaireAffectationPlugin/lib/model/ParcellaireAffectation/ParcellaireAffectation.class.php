@@ -226,11 +226,13 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function cleanNonAffectee() {
         $todelete = [];
-        foreach($this->declaration->getParcelles() as $id => $p) {
-            if ($p->affectee) {
-                continue;
+        foreach($this->declaration as $produit) {
+            foreach($produit->detail as $p) {
+                if ($p->affectee) {
+                    continue;
+                }
+                $todelete[] = $p;
             }
-            $todelete[] = $p;
         }
         foreach($todelete as $p) {
             $this->remove($p->getHash());
