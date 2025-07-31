@@ -37,7 +37,7 @@ class TransactionLotForm extends LotForm
         parent::doUpdateObject($values);
 
         $this->getObject()->set("affectable",true);
-        $this->getObject()->destination_type = DRevClient::LOT_DESTINATION_TRANSACTION;
+        $this->getObject()->destination_type = ($this->getObject()->pays == 'France')? DRevClient::LOT_DESTINATION_VRAC:  DRevClient::LOT_DESTINATION_TRANSACTION;
 
     }
 
