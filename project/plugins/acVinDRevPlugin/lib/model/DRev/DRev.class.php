@@ -788,6 +788,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             $produit = $this->addProduit($produitConfig->getHash(), $complement, $line[DRCsvFile::CSV_COLONNE_ID]);
 
+            if (strpos($produitConfig->getHash(), 'genres/VDB/')) {
+                $hashMou = str_replace('genres/VDB/', 'genres/MOU/', $produitConfig->getHash());
+                if ($produitConfigMou = $this->getConfiguration()->get($hashMou)) {
+                    $this->addProduit($produitConfigMou->getHash(), $complement);
+                }
+            }
+
             $produits_with_colonne_id[$produit->getHash()] = $produit->getHash();
 
             if($is_bailleur) {
@@ -1899,8 +1906,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->getQuantiteSuperficeRecolte($parameters);
     }
 
-    public function getQuantiteSuperficeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
+    public function getTranchesByVolumeAndProduit(TemplateFactureCotisationCallbackParameters $parameters) {
+        $valeur_tranche = $parameters->getParameters('tranche');
+        if ( ! ($valeur_tranche > 0) ) {
+            throw new sfException('Parametre tranche manquant');
+        }
+        $tranches = 0;
+        foreach ($this->declaration->getProduitsFilteredBy($parameters) as $produit) {
+            $tranches += ceil($produit->getTotalVolumeRevendique() / $valeur_tranche);
+        }
+        return $tranches;
+    }
 
+
+    public function getQuantiteSuperficeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
         if (DRevClient::getInstance()->matchFilterDrev($this, $parameters) === false) {
             return null;
         }

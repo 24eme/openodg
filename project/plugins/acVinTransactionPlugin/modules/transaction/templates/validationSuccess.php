@@ -10,7 +10,6 @@
     <?php echo $form->renderGlobalErrors(); ?>
 
     <?php if(isset($form["date"])): ?>
-    <div class="row">
         <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
             <?php if ($form["date"]->hasError()): ?>
                 <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
@@ -25,7 +24,6 @@
                 </div>
             </div>
         </div>
-    </div>
     <?php endif; ?>
 
     <?php if($validation->hasPoints()): ?>

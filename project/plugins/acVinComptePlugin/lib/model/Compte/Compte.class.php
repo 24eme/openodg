@@ -366,7 +366,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $societe = $this->getSociete();
 
             foreach($societe->getEtablissementsObj() as $etablissement) {
-                if($etablissement->etablissement->isSameCompteThanSociete()) {
+                if($etablissement->etablissement && $etablissement->etablissement->isSameCompteThanSociete()) {
 
                     return $etablissement->etablissement;
                 }

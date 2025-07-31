@@ -125,7 +125,7 @@
               <?php echo $form['degustation']->renderError(); ?>
               <?php endif; ?>
               <div class="form-group" style="margin-bottom: 20px;">
-                  <?php echo $form["date_commission"]->renderLabel("Date de la commission :", array("class" => "col-xs-3 control-label")); ?>
+                  <?php echo $form["date_commission"]->renderLabel("Date de retiraison :", array("class" => "col-xs-3 control-label")); ?>
                   <div class="input-group date-picker-week col-xs-3" style="z-index: 100px; position: relative;">
                       <?php if(isset($form["degustation"])): ?>
                       <?php echo $form['degustation']->render(); ?>
@@ -147,6 +147,6 @@
                   </script>
               </div>
           <?php elseif($transaction->date_commission): ?>
-              <p>Date de la commission : <?php echo ($transaction->exist('date_commission')) ? date_format(date_create($transaction->get('date_commission')), 'd/m/Y') : null; ?></p>
+              <p>Date de retiraison : <?php echo ($transaction->exist('date_commission')) ? date_format(date_create($transaction->get('date_commission')), 'd/m/Y') : null; ?></p>
               <?php endif ?>
           <?php endif; ?>

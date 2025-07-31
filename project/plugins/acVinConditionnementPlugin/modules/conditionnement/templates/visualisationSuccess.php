@@ -62,7 +62,7 @@
     </div>
 
     <div class="col-xs-4 text-right">
-        <div class="btn-group row">
+        <div class="btn-group">
         <?php if ($conditionnement->validation && ConditionnementSecurity::getInstance($sf_user, $conditionnement->getRawValue())->isAuthorized(ConditionnementSecurity::DEVALIDATION) && !$conditionnement->hasLotsUtilises()):
                 if (!$conditionnement->validation_odg): ?>
                     <a class="btn btn-default" href="<?php echo url_for('conditionnement_devalidation', $conditionnement) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette Conditionnement ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
