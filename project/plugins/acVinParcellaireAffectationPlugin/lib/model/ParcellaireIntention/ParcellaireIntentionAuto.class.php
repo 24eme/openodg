@@ -27,7 +27,7 @@ class ParcellaireIntentionAuto extends ParcellaireIntentionAffectation {
             }
             foreach ($produits as $hash) {
                 $node = $this->declaration->add($hash);
-                $node = $node->detail->add($pid.'-'.str_replace('/', '-', $hash));
+                $node = $node->detail->add($pid);
                 ParcellaireClient::CopyParcelle($node, $parcelle, true);
                 $parcelle->produit_hash = $hash;
                 $node->affectation = 1;

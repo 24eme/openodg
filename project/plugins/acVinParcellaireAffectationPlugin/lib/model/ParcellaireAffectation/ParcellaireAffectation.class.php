@@ -122,18 +122,20 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
     $intention->updateParcelles();
     $allready_selected = [];
-	foreach ($intention->getParcelles() as $parcelle) {
-        if (!$parcelle->affectation) {
-            continue;
-        }
-        if($parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelleByParcelleId($parcelle)) {
-            continue;
-        }
-        if(!$parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelle($parcelle, 1, true, $allready_selected)) {
-            continue;
-        }
+    foreach ($intention->declaration as $produit) {
+        foreach($produit->detail as $parcelle) {
+            if (!$parcelle->affectation) {
+                continue;
+            }
+            if($parcelle->isRealParcelleIdFromParcellaire() && $this->findProduitParcelleByParcelleId($parcelle)) {
+                continue;
+            }
+            if(!$parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelle($parcelle, 1, true, $allready_selected)) {
+                continue;
+            }
 
-        $this->addParcelle($parcelle);
+            $this->addParcelle($parcelle);
+        }
     }
   }
 

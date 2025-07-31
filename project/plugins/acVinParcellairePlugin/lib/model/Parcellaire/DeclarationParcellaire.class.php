@@ -162,8 +162,16 @@ class DeclarationParcellaire extends acCouchdbDocument {
         return $p[$id];
     }
 
-    public function findParcelleByParcelleId($parcelle) {
-        $p = $this->getParcelleById($parcelle->getParcelleId());
+    public function findProduitParcelleByParcelleId($parcelle) {
+        $hash = str_replace('/declaration/', '', $parcelle->produit_hash);
+        if (!$this->declaration->exist($hash)) {
+            return null;
+        }
+        if (!$this->declaration->get($hash)->detail->exist($parcelle->getParcelleId())) {
+            return null;
+        }
+
+        $p = $this->declaration->get($hash)->detail->get($parcelle->getParcelleId());
 
         if($p && $p->cepage == $parcelle->cepage && $p->campagne_plantation == $parcelle->campagne_plantation) {
             return $p;
