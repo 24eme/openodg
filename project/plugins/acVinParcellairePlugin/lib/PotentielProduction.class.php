@@ -14,28 +14,28 @@ class PotentielProduction {
     private static $affectations = [];
     private static $potentiels = [];
 
-    public static function retrievePotentielProductionFromParcellaire(Parcellaire $parcellaire, $date = null) {
+    public static function retrievePotentielProductionFromParcellaire(Parcellaire $parcellaire, $date = null, $affectation_be_validated = true) {
         $client = ParcellaireAffectationClient::getInstance();
         if (method_exists($client, "findPreviousByIdentifiantAndDate")) {
             $affectation = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($parcellaire->identifiant, $date);
-            return PotentielProduction::cacheCreatePotentielProduction($parcellaire, $affectation);
+            return PotentielProduction::cacheCreatePotentielProduction($parcellaire, $affectation, $affectation_be_validated);
         }
 
         return null;
     }
 
-    public static function retrievePotentielProductionFromIdentifiant($identifiant, $date = null) {
+    public static function retrievePotentielProductionFromIdentifiant($identifiant, $date = null, $affectation_be_validated = true) {
         $client = ParcellaireAffectationClient::getInstance();
         if (method_exists($client, "findPreviousByIdentifiantAndDate")) {
             $parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($identifiant, $date);
             $affectation = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($identifiant, $date);
-            return PotentielProduction::cacheCreatePotentielProduction($parcellaire, $affectation);
+            return PotentielProduction::cacheCreatePotentielProduction($parcellaire, $affectation, $affectation_be_validated);
         }
 
         return null;
     }
 
-    public static function cacheCreatePotentielProduction(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null) {
+    public static function cacheCreatePotentielProduction(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null, $affectation_be_validated = true) {
 
         $parcellaire_cache_id = $parcellaire->_id.$parcellaire->_rev;
         self::$parcellaires[$parcellaire_cache_id] = $parcellaire;
@@ -44,25 +44,25 @@ class PotentielProduction {
         }
         $affectation_cache_id = ($affectation) ? $affectation->_id.$affectation->_rev : '';
 
-        if (!isset(self::$potentiels[$parcellaire_cache_id.$affectation_cache_id])) {
-            self::$potentiels[$parcellaire_cache_id.$affectation_cache_id] = CacheFunction::cache('model', "PotentielProduction::createPotentielProduction", array($parcellaire_cache_id, $affectation_cache_id));
+        if (!isset(self::$potentiels[$parcellaire_cache_id.$affectation_cache_id.$affectation_be_validated])) {
+            self::$potentiels[$parcellaire_cache_id.$affectation_cache_id.$affectation_be_validated] = CacheFunction::cache('model', "PotentielProduction::createPotentielProduction", array($parcellaire_cache_id, $affectation_cache_id, $affectation_be_validated));
         }
 
-        return self::$potentiels[$parcellaire_cache_id.$affectation_cache_id];
+        return self::$potentiels[$parcellaire_cache_id.$affectation_cache_id.$affectation_be_validated];
     }
 
-    public static function createPotentielProduction($parcellaire_id, $affectation_id) {
+    public static function createPotentielProduction($parcellaire_id, $affectation_id, $affectation_be_validated = true) {
         $parcellaire = self::$parcellaires[$parcellaire_id];
         $affectation = null;
         if ($affectation_id) {
             $affectation = self::$affectations[$affectation_id];
         }
-        return new PotentielProduction($parcellaire, $affectation);
+        return new PotentielProduction($parcellaire, $affectation, $affectation_be_validated);
     }
 
-    private function __construct(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null) {
+    private function __construct(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null, $affectation_be_validated = true) {
         $this->parcellaire = $parcellaire;
-        if($affectation && $affectation->isValidee())  {
+        if($affectation && (!$affectation_be_validated || $affectation->isValidee()))  {
             $this->parcellaire_affectation = $affectation;
         }
 
