@@ -145,11 +145,20 @@ class PotentielProductionRule {
     public function getSomme() {
         return $this->somme;
     }
+    public function getPC() {
+        if (!$this->getSomme()) {
+            return ;
+        }
+        return $this->somme / ($this->limit / $this->getLimitPC());
+    }
     public function getCepages() {
         return array_keys($this->cepages_superficie);
     }
     public function getLimit() {
         return $this->limit;
+    }
+    public function getLimitPC() {
+        return $this->regle['limit'];
     }
     public function getSens() {
         return $this->regle['sens'];
