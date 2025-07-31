@@ -127,7 +127,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             if (!$parcelle->affectation) {
                 continue;
             }
-            if($parcelle->isRealParcelleIdFromParcellaire() && $this->findProduitParcelleByParcelleId($parcelle)) {
+            if($parcelle->isRealParcelleIdFromParcellaire() && $this->findProduitParcelle($parcelle)) {
                 continue;
             }
             if(!$parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelle($parcelle, 1, true, $allready_selected)) {
@@ -145,12 +145,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             return;
         }
         $destinataires = $this->getDestinataires();
-        foreach($previous->getParcelles() as $previousParcelle) {
+        foreach($previous->declaration as $produit) {
+          foreach($produit->detail as $previousParcelle) {
+
             if(!$previousParcelle->isAffectee()) {
                 continue;
             }
 
-            $pMatch = $this->findParcelle($previousParcelle);
+            $pMatch = $this->findProduitParcelle($previousParcelle);
             if($pMatch) {
                 $pMatch->affectee = 1;
                 $pMatch->superficie = $previousParcelle->superficie;
@@ -172,6 +174,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                     $pMatch->affecter($previousParcelle->superficie, current($destinataires)->getEtablissement());
                 }
             }
+          }
         }
     }
 

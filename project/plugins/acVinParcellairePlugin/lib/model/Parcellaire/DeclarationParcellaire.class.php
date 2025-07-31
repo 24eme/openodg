@@ -162,7 +162,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
         return $p[$id];
     }
 
-    public function findProduitParcelleByParcelleId($parcelle) {
+    public function findProduitParcelle($parcelle) {
         $hash = str_replace('/declaration/', '', $parcelle->produit_hash);
         if (!$this->declaration->exist($hash)) {
             return null;
