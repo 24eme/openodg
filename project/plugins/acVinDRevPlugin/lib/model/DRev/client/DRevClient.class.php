@@ -48,6 +48,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     private static $lotDestinationsType = array(
         DRevClient::LOT_DESTINATION_CONDITIONNEMENT => "Conditionnement",
         DRevClient::LOT_DESTINATION_TRANSACTION => "Vrac Export",
+        DRevClient::LOT_DESTINATION_VRAC => "Vrac",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE => "Vrac France",
         DRevClient::LOT_DESTINATION_VRAC_EXPORT => "Vrac Export",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT => "Vrac France et Conditionnement",

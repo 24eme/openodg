@@ -477,7 +477,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getProblemPortentiel() {
-        $pot = PotentielProduction::cacheCreatePotentielProduction($this->parcellaire, $this);
+        $pot = PotentielProduction::cacheCreatePotentielProduction($this->parcellaire, $this, false);
         $ret = [];
         foreach($pot->getProduits() as $prod) {
             if ($prod->hasPotentiel() && $prod->hasLimit()) {

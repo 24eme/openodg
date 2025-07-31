@@ -14,28 +14,28 @@ class PotentielProduction {
     private static $affectations = [];
     private static $potentiels = [];
 
-    public static function retrievePotentielProductionFromParcellaire(Parcellaire $parcellaire, $date = null) {
+    public static function retrievePotentielProductionFromParcellaire(Parcellaire $parcellaire, $date = null, $affectation_be_validated = true) {
         $client = ParcellaireAffectationClient::getInstance();
         if (method_exists($client, "findPreviousByIdentifiantAndDate")) {
             $affectation = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($parcellaire->identifiant, $date);
-            return PotentielProduction::cacheCreatePotentielProduction($parcellaire, $affectation);
+            return PotentielProduction::cacheCreatePotentielProduction($parcellaire, $affectation, $affectation_be_validated);
         }
 
         return null;
     }
 
-    public static function retrievePotentielProductionFromIdentifiant($identifiant, $date = null) {
+    public static function retrievePotentielProductionFromIdentifiant($identifiant, $date = null, $affectation_be_validated = true) {
         $client = ParcellaireAffectationClient::getInstance();
         if (method_exists($client, "findPreviousByIdentifiantAndDate")) {
             $parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($identifiant, $date);
             $affectation = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($identifiant, $date);
-            return PotentielProduction::cacheCreatePotentielProduction($parcellaire, $affectation);
+            return PotentielProduction::cacheCreatePotentielProduction($parcellaire, $affectation, $affectation_be_validated);
         }
 
         return null;
     }
 
-    public static function cacheCreatePotentielProduction(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null) {
+    public static function cacheCreatePotentielProduction(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null, $affectation_be_validated = true) {
 
         $parcellaire_cache_id = $parcellaire->_id.$parcellaire->_rev;
         self::$parcellaires[$parcellaire_cache_id] = $parcellaire;
@@ -44,34 +44,33 @@ class PotentielProduction {
         }
         $affectation_cache_id = ($affectation) ? $affectation->_id.$affectation->_rev : '';
 
-        if (!isset(self::$potentiels[$parcellaire_cache_id.$affectation_cache_id])) {
-            self::$potentiels[$parcellaire_cache_id.$affectation_cache_id] = CacheFunction::cache('model', "PotentielProduction::createPotentielProduction", array($parcellaire_cache_id, $affectation_cache_id));
+        if (!isset(self::$potentiels[$parcellaire_cache_id.$affectation_cache_id.$affectation_be_validated])) {
+            self::$potentiels[$parcellaire_cache_id.$affectation_cache_id.$affectation_be_validated] = CacheFunction::cache('model', "PotentielProduction::createPotentielProduction", array($parcellaire_cache_id, $affectation_cache_id, $affectation_be_validated));
         }
 
-        return self::$potentiels[$parcellaire_cache_id.$affectation_cache_id];
+        return self::$potentiels[$parcellaire_cache_id.$affectation_cache_id.$affectation_be_validated];
     }
 
-    public static function createPotentielProduction($parcellaire_id, $affectation_id) {
+    public static function createPotentielProduction($parcellaire_id, $affectation_id, $affectation_be_validated = true) {
         $parcellaire = self::$parcellaires[$parcellaire_id];
         $affectation = null;
         if ($affectation_id) {
             $affectation = self::$affectations[$affectation_id];
         }
-        return new PotentielProduction($parcellaire, $affectation);
+        return new PotentielProduction($parcellaire, $affectation, $affectation_be_validated);
     }
 
-    private function __construct(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null) {
+    private function __construct(Parcellaire $parcellaire, ParcellaireAffectation $affectation = null, $affectation_be_validated = true) {
         $this->parcellaire = $parcellaire;
-        $this->parcellaire_affectation = $affectation;
+        if($affectation && (!$affectation_be_validated || $affectation->isValidee()))  {
+            $this->parcellaire_affectation = $affectation;
+        }
 
-        foreach($this->getLibellesPotentielProduits() as $k) {
-            if (!$k) {
-                continue;
-            }
+        foreach($this->getLibellesPotentielProduits() as $l => $p) {
             $ppproduit = null;
-            $ppproduit = new PotentielProductionProduit($this, $k);
+            $ppproduit = new PotentielProductionProduit($this, $l, $p);
             if ($ppproduit && $ppproduit->hasEncepagement()) {
-                $this->produits[$k] = $ppproduit;
+                $this->produits[$l] = $ppproduit;
             }
         }
     }
@@ -82,14 +81,14 @@ class PotentielProduction {
             $cepage = $p->getCepage();
             foreach($this->parcellaire->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
                 $l = preg_replace('/ +$/', '', $prod->formatProduitLibelle("%a% %m% %l% - %co% %ce%"));
-                $libelles[$l] = $l;
+                $libelles[$l] = $prod;
             }
             if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
-                $libelles['XXXXjeunes vignes'] = 'XXXXjeunes vignes';
+                $libelles['XXXXjeunes vignes'] = null;
             }
         }
         ksort($libelles);
-        return array_keys($libelles);
+        return $libelles;
     }
 
     public function getProduits() {
