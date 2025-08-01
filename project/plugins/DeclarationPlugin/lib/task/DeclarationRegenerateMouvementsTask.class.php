@@ -41,13 +41,13 @@ EOF;
             $drev->save();
         }
 
-        $is_facture = 0;
         $conserveMvtsFacture = [];
         foreach($drev->mouvements as $id => $mvts ) {
             foreach ($mvts as $key => $mvt) {
                 if ($mvt->facture) {
-                    $conserveMvtsFacture[$mvt->getHash()] = $mvt->getHash();
-                    $is_facture = 1;
+                    $empreinte = $mvt->toArray(true, false);
+                    unset($empreinte['facture']);
+                    $conserveMvtsFacture[$mvt->getHash()] = json_encode($empreinte);
                     if(isset($options['conservefacture']) && $options['conservefacture']) {
                         continue;
                     }
@@ -62,13 +62,34 @@ EOF;
         if (!$options['onlydeletemouvements']) {
             $drev->generateMouvementsFactures();
         }
+
         if ($options['conservefacture']) {
-            foreach($conserveMvtsFacture as $hash) {
-                if(!$drev->exist($hash)) {
-                    echo sprintf("ERROR;Le mouvements ne peuvent pas être conservés;%s;%s\n", $drev->_id, $hash);
-                    exit(1);
+            foreach($conserveMvtsFacture as $hash => $empreinteConserve) {
+                if($drev->exist($hash)) {
+
+                    $drev->get($hash)->facture = 1;
+                    continue;
                 }
-                $drev->get($hash)->facture = 1;
+
+                $empreinteFinded = false;
+                foreach($drev->mouvements as $id => $mvts ) {
+                    foreach ($mvts as $key => $mvt) {
+                        $empreinte = $mvt->toArray(true, false);
+                        unset($empreinte['facture']);
+                        if(json_encode($empreinte) == $empreinteConserve) {
+                            $empreinteFinded = $mvt;
+                            break;
+                        }
+                    }
+                }
+
+                if($empreinteFinded) {
+                    $empreinteFinded->facture = 1;
+                    continue;
+                }
+
+                echo sprintf("ERROR;Le mouvements ne peuvent pas être conservés;%s;%s\n", $drev->_id, $hash);
+                exit(1);
             }
         } elseif ($options['flagfacture']) {
             foreach($drev->mouvements as $id => $mvts ) {
