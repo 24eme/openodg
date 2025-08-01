@@ -32,12 +32,9 @@ if(isset($coop)):
 <?php endif; ?>
 
 <ul class="nav nav-tabs mt-4">
-<?php
-foreach($destinataires as $id => $d):
-?>
-    <?php
-        if (count($produits) > 1):
-            foreach ($produits as $hash => $produit):
+<?php foreach($destinataires as $id => $d):
+    if (count($produits) > 1):
+        foreach ($produits as $hash => $produit):
     ?>
     <li role="presentation" class="<?php if($id.$hash == $destinataire.$hashproduit): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>">
         <a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]) ?>">
@@ -47,8 +44,8 @@ foreach($destinataires as $id => $d):
         </a>
     </li>
     <?php
-            endforeach;
-        else:
+        endforeach;
+    else:
     ?>
     <li role="presentation" class="<?php if($id == $destinataire): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>"><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'] ?></a></li>
     <?php endif; ?>

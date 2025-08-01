@@ -2642,7 +2642,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $nonHabilitationODG = array();
         foreach($this->getProduits() as $hash_c => $produit_c) {
             $produit = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($produit_c->getConfig());
-            $hash = $produit->getHash();
+            $produit_hab = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($produit);
+            $hash = $produit_hab->getHash();
             if (!$habilitation || !$habilitation->isHabiliteFor($hash, HabilitationClient::ACTIVITE_VINIFICATEUR)) {
                 $nonHabilitationODG[$hash] = $produit;
             }

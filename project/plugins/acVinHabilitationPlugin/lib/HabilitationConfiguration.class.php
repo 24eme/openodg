@@ -85,8 +85,9 @@ class HabilitationConfiguration {
           return null;
       }
       $produithab = $produit->getAppellation();
-      if (strpos($produithab->getHash(), '/MOU/') !== false || strpos($produithab->getHash(), '/EFF/') !== false) {
-          $h = str_replace(['/MOU/','/EFF/'], '/TRANQ/', $produithab->getHash());
+      $hash = $produithab->getHash();
+      $h = str_replace(['/MOU/','/EFF/', '/VDB/'], '/TRANQ/', $hash);
+      if ($hash != $h) {
           $produithab = $produithab->getDocument()->get($h);
       }
 

@@ -318,10 +318,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     public function getDestinataires() {
         $destinataires = [];
 
-        if($this->getHabilitation() && in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $this->getHabilitation()->getActivitesHabilites())) {
-            $destinataires[$this->getEtablissementObject()->_id] = ['libelle_etablissement' => "Cave particulière"];
-        }
-
         foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATIVE) as $liaison) {
             $destinataires[$liaison->id_etablissement] = $liaison;
         }
@@ -339,6 +335,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                     $destinataires["ETABLISSEMENT-".$destination->identifiant] = ['libelle_etablissement' => $destination->nom];
                 }
             }
+        }
+
+        if(!count($destinataires) || ($this->getHabilitation() && in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $this->getHabilitation()->getActivitesHabilites()))) {
+            $destinataires[$this->getEtablissementObject()->_id] = ['libelle_etablissement' => "Cave particulière"];
         }
 
         return $destinataires;
