@@ -47,9 +47,17 @@
         echo "<td>".$rule->getLibelle()."</td>";
         echo "<td>".implode(', ', $rule->getCepages()->getRawValue())."</td>";
         printf("<td class='text-right'>%.4f</td>", $rule->getSomme());
-        printf("<td class='text-right text-muted'>%d%s</td>", $rule->getPC()*100, '%');
+        if ($rule->getRegleFoncton() == 'ProportionSomme') {
+            printf("<td class='text-right text-muted'>%d%s</td>", $rule->getPC()*100, '%');
+        }else{
+            echo "<td></td>";
+        }
         printf("<td class='text-right'>%s %.4f</td>", $rule->getSens(), $rule->getLimit());
-        printf("<td class='text-right text-muted'>%d%s</td>", $rule->getLimitPC()*100, '%');
+        if ($rule->getRegleFoncton() == 'ProportionSomme') {
+            printf("<td class='text-right text-muted'>%d%s</td>", $rule->getLimitPC()*100, '%');
+        }else{
+            echo "<td></td>";
+        }
         echo "<td class='text-center'>";
         if ($rule->getResult()) {
             echo "OK";
