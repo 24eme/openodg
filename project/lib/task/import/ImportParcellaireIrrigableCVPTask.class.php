@@ -1,6 +1,6 @@
 <?php
 
-class ImportParcellaireIrrigableManquantAixTask extends sfBaseTask
+class ImportParcellaireIrrigableCVPTask extends sfBaseTask
 {
 
     const CSV_CAMPAGNE = 0;
@@ -157,7 +157,7 @@ EOF;
                     $this->cpt_error = 0;
                 }
                 $this->irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($etablissement->identifiant, substr($data[self::CSV_CAMPAGNE], 0, 4));
-                $this->irrigable->observations .= "Import Aix";
+                $this->irrigable->observations .= "Import Coteaux Varois";
             }
             if ($pt && $pt->getProduitHash()) {
                 $produit_hash = str_replace('/declaration/', '', $pt->getProduitHash());
@@ -174,8 +174,9 @@ EOF;
                     continue;
                 }
                 $pkey = explode('-', $pkey)[0].'-X'.$pkeyid++;
-                $pt = $ptold;
+                $pt = ParcellaireParcelle::freeInstance($parcellaire);
                 $pt->campagne_plantation = $p->campagne_plantation;
+                $pt->idu = $data[self::CSV_IDU];
                 $pt->section = $p->section;
                 $pt->numero_parcelle = $p->numero_parcelle;
                 $pt->prefix = $p->prefix;
@@ -186,7 +187,6 @@ EOF;
                 $pt->lieu = $p->lieu;
                 $pt->parcelle_id = $pkey;
             }
-            $ptold = $pt;
 
             $item = $this->irrigable->declaration->add($produit_hash);
             $pi = $item->detail->add($pkey);
@@ -196,6 +196,7 @@ EOF;
             $pi->superficie = $p->superficie;
             $pi->active = 1;
         }
+
         $this->saving();
     }
 
