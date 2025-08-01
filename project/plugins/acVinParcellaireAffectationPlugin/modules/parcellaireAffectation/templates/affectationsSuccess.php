@@ -137,6 +137,8 @@ foreach($destinataires as $id => $d):
                     <td class="col-xs-1 text-right" id="superficie_potentielle"><?php echo $superficie_potentielle; ?></td>
                     <td class="col-xs-2 text-center" colspan="2"> (<a href="<?php echo url_for('parcellaire_potentiel_visualisation', array('id' => $parcellaireAffectation->getParcellaire()->_id)); ?>">détail du potentiel</a>) </td>
                 </tr>
+<?php foreach ($parcellaireAffectation->getTheoriticalPotentielProductionProduit($hashproduit)->getRules() as $pprule): ?>
+<?php endforeach; ?>
                 <tr class="total">
                     <td class="col-xs-9 text-right"><strong>Total affecté</strong></td>
                     <td class="col-xs-1 text-right"></td>

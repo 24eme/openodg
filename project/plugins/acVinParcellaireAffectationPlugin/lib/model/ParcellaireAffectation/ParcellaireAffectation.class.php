@@ -516,15 +516,27 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $ret;
     }
 
-    public function getTheoriticalPotentielForHash($hash) {
-        $pot = PotentielProduction::cacheCreatePotentielProduction($this->parcellaire);
+    public function getTheoriticalPotentielProduction() {
+        return PotentielProduction::cacheCreatePotentielProduction($this->parcellaire);
+    }
+
+    public function getTheoriticalPotentielProductionProduit($hash) {
+        $pot = $this->getTheoriticalPotentielProduction();
+        if (!$pot) {
+            return null;
+        }
         foreach($pot->getProduits() as $prod) {
-            if (!$prod->getHashProduitAffectation() == $hash) {
-                continue;
+            if ($prod->getHashProduitAffectation() == $hash) {
+                return $prod;
             }
-            if ($prod->hasPotentiel()) {
-                return $prod->getSuperficieMax();
-            }
+        }
+        return null;
+    }
+
+    public function getTheoriticalPotentielForHash($hash) {
+        $prod = $this->getTheoriticalPotentielProductionProduit($hash);
+        if ($prod && $prod->hasPotentiel()) {
+            return $prod->getSuperficieMax();
         }
         return null;
     }
