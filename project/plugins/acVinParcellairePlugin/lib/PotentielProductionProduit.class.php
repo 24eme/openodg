@@ -315,7 +315,7 @@ class PotentielProductionProduit {
     }
 
     private $cache_parcelles = null;
-    public function getParcelleId() {
+    private function getParcelleIds() {
         if (!$this->cache_parcelles) {
             $this->cache_parcelles = [];
             foreach($this->parcelles_par_categories as $libelle => $parcelles) {
@@ -327,7 +327,7 @@ class PotentielProductionProduit {
     }
 
     public function hasParcelleId($pid) {
-        return in_array($pid, $this->getParcelleId());
+        return in_array($pid, $this->getParcelleIds());
     }
 
     public function getHashProduitAffectation() {
