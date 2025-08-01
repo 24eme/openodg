@@ -56,6 +56,48 @@
       "details": {
         "volumeRevendiqueMillesimeAnterieur": {
           "modele": "CotisationVariable",
+          "prix": 0.15,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "Cotisation Méditerranée volume revendiqué millésime %millesime_precedent%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "date": "%periode+1%-07-31",
+          "callback": "getVolumeRevendiqueLots",
+          "callback_parameters": {
+            "millesime": "/millesime/precedent",
+            "appellations": "/appellations/MED"
+          }
+        },
+        "volumeRevendiqueMillesimeCourant": {
+          "modele": "CotisationVariable",
+          "prix": 0.15,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "Cotisation Méditerranée volume revendiqué millésime %millesime_courant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "date": "%periode+1%-07-31",
+          "callback": "getVolumeRevendiqueLots",
+          "callback_parameters": {
+            "millesime": "/millesime/courant",
+            "appellations": "/appellations/MED"
+          }
+        }
+      }
+    },
+    "01_cotisationCollinesRhodaniennes": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "volumeRevendiqueMillesimeAnterieur": {
+          "modele": "CotisationVariable",
           "prix": 0.3,
           "tva": 0,
           "unite": "hl",
