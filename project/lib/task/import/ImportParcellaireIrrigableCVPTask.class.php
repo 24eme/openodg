@@ -175,8 +175,8 @@ EOF;
                 }
                 $pkey = explode('-', $pkey)[0].'-X'.$pkeyid++;
                 $pt = ParcellaireParcelle::freeInstance($parcellaire);
+                $pt->idu = ($data[self::CSV_IDU]) ? $data[self::CSV_IDU] : $data[self::CSV_CODE_COMMUNE]."0000".$p->section.sprintf("%04d",$p->numero_parcelle);
                 $pt->campagne_plantation = $p->campagne_plantation;
-                $pt->idu = $data[self::CSV_IDU];
                 $pt->section = $p->section;
                 $pt->numero_parcelle = $p->numero_parcelle;
                 $pt->prefix = $p->prefix;
@@ -202,7 +202,7 @@ EOF;
 
     private function saving() {
         if ($this->irrigable) {
-            $this->irrigable->validate();
+            $this->irrigable->validate($this->irrigable->getPeriode()."-07-15");
             if ($this->real_save) {
                 $this->irrigable->save();
                 echo "LOG: ".$this->irrigable->_id." saved (".$this->currentEtablissementKey." - $this->cpt dont warning:$this->cpt_warning error:$this->cpt_error)\n";
