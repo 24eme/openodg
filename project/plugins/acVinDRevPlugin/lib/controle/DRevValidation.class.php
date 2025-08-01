@@ -187,11 +187,17 @@ class DRevValidation extends DeclarationLotsValidation
 
     protected function controleProduitsDocumentDouanier($produits)
     {
+        $produits_hash = [];
+        foreach(array_keys($produits) as $h) {
+            $h = str_replace(['/EFF/', '/MOU/'], '/VDB/', $h);
+            $produits_hash[] = $h;
+        }
     	$drev = $this->document->getFictiveFromDocumentDouanier();
     	$hasDiff = false;
     	foreach ($drev->getProduits() as $hash_prod => $produit) {
             $hash = $produit->getParent()->getHash();
-    		if (!array_key_exists($hash, $produits)) {
+            $hash = str_replace(['/EFF/', '/MOU/'], '/VDB/', $hash);
+            if (!in_array($hash, $produits_hash)) {
     			$hasDiff = true;
     		}
     	}
