@@ -17,9 +17,11 @@
     <tr>
         <th>Condition</th>
         <th>Cepages concernés</th>
-        <th>Valeur</th>
-        <th>Limit</th>
-        <th>Résultat</th>
+        <th class="text-right">Valeur</th>
+        <th class="text-right"> </th>
+        <th class="text-right">Limit</th>
+        <th class="text-right"> </th>
+        <th class="text-center">Résultat</th>
     </tr>
 <?php
     $disabled = false;
@@ -44,9 +46,11 @@
         echo "'>";
         echo "<td>".$rule->getLibelle()."</td>";
         echo "<td>".implode(', ', $rule->getCepages()->getRawValue())."</td>";
-        echo "<td>".$rule->getSomme()."</td>";
-        echo "<td>".$rule->getSens()." ".$rule->getLimit()."</td>";
-        echo "<td>";
+        printf("<td class='text-right'>%.4f</td>", $rule->getSomme());
+        printf("<td class='text-right text-muted'>%d%s</td>", $rule->getPC()*100, '%');
+        printf("<td class='text-right'>%s %.4f</td>", $rule->getSens(), $rule->getLimit());
+        printf("<td class='text-right text-muted'>%d%s</td>", $rule->getLimitPC()*100, '%');
+        echo "<td class='text-center'>";
         if ($rule->getResult()) {
             echo "OK";
         }elseif(!$rule->isBlockingRule()) {
