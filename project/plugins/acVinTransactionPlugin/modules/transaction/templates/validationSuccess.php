@@ -17,7 +17,7 @@
             <?php echo $form["date"]->renderLabel("Date de réception du document :", array("class" => "col-xs-6 control-label")); ?>
             <div class="col-xs-6">
                 <div class="input-group date-picker">
-                    <?php echo $form["date"]->render(array("class" => "form-control")); ?>
+                    <?php echo $form["date"]->render(array("class" => "form-control", "required" => "required")); ?>
                     <div class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </div>

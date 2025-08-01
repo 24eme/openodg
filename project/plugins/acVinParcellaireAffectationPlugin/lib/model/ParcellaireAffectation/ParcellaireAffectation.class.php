@@ -122,18 +122,20 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
     $intention->updateParcelles();
     $allready_selected = [];
-	foreach ($intention->getParcelles() as $parcelle) {
-        if (!$parcelle->affectation) {
-            continue;
-        }
-        if($parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelleByParcelleId($parcelle)) {
-            continue;
-        }
-        if(!$parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelle($parcelle, 1, true, $allready_selected)) {
-            continue;
-        }
+    foreach ($intention->declaration as $produit) {
+        foreach($produit->detail as $parcelle) {
+            if (!$parcelle->affectation) {
+                continue;
+            }
+            if($parcelle->isRealParcelleIdFromParcellaire() && $this->findProduitParcelle($parcelle)) {
+                continue;
+            }
+            if(!$parcelle->isRealParcelleIdFromParcellaire() && $this->findParcelle($parcelle, 1, true, $allready_selected)) {
+                continue;
+            }
 
-        $this->addParcelle($parcelle);
+            $this->addParcelle($parcelle);
+        }
     }
   }
 
@@ -143,12 +145,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             return;
         }
         $destinataires = $this->getDestinataires();
-        foreach($previous->getParcelles() as $previousParcelle) {
+        foreach($previous->declaration as $produit) {
+          foreach($produit->detail as $previousParcelle) {
+
             if(!$previousParcelle->isAffectee()) {
                 continue;
             }
 
-            $pMatch = $this->findParcelle($previousParcelle);
+            $pMatch = $this->findProduitParcelle($previousParcelle);
             if($pMatch) {
                 $pMatch->affectee = 1;
                 $pMatch->superficie = $previousParcelle->superficie;
@@ -170,6 +174,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                     $pMatch->affecter($previousParcelle->superficie, current($destinataires)->getEtablissement());
                 }
             }
+          }
         }
     }
 
@@ -224,11 +229,13 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function cleanNonAffectee() {
         $todelete = [];
-        foreach($this->declaration->getParcelles() as $id => $p) {
-            if ($p->affectee) {
-                continue;
+        foreach($this->declaration as $produit) {
+            foreach($produit->detail as $p) {
+                if ($p->affectee) {
+                    continue;
+                }
+                $todelete[] = $p;
             }
-            $todelete[] = $p;
         }
         foreach($todelete as $p) {
             $this->remove($p->getHash());
@@ -477,7 +484,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getProblemPortentiel() {
-        $pot = PotentielProduction::cacheCreatePotentielProduction($this->parcellaire, $this);
+        $pot = PotentielProduction::cacheCreatePotentielProduction($this->parcellaire, $this, false);
         $ret = [];
         foreach($pot->getProduits() as $prod) {
             if ($prod->hasPotentiel() && $prod->hasLimit()) {

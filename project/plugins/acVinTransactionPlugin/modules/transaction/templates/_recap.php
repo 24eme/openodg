@@ -117,7 +117,7 @@
 
           <?php if (DRevConfiguration::getInstance()->hasDegustation()): ?>
           <h3>Contrôle</h3>
-          <p>Date de controle souhaitée (hors lots en élevage) : <?php if ($transaction->exist('date_degustation_voulue')): ?><?php echo $transaction->get('date_degustation_voulue'); ?><?php else: ?><?php echo date('d/m/Y'); ?><?php endif; ?></p>
+          <p>Date de controle souhaitée (hors lots en élevage) : <?php if ($transaction->exist('date_degustation_voulue')): ?><?php echo date_format(date_create($transaction->get('date_degustation_voulue')), 'd/m/Y') ?><?php else: ?><?php echo date('d/m/Y'); ?><?php endif; ?></p>
 
           <?php if(isset($form["date_commission"])): ?>
               <?php echo $form["date_commission"]->renderError(); ?>

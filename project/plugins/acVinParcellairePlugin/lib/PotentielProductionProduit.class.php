@@ -3,6 +3,7 @@
 class PotentielProductionProduit {
 
     private $key;
+    private $produit;
     private $libelle;
     private $rules = [];
     private $superficie_encepagement;
@@ -12,17 +13,12 @@ class PotentielProductionProduit {
     private $potentiel_production;
     private $synthese = null;
 
-    public function __construct(PotentielProduction $p, $parcellaire_produit_libelle) {
+    public function __construct(PotentielProduction $p, $parcellaire_produit_libelle, $produit_configuration) {
         $this->potentiel_production = $p;
         $this->libelle = $parcellaire_produit_libelle;
-        foreach (ParcellaireConfiguration::getInstance()->getPotentielGroupes() as $groupe_key) {
-            $conf_produit_libelle = ParcellaireConfiguration::getInstance()->getGroupeSyntheseLibelle($groupe_key);
-            if (strpos($conf_produit_libelle, $parcellaire_produit_libelle) === false && strpos($parcellaire_produit_libelle, $conf_produit_libelle) === false) {
-                continue;
-            }
-            $this->key = $groupe_key;
-            break;
-        }
+        $this->produit = $produit_configuration;
+        $this->key = ParcellaireConfiguration::getInstance()->getGroupeKeyByProduitConf($produit_configuration);
+
         $this->initSynthese();
         $this->initEncepagement();
         if (strpos($this->libelle, 'XXX') === false) {
@@ -226,7 +222,7 @@ class PotentielProductionProduit {
     }
 
     private function initSynthese() {
-        $filter_produit_hash = ParcellaireConfiguration::getInstance()->getGroupeFilterProduitHash($this->key);
+        $filter_produit_hash = ParcellaireConfiguration::getInstance()->getGroupeFilterParcellaireProduitHash($this->key);
         $filter_insee = ParcellaireConfiguration::getInstance()->getGroupeFilterINSEE($this->key);
         $parcellaire2ref = $this->getParcellaire2Ref();
         if ($parcellaire2ref->type == ParcellaireAffectationClient::TYPE_MODEL && ParcellaireConfiguration::getInstance()->getHashProduitAffectation($this->key)) {
@@ -319,7 +315,7 @@ class PotentielProductionProduit {
     }
 
     private $cache_parcelles = null;
-    public function getParcelleId() {
+    private function getParcelleIds() {
         if (!$this->cache_parcelles) {
             $this->cache_parcelles = [];
             foreach($this->parcelles_par_categories as $libelle => $parcelles) {
@@ -331,7 +327,7 @@ class PotentielProductionProduit {
     }
 
     public function hasParcelleId($pid) {
-        return in_array($pid, $this->getParcelleId());
+        return in_array($pid, $this->getParcelleIds());
     }
 
     public function getHashProduitAffectation() {

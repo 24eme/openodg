@@ -27,7 +27,11 @@ class ExportDegustationNonConformitePDF extends ExportDeclarationLotsPDF {
     }
 
     protected function getHeaderTitle() {
-        return "Résultat de lot non conforme";
+        if (DegustationConfiguration::getInstance()->hasAcceptabiliteAoc($this->degustation->getRegion())) {
+            return "Résultat de lot non acceptable";
+        } else {
+            return "Résultat de lot non conforme";
+        }
     }
 
     protected function getHeaderSubtitle() {
