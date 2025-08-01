@@ -1,7 +1,7 @@
 <?php $global_error_class = ($appellation && ($appellation_hash == $key))? 'error_field_to_focused' : ''; ?>
 
 <tr class="vertical-center <?php echo (isset($form['superficie_revendique'.(($vtsgn) ? "_vtsgn" : null)])) ? 'with_superficie' : ''; ?>" >
-    <td><?php echo $produit->getRawValue()->getLibelleCompletHTML() ?> <small class="pull-right" style="margin-top: 3px;"><?php echoFloat($produit->superficie_revendique, 4) ?> ha</small> <?php if (!$vtsgn && $produit->canHaveVtsgn()):?><small class="text-muted">(hors VT/SGN)</small><?php elseif($vtsgn) : ?><span>VT/SGN</span><?php endif; ?></td>
+    <td><?php echo $produit->getRawValue()->getLibelleCompletHTML() ?> <small class="pull-right" style="margin-top: 3px;"><?php if ($produit->superficie_revendique) {echoFloat($produit->superficie_revendique, 4); echo ' ha';} ?></small> <?php if (!$vtsgn && $produit->canHaveVtsgn()):?><small class="text-muted">(hors VT/SGN)</small><?php elseif($vtsgn) : ?><span>VT/SGN</span><?php endif; ?></td>
 <?php if ($drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR): ?>
     <?php include_partial('drev/revendicationFormInput', array('form' => $form['recolte'], 'produit' => $produit, 'name' => 'volume_total', 'vtsgn' => $vtsgn, "placeholder" => "hl", "tdClass" => "info", 'global_error_id' => $global_error_id, 'global_error_class' => $global_error_class)); ?>
   <?php endif; ?>
