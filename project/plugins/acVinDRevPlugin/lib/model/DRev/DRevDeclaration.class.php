@@ -118,7 +118,16 @@ class DRevDeclaration extends BaseDRevDeclaration
                 $produits[$items->getHash()] = $items;
             }
         }
+        uksort($produits, "DRevDeclaration::sortProduitHash");
         return $produits;
+    }
+
+    public static function sortProduitHash($ka, $kb) {
+        $ka = str_replace('/MOU/', '/VMOU/', $ka);
+        $ka = str_replace('/MEFF/', '/VEFF/', $ka);
+        $kb = str_replace('/MOU/', '/VMOU/', $kb);
+        $kb = str_replace('/MEFF/', '/VEFF/', $kb);
+        return strcmp($ka, $kb);
     }
 
 	public function getProduitsWithoutLots($region = null){
@@ -148,7 +157,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 			uasort($produitsByRegion, "DrevDeclaration::sortByLibelle");
 			$produits = array_merge($produits,$produitsByRegion);
 		}
-
+        uksort($produits, "DRevDeclaration::sortProduitHash");
 		return $produits;
 	}
 
@@ -164,6 +173,7 @@ class DRevDeclaration extends BaseDRevDeclaration
             }
 			$produits[$produit->getHash()] = $produit;
 		}
+        uksort($produits, "DRevDeclaration::sortProduitHash");
 		return $produits;
 	}
 

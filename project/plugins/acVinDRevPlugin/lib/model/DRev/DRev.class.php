@@ -788,13 +788,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             $produit = $this->addProduit($produitConfig->getHash(), $complement, $line[DRCsvFile::CSV_COLONNE_ID]);
 
-            if (strpos($produitConfig->getHash(), 'genres/VDB/')) {
-                $hashMou = str_replace('genres/VDB/', 'genres/MOU/', $produitConfig->getHash());
-                if ($produitConfigMou = $this->getConfiguration()->get($hashMou)) {
-                    $this->addProduit($produitConfigMou->getHash(), $complement);
-                }
-            }
-
             $produits_with_colonne_id[$produit->getHash()] = $produit->getHash();
 
             if($is_bailleur) {
@@ -934,6 +927,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if ($p->recolte->exist('vsi') && $p->recolte->vsi) {
                 $produitRecolte->add('vsi');
                 $produitRecolte->vsi += $p->recolte->vsi;
+            }
+
+            if (strpos($p->getHash(), 'genres/VDB/')) {
+                $hashMou = str_replace('genres/VDB/', 'genres/MOU/', $p->getConfig()->getHash());
+                if ($produitConfigMou = $this->getConfiguration()->get($hashMou)) {
+                    $this->addProduit($produitConfigMou->getHash(), $complement);
+                }
             }
 
             $this->remove($hash);
