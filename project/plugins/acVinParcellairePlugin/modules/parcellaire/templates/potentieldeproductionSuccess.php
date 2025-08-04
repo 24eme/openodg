@@ -47,13 +47,13 @@
         echo "<td>".$rule->getLibelle()."</td>";
         echo "<td>".implode(', ', $rule->getCepages()->getRawValue())."</td>";
         printf("<td class='text-right'>%.4f</td>", $rule->getSomme());
-        if ($rule->getRegleFoncton() == 'ProportionSomme') {
+        if ($rule->getRegleFonction() == 'ProportionSomme') {
             printf("<td class='text-right text-muted'>%d%s</td>", $rule->getPC()*100, '%');
         }else{
             echo "<td></td>";
         }
         printf("<td class='text-right'>%s %.4f</td>", $rule->getSens(), $rule->getLimit());
-        if ($rule->getRegleFoncton() == 'ProportionSomme') {
+        if ($rule->getRegleFonction() == 'ProportionSomme') {
             printf("<td class='text-right text-muted'>%d%s</td>", $rule->getLimitPC()*100, '%');
         }else{
             echo "<td></td>";
