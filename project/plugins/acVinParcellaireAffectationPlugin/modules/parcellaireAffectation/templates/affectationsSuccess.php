@@ -127,20 +127,28 @@ if(isset($coop)):
         $superficie_potentielle = $parcellaireAffectation->getTheoriticalPotentielForHash($hashproduit);
         if ($superficie_potentielle):
     ?>
-        <h3>Synthèse des parcelles affectées</h3>
+    <span id="PPvalid" class="pull-right label label-success mt-2 hidden"><span class="glyphicon glyphicon-ok-circle"></span> Le potentiel de production est respecté</span>
+    <span id="PPinvalid" class="pull-right label label-danger mt-2 hidden"><span class="glyphicon glyphicon-warning-sign"></span> Le potentiel de prodution n'est pas respecté</span>
+        <h3>Vérification du potentiel de production des parcelles affectées</h3>
         <table id="synthese-total" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
                 <tr>
-                    <td class="col-xs-9 text-right">Superficie potentielle max</td>
-                    <td class="col-xs-1 text-right" id="superficie_potentielle"><?php echo $superficie_potentielle; ?></td>
+                    <td class="col-xs-9 text-right">Superficie potentielle max.</td>
+                    <td class="col-xs-1 text-right" id="superficie_potentielle"><?php echoFloat($superficie_potentielle, 4); ?></td>
                     <td class="col-xs-2 text-center" colspan="2"> (<a href="<?php echo url_for('parcellaire_potentiel_visualisation', array('id' => $parcellaireAffectation->getParcellaire()->_id)); ?>">détail du potentiel</a>) </td>
                 </tr>
-<?php foreach ($parcellaireAffectation->getTheoriticalPotentielProductionProduit($hashproduit)->getRules() as $pprule): ?>
-<?php endforeach; ?>
+<?php foreach ($parcellaireAffectation->getTheoriticalPotentielProductionProduit($hashproduit)->getRules() as $rule): ?>
+    <tr class="potentiel-regles">
+        <td class="col-xs-9 text-right"><span class="text-muted"><?php if ($rule->getRegleFonction() == 'ProportionSomme'){echo 'Proportion de';}else{echo 'Nombre de';} ?></span> <?php echo implode(', ', $rule->getCepages()->getRawValue()); ?></td>
+        <td class="col-xs-1 text-right"></td>
+        <td class="col-xs-1 text-right"></td>
+        <td class="col-xs-1 text-left" data-rulefonction="<?php echo $rule->getRegleFonction(); ?>" data-rulesens="<?php echo $rule->getSens(); ?>" data-rulevalue="<?php if ($rule->getRegleFonction() == 'ProportionSomme'){echo $rule->getLimitPC()*100;}else{echo $rule->getLimit();} ?>"><?php echo $rule->getSens() . ' '?><?php if ($rule->getRegleFonction() == 'ProportionSomme'){echo $rule->getLimitPC()*100 . '%';}else{echo $rule->getLimit();} ?></td>
+    </tr>
+<?php endforeach;?>
                 <tr class="total">
                     <td class="col-xs-9 text-right"><strong>Total affecté</strong></td>
                     <td class="col-xs-1 text-right"></td>
                     <td class="col-xs-1 text-right"></td>
-                    <td class="col-xs-1"></td>
+                    <td class="col-xs-1 text-left">parcelle(s)</td>
                 </tr>
         </table>
 <?php endif; ?>
@@ -172,37 +180,127 @@ if(isset($coop)):
                 document.querySelector('#synthese-total tr.total td:nth-child(0n+2)').innerText = total_superficie.toFixed(4);
                 document.querySelector('#synthese-total tr.total td:nth-child(0n+3)').innerText = total_checked;
 
-                if (total_superficie > parseFloat(document.querySelector('#superficie_potentielle').innerText)) {
-                    $('#synthese-total').addClass("alert alert-danger");
-                    $('#synthese-total').removeClass("alert alert-success");
-                }else{
-                    $('#synthese-total').removeClass("alert alert-danger");
-                    $('#synthese-total').addClass("alert alert-success");
-                }
             };
 
-            (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
-                el.addEventListener('change', function (event) {
-                    superficie = this.value;
-                    if (this.parentNode.parentNode.childNodes[11].innerText == superficie) {
-                        this.parentNode.parentNode.childNodes[17].innerText = 'Totale';
-                    }else{
-                        this.parentNode.parentNode.childNodes[17].innerText = 'Partielle';
+            updateRules = function (table) {
+                let produitArray = {};
+                table.querySelectorAll("tbody tr:not(.commune-total)").forEach(function (tr) {
+                    if (tr.querySelector('.bsswitch:checked')) {
+                        if (! produitArray[tr.querySelector('td:nth-child(0n+4)').innerText]) {
+                            produitArray[tr.querySelector('td:nth-child(0n+4)').innerText] = 0;
+                        }
+                        produitArray[tr.querySelector('td:nth-child(0n+4)').innerText] += parseFloat(tr.querySelector('td:nth-child(0n+7) input').value);
                     }
-                    const table = event.target.closest('table')
-                    updateTotal(table)
-                })
-            });
+                });
+
+                document.querySelectorAll("tr.potentiel-regles").forEach(function (tr) {
+                    let total = 0;
+                    let produitCount = 0;
+                    let produitsBruts = tr.querySelector('td:nth-child(0n+1)').innerText;
+                    let produits = produitsBruts.substr(produitsBruts.indexOf('de ') + 3).split(',');
+                    produits.forEach(function (i) {
+                        i = i.trim();
+                        if (produitArray[i]) {
+                            total += produitArray[i];
+                            produitCount++;
+                        }
+                    });
+
+                    let valeurActuelle = 0;
+                    let limitPC = 0;
+                    let valueMax = 0;
+                    let fonction = tr.querySelector('td:nth-child(0n+4)').dataset.rulefonction;
+                    let sens = tr.querySelector('td:nth-child(0n+4)').dataset.rulesens;
+                    let totalAffecte = document.querySelector('#synthese-total tr.total td:nth-child(0n+2)').innerText;
+
+                    if (fonction == 'ProportionSomme') {
+                        valeurActuelle = total.toFixed(4);
+                        limitPC = tr.querySelector('td:nth-child(0n+4)').dataset.rulevalue / 100;
+                        if (totalAffecte > 0) {
+                            tr.querySelector('td:nth-child(0n+3)').innerText = Math.round((total.toFixed(4) / totalAffecte) * 100) + '%';
+                        } else {
+                            tr.querySelector('td:nth-child(0n+3)').innerText = '0%';
+                        }
+                        tr.querySelector('td:nth-child(0n+2)').innerText = total.toFixed(4);
+                        valueMax = totalAffecte * limitPC;
+                    } else {
+                        valeurActuelle = produitCount;
+                        limitPC = tr.querySelector('td:nth-child(0n+4)').dataset.rulevalue;
+                        tr.querySelector('td:nth-child(0n+2)').innerText = produitCount;
+                        valueMax = limitPC;
+                    }
+
+                    if (valueMax == 0) {
+                        tr.classList = "potentiel-regles";
+                    } else {
+                        if (fonction == 'ProportionSomme') {
+                            if (sens == '>=') {
+                                if (valeurActuelle >= valueMax) {
+                                    tr.classList = "potentiel-regles success";
+                                } else {
+                                    tr.classList = "potentiel-regles danger";
+                                    isValid = 0;
+                                }
+                            } else {
+                                if (valeurActuelle <= valueMax) {
+                                    tr.classList = "potentiel-regles success";
+                                } else {
+                                    tr.classList = "potentiel-regles danger";
+                                    isValid = 0;
+                                }
+                            }
+                        } else {
+                            if (sens == '>=') {
+                                if (valeurActuelle >= valueMax) {
+                                    tr.classList = "potentiel-regles success";
+                                } else {
+                                    tr.classList = "potentiel-regles danger";
+                                    isValid = 0;
+                                }
+                            } else {
+                                if (valeurActuelle <= valueMax) {
+                                    tr.classList = "potentiel-regles success";
+                                } else {
+                                    tr.classList = "potentiel-regles danger";
+                                    isValid = 0;
+                                }
+                            }
+                        }
+                    }
+                    document.getElementById('PPvalid').classList.toggle('hidden', document.querySelectorAll('.potentiel-regles.danger').length || !document.querySelectorAll('.potentiel-regles.success').length);
+                    document.getElementById('PPinvalid').classList.toggle('hidden', !document.querySelectorAll('.potentiel-regles.danger').length);
+                });
+            };
+
+                (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
+                    el.addEventListener('change', function (event) {
+                        superficie = this.value;
+                        if (this.parentNode.parentNode.childNodes[11].innerText == superficie) {
+                            this.parentNode.parentNode.childNodes[17].innerText = 'Totale';
+                        }else{
+                            this.parentNode.parentNode.childNodes[17].innerText = 'Partielle';
+                        }
+                        const table = event.target.closest('table');
+                        updateTotal(table);
+                        updateRules(table);
+                    })
+                });
 
             (document.querySelectorAll('table[id^=parcelles_]') || []).forEach(function (el) {
                 updateTotal(el)
+                updateRules(el)
             });
 
             $('.bsswitch').on('switchChange.bootstrapSwitch', function (event, state) {
                 const table = event.target.closest('table')
                 updateTotal(table)
+                updateRules(table)
             });
         });
+
+
+
+
     </script>
 
     <div class="row row-margin row-button"  style="display:flex; justify-content: space-evenly;">

@@ -167,10 +167,9 @@ class PotentielProductionRule {
         return $this->name;
     }
 
-    public function getRegleFoncton() {
+    public function getRegleFonction() {
         return $this->regle['fonction'];
     }
-
 
     public static function addemptycepage($original, $keys, $value = 0) {
         foreach(array_keys($keys) as $k) {
