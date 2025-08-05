@@ -606,6 +606,7 @@ all:
         cdp_lalonde_blanc:
           synthese_libelle: "Côtes de Provence La Londe - Blanc"
           filter_parcellaire_produit_hash: 'appellations/CDP'
+          filter_insee: ['83019', '83069', '83071']
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/LLO/couleurs/blanc/cepages/DEFAUT
           parcellaire2reference: 'ParcellaireAffectation'
           categories:
@@ -630,6 +631,7 @@ all:
         cdp_lalonde_rouge:
           synthese_libelle: "Côtes de Provence La Londe - Rouge"
           filter_parcellaire_produit_hash: 'appellations/CDP'
+          filter_insee: ['83019', '83069', '83071']
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/LLO/couleurs/rouge/cepages/DEFAUT
           parcellaire2reference: 'ParcellaireAffectation'
           categories:
@@ -676,6 +678,7 @@ all:
         cdp_lalonde_rose:
           synthese_libelle: "Côtes de Provence La Londe - Rosé"
           filter_parcellaire_produit_hash: 'appellations/CDP'
+          filter_insee: ['83019', '83069', '83071']
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/LLO/couleurs/rose/cepages/DEFAUT
           parcellaire2reference: 'ParcellaireAffectation'
           categories:
