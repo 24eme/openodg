@@ -428,7 +428,7 @@ all:
               limit: 0.3
         cdp_stevictoire_rouge:
           synthese_libelle: "Côtes de Provence Sainte Victoire - Rouge"
-          filter_parcellaire_produit_hash: 'appellations/CDP/mentions/DEFAUT/lieux/SVI'
+          filter_parcellaire_produit_hash: 'appellations/CDP'
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/SVI/couleurs/rouge/cepages/DEFAUT
           parcellaire2reference: 'ParcellaireAffectation'
           categories:
@@ -486,7 +486,7 @@ all:
               limit: 0.2
         cdp_stevictoire_rose:
           synthese_libelle: "Côtes de Provence Sainte Victoire - Rosé"
-          filter_parcellaire_produit_hash: 'appellations/CDP/mentions/DEFAUT/lieux/SVI'
+          filter_parcellaire_produit_hash: 'appellations/CDP'
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/SVI/couleurs/rose/cepages/DEFAUT
           parcellaire2reference: 'ParcellaireAffectation'
           categories:
@@ -538,7 +538,7 @@ all:
               limit: 0.2
         cdp_frejus_rouge:
           synthese_libelle: "Côtes de Provence Fréjus - Rouge"
-          filter_parcellaire_produit_hash: 'appellations/CDP/mentions/DEFAUT/lieux/FRE'
+          filter_parcellaire_produit_hash: 'appellations/CDP'
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/FRE/couleurs/rouge/cepages/DEFAUT
           filter_insee: ['83061', '83085', '83086', '83480', '83107', '83118', '83028, 83141']
           parcellaire2reference: 'ParcellaireAffectation'
@@ -562,7 +562,7 @@ all:
               limit: 0.6
         cdp_frejus_rose:
           synthese_libelle: "Côtes de Provence Fréjus - Rosé"
-          filter_parcellaire_produit_hash: 'appellations/CDP/mentions/DEFAUT/lieux/FRE'
+          filter_parcellaire_produit_hash: 'appellations/CDP'
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/FRE/couleurs/rose/cepages/DEFAUT
           filter_insee: ['83061', '83085', '83086', '83480', '83107', '83118', '83028, 83141']
           parcellaire2reference: 'ParcellaireAffectation'
@@ -603,7 +603,7 @@ all:
               limit: 0.2
         cdp_lalonde_blanc:
           synthese_libelle: "Côtes de Provence La Londe - Blanc"
-          filter_parcellaire_produit_hash: 'appellations/CDP/mentions/DEFAUT/lieux/LLO'
+          filter_parcellaire_produit_hash: 'appellations/CDP'
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/LLO/couleurs/blanc/cepages/DEFAUT
           parcellaire2reference: 'ParcellaireAffectation'
           categories:
@@ -627,7 +627,7 @@ all:
               limit: 0.5
         cdp_lalonde_rouge:
           synthese_libelle: "Côtes de Provence La Londe - Rouge"
-          filter_parcellaire_produit_hash: 'appellations/CDP/mentions/DEFAUT/lieux/LLO'
+          filter_parcellaire_produit_hash: 'appellations/CDP'
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/LLO/couleurs/rouge/cepages/DEFAUT
           parcellaire2reference: 'ParcellaireAffectation'
           categories:
@@ -673,7 +673,7 @@ all:
               limit: 0.1
         cdp_lalonde_rose:
           synthese_libelle: "Côtes de Provence La Londe - Rosé"
-          filter_parcellaire_produit_hash: 'appellations/CDP/mentions/DEFAUT/lieux/LLO'
+          filter_parcellaire_produit_hash: 'appellations/CDP'
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/LLO/couleurs/rose/cepages/DEFAUT
           parcellaire2reference: 'ParcellaireAffectation'
           categories:
@@ -724,7 +724,7 @@ all:
               limit: 0.2
         cdp_pierrefeu_rouge:
           synthese_libelle: "Côtes de Provence Pierrefeu - Rouge"
-          filter_parcellaire_produit_hash: 'appellations/CDP/mentions/DEFAUT/lieux/PIE'
+          filter_parcellaire_produit_hash: 'appellations/CDP'
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/PIE/couleurs/rouge/cepages/DEFAUT
           filter_insee: ['83091', '83100']
           parcellaire2reference: 'ParcellaireAffectation'
@@ -760,7 +760,7 @@ all:
         cdp_pierrefeu_rose:
           synthese_libelle: "Côtes de Provence Pierrefeu - Rosé"
           filter_insee: ['83091', '83100']
-          filter_parcellaire_produit_hash: 'appellations/CDP/mentions/DEFAUT/lieux/PIE'
+          filter_parcellaire_produit_hash: 'appellations/CDP'
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/PIE/couleurs/rose/cepages/DEFAUT
           parcellaire2reference: 'ParcellaireAffectation'
           categories:
