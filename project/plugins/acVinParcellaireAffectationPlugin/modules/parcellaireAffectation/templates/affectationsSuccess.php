@@ -177,9 +177,11 @@ if(isset($coop)):
                 document.querySelectorAll('tr.commune-total td:nth-child(0n+3)').forEach(function(td) {
                     total_checked += parseInt(td.innerText);
                 });
-                document.querySelector('#synthese-total tr.total td:nth-child(0n+2)').innerText = total_superficie.toFixed(4);
-                document.querySelector('#synthese-total tr.total td:nth-child(0n+3)').innerText = total_checked;
 
+                if(document.querySelector('#synthese-total')) {
+                    document.querySelector('#synthese-total tr.total td:nth-child(0n+2)').innerText = total_superficie.toFixed(4);
+                    document.querySelector('#synthese-total tr.total td:nth-child(0n+3)').innerText = total_checked;
+                }
             };
 
             updateRules = function (table) {
