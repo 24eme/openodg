@@ -509,6 +509,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $pot = PotentielProduction::cacheCreatePotentielProduction($this->parcellaire, $this, false);
         $ret = [];
         foreach($pot->getProduits() as $prod) {
+            if (!$prod->getProduitHash() || !$this->exist($prod->getProduitHash())) {
+                continue;
+            }
             if ($prod->hasPotentiel() && $prod->hasLimit()) {
                 $ret[$prod->getLibelle()] = $prod->getSuperficieMax();
             }
