@@ -131,8 +131,7 @@ class parcellaireAffectationActions extends sfActions {
 
 
         $this->produits = $this->parcellaireAffectation->getProduits();
-        $this->hashproduit = $request->getParameter('hashproduit', (count($this->produits) > 1)? array_key_first($this->produits) : null);
-
+        $this->hashproduit = $request->getParameter('hashproduit', (count($this->produits) >= 1)? array_key_first($this->produits) : null);
 
 		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation, $this->destinataire, $this->hashproduit);
 
