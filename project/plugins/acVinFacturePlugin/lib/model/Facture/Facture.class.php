@@ -579,7 +579,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     public function hasTalonDetachable()
     {
-        return FactureConfiguration::getInstance()->hasTalonDetachable();
+
+        return FactureConfiguration::getInstance()->hasTalonDetachable() && !$this->isAvoir();
     }
 
     /*** ARCHIVAGE ***/
