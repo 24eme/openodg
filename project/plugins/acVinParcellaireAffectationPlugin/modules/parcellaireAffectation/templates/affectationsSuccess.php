@@ -123,7 +123,7 @@ if(isset($coop)):
     </table>
     <?php endforeach; ?>
     <?php
-    if ($has_parcelles):
+    if ($has_parcelles && $hashproduit):
         $superficie_potentielle = $parcellaireAffectation->getTheoriticalPotentielForHash($hashproduit);
         if ($superficie_potentielle):
     ?>
