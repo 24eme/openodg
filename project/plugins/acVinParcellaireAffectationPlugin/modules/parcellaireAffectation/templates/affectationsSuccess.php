@@ -88,9 +88,9 @@ if(isset($coop)):
       $parcelles = $parcelles->getRawValue();
       ksort($parcelles);
     		foreach ($parcelles as $parcelle):
-            if (isset($form[$parcelle->getParcelleKeyId()])):
+            if (isset($form[$parcelle->getParcelleId()])):
     	?>
-    		<tr class="vertical-center" id="tr_<?php echo $parcelle->getParcelleKeyId();?>">
+    		<tr class="vertical-center" id="tr_<?php echo $parcelle->getParcelleId();?>">
     			<td><?php echo $parcelle->commune; ?></td>
                 <td><?php echo $parcelle->lieu; ?></td>
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
@@ -98,13 +98,13 @@ if(isset($coop)):
                 <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
                 <td class="text-right"><?php echoFloatFr($parcelle->getSuperficieParcellaire(),4); ?></td>
                 <td class="text-right edit">
-                    <?php echo $form[$parcelle->getParcelleKeyId()]['superficie']->render(); ?>
+                    <?php echo $form[$parcelle->getParcelleId()]['superficie']->render(); ?>
                 </td>
             	<td class="text-center">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$parcelle->getParcelleKeyId()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $form[$parcelle->getParcelleKeyId()]['affectee']->renderError() ?>
+                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$parcelle->getParcelleId()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
+                    	<?php echo $form[$parcelle->getParcelleId()]['affectee']->renderError() ?>
                         <div class="col-xs-12">
-    		            	<?php echo $form[$parcelle->getParcelleKeyId()]['affectee']->render(array('class' => "bsswitch test", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+    		            	<?php echo $form[$parcelle->getParcelleId()]['affectee']->render(array('class' => "bsswitch test", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                         </div>
                     </div>
             	</td>
