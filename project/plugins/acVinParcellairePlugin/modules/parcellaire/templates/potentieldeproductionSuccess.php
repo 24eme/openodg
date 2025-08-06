@@ -6,12 +6,12 @@
     <li><a href="<?php echo url_for('parcellaire'); ?>">Parcellaire</a></li>
 <?php endif; ?>
   <li><a href="<?php echo url_for('parcellaire_declarant', $etablissement); ?>">Parcellaire de <?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>) </a></li>
-  <li>Détails du Potentiel de Production</li>
+  <li>Détail du Potentiel de Production</li>
 </ol>
 
 <h1>Potentiel de production</h1>
 <?php foreach($potentiel->getProduits() as $produit): if ($produit->hasPotentiel()): ?>
-<span class="pull-right">Caculé d'après <a href="<?php echo url_for( ($produit->parcellaire2refIsAffectation()) ? 'parcellaireaffectation_visualisation' : 'parcellaire_visualisation', $produit->getParcellaire2Ref()) ?>"><?php echo $produit->getParcellaire2Ref()->_id; ?></a></span>
+<span class="pull-right">Calculé d'après <a href="<?php echo url_for( ($produit->parcellaire2refIsAffectation()) ? 'parcellaireaffectation_visualisation' : 'parcellaire_visualisation', $produit->getParcellaire2Ref()) ?>"><?php echo $produit->getParcellaire2Ref()->_id; ?></a></span>
 <h2><?php echo $produit->getLibelle(); ?></h2>
 <table class="table">
     <tr>
