@@ -5,7 +5,7 @@ all:
       export_sage_width_txt: true
       modalite_paiement: "30 jours par virement"
       uniq_template_prefix: "TEMPLATE-FACTURE-%region%"
-      paiements: true
+      paiements: false
       export_type: "isa"
       liste_dernier_exercice: true
       facturation_region: true
