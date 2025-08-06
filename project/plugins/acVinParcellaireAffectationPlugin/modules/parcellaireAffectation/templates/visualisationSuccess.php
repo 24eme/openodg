@@ -38,12 +38,7 @@
 <?php endif; ?>
 
 <?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation, 'coop' => $coop)); ?>
-<div class="row">
-    <div class="col-xs-10"></div>
-    <div class="col-xs-2 mb-2">
-        <a href="<?php echo url_for('parcellaire_potentiel_visualisation', array('id' => $parcellaireAffectation->getParcellaire()->_id)); ?>">Voir le détail du potentiel</a>
-    </div>
-</div>
+
 <?php include_component('parcellaire', 'syntheseParCepages', array('parcellaire' => $parcellaireAffectation)); ?>
 
 <?php if($parcellaireAffectation->observations): ?>
