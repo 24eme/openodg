@@ -38,9 +38,11 @@
             <th class="col-xs-2">Numéro</th>
             <th class="col-xs-1">Type</th>
             <th class="col-xs-3">Opérateur</th>
-            <th class="col-xs-2 text-right">Montant TTC Facture</th>
+            <th class="<?php if ($hasPaiements):?>col-xs-2<?php else: ?>col-xs-5<?php endif;?> text-right">Montant TTC Facture</th>
+            <?php if($hasPaiements):?>
             <th class="col-xs-2 text-right">Montant payé</th>
             <th class="col-xs-1 text-center"><a href='"' onclick="document.getElementById('table_filtre').value = 'non payée';document.getElementById('table_filtre').dispatchEvent(new Event('keyup'));return false;"><small>Voir que les impayées</small></a></th>
+            <?php endif;?>
         </tr>
     </thead>
     <tbody>
@@ -57,8 +59,10 @@
                     <?php endif; ?>
                 </td>
                 <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->doc->total_ttc)); ?>&nbsp;€<span hidden><?php echo Anonymization::hideIfNeeded($facture->doc->total_ttc); ?></span></td>
+                <?php if($hasPaiements):?>
                 <td class="text-right"><?php (!isset($facture->doc->montant_paiement) || $facture->doc->montant_paiement == 0) ? $amount = "" : $amount = echoFloat((float)$facture->doc->montant_paiement) . "€"; ?>&nbsp;<?php echo $amount ?><span hidden><?php echo $facture->doc->montant_paiement ?></span></td>
                 <td class="text-center"><?php if ($facture->doc->montant_paiement < $facture->doc->total_ttc) : ?><span class="label label-danger">Non payée</span><?php else: ?> <span class="label label-success">Soldée</span><?php endif; ?></td>
+                <?php endif;?>
             </tr>
         <?php endforeach; ?>
         <?php if(!count($factures)): ?>
