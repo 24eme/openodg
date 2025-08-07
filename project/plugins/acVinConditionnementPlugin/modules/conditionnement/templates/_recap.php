@@ -117,18 +117,18 @@
 
 <?php if (DRevConfiguration::getInstance()->hasDegustation()): ?>
 <h3>Contrôle</h3>
-<?php if (isset($form['date_degustation_voulue'])): ?>
+<?php if(isset($form["date_degustation_voulue"])): ?>
     <?php echo $form["date_degustation_voulue"]->renderError(); ?>
     <div class="form-group" style="margin-bottom: 20px;">
-        <?php echo $form["date_degustation_voulue"]->renderLabel("Date de contrôle souhaitée : ", array("class" => "col-xs-3 control-label")); ?>
-        <div class="input-group date-picker-week col-xs-3" style="z-index: 100px; position: relative;">
-            <?php echo $form["date_degustation_voulue"]->render(); ?>
-            <div class="input-group-addon">
-                <span class="glyphicon-calendar glyphicon"></span>
-            </div>
+        <?php echo $form["date_degustation_voulue"]->renderLabel("Date de controle des vins souhaitée :", array("class" => "col-xs-3 control-label")); ?>
+        <div class="input-group date-picker-week col-xs-3">
+        <?php echo $form["date_degustation_voulue"]->render(array("class" => "form-control", "placeholder" => "", "required" => "true")); ?>
+        <div class="input-group-addon">
+            <span class="glyphicon-calendar glyphicon"></span>
+        </div>
         </div>
     </div>
-<?php endif;?>
+<?php endif; ?>
 
 <?php if(isset($form["date_commission"])): ?>
     <?php echo $form["date_commission"]->renderError(); ?>
