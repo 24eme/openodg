@@ -6,24 +6,17 @@
 
 
         <?php if($conditionnement->exist('lots')): ?>
+            <?php if(!$conditionnement->validation_odg && $sf_user->isAdmin()): ?>
+              <div class="pull-right">
+                <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
+              </span>
+              </div>
+            <?php endif; ?>
           <h3 id="table_igp_title">Déclaration des lots</h3>
-          <?php
-          $lots = $conditionnement->getLotsByCouleur();
-          ?>
-          <div class="row">
-              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
+          <?php $lots = $conditionnement->getLotsByCouleur(); ?>
+          <div class="mb-2">
+              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" class="hamzastyle" style="width: 100%;">
           </div>
-          <br/>
-          <?php if(!$conditionnement->validation_odg && $sf_user->isAdmin()): ?>
-          <div class="row text-right">
-            <div class="col-xs-3 col-xs-offset-9">
-              <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
-            </span>
-
-            </div>
-          </div>
-          <br/>
-          <?php endif; ?>
           <table class="table table-bordered table-striped table_igp">
             <thead>
               <tr>
