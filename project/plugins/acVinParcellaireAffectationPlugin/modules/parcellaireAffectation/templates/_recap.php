@@ -116,3 +116,8 @@
 </table>
 <?php  endforeach; ?>
 <?php  endforeach; ?>
+<?php if (PotentielProduction::cacheCreatePotentielProduction($parcellaireAffectation->getRawValue()->getParcellaire(), $parcellaireAffectation->getRawValue(), false)->parcellaire2refIsAffectation()):?>
+    <div class="text-right mb-5">
+        <a href="<?php echo url_for('parcellaire_potentiel_visualisation', array('id' => $parcellaireAffectation->getParcellaire()->_id)); ?>">Voir le détail du potentiel de production</a>
+    </div>
+<?php endif;?>
