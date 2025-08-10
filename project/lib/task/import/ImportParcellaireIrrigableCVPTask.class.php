@@ -157,6 +157,7 @@ EOF;
                     $this->cpt_error = 0;
                 }
                 $this->irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($etablissement->identifiant, substr($data[self::CSV_CAMPAGNE], 0, 4));
+                $this->irrigable->observations = str_replace("Import Coteaux Varois", "", $this->irrigable->observations);
                 $this->irrigable->observations .= "Import Coteaux Varois";
             }
             if ($pt && $pt->getProduitHash()) {
