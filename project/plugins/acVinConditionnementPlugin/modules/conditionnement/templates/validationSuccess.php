@@ -30,11 +30,7 @@
         <?php include_partial('conditionnement/pointsAttentions', array('conditionnement' => $conditionnement, 'validation' => $validation)); ?>
     <?php endif; ?>
 
-    <?php if($sf_user->isAdmin()): ?>
-      <?php include_partial('conditionnement/recap', array('conditionnement' => $conditionnement, 'form' => $form)); ?>
-    <?php else:?>
-      <?php include_partial('conditionnement/recap', array('conditionnement' => $conditionnement)); ?>
-    <?php endif; ?>
+    <?php include_partial('conditionnement/recap', array('conditionnement' => $conditionnement, 'form' => $form)); ?>
 
 	<?php  if (!$conditionnement->isPapier() && count($validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)) > 0): ?>
     	<?php include_partial('conditionnement/engagements', array('conditionnement' => $conditionnement, 'validation' => $validation, 'form' => $form)); ?>

@@ -1,25 +1,20 @@
 <?php
 
-class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
+class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportDegustationPDF {
 
-    protected $degustation = null;
     protected $secteur = null;
     protected $etablissements = [];
     protected $lots = [];
     protected $lotid = null;
 
     public function __construct($degustation, $lotid = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null, $secteur = null) {
-        $this->degustation = $degustation;
+        parent::__construct($degustation, $type, $use_cache, $file_dir, $filename);
         $this->lotid = $lotid;
         if($secteur == DegustationClient::DEGUSTATION_SANS_SECTEUR) {
             $secteur = null;
         }
         $this->secteur = $secteur;
-        if (!$filename) {
-            $filename = $this->getFileName(true);
-        }
         $this->engine();
-        parent::__construct($type, $use_cache, $file_dir, $filename);
     }
 
     public function engine() {
@@ -114,10 +109,6 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
                 return $header_subtitle;
             }
         }
-    }
-
-    protected function getConfig() {
-        return new ExportDegustationFicheIndividuelleLotsAPreleverPDFConfig();
     }
 
     public function getFileName($with_rev = false) {

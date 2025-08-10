@@ -6,24 +6,17 @@
 
 
         <?php if($conditionnement->exist('lots')): ?>
+            <?php if(!$conditionnement->validation_odg && $sf_user->isAdmin()): ?>
+              <div class="pull-right">
+                <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
+              </span>
+              </div>
+            <?php endif; ?>
           <h3 id="table_igp_title">Déclaration des lots</h3>
-          <?php
-          $lots = $conditionnement->getLotsByCouleur();
-          ?>
-          <div class="row">
-              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
+          <?php $lots = $conditionnement->getLotsByCouleur(); ?>
+          <div class="mb-2">
+              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" class="hamzastyle" style="width: 100%;">
           </div>
-          <br/>
-          <?php if(!$conditionnement->validation_odg && $sf_user->isAdmin()): ?>
-          <div class="row text-right">
-            <div class="col-xs-3 col-xs-offset-9">
-              <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
-            </span>
-
-            </div>
-          </div>
-          <br/>
-          <?php endif; ?>
           <table class="table table-bordered table-striped table_igp">
             <thead>
               <tr>
@@ -117,18 +110,18 @@
 
 <?php if (DRevConfiguration::getInstance()->hasDegustation()): ?>
 <h3>Contrôle</h3>
-<?php if (isset($form['date_degustation_voulue'])): ?>
+<?php if(isset($form["date_degustation_voulue"])): ?>
     <?php echo $form["date_degustation_voulue"]->renderError(); ?>
     <div class="form-group" style="margin-bottom: 20px;">
-        <?php echo $form["date_degustation_voulue"]->renderLabel("Date de contrôle souhaitée : ", array("class" => "col-xs-3 control-label")); ?>
-        <div class="input-group date-picker-week col-xs-3" style="z-index: 100px; position: relative;">
-            <?php echo $form["date_degustation_voulue"]->render(); ?>
-            <div class="input-group-addon">
-                <span class="glyphicon-calendar glyphicon"></span>
-            </div>
+        <?php echo $form["date_degustation_voulue"]->renderLabel("Date de controle des vins souhaitée :", array("class" => "col-xs-3 control-label")); ?>
+        <div class="input-group date-picker-week col-xs-3">
+        <?php echo $form["date_degustation_voulue"]->render(array("class" => "form-control", "placeholder" => "", "required" => "true")); ?>
+        <div class="input-group-addon">
+            <span class="glyphicon-calendar glyphicon"></span>
+        </div>
         </div>
     </div>
-<?php endif;?>
+<?php endif; ?>
 
 <?php if(isset($form["date_commission"])): ?>
     <?php echo $form["date_commission"]->renderError(); ?>

@@ -122,4 +122,13 @@ class PotentielProduction {
         return $hash_produits;
     }
 
+    public function parcellaire2refIsAffectation()
+    {
+        foreach ($this->getProduits() as $produit) {
+            if ($produit && $produit->hasPotentiel() && $produit->parcellaire2refIsAffectation()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
