@@ -358,7 +358,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function getHabilitation() {
         if(is_null($this->habilitation)) {
-            $this->habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getPeriode().'-03-01');
+            $this->habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getPeriode().'-99-99');
         }
 
         return $this->habilitation;
