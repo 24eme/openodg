@@ -1,0 +1,4 @@
+all:
+  configuration:
+    transaction:
+      destination_defaut: 'France'

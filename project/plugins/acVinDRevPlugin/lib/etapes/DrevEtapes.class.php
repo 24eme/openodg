@@ -82,6 +82,11 @@ class DrevEtapes extends Etapes
 			return $doc->getDocumentDouanierType();
 		}
 
+        if($step == self::ETAPE_REVENDICATION_SUPERFICIE) {
+
+            return "Produits";
+        }
+
 		return parent::getLibelle($step, $doc);
     }
 

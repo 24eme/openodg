@@ -4,7 +4,7 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">Chgt.&nbsp;de&nbsp;dénomination&nbsp;/&nbsp;Déclassement</h3>
+            <h3 class="panel-title">Chgt.&nbsp;de&nbsp;dénom.&nbsp;ou&nbsp;déclass.&nbsp;de&nbsp;lots&nbsp;contrôlés</h3>
         </div>
         <div class="panel-body">
             <?php if ($enCours): ?>
@@ -14,7 +14,7 @@
                 <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('chgtdenom_delete', $enCours) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
             </div>
             <?php else: ?>
-            <p class="explications">Espace permettant le changement de dénomination ou déclassement de vos logements.</p>
+            <p class="explications">Espace permettant le changement de dénomination ou déclassement de vos logements pour vos lot contrôlés.</p>
             <div class="actions">
             <a class="btn btn-default btn-block" href="<?php echo url_for('chgtdenom_lots', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><?php if($sf_user->isAdmin()): ?><span class="glyphicon glyphicon-file"></span> Saisie papier<?php else: ?>Démarrer la télédéclaration<?php endif; ?></a>
             </div>

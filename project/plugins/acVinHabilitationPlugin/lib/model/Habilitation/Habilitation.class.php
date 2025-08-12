@@ -163,20 +163,22 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     public function addProduit($hash, $date = null) {
         $hash = preg_replace("|/declaration/|", '', $hash);
         if(!$this->getConfiguration($date)->exist('/declaration/'.$hash)){
-            return null;
+          return null;
         }
         $prod = $this->getConfiguration($date)->get('/declaration/'.$hash);
+        $exist = $this->declaration->exist($hash);
         $produit = $this->getProduitByProduitConf($prod);
-        if(!$produit) {
-            $produit_libelle = $produit->getLibelle();
+        if(!$exist) {
             $produit->initActivites();
             if($date == $this->date || !$date) {
-                $this->addHistoriqueNewProduit($produit_libelle);
+                $this->addHistoriqueNewProduit($produit->getLibelle());
             }
             $this->declaration->reorderByConf();
+            $produit = $this->get($produit->getHash());
         }
         return $produit;
     }
+
 
     public function getProduitByProduitConf($prodconf) {
         $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prodconf);

@@ -89,9 +89,6 @@
     <?php if(in_array('parcellaireAffectationCoop', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_partial('parcellaireAffectationCoop/monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireAffectationConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
-    <?php if(class_exists("ParcellaireIrrigableConfiguration") && ParcellaireIrrigableConfiguration::getInstance()->isModuleEnabled()): ?>
-    <?php include_component('parcellaireIrrigable', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireIrrigableConfiguration::getInstance()->getCurrentPeriode())); ?>
-    <?php endif; ?>
     <?php if(class_exists("ParcellaireIrrigueConfiguration") && ParcellaireIrrigueConfiguration::getInstance()->isModuleEnabled()): ?>
     <?php include_component('parcellaireIrrigue', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireIrrigueConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>

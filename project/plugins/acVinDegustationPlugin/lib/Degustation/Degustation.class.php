@@ -1239,9 +1239,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $degustateurs = [];
 
             $regions = array_unique(array_merge([$this->region], $this->getRegionsFromProduits()));
-            foreach($regions as $region) {
-                $region_postfix = ($region)  ? '_'.strtolower($region) : '';
-                $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college.$region_postfix );
+            if (DegustationConfiguration::getInstance()->hasDegustateurParRegion()) {
+                $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college);
+            } else {
+                foreach($regions as $region) {
+                    $region_postfix = ($region)  ? '_'.strtolower($region) : '';
+                    $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college.$region_postfix );
+                }
             }
             if (count($comptes_degustateurs) > 0) {
                 foreach ($comptes_degustateurs as $compte) {
@@ -1993,8 +1997,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function isLibelleAcceptable()
         {
-            if (DegustationConfiguration::getInstance()->hasAcceptabiliteAoc()) {
-                return DegustationConfiguration::getInstance()->getAcceptabiliteAoc();
+            if (DegustationConfiguration::getInstance()->hasAcceptabiliteAoc($this->getRegion())) {
+                return DegustationConfiguration::getInstance()->getAcceptabiliteAoc($this->getRegion());
             }
             return false;
         }

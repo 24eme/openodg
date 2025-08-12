@@ -74,7 +74,7 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
                 continue;
             }
             foreach ($produit->detail as $parcelle) {
-                $parcelles[$parcelle->getParcelleKeyId()] = $parcelle;
+                $parcelles[$parcelle->getParcelleId()] = $parcelle;
             }
         }
         return $parcelles;

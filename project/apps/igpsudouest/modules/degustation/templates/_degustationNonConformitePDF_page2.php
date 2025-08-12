@@ -3,9 +3,12 @@
 <?php use_helper('TemplatingPDF'); ?>
 
 <?php
-if ($lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR && ($lot->destination_type == "CONDITIONNEMENT" || strpos($lot->id_document_provenance, "CONDITIONNEMENT"))) {
-    echo include_partial('degustationNonConformiteConditionnePDF_page2', array('degustation' => $degustation, 'etablissement' => $etablissement, "lot" => $lot));
-} else {
-    echo include_partial('degustationNonConformiteNonConditionnePDF_page2', array('degustation' => $degustation, 'etablissement' => $etablissement, "lot" => $lot));
-}
+    if ($lot->conformite == Lot::CONFORMITE_NONCONFORME_MINEUR) {
+        echo include_partial('degustationNonConformiteMinPDF_page2', array('degustation' => $degustation, 'etablissement' => $etablissement, "lot" => $lot));
+    }
+    else if ($lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR_CONDITIONNÉ) {
+        echo include_partial('degustationNonConformiteConditionnePDF_page2', array('degustation' =>     $degustation, 'etablissement' => $etablissement, "lot" => $lot));
+    } else {
+        echo include_partial('degustationNonConformiteNonConditionnePDF_page2', array('degustation' =>  $degustation, 'etablissement' => $etablissement, "lot" => $lot));
+    }
 ?>

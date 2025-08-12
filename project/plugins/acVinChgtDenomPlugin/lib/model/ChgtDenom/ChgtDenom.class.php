@@ -144,6 +144,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $date = date('c');
         }
         $this->validation_odg = $date;
+        if ($region) {
+            $this->add('region', $region);
+        }
         if(!$this->isFactures()){
             $this->save();
             $this->clearMouvementsFactures();
@@ -415,6 +418,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $this->generateMouvementsLots();
             $this->fillDocToSaveFromLots();
         }
+
+        if ($this->origine_produit_hash) {
+            $this->add('region', RegionConfiguration::getInstance()->getOdgRegion($this->origine_produit_hash));
+        }
+
         $saved = parent::save($saveDependants);
         if ($saveDependants) {
             $this->saveDocumentsDependants();
@@ -511,7 +519,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       }
 
       $ordre = sprintf('%02d', intval($lot->document_ordre) + 1 );
-      $lot->date = $this->date;
+      $lot->date = ($this->validation < $this->date) ? $this->validation : $this->date;
       $lot->document_ordre = $ordre;
       $lot->id_document_provenance = $this->changement_origine_id_document;
 
@@ -634,6 +642,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function addCepage($cepage, $repartition) {
+        if(!$repartition) {
+            $repartition = -1;
+        }
         $this->changement_cepages->add($cepage, $repartition);
     }
 

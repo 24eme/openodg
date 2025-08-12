@@ -70,7 +70,7 @@
             <?php endif; ?>
         <?php endif; ?>
         <?php if(!$transaction->validation): ?>
-                <a href="<?php echo url_for("transaction_delete", $transaction) ?>" class="btn btn-default alert-danger" onclick="return confirm('Souhaitez-vous vraiment SUPPRIMER ce document ?')"><span class="glyphicon glyphicon-remove"></span> Supprimer cette saisie</a>
+                <a href="<?php echo url_for("transaction_delete", $transaction) ?>" class="btn btn-default alert-danger" onclick="return confirm('Souhaitez-vous vraiment SUPPRIMER ce document ?')"><span class="glyphicon glyphicon-remove"></span> Supprimer la saisie</a>
                 <a href="<?php echo url_for("transaction_edit", $transaction) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
         <?php elseif(!$transaction->validation_odg && ( $sf_user->isAdmin() ||
                                                  ($sf_user->hasTransactionAdmin() && TransactionConfiguration::getInstance()->hasValidationOdgRegion() && !$transaction->isValidateOdgByRegion($regionParam))

@@ -131,8 +131,7 @@ class parcellaireAffectationActions extends sfActions {
 
 
         $this->produits = $this->parcellaireAffectation->getProduits();
-        $this->hashproduit = $request->getParameter('hashproduit', (count($this->produits) > 1)? array_key_first($this->produits) : null);
-
+        $this->hashproduit = $request->getParameter('hashproduit', (count($this->produits) >= 1)? array_key_first($this->produits) : null);
 
 		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation, $this->destinataire, $this->hashproduit);
 
@@ -220,6 +219,7 @@ class parcellaireAffectationActions extends sfActions {
             unset($this->destinatairesIncomplete["ETABLISSEMENT-".explode("-", $this->coop)[1]]);
         }
 
+
     	if (!$request->isMethod(sfWebRequest::POST)) {
     		$this->validation = new ParcellaireAffectationValidation($this->parcellaireAffectation);
     		return sfView::SUCCESS;
@@ -234,6 +234,7 @@ class parcellaireAffectationActions extends sfActions {
         if(count($this->destinatairesIncomplete)) {
             return $this->redirect('declaration_etablissement', $this->parcellaireAffectation->getEtablissementObject());
         }
+
 
     	$this->form->bind($request->getParameter($this->form->getName()));
 
