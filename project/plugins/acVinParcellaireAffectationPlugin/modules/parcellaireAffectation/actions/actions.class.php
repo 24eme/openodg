@@ -156,19 +156,19 @@ class parcellaireAffectationActions extends sfActions {
 
         $finded = false;
         $previous = null;
-        if (!$this->coop) foreach($this->destinataires as $dId => $d) {
-            if($dId == $this->destinataire && $request->getParameter('previous')) {
-                break;
+        if (!$this->coop) {
+            foreach($this->destinataires as $dId => $d) {
+                if($dId == $this->destinataire && $request->getParameter('previous')) {
+                    break;
+                }
+                $previous = $dId;
+                if($finded) {
+                    return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $dId]);
+                }
+                if($dId == $this->destinataire && !$request->getParameter('previous')) {
+                    $finded = true;
+                }
             }
-            $previous = $dId;
-            if($finded) {
-                return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $dId]);
-            }
-            if($dId == $this->destinataire && !$request->getParameter('previous')) {
-                $finded = true;
-            }
-
-
         }
         if($request->getParameter('previous') && $previous) {
             return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $previous]);
@@ -184,6 +184,11 @@ class parcellaireAffectationActions extends sfActions {
                 }
             }
             $this->redirect('parcellaireaffectation_exploitation', ['sf_subject' => $this->parcellaireAffectation]);
+        }
+
+        if ($request->getParameter('service')) {
+            $next = str_replace('%2F', '/', $request->getParameter('service'));
+            return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $previous, 'hashproduit' => $next]);
         }
 
         if ($this->hashproduit) {
