@@ -114,7 +114,7 @@ function pictoDegustable($lot) {
         throw new Exception("Lot ".$lot->getDocument()->_id.":".$lot->getHash()." non trouvé");
     }
 
-    if($lotOrigine->id_document_affectation && strpos($lotOrigine->id_document_affectation, 'DEGUSTATION')) {
+    if($lotOrigine->id_document_affectation && $lotOrigine->date_commission <= date("Y-m-d")) {
         return '<span title="Dégusté" class="glyphicon glyphicon-ok-circle text-success"></span>';
     }
 
