@@ -356,6 +356,45 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $destinataires;
     }
 
+    public function checkDestinatairesAreSet()
+    {
+        foreach ($this->getParcelles() as $parcelle) {
+            if ($parcelle->exist('destinations') && count($parcelle->destinations)) {
+                continue;
+            }
+
+            $destinataires = $this->getDestinataires();
+
+            echo $this->identifiant.': ';
+            echo count($destinataires ?? []);
+            echo ' destinataire(s)';
+
+            $nb_destinataires = count($destinataires);
+
+            if ($nb_destinataires === 1) {
+                $etablissement = EtablissementClient::getInstance()->find(key($destinataires));
+                foreach ($this->getParcelles() as $parcelle) {
+                    $parcelle->affecter($parcelle->superficie, $etablissement);
+                }
+            }
+
+            if ($nb_destinataires > 1 && getenv('DESTINATION_NO_THROW') !== false) {
+                $etablissements = [];
+                foreach ($destinataires as $id => $destinataire) {
+                    $etablissements[] = EtablissementClient::getInstance()->find($id);
+                }
+
+                foreach ($this->getParcelles() as $parcelle) {
+                    foreach ($etablissements as $etablissement) {
+                        $parcelle->affecter($parcelle->superficie, $etablissement);
+                    }
+                }
+            } elseif ($nb_destinataires > 1) {
+                throw new Exception("Impossible d'ajouter plusieurs destinations dans une parcelle");
+            }
+        }
+    }
+
     public function getHabilitation() {
         if(is_null($this->habilitation)) {
             $this->habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getPeriode().'-99-99');
