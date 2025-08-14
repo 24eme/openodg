@@ -514,7 +514,7 @@ class Email {
         $degustation->save(false);
       }
 
-      $message = $this->newInstance('degustation')
+      $message = $this->newMailInstance('degustation')
               ->setTo($to)
               ->setSubject($subject)
               ->setBody($body);
