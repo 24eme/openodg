@@ -246,6 +246,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     protected function doSave() {
         $this->piece_document->generatePieces();
+        $this->checkDestinatairesAreSet();
     }
 
 
