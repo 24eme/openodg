@@ -1,11 +1,16 @@
 all:
   configuration:
     degustation:
+      colleges:
+        degustateur_technicien: "Techniciens"
+        degustateur_operateur: "Opérateurs"
+        degustateur_usager_du_produit: "Usagers du produit"
       anonymat4labo: true
       conformite:
         - CONFORME
         - NONCONFORME_MINEUR
         - NONCONFORME_MAJEUR
+        - NONCONFORME_MAJEUR_CONDITIONNÉ
         - NONCONFORME_GRAVE
         - NONTYPICITE_CEPAGE
         - NONCONFORME_ANALYTIQUE

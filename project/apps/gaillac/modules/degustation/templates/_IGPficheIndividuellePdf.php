@@ -63,8 +63,6 @@
 
 
 </style>
-
-
 <div class="encart-nom"><small>NOM & PRENOM DU DEGUSTATEUR : </small>............................................................................................................................................................&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small>SIGNATURE :</small></div>
 
 <table border=0 cellspacing=0 cellpadding=0>
@@ -249,5 +247,5 @@
 
 </table>
 <div>
-    <small><i>* Rayer la mention inutile</i></small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i>** Brune pour les vins rouges, marron pour les vins blancs
+    <small><i>* Rayer la mention inutile</i></small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i>** Brune pour les vins rouges, marron pour les vins blancs</i></small>
 </div>

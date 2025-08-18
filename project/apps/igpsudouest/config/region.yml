@@ -1,0 +1,29 @@
+all:
+  configuration:
+    region:
+      odg:
+        COMTETOLOSAN:
+          nom: "IGP Comté Tolosan"
+          produits:
+            - "appellations/COT"
+          habilitation_produits: "/Comté Tolosan/"
+        AVEYRON:
+          nom: "IGP Aveyron"
+          produits:
+            - "appellations/AVR"
+          habilitation_produits: "/Aveyron/"
+        ARIEGE:
+          nom: "IGP Ariége"
+          produits:
+            - "appellations/ARG"
+          habilitation_produits: "/Ariége/"
+        LAVILLEDIEU:
+          nom: "IGP Lavilledieu"
+          produits:
+            - "appellations/LVD"
+          habilitation_produits: "/Lavilledieu/"
+        THEZACPERRICARD:
+          nom: "IGP Thézac-Perricard"
+          produits:
+            - "appellations/TZP"
+          habilitation_produits: "/Thézac-Perricard/"

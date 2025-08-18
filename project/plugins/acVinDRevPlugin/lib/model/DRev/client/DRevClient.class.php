@@ -45,10 +45,10 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $denom;
     }
 
-    public static $lotDestinationsType = array(
+    private static $lotDestinationsType = array(
         DRevClient::LOT_DESTINATION_CONDITIONNEMENT => "Conditionnement",
-        DRevClient::LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE => "Conditionnement sur conservatoire",
         DRevClient::LOT_DESTINATION_TRANSACTION => "Vrac Export",
+        DRevClient::LOT_DESTINATION_VRAC => "Vrac",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE => "Vrac France",
         DRevClient::LOT_DESTINATION_VRAC_EXPORT => "Vrac Export",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT => "Vrac France et Conditionnement",
@@ -56,6 +56,16 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         DRevClient::LOT_DESTINATION_VRAC_EXPORT_ET_CONDITIONNEMENT => "Vrac Export et Conditionnement",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE_VRAC_EXPORT_CONDITIONNEMENT => "Vrac Export, Vrac France et Conditionnement"
     );
+
+    public static function getLotDestinationsTypes() {
+        if (Organisme::getInstance()->isOC()) {
+            return array_merge([DRevClient::LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE => "Conditionnement sur conservatoire"], self::$lotDestinationsType);
+        }
+        return self::$lotDestinationsType;
+    }
+    public static function getLotDestinationsType($t) {
+        return self::getLotDestinationsTypes()[$t] ?? null;
+    }
 
     public $cache_find_drev = null;
 
@@ -221,13 +231,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             $filters = $filterparameters->getParameters();
         }
         foreach ($filters as $type => $filter) {
-            if ($type === 'appellations') {
-                throw new sfException('not implemented');
-            } elseif ($type === 'millesime') {
-                throw new sfException('not implemented');
-            } elseif ($type === 'deja') {
-                throw new sfException('not implemented');
-            } elseif ($type === 'region') {
+            if ($type === 'region') {
                 if ($drev->exist('region')) {
                     $region = str_replace('/region/', '', $filter);
                     $match = $match && strpos($drev->region, $region) !== false;
@@ -289,8 +293,10 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
                 $region = str_replace('/region/', '', $filter);
                 $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->getProduitHash());
             } elseif($type === 'famille') {
-                $e = $this->getCachedEtablissement($lot->declarant_identifiant);
-                $match = $match && $this->matchFilterFamille($e->famille, $filter);
+                if (isset($lot->declarant_identifiant)) {
+                    $e = $this->getCachedEtablissement($lot->declarant_identifiant);
+                    $match = $match && $this->matchFilterFamille($e->famille, $filter);
+                }
             }
         }
 
