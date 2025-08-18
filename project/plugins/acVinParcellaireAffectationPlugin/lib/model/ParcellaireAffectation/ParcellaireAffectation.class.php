@@ -360,11 +360,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     public function checkDestinatairesAreSet()
     {
         $destinataires = $this->getDestinataires();
-
-        echo $this->identifiant.': ';
-        echo count($destinataires ?? []);
-        echo ' destinataire(s)';
-
         $nb_destinataires = count($destinataires);
 
         foreach ($this->getParcelles() as $parcelle) {
