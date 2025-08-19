@@ -74,7 +74,9 @@ class ExportLotsCSV {
           $destination = null;
           $destination_date = null;
           if (isset($lot['destination_type'])) {
-            $destination = isset(DRevClient::getLotDestinationsType($lot['destination_type']))? DRevClient::getLotDestinationsType($lot['destination_type']) : $lot['destination_type'];
+              $destination = DRevClient::getLotDestinationsType($lot['destination_type'])
+                             ? DRevClient::getLotDestinationsType($lot['destination_type'])
+                             : $lot['destination_type'];
           }
           if (isset($lot['destination_date'])) {
             $destination_date = $lot['destination_date'];
