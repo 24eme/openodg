@@ -135,6 +135,8 @@ class facturationActions extends sfActions
                 }
             }
 
+            $this->hasPaiements = FactureConfiguration::getInstance()->hasPaiements();
+
             $this->form = new FactureGenerationForm();
 
             if(class_exists("Societe")) {
@@ -575,6 +577,7 @@ class facturationActions extends sfActions
         if ($request->getParameter('campagne')) {
             $this->campagne = $request->getParameter('campagne');
         }
+        $this->hasPaiements = FactureConfiguration::getInstance()->hasPaiements();
         $this->factures = FactureClient::getInstance()->getAllFactures($this->campagne);
     }
 

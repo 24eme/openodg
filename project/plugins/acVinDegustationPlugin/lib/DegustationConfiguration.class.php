@@ -126,15 +126,20 @@ class DegustationConfiguration {
         return isset($this->configuration['has_degustateurs_prerempli']) && $this->configuration['has_degustateurs_prerempli'];
     }
 
-    public function hasAcceptabiliteAoc()
+    public function hasAcceptabiliteAoc($region)
     {
-        return isset($this->configuration['is_acceptable_aoc']) && $this->configuration['is_acceptable_aoc'];
+            return isset($this->configuration['is_acceptable'][strtolower($region)]) && $this->configuration['is_acceptable'][strtolower($region)];
     }
 
-    public function getAcceptabiliteAoc()
+    public function getAcceptabiliteAoc($region)
     {
-        if ($this->hasAcceptabiliteAoc()) {
-            return $this->configuration['is_acceptable_aoc'];
+        if ($this->hasAcceptabiliteAoc($region)) {
+            return $this->configuration['is_acceptable'][strtolower($region)];
         }
+    }
+
+    public function hasDegustateurParRegion()
+    {
+        return isset($this->configuration['has_degustateur_par_region']) && $this->configuration['has_degustateur_par_region'];
     }
 }

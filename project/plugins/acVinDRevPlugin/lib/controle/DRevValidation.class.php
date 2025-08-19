@@ -25,6 +25,7 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_WARNING, 'declaration_surface_bailleur', "Vous n'avez pas reparti votre part de surface avec le bailleur");
         $this->addControle(self::TYPE_WARNING, 'vci_complement', "Vous ne complétez pas tout votre volume malgré votre stock VCI disponible");
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', "Le volume récolté de la DR est absent ou à zéro");
+        $this->addControle(self::TYPE_WARNING, 'declaration_elevage', "Vous avez déclaré un lot en élevage. Vous devez prendre contact avec votre ODG lorsque vous souhaiterez le commercialiser.");
 
         /*
          * Error
@@ -186,11 +187,17 @@ class DRevValidation extends DeclarationLotsValidation
 
     protected function controleProduitsDocumentDouanier($produits)
     {
+        $produits_hash = [];
+        foreach(array_keys($produits) as $h) {
+            $h = str_replace(['/EFF/', '/MOU/'], '/VDB/', $h);
+            $produits_hash[] = $h;
+        }
     	$drev = $this->document->getFictiveFromDocumentDouanier();
     	$hasDiff = false;
     	foreach ($drev->getProduits() as $hash_prod => $produit) {
             $hash = $produit->getParent()->getHash();
-    		if (!array_key_exists($hash, $produits)) {
+            $hash = str_replace(['/EFF/', '/MOU/'], '/VDB/', $hash);
+            if (!in_array($hash, $produits_hash)) {
     			$hasDiff = true;
     		}
     	}
@@ -306,7 +313,9 @@ class DRevValidation extends DeclarationLotsValidation
             $this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
             $has_point_dr = true;
         } elseif ($this->document->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR && !$produit->getSommeProduitsCepage('recolte/recolte_nette')) {
-            $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            if (strpos($produit->getHash(), '/MOU/') === false) {
+                $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            }
             $has_point_dr = true;
         } else {
 
@@ -444,6 +453,7 @@ class DRevValidation extends DeclarationLotsValidation
 
         $this->controleLotsGenerique('drev_lots');
 
+        $is_elevage = false;
         foreach ($this->document->lots as $key => $lot) {
             if($lot->hasBeenEdited()){
               continue;
@@ -462,6 +472,12 @@ class DRevValidation extends DeclarationLotsValidation
                     $this->addPoint(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr_err', $lot->getProduitLibelle(). " ( ".$lot->volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
                 }
             }
+            if ($lot->isInElevage()) {
+                $is_elevage = true;
+            }
+        }
+        if ($is_elevage) {
+            $this->addPoint(self::TYPE_WARNING, 'declaration_elevage', '');
         }
 
         $synthese = $this->document->summerizeProduitsLotsByCouleur('couleur');

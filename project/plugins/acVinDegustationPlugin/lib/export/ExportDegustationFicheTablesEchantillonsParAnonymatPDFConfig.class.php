@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationFicheTablesEchantillonsParAnonymatPDFConf extends ExportPDFConfig
+class ExportDegustationFicheTablesEchantillonsParAnonymatPDFConfig extends ExportPDFConfig
 {
     public function __construct() {
         parent::__construct();

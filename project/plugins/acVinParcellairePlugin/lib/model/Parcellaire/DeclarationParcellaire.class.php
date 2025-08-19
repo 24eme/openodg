@@ -16,10 +16,10 @@ class DeclarationParcellaire extends acCouchdbDocument {
     public function getParcelles($hashproduitFilter = null) {
         $parcelles = [];
         if ($this->declaration && count($this->declaration)) foreach ($this->declaration->getParcelles($hashproduitFilter) as $p) {
-            if (isset($parcelles[$p->getParcelleKeyId()])) {
-                throw new sfException('parcelleid '.$p->getParcelleKeyId().' already exists');
+            if (isset($parcelles[$p->getParcelleId()])) {
+                throw new sfException('parcelleid '.$p->getParcelleId().' already exists');
             }
-            $parcelles[$p->getParcelleKeyId()] = $p;
+            $parcelles[$p->getParcelleId()] = $p;
         }
         return $parcelles;
     }
@@ -162,8 +162,16 @@ class DeclarationParcellaire extends acCouchdbDocument {
         return $p[$id];
     }
 
-    public function findParcelleByParcelleId($parcelle) {
-        $p = $this->getParcelleById($parcelle->getParcelleId());
+    public function findProduitParcelle($parcelle) {
+        $hash = str_replace('/declaration/', '', $parcelle->produit_hash);
+        if (!$this->declaration->exist($hash)) {
+            return null;
+        }
+        if (!$this->declaration->get($hash)->detail->exist($parcelle->getParcelleId())) {
+            return null;
+        }
+
+        $p = $this->declaration->get($hash)->detail->get($parcelle->getParcelleId());
 
         if($p && $p->cepage == $parcelle->cepage && $p->campagne_plantation == $parcelle->campagne_plantation) {
             return $p;

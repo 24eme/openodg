@@ -1,25 +1,25 @@
 {
-  "_id": "TEMPLATE-FACTURE-AOPGAILLAC-2005",
+  "_id": "TEMPLATE-FACTURE-AOPGAILLAC-2020",
   "type": "TemplateFacture",
   "region": "AOPGAILLAC",
-  "campagne": 2005,
-  "libelle": "2005 - AOP Gaillac",
+  "campagne": 2020,
+  "libelle": "2020 - AOP Gaillac",
   "docs": [
     "DRev"
   ],
   "cotisations": {
-    "00_%detail_identifiant%_syndicaleGLC": {
+    "00_syndicaleGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation syndicale",
-      "code_comptable": "70620000",
+      "code_comptable": "70810000",
       "details": {
         "00_fixe": {
           "modele": "CotisationFixe",
           "prix": 10,
           "tva": 0,
           "unite": "",
-          "libelle": "AOP Gaillac - %detail_identifiant%",
+          "libelle": "AOP Gaillac",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -32,18 +32,18 @@
         }
       }
     },
-    "01_%detail_identifiant%_00_GLC_cotisationSyndicaleApporteursGLC": {
+    "01_GLC_cotisationSyndicaleApporteursGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation",
-      "code_comptable": "75101000",
+      "code_comptable": "70810000",
       "details": {
         "forfait": {
           "modele": "CotisationVariable",
           "prix": 10,
           "tva": 0,
           "unite": null,
-          "libelle": "syndicale annuelle AOP Gaillac - %detail_identifiant%",
+          "libelle": "syndicale annuelle AOP Gaillac",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -56,41 +56,41 @@
         }
       }
     },
-    "02_%detail_identifiant%_surfaceGLC": {
+    "02_surfaceGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation technique",
-      "code_comptable": "70620000",
+      "code_comptable": "70810000",
       "details": {
         "00_surface": {
           "modele": "CotisationVariable",
           "prix": 10,
           "tva": 0,
           "unite": "ha",
-          "libelle": "surface AOP Gaillac - %detail_identifiant%",
+          "libelle": "surface AOP Gaillac",
           "complement_libelle": "",
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeFacturable",
+          "callback": "getSurfaceFacturable",
           "callback_parameters": {
             "appellations": "/appellations/GLC"
           }
         }
       }
     },
-    "03_%detail_identifiant_odgGLC": {
+    "03_odgGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation ODG",
-      "code_comptable": "70620000",
+      "code_comptable": "70810000",
       "details": {
         "00_volume": {
           "modele": "CotisationVariable",
           "prix": 1.35,
           "tva": 0,
           "unite": "hl",
-          "libelle": "volume AOP Gaillac - %detail_identifiant%",
+          "libelle": "volume AOP Gaillac",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -102,18 +102,42 @@
         }
       }
     },
-    "04_%detail_identifiant%_inaoGLC": {
+    "04_analyse": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Participation Frais Analyses",
+      "code_comptable": "70610000",
+      "details": {
+        "00_produit_tranche": {
+          "modele": "CotisationVariable",
+          "prix": 52,
+          "tva": 0,
+          "unite": null,
+          "libelle": "Tranche(s)",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getTranchesByVolumeAndProduit",
+          "callback_parameters": {
+            "appellations": "certifications/AOP",
+            "tranche": 1500
+          }
+        }
+      }
+    },
+    "10_inaoGLC": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Droits INAO",
-      "code_comptable": "70610000",
+      "code_comptable": "70810000",
       "details": {
         "00_recolte": {
           "modele": "CotisationVariable",
           "prix": 0.15,
           "tva": 0,
           "unite": "hl",
-          "libelle": "AOP Gaillac - %detail_identifiant%",
+          "libelle": "AOP Gaillac",
           "complement_libelle": "",
           "docs": [
             "DRev"

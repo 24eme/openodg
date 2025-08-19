@@ -4,7 +4,9 @@ all:
       anonymat4labo: true
       specificite_lot_pdf: true
       always_identifiant_table: true
-      is_acceptable_aoc: true
+      is_acceptable:
+        aopgaillac : true
+        igptarn : false
       conformite:
         - CONFORME
         - NONCONFORME_MINEUR
@@ -13,3 +15,4 @@ all:
         - NONTYPICITE_CEPAGE
         - NONCONFORME_ANALYTIQUE
       has_notification: true
+      has_degustateur_par_region: true

@@ -24,9 +24,6 @@ class importOperateursHabilitationsAOPGaillacCsvTask extends sfBaseTask
     const CSV_COOOPERATIVE_COOPERATEUR = 18;
     const CSV_OBSERVATIONS = 19;
 
-
-    const hash_produit = 'certifications/AOP/genres/TRANQ/appellations/GLC';
-
     const activites = [
         self::CSV_PRODUCTEUR_DE_RAISINS => HabilitationClient::ACTIVITE_PRODUCTEUR,
         self::CSV_PRODUCTEUR_DE_MOUTS => HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS,
@@ -48,6 +45,7 @@ class importOperateursHabilitationsAOPGaillacCsvTask extends sfBaseTask
     {
         $this->addArguments(array(
             new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('hash', sfCommandArgument::REQUIRED, "Hash Produit"),
             new sfCommandArgument('csvemail', sfCommandArgument::REQUIRED, "Fichier csv pour les mail"),
         ));
 
@@ -87,7 +85,7 @@ EOF;
                 }
             }
         }
-
+        $this->hash_produit = $arguments['hash'];
         $csvfile = fopen($arguments['csv'], 'r');
 
         if (! $csvfile) {
@@ -98,13 +96,16 @@ EOF;
             if (is_numeric($data[self::CSV_NUMERO_ENREGISTREMENT]) === false) {
                 continue;
             }
-
-            $etablissement = $this->importSocieteEtablissement($data, (bool)$options['suspendu']);
-            if ($etablissement === false) {
-                continue;
+            try {
+                $etablissement = $this->importSocieteEtablissement($data, (bool)$options['suspendu']);
+                if ($etablissement === false) {
+                    continue;
+                    }
+                $this->importLien($etablissement, $data);
+                $this->importHabilitation($etablissement, $data, (bool)$options['suspendu']);
+            }catch(sfException $e) {
+                print_r(["ERROR", $data, $e->getMessage()]);
             }
-            $this->importLien($etablissement, $data);
-            $this->importHabilitation($etablissement, $data, (bool)$options['suspendu']);
         }
     }
 
@@ -143,7 +144,6 @@ EOF;
                 if ($e->num_interne) {
                     $e->num_interne .= "|";
                 }
-                $e->num_interne .= $data[self::CSV_NUMERO_ENREGISTREMENT];
                 $e->addCommentaire("Etablissement partagé IGP - AOP (".date('d/m/Y').")");
                 $e->region = 'IGPTARN|AOPGAILLAC';
             } else {
@@ -228,7 +228,6 @@ EOF;
         }
 
         $etablissement->cvi = $cvi;
-        $etablissement->num_interne = $data[self::CSV_NUMERO_ENREGISTREMENT];
         $etablissement->commentaire = trim($data[self::CSV_OBSERVATIONS]) ? $data[self::CSV_OBSERVATIONS] : null;
         $etablissement->region = 'AOPGAILLAC';
 
@@ -279,14 +278,20 @@ EOF;
             self::CSV_VINIFICATION => $data[self::CSV_VINIFICATION],
             self::CSV_ACHAT_DE_VINS_EN_VRAC => $data[self::CSV_ACHAT_DE_VINS_EN_VRAC],
             self::CSV_CONDITIONNEMENT => $data[self::CSV_CONDITIONNEMENT],
+            self::CSV_ELABORATION_DE_MOUSSEUX => $data[self::CSV_ELABORATION_DE_MOUSSEUX],
+            self::CSV_ELEVAGE => $data[self::CSV_ELEVAGE],
+            self::CSV_TRANSACTIONS_VRAC_VENTE_ENTRE_OPERATEURS => $data[self::CSV_TRANSACTIONS_VRAC_VENTE_ENTRE_OPERATEURS],
+            self::CSV_MISE_EN_MARCHÉ_VRAC_A_DESTINATION_CONSOMMATEUR => $data[self::CSV_MISE_EN_MARCHÉ_VRAC_A_DESTINATION_CONSOMMATEUR],
+
         ] as $key => $activite) {
             if ($activite === "1") {
-                $activites[] = self::activites[$key];
+                $activites[self::activites[$key]] = self::activites[$key];
             }
         }
+        $activites = array_keys($activites);
 
         if (!isset($_ENV['DRY_RUN'])) {
-            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_decision, $activites, [], $statut);
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, $this->hash_produit, $date_decision, $activites, [], $statut);
         }
         /*
         if($suspendu) {

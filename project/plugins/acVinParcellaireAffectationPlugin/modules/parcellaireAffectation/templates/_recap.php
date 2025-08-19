@@ -17,7 +17,7 @@
     </p>
 <?php endif; ?>
 <?php foreach ($parcellaireAffectation->getProblemPortentiel() as $produit => $limit ): ?>
-    <p class="alert alert-error">
+    <p class="alert alert-danger">
     Le potentiel de production n'est pas respecté pour <?php echo $produit; ?>. Au vu de la sélection de vos parcelles, vous ne pouvez pas produire sur plus de <?php echo $limit; ?> ha.
     </p>
 <?php endforeach; ?>
@@ -116,3 +116,8 @@
 </table>
 <?php  endforeach; ?>
 <?php  endforeach; ?>
+<?php if (PotentielProduction::cacheCreatePotentielProduction($parcellaireAffectation->getRawValue()->getParcellaire(), $parcellaireAffectation->getRawValue(), false)->parcellaire2refIsAffectation()):?>
+    <div class="text-right mb-5">
+        <a href="<?php echo url_for('parcellaire_potentiel_visualisation', array('id' => $parcellaireAffectation->getParcellaire()->_id)); ?>">Voir le détail du potentiel de production</a>
+    </div>
+<?php endif;?>

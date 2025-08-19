@@ -68,7 +68,7 @@
                         </td>
                         <td class="text-right"><?php echo $lot->pays; ?></td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
-                        <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
+                        <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::getLotDestinationsType($lot->destination_type) : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
                         <?php if ($sf_user->isAdmin()): ?>
                           <td class="text-center">
                             <?php if(isset($form['lots'])): ?>
@@ -117,7 +117,7 @@
 
           <?php if (DRevConfiguration::getInstance()->hasDegustation()): ?>
           <h3>Contrôle</h3>
-          <p>Date de controle souhaitée (hors lots en élevage) : <?php if ($transaction->exist('date_degustation_voulue')): ?><?php echo $transaction->get('date_degustation_voulue'); ?><?php else: ?><?php echo date('d/m/Y'); ?><?php endif; ?></p>
+          <p>Date de controle souhaitée (hors lots en élevage) : <?php if ($transaction->exist('date_degustation_voulue')): ?><?php echo date_format(date_create($transaction->get('date_degustation_voulue')), 'd/m/Y') ?><?php else: ?><?php echo date('d/m/Y'); ?><?php endif; ?></p>
 
           <?php if(isset($form["date_commission"])): ?>
               <?php echo $form["date_commission"]->renderError(); ?>
@@ -125,7 +125,7 @@
               <?php echo $form['degustation']->renderError(); ?>
               <?php endif; ?>
               <div class="form-group" style="margin-bottom: 20px;">
-                  <?php echo $form["date_commission"]->renderLabel("Date de la commission :", array("class" => "col-xs-3 control-label")); ?>
+                  <?php echo $form["date_commission"]->renderLabel("Date de retiraison :", array("class" => "col-xs-3 control-label")); ?>
                   <div class="input-group date-picker-week col-xs-3" style="z-index: 100px; position: relative;">
                       <?php if(isset($form["degustation"])): ?>
                       <?php echo $form['degustation']->render(); ?>
@@ -147,6 +147,6 @@
                   </script>
               </div>
           <?php elseif($transaction->date_commission): ?>
-              <p>Date de la commission : <?php echo ($transaction->exist('date_commission')) ? date_format(date_create($transaction->get('date_commission')), 'd/m/Y') : null; ?></p>
+              <p>Date de retiraison : <?php echo ($transaction->exist('date_commission')) ? date_format(date_create($transaction->get('date_commission')), 'd/m/Y') : null; ?></p>
               <?php endif ?>
           <?php endif; ?>

@@ -366,7 +366,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $societe = $this->getSociete();
 
             foreach($societe->getEtablissementsObj() as $etablissement) {
-                if($etablissement->etablissement->isSameCompteThanSociete()) {
+                if($etablissement->etablissement && $etablissement->etablissement->isSameCompteThanSociete()) {
 
                     return $etablissement->etablissement;
                 }
@@ -820,7 +820,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
       return ($this->getSociete())? $this->getSociete()->getCodeComptable() : null;
     }
 
-    public function getTagsDegustateur()
+    public function getTagsDegustateur($college = null)
     {
         $tags = [];
 
@@ -829,6 +829,12 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
                 if (strpos($tag, 'degustateur_') === 0) {
                     $tags[] = ucfirst(str_replace('_', ' ', substr($tag, strlen('degustateur_'))));
                 }
+            }
+        }
+
+        foreach ($this->droits as $droit) {
+            if (strpos($droit, str_replace('_', ':', $college).':') === 0) {
+                $tags[] = ucfirst(str_replace(str_replace('_', ':', $college).':', '', $droit));
             }
         }
 

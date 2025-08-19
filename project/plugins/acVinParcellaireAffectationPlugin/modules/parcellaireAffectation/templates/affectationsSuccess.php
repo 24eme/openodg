@@ -32,25 +32,22 @@ if(isset($coop)):
 <?php endif; ?>
 
 <ul class="nav nav-tabs mt-4">
-<?php
-foreach($destinataires as $id => $d):
-?>
-    <?php
-        if (count($produits) > 1):
-            foreach ($produits as $hash => $produit):
+<?php foreach($destinataires as $id => $d):
+    if (count($produits) > 1):
+        foreach ($produits as $hash => $produit):
     ?>
     <li role="presentation" class="<?php if($id.$hash == $destinataire.$hashproduit): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>">
-        <a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]) ?>">
+        <a class="onglet-presentation" data-form="validation-form" data-href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]) ?>" href="#">
             <?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php
             echo ($d['libelle_etablissement'] != 'Cave particulière') ? $d['libelle_etablissement'].' - ' : '';
             echo $produit; ?>
         </a>
     </li>
     <?php
-            endforeach;
-        else:
+        endforeach;
+    else:
     ?>
-    <li role="presentation" class="<?php if($id == $destinataire): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>"><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'] ?></a></li>
+    <li role="presentation" class="<?php if($id == $destinataire): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>"><a class="onglet-presentation" data-form="validation-form" data-href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id]) ?>" href="#"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'] ?></a></li>
     <?php endif; ?>
 <?php endforeach; ?>
 </ul>
@@ -91,9 +88,9 @@ foreach($destinataires as $id => $d):
       $parcelles = $parcelles->getRawValue();
       ksort($parcelles);
     		foreach ($parcelles as $parcelle):
-            if (isset($form[$parcelle->getParcelleKeyId()])):
+            if (isset($form[$parcelle->getParcelleId()])):
     	?>
-    		<tr class="vertical-center" id="tr_<?php echo $parcelle->getParcelleKeyId();?>">
+    		<tr class="vertical-center" id="tr_<?php echo $parcelle->getParcelleId();?>">
     			<td><?php echo $parcelle->commune; ?></td>
                 <td><?php echo $parcelle->lieu; ?></td>
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
@@ -101,13 +98,13 @@ foreach($destinataires as $id => $d):
                 <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
                 <td class="text-right"><?php echoFloatFr($parcelle->getSuperficieParcellaire(),4); ?></td>
                 <td class="text-right edit">
-                    <?php echo $form[$parcelle->getParcelleKeyId()]['superficie']->render(); ?>
+                    <?php echo $form[$parcelle->getParcelleId()]['superficie']->render(); ?>
                 </td>
             	<td class="text-center">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$parcelle->getParcelleKeyId()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $form[$parcelle->getParcelleKeyId()]['affectee']->renderError() ?>
+                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$parcelle->getParcelleId()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
+                    	<?php echo $form[$parcelle->getParcelleId()]['affectee']->renderError() ?>
                         <div class="col-xs-12">
-    		            	<?php echo $form[$parcelle->getParcelleKeyId()]['affectee']->render(array('class' => "bsswitch test", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+    		            	<?php echo $form[$parcelle->getParcelleId()]['affectee']->render(array('class' => "bsswitch test", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                         </div>
                     </div>
             	</td>
@@ -126,22 +123,32 @@ foreach($destinataires as $id => $d):
     </table>
     <?php endforeach; ?>
     <?php
-    if ($has_parcelles):
+    if ($has_parcelles && $hashproduit):
         $superficie_potentielle = $parcellaireAffectation->getTheoriticalPotentielForHash($hashproduit);
         if ($superficie_potentielle):
     ?>
-        <h3>Synthèse des parcelles affectées</h3>
+    <span id="PPvalid" class="pull-right label label-success mt-2 hidden"><span class="glyphicon glyphicon-ok-circle"></span> Le potentiel de production est respecté</span>
+    <span id="PPinvalid" class="pull-right label label-danger mt-2 hidden"><span class="glyphicon glyphicon-warning-sign"></span> Le potentiel de prodution n'est pas respecté</span>
+        <h3>Vérification du potentiel de production des parcelles affectées</h3>
         <table id="synthese-total" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
                 <tr>
-                    <td class="col-xs-9 text-right">Superficie potentielle max</td>
-                    <td class="col-xs-1 text-right" id="superficie_potentielle"><?php echo $superficie_potentielle; ?></td>
+                    <td class="col-xs-9 text-right">Superficie potentielle max.</td>
+                    <td class="col-xs-1 text-right" id="superficie_potentielle"><?php echoFloat($superficie_potentielle, 4); ?></td>
                     <td class="col-xs-2 text-center" colspan="2"> (<a href="<?php echo url_for('parcellaire_potentiel_visualisation', array('id' => $parcellaireAffectation->getParcellaire()->_id)); ?>">détail du potentiel</a>) </td>
                 </tr>
+<?php foreach ($parcellaireAffectation->getTheoriticalPotentielProductionProduit($hashproduit)->getRules() as $rule): ?>
+    <tr class="potentiel-regles">
+        <td class="col-xs-9 text-right"><span class="text-muted"><?php if ($rule->getRegleFonction() == 'ProportionSomme'){echo 'Proportion de';}else{echo 'Nombre de';} ?></span> <?php echo implode(', ', $rule->getCepages()->getRawValue()); ?></td>
+        <td class="col-xs-1 text-right"></td>
+        <td class="col-xs-1 text-right"></td>
+        <td class="col-xs-1 text-left" data-rulefonction="<?php echo $rule->getRegleFonction(); ?>" data-rulesens="<?php echo $rule->getSens(); ?>" data-rulevalue="<?php if ($rule->getRegleFonction() == 'ProportionSomme'){echo $rule->getLimitPC()*100;}else{echo $rule->getLimit();} ?>"><?php echo $rule->getSens() . ' '?><?php if ($rule->getRegleFonction() == 'ProportionSomme'){echo $rule->getLimitPC()*100 . '%';}else{echo $rule->getLimit();} ?></td>
+    </tr>
+<?php endforeach;?>
                 <tr class="total">
-                    <td class="col-xs-9 text-right"><strong>Total effecté</strong></td>
+                    <td class="col-xs-9 text-right"><strong>Total affecté</strong></td>
                     <td class="col-xs-1 text-right"></td>
                     <td class="col-xs-1 text-right"></td>
-                    <td class="col-xs-1"></td>
+                    <td class="col-xs-1 text-left">parcelle(s)</td>
                 </tr>
         </table>
 <?php endif; ?>
@@ -170,40 +177,142 @@ foreach($destinataires as $id => $d):
                 document.querySelectorAll('tr.commune-total td:nth-child(0n+3)').forEach(function(td) {
                     total_checked += parseInt(td.innerText);
                 });
-                document.querySelector('#synthese-total tr.total td:nth-child(0n+2)').innerText = total_superficie.toFixed(4);
-                document.querySelector('#synthese-total tr.total td:nth-child(0n+3)').innerText = total_checked;
 
-                if (total_superficie > parseFloat(document.querySelector('#superficie_potentielle').innerText)) {
-                    $('#synthese-total').addClass("alert alert-danger");
-                    $('#synthese-total').removeClass("alert alert-success");
-                }else{
-                    $('#synthese-total').removeClass("alert alert-danger");
-                    $('#synthese-total').addClass("alert alert-success");
+                if(document.querySelector('#synthese-total')) {
+                    document.querySelector('#synthese-total tr.total td:nth-child(0n+2)').innerText = total_superficie.toFixed(4);
+                    document.querySelector('#synthese-total tr.total td:nth-child(0n+3)').innerText = total_checked;
                 }
             };
 
-            (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
-                el.addEventListener('change', function (event) {
-                    superficie = this.value;
-                    if (this.parentNode.parentNode.childNodes[11].innerText == superficie) {
-                        this.parentNode.parentNode.childNodes[17].innerText = 'Totale';
-                    }else{
-                        this.parentNode.parentNode.childNodes[17].innerText = 'Partielle';
+            updateRules = function (table) {
+                let produitArray = {};
+                table.querySelectorAll("tbody tr:not(.commune-total)").forEach(function (tr) {
+                    if (tr.querySelector('.bsswitch:checked')) {
+                        if (! produitArray[tr.querySelector('td:nth-child(0n+4)').innerText]) {
+                            produitArray[tr.querySelector('td:nth-child(0n+4)').innerText] = 0;
+                        }
+                        produitArray[tr.querySelector('td:nth-child(0n+4)').innerText] += parseFloat(tr.querySelector('td:nth-child(0n+7) input').value);
                     }
-                    const table = event.target.closest('table')
-                    updateTotal(table)
-                })
-            });
+                });
+
+                document.querySelectorAll("tr.potentiel-regles").forEach(function (tr) {
+                    let total = 0;
+                    let produitCount = 0;
+                    let produitsBruts = tr.querySelector('td:nth-child(0n+1)').innerText;
+                    let produits = produitsBruts.substr(produitsBruts.indexOf('de ') + 3).split(',');
+                    produits.forEach(function (i) {
+                        i = i.trim();
+                        if (produitArray[i]) {
+                            total += produitArray[i];
+                            produitCount++;
+                        }
+                    });
+
+                    let valeurActuelle = 0;
+                    let limitPC = 0;
+                    let valueMax = 0;
+                    let fonction = tr.querySelector('td:nth-child(0n+4)').dataset.rulefonction;
+                    let sens = tr.querySelector('td:nth-child(0n+4)').dataset.rulesens;
+                    let totalAffecte = document.querySelector('#synthese-total tr.total td:nth-child(0n+2)').innerText;
+
+                    if (fonction == 'ProportionSomme') {
+                        valeurActuelle = total.toFixed(4);
+                        limitPC = tr.querySelector('td:nth-child(0n+4)').dataset.rulevalue / 100;
+                        if (totalAffecte > 0) {
+                            tr.querySelector('td:nth-child(0n+3)').innerText = Math.round((total.toFixed(4) / totalAffecte) * 100) + '%';
+                        } else {
+                            tr.querySelector('td:nth-child(0n+3)').innerText = '0%';
+                        }
+                        tr.querySelector('td:nth-child(0n+2)').innerText = total.toFixed(4);
+                        valueMax = totalAffecte * limitPC;
+                    } else {
+                        valeurActuelle = produitCount;
+                        limitPC = tr.querySelector('td:nth-child(0n+4)').dataset.rulevalue;
+                        tr.querySelector('td:nth-child(0n+2)').innerText = produitCount;
+                        valueMax = limitPC;
+                    }
+
+                    if (valueMax == 0) {
+                        tr.classList = "potentiel-regles";
+                    } else {
+                        if (fonction == 'ProportionSomme') {
+                            if (sens == '>=') {
+                                if (valeurActuelle >= valueMax) {
+                                    tr.classList = "potentiel-regles success";
+                                } else {
+                                    tr.classList = "potentiel-regles danger";
+                                    isValid = 0;
+                                }
+                            } else {
+                                if (valeurActuelle <= valueMax) {
+                                    tr.classList = "potentiel-regles success";
+                                } else {
+                                    tr.classList = "potentiel-regles danger";
+                                    isValid = 0;
+                                }
+                            }
+                        } else {
+                            if (sens == '>=') {
+                                if (valeurActuelle >= valueMax) {
+                                    tr.classList = "potentiel-regles success";
+                                } else {
+                                    tr.classList = "potentiel-regles danger";
+                                    isValid = 0;
+                                }
+                            } else {
+                                if (valeurActuelle <= valueMax) {
+                                    tr.classList = "potentiel-regles success";
+                                } else {
+                                    tr.classList = "potentiel-regles danger";
+                                    isValid = 0;
+                                }
+                            }
+                        }
+                    }
+                    document.getElementById('PPvalid').classList.toggle('hidden', document.querySelectorAll('.potentiel-regles.danger').length || !document.querySelectorAll('.potentiel-regles.success').length);
+                    document.getElementById('PPinvalid').classList.toggle('hidden', !document.querySelectorAll('.potentiel-regles.danger').length);
+                });
+            };
+
+                (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
+                    el.addEventListener('change', function (event) {
+                        superficie = this.value;
+                        if (this.parentNode.parentNode.childNodes[11].innerText == superficie) {
+                            this.parentNode.parentNode.childNodes[17].innerText = 'Totale';
+                        }else{
+                            this.parentNode.parentNode.childNodes[17].innerText = 'Partielle';
+                        }
+                        const table = event.target.closest('table');
+                        updateTotal(table);
+                        updateRules(table);
+                    })
+                });
 
             (document.querySelectorAll('table[id^=parcelles_]') || []).forEach(function (el) {
                 updateTotal(el)
+                updateRules(el)
             });
 
             $('.bsswitch').on('switchChange.bootstrapSwitch', function (event, state) {
                 const table = event.target.closest('table')
                 updateTotal(table)
+                updateRules(table)
             });
         });
+
+        document.querySelectorAll("a[class^=onglet-presentation]").forEach(function (el) {
+            el.addEventListener("click", () => {
+                let form = document.querySelector("#" + el.dataset.form);
+                let input = document.createElement("input");
+                input.setAttribute("type", "hidden");
+                input.setAttribute("name", "service");
+                input.setAttribute("value", el.dataset.href.substring(el.dataset.href.indexOf("hashproduit=") + 12));
+                form.append(input);
+                form.submit();
+            });
+        });
+
+
     </script>
 
     <div class="row row-margin row-button"  style="display:flex; justify-content: space-evenly;">

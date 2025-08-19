@@ -218,6 +218,9 @@ class conditionnementActions extends sfActions {
 
             return sfView::SUCCESS;
         }
+        if (DrevConfiguration::getInstance()->hasDegustation()) {
+            $this->conditionnement->setDateDegustationSouhaitee($this->form->getValue('date_degustation_voulue'));
+        }
         $this->form->save();
         $dateValidation = date('c');
 
