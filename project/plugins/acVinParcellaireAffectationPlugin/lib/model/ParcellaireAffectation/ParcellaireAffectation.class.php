@@ -536,6 +536,22 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return false;
     }
 
+    public function getProblemMultiAffectee()
+    {
+        $ret = [];
+        foreach ($this->getParcellesMultiProduits() as $parcelle) {
+            $total_superficie_affecte = 0;
+            foreach ($parcelle as $parcelleDetail) {
+                $total_superficie_affecte += $parcelleDetail->superficie;
+                if ($total_superficie_affecte > $parcelleDetail->getSuperficieParcellaire()) {
+                    $ret[$parcelleDetail->idu] = ['section' => $parcelleDetail->section, 'numero_parcelle' => $parcelleDetail->numero_parcelle, 'total_superficie_affecte' => $total_superficie_affecte, 'superficie_parcellaire' => $parcelleDetail->getSuperficieParcellaire()];
+                    break;
+                }
+            }
+        }
+        return $ret;
+    }
+
     public function getProblemPortentiel() {
         $pot = PotentielProduction::cacheCreatePotentielProduction($this->parcellaire, $this, false);
         $ret = [];
