@@ -251,12 +251,13 @@
         </div>
 <?php endif; ?>
 
-        <hr/>
         <?php if($drev->hasVolumeSeuilAndSetIfNecessary()): ?>
         <?php include_partial('drev/vip2c', array('drev' => $drev, 'form' => $form, 'vip2c' => $vip2c)); ?>
         <hr/>
         <?php endif; ?>
 
+<?php if (count($drev->lots) > 0): ?>
+        <hr/>
         <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
         <h3>Contrôle IGP</h3>
         <?php if(isset($form["date_degustation_voulue"])): ?>
@@ -304,3 +305,4 @@
             <p>Date de la commission : <?php echo ($drev->exist('date_commission')) ? date_format(date_create($drev->get('date_commission')), 'd/m/Y') : null; ?></p>
             <?php endif ?>
         <?php endif; ?>
+    <?php endif;?>
