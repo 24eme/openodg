@@ -12,7 +12,7 @@ class ConditionnementValidationForm extends acCouchdbForm
     }
 
     public function configure() {
-        if(!$this->getDocument()->isPapier() && !$this->getDocument()->validation) {
+        if(!$this->getDocument()->validation) {
             $engagements = $this->getOption('engagements');
             foreach ($engagements as $engagement) {
                 $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
@@ -23,6 +23,16 @@ class ConditionnementValidationForm extends acCouchdbForm
                     $this->getValidator('engagement_'.$engagement->getCode())->setOption('required', false);
                 }
             }
+            if (DrevConfiguration::getInstance()->hasDegustation()) {
+                $this->setWidget('date_degustation_voulue', new sfWidgetFormInput(array(), array()));
+                $this->setValidator('date_degustation_voulue', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true, 'min' => date('Y-m-d'))));
+
+                if ($this->getDocument()->exist('date_degustation_voulue') && $this->getDocument()->date_degustation_voulue !== null) {
+                    $this->setDefault('date_degustation_voulue', DateTime::createFromFormat('Y-m-d', $this->getDocument()->date_degustation_voulue)->format('d/m/Y'));
+                } else {
+                    $this->setDefault('date_degustation_voulue', (new DateTime())->format('d/m/Y'));
+                }
+            }
         }
 
         $formDegustable = new BaseForm();
@@ -31,13 +41,13 @@ class ConditionnementValidationForm extends acCouchdbForm
                 if($lot->hasBeenEdited()){
                     continue;
                 }
-								$formDegustable->embedForm($lot->getKey(), new LotAffectableForm($lot));
+				$formDegustable->embedForm($lot->getKey(), new LotAffectableForm($lot));
             }
         }
 
         $this->embedForm('lots', $formDegustable);
 
-        if (DRevConfiguration::getInstance()->hasDegustation() && !$this->getDocument()->validation_odg) {
+        if (DRevConfiguration::getInstance()->hasDegustation() && !$this->getDocument()->validation_odg && $this->isAdmin()) {
             $this->setWidget('date_commission', new bsWidgetFormInput(array(), array('required' => true)));
             $this->setValidator('date_commission', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
 
@@ -50,14 +60,6 @@ class ConditionnementValidationForm extends acCouchdbForm
                 $this->setValidator('degustation', new sfValidatorPass(array('required' => false)));
                 $this->widgetSchema['date_commission']->setAttribute('required', false);
                 $this->getWidget('date_commission')->setAttribute('class', 'form-control hidden');
-            } else {
-                $this->setDefault('date_commission', date('d/m/Y'));
-            }
-
-            $this->setWidget('date_degustation_voulue', new bsWidgetFormInput(array(), array('required' => true)));
-            $this->setValidator('date_degustation_voulue', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
-            if ($this->getDocument()->exist('date_degustation_voulue') && $this->getDocument()->date_degustation_voulue) {
-                $this->setDefault('date_degustation_voulue', DateTime::createFromFormat('Y-m-d', $this->getDocument()->date_degustation_voulue)->format('d/m/Y'));
             } else {
                 $this->setDefault('date_commission', date('d/m/Y'));
             }
@@ -78,7 +80,6 @@ class ConditionnementValidationForm extends acCouchdbForm
 
        if (DRevConfiguration::getInstance()->hasDegustation()) {
            $this->getDocument()->add('date_commission', $values['date_commission']);
-           $this->getDocument()->add('date_degustation_voulue', (isset($values['date_degustation_voulue']))? $values['date_degustation_voulue'] : date('Y-m-d'));
        }
 
        if($this->isAdmin()){

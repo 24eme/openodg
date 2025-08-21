@@ -64,7 +64,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return self::$lotDestinationsType;
     }
     public static function getLotDestinationsType($t) {
-        return self::getLotDestinationsTypes()[$t] ?? null;
+        $destinations = self::getLotDestinationsTypes();
+        return isset($destinations[$t]) ? $destinations[$t] : null;
     }
 
     public $cache_find_drev = null;

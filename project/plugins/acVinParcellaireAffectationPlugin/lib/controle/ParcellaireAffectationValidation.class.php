@@ -13,7 +13,13 @@ class ParcellaireAffectationValidation extends DocumentValidation {
     public function configure() {
         $this->addControle(self::TYPE_WARNING, 'superficie_douane_depassee', "La superficie affectée est supérieure à celle de votre déclaration douanière");
         $this->addControle(self::TYPE_WARNING, 'sans_appellation_syndicat', "Produits gérés par le syndicat");
+        $this->addControle(self::TYPE_WARNING, 'denomination_cvi', "Erreur CVI");
+        $this->addControle(self::TYPE_WARNING, 'probleme_densite', "Ecart Pieds");
+        $this->addControle(self::TYPE_WARNING, 'cepage_non_autorise', "Cépage non autorisé");
+        $this->addControle(self::TYPE_WARNING, 'probleme_parcellaire', "Non conformité parcellaire");
         $this->addControle(self::TYPE_ERROR, 'sans_habilitation', "Erreur d'habilitation");
+        $this->addControle(self::TYPE_ERROR, 'erreur_potentiel_production', "Potentiel de production non respecté");
+        $this->addControle(self::TYPE_ERROR, 'parcelle_multi_affectee', "Parcelle multi affectée");
     }
 
     public function controle() {
@@ -47,6 +53,27 @@ class ParcellaireAffectationValidation extends DocumentValidation {
                     $this->addPoint(self::TYPE_ERROR, 'sans_habilitation', "Parcelles affectée en cave particulière mais pas d'habilitation en vinification");
                 }
             }
+        }
+
+        if ($this->document->hasProblemProduitCVI()) {
+            $this->addPoint(self::TYPE_WARNING, 'denomination_cvi', "Les parcelles mises en valeur pourrait rencontrer des problèmes de dénomination déclarée au CVI.");
+        }
+        if ($this->document->hasProblemEcartPieds()) {
+            $this->addPoint(self::TYPE_WARNING, 'probleme_densite', "Les parcelles dont la superficie en mise en valeur pourrait rencontrer des problèmes de densité d'après l'analyse du CVI.");
+        }
+        if ($this->document->hasProblemCepageAutorise()) {
+            $this->addPoint(self::TYPE_WARNING, 'cepage_non_autorise', "Les parcelles dont le cépage est mis en valeur pourrait rencontrer des problèmes de conformité avec le cahier des charges.");
+        }
+        if ($this->document->hasProblemParcellaire()) {
+            $this->addPoint(self::TYPE_WARNING, 'probleme_parcellaire', "Les parcelles dont l'identifiant est mis en valeur pourrait rencontrer de conformité avec votre parcellaire CVI.");
+
+        }
+        foreach ($this->document->getProblemPortentiel() as $produit => $limit ) {
+            $this->addPoint(self::TYPE_ERROR, 'erreur_potentiel_production', "Le potentiel de production n'est pas respecté pour " . $produit . ". Au vu de la sélection de vos parcelles, vous ne pouvez pas produire sur plus de " . $limit . " ha.");
+        }
+
+        foreach ($this->document->getProblemMultiAffectee() as $parcelle) {
+            $this->addPoint(self::TYPE_ERROR, 'parcelle_multi_affectee', "Pour la parcelle " . $parcelle['section'] .' / ' . $parcelle['numero_parcelle'] . ", le total de superficie affectée (" . $parcelle['total_superficie_affecte'] . " ha) est supérieur à la superficie du parcellaire (" . $parcelle['superficie_parcellaire'] . " ha).");
         }
     }
 }
