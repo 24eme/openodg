@@ -17,36 +17,43 @@ class ParcellaireIntentionAuto extends ParcellaireIntentionAffectation {
         $parcelles = $parcellaire->getParcelles();
         $this->remove('declaration');
         $this->add('declaration');
-        $produitsCepagesAutorises = [];
+
+        $pid_produits_to_add = [];
+        $potentiel = PotentielProduction::cacheCreatePotentielProduction($parcellaire);
         foreach($parcelles as $pid => $parcelle) {
-            if ( !in_array($this->getDenominationAire($parcelle->getProduitLibelle()),  array_keys($parcelle->getIsInAires())) &&
-                 !in_array(AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE,  array_keys($parcelle->getIsInAires()))) {
+            $produits = $potentiel->getProduitsFromParcelleId($pid);
+            if (!count($produits)) {
                 continue;
             }
+            $pid_produits_to_add[$pid] = $produits;
+        }
+        if (!count($pid_produits_to_add)) {
             $hashes = $this->getDenominationAireHash();
-            $nbHashes = count($hashes);
-            foreach ($hashes as $hash) {
-                if (!isset($produitsCepagesAutorises[$hash])) {
-                    $produitsCepagesAutorises[$hash] = [];
-                    foreach ($this->getConfiguration()->declaration->get($hash)->getProduitsAll() as $confProduit) {
-                        $produitsCepagesAutorises[$hash] = array_unique(array_merge($produitsCepagesAutorises[$hash], $confProduit->getCepagesAutorises()->toArray(true,false)));
+            $produitsCepagesAutorises = [];
+            foreach($parcelles as $pid => $parcelle) {
+                foreach ($hashes as $hash) {
+                    if (!isset($produitsCepagesAutorises[$hash])) {
+                        $produitsCepagesAutorises[$hash] = [];
+                        foreach ($this->getConfiguration()->declaration->get($hash)->getProduitsAll() as $confProduit) {
+                            $produitsCepagesAutorises[$hash] = array_unique(array_merge($produitsCepagesAutorises[$hash], $confProduit->getCepagesAutorises()->toArray(true,false)));
+                        }
                     }
+                    if (count($produitsCepagesAutorises[$hash]) > 0 && !in_array($parcelle->cepage, $produitsCepagesAutorises[$hash])) {
+                        continue;
+                    }
+                    if (!isset($pid_produits_to_add[$pid])) {
+                        $pid_produits_to_add[$pid] = [];
+                    }
+                    $pid_produits_to_add[$pid][] = $hash;
                 }
-                if (count($produitsCepagesAutorises[$hash]) > 0 && !in_array($parcelle->cepage, $produitsCepagesAutorises[$hash])) {
-                    continue;
-                }
-                if ($nbHashes > 1) {
-                    $tmp = explode('/', $hash);
-                    $lastHashData = $tmp[11];
-                    $newPid = strtoupper($lastHashData).'-'.$pid;
-                } else {
-                    $newPid = $pid;
-                }
+            }
+        }
+        foreach ($pid_produits_to_add as $pid => $produits) {
+            $parcelle = $parcelles[$pid];
+            foreach ($produits as $hash) {
                 $node = $this->declaration->add($hash);
-                $node->libelle = $this->getDenominationAire();
-                $node = $node->detail->add($newPid);
+                $node = $node->detail->add($pid);
                 ParcellaireClient::CopyParcelle($node, $parcelle, true);
-                $node->parcelle_id = $newPid;
                 $parcelle->produit_hash = $hash;
                 $node->affectation = 1;
             }

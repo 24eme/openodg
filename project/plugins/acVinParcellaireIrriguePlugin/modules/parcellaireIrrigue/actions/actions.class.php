@@ -6,6 +6,10 @@ class parcellaireIrrigueActions extends sfActions {
     	$this->etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $this->etablissement);
 
+        if(!$this->getUser()->isAdminODG() && !ParcellaireIrrigueConfiguration::getInstance()->isOpen()) {
+            throw new sfError403Exception("La téléclaration n'est pas encore ouverte");
+        }
+
 		$this->papier = $request->getParameter('papier', false);
 		$this->periode = $request->getParameter('periode');
 
@@ -81,5 +85,11 @@ class parcellaireIrrigueActions extends sfActions {
         return $this->renderText($this->document->output());
     }
 
+    public function executePDFLast(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
 
+        $this->parcellaireIrrigue = ParcellaireIrrigueClient::getInstance()->getLast($this->etablissement->identifiant, $request->getParameter('periode'));
+
+        return $this->redirect('parcellaireirrigue_export_pdf', $this->parcellaireIrrigue);
+    }
 }

@@ -35,13 +35,14 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
   }
 
   public function updateParcelles() {
+      $this->updateIntentionFromParcellaireAndLieux();
       foreach($this->declaration->getParcelles() as $p) {
           $p->updateFromParcellaire();
       }
   }
 
   public function getDenominationAire() {
-      return "AOC Sainte-Victoire";
+      return "AOC CdP Sainte-Victoire";
   }
 
   public function updateIntentionFromParcellaireAndLieux() {

@@ -8,7 +8,16 @@
           <th class="col-xs-5">Cotisation</th>
           <th class="col-xs-1">Quantite</th>
           <th class="col-xs-1">Prix unit.</th>
-          <th class="col-xs-1">Tva</th>
+          <?php $displayTva = false;
+            foreach ($mouvements as $keyMvt => $mvt):
+              $valueMvt = (isset($mvt->value))? $mvt->value : $mvt;
+               ?>
+               <?php if ($valueMvt->tva > '0'): ?>
+                   <?php $displayTva = true;?>
+                   <th class="col-xs-1">Tva</th>
+                   <?php break;?>
+               <?php endif; ?>
+          <?php endforeach;?>
           <th class="col-xs-1">Prix HT</th>
       </tr>
   </thead>
@@ -23,7 +32,9 @@
       <td><?php echo $valueMvt->type_libelle ?> <?php echo $valueMvt->detail_libelle ?></td>
       <td class="text-right"><?php echo echoFloat($valueMvt->quantite); ?>&nbsp;<small class="text-muted"><?php if(isset($valueMvt->unite)): ?><?php echo $valueMvt->unite ?><?php else: ?>&nbsp;&nbsp;<?php endif; ?></small></td>
       <td class="text-right"><?php echo echoFloat($valueMvt->taux); ?>&nbsp;€</td>
-      <td class="text-right"><?php echo echoFloat($valueMvt->tva * 100, 0, 0); ?>&nbsp;%</td>
+      <?php if ($displayTva): ?>
+          <td class="text-right"><?php echo echoFloat($valueMvt->tva * 100, 0, 0); ?>&nbsp;%</td>
+      <?php endif;?>
       <td class="text-right"><?php echo echoFloat($valueMvt->taux * $valueMvt->quantite); ?>&nbsp;€</td>
   </tr>
 <?php endforeach; ?>

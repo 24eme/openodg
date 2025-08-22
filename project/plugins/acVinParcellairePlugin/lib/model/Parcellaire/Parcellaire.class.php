@@ -548,9 +548,17 @@ class Parcellaire extends BaseParcellaire {
         return $kml;
     }
 
+    public function getCommunes(){
+        $communes = [];
+        foreach ($this->getParcelles() as $p) {
+            $communes[$p->code_commune] = $p->code_commune;
+        }
+        return array_keys($communes);
+    }
+
     public function getMergedAires() {
 
-        return AireClient::getInstance()->getMergedAiresForInseeCommunes($this->declaration->getCommunes());
+        return AireClient::getInstance()->getMergedAiresForInseeCommunes($this->getCommunes());
     }
 
 }

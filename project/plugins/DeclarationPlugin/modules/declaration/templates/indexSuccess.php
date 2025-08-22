@@ -1,6 +1,6 @@
 <?php use_helper('Date'); ?>
 <?php use_helper('Lot'); ?>
-<?php $query = ($query) ? $query->getRawValue() : $query ?>
+<?php $query = ($query) ? $query->getRawValue() : $query; ?>
 
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo ($regionParam)?  url_for('declaration',(array('region' => $regionParam))) : url_for('declaration'); ?>">Déclarations</a></li>
@@ -37,7 +37,7 @@
                       <?php $params = array("id" => $doc->id); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
                         <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php if($doc->key[DeclarationTousView::KEY_DATE] && $doc->key[DeclarationTousView::KEY_DATE] !== true): ?><?php echo Date::francizeDate($doc->key[DeclarationTousView::KEY_DATE]); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
                         <td><?php echo $doc->key[DeclarationTousView::KEY_CAMPAGNE]; ?></td>
-                        <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo clarifieTypeDocumentLibelle($doc->key[DeclarationTousView::KEY_TYPE]); ?></a></td>
+                        <td class="text-center"><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo clarifieTypeDocumentLibelle($doc->key[DeclarationTousView::KEY_TYPE]); ?><?php if(substr($doc->id, 0, 4) == "DREV" && strpos($doc->id, 'M')): ?><br /><small class="text-muted"><?php echo substr($doc->id, strpos($doc->id, 'M')); ?></small><?php endif; ?></a></td>
                         <td><a href="<?php echo url_for("declaration_doc", $params); ?>">
                             <?php echo Anonymization::hideIfNeeded($doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]); ?>
                             <small>
@@ -70,7 +70,8 @@
 
     <div class="col-sm-3 col-xs-12">
         <p class="text-muted"><i><?php echo $nbResultats ?> déclaration<?php if ($nbResultats > 1): ?>s<?php endif; ?></i></p>
-        <p><a href="<?php echo url_for('declaration_export', array('query' => $query)) ?>" class="btn btn-default btn-default-step btn-block btn-upper"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a>
+        <?php $allParams=array('query' => $query); if($regionParam): $allParams=array_merge($allParams,array('region' => $regionParam)); endif;  ?>
+        <p><a href="<?php echo url_for('declaration_export', $allParams) ?>" class="btn btn-default btn-default-step btn-block btn-upper"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a>
         </p>
         <?php if($query && count($query) > 0): ?>
         <p>
@@ -95,7 +96,7 @@
         <div class="list-group">
             <?php if($sf_user->isAdmin()): ?>
             <?php foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region): ?>
-                <a href="<?php echo url_for('declaration', ['region' => $region]) ?>" class="list-group-item <?php if($region == $regionParam): ?>active<?php endif; ?>"><span class="badge"><?php if($region == $regionParam): ?><?php echo $nbResultats; ?><?php else : ?>?<?php endif; ?></span> <?php echo str_replace('_', ' ', $region); ?></a>
+                <a href="<?php echo url_for('declaration', ['query' => $query, 'region' => $region]) ?>" class="list-group-item <?php if($region == $regionParam): ?>active<?php endif; ?>"><span class="badge"><?php if($region == $regionParam): ?><?php echo $nbResultats; ?><?php else : ?>?<?php endif; ?></span> <?php echo str_replace('_', ' ', $region); ?></a>
             <?php endforeach; ?>
             <?php else: ?>
                 <span class="list-group-item active"><span class="badge"><?php echo $nbResultats; ?></span> <?php echo str_replace('_', ' ', $regionParam); ?></span>

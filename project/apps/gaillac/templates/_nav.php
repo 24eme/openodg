@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-xs-4 col-md-1">
           <div class="logo-site">
-            <a href="<?php echo url_for('accueil') ?>"><img style="margin-top: 20px;margin-bottom: 10px;" src="/<?php echo Organisme::getInstance()->getLogoWebPath() ?>" alt="Logo" height="50px"></a>
+            <a href="<?php echo url_for('accueil') ?>"><img style="margin-top: 20px;margin-bottom: 10px;" src="/<?php if (! $sf_user->isAdmin()) {echo Organisme::getInstance()->getJoinedLogoWebPathForTeledeclaration(['aopgaillac', 'igptarn']);} else {echo Organisme::getInstance()->getLogoWebPath();} ?>" alt="Logo" height="50px"></a>
           </div>
         </div>
         <div class="col-xs-8 col-md-11 text-center">
@@ -51,6 +51,10 @@
                        <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceHabilitationRoute): ?><?php echo url_for('habilitation_declarant', $etablissement); ?><?php else: ?><?php echo url_for('habilitation'); ?><?php endif; ?>">Habilitations</a></li>
                     <?php endif; ?>
                     <li class="<?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('pieces_historique', $etablissement); ?>">Documents</a></li>
+                    <?php if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()): ?>
+                    <li class="<?php if($route instanceof InterfaceParcellaireRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('parcellaire_declarant', $etablissement); ?>">Parcellaire</a></li>
+                    <?php endif; ?>
+                    <li class="<?php if($route instanceof InterfaceFacturationRoute): ?>active<?php endif; ?>"><a href="<?php if($compte  && !$route instanceof InterfaceFacturationRoute): ?><?php echo url_for('facturation_declarant', $compte); ?><?php endif; ?>">Facturation</a></li>
                     <li class="<?php if($route && preg_match('/compte/', $route->getParameters()['module'])): ?>active<?php endif; ?>"><a tabindex="-1" href="<?php echo url_for("compte_teledeclarant_modification") ?>" title="Mon compte">Mon compte</a></li>
                 </ul>
             <?php endif; ?>

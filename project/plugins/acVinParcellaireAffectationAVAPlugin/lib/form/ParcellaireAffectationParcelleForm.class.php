@@ -60,7 +60,7 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
         } else {
             $this->setValidator('cepage', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)), array('required' => "Aucun cépage saisie.")));
             $this->setValidator('lieuDit', new sfValidatorString(array('required' => true)));
-            $this->setValidator('lieuDitCadastral', new sfValidatorString(array('required' => false)));
+            $this->setValidator('lieuDitCadastral', new sfValidatorString(array('required' => true)));
         }
 
         $this->setWidget('superficie', new sfWidgetFormInputFloat(array('float_format' => '%01.2f')));
@@ -146,7 +146,7 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
             $lieu = $values['lieuDit'];
         }
         $isKeyModified = false;
-        if($this->getObject()) {
+        if(! $this->mustCreateNew()) {
             $isKeyModified = ($this->getObject()->getCepage()->getHash() != str_replace('-', '/', $cepage) || $this->getObject()->commune != $commune || $this->getObject()->section != $section || $this->getObject()->numero_parcelle != $numero_parcelle || $this->getObject()->lieu != $lieu);
         }
         if($this->mustCreateNew() || $isKeyModified) {

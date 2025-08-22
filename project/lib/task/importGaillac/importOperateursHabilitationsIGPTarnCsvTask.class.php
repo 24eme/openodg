@@ -31,6 +31,7 @@ class importOperateursHabilitationsIGPTarnCsvTask extends sfBaseTask
     {
         $this->addArguments(array(
             new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('csvemail', sfCommandArgument::REQUIRED, "Fichier csv pour les mail"),
         ));
 
         $this->addOptions(array(
@@ -47,6 +48,8 @@ class importOperateursHabilitationsIGPTarnCsvTask extends sfBaseTask
 EOF;
     }
 
+    private $id2emails = [];
+
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
@@ -57,6 +60,21 @@ EOF;
 
         if (! $csvfile) {
             throw new sfException("Impossible d'ouvrir le fichier " . $arguments['csv']);
+        }
+
+        if ($arguments['csvemail']) {
+            $emailfile = fopen($arguments['csvemail'], 'r');
+            while(($data = fgetcsv($emailfile, 1000, ";")) !== false) {
+                if (strpos($data[2], '@') === false) {
+                    continue;
+                }
+                if ($data[0]) {
+                    $this->id2emails[$data[0]] = $data[2];
+                }
+                if ($data[1]) {
+                    $this->id2emails[$data[1]] = $data[2];
+                }
+            }
         }
 
         while(($data = fgetcsv($csvfile, 1000, ";")) !== false) {
@@ -95,7 +113,7 @@ EOF;
         if (!$societe) {
 
             $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
-            $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_OPERATEUR]);
+            $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR);
 
             $societe = SocieteClient::getInstance()->find($newSociete->_id);
 
@@ -118,6 +136,14 @@ EOF;
                 $societe->telephone_bureau = $tel;
             }
             $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
+
+            $cvi = EtablissementClient::repairCVI($data[self::CSV_NOCVI]);
+            if ($cvi && isset($this->id2emails[$cvi]) && $this->id2emails[$cvi]) {
+                $societe->email = $this->id2emails[$cvi];
+            }
+            if (!$societe->email && isset($this->id2emails[$societe->siret]) && $this->id2emails[$societe->siret]) {
+                $societe->email = $this->id2emails[$societe->siret];
+            }
 
             try {
                 $societe->save();

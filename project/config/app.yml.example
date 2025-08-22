@@ -8,6 +8,11 @@ all:
       - localhost
       - ::1
 #    rights: []
+  redirect_domain:
+    ADMIN: ~ # utilisateur quand NO_AUTH
+    AAAXXXXXXX: igp.sous.domaine.fr
+    AAAYYYYYYY: aoc.sous.domaine.fr
+    DEFAUT: teledeclaration.sous.domaine.fr
   cas:
     domain: login.cas
     port: 443
