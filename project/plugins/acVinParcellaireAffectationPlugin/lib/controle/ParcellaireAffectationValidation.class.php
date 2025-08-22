@@ -19,6 +19,7 @@ class ParcellaireAffectationValidation extends DocumentValidation {
         $this->addControle(self::TYPE_WARNING, 'probleme_parcellaire', "Non conformité parcellaire");
         $this->addControle(self::TYPE_ERROR, 'sans_habilitation', "Erreur d'habilitation");
         $this->addControle(self::TYPE_ERROR, 'erreur_potentiel_production', "Potentiel de production non respecté");
+        $this->addControle(self::TYPE_ERROR, 'parcelle_multi_affectee', "Parcelle multi affectée");
     }
 
     public function controle() {
@@ -71,5 +72,8 @@ class ParcellaireAffectationValidation extends DocumentValidation {
             $this->addPoint(self::TYPE_ERROR, 'erreur_potentiel_production', "Le potentiel de production n'est pas respecté pour " . $produit . ". Au vu de la sélection de vos parcelles, vous ne pouvez pas produire sur plus de " . $limit . " ha.");
         }
 
+        foreach ($this->document->getProblemMultiAffectee() as $parcelle) {
+            $this->addPoint(self::TYPE_ERROR, 'parcelle_multi_affectee', "Pour la parcelle " . $parcelle['section'] .' / ' . $parcelle['numero_parcelle'] . ", le total de superficie affectée (" . $parcelle['total_superficie_affecte'] . " ha) est supérieur à la superficie du parcellaire (" . $parcelle['superficie_parcellaire'] . " ha).");
+        }
     }
 }
