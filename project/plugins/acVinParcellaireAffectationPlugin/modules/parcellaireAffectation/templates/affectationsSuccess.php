@@ -184,9 +184,9 @@ if(isset($coop)):
                 }
             };
 
-            updateRules = function (table) {
+            updateRules = function () {
                 let produitArray = {};
-                table.querySelectorAll("tbody tr:not(.commune-total)").forEach(function (tr) {
+                document.querySelectorAll("table.tableParcellaire tbody tr:not(.commune-total)").forEach(function (tr) {
                     if (tr.querySelector('.bsswitch:checked')) {
                         if (! produitArray[tr.querySelector('td:nth-child(0n+4)').innerText]) {
                             produitArray[tr.querySelector('td:nth-child(0n+4)').innerText] = 0;
@@ -284,19 +284,19 @@ if(isset($coop)):
                         }
                         const table = event.target.closest('table');
                         updateTotal(table);
-                        updateRules(table);
+                        updateRules();
                     })
                 });
 
             (document.querySelectorAll('table[id^=parcelles_]') || []).forEach(function (el) {
                 updateTotal(el)
-                updateRules(el)
+                updateRules()
             });
 
             $('.bsswitch').on('switchChange.bootstrapSwitch', function (event, state) {
                 const table = event.target.closest('table')
                 updateTotal(table)
-                updateRules(table)
+                updateRules()
             });
         });
 
