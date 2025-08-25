@@ -40,7 +40,7 @@ class DRevValidationForm extends acCouchdbForm
             }
         }
 
-        if (DrevConfiguration::getInstance()->hasDegustation() && !$this->getDocument()->validation_odg && $this->isAdmin) {
+        if (DrevConfiguration::getInstance()->hasDegustation() && !$this->getDocument()->validation_odg && $this->isAdmin && (count($this->getDocument()->lots) > 0)) {
             $this->setWidget('date_commission', new bsWidgetFormInput(array(), array('required' => true)));
             $this->setValidator('date_commission', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
 
