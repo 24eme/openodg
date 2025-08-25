@@ -13,11 +13,18 @@ curl -s "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/declaration/_vi
         continue;
     fi
 
-    echo $id
-
 	NEWANNEE=$(($ANNEE + 1))
 	NEWCAMPAGNE="$NEWANNEE-$(($NEWANNEE + 1))"
 	NEWDOCID=$(echo -n $id | sed -r "s/$ANNEE$/$NEWANNEE/");
-	curl -sX COPY "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/$id" -H "Destination: $NEWDOCID" | grep '"rev":' || continue;
-	php symfony document:setvalue $NEWDOCID campagne "$NEWCAMPAGNE" validation "$(date +%Y-%m-%d)" validation_odg "$(date +%Y-%m-%d)" signataire "Générée depuis la déclaration de $ANNEE" papier "AUTO" $SYMFONYTASKOPTIONS
+
+    echo "Copie du document $id"
+    echo "Nouvelle campagne : $NEWCAMPAGNE"
+    echo "Nouveau document : $NEWDOCID"
+
+    if ! (curl -sX COPY "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/$id" -H "Destination: $NEWDOCID" | grep '"rev":'); then
+        echo "$NEWDOCID existe déjà"
+        continue
+    else
+        php symfony document:setvalue $NEWDOCID campagne "$NEWCAMPAGNE" validation "$(date +%Y-%m-%d)" validation_odg "$(date +%Y-%m-%d)" signataire "Générée depuis la déclaration de $ANNEE" papier "AUTO" $SYMFONYTASKOPTIONS
+    fi
 done;
