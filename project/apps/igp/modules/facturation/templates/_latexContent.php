@@ -214,7 +214,7 @@
         <?php endif; ?>
         <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
 		\hline
-    <?php if ($i) $i++ ; else $i = 12; endforeach; ?>
+    <?php if ($i) $i++ ; else $i = 13; endforeach; ?>
   <?php endforeach; ?>
   \end{tabular}
 

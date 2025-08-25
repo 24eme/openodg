@@ -1,28 +1,5 @@
 <?php use_helper('Float') ?>
 
-<?php if ($parcellaireAffectation->hasProblemProduitCVI()): ?>
-    <p class="alert alert-warning">
-    Les parcelles mises en valeur pourrait rencontrer des problèmes de dénomination déclarée au CVI.
-    </p>
-<?php endif; ?>
-<?php if ($parcellaireAffectation->hasProblemEcartPieds()): ?>
-    <p class="alert alert-warning">Les parcelles dont la superficie en mise en valeur pourrait rencontrer des problèmes de densité d'après l'analyse du CVI.</p>
-<?php endif; ?>
-<?php if ($parcellaireAffectation->hasProblemCepageAutorise()): ?>
-    <p class="alert alert-warning">Les parcelles dont le cépage est mis en valeur pourrait rencontrer des problèmes de conformité avec le cahier des charges.</p>
-<?php endif; ?>
-<?php if ($parcellaireAffectation->hasProblemParcellaire()): ?>
-    <p class="alert alert-warning">
-    Les parcelles dont l'identifiant est mis en valeur pourrait rencontrer de conformité avec votre parcellaire CVI.
-    </p>
-<?php endif; ?>
-<?php foreach ($parcellaireAffectation->getProblemPortentiel() as $produit => $limit ): ?>
-    <p class="alert alert-danger">
-    Le potentiel de production n'est pas respecté pour <?php echo $produit; ?>. Au vu de la sélection de vos parcelles, vous ne pouvez pas produire sur plus de <?php echo $limit; ?> ha.
-    </p>
-<?php endforeach; ?>
-
-
 <?php foreach ($parcellaireAffectation->getProduits() as $hash => $produit): ?>
 <?php if (count($parcellaireAffectation->getProduits()) > 1): ?>
     <div class="row">
