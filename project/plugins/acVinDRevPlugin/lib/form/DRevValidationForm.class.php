@@ -28,7 +28,7 @@ class DRevValidationForm extends acCouchdbForm
                     }
                 }
             }
-            if (DrevConfiguration::getInstance()->hasDegustation()) {
+            if (DrevConfiguration::getInstance()->hasDegustation() && (count($this->getDocument()->lots) > 0)) {
                 $this->setWidget('date_degustation_voulue', new sfWidgetFormInput(array(), array()));
                 $this->setValidator('date_degustation_voulue', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true, 'min' => date('Y-m-d'))));
 
