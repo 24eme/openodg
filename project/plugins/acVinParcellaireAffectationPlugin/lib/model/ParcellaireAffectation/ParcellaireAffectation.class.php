@@ -246,6 +246,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     protected function doSave() {
         $this->piece_document->generatePieces();
+        $this->checkDestinatairesAreSet();
     }
 
 
@@ -354,6 +355,36 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
 
         return $destinataires;
+    }
+
+    public function checkDestinatairesAreSet()
+    {
+        $destinataires = $this->getDestinataires();
+        $nb_destinataires = count($destinataires);
+
+        foreach ($this->getParcelles() as $parcelle) {
+            if ($parcelle->exist('destinations') && count($parcelle->destinations)) {
+                continue;
+            }
+
+            if ($nb_destinataires === 1) {
+                $etablissement = EtablissementClient::getInstance()->find(key($destinataires));
+                $parcelle->affecter($parcelle->superficie, $etablissement);
+            }
+
+            if ($nb_destinataires > 1 && getenv('DESTINATION_NO_THROW') !== false) {
+                $etablissements = [];
+                foreach ($destinataires as $id => $destinataire) {
+                    $etablissements[] = EtablissementClient::getInstance()->find($id);
+                }
+
+                foreach ($etablissements as $etablissement) {
+                    $parcelle->affecter($parcelle->superficie, $etablissement);
+                }
+            } elseif ($nb_destinataires > 1) {
+                throw new Exception("Impossible d'ajouter plusieurs destinations dans une parcelle");
+            }
+        }
     }
 
     public function getHabilitation() {
@@ -503,6 +534,22 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             }
         }
         return false;
+    }
+
+    public function getProblemMultiAffectee()
+    {
+        $ret = [];
+        foreach ($this->getParcellesMultiProduits() as $parcelle) {
+            $total_superficie_affecte = 0;
+            foreach ($parcelle as $parcelleDetail) {
+                $total_superficie_affecte += $parcelleDetail->superficie;
+                if ($total_superficie_affecte > $parcelleDetail->getSuperficieParcellaire()) {
+                    $ret[$parcelleDetail->idu] = ['section' => $parcelleDetail->section, 'numero_parcelle' => $parcelleDetail->numero_parcelle, 'total_superficie_affecte' => $total_superficie_affecte, 'superficie_parcellaire' => $parcelleDetail->getSuperficieParcellaire()];
+                    break;
+                }
+            }
+        }
+        return $ret;
     }
 
     public function getProblemPortentiel() {

@@ -985,11 +985,14 @@ abstract class Lot extends acCouchdbDocumentTree
         }
 
         if (RegionConfiguration::getInstance()->hasOdgProduits()) {
-            if ($this->getDocument()->exist('region') && $this->getDocument()->region && (strpos($this->getDocument()->region, '|') == false)) {
+            if ($this->getDocument()->exist('region') && $this->getDocument()->region && RegionConfiguration::getInstance()->hasOC()) { // On veut que l'OIVC est accès aux lots
                 $mouvement->add('region', $this->getDocument()->region);
-            }elseif ($r = RegionConfiguration::getInstance()->getOdgRegion($this->produit_hash)) {
+            } elseif ($this->getDocument()->exist('region') && $this->getDocument()->region && strpos($this->getDocument()->region, '|') === false) { // Si qu'une seule région dans le doc
+                $mouvement->add('region', $this->getDocument()->region);
+            } elseif ($r = RegionConfiguration::getInstance()->getOdgRegion($this->produit_hash)) { // On prends la région du produit si multi-régions
                 $mouvement->add('region', $r);
             }
+
             if (RegionConfiguration::getInstance()->hasOC()) {
                 if (strpos($this->initial_type, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE) === 0 || strpos($this->initial_type, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE) === 0) {
                     $mouvement->add('region', Organisme::getOIRegion());

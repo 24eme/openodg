@@ -7,7 +7,7 @@ ANNEE=$2
 
 CAMPAGNE="$ANNEE-$(($ANNEE + 1))"
 
-curl -s "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/declaration/_view/tous?startkey=\[\"$DOCTYPE\",\"$CAMPAGNE\"\]&endkey=\[\"$DOCTYPE\",\"$CAMPAGNE\",\[\]\]&reduce=false" | grep "Approuvé" | cut -d "," -f 1 | grep id | sed 's/{"id":"//'  | sed 's/"//' | while read id; do
+curl -s "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/declaration/_view/tous?startkey=\[\"\",\"$DOCTYPE\",\"$CAMPAGNE\"\]&endkey=\[\"\",\"$DOCTYPE\",\"$CAMPAGNE\",\[\]\]&reduce=false" | grep "Approuvé" | cut -d "," -f 1 | grep id | sed 's/{"id":"//'  | sed 's/"//' | while read id; do
     ETABLISSEMENT_ID=$(echo -n $id | cut -d "-" -f 2);
     if ! test "$(curl -s http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/$ETABLISSEMENT_ID | grep ACTIF)"; then
         continue;
