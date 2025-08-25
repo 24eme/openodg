@@ -2,7 +2,7 @@ all:
   configuration:
     region:
       odg:
-        AOPGAILLAC:
+        AOCGAILLAC:
           # nom: ""
           # adresse: ""
           # telephone: ""
