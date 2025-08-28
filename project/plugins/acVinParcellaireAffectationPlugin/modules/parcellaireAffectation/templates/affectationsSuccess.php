@@ -109,7 +109,9 @@ if(isset($coop)):
                     </div>
             	</td>
                 <td class="text-center">
-                    <?php if ($parcelle->isPartielle()): ?><span>Partielle</span><?php else: ?><span>Totale</span><?php endif; ?>
+                    <?php if ($parcelle->isAffectee()): ?>
+                        <?php if ($parcelle->isPartielle()): ?><span>Partielle</span><?php else: ?><span>Totale</span><?php endif; ?>
+                    <?php endif;?>
                 </td>
             </tr>
         <?php  endif; endforeach; ?>
@@ -274,19 +276,31 @@ if(isset($coop)):
                 });
             };
 
-                (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
-                    el.addEventListener('change', function (event) {
-                        superficie = this.value;
-                        if (this.parentNode.parentNode.childNodes[11].innerText == superficie) {
-                            this.parentNode.parentNode.childNodes[17].innerText = 'Totale';
-                        }else{
-                            this.parentNode.parentNode.childNodes[17].innerText = 'Partielle';
-                        }
-                        const table = event.target.closest('table');
-                        updateTotal(table);
-                        updateRules();
-                    })
+            changeAffectation = function (ligne, state) {
+                if (! state) {
+                    ligne.childNodes[17].innerText = '';
+                    return ;
+                }
+                superficie = ligne.childNodes[13].childNodes[1].value;
+                if (parseFloat(ligne.childNodes[11].innerText.replace(",", ".")) < parseFloat(superficie)) {
+                    ligne.childNodes[17].innerText = 'Totale';
+                    ligne.childNodes[13].childNodes[1].value = ligne.childNodes[11].innerText.replace(",", ".");
+                } else if (parseFloat(ligne.childNodes[11].innerText.replace(",", ".")) == parseFloat(superficie)) {
+                    ligne.childNodes[17].innerText = 'Totale';
+                } else {
+                    ligne.childNodes[17].innerText = 'Partielle';
+                }
+            };
+
+            (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
+                el.addEventListener('change', function(){
+                    ligneActive = this.closest('tr');
+                    ligneState = ligneActive.querySelector('input.bsswitch').checked;
+                    changeAffectation(ligneActive, ligneState);
+                    updateTotal(this.closest('table'));
+                    updateRules()
                 });
+            });
 
             (document.querySelectorAll('table[id^=parcelles_]') || []).forEach(function (el) {
                 updateTotal(el)
@@ -295,6 +309,8 @@ if(isset($coop)):
 
             $('.bsswitch').on('switchChange.bootstrapSwitch', function (event, state) {
                 const table = event.target.closest('table')
+                const ligneActive = event.target.closest('tr');
+                changeAffectation(ligneActive, state);
                 updateTotal(table)
                 updateRules()
             });
@@ -311,7 +327,6 @@ if(isset($coop)):
                 form.submit();
             });
         });
-
 
     </script>
 
