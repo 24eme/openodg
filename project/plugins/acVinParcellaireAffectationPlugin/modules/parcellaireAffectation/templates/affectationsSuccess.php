@@ -303,6 +303,11 @@ if(isset($coop)):
             });
 
             (document.querySelectorAll('table[id^=parcelles_]') || []).forEach(function (el) {
+                el.querySelectorAll('tr[id^=tr_]').forEach(function (tr) {
+                    ligneState = tr.querySelector('input.bsswitch').checked;
+                    changeAffectation(tr, ligneState);
+                });
+
                 updateTotal(el)
                 updateRules()
             });
