@@ -162,10 +162,10 @@ class parcellaireAffectationActions extends sfActions {
                     break;
                 }
                 $previous = $dId;
-                if($finded) {
+                if($finded && count($this->produits) < 2) {
                     return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $dId]);
                 }
-                if($dId == $this->destinataire && !$request->getParameter('previous')) {
+                if($dId == $this->destinataire && !$request->getParameter('previous') && !$request->getParameter('service')) {
                     $finded = true;
                 }
             }
@@ -175,7 +175,6 @@ class parcellaireAffectationActions extends sfActions {
         }
 
         if($request->getParameter('previous')) {
-
             if ($this->hashproduit) {
                 $produits = array_keys($this->produits);
                 $current = array_search($this->hashproduit, $produits);
@@ -198,7 +197,7 @@ class parcellaireAffectationActions extends sfActions {
             $produits = array_keys($this->produits);
             $current = array_search($this->hashproduit, $produits);
             if ($next = $produits[$current + 1] ?? null) {
-                return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $previous, 'hashproduit' => $next]);
+                return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $request->getParameter('destinataire'), 'hashproduit' => $next]);
             }
         }
 
