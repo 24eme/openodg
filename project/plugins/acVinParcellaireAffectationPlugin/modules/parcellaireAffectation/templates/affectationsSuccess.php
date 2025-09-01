@@ -37,7 +37,7 @@ if(isset($coop)):
         foreach ($produits as $hash => $produit):
     ?>
     <li role="presentation" class="<?php if($id.$hash == $destinataire.$hashproduit): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>">
-        <a class="onglet-presentation" data-form="validation-form" href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]) ?>">
+        <a class="onglet-presentation" data-form="validation-form" data-href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]) ?>" href='#'>
             <?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php
             echo ($d['libelle_etablissement'] != 'Cave particulière') ? $d['libelle_etablissement'].' - ' : '';
             echo $produit; ?>
@@ -303,6 +303,11 @@ if(isset($coop)):
             });
 
             (document.querySelectorAll('table[id^=parcelles_]') || []).forEach(function (el) {
+                el.querySelectorAll('tr[id^=tr_]').forEach(function (tr) {
+                    ligneState = tr.querySelector('input.bsswitch').checked;
+                    changeAffectation(tr, ligneState);
+                });
+
                 updateTotal(el)
                 updateRules()
             });
@@ -322,7 +327,7 @@ if(isset($coop)):
                 let input = document.createElement("input");
                 input.setAttribute("type", "hidden");
                 input.setAttribute("name", "service");
-                input.setAttribute("value", el.dataset.href.substring(el.dataset.href.indexOf("hashproduit=") + 12));
+                input.setAttribute("value", el.dataset.href.substring(el.dataset.href.indexOf("destinataire")));
                 form.append(input);
                 form.submit();
             });
