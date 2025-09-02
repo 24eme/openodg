@@ -338,3 +338,16 @@ code {
 .nav-step ul.navbar-nav li {
     border-right: 1px solid #dddddd;
 }
+
+.mdp {
+    display: inline-block;
+    padding: 9px 0;
+}
+
+.mdp i.glyphicon {
+    font-size: 15px;
+}
+
+.mdp-wrapper {
+     padding: 0 !important;
+ }

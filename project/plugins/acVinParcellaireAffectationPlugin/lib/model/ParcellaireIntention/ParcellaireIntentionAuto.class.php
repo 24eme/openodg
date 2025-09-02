@@ -66,6 +66,9 @@ class ParcellaireIntentionAuto extends ParcellaireIntentionAffectation {
 
     public function getDenominationAireHash() {
         $value = ParcellaireConfiguration::getInstance()->affectationDenominationAireHash();
+        if (!$value) {
+            return [];
+        }
         return (is_array($value))? $value : [$value];
     }
 

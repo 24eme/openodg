@@ -37,7 +37,7 @@ if(isset($coop)):
         foreach ($produits as $hash => $produit):
     ?>
     <li role="presentation" class="<?php if($id.$hash == $destinataire.$hashproduit): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>">
-        <a class="onglet-presentation" data-form="validation-form" data-href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]) ?>" href="#">
+        <a class="onglet-presentation" data-form="validation-form" data-href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]) ?>" href='#'>
             <?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php
             echo ($d['libelle_etablissement'] != 'Cave particulière') ? $d['libelle_etablissement'].' - ' : '';
             echo $produit; ?>
@@ -109,7 +109,9 @@ if(isset($coop)):
                     </div>
             	</td>
                 <td class="text-center">
-                    <?php if ($parcelle->isPartielle()): ?><span>Partielle</span><?php else: ?><span>Totale</span><?php endif; ?>
+                    <?php if ($parcelle->isAffectee()): ?>
+                        <?php if ($parcelle->isPartielle()): ?><span>Partielle</span><?php else: ?><span>Totale</span><?php endif; ?>
+                    <?php endif;?>
                 </td>
             </tr>
         <?php  endif; endforeach; ?>
@@ -153,7 +155,7 @@ if(isset($coop)):
         </table>
 <?php endif; ?>
     <?php else: ?>
-        <p class="m-5"><i>Pas de parcelles affectables trouvées</i></p>
+        <p class="m-5"><i>Pas de parcelles affectables trouvées : voir l'<a href="<?php echo url_for('habilitation_visualisation', $parcellaireAffectation->getHabilitation()); ?>">habilitation</a> ou le <a href="<?php echo url_for('parcellaire_visualisation',  $parcellaireAffectation->getParcellaire()); ?>">parcellaire</a></i></p>
     <?php endif; ?>
     <script>
         document.addEventListener('DOMContentLoaded', function (e) {
@@ -184,9 +186,9 @@ if(isset($coop)):
                 }
             };
 
-            updateRules = function (table) {
+            updateRules = function () {
                 let produitArray = {};
-                table.querySelectorAll("tbody tr:not(.commune-total)").forEach(function (tr) {
+                document.querySelectorAll("table.tableParcellaire tbody tr:not(.commune-total)").forEach(function (tr) {
                     if (tr.querySelector('.bsswitch:checked')) {
                         if (! produitArray[tr.querySelector('td:nth-child(0n+4)').innerText]) {
                             produitArray[tr.querySelector('td:nth-child(0n+4)').innerText] = 0;
@@ -274,29 +276,48 @@ if(isset($coop)):
                 });
             };
 
-                (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
-                    el.addEventListener('change', function (event) {
-                        superficie = this.value;
-                        if (this.parentNode.parentNode.childNodes[11].innerText == superficie) {
-                            this.parentNode.parentNode.childNodes[17].innerText = 'Totale';
-                        }else{
-                            this.parentNode.parentNode.childNodes[17].innerText = 'Partielle';
-                        }
-                        const table = event.target.closest('table');
-                        updateTotal(table);
-                        updateRules(table);
-                    })
+            changeAffectation = function (ligne, state) {
+                if (! state) {
+                    ligne.childNodes[17].innerText = '';
+                    return ;
+                }
+                superficie = ligne.childNodes[13].childNodes[1].value;
+                if (parseFloat(ligne.childNodes[11].innerText.replace(",", ".")) < parseFloat(superficie)) {
+                    ligne.childNodes[17].innerText = 'Totale';
+                    ligne.childNodes[13].childNodes[1].value = ligne.childNodes[11].innerText.replace(",", ".");
+                } else if (parseFloat(ligne.childNodes[11].innerText.replace(",", ".")) == parseFloat(superficie)) {
+                    ligne.childNodes[17].innerText = 'Totale';
+                } else {
+                    ligne.childNodes[17].innerText = 'Partielle';
+                }
+            };
+
+            (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
+                el.addEventListener('change', function(){
+                    ligneActive = this.closest('tr');
+                    ligneState = ligneActive.querySelector('input.bsswitch').checked;
+                    changeAffectation(ligneActive, ligneState);
+                    updateTotal(this.closest('table'));
+                    updateRules()
                 });
+            });
 
             (document.querySelectorAll('table[id^=parcelles_]') || []).forEach(function (el) {
+                el.querySelectorAll('tr[id^=tr_]').forEach(function (tr) {
+                    ligneState = tr.querySelector('input.bsswitch').checked;
+                    changeAffectation(tr, ligneState);
+                });
+
                 updateTotal(el)
-                updateRules(el)
+                updateRules()
             });
 
             $('.bsswitch').on('switchChange.bootstrapSwitch', function (event, state) {
                 const table = event.target.closest('table')
+                const ligneActive = event.target.closest('tr');
+                changeAffectation(ligneActive, state);
                 updateTotal(table)
-                updateRules(table)
+                updateRules()
             });
         });
 
@@ -306,12 +327,11 @@ if(isset($coop)):
                 let input = document.createElement("input");
                 input.setAttribute("type", "hidden");
                 input.setAttribute("name", "service");
-                input.setAttribute("value", el.dataset.href.substring(el.dataset.href.indexOf("hashproduit=") + 12));
+                input.setAttribute("value", el.dataset.href.substring(el.dataset.href.indexOf("destinataire")));
                 form.append(input);
                 form.submit();
             });
         });
-
 
     </script>
 

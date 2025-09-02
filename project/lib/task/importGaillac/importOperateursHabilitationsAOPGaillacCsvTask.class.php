@@ -1,6 +1,6 @@
 <?php
 
-class importOperateursHabilitationsAOPGaillacCsvTask extends sfBaseTask
+class importOperateursHabilitationsAOCGaillacCsvTask extends sfBaseTask
 {
 
     const CSV_NUMERO_ENREGISTREMENT = 0;
@@ -57,7 +57,7 @@ class importOperateursHabilitationsAOPGaillacCsvTask extends sfBaseTask
         ));
 
         $this->namespace = 'import';
-        $this->name = 'operateur-habilitation-aopgaillac';
+        $this->name = 'operateur-habilitation-aocgaillac';
         $this->briefDescription = 'Import des opérateurs et habilitations de ventoux (via un csv)';
         $this->detailedDescription = <<<EOF
 EOF;
@@ -145,9 +145,9 @@ EOF;
                     $e->num_interne .= "|";
                 }
                 $e->addCommentaire("Etablissement partagé IGP - AOP (".date('d/m/Y').")");
-                $e->region = 'IGPTARN|AOPGAILLAC';
+                $e->region = 'IGPTARN|AOCGAILLAC';
             } else {
-                $e->region = 'AOPGAILLAC';
+                $e->region = 'AOCGAILLAC';
             }
             if (!isset($_ENV['DRY_RUN'])) {
                 $e->save();
@@ -229,7 +229,7 @@ EOF;
 
         $etablissement->cvi = $cvi;
         $etablissement->commentaire = trim($data[self::CSV_OBSERVATIONS]) ? $data[self::CSV_OBSERVATIONS] : null;
-        $etablissement->region = 'AOPGAILLAC';
+        $etablissement->region = 'AOCGAILLAC';
 
         $societe->pushAdresseTo($etablissement);
         $societe->pushContactTo($etablissement);
