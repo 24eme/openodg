@@ -98,7 +98,6 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
         foreach($this as $hash => $produit) {
             $produits[$hash] = $produit->libelle;
         }
-        ksort($produits);
         return $produits;
     }
 }
