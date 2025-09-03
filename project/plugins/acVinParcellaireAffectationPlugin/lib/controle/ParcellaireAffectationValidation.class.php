@@ -17,6 +17,7 @@ class ParcellaireAffectationValidation extends DocumentValidation {
         $this->addControle(self::TYPE_WARNING, 'probleme_densite', "Ecart Pieds");
         $this->addControle(self::TYPE_WARNING, 'cepage_non_autorise', "Cépage non autorisé");
         $this->addControle(self::TYPE_WARNING, 'probleme_parcellaire', "Non conformité parcellaire");
+
         $this->addControle(self::TYPE_ERROR, 'sans_habilitation', "Erreur d'habilitation");
         $this->addControle(self::TYPE_ERROR, 'erreur_potentiel_production', "Potentiel de production non respecté");
         $this->addControle(self::TYPE_ERROR, 'parcelle_multi_affectee', "Parcelle multi affectée");
@@ -24,6 +25,7 @@ class ParcellaireAffectationValidation extends DocumentValidation {
 
     public function controle() {
         $appellationGeree = false;
+        $hasMouOrEff = false;
         $appellations = ConfigurationClient::getCurrent()->getProduits();
         foreach ($this->document->getParcelles() as $parcelle) {
             if ($parcelle->getConfig() && $parcelle->getConfig()->getAppellation()->getKey() != Configuration::DEFAULT_KEY) {
@@ -36,6 +38,10 @@ class ParcellaireAffectationValidation extends DocumentValidation {
 
             if ($parcelle->getSuperficieParcellaire() < $parcelle->superficie) {
                 $this->addPoint(self::TYPE_WARNING, 'superficie_douane_depassee', "La parcelle <strong>$parcelle->section / $parcelle->numero_parcelle</strong> ($parcelle->superficie ha) dépasse celle de votre parcellaire (".$parcelle->getSuperficieParcellaire()." ha)");
+            }
+
+            if (strpos($parcelle->hash, "MOU") || strpos($parcelle->hash, "EFF")) {
+                $hasMouOrEff = true;
             }
         }
 
@@ -53,6 +59,10 @@ class ParcellaireAffectationValidation extends DocumentValidation {
                     $this->addPoint(self::TYPE_ERROR, 'sans_habilitation', "Parcelles affectée en cave particulière mais pas d'habilitation en vinification");
                 }
             }
+        }
+
+        if ($hasMouOrEff && !in_array(HabilitationClient::ACTIVITE_ELABORATEUR, $this->document->getHabilitation()->getActivitesHabilites())) {
+            $this->addPoint(self::TYPE_ERROR, 'sans_habilitation', "Pas d'activité élaborateur trouvée");
         }
 
         if ($this->document->hasProblemProduitCVI()) {

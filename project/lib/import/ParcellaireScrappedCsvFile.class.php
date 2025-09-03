@@ -89,6 +89,8 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
             $libelle = str_replace(['VDB ', 'VCI '], '', $libelle);
             $libelle = str_replace(' PG', ' PINOT GRIS', $libelle);
             $libelle = str_replace('ALSACE ST-HIPPOLYTE', 'ALSACE COMMUNALE SAINT HIPPOLYTE', $libelle);
+            $libelle = str_replace('ALSACE SAINT HIPPOLYTE', 'ALSACE COMMUNALE SAINT HIPPOLYTE', $libelle);
+            $libelle = str_replace('ALSACE RODERN', 'ALSACE COMMUNALE RODERN', $libelle);
             $libelle = str_replace(['VAL LOIRE', 'VDP JARDIN DE FRANCE', 'VINS DE PAYS DU JARDIN DE LA FRANCE'], 'IGP Val de Loire', $libelle);
             $libelle = str_replace('CX ', 'COTEAUX ', $libelle);
             $libelle = str_replace('COTEAUX LAYON', 'COTEAUX DU LAYON', $libelle);

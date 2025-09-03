@@ -166,6 +166,9 @@
                       <?php
                       $firstRow=false;
                     endforeach; ?>
+                <?php if (!$totalVolume): ?>
+                <tr><td colspan="<?php echo $drev->isValidee() ? 8 : 5; ?>"><center><i>Aucun lot déclaré</i></center></td></tr>
+                <?php endif; ?>
                 <tr>
                 <?php
                     $colspan = 2;
@@ -184,7 +187,7 @@
               </tbody>
             </table>
 
-
+        <?php if ($totalVolume): ?>
           <h3 id="table_igp_title">Prélèvement</h3>
           <?php if(!$drev->isValidee()): ?>
             <table class="table table-bordered table-striped table_igp">
@@ -234,6 +237,7 @@
             </tbody>
           </table>
         <?php endif; ?>
+    <?php endif; ?>
 <?php endif; ?>
 
 <?php if($drev->isValideeOdg() && $drev->isModifiable()): ?>
@@ -256,11 +260,10 @@
         <hr/>
         <?php endif; ?>
 
-<?php if (count($drev->lots) > 0): ?>
+    <?php if (count($drev->lots) > 0): ?>
         <hr/>
-        <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
+        <?php if (DrevConfiguration::getInstance()->hasDegustation() && isset($form["date_degustation_voulue"])): ?>
         <h3>Contrôle IGP</h3>
-        <?php if(isset($form["date_degustation_voulue"])): ?>
             <?php echo $form["date_degustation_voulue"]->renderError(); ?>
             <div class="form-group" style="margin-bottom: 20px;">
                 <?php echo $form["date_degustation_voulue"]->renderLabel("Date de controle des vins souhaitée :", array("class" => "col-xs-3 control-label")); ?>
@@ -303,6 +306,5 @@
             </div>
         <?php elseif($drev->date_commission): ?>
             <p>Date de la commission : <?php echo ($drev->exist('date_commission')) ? date_format(date_create($drev->get('date_commission')), 'd/m/Y') : null; ?></p>
-            <?php endif ?>
         <?php endif; ?>
     <?php endif;?>

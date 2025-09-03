@@ -1236,12 +1236,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $no_validate = false;
         foreach ($this->declaration->getProduits() as $key => $produit) {
-            if($produit->isValidateOdg() === false){
+            if($produit->isValidateOdg() === false && $produit->volume_revendique_total){
                 $no_validate = true;
                 break;
             }
         }
-
+        foreach($this->lots as $lot) {
+            if (!$lot->isProduitValidateOdg()) {
+                $no_validate = true;
+                break;
+            }
+        }
         if($this->isModificative()){
             $this->getMother()->validateOdgByRegion($date, $region);
             $this->getMother()->save();
