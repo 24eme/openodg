@@ -249,6 +249,17 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         /* $this->checkDestinatairesAreSet(); */
     }
 
+    public function save()
+    {
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            $regions = $this->getRegions();
+            if (count($regions)) {
+                $this->add('region', implode('|', $regions));
+            }
+        }
+
+        parent::save();
+    }
 
     public function cleanNonAffectee() {
         $todelete = [];
@@ -619,4 +630,13 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $this->declaration->getProduits();
     }
 
+    public function getRegions()
+    {
+        $regions = [];
+        foreach ($this->getProduits() as $hash => $p) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($hash);
+        }
+
+        return array_unique(array_filter($regions, 'strlen'));
+    }
 }
