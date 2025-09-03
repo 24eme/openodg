@@ -147,9 +147,11 @@ if(isset($coop)):
         $superficie_potentielle = $parcellaireAffectation->getTheoriticalPotentielForHash($hashproduit);
         if ($superficie_potentielle):
     ?>
-    <span id="PPvalid" class="pull-right label label-success mt-2 hidden"><span class="glyphicon glyphicon-ok-circle"></span> Le potentiel de production est respecté</span>
-    <span id="PPinvalid" class="pull-right label label-danger mt-2 hidden"><span class="glyphicon glyphicon-warning-sign"></span> Le potentiel de prodution n'est pas respecté</span>
-        <h3>Vérification du potentiel de production des parcelles affectées</h3>
+    <h3>Vérification du potentiel de production des parcelles affectées en <?php echo $produits[$hashproduit]; ?></h3>
+    <div>
+        <span id="PPvalid" class="pull-right label label-success mt-2 hidden"><span class="glyphicon glyphicon-ok-circle"></span> Le potentiel de production est respecté</span>
+        <span id="PPinvalid" class="pull-right label label-danger mt-2 hidden"><span class="glyphicon glyphicon-warning-sign"></span> Le potentiel de prodution n'est pas respecté</span>
+    </div>
         <table id="synthese-total" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
                 <tr>
                     <td class="col-xs-9 text-right">Superficie potentielle max.</td>
@@ -208,10 +210,10 @@ if(isset($coop)):
                 let produitArray = {};
                 document.querySelectorAll("table.tableParcellaire tbody tr:not(.commune-total)").forEach(function (tr) {
                     if (tr.querySelector('.bsswitch:checked')) {
-                        if (! produitArray[tr.querySelector('td:nth-child(0n+4)').innerText]) {
-                            produitArray[tr.querySelector('td:nth-child(0n+4)').innerText] = 0;
+                        if (! produitArray[tr.querySelector('td:nth-child(0n+3)').innerText]) {
+                            produitArray[tr.querySelector('td:nth-child(0n+3)').innerText] = 0;
                         }
-                        produitArray[tr.querySelector('td:nth-child(0n+4)').innerText] += parseFloat(tr.querySelector('td:nth-child(0n+7) input').value);
+                        produitArray[tr.querySelector('td:nth-child(0n+3)').innerText] += parseFloat(tr.querySelector('td:nth-child(0n+6) input').value);
                     }
                 });
 
