@@ -58,7 +58,7 @@ if(isset($coop)):
     <?php endif; ?>
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
-    <?php $has_parcelles = false; ?>
+    <?php $has_parcelles = false; $tablei = 0; ?>
     <?php foreach ($parcellaireAffectation->getGroupedParcelles(false, $hashproduit) as $group => $parcelles): $tablei++;?>
     <?php if ($group && $parcellaireAffectation->hasDgc()): ?>
         <div style="margin-bottom: 1em;" class="row">
