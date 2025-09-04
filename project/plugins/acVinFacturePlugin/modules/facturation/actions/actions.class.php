@@ -507,7 +507,7 @@ class facturationActions extends sfActions
     }
 
     public function executeEditionLibre(sfWebRequest $request) {
-        $this->factureMouvements = MouvementsFactureClient::getInstance()->find('MOUVEMENTSFACTURE-' . $request->getParameter('id'));
+        $this->factureMouvements = MouvementsFactureClient::getInstance()->find('MOUVEMENTSFACTURE-' . str_replace('MOUVEMENTSFACTURE-', '', $request->getParameter('id')));
 
         $this->form = new FactureMouvementsEditionForm($this->factureMouvements);
 
