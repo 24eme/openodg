@@ -57,6 +57,10 @@ class declarationActions extends sfActions {
 
         $doc_type = $matches[1];
 
+        if($doc_type == "MOUVEMENTSFACTURE") {
+            return $this->redirect("facturation_libre_edition", array("id" => $doc_id));
+        }
+
         if ($doc_type == "DEGUSTATION") {
             return $this->redirect('degustation_visualisation', ['id' => $doc_id]);
         }
@@ -152,11 +156,6 @@ class declarationActions extends sfActions {
 
         if($doc_type == "ADELPHE") {
             return $this->redirect('adelphe_visualisation', array('id' => $doc_id));
-        }
-
-        if($doc_type == "MOUVEMENTSFACTURE") {
-
-            return $this->redirect("facturation_libre_edition", array("id" => $doc_id));
         }
 
         return $this->forward404();
