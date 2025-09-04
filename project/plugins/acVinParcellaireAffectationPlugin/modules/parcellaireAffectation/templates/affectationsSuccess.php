@@ -53,36 +53,55 @@ if(isset($coop)):
 </ul>
 
 <form id="validation-form" action="" method="post" class="form-horizontal">
+    <?php if (!$parcellaireAffectation->hasDgc()): ?>
+        <h3>Affectation <?php echo $produits[$hashproduit]; ?></h3>
+    <?php endif; ?>
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
-    <?php $has_parcelles = false; ?>
-    <?php foreach ($parcellaireAffectation->getGroupedParcelles(false, $hashproduit) as $group => $parcelles):?>
-    <?php if ($group): ?>
+    <?php $has_parcelles = false; $tablei = 0; ?>
+    <?php foreach ($parcellaireAffectation->getGroupedParcelles(false, $hashproduit) as $group => $parcelles): $tablei++;?>
+    <?php if ($group && $parcellaireAffectation->hasDgc()): ?>
         <div style="margin-bottom: 1em;" class="row">
             <div class="col-xs-6">
-                <h3><?php if ($parcellaireAffectation->hasDgc()): ?>Dénomination <?php endif; ?><?php echo $group; ?></h3>
+                <h3>Dénomination <?php echo $group; ?></h3>
             </div>
             <div class="col-xs-6">
                <p class="text-right" style="margin-top: 30px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette  <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
            </div>
         </div>
     <?php endif; ?>
-    <table id="parcelles_<?php echo $group; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
-    	<thead>
-        	<tr>
-        		<th class="col-xs-3">Commune</th>
-                <th class="col-xs-2">Lieu-dit</th>
-                <th class="col-xs-1">Section /<br />N° parcelle</th>
-                <th class="col-xs-2">Cépage</th>
-                <th class="col-xs-1 text-center">Année plantat°</th>
-                <th class="col-xs-1 text-right">Surf. totale <span class="text-muted small">(ha)</span></th>
-                <th class="col-xs-1 text-right">Surf. dédiée&nbsp;<span class="text-muted small">(ha)</span></th>
-                <th class="col-xs-1">Affectée?</th>
-                <th class="col-xs-1">Affectation</th>
+    <table id="parcelles_<?php echo $group; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire mb-0">
+    <thead>
+    <?php if ($tablei == 1 || $parcellaireAffectation->hasDgc()): ?>
+        <tr>
+            <th class="col-xs-3">Commune / Lieu-dit</th>
+            <th class="col-xs-1">Section /<br />N° parcelle</th>
+            <th class="col-xs-2">Cépage</th>
+            <th class="col-xs-1 text-center">Année plantat°</th>
+            <th class="col-xs-1 text-right">Surf. totale <span class="text-muted small">(ha)</span></th>
+            <th class="col-xs-1 text-right">Surf. dédiée&nbsp;<span class="text-muted small">(ha)</span></th>
+            <th class="col-xs-1">Affectée?</th>
+            <th class="col-xs-1">Affectation</th>
 
-            </tr>
-    	</thead>
-    	<tbody>
+        </tr>
+    <?php endif; ?>
+    <?php if (!$parcellaireAffectation->hasDgc()): ?>
+        <tr>
+            <th class="col-xs-12" colSpan="8">
+                <div class="row mt-2">
+                    <div class="col-xs-6">
+                        <?php echo $group;?>
+                    </div>
+                    <div class="col-xs-6">
+                    <p class="text-right"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette  <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
+                    </div>
+                </div>
+            </th>
+
+        </tr>
+    <?php endif; ?>
+    </thead>
+    <tbody>
     	<?php
       $has_parcelles = true;
       $parcelles = $parcelles->getRawValue();
@@ -91,16 +110,15 @@ if(isset($coop)):
             if (isset($form[$parcelle->getParcelleId()])):
     	?>
     		<tr class="vertical-center" id="tr_<?php echo $parcelle->getParcelleId();?>">
-    			<td><?php echo $parcelle->commune; ?></td>
-                <td><?php echo $parcelle->lieu; ?></td>
-                <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
-                <td><?php echo $parcelle->cepage; ?></td>
-                <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
-                <td class="text-right"><?php echoFloatFr($parcelle->getSuperficieParcellaire(),4); ?></td>
-                <td class="text-right edit">
+                <td class="col-xs-3"><?php echo $parcelle->commune; ?> / <?php echo $parcelle->lieu; ?></td>
+                <td class="col-xs-1" style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
+                <td class="col-xs-2"><?php echo $parcelle->cepage; ?></td>
+                <td class="col-xs-1 text-center"><?php echo $parcelle->campagne_plantation; ?></td>
+                <td class="col-xs-1 text-right"><?php echoFloatFr($parcelle->getSuperficieParcellaire(),4); ?></td>
+                <td class="col-xs-1 text-right edit">
                     <?php echo $form[$parcelle->getParcelleId()]['superficie']->render(); ?>
                 </td>
-            	<td class="text-center">
+                <td class="col-xs-1 text-center">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$parcelle->getParcelleId()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$parcelle->getParcelleId()]['affectee']->renderError() ?>
                         <div class="col-xs-12">
@@ -108,7 +126,7 @@ if(isset($coop)):
                         </div>
                     </div>
             	</td>
-                <td class="text-center">
+                <td class="col-xs-1 text-center">
                     <?php if ($parcelle->isAffectee()): ?>
                         <?php if ($parcelle->isPartielle()): ?><span>Partielle</span><?php else: ?><span>Totale</span><?php endif; ?>
                     <?php endif;?>
@@ -116,7 +134,7 @@ if(isset($coop)):
             </tr>
         <?php  endif; endforeach; ?>
         <tr class="commune-total">
-            <td colspan="6" class="text-right"><strong>Total <?php echo $group ?></strong></td>
+            <td colspan="5" class="text-right"><strong>Total <?php echo $group ?></strong></td>
             <td class="text-right"></td>
             <td class="text-right"></td>
             <td></td>
@@ -129,9 +147,11 @@ if(isset($coop)):
         $superficie_potentielle = $parcellaireAffectation->getTheoriticalPotentielForHash($hashproduit);
         if ($superficie_potentielle):
     ?>
-    <span id="PPvalid" class="pull-right label label-success mt-2 hidden"><span class="glyphicon glyphicon-ok-circle"></span> Le potentiel de production est respecté</span>
-    <span id="PPinvalid" class="pull-right label label-danger mt-2 hidden"><span class="glyphicon glyphicon-warning-sign"></span> Le potentiel de prodution n'est pas respecté</span>
-        <h3>Vérification du potentiel de production des parcelles affectées</h3>
+    <h3>Vérification du potentiel de production des parcelles affectées en <?php echo $produits[$hashproduit]; ?></h3>
+    <div>
+        <span id="PPvalid" class="pull-right label label-success mt-2 hidden"><span class="glyphicon glyphicon-ok-circle"></span> Le potentiel de production est respecté</span>
+        <span id="PPinvalid" class="pull-right label label-danger mt-2 hidden"><span class="glyphicon glyphicon-warning-sign"></span> Le potentiel de prodution n'est pas respecté</span>
+    </div>
         <table id="synthese-total" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
                 <tr>
                     <td class="col-xs-9 text-right">Superficie potentielle max.</td>
@@ -165,7 +185,7 @@ if(isset($coop)):
 
                 table.querySelectorAll("tbody tr:not(.commune-total)").forEach(function (tr) {
                     if (tr.querySelector('.bsswitch:checked')) {
-                        superficie += parseFloat(tr.querySelector('td:nth-child(0n+7) input').value)
+                        superficie += parseFloat(tr.querySelector('td:nth-child(0n+6) input').value)
                         checked ++
                     }
                 })
@@ -190,10 +210,10 @@ if(isset($coop)):
                 let produitArray = {};
                 document.querySelectorAll("table.tableParcellaire tbody tr:not(.commune-total)").forEach(function (tr) {
                     if (tr.querySelector('.bsswitch:checked')) {
-                        if (! produitArray[tr.querySelector('td:nth-child(0n+4)').innerText]) {
-                            produitArray[tr.querySelector('td:nth-child(0n+4)').innerText] = 0;
+                        if (! produitArray[tr.querySelector('td:nth-child(0n+3)').innerText]) {
+                            produitArray[tr.querySelector('td:nth-child(0n+3)').innerText] = 0;
                         }
-                        produitArray[tr.querySelector('td:nth-child(0n+4)').innerText] += parseFloat(tr.querySelector('td:nth-child(0n+7) input').value);
+                        produitArray[tr.querySelector('td:nth-child(0n+3)').innerText] += parseFloat(tr.querySelector('td:nth-child(0n+6) input').value);
                     }
                 });
 
@@ -275,20 +295,20 @@ if(isset($coop)):
                     document.getElementById('PPinvalid').classList.toggle('hidden', !document.querySelectorAll('.potentiel-regles.danger').length);
                 });
             };
-
             changeAffectation = function (ligne, state) {
+                console.log([ligne]);
                 if (! state) {
-                    ligne.childNodes[17].innerText = '';
+                    ligne.childNodes[15].innerText = '';
                     return ;
                 }
-                superficie = ligne.childNodes[13].childNodes[1].value;
-                if (parseFloat(ligne.childNodes[11].innerText.replace(",", ".")) < parseFloat(superficie)) {
-                    ligne.childNodes[17].innerText = 'Totale';
-                    ligne.childNodes[13].childNodes[1].value = ligne.childNodes[11].innerText.replace(",", ".");
-                } else if (parseFloat(ligne.childNodes[11].innerText.replace(",", ".")) == parseFloat(superficie)) {
-                    ligne.childNodes[17].innerText = 'Totale';
+                superficie = parseFloat(ligne.childNodes[11].childNodes[1].value);
+                if (parseFloat(ligne.childNodes[9].innerText.replace(",", ".")) < superficie) {
+                    ligne.childNodes[15].innerText = 'Totale';
+                    ligne.childNodes[11].childNodes[1].value = ligne.childNodes[11].innerText.replace(",", ".");
+                } else if (parseFloat(ligne.childNodes[9].innerText.replace(",", ".")) == superficie) {
+                    ligne.childNodes[15].innerText = 'Totale';
                 } else {
-                    ligne.childNodes[17].innerText = 'Partielle';
+                    ligne.childNodes[15].innerText = 'Partielle';
                 }
             };
 

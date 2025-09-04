@@ -154,6 +154,11 @@ class declarationActions extends sfActions {
             return $this->redirect('adelphe_visualisation', array('id' => $doc_id));
         }
 
+        if($doc_type == "MOUVEMENTSFACTURE") {
+
+            return $this->redirect("facturation_libre_edition", array("id" => $doc_id));
+        }
+
         return $this->forward404();
     }
 
