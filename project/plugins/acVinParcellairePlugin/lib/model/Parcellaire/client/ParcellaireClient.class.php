@@ -112,6 +112,46 @@ class ParcellaireClient extends acCouchdbClient {
      */
     public function saveParcellaire(Etablissement $etablissement, Array &$errors, $contextInstance = null, $scrapping = true)
     {
+        try {
+            return $this->saveParcellaireScrapyApi($etablissement, $errors, $contextInstance, $scrapping);
+        }catch(sfException $e) {
+        }
+        return $this->saveParcellaireScrapyLocal($etablissement, $errors, $contextInstance, $scrapping);
+    }
+
+    public function saveParcellaireScrapyApi(Etablissement $etablissement, Array &$errors, $contextInstance = null, $scrapping = true)
+    {
+        if (ProdouaneScrappyClient::scrape('parcellaire', date('Y'), $etablissement->cvi) != ProdouaneScrappyClient::SCRAPING_SUCCESS) {
+            return false;
+        }
+        $nb = 0;
+        $files = ProdouaneScrappyClient::listAndSaveInTmp('parcellaire', date('Y'), $etablissement->cvi);
+        foreach ($files as $f) {
+            $i = pathinfo($f);
+            switch ($i['extension']) {
+                case 'pdf':
+                    $parcellaire->storeAttachment($f, 'application/pdf', "import-cadastre-$cvi-parcelles.pdf");
+                    $parcellaire->save();
+                    $nb++;
+                    break;
+                case 'csv':
+                    $parcellaire->storeAttachment($f, 'text/csv', "import-cadastre-$cvi-parcelles.csv");
+                    $parcellaire->save();
+                    $nb++;
+                    break;
+                case 'json':
+                    $parcellaire->storeAttachment($f, 'text/json', "import-cadastre-$cvi-parcelles.json");
+                    $parcellaire->save();
+                    $nb++;
+                    break;
+            }
+            unlink($f);
+        }
+        return ($nb > 1);
+     }
+
+    public function saveParcellaireScrapyLocal(Etablissement $etablissement, Array &$errors, $contextInstance = null, $scrapping = true)
+    {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         $cvi = $etablissement->cvi;
 
