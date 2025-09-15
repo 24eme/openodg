@@ -1,13 +1,13 @@
 <?php
 require_once(dirname(__FILE__).'/../config/ProjectConfiguration.class.php');
 $configuration = ProjectConfiguration::getApplicationConfiguration('gaillac', 'prod', false);
-sfConfig::set('app_region', 'AOPGAILLAC');
-session_name('AOPGAILLAC');
+sfConfig::set('app_region', 'AOCGAILLAC');
+session_name('AOCGAILLAC');
 
 $context = sfContext::createInstance($configuration);
-$user = $context->getUser()->getCompteOrigin();
-
-if ($user && sfConfig::has('app_redirect_domain_DEFAUT')) {
+if (sfConfig::has('app_redirect_domain_DEFAUT')) {
+  $user = $context->getUser()->getCompteOrigin();
+  if ($user && strpos($_SERVER['REQUEST_URI'], 'logout') === false) {
     $request = $context->getRequest();
 
     $location = sfConfig::has('app_redirect_domain_'.$user->identifiant)
@@ -20,9 +20,13 @@ if ($user && sfConfig::has('app_redirect_domain_DEFAUT')) {
                ? '?'.parse_url($request->getUri(), PHP_URL_QUERY)
                : '';
 
+       $context->getUser()->signOutOrigin();
+       unset($_SESSION['phpCAS']);
+
         header("Location: http://$location$path$query");
         exit;
     }
+  }
 }
 
 $context->dispatch();

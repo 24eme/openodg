@@ -246,9 +246,20 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     protected function doSave() {
         $this->piece_document->generatePieces();
-        $this->checkDestinatairesAreSet();
+        /* $this->checkDestinatairesAreSet(); */
     }
 
+    public function save()
+    {
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            $regions = $this->getRegions();
+            if (count($regions)) {
+                $this->add('region', implode('|', $regions));
+            }
+        }
+
+        parent::save();
+    }
 
     public function cleanNonAffectee() {
         $todelete = [];
@@ -543,7 +554,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             $total_superficie_affecte = 0;
             foreach ($parcelle as $parcelleDetail) {
                 $total_superficie_affecte += $parcelleDetail->superficie;
-                if ($total_superficie_affecte > $parcelleDetail->getSuperficieParcellaire()) {
+                if (round($total_superficie_affecte, 4) > round($parcelleDetail->getSuperficieParcellaire(), 4)) {
                     $ret[$parcelleDetail->idu] = ['section' => $parcelleDetail->section, 'numero_parcelle' => $parcelleDetail->numero_parcelle, 'total_superficie_affecte' => $total_superficie_affecte, 'superficie_parcellaire' => $parcelleDetail->getSuperficieParcellaire()];
                     break;
                 }
@@ -619,4 +630,13 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $this->declaration->getProduits();
     }
 
+    public function getRegions()
+    {
+        $regions = [];
+        foreach ($this->getProduits() as $hash => $p) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($hash);
+        }
+
+        return array_unique(array_filter($regions, 'strlen'));
+    }
 }
