@@ -251,7 +251,7 @@ class PotentielProductionProduit {
         }else{
             $real_parcellaire = $parcellaire2ref->getParcellaire();
         }
-        foreach($parcellaire2ref->getParcelles() as $p) {
+        foreach($parcellaire2ref->getParcelles($filter_produit_hash) as $p) {
             if ($filter_produit_hash === true && !$p->produit_hash) {
                 continue;
             }
