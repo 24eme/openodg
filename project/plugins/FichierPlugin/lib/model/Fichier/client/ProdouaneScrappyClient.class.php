@@ -3,35 +3,9 @@ class ProdouaneScrappyClient {
 
     const SCRAPING_SUCCESS = 0;
 
-    public static function getDocumentPath($contextInstance = null) {
-        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        return sfConfig::get('app_scrapy_documents');
-    }
-
-    public static function getScrapyBin($contextInstance = null) {
-        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        return sfConfig::get('app_scrapy_bin');;
-    }
-
-    public static function exec($scriptname, $arguments, &$output, $contextInstance = null) {
-        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        $scrapybin = self::getScrapyBin($contextInstance);
-        $scrapyconfigfilename = sfConfig::get('app_scrapy_configfilename');
-        if ($scrapyconfigfilename) {
-            $scrapyconfigfilename = preg_replace('/%app%/', sfConfig::get('sf_app'), $scrapyconfigfilename);
-            $scrapybin = "PRODOUANE_CONFIG_FILENAME=".$scrapyconfigfilename." bash ".$scrapybin;
-        }else{
-            $scrapybin = "bash ".$scrapybin;
-        }
-
-        $contextInstance->getLogger()->info("PrdouaneScrappyClient: ".$scrapybin."/$scriptname $arguments RUNNING");
-        exec($scrapybin."/$scriptname $arguments", $output, $status);
-        $contextInstance->getLogger()->info("PrdouaneScrappyClient: ".$scrapybin."/$scriptname $arguments FIN ($status) ".implode(' - ', $output));
-        return $status;
-    }
-
     public static function getUrl($action, $type, $millesime, $cvi, $json = false, $filename = null) {
         $conf = sfConfig::get('app_scrapy_api_url');
+        $conf = str_replace('%app%', sfConfig::get('sf_app'), $conf);
         if (!$conf) {
             throw new sfException('no configuration for scrapy api url');
         }
@@ -53,7 +27,7 @@ class ProdouaneScrappyClient {
         if (!isset($res->error_code) || $res->error_code) {
             return $res->error_code;
         }
-        return 0;
+        return self::SCRAPING_SUCCESS;
     }
 
     public static function list($type, $millesime, $cvi) {
@@ -79,9 +53,10 @@ class ProdouaneScrappyClient {
 
     public static function listAndSaveInTmp($type, $millesime, $cvi) {
         $files = [];
-        foreach(self::list($type, $millesime, $cvi) as $f) {
-            $ftmp = self::saveFile($type, $millesime, $cvi, $f, "/tmp/");
-            if ($fp) {
+        $urlfiles = self::list($type, $millesime, $cvi);
+        foreach($urlfiles as $f) {
+            $ftmp = self::saveFile($type, $millesime, $cvi, $f, "/tmp");
+            if ($ftmp) {
                 $files[] = $ftmp;
             }
         }

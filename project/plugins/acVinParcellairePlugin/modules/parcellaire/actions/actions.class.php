@@ -78,7 +78,7 @@ class parcellaireActions extends sfActions {
 
             $msg = '';
 
-            if (! ParcellaireClient::getInstance()->saveParcellaire($this->etablissement, $errors, null, !($this->noscrape)) ) {
+            if (! ParcellaireClient::getInstance()->retrieveParcellaireFromScrapy($this->etablissement, $errors, null, !($this->noscrape)) ) {
                 $msg = $errors['csv'].'\n'.$errors['json'];
             }
         } catch (Exception $e) {

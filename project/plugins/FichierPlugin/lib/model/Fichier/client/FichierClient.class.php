@@ -15,7 +15,7 @@ class FichierClient extends acCouchdbClient {
 
     public static function getInstance()
     {
-      return acCouchdbManager::getClient("Fichier");
+        return acCouchdbManager::getClient("Fichier");
     }
 
     public function createDoc($identifiant, $papier = false)
@@ -33,15 +33,15 @@ class FichierClient extends acCouchdbClient {
     }
 
     /**
-     * Scrape le site des douanes pour récupérer des documents administratifs
-     * et les converti en document CouchDB
-     *
-     * @param Etablissement $etablissement Un objet CouchDB Etablissement
-     * @param string $type Le type de document à scraper
-     * @param string $annee L'année de création du document
-     *
-     * @return false|Un document
-     */
+    * Scrape le site des douanes pour récupérer des documents administratifs
+    * et les converti en document CouchDB
+    *
+    * @param Etablissement $etablissement Un objet CouchDB Etablissement
+    * @param string $type Le type de document à scraper
+    * @param string $annee L'année de création du document
+    *
+    * @return false|Un document
+    */
     public function scrapeAndSaveFiles($etablissement, $type, $annee, $scrap = true, $context = null)
     {
         $etablissements = $etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
@@ -89,53 +89,16 @@ class FichierClient extends acCouchdbClient {
             throw new sfException("$type is not allowed for scrapy file");
         }
 
-        try {
-            return ProdouaneScrappyClient::scrape($type, $annee, $etablissement->cvi);
-        }catch($e) {
-        }
+        return ProdouaneScrappyClient::scrape($type, $annee, $etablissement->cvi);
 
-        $scrapydocs = ProdouaneScrappyClient::getDocumentPath();
-
-        if (!preg_match('/^[0-9]{4}$/', $annee)) {
-            throw new sfException("$annee is not a valid year for scrapy file");
-        }
-
-        if (!$etablissement->cvi || !preg_match('/^[0-9A]{5}[0-9A-Z]{5}$/i', $etablissement->cvi)) {
-            throw new sfException("CVI : ".$etablissement->cvi." is not a valid cvi for scrapy file");
-        }
-
-        $t = strtolower($type);
-        $cvi = $etablissement->cvi;
-
-        $files = $this->getScrapyFiles($etablissement, $t, $annee, true);
-
-        $status = ProdouaneScrappyClient::exec("download_douane.sh", "$t $annee $cvi 1>&2", $output);
     }
 
     public function getScrapyFiles($etablissement, $type, $annee, $listonly = false, $context = null)
     {
-        try {
-            if ($listonly) {
-                return ProdouaneScrappyClient::list($type, $annee, $etablissement->cvi);
-            }
-            return ProdouaneScrappyClient::listAndSaveInTmp($type, $annee, $etablissement->cvi);
-        }catch($e) {
+        if ($listonly) {
+            return ProdouaneScrappyClient::list($type, $annee, $etablissement->cvi);
         }
-        $files = array();
-        $directory = new DirectoryIterator(ProdouaneScrappyClient::getDocumentPath($context));
-        $iterator = new IteratorIterator($directory);
-        if ($annee > 2021 && ($type == 'sv11' || $type == 'sv12')) {
-            $type = 'production';
-        }
-        $regex = new RegexIterator($directory, '/^'.$type.'-'.$annee.'-'.$etablissement->cvi.'\..+$/i', RegexIterator::MATCH);
-        foreach($regex as $file) {
-            $file_path = $file->getPathname);
-            if(!is_writable($file_path) {
-                throw new sfException("File ".$file." not writable. Once the new version has been downloaded, it cannot be replaced");
-            }
-            $files[] = $file_path;
-        }
-        return $files;
+        return ProdouaneScrappyClient::listAndSaveInTmp($type, $annee, $etablissement->cvi);
     }
 
     public function findByArgs($type, $identifiant, $annee)
