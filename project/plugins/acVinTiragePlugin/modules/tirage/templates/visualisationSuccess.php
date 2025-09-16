@@ -71,7 +71,7 @@
                             <?php foreach ($tirage->getOrAdd('documents') as $document): ?>
                                 <tr>
                                     <td class="text-left"><?php echo TirageDocuments::getDocumentLibelle($document->getKey()) ?></td>
-                                    <?php $href = '' ; if ($tirage->hasDr()) { $href = url_for("tirage_dr_pdf", $tirage); } ?>
+                                    <?php $href = '' ; if ($tirage->hasDr() && $document->getKey() == TirageDocuments::DOC_PRODUCTEUR) { $href = url_for("tirage_dr_pdf", $tirage); } ?>
                                     <td class="text-center">
                                          <<?php if ($href) {echo 'a href="'.$href.'"';} else { echo 'span';}
                                         ?>  class="<?php if ($document->statut == TirageDocuments::STATUT_RECU): ?>text-success<?php else: ?>text-warning<?php endif;

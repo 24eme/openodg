@@ -413,6 +413,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       return $this->exist('papier') && $this->get('papier') === "1";
   }
 
+  public function isTeledeclare() {
+      return !$this->isPapier();
+  }
+
   public function isAuto() {
       if ($this->exist('papier')) {
           return $this->papier === "1" || $this->papier === 'AUTO';

@@ -232,6 +232,11 @@ class parcellaireAffectationActions extends sfActions {
     		return sfView::SUCCESS;
     	}
 
+        if (!$this->validation->isValide() && $this->parcellaireAffectation->isTeledeclare() && !$this->getUser()->isAdmin()) {
+
+            return sfView::SUCCESS;
+        }
+
         if($this->coop) {
             $coopDoc = ParcellaireAffectationCoopClient::getInstance()->find($this->coop);
             $coopDoc->addApporteur($this->parcellaireAffectation->getEtablissementObject()->_id)->add('statuts')->add($this->parcellaireAffectation->getType(), ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT);
