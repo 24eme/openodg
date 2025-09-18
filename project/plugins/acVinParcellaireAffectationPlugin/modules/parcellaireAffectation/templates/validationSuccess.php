@@ -41,7 +41,6 @@
     </div>
 
     <?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation, 'coop' => $coop)); ?>
-
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="row">
@@ -70,32 +69,13 @@
             <?php if(count($destinatairesIncomplete)): ?>
             <button type="button" data-toggle="modal" data-target="#parcellaireaffectation-information-incomplete" <?php if (isset($validation) && $validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Terminer votre déclaration</button>
             <?php else: ?>
-            <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#parcellaireaffectation-confirmation-validation" <?php if (isset($validation) && $validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider votre déclaration</button>
+            <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#parcellaireaffectation-confirmation-validation" <?php if (isset($validation) && $validation->hasErreurs() && $parcellaireAffectation->isTeledeclare() && (!$sf_user->isAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider votre déclaration</button>
             <?php endif; ?>
         </div>
     </div>
     <?php if (!isset($validation) || !$validation->hasErreurs()): ?>
 	<?php include_partial('parcellaireAffectation/popupConfirmationValidation', array('form' => $form)); ?>
 	<?php endif; ?>
-    <?php if(count($destinatairesIncomplete)): ?>
-        <div class="modal fade" id="parcellaireaffectation-information-incomplete" role="dialog" aria-labelledby="Confirmation de validation" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">Déclaration d'affectation parcellaire partagée</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Cette déclaration est partagée avec d'autres caves coopératives qui n'ont pas encore affecté leurs parcelles.</p>
-                        <p>Elle sera validée lorsque ces autres caves auront également effectué leur saisie.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" form="validation-form" class="btn btn-success btn pull-right">Continuer</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
 </form>
 
 <?php if(isset($coop)): ?>
@@ -106,4 +86,24 @@
 <script type="text/javascript">
 $('#parcellaireaffectation-confirmation-validation').modal('show')
 </script>
+<?php endif; ?>
+
+<?php if(count($destinatairesIncomplete)): ?>
+    <div class="modal fade" id="parcellaireaffectation-information-incomplete" role="dialog" aria-labelledby="Confirmation de validation" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Déclaration d'affectation parcellaire partagée</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Cette déclaration est partagée avec d'autres caves coopératives qui n'ont pas encore affecté leurs parcelles.</p>
+                    <p>Elle sera validée lorsque ces autres caves auront également effectué leur saisie.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="validation-form" class="btn btn-success btn pull-right">Continuer</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php endif; ?>

@@ -14,7 +14,7 @@ class DRevConfiguration extends DeclarationConfiguration {
 
     public function getCampagneDebutMois() {
 
-        return 10;
+        return 9;
     }
 
     public function getModuleName() {
@@ -94,6 +94,11 @@ class DRevConfiguration extends DeclarationConfiguration {
       return isset($this->configuration['validation_odg']) && $this->configuration['validation_odg'] == 'region';
     }
 
+    public function hasNotifPourApprobation()
+    {
+        return isset($this->configuration['notif_pour_approbation']) && $this->configuration['notif_pour_approbation'];
+    }
+
     public function hasValidationOdgAutoOrRegion(){
       return $this->hasValidationOdgAuto() || $this->hasValidationOdgRegion();
     }
@@ -111,9 +116,15 @@ class DRevConfiguration extends DeclarationConfiguration {
     }
 
     public function hasEtapeSuperficie() {
+        if ($this->hasEtapesAOC()) {
+            return true;
+        }
         return isset($this->configuration['etape_superficie']) && boolval($this->configuration['etape_superficie']);
     }
 
+    public function hasEtapesAOC() {
+        return isset($this->configuration['etapes_aoc']) && boolval($this->configuration['etapes_aoc']);
+    }
 
     public function isDrDouaneRequired() {
         return isset($this->configuration['dr_douane_required']) && boolval($this->configuration['dr_douane_required']);
@@ -180,6 +191,11 @@ class DRevConfiguration extends DeclarationConfiguration {
 
     public function isSentToInnovagro() {
         return isset($this->configuration['send_to_innovagro']) && boolval($this->configuration['send_to_innovagro']);
+    }
+
+    public function isSaisieSuperficieRevendique() {
+
+        return isset($this->configuration['saisie_superficie_revendique']) && boolval($this->configuration['saisie_superficie_revendique']);
     }
 
 }

@@ -10,7 +10,6 @@ all:
         VRAC: "Détenteur de vin en vrac"
         PRESTATAIRE_DE_SERVICE: "Prestataire de service"
       demande:
-        listing: false
         statuts:
           DEPOT: "Dépôt"
           COMPLET: "Complet"
@@ -21,10 +20,12 @@ all:
           REFUSE: "Refusé"
           ANNULE: "Annulé"
         automatique:
+          COMPLET: TRANSMIS_OC
+          VALIDE_OC: VALIDE
         habilitations:
           HABILITATION:
             COMPLET: DEMANDE_HABILITATION
-            VALIDE_OC: HABILITE
+            TRANSMIS_OC: DEMANDE_HABILITATION
             VALIDE: HABILITE
             REFUSE: REFUS
             ANNULE: ANNULÉ

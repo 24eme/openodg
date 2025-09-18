@@ -3,16 +3,16 @@
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
-      <?php if (($drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) || ($drev->getDocumentDouanierType() == SV11CsvFile::CSV_TYPE_SV11)): ?>
+      <?php if (($drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) || ($drev->getDocumentDouanierType() == SV11CsvFile::CSV_TYPE_SV11)): $nbcols = 5; ?>
         <th class="col-xs-4"><?php if (count($drev->declaration->getProduitsWithoutLots()) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
           <th class="col-xs-1 text-center">Superficie revendiquée&nbsp;<small class="text-muted">(ha)</small></th>
           <th class="col-xs-1 text-center">Volume millesime <?php echo $drev->periode-1 ?> issu du VCI&nbsp;<small class="text-muted">(hl)</small></th>
-          <?php if($drev->hasVSI()): ?>
+          <?php if($drev->hasVSI()): $nbcols++; ?>
           <th class="col-xs-1 text-center">Volume<br />millésime <?php echo $drev->periode ?><br />issu du VSI&nbsp;<small class="text-muted">(hl)</small></th>
           <?php endif; ?>
           <th class="col-xs-1 text-center">Volume issu de la récolte <?php echo $drev->periode ?>&nbsp;<small class="text-muted">(hl)</small></th>
           <th class="col-xs-1 text-center">Volume revendiqué net total&nbsp;<?php if($drev->hasProduitWithMutageAlcoolique()): ?><small>(alcool compris)</small>&nbsp;<?php endif; ?><small class="text-muted">(hl)</small></th>
-        <?php else: ?>
+        <?php else: $nbcols = 4; ?>
           <th class="col-xs-6"><?php if (count($drev->declaration->getProduitsWithoutLots()) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
             <th class="col-xs-1 text-center">Superficie revendiquée&nbsp;<small class="text-muted">(ha)</small></th>
             <th class="col-xs-1 text-center">Volume issu de la récolte <?php echo $drev->periode ?>&nbsp;<small class="text-muted">(hl)</small></th>
@@ -20,10 +20,17 @@
           <?php endif; ?>
         </tr>
       </thead>
+<?php if (!count($drev->declaration->getProduitsWithoutLots())): ?>
+    <tbody>
+        <tr>
+            <td colspan="<?php echo $nbcols; ?>"><center><i>Pas de produit AOC/AOP revendiqué</i></center></td>
+        </tr>
+    </tbody>
+<?php else: ?>
       <tbody>
         <?php foreach ($drev->declaration->getProduitsWithoutLots() as $produit) : ?>
           <tr>
-            <td><?php echo $produit->getRawValue()->getLibelleCompletHTML() ?><?php if($produit->isValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?><small class="pull-right <?php if($produit->getRendementEffectif() > $produit->getConfig()->getRendement()): ?>text-danger<?php endif; ?>">&nbsp;<?php echoFloat(round($produit->getRendementEffectif(), 2)); ?> hl/ha</small></td>
+            <td><?php echo $produit->getRawValue()->getLibelleCompletHTML() ?><?php if($produit->isValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?><small class="pull-right <?php if($produit->getRendementEffectif() > $produit->getConfig()->getRendement()): ?>text-danger<?php endif; ?>">&nbsp;<?php if($produit->superficie_revendique) { echoFloat(round($produit->getRendementEffectif(), 2)); echo ' hl/ha'; } ?></small></td>
             <td class="text-right <?php echo isVersionnerCssClass($produit, 'superficie_revendique') ?>"><?php if($produit->superficie_revendique): ?><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ha</small><?php endif; ?></td>
             <?php if (($drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) || ($drev->getDocumentDouanierType() == SV11CsvFile::CSV_TYPE_SV11)): ?>
               <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_issu_vci') ?>"><?php if($produit->volume_revendique_issu_vci): ?><?php echoFloat($produit->volume_revendique_issu_vci) ?> <small class="text-muted">hl</small><?php endif; ?></td>
@@ -48,8 +55,8 @@
             <td class="text-right"><?php echo echoFloat(array_reduce($drev->declaration->getProduitsWithoutLots()->getRawValue(), function ($tot, $p) { $tot += $p->volume_revendique_issu_recolte; return $tot; }, 0)) ?> <small class="text-muted">hl</small></td>
             <td class="text-right"><?php echo echoFloat(array_reduce($drev->declaration->getProduitsWithoutLots()->getRawValue(), function ($tot, $p) { $tot += $p->volume_revendique_total; return $tot; }, 0)) ?> <small class="text-muted">hl</small></td>
         </tr>
-
       </tbody>
+<?php endif; ?>
     </table>
     <?php $bailleurs = $drev->getBailleurs(true)->getRawValue(); ?>
     <?php if(count($bailleurs)): ?>
@@ -63,3 +70,19 @@
             Ces volumes seront directement revendiqués par ce<?php if(count($bailleurs) > 1): ?>s<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s<?php endif; ?>.
           </p>
         <?php endif; ?>
+<?php if (DRevConfiguration::getInstance()->hasEtapesAOC()): ?>
+<?php if($drev->isValideeOdg() && $drev->isModifiable()): ?>
+    <div class="text-right" style="margin-bottom: 20px;">
+          <a onclick="return confirm('Êtes vous sûr de vouloir modifier la DREV ?')" class="btn btn-primary" href="<?php echo url_for('drev_modificative', $drev) ?>">Modifier la revendication</a>
+      </div>
+<?php elseif($drev->isValidee() && !$drev->isValideeOdg()): ?>
+        <div class="text-right">
+          <p class="text-danger">La DREV est en attente d'approbation</p>
+          <p>Vous ne pouvez donc pas la modifier</p>
+        </div>
+<?php elseif($drev->isValideeOdg()): ?>
+        <div class="text-right">
+          <p class="text-danger">Cette DREV n'est pas la dernière et donc pas modifiable</p>
+        </div>
+<?php endif; ?>
+<?php endif; ?>

@@ -17,11 +17,11 @@
         <link rel="icon" type="image/png" href="/favico_gaillac.png" />
 
         <link href="<?php echo public_path("/components/vins/vins.css").'?'.$gitcommit; ?>" rel="stylesheet">
-        <link href="<?php echo public_path("/css/compile_default.css").'?'.$gitcommit; ?>" rel="stylesheet">
+        <link href="<?php echo public_path("/css/compile_gaillac.css").'?'.$gitcommit; ?>" rel="stylesheet">
         <link href="<?php echo public_path("/js/lib/leaflet/leaflet.css").'?'.$gitcommit; ?>" rel="stylesheet">
 
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
-        <link href="/css/style_igp.css" rel="stylesheet" type="text/css">
+        <link href="/css/style_gaillac.css" rel="stylesheet" type="text/css">
 
         <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
         <script type="text/javascript" src="/js/lib/device.min.js"></script>
@@ -43,23 +43,16 @@
         <!-- ####### PLEASE KEEP ####### -->
 
             <div id="header" class="hidden-print">
-                <?php include_partial('global/nav'); ?>
+                <?php include_component('global', 'nav'); ?>
             </div>
 
                 <section id="content" class="container">
                         <?php if(sfConfig::get('app_instance') == 'preprod' ): ?>
-                          <div><p style="color:red; text-align:center; font-weight: bold;">Preproduction (la base est succeptible d'être supprimée à tout moment)</p></div>
+                          <div><p style="color:red; text-align:center; font-weight: bold;">Preproduction (la base est susceptible d'être supprimée à tout moment)</p></div>
                         <?php endif; ?>
 
                         <?php echo $sf_content ?>
                 </section>
-
-                <footer id="footer" class="container hidden-xs hidden-sm text-center mt-5 mb-5" role="contentinfo">
-                    <nav role="navigation">
-                        <ul class="list-inline" style="font-size: 13px;">
-                        </ul>
-                    </nav>
-                </footer>
 
             <div class="alert alert-danger notification" id="ajax_form_error_notification">Une erreur est survenue</div>
             <div class="alert alert-success notification" id="ajax_form_progress_notification">Enregistrement en cours ...</div>

@@ -53,9 +53,11 @@
                 <th class="col-xs-1">Section /<br />N° parcelle</th>
                 <th class="col-xs-2">Cépage</th>
                 <th class="col-xs-1">Année plantat°</th>
-                <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(ha)</span></th>
-                <th class="col-xs-1">Type de matériel</th>
-                <th class="col-xs-1">Type de ressource</th>
+                <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
+                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource()): ?>
+                    <th class="col-xs-1">Type de matériel</th>
+                    <th class="col-xs-1">Type de ressource</th>
+                <?php endif; ?>
                 <th class="col-xs-1">Irrigation?</th>
                 <th class="col-xs-2">Date de déclaration d'irrigation</th>
 
@@ -70,11 +72,17 @@
 			<tr class="vertical-center" id="tr_<?php $parcelle->getParcelleId();?>">
                 <td><?php echo $parcelle->lieu; ?></td>
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
-                <td><?php echo $parcelle->cepage; ?></td>
+                <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
-                <td style="text-align: right;"><?php echoFloatFr($parcelle->superficie); ?></td>
-            	<td><?php echo $parcelle->materiel; ?></td>
-            	<td><?php echo $parcelle->ressource; ?></td>
+                <?php if (ParcellaireConfiguration::getInstance()->isAres()): ?>
+                    <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)); ?></td>
+                <?php else: ?>
+                    <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie()); ?></td>
+                <?php endif ?>
+                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource() ): ?>
+                    <td><?php echo $parcelle->materiel; ?></td>
+                    <td><?php echo $parcelle->ressource; ?></td>
+                <?php endif; ?>
             	<?php if($parcelle->irrigation && (!$parcellaireIrrigue->exist('papier') || !$parcellaireIrrigue->papier)): ?>
             	<td class="text-center text-success"><span class="glyphicon glyphicon-ok-sign"></span></td>
             	<td class="text-center"><?php echo format_date($parcelle->date_irrigation, "dd/MM/yyyy", "fr_FR"); ?></td>
@@ -98,7 +106,7 @@
         <div class="col-xs-4"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireIrrigue->identifiant, 'campagne' => $parcellaireIrrigue->campagne)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
             <?php if($parcellaireIrrigue->isValidee()): ?>
-                <a href="<?php echo url_for('parcellaireirrigue_export_pdf', $parcellaireIrrigue) ?>" class="btn btn-success">
+                <a href="<?php echo url_for('parcellaireirrigue_export_pdf_last',array('identifiant' => $parcellaireIrrigue->identifiant, 'periode' => $parcellaireIrrigue->periode)) ?>" class="btn btn-success">
                     <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
                 </a>
             <?php endif; ?>
@@ -107,7 +115,6 @@
     </div>
     <?php include_partial('parcellaireIrrigue/popupConfirmationValidation', array('form' => $form)); ?>
 </form>
-</div>
 
 <?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
 <script type="text/javascript">

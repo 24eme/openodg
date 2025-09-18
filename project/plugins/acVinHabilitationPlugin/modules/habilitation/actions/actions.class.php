@@ -2,6 +2,15 @@
 
 class habilitationActions extends sfActions {
 
+  public function executeIndex(sfWebRequest $request)
+  {
+      if(HabilitationConfiguration::getInstance()->isListingParDemande()) {
+
+          return $this->redirect('habilitation_demande_liste');
+      }
+
+      return $this->redirect('habilitation_liste');
+  }
 
   public function executeIndexDemande(sfWebRequest $request)
   {
@@ -16,7 +25,7 @@ class habilitationActions extends sfActions {
         if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getRegion())){
             $params = array();
             $params['region'] = $region;
-            return $this->redirect('habilitation_demande', $params);
+            return $this->redirect('habilitation_demande_liste', $params);
         }
 
         $regionProduitsFiltre = RegionConfiguration::getInstance()->getOdgHabilitationProduits($this->regionParam);
@@ -43,7 +52,16 @@ class habilitationActions extends sfActions {
                         }
                         );
 
-      $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+
+      if(class_exists("EtablissementChoiceForm")) {
+          $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+      }elseif(class_exists("LoginForm")) {
+        $this->form = new LoginForm();
+      }
+
+      if(!isset($this->form)) {
+          return sfView::SUCCESS;
+      }
 
       if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -76,11 +94,6 @@ class habilitationActions extends sfActions {
 
   public function executeIndexHabilitation(sfWebRequest $request)
   {
-      if(HabilitationConfiguration::getInstance()->isListingParDemande()) {
-
-          return $this->redirect('habilitation_demande');
-      }
-
       $this->buildSearch($request,
                         'habilitation',
                         'activites',
@@ -124,7 +137,7 @@ class habilitationActions extends sfActions {
       $form->bind($request->getParameter($form->getName()));
       if (!$form->isValid()) {
 
-          return (HabilitationConfiguration::getInstance()->isSuiviParDemande()) ? $this->redirect('habilitation_demande') : $this->redirect('habilitation');
+          return $this->redirect('habilitation');
       }
 
       return $this->redirect('habilitation_declarant', $form->getEtablissement());
@@ -375,7 +388,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeDemandeEdition(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true, 'allow_habilitation' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
         $this->historique = $this->habilitation->getFullHistorique();
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));

@@ -1,3 +1,4 @@
+<?php use_helper('Date'); ?>
 <?php use_helper('TemplatingPDF'); ?>
 <?php use_helper('Lot') ?>
 <style>
@@ -40,7 +41,7 @@
 }
 
 .size-commentaire {
-    height: 70px;
+    height: 65px;
 }
 
 .fond-sombre {
@@ -64,9 +65,9 @@
 
 <table border=0 cellspacing=0 cellpadding=0>
     <tr>
-        <td colspan="2"><b>DATE&nbsp;:&nbsp;<?php echo $lots[0]->date_commission; ?><br>JURY&nbsp;N°&nbsp;:<br><span class="text-red">AOC</span></b></td>
+        <td colspan="2"><b>DATE&nbsp;:&nbsp;<?php echo format_date($lots[0]->date_commission, "dd/MM/yyyy", "fr_FR"); ?><br>JURY&nbsp;N°&nbsp;:&nbsp;<?php echo $lots[0]->numero_table; ?><br></b></td>
         <?php foreach ($lots as $lot) :?>
-            <td class="td text-large <?php if(! $lot): ?>text-muted<?php endif;?>" colspan="3">&nbsp;N°&nbsp;échantillon&nbsp;:&nbsp;<?php if ($lot){ echo $lot->numero_anonymat;} else {echo "";} ?><br>&nbsp;Cépage&nbsp;:&nbsp;<?php if ($lot) {echo $lot->getCepagesLibelle();} else {echo "";} ?><br>&nbsp;<small><i>(si revendiqué)</i></small></td>
+            <td class="td text-large <?php if(! $lot): ?>text-muted<?php endif;?>" colspan="3">&nbsp;N°&nbsp;échantillon&nbsp;:&nbsp;<?php if ($lot){ echo $lot->numero_anonymat;} else {echo "";} ?><br>&nbsp;<?php if ($lot) {echo $lot->getProduitLibelle();} elseif(isset($lot->cepages)) {echo $lot->getCepagesLibelle();} ?></td>
         <?php endforeach; ?>
     </tr>
     <tr>
@@ -103,10 +104,11 @@
     <tr class="align-mid">
 
         <td class="td align-right text-middle-size" colspan="2"><b>Franchise</b>&nbsp;&nbsp;</td>
-        <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Oui</td>
-        <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Limite</td>
-        <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
-
+        <?php foreach ($lots as $lot) :?>
+            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Oui</td>
+            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Limite</td>
+            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
+        <?php endforeach; ?>
     </tr>
     <tr>
         <td class="td align-right" colspan="2"><small><i>&nbsp;Préciser&nbsp;le&nbsp;type&nbsp;de&nbsp;défaut&nbsp;:&nbsp;&nbsp;&nbsp;</i></small></td>
@@ -186,9 +188,9 @@
     <tr class="align-mid">
         <td class="td align-right text-middle-size" colspan="2"><b>Qualité&nbsp;des&nbsp;tanins</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot) :?>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Bon</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Moyen</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Mauvais</td>
+            <td class="td <?php if( (! $lot) || ! stripos($lot->getCouleurLibelle(), 'rouge')): ?>text-muted<?php endif;?>">Bon</td>
+            <td class="td <?php if( (! $lot) || ! stripos($lot->getCouleurLibelle(), 'rouge')): ?>text-muted<?php endif;?>">Moyen</td>
+            <td class="td <?php if( (! $lot) || ! stripos($lot->getCouleurLibelle(), 'rouge')): ?>text-muted<?php endif;?>">Mauvais</td>
         <?php endforeach; ?>
     </tr>
     <tr>

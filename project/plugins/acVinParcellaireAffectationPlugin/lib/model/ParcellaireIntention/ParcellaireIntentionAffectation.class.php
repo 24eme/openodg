@@ -35,13 +35,14 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
   }
 
   public function updateParcelles() {
+      $this->updateIntentionFromParcellaireAndLieux();
       foreach($this->declaration->getParcelles() as $p) {
           $p->updateFromParcellaire();
       }
   }
 
   public function getDenominationAire() {
-      return "AOC Sainte-Victoire";
+      return "AOC CdP Sainte-Victoire";
   }
 
   public function updateIntentionFromParcellaireAndLieux() {
@@ -73,7 +74,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
               continue;
           }
 
-          $pMatch = $parcellaire->findParcelle($parcelle, 1, $already_seen);
+          $pMatch = $parcellaire->findParcelle($parcelle, 1, true, $already_seen);
 
           if(!$pMatch) {
               continue;

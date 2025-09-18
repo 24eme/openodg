@@ -50,10 +50,15 @@ abstract class Lot extends acCouchdbDocumentTree
     const CONFORMITE_NONCONFORME_PREFIX = "NON";
     const CONFORMITE_NONCONFORME_MINEUR = "NONCONFORME_MINEUR";
     const CONFORMITE_NONCONFORME_MAJEUR = "NONCONFORME_MAJEUR";
+    const CONFORMITE_NONCONFORME_MAJEUR_CONDITIONNÉ = "NONCONFORME_MAJEUR_CONDITIONNÉ";
     const CONFORMITE_NONCONFORME_GRAVE = "NONCONFORME_GRAVE";
     const CONFORMITE_NONCONFORME_ANALYTIQUE = "NONCONFORME_ANALYTIQUE";
     const CONFORMITE_NONCONFORME_ORGANOLEPTIQUE = "NONCONFORME_ORGANOLEPTIQUE";
     const CONFORMITE_NONTYPICITE_CEPAGE = "NONTYPICITE_CEPAGE";
+
+    const CONFORMITE_CONFORME_DEFAUT = "ACCEPTÉ AVEC DÉFAUT";
+    const CONFORMITE_NONCONFORME_ETAT = "NON ACCEPTE EN ETAT"; //uniquement vins en vrac AOP
+    const CONFORMITE_NONCONFORME = "NON ACCEPTÉ";
 
     const STATUT_NOTIFICATION_COURRIER_OLD = "20_NOTIFICATION_COURRIER";
     const STATUT_NOTIFICATION_COURRIER = "02_NOTIFICATION_COURRIER";
@@ -125,16 +130,26 @@ abstract class Lot extends acCouchdbDocumentTree
       self::CONFORMITE_CONFORME => "Conforme",
       self::CONFORMITE_NONCONFORME_MINEUR => "Non conformité mineure",
       self::CONFORMITE_NONCONFORME_MAJEUR => "Non conformité majeure",
+      self::CONFORMITE_NONCONFORME_MAJEUR_CONDITIONNÉ => "Non conformité majeure conditionné",
       self::CONFORMITE_NONCONFORME_GRAVE => "Non conformité grave",
       self::CONFORMITE_NONTYPICITE_CEPAGE => "Non typicité cépage",
       self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Non conformité analytique",
       self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non conformité organoleptique",
     );
 
+    public static $libellesAcceptabilites = array(
+      self::CONFORMITE_CONFORME => "Accepté",
+      self::CONFORMITE_CONFORME_DEFAUT => "Accepté avec défaut",
+      self::CONFORMITE_NONCONFORME_ETAT => "Non accepté en l'état",
+      self::CONFORMITE_NONCONFORME => "Non accepté",
+      // self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non acceptabilité organoleptique",
+    );
+
     public static $shortLibellesConformites = array(
       self::CONFORMITE_CONFORME => "",
       self::CONFORMITE_NONCONFORME_MINEUR => "Mineure",
       self::CONFORMITE_NONCONFORME_MAJEUR => "Majeure",
+      self::CONFORMITE_NONCONFORME_MAJEUR_CONDITIONNÉ => "Majeure conditionné",
       self::CONFORMITE_NONCONFORME_GRAVE => "Grave",
       self::CONFORMITE_NONTYPICITE_CEPAGE => "Typ. cép.",
       self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Analytique",
@@ -144,6 +159,7 @@ abstract class Lot extends acCouchdbDocumentTree
     public static $nonConformites = array(
         self::CONFORMITE_NONCONFORME_MINEUR,
         self::CONFORMITE_NONCONFORME_MAJEUR,
+        self::CONFORMITE_NONCONFORME_MAJEUR_CONDITIONNÉ,
         self::CONFORMITE_NONCONFORME_GRAVE,
         self::CONFORMITE_NONTYPICITE_CEPAGE
     );
@@ -169,9 +185,18 @@ abstract class Lot extends acCouchdbDocumentTree
         return (isset($libelles[$statut]))? $libelles[$statut] : $statut;
     }
 
-    public static function getLibelleConformite($conformite) {
-        $libelles = self::$libellesConformites;
-        return (isset($libelles[$conformite]))? $libelles[$conformite] : $conformite;
+    public function getLibelleConformite() {
+        $libelles = $this->isLibelleAcceptable() ? self::$libellesAcceptabilites : self::$libellesConformites;
+
+        return isset($libelles[$this->conformite]) ? $libelles[$this->conformite]: $this->conformite;
+    }
+
+    public function isLibelleAcceptable()
+    {
+        if (DegustationConfiguration::getInstance()->hasAcceptabiliteAoc($this->getRegion())) {
+            return DegustationConfiguration::getInstance()->getAcceptabiliteAoc($this->getRegion());
+        }
+        return false;
     }
 
     public function getConfigProduit() {
@@ -762,6 +787,9 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function addCepage($cepage, $repartition) {
+        if(!$repartition) {
+            $repartition = -1;
+        }
         $this->cepages->add($cepage, $repartition);
     }
 
@@ -772,7 +800,7 @@ abstract class Lot extends acCouchdbDocumentTree
                 $libelle .= ", ";
             }
             $libelle .= $cepage;
-            if($withRepartition) {
+            if($repartition && $withRepartition) {
                 $libelle .= " (".number_format($repartition, 2, ',', ' ')."%)";
             }
         }
@@ -783,11 +811,17 @@ abstract class Lot extends acCouchdbDocumentTree
       $volume_total = 0;
       $cepages = array();
       foreach($this->cepages as $volume) {
+          if($volume == -1) {
+              continue;
+          }
         $volume_total += $volume;
       }
       foreach($this->cepages as $cep => $volume) {
         if (!isset($cepages[$cep])) {
             $cepages[$cep] = 0;
+        }
+        if($volume == -1) {
+            continue;
         }
         $vol = ($volume_total>0)? round(($volume/$volume_total) * 100) : 0;
         $cepages[$cep] += $vol;
@@ -849,6 +883,18 @@ abstract class Lot extends acCouchdbDocumentTree
 
         return $libelle;
 
+    }
+
+    public static function getSyntheseLibelleConfigMillesime($conf, $millesime) {
+        return $conf->getCouleur()->getLibelleCompletDR().' '.$millesime;
+    }
+
+    public function getSyntheseLibelle() {
+        $c = $this->getConfig();
+        if($this->getProduitRevendique()){
+            $c = $this->getProduitRevendique()->getConfig();
+        }
+        return self::getSyntheseLibelleConfigMillesime($c, $this->millesime);
     }
 
     public function getUniqueId(){
@@ -939,21 +985,25 @@ abstract class Lot extends acCouchdbDocumentTree
         }
 
         if (RegionConfiguration::getInstance()->hasOdgProduits()) {
-            if ($this->getDocument()->exist('region') && $this->getDocument()->region) {
+            if ($this->getDocument()->exist('region') && $this->getDocument()->region && RegionConfiguration::getInstance()->hasOC()) { // On veut que l'OIVC est accès aux lots
                 $mouvement->add('region', $this->getDocument()->region);
-            }elseif ($r = RegionConfiguration::getInstance()->getOdgRegion($this->produit_hash)) {
+            } elseif ($this->getDocument()->exist('region') && $this->getDocument()->region && strpos($this->getDocument()->region, '|') === false) { // Si qu'une seule région dans le doc
+                $mouvement->add('region', $this->getDocument()->region);
+            } elseif ($r = RegionConfiguration::getInstance()->getOdgRegion($this->produit_hash)) { // On prends la région du produit si multi-régions
                 $mouvement->add('region', $r);
             }
 
-            if (strpos($this->initial_type, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE) === 0 || strpos($this->initial_type, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE) === 0) {
-                $mouvement->add('region', Organisme::getOIRegion());
-            }
+            if (RegionConfiguration::getInstance()->hasOC()) {
+                if (strpos($this->initial_type, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE) === 0 || strpos($this->initial_type, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE) === 0) {
+                    $mouvement->add('region', Organisme::getOIRegion());
+                }
 
-            if (strpos($this->initial_type, TransactionClient::TYPE_MODEL) === 0) {
-                $mouvement->add('region', Organisme::getOIRegion());
-            }
-            if (strpos($this->initial_type, PMCNCClient::TYPE_MODEL) === 0) {
-                $mouvement->add('region', Organisme::getOIRegion());
+                if (strpos($this->initial_type, TransactionClient::TYPE_MODEL) === 0) {
+                    $mouvement->add('region', Organisme::getOIRegion());
+                }
+                if (strpos($this->initial_type, PMCNCClient::TYPE_MODEL) === 0) {
+                    $mouvement->add('region', Organisme::getOIRegion());
+                }
             }
         }
         return $mouvement;

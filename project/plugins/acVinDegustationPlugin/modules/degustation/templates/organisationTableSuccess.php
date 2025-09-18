@@ -117,7 +117,7 @@
                         <?php if($numero_table > 1): ?>
                         <a href="<?php echo url_for("degustation_organisation_table", array('id' => $degustation->_id, 'numero_table' => $numero_table - 1, 'tri' => $tri)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Précédent</a>
                         <?php else: ?>
-                            <a href="<?php echo url_for("degustation_tables_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+                            <a href="<?php echo url_for(DegustationEtapes::getInstance()->getPreviousLink(DegustationEtapes::ETAPE_TABLES), $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
                         <?php endif; ?>
                     </div>
           			<div class="col-xs-4 text-center">

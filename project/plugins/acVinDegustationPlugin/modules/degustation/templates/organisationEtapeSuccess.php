@@ -75,15 +75,6 @@ echo $form->renderGlobalErrors();
     </div>
     </div>
 
-    <div class="row row-margin row-button mb-4">
-        <div class="col-xs-4"></div>
-        <div class="col-xs-4 text-center"></div>
-        <div class="col-xs-4 text-right">
-            <button type="submit" class="btn btn-xs btn-primary">
-                Enregistrer
-            </button>
-        </div>
-    </div>
 
     <div class="row row-margin row-button">
         <div class="col-xs-4"><a href="<?php echo url_for("degustation_selection_operateurs", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>

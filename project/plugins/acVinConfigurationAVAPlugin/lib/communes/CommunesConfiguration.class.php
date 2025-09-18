@@ -14,7 +14,11 @@ class CommunesConfiguration {
     }
 
     public function __construct() {
-        $this->communes = sfConfig::get('configuration_communes', array());
+        $this->config = sfConfig::get('configuration_communes', array());
+        $this->communes = []
+        if (isset($this->config['insee2commune'])) {
+            $this->communes = $this->config['insee2commune'];
+        }
         $this->communes_reverse = array_flip($this->communes);
     }
 

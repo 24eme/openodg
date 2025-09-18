@@ -95,6 +95,7 @@ class drevActions extends sfActions {
     public function executeDevalidation(sfWebRequest $request) {
 
         $drev = $this->getRoute()->getDRev();
+
         if (!$this->getUser()->isAdmin()) {
           $this->secure(DRevSecurity::DEVALIDATION , $drev);
         }
@@ -401,7 +402,7 @@ class drevActions extends sfActions {
             $has = true;
         }
 
-        if(!$has && !count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative() && DrevConfiguration::getInstance()->isDrDouaneRequired()) {
+        if(!$has && !count($this->drev->getProduitsLots()) && !$request->getParameter('prec') && !$this->drev->isModificative() && count($this->drev->declaration)) {
 
             return $this->redirect('drev_revendication', $this->drev);
         }

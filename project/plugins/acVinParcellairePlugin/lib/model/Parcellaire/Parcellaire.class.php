@@ -163,6 +163,7 @@ class Parcellaire extends BaseParcellaire {
         $p->commune = $commune;
         $p->source_produit_libelle = $source_produit_libelle;
         if($lieu){
+            $lieu = preg_replace('/[\n]+/', ' ', $lieu);
             $lieu = strtoupper($lieu);
             $lieu = trim($lieu);
             $p->lieu = $lieu;
@@ -236,9 +237,9 @@ class Parcellaire extends BaseParcellaire {
         return $this->parcelles_idu;
     }
 
-    public function findParcelle($parcelle, $scoreMin = 1, &$allready_selected = null) {
+    public function findParcelle($parcelle, $scoreMin = 1, $with_cepage_match = false, &$allready_selected = null) {
 
-        return ParcellaireClient::findParcelle($this, $parcelle, $scoreMin, $allready_selected);
+        return ParcellaireClient::findParcelle($this, $parcelle, $scoreMin, $with_cepage_match, $allready_selected);
     }
 
     public function getDateFr() {
@@ -547,9 +548,17 @@ class Parcellaire extends BaseParcellaire {
         return $kml;
     }
 
+    public function getCommunes(){
+        $communes = [];
+        foreach ($this->getParcelles() as $p) {
+            $communes[$p->code_commune] = $p->code_commune;
+        }
+        return array_keys($communes);
+    }
+
     public function getMergedAires() {
 
-        return AireClient::getInstance()->getMergedAiresForInseeCommunes($this->declaration->getCommunes());
+        return AireClient::getInstance()->getMergedAiresForInseeCommunes($this->getCommunes());
     }
 
 }

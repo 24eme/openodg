@@ -109,8 +109,11 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executeAffectations(sfWebRequest $request) {
         $this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        $this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
         $this->coop = $request->getParameter('coop');
-        $this->destinataire = $request->getParameter('destinataire', $this->parcellaireAffectation->getEtablissementObject()->_id);
+        $this->destinataires = $this->parcellaireAffectation->getDestinataires();
+        $this->destinataire = $request->getParameter('destinataire', key($this->destinataires));
+
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
 
         if ($this->coop) {
@@ -126,11 +129,11 @@ class parcellaireAffectationActions extends sfActions {
 
         $this->parcellaireAffectation->updateParcellesAffectation();
 
-    	$this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
 
-		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation, $this->destinataire);
+        $this->produits = $this->parcellaireAffectation->getProduits();
+        $this->hashproduit = $request->getParameter('hashproduit', (count($this->produits) >= 1)? array_key_first($this->produits) : null);
 
-        $this->destinataires = array_merge([$this->etablissement->_id => ['libelle_etablissement' => "Cave particulière"]], $this->parcellaireAffectation->getDestinataires());
+		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation, $this->destinataire, $this->hashproduit);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -153,26 +156,49 @@ class parcellaireAffectationActions extends sfActions {
 
         $finded = false;
         $previous = null;
-        if (!$this->coop) foreach($this->destinataires as $dId => $d) {
-            if($dId == $this->destinataire && $request->getParameter('previous')) {
-                break;
+        if (!$this->coop) {
+            foreach($this->destinataires as $dId => $d) {
+                if($dId == $this->destinataire && $request->getParameter('previous')) {
+                    break;
+                }
+                $previous = $dId;
+                if($finded && count($this->produits) < 2) {
+                    return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $dId]);
+                }
+                if($dId == $this->destinataire && !$request->getParameter('previous') && !$request->getParameter('service')) {
+                    $finded = true;
+                }
             }
-            $previous = $dId;
-            if($finded) {
-                return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $dId]);
-            }
-            if($dId == $this->destinataire && !$request->getParameter('previous')) {
-                $finded = true;
-            }
-
-
         }
         if($request->getParameter('previous') && $previous) {
             return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $previous]);
         }
 
         if($request->getParameter('previous')) {
+            if ($this->hashproduit) {
+                $produits = array_keys($this->produits);
+                $current = array_search($this->hashproduit, $produits);
+                if ($prev = $produits[$current - 1] ?? null) {
+                    return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $dId, 'hashproduit' => $prev]);
+                }
+            }
             $this->redirect('parcellaireaffectation_exploitation', ['sf_subject' => $this->parcellaireAffectation]);
+        }
+
+        if ($request->getParameter('service')) {
+            $serviceClean = str_replace('%2F', '/', $request->getParameter('service'));
+            $serviceTab = explode('&', $serviceClean);
+            $destinataire = substr($serviceTab[0], strpos($serviceTab[0], '=') + 1);
+            $hashproduit = substr($serviceTab[1], strpos($serviceTab[1], '=') + 1);
+            return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $destinataire, 'hashproduit' => $hashproduit]);
+        }
+
+        if ($this->hashproduit) {
+            $produits = array_keys($this->produits);
+            $current = array_search($this->hashproduit, $produits);
+            if ($next = $produits[$current + 1] ?? null) {
+                return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $request->getParameter('destinataire'), 'hashproduit' => $next]);
+            }
         }
 
         return $this->redirect('parcellaireaffectation_validation', ['sf_subject' => $this->parcellaireAffectation]);
@@ -200,14 +226,27 @@ class parcellaireAffectationActions extends sfActions {
             unset($this->destinatairesIncomplete["ETABLISSEMENT-".explode("-", $this->coop)[1]]);
         }
 
+        $this->validation = new ParcellaireAffectationValidation($this->parcellaireAffectation);
+
     	if (!$request->isMethod(sfWebRequest::POST)) {
-    		$this->validation = new ParcellaireAffectationValidation($this->parcellaireAffectation);
     		return sfView::SUCCESS;
     	}
+
+        if (!$this->validation->isValide() && $this->parcellaireAffectation->isTeledeclare() && !$this->getUser()->isAdmin()) {
+
+            return sfView::SUCCESS;
+        }
+
+        if($this->coop) {
+            $coopDoc = ParcellaireAffectationCoopClient::getInstance()->find($this->coop);
+            $coopDoc->addApporteur($this->parcellaireAffectation->getEtablissementObject()->_id)->add('statuts')->add($this->parcellaireAffectation->getType(), ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT);
+            $coopDoc->save();
+        }
 
         if(count($this->destinatairesIncomplete)) {
             return $this->redirect('declaration_etablissement', $this->parcellaireAffectation->getEtablissementObject());
         }
+
 
     	$this->form->bind($request->getParameter($this->form->getName()));
 

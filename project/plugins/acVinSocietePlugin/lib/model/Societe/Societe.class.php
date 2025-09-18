@@ -650,7 +650,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
       if (!$mandat) {
           return false;
       }
-      return $mandat->is_signe;
+      return boolval($mandat->is_signe) && boolval($mandat->is_actif);
     }
 
     /*** TODO : Fonctions à retirer après le merge ****/

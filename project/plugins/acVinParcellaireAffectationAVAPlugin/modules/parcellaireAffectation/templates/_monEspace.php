@@ -17,6 +17,9 @@
                 </p>
                 <?php endif; ?>
         </div>
+        <div class="panel-bottom-documents <?php if($sf_user->isAdmin()): ?> panel-bottom-documents-etape <?php endif; ?>">
+            <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireaffectation')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+        </div>
             <?php elseif ($parcellaire):  ?>
         <div class="panel-body">
                 <p>Vous avez déjà débuté votre déclaration d'affectation parcellaire pour cette année sans la valider.</p>
@@ -29,6 +32,9 @@
                     <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-xs btn-danger pull-right" href="<?php echo url_for('parcellaire_delete', $parcellaire) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                 </p>
                 </div>
+        <div class="panel-bottom-documents panel-bottom-documents-etape">
+            <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireaffectation')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+        </div>
             <?php elseif (!ParcellaireAffectationConfiguration::getInstance()->isOpen()): ?>
             <div class="panel-body">
                 <?php if(date('Y-m-d') > ParcellaireAffectationConfiguration::getInstance()->getDateOuvertureFin()): ?>
@@ -47,6 +53,9 @@
                     </p>
                 <?php endif; ?>
             </div>
+            <div class="panel-bottom-documents <?php if(date('Y-m-d') > ParcellaireAffectationConfiguration::getInstance()->getDateOuvertureFin()): ?> panel-bottom-documents-demarrage <?php endif; ?>">
+                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireaffectation')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+            </div>
             <?php else:  ?>
             <div class="panel-body">
                     <p>Aucune déclaration d'affectation parcellaire n'a été débutée vous concernant cette année</p>
@@ -61,6 +70,9 @@
                             <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('parcellaire_create_papier', array('sf_subject' => $etablissement, 'campagne' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                         </p>
                     <?php endif; ?>
+            </div>
+            <div class="panel-bottom-documents <?php if ($sf_user->isAdmin()): ?>panel-bottom-documents-demarrage <?php endif; ?>">
+                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireaffectation')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
             </div>
             <?php endif; ?>
     </div>

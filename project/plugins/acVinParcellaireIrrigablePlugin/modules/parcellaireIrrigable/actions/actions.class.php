@@ -132,7 +132,7 @@ class parcellaireIrrigableActions extends sfActions {
             return $this->redirect('declaration_etablissement', $this->parcellaireIrrigable->getEtablissementObject());
         }
 
-    	return $this->redirect('parcellaireirrigable_irrigations', $this->parcellaireIrrigable);
+        return ($next = $this->getRouteNextEtape(ParcellaireIrrigableEtapes::ETAPE_PARCELLES)) ? $this->redirect($next, $this->parcellaireIrrigable) : $this->redirect('parcellaireirrigable_validation', $this->parcellaireIrrigable);
     }
 
     public function executeIrrigations(sfWebRequest $request) {
@@ -184,10 +184,10 @@ class parcellaireIrrigableActions extends sfActions {
 	       	$this->parcellaireIrrigable->validateOdg();
 	    }
 
-    	$this->form = new ParcellaireIrrigableValidationForm($this->parcellaireIrrigable);
+		$this->validation = new ParcellaireIrrigableValidation($this->parcellaireIrrigable);
+		$this->form = new ParcellaireIrrigableValidationForm($this->parcellaireIrrigable, array('engagements' => $this->validation->getPoints(ParcellaireIrrigableValidation::TYPE_ENGAGEMENT)));
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
-    		$this->validation = new ParcellaireIrrigableValidation($this->parcellaireIrrigable);
     		return sfView::SUCCESS;
     	}
 
@@ -197,6 +197,13 @@ class parcellaireIrrigableActions extends sfActions {
 
     		return sfView::SUCCESS;
     	}
+
+        $documents = $this->parcellaireIrrigable->getOrAdd('documents');
+
+        foreach ($this->validation->getPoints(ParcellaireIrrigableValidation::TYPE_ENGAGEMENT) as $engagement) {
+            $document = $documents->add($engagement->getCode());
+            $document->libelle = ParcellaireIrrigableDocuments::getDocumentLibelle($document->getKey());
+        }
 
     	$this->form->save();
 
@@ -238,6 +245,18 @@ class parcellaireIrrigableActions extends sfActions {
     		return $etape;
     	}
     	return ($parcellaireIrrigableEtapes->isLt($parcellaireIrrigableEtapes->etape, $etape)) ? $etape : $parcellaireIrrigableEtapes->etape;
+    }
+
+
+    protected function getRouteNextEtape($etape = null, $class = "ParcellaireIrrigableEtapes") {
+        $etapes = $class::getInstance();
+        $routes = $etapes->getRouteLinksHash();
+        if (!$etape) {
+            $etape = $etapes->getFirst();
+        } else {
+            $etape = $etapes->getNext($etape);
+        }
+        return (isset($routes[$etape])) ? $routes[$etape] : null;
     }
 
     protected function secure($droits, $doc) {

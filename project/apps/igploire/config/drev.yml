@@ -9,3 +9,9 @@ all:
       degustation: true
       specificite_lot: true
       engagement_pdf: true
+      specificites:
+        bio: "bio"
+        HVE: "HVE"
+        primeur: "primeur"
+        autre: "Autre"
+        TerraVitis: "Terra Vitis"

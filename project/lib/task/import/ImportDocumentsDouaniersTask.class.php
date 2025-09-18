@@ -108,12 +108,15 @@ EOF;
                     continue;
                 }
 
-        		try {
-        			$fichiers = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, ($options['scrapefiles']), $contextInstance);
-        		} catch (Exception $e) {
-        			echo sprintf("ERROR;%s\n", $e->getMessage());
-        			continue;
-        		}
+                try {
+                    $fichiers = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, ($options['scrapefiles']), $contextInstance);
+                } catch (Exception $e) {
+                    if ($options['debug']) {
+                        throw $e;
+                    }
+                    echo sprintf("ERROR;%s\n", $e->getMessage());
+                    continue;
+                }
 
         		if (!$fichiers) {
         			echo sprintf("WARNING;Aucun document douanier pour %s (%s)\n", $etablissement->_id, $etablissement->cvi);

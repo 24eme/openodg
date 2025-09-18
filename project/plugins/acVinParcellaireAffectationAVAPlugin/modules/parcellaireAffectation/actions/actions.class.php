@@ -176,11 +176,11 @@ class parcellaireAffectationActions extends sfActions {
         $this->parcelles = array();
         if ($this->appellationNode == ParcellaireAffectationClient::APPELLATION_VTSGN) {
             $parc = array();
-            foreach($this->parcellaire->getDeclaration()->getProduitsCepageDetails(true, true) as $p) {
-                $parc[$p->commune.' '.$p->section.' '.$p->numero_parcelle.' '.$p->getHash()] = $p;
-            }
             foreach($this->parcellaire->get('declaration/certification/genre/appellation_ALSACEBLANC')->getDetailsSortedByParcelle(false) as $p) {
-                $parc[$p->commune.' '.$p->section.' '.$p->numero_parcelle.' '.$p->getHash()] = $p;
+                $parc[$p->getParcelleIdentifiant().' '.$p->getKey().' '.$p->superficie.' '.$p->parcelle_id.' '.$p->campagne_plantation.' '.$p->prefix] = $p;
+            }
+            foreach($this->parcellaire->getDeclaration()->getProduitsCepageDetails(true, true) as $p) {
+                $parc[$p->getParcelleIdentifiant().' '.$p->getKey().' '.$p->superficie.' '.$p->parcelle_id.' '.$p->campagne_plantation.' '.$p->prefix] = $p;
             }
             ksort($parc);
             $this->parcelles = array_values($parc);
@@ -260,14 +260,14 @@ class parcellaireAffectationActions extends sfActions {
         $parcelleKey = $request->getParameter('parcelle');
 
         preg_match('/^(.*)-detail-(.*)$/', $parcelleKey, $parcelleKeyMatches);
-        $detail = $this->parcellaire->get(str_replace('-', '/', $parcelleKeyMatches[1]))->detail->get($parcelleKeyMatches[2]);
+        $this->parcelle = $this->parcellaire->get(str_replace('-', '/', $parcelleKeyMatches[1]))->detail->get($parcelleKeyMatches[2]);
 
-        if (!$detail) {
+        if (!$this->parcelle) {
 
             return $this->forward404(sprintf("Le détail n'existe pas"));
         }
 
-        $this->form = new ParcellaireAffectationModificationParcelleForm($detail);
+        $this->form = new ParcellaireAffectationModificationParcelleForm($this->parcelle);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

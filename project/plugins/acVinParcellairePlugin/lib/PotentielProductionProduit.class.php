@@ -3,6 +3,7 @@
 class PotentielProductionProduit {
 
     private $key;
+    private $produit;
     private $libelle;
     private $rules = [];
     private $superficie_encepagement;
@@ -12,17 +13,12 @@ class PotentielProductionProduit {
     private $potentiel_production;
     private $synthese = null;
 
-    public function __construct(PotentielProduction $p, $libelle) {
+    public function __construct(PotentielProduction $p, $parcellaire_produit_libelle, $produit_configuration) {
         $this->potentiel_production = $p;
-        $this->libelle = $libelle;
-        foreach (ParcellaireConfiguration::getInstance()->getPotentielGroupes() as $groupe_key) {
-            $produit_libelle = ParcellaireConfiguration::getInstance()->getGroupeSyntheseLibelle($groupe_key);
-            if ($produit_libelle != $libelle) {
-                continue;
-            }
-            $this->key = $groupe_key;
-            break;
-        }
+        $this->libelle = $parcellaire_produit_libelle;
+        $this->produit = $produit_configuration;
+        $this->key = ParcellaireConfiguration::getInstance()->getGroupeKeyByProduitConf($produit_configuration);
+
         $this->initSynthese();
         $this->initEncepagement();
         if (strpos($this->libelle, 'XXX') === false) {
@@ -34,12 +30,15 @@ class PotentielProductionProduit {
 
     public function initEncepagement() {
         $this->cepages_par_categories = [];
+        $this->parcelles_par_categories = [];
         if ($this->key) {
             foreach (ParcellaireConfiguration::getInstance()->getGroupeCategories($this->key) as $category_key => $category_cepages) {
                 $this->cepages_par_categories[$category_key] = [];
+                $this->parcelles_par_categories[$category_key] = [];
                 foreach($category_cepages as $c) {
                     if (isset($this->synthese[$this->libelle]) && isset($this->synthese[$this->libelle]['Cepage'][$c])) {
                         $this->cepages_par_categories[$category_key][$c] = $this->synthese[$this->libelle]['Cepage'][$c]['superficie_max'];
+                        $this->parcelles_par_categories[$category_key] = array_merge($this->parcelles_par_categories[$category_key], $this->synthese[$this->libelle]['Cepage'][$c]['parcelles_id']);
                     }
                 }
             }
@@ -47,8 +46,8 @@ class PotentielProductionProduit {
         $this->cepages_par_categories['cepages_couleur'] = [];
         $this->cepages_par_categories['cepages_toutes_couleurs'] = [];
         $this->superficie_encepagement = 0;
-        foreach($this->synthese as $this->synthese_libelle => $this->synthese_couleur) {
-            foreach($this->synthese_couleur as $cepages) {
+        foreach($this->synthese as $synthese_libelle => $synthese_couleur) {
+            foreach($synthese_couleur as $cepages) {
                 foreach($cepages as $k => $superficies) {
                     if ($k == 'Total') {
                         continue;
@@ -62,11 +61,13 @@ class PotentielProductionProduit {
                     if (!isset($this->cepages_par_categories['cepages_toutes_couleurs'][$k])) {
                         $this->cepages_par_categories['cepages_toutes_couleurs'][$k] = $superficies['superficie_max'];
                     }
-                    if ($this->synthese_libelle != $this->libelle) {
+                    if ($synthese_libelle != $this->libelle) {
                         continue;
                     }
                     $this->cepages_par_categories['cepages_couleur'][$k] = $superficies['superficie_max'];
-                    $this->superficie_encepagement += $superficies['superficie_max'];
+                    if (isset($this->cepages_par_categories['cepages_couleur'][$k])) {
+                        $this->superficie_encepagement += $superficies['superficie_max'];
+                    }
                 }
             }
         }
@@ -85,10 +86,21 @@ class PotentielProductionProduit {
         $potentiel_has_desactive = false;
         $potentiel_sans_blocant = true;
 
-        $task = new Simplex\Task(new Simplex\Func(PotentielProductionRule::addemptycepage($this->cepages_par_categories['cepages_couleur'], $this->cepages_par_categories['cepages_couleur'])));
+        $task = PotentielProductionRule::createTask(PotentielProductionRule::addemptycepage($this->cepages_par_categories['cepages_couleur'], $this->cepages_par_categories['cepages_couleur']));
 
         $is_all_ok = true;
+        if (isset($_GET['verbose'])) {
+            echo "<pre>";
+            echo "règle ".$this->key.":\n";
+            echo "=============================\n";
+            echo "</pre>";
+        }
         foreach(ParcellaireConfiguration::getInstance()->getGroupeRegles($this->key) as $regle) {
+            if (isset($_GET['verbose'])) {
+                echo "<pre>";
+                print_r($regle);
+                echo "</pre>";
+            }
             $pprule = new PotentielProductionRule($this, $regle);
             $this->addRule($pprule);
             $simplex = $pprule->getSimplexRestriction();
@@ -105,7 +117,7 @@ class PotentielProductionProduit {
         }
         foreach(array_keys($this->cepages_superficie) as $c) {
             if ($this->cepages_superficie[$c]) {
-                $task->addRestriction(new Simplex\Restriction(PotentielProductionRule::addemptycepage([$c => $this->cepages_superficie[$c]], $this->cepages_superficie), Simplex\Restriction::TYPE_LOE, $this->cepages_superficie[$c]));
+                $task->addRestriction(PotentielProductionRule::getNewRectrition(PotentielProductionRule::addemptycepage([$c => $this->cepages_superficie[$c]], $this->cepages_superficie), PotentielProductionRule::TYPE_LOE, $this->cepages_superficie[$c]));
             }
         }
 
@@ -117,14 +129,32 @@ class PotentielProductionProduit {
             if ($solution) {
                 $optimum = $solver->getSolutionValue($solution);
                 $this->superficie_max = round($optimum->toFloat(), 5);
+                if (isset($_GET['verbose'])) {
+                    echo "<pre>";
+                    echo "solution optimum: ".$this->superficie_max."\n";
+                    echo "</pre>";
+                }
             } else {
                 $printer = new Simplex\Printer;
-                $printer->printSolution($solver);
+                if (isset($_GET['verbose'])) {
+                        echo "<pre>";
+                        echo "Impossible : pas de solution\n";
+                        echo "solution:\n";
+                        $printer->printSolution($solver);
+                        echo "solver:\n";
+                        $printer->printSolver($solver);
+                        echo "</pre>";
+                }
                 $this->superficie_max = "IMPOSSIBLE";
             }
         }
         if (!$potentiel_sans_blocant) {
             $this->superficie_max = "IMPOSSIBLE";
+            if (isset($_GET['verbose'])) {
+                echo "<pre>";
+                echo "Impossible : car potentiel blocant\n";
+                echo "</pre>";
+            }
         }
         if ($potentiel_has_desactive) {
             $this->superficie_max = round(array_sum($this->cepages_superficie), 5);
@@ -185,16 +215,19 @@ class PotentielProductionProduit {
     }
 
     public function getParcellaire2Ref() {
-        if (ParcellaireConfiguration::getInstance()->affectationIsParcellaire2Reference($this->key)) {
+        if (ParcellaireConfiguration::getInstance()->affectationIsParcellaire2Reference($this->key) && $this->potentiel_production->getParcellaireAffectation()) {
             return $this->potentiel_production->getParcellaireAffectation();
         }
         return $parcellaire2ref = $this->potentiel_production->getParcellaire();
     }
 
     private function initSynthese() {
-        $filter_produit_hash = ParcellaireConfiguration::getInstance()->getGroupeFilterProduitHash($this->key);
+        $filter_produit_hash = ParcellaireConfiguration::getInstance()->getGroupeFilterParcellaireProduitHash($this->key);
         $filter_insee = ParcellaireConfiguration::getInstance()->getGroupeFilterINSEE($this->key);
         $parcellaire2ref = $this->getParcellaire2Ref();
+        if ($parcellaire2ref->type == ParcellaireAffectationClient::TYPE_MODEL && ParcellaireConfiguration::getInstance()->getHashProduitAffectation($this->key)) {
+            $filter_produit_hash = ParcellaireConfiguration::getInstance()->getHashProduitAffectation($this->key);
+        }
         $this->synthese = self::cacheSynthese($parcellaire2ref, $filter_produit_hash, $filter_insee);
     }
 
@@ -218,7 +251,7 @@ class PotentielProductionProduit {
         }else{
             $real_parcellaire = $parcellaire2ref->getParcellaire();
         }
-        foreach($parcellaire2ref->getParcelles() as $p) {
+        foreach($parcellaire2ref->getParcelles($filter_produit_hash) as $p) {
             if ($filter_produit_hash === true && !$p->produit_hash) {
                 continue;
             }
@@ -257,10 +290,12 @@ class PotentielProductionProduit {
                 if (!isset($synthese[$libelle]['Cepage'][$cepage])) {
                     $synthese[$libelle]['Cepage'][$cepage] = array();
                     $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] = 0;
+                    $synthese[$libelle]['Cepage'][$cepage]['parcelles_id'] = [];
                 }
                 $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] += $p->superficie;
                 if (strpos($cepage, '- jeunes vignes') === false) {
                     $synthese[$libelle]['Total']['Total']['superficie_max'] += $p->superficie;
+                    $synthese[$libelle]['Cepage'][$cepage]['parcelles_id'][] = $p->getParcelleId();
                 }
             }
         }
@@ -279,5 +314,34 @@ class PotentielProductionProduit {
 
     }
 
+    private $cache_parcelles = null;
+    private function getParcelleIds() {
+        if (!$this->cache_parcelles) {
+            $this->cache_parcelles = [];
+            foreach($this->parcelles_par_categories as $libelle => $parcelles) {
+                $this->cache_parcelles = array_merge($this->cache_parcelles, $parcelles);
+            }
+            $this->cache_parcelles = array_unique($this->cache_parcelles);
+        }
+        return $this->cache_parcelles;
+    }
+
+    public function hasParcelleId($pid) {
+        return in_array($pid, $this->getParcelleIds());
+    }
+
+    public function getHashProduitAffectation() {
+        if (!$this->key) {
+            return null;
+        }
+        return ParcellaireConfiguration::getInstance()->getHashProduitAffectation($this->key);
+    }
+
+    public function getProduitHash() {
+        if(!$this->produit) {
+            return null;
+        }
+        return $this->produit->getHash();
+    }
 
 }

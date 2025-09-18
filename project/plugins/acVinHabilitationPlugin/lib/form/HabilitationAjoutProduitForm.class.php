@@ -44,7 +44,7 @@ class HabilitationAjoutProduitForm extends acCouchdbForm
                 if ($this->getDocument()->exist($produit->getHash())) {
                   continue;
                 }
-                $this->produits[$produit->getHash()] = $produit->getLibelleComplet();
+                $this->produits[$produit->getHash()] = preg_replace('/ Tranquilles?$/', '', $produit->getLibelleComplet());
             }
         }
         if (count($this->produits) == 1) {

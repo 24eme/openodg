@@ -50,7 +50,7 @@ abstract class ExportPDF {
     }
 
     public function removeCache() {
-        
+
         return $this->printable_document->removeCache();
     }
 
@@ -67,7 +67,7 @@ abstract class ExportPDF {
     }
 
     public function output() {
-        
+
         return $this->printable_document->output();
     }
 

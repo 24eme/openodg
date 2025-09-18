@@ -4,7 +4,7 @@
 <?php include_partial('conditionnement/breadcrumb', array('conditionnement' => $conditionnement )); ?>
 <?php include_partial('conditionnement/step', array('step' => ConditionnementEtapes::ETAPE_LOTS, 'conditionnement' => $conditionnement, 'ajax' => true)) ?>
 
-    <div class="page-header"><h2>Conditionnement des Lots IGP</h2></div>
+    <div class="page-header"><h2>Conditionnement des Lots</h2></div>
 
 
 
@@ -128,13 +128,6 @@
                             <div class="col-sm-12 text-danger">
                             <?php echo $lot['destination_date']->renderError(); ?>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-offset-8 col-md-3 ">
-                            <?php echo $lot['elevage']->render() ?>
-                            <?php echo $lot['elevage']->renderLabel('Lot prévu en élevage') ?>
-                            <?php echo $lot['elevage']->renderError() ?>
                         </div>
                     </div>
                 </div>

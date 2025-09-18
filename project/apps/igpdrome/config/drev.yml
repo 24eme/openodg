@@ -11,3 +11,9 @@ all:
       engagement_pdf: true
       volume_seuil:
         campagne: 2022-2023
+      specificites:
+        bio: "bio"
+        HVE: "HVE"
+        primeur: "primeur"
+        autre: "Autre"
+        TerraVitis: "Terra Vitis"

@@ -1,10 +1,16 @@
-<?php if(strpos($etablissement->famille, 'PRODUCTEUR') === false): return; endif; ?>
+<?php
+if(
+    ! $etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR )
+    && ! $etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR)
+): return;
+endif; ?>
+
 <?php use_helper('Date'); ?>
 
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel <?php if($parcellaireIrrigue): ?>panel-primary<?php elseif($parcellaireIrrigable && !$parcellaireIrrigable->validation): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
+    <div class="block_declaration panel <?php if($parcellaireIrrigue): ?>panel-primary panel-irrigue <?php elseif($parcellaireIrrigable && !$parcellaireIrrigable->validation): ?>panel-primary panel-irrigable <?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">Déclarations d'irrigation <?php echo $periode ?></h3>
+            <h3 class="panel-title">Parcelles irrigables / irriguées <?php echo $periode ?></h3>
         </div>
 <?php if (!$parcellaireIrrigable): ?>
     <?php if (!ParcellaireIrrigableConfiguration::getInstance()->isOpen()): ?>
@@ -26,11 +32,11 @@
       </div>
       <?php elseif (!$parcellaire): ?>
       <div class="panel-body">
-          <p class="explications">Les données de votre parcellaire ne sont pas présente sur la plateforme.<br/><br/>Il ne vous est donc pas possible de déclarer vos pieds morts ou manquants : <a href="<?php echo url_for("parcellaire_declarant", $etablissement) ?>">Voir le parcellaire</a></p>
+          <p class="explications">Les données de votre parcellaire ne sont pas présente sur la plateforme.<br/><br/>Il ne vous est donc pas possible de déclarer vos parcelles irrigables : <a href="<?php echo url_for("parcellaire_declarant", $etablissement) ?>">Voir le parcellaire</a></p>
       </div>
       <?php else:  ?>
     <div class="panel-body">
-        <p class="explications">Identifier ou mettre à jour vos parcelles<br />irrigables.</p>
+        <p class="explications">Identifier ou mettre à jour vos parcelles irrigables avant de déclarer vos parcelles irriguées <?php echo $periode ?>.</p>
         <div class="actions">
             <a class="btn btn-block btn-default" href="<?php echo url_for('parcellaireirrigable_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la déclaration « Irrigable »</a>
         </div>
@@ -73,7 +79,7 @@
           </div>
       <?php else:  ?>
         <div class="panel-body">
-            <p class="explications"><?php if(!$parcellaireIrrigue): ?>Identifier<?php else: ?>Mettre à jour<?php endif; ?> vos parcelles irriguées depuis votre <a href="<?php echo url_for('parcellaireirrigable_visualisation', array('sf_subject' => $parcellaireIrrigable)) ?>">déclaration d'irrigabilité <?php echo $periode; ?></a>.<br />&nbsp;</p>
+            <p class="explications"><?php if(!$parcellaireIrrigue): ?>Identifier<?php else: ?>Mettre à jour<?php endif; ?> vos parcelles irriguées depuis votre <a href="<?php echo url_for('parcellaireirrigable_visualisation', array('sf_subject' => $parcellaireIrrigable)) ?>">déclaration d'irrigabilité <?php echo $periode; ?></a>.</p>
           	<div class="actions">
                 <a class="btn btn-block btn-default" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode, 'papier' => false)) ?>"><?php if(!$parcellaireIrrigue): ?>Démarrer un « Irrigué »<?php else: ?>Visualiser et continuer l'irrigué<?php endif; ?></a>
             </div>

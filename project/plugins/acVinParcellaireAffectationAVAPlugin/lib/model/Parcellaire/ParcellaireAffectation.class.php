@@ -164,7 +164,7 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
                 }
                 foreach($CVIParcelle->getIsInAires() as $nom => $statut) {
                     $libelle = strtoupper($nom.' '.$CVIParcelle->getCepage());
-                    $libelle = str_replace([' A PETITS GRAINS', ' A PETITS GRAINS ROSE.'], '', str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N|G)$/', '', $libelle)));
+                    $libelle = str_replace([' A PETITS GRAINS ROSE', ' A PETITS GRAINS'], '', str_replace(['GEWURZTRAMINER', 'MUSCATS'], ['GEWURZT', 'MUSCAT'], preg_replace('/[ \.](B|RS|N|G)$/', '', $libelle)));
                     if (strpos(strtoupper($nom), 'GRAND CRU') !== false || strpos(strtoupper($nom), 'COMMUNALE') !== false) {
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod) {
@@ -176,6 +176,13 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod && $prod->hasVtsgn()) {
                             $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle);
+                            $parcelle->superficie = $CVIParcelle->superficie;
+                            $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
+                            $parcelle->vtsgn = 0;
+                        }
+                        if($prod && $prod->getKey() == 'cepage_PN') {
+                            $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle);
+                            $parcelle = $this->addProduitParcelle("/declaration/certification/genre/appellation_PINOTNOIRROUGE/mention/lieu/couleur/cepage_PR", $CVIParcelle);
                             $parcelle->superficie = $CVIParcelle->superficie;
                             $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                             $parcelle->vtsgn = 0;
@@ -290,23 +297,36 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
     }
 
     public function updateFromLastAffectation() {
-        $prevParcellaire = $this->getAffectationLastCampagne();
-        if(!$prevParcellaire) {
+        if ($this->isIntentionCremant() && ParcellaireAffectationClient::getInstance()->find(ParcellaireAffectationClient::getInstance()->buildId($this->identifiant, $this->campagne, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT))) {
             return;
         }
 
+        $prevParcellaire = $this->getAffectationLastCampagne();
+
+        if(!$prevParcellaire) {
+            return;
+        }
         foreach($prevParcellaire->declaration->getAppellations() as $appellation) {
             foreach($appellation->getParcelles() as $prevParcelle) {
                 $parcelle = null;
                 if($this->exist($appellation->getHash())) {
                     $parcelle = $this->get($appellation->getHash())->findParcelle($prevParcelle);
                 }
+                if(!$parcelle && $prevParcelle->isRealParcelleIdFromParcellaire()) {
+                    continue;
+                }
                 if(!$parcelle) {
                     $parcelle = $this->addProduitParcelle($prevParcelle->getProduitHash(), $prevParcelle);
                     $parcelle->superficie = $prevParcelle->superficie;
                 }
+
                 $parcelle->active = $prevParcelle->active;
                 $parcelle->vtsgn = $prevParcelle->vtsgn;
+                $parcelle->lieu = $prevParcelle->lieu;
+
+                if ($prevParcelle->exist('lieu_cadastral')) {
+                    $parcelle->add('lieu_cadastral', $prevParcelle->lieu_cadastral);
+                }
             }
         }
     }
@@ -436,8 +456,9 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
 
         $produit = $this->addProduit($hash);
 
-        $detail = $produit->detail->add($parcelleKey);
-
+        $i = 0;
+        while($produit->detail->exist($parcelleKey.sprintf('-%02d', $i))) { $i++; }
+        $detail = $produit->detail->add($parcelleKey.sprintf('-%02d', $i));
         $detail->commune = $commune;
         $detail->section = $section;
         $detail->numero_parcelle = $numero_parcelle;
@@ -610,28 +631,32 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
     public function getParcellesByLieux($cviFilter = null) {
         $parcellesByLieux = array();
         $appellationsPos = array_flip(array_keys(ParcellaireAffectationClient::getInstance()->getAppellationsKeys($this->getTypeParcellaire())));
-        foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
-            $acheteurs = $parcelle->getAcheteursByCVI();
-            if($cviFilter) {
-                if(!array_key_exists($cviFilter, $acheteurs)) {
-                    continue;
-                }
-            }
-            $keyLieu = sprintf("%s. %s %s", $appellationsPos[str_replace("appellation_", "", $parcelle->getLieuNode()->getAppellation()->getKey())], $parcelle->getLieuNode()->getAppellation()->getLibelle(), $parcelle->getLieuLibelle());
-            if (!array_key_exists($keyLieu, $parcellesByLieux)) {
-                $parcellesByLieux[$keyLieu] = new stdClass();
-                $parcellesByLieux[$keyLieu]->total_superficie = 0;
-                $parcellesByLieux[$keyLieu]->appellation_libelle = $parcelle->getAppellation()->getLibelle();
-                $parcellesByLieux[$keyLieu]->lieu_libelle = $parcelle->getLieuLibelle();
-                $parcellesByLieux[$keyLieu]->parcelles = array();
-                $parcellesByLieux[$keyLieu]->acheteurs = array();
-            }
-            $parcellesByLieux[$keyLieu]->acheteurs = $parcellesByLieux[$keyLieu]->acheteurs + $acheteurs;
+        foreach ($this->declaration->getAppellationsOrderParcellaire() as $appellation) {
+            $details = $appellation->getDetailsSortedByParcelle();
 
-            $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()] = new stdClass();
-            $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()]->cepage_libelle = $parcelle->getCepageLibelle();
-            $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()]->parcelle = $parcelle;
-            $parcellesByLieux[$keyLieu]->total_superficie += $parcelle->superficie;
+            foreach ($details as $parcelle) {
+                $acheteurs = $parcelle->getAcheteursByCVI();
+                if($cviFilter) {
+                    if(!array_key_exists($cviFilter, $acheteurs)) {
+                        continue;
+                    }
+                }
+                $keyLieu = sprintf("%s. %s %s", $appellationsPos[str_replace("appellation_", "", $parcelle->getLieuNode()->getAppellation()->getKey())], $parcelle->getLieuNode()->getAppellation()->getLibelle(), $parcelle->getLieuLibelle());
+                if (!array_key_exists($keyLieu, $parcellesByLieux)) {
+                    $parcellesByLieux[$keyLieu] = new stdClass();
+                    $parcellesByLieux[$keyLieu]->total_superficie = 0;
+                    $parcellesByLieux[$keyLieu]->appellation_libelle = $parcelle->getAppellation()->getLibelle();
+                    $parcellesByLieux[$keyLieu]->lieu_libelle = $parcelle->getLieuLibelle();
+                    $parcellesByLieux[$keyLieu]->parcelles = array();
+                    $parcellesByLieux[$keyLieu]->acheteurs = array();
+                }
+                $parcellesByLieux[$keyLieu]->acheteurs = $parcellesByLieux[$keyLieu]->acheteurs + $acheteurs;
+
+                $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()] = new stdClass();
+                $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()]->cepage_libelle = $parcelle->getCepageLibelle();
+                $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()]->parcelle = $parcelle;
+                $parcellesByLieux[$keyLieu]->total_superficie += $parcelle->superficie;
+            }
         }
 
         ksort($parcellesByLieux);

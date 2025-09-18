@@ -89,8 +89,8 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
     /**** MOUVEMENTS ****/
 
-    public function getTemplateFacture() {
-        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
+    public function getTemplateFacture($region = null) {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne(), $region);
     }
 
     public function getMouvementsFactures() {
@@ -98,9 +98,9 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         return $this->_get('mouvements');
     }
 
-    public function getMouvementsFacturesCalcule() {
+    public function getMouvementsFacturesCalcule($region = null) {
 
-      $templateFacture = $this->getTemplateFacture();
+      $templateFacture = $this->getTemplateFacture($region);
 
       if(!$templateFacture) {
           return array();
@@ -476,7 +476,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                 $match = $match && $this->matchFilterProduit($produit, $filter);
             } elseif ($type === 'region') {
                 $region = $filter;
-                $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit->produit);
+                $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit);
             } elseif($type === 'famille') {
                 $match = $match && DRevClient::getInstance()->matchFilterFamille($this->declarant->famille, $filter);
             }
@@ -490,11 +490,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         $produitExclude = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
 
-        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produit->produit)) {
+        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produit)) {
 
             return false;
         }
-        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produit->produit)) {
+        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produit)) {
 
             return false;
         }
@@ -515,7 +515,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             if ($famille_exclue && $donnee->colonne_famille == $famille_exclue) {
                 continue;
             }
-            if($produitFilter && !$this->matchFilter($donnee, $produitFilter)) {
+            if($produitFilter && !$this->matchFilter($donnee->produit, $produitFilter)) {
                 continue;
             }
             if(preg_replace('/^0/', '', strtolower($donnee->categorie)) !== preg_replace('/^0/', '', str_replace("L", "", strtolower($numLigne)))) {
@@ -911,9 +911,8 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
     public function getTiers($include_non_reconnu = false, $relation_voulue = null, $hydrate = acCouchdbClient::HYDRATE_JSON): array {
         $cvis = array();
-        foreach($this->getCsv() as $data) {
-            $cvi = $data[DouaneCsvFile::CSV_TIERS_CVI];
-            $cvi = str_replace('"', '', $cvi);
+        foreach($this->getDonnees() as $data) {
+            $cvi = str_replace('"', '', $data->tiers_cvi);
             if(!$cvi) {
                 continue;
             }
@@ -922,18 +921,18 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             }
             if ($relation_voulue != null &&
                     $relation_voulue == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR &&
-                        (! ($data[DouaneCsvFile::CSV_LIGNE_CODE] === "06" ||
-                            $data[DouaneCsvFile::CSV_LIGNE_CODE] === "07"))) {
+                        (! ($data->categorie === "06" ||
+                            $data->categorie === "07"))) {
                 continue;
             }
             if ($relation_voulue != null &&
                     $relation_voulue == EtablissementFamilles::FAMILLE_COOPERATIVE &&
-                        (! ($data[DouaneCsvFile::CSV_LIGNE_CODE] === "09"))) {
+                        (! ($data->code === "09"))) {
                 continue;
             }
             $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
             if(!$etablissement) {
-                $cvis[$cvi] = $data[DouaneCsvFile::CSV_TIERS_LIBELLE];
+                $cvis[$cvi] = $data->tiers_raison_sociale;
                 continue;
             }
 
@@ -972,9 +971,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                     $res_habilitation[$cvi] = array('habilitation' => HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->tiers[$cvi]->identifiant, $this->date_depot), "habilitation_ok" => true);
                 }
                 $hab = false;
-                foreach($res_habilitation[$cvi]['habilitation']->getProduitsHabilites(HabilitationClient::ACTIVITE_PRODUCTEUR) as $h => $p) {
-                    if (strpos($hash, str_replace('/declaration/', '', $h)) !== false) {
-                        $hab = true;
+                if ($res_habilitation[$cvi]['habilitation']) {
+                    foreach($res_habilitation[$cvi]['habilitation']->getProduitsHabilites(HabilitationClient::ACTIVITE_PRODUCTEUR) as $h => $p) {
+                        if (strpos($hash, str_replace('/declaration/', '', $h)) !== false) {
+                            $hab = true;
+                        }
                     }
                 }
                 $res_habilitation[$cvi]['habilitation_ok'] = $res_habilitation[$cvi]['habilitation_ok'] && $hab;
@@ -1003,15 +1004,19 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         $etab_declarant =  $this->getEtablissementObject();
         foreach ($this->getDonnees() as $data) {
             if (($this->type == 'SV12' && $data->categorie == '15') || $this->type == 'SV11' && $data->categorie == '08') {
-                if (! isset($this->tableau_comparaison[$data->produit_libelle][$data->tiers_cvi]['SV'])) {
-                    $this->tableau_comparaison[$data->produit.'|'.$data->produit_libelle][$data->tiers_cvi]['SV'] = $data->valeur;
-                    $this->tableau_comparaison[$data->produit.'|'.$data->produit_libelle][$data->tiers_cvi]['DR'] = 0;
-                } else {
-                    $this->tableau_comparaison[$data->produit.'|'.$data->produit_libelle][$data->tiers_cvi]['SV'] += $data->valeur;
+                $produit_key = $data->produit.'|'.$data->produit_libelle;
+                if (! isset($this->tableau_comparaison[$produit_key])) {
+                    $this->tableau_comparaison[$produit_key] = [];
                 }
-                if (! isset($this->tableau_comparaison[$data->produit.'|'.$data->produit_libelle][$etab_declarant->cvi]['SV'])) {
-                    $this->tableau_comparaison[$data->produit.'|'.$data->produit_libelle][$etab_declarant->cvi]['SV'] = $produits[$data->produit]['lignes'][$data->categorie]['val'];
+                if (! isset($this->tableau_comparaison[$produit_key][$data->tiers_cvi])) {
+                    $this->tableau_comparaison[$produit_key][$data->tiers_cvi] = ['SV' => 0, 'DR' => 0];
                 }
+                $this->tableau_comparaison[$produit_key][$data->tiers_cvi]['SV'] += $data->valeur;
+
+                if (! isset($this->tableau_comparaison[$produit_key][$etab_declarant->cvi])) {
+                    $this->tableau_comparaison[$produit_key][$etab_declarant->cvi] = ['SV' => 0, 'DR' => 0];
+                }
+                $this->tableau_comparaison[$produit_key][$etab_declarant->cvi]['SV'] += $data->valeur;
             }
         }
         foreach ($this->tableau_comparaison as $produit => $cvis) {
@@ -1027,8 +1032,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                 if ($this->tiers[$cvi]) {
                     $dr = DRClient::getInstance()->find('DR-'.$this->tiers[$cvi]['identifiant'].'-'.$this->campagne);
                 }
-                if (! $dr) {
-                    $this->tableau_comparaison[$produit][$cvi]['DR'] = 0;
+                if (!$dr) {
                     continue;
                 }
                 $datas = $dr->getEnhancedDonnees();
@@ -1036,15 +1040,16 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                     if ($data->tiers_cvi != $etab_declarant->cvi && substr($data->tiers, 0, -2) != substr($etab_declarant->_id, 0, -2)) {
                         continue;
                     }
-                    if (strpos($produit, $data->produit_libelle) === false && strpos($produit, $dr->getConfiguration()->declaration->get($data->produit)->getLibelleFormat()) === false) {
+                    $produit_key = $data->produit.'|'.$data->produit_libelle;
+                    if (strpos($produit,  $produit_key) === false) {
                         continue;
                     }
+                    $dr_cvi = $cvi;
                     if ( ($this->type == 'SV12' && ($data->categorie == '06' || $data->categorie == '07')) || ($this->type == 'SV11' && $data->categorie == '08') ) {
-                        if (! isset($this->tableau_comparaison[$produit][$cvi]['DR'])) {
-                            $this->tableau_comparaison[$produit][$cvi]['DR'] = $data->valeur;
-                        } else {
-                            $this->tableau_comparaison[$produit][$cvi]['DR'] += $data->valeur;
+                        if (! isset($this->tableau_comparaison[$produit][$dr_cvi])) {
+                            $this->tableau_comparaison[$produit][$dr_cvi] = ['SV' => 0, 'DR' => 0];
                         }
+                        $this->tableau_comparaison[$produit][$dr_cvi]['DR'] += $data->valeur;
                         $totalDR += $data->valeur;
                     }
                 }

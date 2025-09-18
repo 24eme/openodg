@@ -28,11 +28,6 @@ class commonActions extends sfActions {
             return $this->redirect('compte_search');
         }
 
-        if ($this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && HabilitationConfiguration::getInstance()->isListingParDemande()) {
-
-            return $this->redirect('habilitation_demande');
-        }
-
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
 
             return $this->redirect('habilitation');

@@ -177,6 +177,8 @@ $list_idu = [];
                                         echo "</span>";
                                         $separateur = ',';
                                     }?>
+                                    <?php else: ?>
+                                        <span class="text-danger">Aucune aire<span>
                                     <?php endif; ?>
                                 </td>
                                 <td class="" style="text-align: center;"><?php echo $compagne; ?></td>

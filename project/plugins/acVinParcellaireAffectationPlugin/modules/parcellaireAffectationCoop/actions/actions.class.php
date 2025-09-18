@@ -178,7 +178,7 @@ class parcellaireAffectationCoopActions extends sfActions {
             if(!$doc->isValidee()) {
                 continue;
             }
-            $export = new ExportParcellaireAffectationCSV($doc, $header);
+            $export = new ExportParcellaireAffectationCSV($doc, $header, null, $parcellaireAffectationCoop->identifiant);
             $this->renderText($export->export());
             $header = false;
         }
@@ -189,6 +189,32 @@ class parcellaireAffectationCoopActions extends sfActions {
         $attachement = sprintf("attachment; filename=export_affectation_parcellaire_%s_%s_%s.csv", $etablissement->identifiant, $parcellaireAffectationCoop->getPeriode(), date('YmdHis'));
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition',$attachement );
+
+        return sfView::NONE;
+    }
+
+    public function executeExportapporteurcsv(sfWebRequest $request) {
+        $parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $etablissement = $this->getRoute()->getEtablissement();
+        $csv = [];
+        $csv[] = implode(";", ["Periode", "Cave cooperative CVI", "Cave cooperative nom", "Apporteur CVI", "Aporteur Nom", "Origine"]);
+        foreach($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur) {
+
+            $csv[] = implode(";", [
+                $parcellaireAffectationCoop->getPeriode(),
+                $parcellaireAffectationCoop->getEtablissementObject()->cvi,
+                $parcellaireAffectationCoop->getEtablissementObject()->nom,
+                $apporteur->cvi,
+                $apporteur->nom,
+                $apporteur->provenance,
+            ]);
+        }
+
+        $attachement = sprintf("attachment; filename=export_apporteurs_%s_%s_%s.csv", $etablissement->identifiant, $parcellaireAffectationCoop->getPeriode(), date('YmdHis'));
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition',$attachement );
+
+        $this->renderText(implode("\n", $csv));
 
         return sfView::NONE;
     }

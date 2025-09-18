@@ -57,8 +57,7 @@ class HabilitationEditionForm extends acCouchdbForm
                 if (!isset($values['statut_'.$idWidgets]) || empty($values['statut_'.$idWidgets]) || !isset($values['date_'.$idWidgets]) || empty($values['date_'.$idWidgets])) {
                   continue;
                 }
-
-                if (Organisme::getCurrentRegion() && !RegionConfiguration::getInstance()->isHashProduitInRegion(Organisme::getCurrentRegion() ,$activite->getProduitHash())) {
+                if (!sfContext::getInstance()->getUser()->isAdmin() && Organisme::getCurrentRegion() && !RegionConfiguration::getInstance()->isHashProduitInRegion(Organisme::getCurrentRegion() ,$activite->getProduitHash())) {
                     throw new sfError403Exception("L'édition de ce produit n'est pas autorisé pour ".$region);
                 }
 

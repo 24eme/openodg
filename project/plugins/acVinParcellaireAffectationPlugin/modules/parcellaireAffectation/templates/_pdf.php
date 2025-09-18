@@ -59,8 +59,11 @@
         <th class="th" style="text-align: center; width: 100px;">Année de plantation</th>
         <th class="th" style="text-align: center; width: 100px;">Surface</th>
     </tr>
-    <?php foreach ($parcelles as $parcelle):
+    <?php
+        $total_produit = 0;
+        foreach ($parcelles as $parcelle):
             if(!$parcelle->affectee): continue; endif;
+            $total_produit += $parcelle->superficie;
          ?>
     	<tr>
     		<td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->commune; ?>&nbsp;</td>
@@ -72,6 +75,10 @@
             <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.4f", $parcelle->superficie); ?>&nbsp;<small>ha</small>&nbsp;</td>
     	</tr>
     <?php endforeach; ?>
+    <tr>
+        <td class="td" colspan="6" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<strong>Total</strong>&nbsp;</td>
+        <td class="td" colspan="1" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<strong><?php printf("%0.4f", $total_produit); ?>&nbsp;<small>ha</small></strong>&nbsp;</td>
+    </tr>
 </table>
 <?php endforeach; ?>
 

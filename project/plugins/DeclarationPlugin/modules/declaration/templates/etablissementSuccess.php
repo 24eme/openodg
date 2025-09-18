@@ -21,7 +21,7 @@
                 <option value="">Courante</option>
                 <?php
                     $campagne_current = intval(ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent());
-                    $campagne_debut = (date('m') > 5 && date('m') < 8) ? intval(ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrentNext()) : $campagne_current;
+                    $campagne_debut = (date('m') >= 5 && date('m') <= 7) ? intval(ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrentNext()) : $campagne_current;
                     for($i=$campagne_debut; $i > $campagne_current - $nb_campagne ; $i--):
                  ?>
                     <option <?php if(isset($periode) && $periode == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i.'-'.($i + 1) ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
@@ -88,9 +88,6 @@
     <?php endif; ?>
     <?php if(in_array('parcellaireAffectationCoop', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_partial('parcellaireAffectationCoop/monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireAffectationConfiguration::getInstance()->getCurrentPeriode())); ?>
-    <?php endif; ?>
-    <?php if(class_exists("ParcellaireIrrigableConfiguration") && ParcellaireIrrigableConfiguration::getInstance()->isModuleEnabled()): ?>
-    <?php include_component('parcellaireIrrigable', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireIrrigableConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
     <?php if(class_exists("ParcellaireIrrigueConfiguration") && ParcellaireIrrigueConfiguration::getInstance()->isModuleEnabled()): ?>
     <?php include_component('parcellaireIrrigue', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireIrrigueConfiguration::getInstance()->getCurrentPeriode())); ?>

@@ -29,9 +29,15 @@
             <th>Détails</th>
         </tr>
     </thead>
-    <?php if ($tableau_comparaison = $sv->getTableauComparaisonTiersApporteurs()) : ?>
-        <?php foreach ($tableau_comparaison as $produit => $cvis): ?>
-            <?php $totalDeclarantSV = $cvis[$sv->getEtablissementObject()->getCvi()]['SV']; $totalApporteurDR = $cvis[$sv->getEtablissementObject()->getCvi()]['DR']; $diffSVDR = round($totalDeclarantSV - $totalApporteurDR, 2); ?>
+<?php
+
+    if ($tableau_comparaison = $sv->getTableauComparaisonTiersApporteurs()) :
+        foreach ($tableau_comparaison as $produit => $cvis):
+                $totalDeclarantSV = $cvis[$sv->getEtablissementObject()->getCvi()]['SV'];
+                $totalApporteurDR = $cvis[$sv->getEtablissementObject()->getCvi()]['DR'];
+                $diffSVDR = round($totalDeclarantSV - $totalApporteurDR, 2);
+
+?>
             <tbody>
                 <tr>
                     <div class="row">
@@ -72,14 +78,14 @@
                             <?php echo abs($valeur['SV']); ?>
                         </td>
                         <td class="text-right">
-                            <?php if (isset($dr_apporteur) && $dr_apporteur): ?>
+                            <?php if ($valeur['DR'] || isset($dr_apporteur) && $dr_apporteur): ?>
                                 <?php echo abs($valeur['DR']); ?>
                             <?php else: ?>
                                 <small>DR absente</small>
                             <?php endif; ?>
                         </td>
-                        <td class="text-center">
-                            <?php echo abs(round($valeur['SV'] - $valeur['DR'], 2)); ?>
+                        <td class="text-right">
+                            <?php echo round($valeur['SV'] - $valeur['DR'], 2); ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -101,7 +107,7 @@
     </thead>
     <tbody>
 <?php $operateur_nb = 0 ; $habilitation_ok = 0 ; $etablissement_ok = 0; ?>
-<?php foreach ($sv->getHabilitationTiers() as $cvi => $hab): $e = $sv->getCachedTiersByCVI($cvi); $operateur_nb++;?>
+<?php foreach ($sv->getHabilitationTiers() as $cvi => $hab): if ($cvi == $sv->getEtablissementObject()->cvi) {continue;} $e = $sv->getCachedTiersByCVI($cvi); $operateur_nb++;?>
     <tr class="habilitation <?php echo ($hab['habilitation_ok']) ? "collapse" : ""; ?>">
         <td>
             <?php if ($e) : $etablissement_ok++ ; ?>

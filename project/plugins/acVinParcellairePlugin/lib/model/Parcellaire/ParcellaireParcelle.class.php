@@ -125,6 +125,14 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $this->superficie;
     }
 
+    public function getSuperficie($unite = ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_HECTARE) {
+        if($unite == ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE) {
+            return round($this->_get('superficie') * 100, 2);
+        }
+
+        return $this->_get('superficie');
+    }
+
     public function getVtsgn() {
         $v = $this->_get('vtsgn');
         if ($v === null || !$this->superficie) {
@@ -355,5 +363,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         }
         $this->_set('produit_hash', $h);
         return $h;
+    }
+
+    public function isRealParcelleIdFromParcellaire() {
+        return $this->_get('parcelle_id') && strpos($this->_get('parcelle_id'), '-X') === false;
     }
 }

@@ -142,6 +142,18 @@
 
 \\\vspace{8mm}
 
+<?php
+    $displayTva = false;
+    foreach ($facture->lignes as $ligne) {
+        foreach ($ligne->details as $detail) {
+            if ($detail->taux_tva > 0) {
+                $displayTva = true;
+                break;
+            }
+        }
+    }
+?>
+
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
@@ -153,9 +165,20 @@
               \end{tabular}
               \newpage
           <?php endif; ?>
-          \begin{tabular}{|m{9.1cm}|>{\raggedleft}m{1.5cm}|>{\raggedleft}m{2.1cm}|>{\raggedleft}m{1.9cm}|>{\raggedleft}m{2.2cm}|}
+          \begin{tabular}{|m{9.1cm}|>{\raggedleft}m{1.5cm}|>{\raggedleft}m{2.1cm}|
+          <?php if ($displayTva): ?>
+          >{\raggedleft}m{1.9cm}|>{\raggedleft}m{2.2cm}|
+          <?php else: ?>
+          >{\raggedleft}m{4.4cm}|
+          <?php endif; ?>}
           \hline
-          \rowcolor{verttresclair} \textbf{Désignation} & \multicolumn{1}{c|}{\textbf{Prix~uni.}} & \multicolumn{1}{c|}{\textbf{Quantité}} & \multicolumn{1}{c|}{\textbf{TVA}} & \multicolumn{1}{c|}{\textbf{Total HT}}  \tabularnewline
+          \rowcolor{verttresclair} \textbf{Désignation} & \multicolumn{1}{c|}{\textbf{Prix~uni.}} & \multicolumn{1}{c|}{\textbf{Quantité}}<?php
+          echo $displayTva
+              ? ' & \multicolumn{1}{c|}{\textbf{TVA}} & \multicolumn{1}{c|}{\textbf{Total HT}}'
+              : ' & \multicolumn{1}{c|}{\textbf{Total}}';
+          ?>
+
+          \tabularnewline
           \hline
         <?php endif; ?>
         <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?>
@@ -166,7 +189,9 @@
         ?>&
         {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} &
         {<?php echo formatFloat($detail->quantite, ','); ?> \texttt{<?php if($detail->exist('unite')): ?><?php echo ($detail->unite); ?><?php else: ?>~~~<?php endif; ?>} &
-        <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> &
+        <?php if ($displayTva):?>
+            <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> &
+        <?php endif; ?>
         <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
 		\hline
     <?php if ($i) $i++ ; else $i = 12; endforeach; ?>
@@ -185,11 +210,15 @@
 \arrayrulecolor{vertclair}
 \begin{tabular}{m{2.1cm}|>{\raggedleft}m{3.8cm}|>{\raggedleft}m{2.2cm}|}
   \hhline{|~|-|-}
+  <?php if ($displayTva): ?>
   & \cellcolor{verttresclair} \textbf{TOTAL HT} & \textbf{\FACTURETOTALHT~€} \tabularnewline
-  \hhline{|~|-|-}
-  & \cellcolor{verttresclair} \textbf{TOTAL TVA 20\%}  & \textbf{\FACTURETOTALTVA~€} \tabularnewline
-  \hhline{|~|-|-}
-  & \cellcolor{verttresclair} \textbf{TOTAL TTC}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
+      \hhline{|~|-|-}
+      & \cellcolor{verttresclair} \textbf{TOTAL TVA 20\%}  & \textbf{\FACTURETOTALTVA~€} \tabularnewline
+      \hhline{|~|-|-}
+      & \cellcolor{verttresclair} \textbf{TOTAL TTC}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
+  <?php else: ?>
+      & \cellcolor{verttresclair} \textbf{TOTAL} & \textbf{\FACTURETOTALHT~€} \tabularnewline
+  <?php endif;?>
   \hhline{|~|-|-}
   & \cellcolor{verttresclair} \textbf{SOMME DUE}  & \textbf{<?php echo formatFloat($facture->total_ttc - $facture->montant_paiement, ','); ?>~€} \tabularnewline
   \hhline{|~|-|-}
@@ -217,16 +246,15 @@ le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?>
 \textbf{Modalités de paiements} \\
 <?= escape_string_for_latex($facture->modalite_paiement) ?>
 <?php endif; ?>
-\vspace{-0.6cm}
 \begin{itemize}[noitemsep, topsep=0mm, left=-0.25cm..0.2cm]
     \item[-] Nos conditions de vente ne prévoient pas d'escompte pour paiement anticipé
-    \item[-] Conditions de règlement : A réception de la facture
     \item[-] En cas de retard de paiement, seront exigibles, conformément à l'article L 441-10 du code de commerce, une indemnité calculée sur la base de trois fois le taux de l'intérêt légal en vigueur ainsi qu'une indemnité forfaitaire pour frais de recouvrement de 40 euros
 \end{itemize}
 <?php if (isset($exoneration) && $exoneration === true): ?>
 \\ \\
 \textbf{ * : Exonération de TVA en vertu du 9° du 4. de l'article 261 du Code général des impôts}
 <?php endif ?>
+
 
 \end{center}
 \end{document}

@@ -13,9 +13,9 @@ class DeclarationParcellaire extends acCouchdbDocument {
         return $parcellaire->getParcelleFromParcellaireId($id);
     }
 
-    public function getParcelles() {
+    public function getParcelles($hashproduitFilter = null) {
         $parcelles = [];
-        if ($this->declaration && count($this->declaration)) foreach ($this->declaration->getParcelles() as $p) {
+        if ($this->declaration && count($this->declaration)) foreach ($this->declaration->getParcelles($hashproduitFilter) as $p) {
             if (isset($parcelles[$p->getParcelleId()])) {
                 throw new sfException('parcelleid '.$p->getParcelleId().' already exists');
             }
@@ -153,9 +153,36 @@ class DeclarationParcellaire extends acCouchdbDocument {
         }
     }
 
-    public function findParcelle($parcelle, $scoreMin = 1, &$allready_selected = null) {
+    public function getParcelleById($id) {
+        $p = $this->getParcelles();
 
-        return ParcellaireClient::findParcelle($this, $parcelle, 1, false, $allready_selected);
+        if(!isset($p[$id])) {
+            return null;
+        }
+        return $p[$id];
+    }
+
+    public function findProduitParcelle($parcelle) {
+        $hash = str_replace('/declaration/', '', $parcelle->produit_hash);
+        if (!$this->declaration->exist($hash)) {
+            return null;
+        }
+        if (!$this->declaration->get($hash)->detail->exist($parcelle->getParcelleId())) {
+            return null;
+        }
+
+        $p = $this->declaration->get($hash)->detail->get($parcelle->getParcelleId());
+
+        if($p && $p->cepage == $parcelle->cepage && $p->campagne_plantation == $parcelle->campagne_plantation) {
+            return $p;
+        }
+
+        return null;
+    }
+
+    public function findParcelle($parcelle, $scoreMin = 1, $with_cepage_match = false, &$allready_selected = null) {
+
+        return ParcellaireClient::findParcelle($this, $parcelle, $scoreMin, $with_cepage_match, $allready_selected);
     }
 
     private $idunumbers = null;
