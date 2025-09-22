@@ -28,14 +28,14 @@ class AireClient extends acCouchdbClient {
 
     public static function getHttpGeojsonFromCommuneDelimitation($commune_insee, $inao_denomination_id) {
         $dep = substr($commune_insee,0,2);
-        $url_aire = "https://raw.githubusercontent.com/24eme/opendatawine/master/delimitation_aoc/".$dep."/".$commune_insee."/".$inao_denomination_id.".geojson";
+        $url_aire = "https://raw.githubusercontent.com/24eme/opendatawine/refs/heads/master/delimitation_aoc/".$dep."/".$commune_insee."/".$inao_denomination_id.".geojson";
         $contents = @file_get_contents($url_aire);
         return $contents;
     }
 
     public static function getHttpDelimitationsFromCommune($commune_insee) {
         $dep = substr($commune_insee,0,2);
-        $url_aire = "https://raw.githubusercontent.com/24eme/opendatawine/master/delimitation_aoc/".$dep."/".$commune_insee."/denominations.json";
+        $url_aire = "https://raw.githubusercontent.com/24eme/opendatawine/refs/heads/master/delimitation_aoc/".$dep."/".$commune_insee."/delimitations.json";
         $contents = @file_get_contents($url_aire);
         return $contents;
     }
@@ -50,7 +50,7 @@ class AireClient extends acCouchdbClient {
     }
 
     public static function getCommunesArrayFromDenominationId($denom_id) {
-        $url = "https://raw.githubusercontent.com/24eme/opendatawine/master/denominations/".sprintf('%05d', $denom_id).".json";
+        $url = "https://raw.githubusercontent.com/24eme/opendatawine/refs/heads/master/denominations/".sprintf('%05d', $denom_id).".json";
         $contents = @file_get_contents($url);
         return json_decode($contents, JSON_OBJECT_AS_ARRAY);
 
