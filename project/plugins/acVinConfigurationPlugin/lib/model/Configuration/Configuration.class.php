@@ -62,15 +62,16 @@ class Configuration extends BaseConfiguration {
 
     public static function slugifyProduitLibelle($s) {
         $s = strtolower($s);
-        $s = str_replace(['é','è', 'ê', 'ë'], 'e', $s);
-        $s = preg_replace('/(s|s$)/', '', $s);
+        $s = str_replace([' et ', ' de ', ' sur '], ' ', $s);
+        $s = str_replace(['é','è', 'ê', 'ë', 'É', 'È', 'Ê', 'Ë'], 'e', $s);
+        $s = preg_replace('/(s$)/', '', $s);
         $s = preg_replace("/[ ]+/", " ", $s);
         $s = trim($s);
         $s = KeyInflector::slugify($s);
         return $s;
     }
 
-    public function identifyProductByLibelle($libelle) {
+    public function identifyProductByLibelle($libelle, $verbose = false) {
         if(array_key_exists($libelle, $this->identifyLibelleProduct)) {
 
             return $this->identifyLibelleProduct[$libelle];
@@ -82,7 +83,9 @@ class Configuration extends BaseConfiguration {
 
             foreach($this->getProduits() as $produit) {
                 $libelleProduitSlugify = self::slugifyProduitLibelle($produit->getLibelleFormat());
-                //echo $libelleSlugify."/".$libelleProduitSlugify."\n";
+                if ($verbose) {
+                    echo "stricte égalité: ".$libelleSlugify."/".$libelleProduitSlugify."\n";
+                }
                 if($libelleSlugify == $libelleProduitSlugify) {
                     $this->identifyLibelleProduct[$libelle] = $produit;
 
@@ -91,6 +94,9 @@ class Configuration extends BaseConfiguration {
             }
             foreach($this->getProduits() as $produit) {
                 $libelleProduitSlugify = self::slugifyProduitLibelle($produit->getLibelleFormat());
+                if ($verbose) {
+                    print_r(['strpos dans les deux sens', 'conf produit slug' => $libelleProduitSlugify, 'doc libelle slug' => $libelleSlugify, 'conf original' => $produit->getLibelleFormat(), 'libelle original' => $libelle_couleur]);
+                }
                 if(strpos($libelleProduitSlugify, $libelleSlugify) !== false || strpos($libelleSlugify, $libelleProduitSlugify) !== false) {
                     $this->identifyLibelleProduct[$libelle] = $produit;
 

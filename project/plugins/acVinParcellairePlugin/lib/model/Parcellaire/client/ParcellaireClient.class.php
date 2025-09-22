@@ -51,6 +51,16 @@ class ParcellaireClient extends acCouchdbClient {
      */
     public function retrieveParcellaireFromScrapy(Etablissement $etablissement, Array &$errors, $contextInstance = null, $scrapping = true)
     {
+        $parcellaire = null;
+        $ret = $this->scrapeCVIAndSaveInParcellaire($etablissement, $errors, $parcellaire, $contextInstance, $scrapping);
+        if ($ret) {
+            $ret = $this->loadParcellaireCSV($parcellaire, false, $contextInstance);
+        }
+        return $ret;
+    }
+
+    public function scrapeCVIAndSaveInParcellaire(Etablissement $etablissement, Array &$errors, & $parcellaire, $contextInstance = null, $scrapping = true)
+    {
         if ($scrapping && ProdouaneScrappyClient::scrape('parcellaire', date('Y'), $etablissement->cvi) != ProdouaneScrappyClient::SCRAPING_SUCCESS) {
             return false;
         }
@@ -82,15 +92,14 @@ class ParcellaireClient extends acCouchdbClient {
             }
             unlink($f);
         }
-        $this->loadParcellaireCSV($parcellaire, $contextInstance);
         return ($nb > 1);
      }
 
-    public function loadParcellaireCSV(Parcellaire $parcellaire, $contextInstance = null) {
+    public function loadParcellaireCSV(Parcellaire $parcellaire, $verbose = false, $contextInstance = null) {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         try {
             $parcellairecsv = ParcellaireCsvFile::getInstance($parcellaire);
-            $parcellairecsv->convert();
+            $parcellairecsv->convert($verbose);
         } catch (Exception $e) {
             $contextInstance->getLogger()->info("loadParcellaireCSV() : exception ".$e->getMessage());
             if (sfConfig::get('sf_environment') == 'dev') {
