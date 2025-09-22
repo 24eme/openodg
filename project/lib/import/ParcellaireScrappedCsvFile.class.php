@@ -180,10 +180,9 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
                 $produit = $configuration->identifyProductByLibelle($libelle);
                 $nb_reconnaissance++;
             }
-
             if (!$produit && $verbose) {
                 $produit = $configuration->identifyProductByLibelle($libelle, true);
-                print_r([$libelle, $parcelle]);exit;
+                print_r(['libelle' => $libelle, 'parcelle' => $parcelle, 'has produit' => ($produit)]);exit;
             }
 
             $hash = ($produit) ? $produit->getHash() : null ;
