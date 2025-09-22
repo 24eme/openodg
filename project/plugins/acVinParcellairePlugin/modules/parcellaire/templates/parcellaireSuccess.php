@@ -24,12 +24,13 @@ $list_idu = [];
     <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('parcellaire_etablissement_selection'), 'noautofocus' => true)); ?>
 <?php endif; ?>
 
-<div class="page-header no-border">
+<div class="page-header no-border row">
     <?php if($parcellaire): ?>
-    <h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?> <small class="text-muted"><?= $parcellaire->source ?></small></h2>
+    <h2 class="col-xs-8">Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?> <small class="text-muted"><?= $parcellaire->source ?></small></h2>
     <?php else: ?>
-    <h2>Parcellaire</h2>
+    <h2 class="col-xs-8">Parcellaire</h2>
     <?php endif;?>
+    <p class="col-xs-4 text-muted p-4 mt-4 text-right"><?= $parcellaire->_id ?></p>
 </div>
 
 <div class="clearfix">
