@@ -61,11 +61,11 @@ class ParcellaireClient extends acCouchdbClient {
 
     public function scrapeCVIAndSaveInParcellaire(Etablissement $etablissement, Array &$errors, & $parcellaire, $contextInstance = null, $scrapping = true)
     {
-        if ($scrapping && ProdouaneScrappyClient::scrape('parcellaire', date('Y'), $etablissement->cvi) != ProdouaneScrappyClient::SCRAPING_SUCCESS) {
+        if ($scrapping && ProdouaneScrappyClient::scrape('parcellaire', date('Y'), $etablissement->cvi, $errors) != ProdouaneScrappyClient::SCRAPING_SUCCESS) {
             return false;
         }
         $nb = 0;
-        $files = ProdouaneScrappyClient::listAndSaveInTmp('parcellaire', date('Y'), $etablissement->cvi);
+        $files = ProdouaneScrappyClient::listAndSaveInTmp('parcellaire', date('Y'), $etablissement->cvi, $errors);
         if (!count($files)) {
             return false;
         }

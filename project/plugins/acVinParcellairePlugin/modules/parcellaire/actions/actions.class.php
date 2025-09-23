@@ -75,14 +75,17 @@ class parcellaireActions extends sfActions {
 
         try {
             $errors = [];
-            $errors['csv'] =  '';
-            $errors['json'] = '';
-
             $msg = '';
 
             $ret = ParcellaireClient::getInstance()->scrapeCVIAndSaveInParcellaire($this->etablissement, $errors, $parcellaire, null, !($this->noscrape));
             if (! $ret ) {
-                $msg = $errors['csv'].'\n'.$errors['json'];
+                $themsg = [];
+                foreach ($errors as $line) {
+                    if ((strpos($line, 'router') === false) && ! in_array($line, $themsg) && $line) {
+                        $themsg[] = $line;
+                    }
+                }
+                $msg = implode("\n", $themsg);
             }
         } catch (Exception $e) {
             if (sfConfig::get('sf_environment') == 'dev') {
