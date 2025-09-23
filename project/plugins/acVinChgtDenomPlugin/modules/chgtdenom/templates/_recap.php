@@ -66,7 +66,7 @@
         </div>
       <?php else: ?>
         <?php if($chgtDenom->isChgtDenomination()): ?>
-          <span>Dégustable :</span>
+          <span>Contrôle :</span>
           <?php echo pictoDegustable($lot); ?>
         <?php endif; ?>
       <?php endif; ?>

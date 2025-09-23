@@ -1,6 +1,6 @@
 <?php
 
-class ImportParcellaireIrrigableManquantAixTask extends sfBaseTask
+class ImportParcellaireIrrigableCVPTask extends sfBaseTask
 {
 
     const CSV_CAMPAGNE = 0;
@@ -157,7 +157,8 @@ EOF;
                     $this->cpt_error = 0;
                 }
                 $this->irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($etablissement->identifiant, substr($data[self::CSV_CAMPAGNE], 0, 4));
-                $this->irrigable->observations .= "Import Aix";
+                $this->irrigable->observations = str_replace("Import Coteaux Varois", "", $this->irrigable->observations);
+                $this->irrigable->observations .= "Import Coteaux Varois";
             }
             if ($pt && $pt->getProduitHash()) {
                 $produit_hash = str_replace('/declaration/', '', $pt->getProduitHash());
@@ -175,6 +176,8 @@ EOF;
                 }
                 $pkey = explode('-', $pkey)[0].'-X'.$pkeyid++;
                 $pt = $ptold;
+                $pt = ParcellaireParcelle::freeInstance($parcellaire);
+                $pt->idu = ($data[self::CSV_IDU]) ? $data[self::CSV_IDU] : $data[self::CSV_CODE_COMMUNE]."0000".$p->section.sprintf("%04d",$p->numero_parcelle);
                 $pt->campagne_plantation = $p->campagne_plantation;
                 $pt->section = $p->section;
                 $pt->numero_parcelle = $p->numero_parcelle;
@@ -201,7 +204,7 @@ EOF;
 
     private function saving() {
         if ($this->irrigable) {
-            $this->irrigable->validate();
+            $this->irrigable->validate($this->irrigable->getPeriode()."-07-15");
             if ($this->real_save) {
                 $this->irrigable->save();
                 echo "LOG: ".$this->irrigable->_id." saved (".$this->currentEtablissementKey." - $this->cpt dont warning:$this->cpt_warning error:$this->cpt_error)\n";

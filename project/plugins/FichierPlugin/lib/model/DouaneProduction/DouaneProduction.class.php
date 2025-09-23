@@ -89,8 +89,8 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
     /**** MOUVEMENTS ****/
 
-    public function getTemplateFacture() {
-        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
+    public function getTemplateFacture($region = null) {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne(), $region);
     }
 
     public function getMouvementsFactures() {
@@ -98,9 +98,9 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         return $this->_get('mouvements');
     }
 
-    public function getMouvementsFacturesCalcule() {
+    public function getMouvementsFacturesCalcule($region = null) {
 
-      $templateFacture = $this->getTemplateFacture();
+      $templateFacture = $this->getTemplateFacture($region);
 
       if(!$templateFacture) {
           return array();
@@ -476,7 +476,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                 $match = $match && $this->matchFilterProduit($produit, $filter);
             } elseif ($type === 'region') {
                 $region = $filter;
-                $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit->produit);
+                $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit);
             } elseif($type === 'famille') {
                 $match = $match && DRevClient::getInstance()->matchFilterFamille($this->declarant->famille, $filter);
             }
@@ -515,7 +515,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             if ($famille_exclue && $donnee->colonne_famille == $famille_exclue) {
                 continue;
             }
-            if($produitFilter && !$this->matchFilter($donnee, $produitFilter)) {
+            if($produitFilter && !$this->matchFilter($donnee->produit, $produitFilter)) {
                 continue;
             }
             if(preg_replace('/^0/', '', strtolower($donnee->categorie)) !== preg_replace('/^0/', '', str_replace("L", "", strtolower($numLigne)))) {

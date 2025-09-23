@@ -50,7 +50,7 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
     {
         $produits = array();
         foreach ($this->getDocument()->getProduitsConfig(date('Y-m-d')) as $produit) {
-            $produits[$produit->getHash()] = $produit->getLibelleComplet();
+            $produits[$produit->getHash()] = preg_replace("/ Tranquilles?$/", '', $produit->getLibelleComplet());
         }
         return array_merge(array('' => ''), $produits);
     }

@@ -95,6 +95,7 @@ class drevActions extends sfActions {
     public function executeDevalidation(sfWebRequest $request) {
 
         $drev = $this->getRoute()->getDRev();
+
         if (!$this->getUser()->isAdmin()) {
           $this->secure(DRevSecurity::DEVALIDATION , $drev);
         }

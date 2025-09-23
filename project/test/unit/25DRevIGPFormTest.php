@@ -80,6 +80,8 @@ foreach($config->getProduits() as $produitconfig) {
     break;
 }
 
+$should_have_mouvements = (TemplateFactureClient::getInstance()->findAll());
+
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/dr_douane.csv');
 
 $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg').".csv";

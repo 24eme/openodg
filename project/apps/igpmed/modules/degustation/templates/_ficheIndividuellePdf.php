@@ -34,24 +34,21 @@
    <?php if ($table_header): $table_header = false; ?>
      <table border="1px" class="table" id="table_fiche_<?php echo $table_num ?>" $cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
        <tr style="line-height:20px;">
-          <th class="topempty bg-white" style="width:5%; "><?php echo tdStart() ?><strong>Anon</strong></th>
-          <th class="topempty bg-white" style="width:40%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
-          <th class="bg-white" colspan="2" style="width:8%;"><?php echo tdStart() ?><strong>Avis</strong></th>
-          <th class="bg-white" colspan="2" style="width:8%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
-          <th class="topempty bg-white" style="width:27%;"><strong>Motifs<br/>si non conforme</strong></th>
-          <th class="bg-white" colspan="3" style="width:12%"><strong>Intensité si<br/>non conforme</strong></th>
+          <th class="topempty bg-white"style="width:5%; "><?php echo tdStart() ?><strong>Anon</strong></th>
+          <th class="topempty bg-white" style="width:34%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
+          <th class="bg-white" colspan="3" style="width:12%;"><?php echo tdStart() ?><strong>Avis</strong></th>
+          <th class="bg-white"  colspan="3"style="width:8%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
+          <th class="topempty bg-white" style="width:41%;"><strong>Motifs (si non conforme)</strong></th>
        </tr>
        <tr style="line-height:13px;">
          <th class="empty bg-white"></th>
          <th class="empty bg-white"></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Fav.</small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Def.</small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Fav.</small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Def.</small></strong></th>
-         <th class="empty bg-white"></th>
-         <th class="bg-white" style="width:4%"><?php echo tdStart() ?><strong><small>Min.</small></strong></th>
-         <th class="bg-white" style="width:4%"><?php echo tdStart() ?><strong><small>Maj.</small></strong></th>
-         <th class="bg-white" style="width:4%"><?php echo tdStart() ?><strong><small>Grave</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>NCNR</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>NCR</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
+         <th class="empty bg-white" style="width:41%;"></th>
        </tr>
    <?php endif;?>
 
@@ -62,11 +59,10 @@
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
-      <td><?php echo tdStart() ?>&nbsp;</td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
-      <td><?php echo tdStart() ?><span class="zap">o</span></td>
-      <td><?php echo tdStart() ?><span class="zap">o</span></td>
+      <td><?php echo tdStart() ?></td>
     </tr>
     <?php $i++; ?>
   <?php endforeach; ?>
 </table>
+<span><small>NCR = non conformité rédhibitoire<br>NCNR = non conformité non rédhibitoire</small></span>

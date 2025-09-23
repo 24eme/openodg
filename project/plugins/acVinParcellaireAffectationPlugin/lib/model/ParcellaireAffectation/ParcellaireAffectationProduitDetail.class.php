@@ -84,7 +84,14 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
     public function getSuperficieParcellaireAffectable() {
         $superficieAffectable = $this->getSuperficieParcellaire() - $this->getSuperficie();
 
-        return $superficieAffectable > 0 ? $superficieAffectable : 0;
+        if(!$this->isAffectee()) {
+            foreach($this->getDocument()->getParcellesMultiProduitsByParcelleId($this->getParcelleId()) as $p) {
+                $superficieAffectable -= $p->superficie;
+            }
+            return max(0, $superficieAffectable);
+        }
+
+        return ($superficieAffectable > 0) ? $superficieAffectable : 0;
     }
 
     public function isPartielle() {

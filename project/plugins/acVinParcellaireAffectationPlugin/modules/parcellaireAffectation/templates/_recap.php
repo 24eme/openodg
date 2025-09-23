@@ -1,22 +1,5 @@
 <?php use_helper('Float') ?>
 
-<?php if ($parcellaireAffectation->hasProblemProduitCVI()): ?>
-    <p class="alert alert-warning">
-    Les parcelles mises en valeur pourrait rencontrer des problèmes de dénomination déclarée au CVI.
-    </p>
-<?php endif; ?>
-<?php if ($parcellaireAffectation->hasProblemEcartPieds()): ?>
-    <p class="alert alert-warning">Les parcelles dont la superficie en mise en valeur pourrait rencontrer des problèmes de densité d'après l'analyse du CVI.</p>
-<?php endif; ?>
-<?php if ($parcellaireAffectation->hasProblemCepageAutorise()): ?>
-    <p class="alert alert-warning">Les parcelles dont le cépage est mis en valeur pourrait rencontrer des problèmes de conformité avec le cahier des charges.</p>
-<?php endif; ?>
-<?php if ($parcellaireAffectation->hasProblemParcellaire()): ?>
-    <p class="alert alert-warning">
-    Les parcelles dont l'identifiant est mis en valeur pourrait rencontrer de conformité avec votre parcellaire CVI.
-    </p>
-<?php endif; ?>
-
 <?php foreach ($parcellaireAffectation->getProduits() as $hash => $produit): ?>
 <?php if (count($parcellaireAffectation->getProduits()) > 1): ?>
     <div class="row">
@@ -110,3 +93,8 @@
 </table>
 <?php  endforeach; ?>
 <?php  endforeach; ?>
+<?php if (PotentielProduction::cacheCreatePotentielProduction($parcellaireAffectation->getRawValue()->getParcellaire(), $parcellaireAffectation->getRawValue(), false)->parcellaire2refIsAffectation()):?>
+    <div class="text-right mb-5">
+        <a href="<?php echo url_for('parcellaire_potentiel_visualisation', array('id' => $parcellaireAffectation->getParcellaire()->_id)); ?>">Voir le détail du potentiel de production</a>
+    </div>
+<?php endif;?>

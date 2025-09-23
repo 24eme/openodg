@@ -39,7 +39,7 @@
   <br/>
   <tr><td>Dans le cadre du contrôle interne analytique réalisé le <?php echo format_date($lot->prelevement_datetime, "P", "fr_FR"); ?> sur les échantillons prélevés dans votre cave, nous avons relevé le manquement grave suivant :</td></tr>
   <tr><td><strong><?php echo $lot->motif ?></strong></td></tr>
-  <tr><td>Pour : <strong><?php echo showProduitCepagesLot($lot, false) ?> de <?php echo $lot->volume ?> hl</strong></td></tr>
+  <tr><td>Pour : <strong><?php echo showProduitCepagesLot($lot, false) ?> de <?php echo $lot->volume ?> hl (<?php echo $lot->getNumeroLogementOperateur(); ?>)</strong></td></tr>
   <br/>
   <tr><td>Il en résulte que <strong>ce lot de vin est non loyal et marchand</strong> et ne peut être commercialisé en IGP Comté Tolosan. Le plan de contrôle prévoit donc que l'opérateur doit procéder à <strong>son déclassement en VSIG, dans un délais de 10 jours.</strong> Sans réponse de votre part, nous serons dans l'obligation de communiquer ce manquement grave à notre organisme de contrôle externe, QUALISUD, qui procédera à un contrôle externe, qui vous sera facturé.</td></tr>
 </table><br/><br/>
