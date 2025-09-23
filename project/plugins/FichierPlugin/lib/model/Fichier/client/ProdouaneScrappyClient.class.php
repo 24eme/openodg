@@ -20,21 +20,36 @@ class ProdouaneScrappyClient {
         return $conf.'?action='.$action.'&type='.$type.'&millesime='.$millesime.'&cvi='.$cvi.$extra;
     }
 
-    public static function scrape($type, $millesime, $cvi) {
+    public static function scrape($type, $millesime, $cvi, array & $retour) {
         $url = self::getUrl('scrape', $type, $millesime, $cvi, true);
         $response = file_get_contents($url);
         $res = json_decode($response);
-        if (!isset($res->error_code) || $res->error_code) {
+        if (isset($res->msg)) {
+            $retour[] = $res->msg;
+        }
+        if (isset($res->exec_output)) {
+            $retour = array_merge($retour, $res->exec_output);
+        }
+        if (isset($res->error_code) && $res->error_code) {
             return $res->error_code;
         }
         return self::SCRAPING_SUCCESS;
     }
 
-    public static function list($type, $millesime, $cvi) {
+    public static function list($type, $millesime, $cvi, array & $retour) {
         $url = self::getUrl('list', $type, $millesime, $cvi, true);
         $response = file_get_contents($url);
         $res = json_decode($response);
+        if (isset($res->msg)) {
+            $retour[] = $res->msg;
+        }
+        if (isset($res->exec_output)) {
+            $retour = array_merge($retour, $res->exec_output);
+        }
         if (isset($res->error_code) && $res->error_code) {
+            return [];
+        }
+        if (!isset($res->files)) {
             return [];
         }
         return $res->files;
@@ -51,9 +66,9 @@ class ProdouaneScrappyClient {
         return $dest_dir_path.'/'.$filename;
     }
 
-    public static function listAndSaveInTmp($type, $millesime, $cvi) {
+    public static function listAndSaveInTmp($type, $millesime, $cvi, array & $retour) {
         $files = [];
-        $urlfiles = self::list($type, $millesime, $cvi);
+        $urlfiles = self::list($type, $millesime, $cvi, $retour);
         foreach($urlfiles as $f) {
             $ftmp = self::saveFile($type, $millesime, $cvi, $f, "/tmp");
             if ($ftmp) {
