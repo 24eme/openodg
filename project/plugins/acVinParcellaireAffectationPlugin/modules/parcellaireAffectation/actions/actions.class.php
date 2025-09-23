@@ -226,11 +226,16 @@ class parcellaireAffectationActions extends sfActions {
             unset($this->destinatairesIncomplete["ETABLISSEMENT-".explode("-", $this->coop)[1]]);
         }
 
+        $this->validation = new ParcellaireAffectationValidation($this->parcellaireAffectation);
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
-    		$this->validation = new ParcellaireAffectationValidation($this->parcellaireAffectation);
     		return sfView::SUCCESS;
     	}
+
+        if (!$this->validation->isValide() && $this->parcellaireAffectation->isTeledeclare() && !$this->getUser()->isAdmin()) {
+
+            return sfView::SUCCESS;
+        }
 
         if($this->coop) {
             $coopDoc = ParcellaireAffectationCoopClient::getInstance()->find($this->coop);

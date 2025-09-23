@@ -413,6 +413,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       return $this->exist('papier') && $this->get('papier') === "1";
   }
 
+  public function isTeledeclare() {
+      return !$this->isPapier();
+  }
+
   public function isAuto() {
       if ($this->exist('papier')) {
           return $this->papier === "1" || $this->papier === 'AUTO';
@@ -554,7 +558,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             $total_superficie_affecte = 0;
             foreach ($parcelle as $parcelleDetail) {
                 $total_superficie_affecte += $parcelleDetail->superficie;
-                if ($total_superficie_affecte > $parcelleDetail->getSuperficieParcellaire()) {
+                if (round($total_superficie_affecte, 4) > round($parcelleDetail->getSuperficieParcellaire(), 4)) {
                     $ret[$parcelleDetail->idu] = ['section' => $parcelleDetail->section, 'numero_parcelle' => $parcelleDetail->numero_parcelle, 'total_superficie_affecte' => $total_superficie_affecte, 'superficie_parcellaire' => $parcelleDetail->getSuperficieParcellaire()];
                     break;
                 }
