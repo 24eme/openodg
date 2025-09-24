@@ -40,67 +40,6 @@ class ParcellaireClient extends acCouchdbClient {
     }
 
     /**
-     * Scrape le site des douanes via le scrapy
-     *
-     * @param string $cvi Le numéro du CVI à scraper
-     *
-     * @throws Exception Si aucun CVI trouvé
-     * @return string Le fichier le plus récent
-     */
-    public function scrapeParcellaireCSV($cvi, $scrappe = true, $contextInstance = null)
-    {
-        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-
-        $status = 0;
-        if ($scrappe && is_file(ProdouaneScrappyClient::getScrapyBin().'/download_parcellaire.sh')) {
-            $status = ProdouaneScrappyClient::exec("download_parcellaire.sh", "$cvi", $output);
-        }
-
-        $scrapydocs = ProdouaneScrappyClient::getDocumentPath($contextInstance);
-        $file = $scrapydocs.'/parcellaire-'.$cvi.'.csv';
-
-        if (empty($file)) {
-            $contextInstance->getLogger()->info("scrapeParcellaireCSV() : pas de fichiers trouvés");
-        }
-        if ($status != 0) {
-            $contextInstance->getLogger()->info("scrapeParcellaireCSV() : retour du scrap problématique : $status");
-        }
-
-        return $file;
-    }
-    /**
-     * Scrape le site des douanes via le scrapy
-     *
-     * @param string $cvi Le numéro du CVI à scraper
-     *
-     * @throws Exception Si aucun CVI trouvé
-     * @return string Le fichier le plus récent
-     */
-    public function scrapeParcellaireJSON($cvi, $contextInstance = null)
-    {
-        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        $scrapydocs = ProdouaneScrappyClient::getDocumentPath();
-        $status = ProdouaneScrappyClient::exec("download_parcellaire_geojson.sh", "$cvi", $output);
-        $file = $scrapydocs.'/cadastre-'.$cvi.'-parcelles.json';
-        $message = "";
-
-        if (empty($file)) {
-            $message = "Les parcelles n'existent pas dans les fichier du Cadastre. ";
-
-            if($status != 0){
-                $message .= "La récupération des geojson n'a pas fonctionné.";
-            }
-        }
-
-        if(!empty($message)){
-            $contextInstance->getLogger()->info("scrapeParcellaireJSON: error: ".$message);
-            throw new Exception($message);
-        }
-
-        return $file;
-    }
-
-    /**
      * Prend un chemin de fichier en paramètre et le transforme en Parcellaire
      * Vérifie que le nouveau parcellaire est différent du courant avant de le
      * sauver
@@ -110,67 +49,57 @@ class ParcellaireClient extends acCouchdbClient {
      *
      * @return bool
      */
-    public function saveParcellaire(Etablissement $etablissement, Array &$errors, $contextInstance = null, $scrapping = true)
+    public function retrieveParcellaireFromScrapy(Etablissement $etablissement, Array &$errors, $contextInstance = null, $scrapping = true)
     {
-        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        $cvi = $etablissement->cvi;
-
-        $fileCsv = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/parcellaire-'.$cvi.'.csv';
-
-        $fileCsv = $this->scrapeParcellaireCSV($cvi, $scrapping, $contextInstance);
-        $filePdf = str_replace('.csv', '-parcellaire.pdf', $fileCsv);
-
-        $lastParcellaire = $this->getLast($etablissement->identifiant);
-        if($filePdf && is_file($filePdf) && $lastParcellaire && $lastParcellaire->hasParcellairePDF() && md5_file($filePdf) == $lastParcellaire->getParcellairePDFMd5()) {
-
-            throw new Exception("Aucune nouvelle version du PDF trouvée (il se peut que le parcellaire de cet opérateur ne soit pas accessible sur prodouane)");
+        $parcellaire = null;
+        $ret = $this->scrapeCVIAndSaveInParcellaire($etablissement, $errors, $parcellaire, $contextInstance, $scrapping);
+        if ($ret) {
+            $ret = $this->loadParcellaireCSV($parcellaire, false, $contextInstance);
         }
-
-        $parcellaire = ParcellaireClient::getInstance()->findOrCreate(
-            $etablissement->identifiant,
-            date('Y-m-d'),
-            'PRODOUANE'
-        );
-
-        $return = false;
-        if (is_file($filePdf)) {
-            $parcellaire->storeAttachment($filePdf, 'application/pdf', "import-cadastre-$cvi-parcelles.pdf");
-            $parcellaire->save();
-            $return = true;
-        }else{
-            $errors['pdf'] = 'Pas de PDF issu du scrapping trouvé';
-        }
-
-        $returncsv = false;
-        if (is_file($fileCsv)) {
-            $parcellaire->storeAttachment($fileCsv, 'text/csv', "import-cadastre-$cvi-parcelles.csv");
-            $parcellaire->save();
-            $returncsv = true;
-        }else{
-            $errors['csv'] = 'Pas de CSV issu du scrapping trouvé ('.$fileCsv.')';
-        }
-
-        $this->loadParcellaireCSV($parcellaire);
-        $parcellaire->save();
-
-        if ($returncsv) {
-            $fileJson = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/cadastre-'.$cvi.'-parcelles.json';
-            if($scrapping) {
-                $fileJson = $this->scrapeParcellaireJSON($cvi, $contextInstance);
-            }
-            if (is_file($fileJson)) {
-                $parcellaire->storeAttachment($fileJson, 'text/json', "import-cadastre-$cvi-parcelles.json");
-                $parcellaire->save();
-            }
-        }
-        return $return || $returncsv;
+        return $ret;
     }
 
-    public function loadParcellaireCSV(Parcellaire $parcellaire, $contextInstance = null) {
+    public function scrapeCVIAndSaveInParcellaire(Etablissement $etablissement, Array &$errors, & $parcellaire, $contextInstance = null, $scrapping = true)
+    {
+        if ($scrapping && ProdouaneScrappyClient::scrape('parcellaire', date('Y'), $etablissement->cvi, $errors) != ProdouaneScrappyClient::SCRAPING_SUCCESS) {
+            return false;
+        }
+        $nb = 0;
+        $files = ProdouaneScrappyClient::listAndSaveInTmp('parcellaire', date('Y'), $etablissement->cvi, $errors);
+        if (!count($files)) {
+            return false;
+        }
+        $parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, date('Y-m-d'),'PRODOUANE');
+
+        foreach ($files as $f) {
+            $i = pathinfo($f);
+            switch ($i['extension']) {
+                case 'pdf':
+                    $parcellaire->storeAttachment($f, 'application/pdf', "import-cadastre-".$etablissement->cvi."-parcelles.pdf");
+                    $parcellaire->save();
+                    $nb++;
+                    break;
+                case 'csv':
+                    $parcellaire->storeAttachment($f, 'text/csv', "import-cadastre-".$etablissement->cvi."-parcelles.csv");
+                    $parcellaire->save();
+                    $nb++;
+                    break;
+                case 'json':
+                    $parcellaire->storeAttachment($f, 'text/json', "import-cadastre-".$etablissement->cvi."-parcelles.json");
+                    $parcellaire->save();
+                    $nb++;
+                    break;
+            }
+            unlink($f);
+        }
+        return ($nb > 1);
+     }
+
+    public function loadParcellaireCSV(Parcellaire $parcellaire, $verbose = false, $contextInstance = null) {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         try {
             $parcellairecsv = ParcellaireCsvFile::getInstance($parcellaire);
-            $parcellairecsv->convert();
+            $parcellairecsv->convert($verbose);
         } catch (Exception $e) {
             $contextInstance->getLogger()->info("loadParcellaireCSV() : exception ".$e->getMessage());
             if (sfConfig::get('sf_environment') == 'dev') {

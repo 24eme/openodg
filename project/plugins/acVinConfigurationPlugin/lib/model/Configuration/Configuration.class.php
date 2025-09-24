@@ -62,17 +62,20 @@ class Configuration extends BaseConfiguration {
 
     public static function slugifyProduitLibelle($s) {
         $s = strtolower($s);
-        $s = str_replace(['é','è', 'ê', 'ë'], 'e', $s);
-        $s = preg_replace('/(s|s$)/', '', $s);
+        $s = str_replace([' et ', ' de ', ' sur '], ' ', $s);
+        $s = str_replace(['é','è', 'ê', 'ë', 'É', 'È', 'Ê', 'Ë'], 'e', $s);
+        $s = preg_replace('/(s$)/', '', $s);
         $s = preg_replace("/[ ]+/", " ", $s);
         $s = trim($s);
         $s = KeyInflector::slugify($s);
         return $s;
     }
 
-    public function identifyProductByLibelle($libelle) {
+    public function identifyProductByLibelle($libelle, $verbose = false) {
         if(array_key_exists($libelle, $this->identifyLibelleProduct)) {
-
+            if ($verbose) {
+                print_r(['cached' => true, 'produit' => $this->identifyLibelleProduct[$libelle]->getHash(), 'libelle' => $libelle]);
+            }
             return $this->identifyLibelleProduct[$libelle];
         }
         $couleurs = array('', ' blanc', ' rouge', ' rosé');
@@ -82,24 +85,51 @@ class Configuration extends BaseConfiguration {
 
             foreach($this->getProduits() as $produit) {
                 $libelleProduitSlugify = self::slugifyProduitLibelle($produit->getLibelleFormat());
-                //echo $libelleSlugify."/".$libelleProduitSlugify."\n";
+                if ($verbose) {
+                    echo "stricte égalité: ".$libelleSlugify."/".$libelleProduitSlugify."\n";
+                }
                 if($libelleSlugify == $libelleProduitSlugify) {
                     $this->identifyLibelleProduct[$libelle] = $produit;
 
                     return $produit;
                 }
             }
+            $matches = [];
             foreach($this->getProduits() as $produit) {
                 $libelleProduitSlugify = self::slugifyProduitLibelle($produit->getLibelleFormat());
-                if(strpos($libelleProduitSlugify, $libelleSlugify) !== false || strpos($libelleSlugify, $libelleProduitSlugify) !== false) {
-                    $this->identifyLibelleProduct[$libelle] = $produit;
-
-                    return $produit;
+                if ($verbose) {
+                    print_r(['strpos dans les deux sens', 'conf produit slug' => $libelleProduitSlugify, 'doc libelle slug' => $libelleSlugify, 'conf original' => $produit->getLibelleFormat(), 'libelle original' => $libelle_couleur]);
                 }
+                $pc = $this->pc_string($libelleProduitSlugify, $libelleSlugify);
+                if($pc) {
+                    $matches[$pc] = $produit;
+                }
+            }
+            if (count($matches)) {
+                $max = max(array_keys($matches));
+                $this->identifyLibelleProduct[$libelle] = $matches[$max];
+                return $matches[$max];
+            }
+            if ($verbose) {
+                print_r(['matches' => $matches]);
             }
         }
 
         return false;
+    }
+
+    private function pc_string($a, $b) {
+        $idx_a = strpos($a, $b);
+        $idx_b = strpos($b, $a);
+        if (($idx_a === false) && ($idx_b === false)) {
+            return 0;
+        }
+        if (($idx_a !== false)) {
+            return strlen($b) / strlen($a);
+        }
+        if (($idx_b !== false)) {
+            return strlen($a) / strlen($b);
+        }
     }
 
     public function identifyProductByCodeDouane($code) {

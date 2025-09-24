@@ -226,9 +226,9 @@ class parcellaireAffectationActions extends sfActions {
             unset($this->destinatairesIncomplete["ETABLISSEMENT-".explode("-", $this->coop)[1]]);
         }
 
+        $this->validation = new ParcellaireAffectationValidation($this->parcellaireAffectation);
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
-    		$this->validation = new ParcellaireAffectationValidation($this->parcellaireAffectation);
     		return sfView::SUCCESS;
     	}
 
