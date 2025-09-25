@@ -294,14 +294,13 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) {
-        return $this->getProduitsByCepageFromHabilitationOrConfiguration($cepage);
-            if (!$this->cache_produitsbycepagefromhabilitationorconfiguration) {
-                $this->cache_produitsbycepagefromhabilitationorconfiguration = array();
-            }
-            if(!isset($this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage])) {
-                $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage] = $this->getProduitsByCepageFromHabilitationOrConfiguration($cepage);
-            }
-            return $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage];
+        if (!$this->cache_produitsbycepagefromhabilitationorconfiguration) {
+            $this->cache_produitsbycepagefromhabilitationorconfiguration = array();
+        }
+        if(!isset($this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage])) {
+            $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage] = $this->getProduitsByCepageFromHabilitationOrConfiguration($cepage);
+        }
+        return $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage];
     }
 
     public function getProduitsByCepageFromHabilitationOrConfiguration($cepage) {
