@@ -629,13 +629,15 @@ class Email {
                 $reply_to[Organisme::getInstance()->getEmail()] = Organisme::getInstance()->getNom();
             }
         }
-        if ( ! count($reply_to) ) {
-            $email = $emails->setReplyTo($reply_to);
-        }
+
+        $email = $email->setReplyTo($reply_to);
 
         if (sfConfig::get('app_email_plugin_cc_adresse')) {
-            $cc[sfConfig::get('app_email_plugin_cc_adresse')] = sfConfig::get('app_email_plugin_cc_name');
-            $email = $emails->setCc($cc);
+            $email = $email->setCc([
+                sfConfig::get('app_email_plugin_cc_adresse') => sfConfig::get('app_email_plugin_cc_name')
+            ]);
+        } else {
+            $email = $email->setCc($reply_to);
         }
 
         return $email;

@@ -42,7 +42,7 @@ EOF;
         }
 
         try {
-            $create = ParcellaireClient::getInstance()->saveParcellaire($etablissement, $errors, $contextInstance, !$options['noscrapping']);
+            $create = ParcellaireClient::getInstance()->retrieveParcellaireFromScrapy($etablissement, $errors, $contextInstance, !$options['noscrapping']);
         } catch(Exception $e) {
             $errors[] = $e->getMessage();
             $create = false;

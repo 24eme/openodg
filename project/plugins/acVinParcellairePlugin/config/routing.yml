@@ -54,6 +54,14 @@ parcellaire_import_csv:
     model: Etablissement
     type: object
 
+parcellaire_convert_csv:
+  url: /parcellaire/convert/:parcellaire_id
+  param: { module: parcellaire, action: convert }
+  class: ParcellaireDeclarantRoute
+  options:
+    model: Etablissement
+    type: object
+
 parcellaire_map:
   url: /parcellaire/map/:identifiant
   param: { module: parcellaire, action: map}
