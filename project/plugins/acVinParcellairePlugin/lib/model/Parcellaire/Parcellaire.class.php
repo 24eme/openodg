@@ -106,18 +106,20 @@ class Parcellaire extends BaseParcellaire {
         return $this->idunumbers[$idu]++;
     }
 
-    public function getParcelles() {
+    public function hasParcelles() {
         if ($this->exist('parcelles')) {
-            $p = $this->_get('parcelles');
-            if (count($p)) {
-                return $this->_get('parcelles');
-            }
+            return boolval($this->_get('parcelles'));
         }
+        return boolval(count($this->declaration));
+    }
+
+    public function getParcelles() {
+        if ($this->hasParcelles()) {
+            return $this->_get('parcelles');
+        }
+        $this->add('parcelles');
         foreach($this->declaration->getParcelles() as $dp) {
             $id = $dp->getParcelleId();
-            if (!$this->exist('parcelles') || !$this->_get('parcelles')) {
-                $this->add('parcelles', null);
-            }
             $p = $this->_get('parcelles')->add($id);
             $dp->produit_hash = preg_replace('/\/detail\/.*/', '', $dp->getHash());
             ParcellaireClient::CopyParcelle($p, $dp, true);

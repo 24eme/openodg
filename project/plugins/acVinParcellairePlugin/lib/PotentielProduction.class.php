@@ -77,10 +77,13 @@ class PotentielProduction {
 
     private function getLibellesPotentielProduits() {
         $libelles = [];
+        $cepages = [];
         foreach($this->parcellaire->getParcelles() as $p) {
-            $cepage = $p->getCepage();
+            $cepages[$p->cepage] = 1;
+        }
+        foreach(array_keys($cepages) as $cepage) {
             foreach($this->parcellaire->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
-                $l = preg_replace('/ +$/', '', $prod->formatProduitLibelle("%a% %m% %l% - %co% %ce%"));
+                $l = preg_replace('/ +$/', '', $prod->getLibelleFormat([], "%a% %m% %l% - %co% %ce%"));
                 $libelles[$l] = $prod;
             }
             if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
