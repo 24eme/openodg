@@ -107,15 +107,12 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
             $date = $this->getDate();
         }
         $produits = array();
+        $produits_cepage_conf = $this->getConfiguration($date)->getProduitsByCepage($cepage);
         foreach($this->getProduits() as $p) {
-            foreach($p->getConfig($date)->getProduitsInterGenre() as $c) {
-                $cepages = $c->getCepagesAutorises();
-                if($cepages instanceof acCouchdbJson) {
-                    $cepages = (array) $c->getCepagesAutorises()->toArray(true, false);
-                }
-                if (in_array($cepage, $cepages)) {
-                    $produits[] = $c;
-                    continue;
+            $h = preg_replace('/.*\/appellations\//', '/appellations/', $p->getHash());
+            foreach ($produits_cepage_conf as $c => $cp) {
+                if (strpos($cp->getHash(), $h) !== false) {
+                    $produits[] = $cp;
                 }
             }
         }

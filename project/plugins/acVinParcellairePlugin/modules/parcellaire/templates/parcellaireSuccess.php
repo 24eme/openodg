@@ -47,7 +47,8 @@ $list_idu = [];
     </div>
 <?php endif; ?>
 
-<?php if ($parcellaire && count($parcellaire->getParcelles()) > 0): ?>
+
+<?php if ($parcellaire && $parcellaire->hasParcelles()): ?>
     <?php $parcellesByCommune = $parcellaire->getParcellesByCommune(false);
     $import = $parcellaire->getGeoJson(); ?>
 

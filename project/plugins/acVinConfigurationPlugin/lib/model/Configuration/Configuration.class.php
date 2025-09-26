@@ -11,6 +11,7 @@ class Configuration extends BaseConfiguration {
 
     protected $identifyLibelleProduct = array();
     protected $identifyCodeDouaneProduct = array();
+    protected $cepage2produits = array();
     protected $effervescent_vindebase_active = false;
 
     public function constructId() {
@@ -23,14 +24,24 @@ class Configuration extends BaseConfiguration {
     }
 
     public function getProduitsByCepage($cepage) {
-        $produits = array();
-        foreach($this->getProduits() as $p) {
-            if (in_array($cepage, $p->getCepagesAutorises()->toArray())) {
-                $produits[] = $p;
-                continue;
+        $this->setCepages2Produits();
+        if (!isset($this->cepage2produits[$cepage])) {
+            return [];
+        }
+        return $this->cepage2produits[$cepage];
+    }
+
+    public function setCepages2Produits() {
+        if (!count($this->cepage2produits)){
+            foreach($this->getProduits() as $p) {
+                foreach($p->getCepagesAutorises()->toArray(true, false) as $c) {
+                    if (!isset($this->cepage2produits[$c])) {
+                        $this->cepage2produits[$c] = [];
+                    }
+                    $this->cepage2produits[$c][] = $p;
+                }
             }
         }
-        return $produits;
     }
 
     public function getLieux(){
