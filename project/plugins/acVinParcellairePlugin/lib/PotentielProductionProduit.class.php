@@ -266,7 +266,8 @@ class PotentielProductionProduit {
             }
             $cepage = $p->getCepage();
             $libelles = array();
-            foreach($real_parcellaire->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
+            $prods = $real_parcellaire->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage);
+            foreach($prods as $prod) {
                 $libelles[] = preg_replace('/ +$/', '', $prod->formatProduitLibelle("%a% %m% %l% - %co% %ce%"));
             }
             if (!count($libelles)) {
