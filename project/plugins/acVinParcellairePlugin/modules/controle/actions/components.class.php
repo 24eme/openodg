@@ -10,6 +10,7 @@ class controleComponents extends sfComponents
             return;
         }
         $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->etablissement->identifiant, acCouchdbClient::HYDRATE_JSON);
+        $this->controle = ControleClient::getInstance()->getLast($this->etablissement->identifiant);
     }
 
 }

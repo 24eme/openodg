@@ -149,3 +149,11 @@ parcellaire_export_geojson:
   options:
     model: Parcellaire
     type: object
+
+controle_nouveau:
+  url: /controle/nouveau/:identifiant
+  param: { module: controle, action: nouveau }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
