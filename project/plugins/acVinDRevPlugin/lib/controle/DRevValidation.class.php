@@ -173,12 +173,11 @@ class DRevValidation extends DeclarationLotsValidation
         $volume = 0;
         foreach($this->document->getProduits() as $p) {
             $volume += $p->volume_revendique_total;
+            if ($volume) {
+                return;
+            }
             $superficie += $p->superficie_revendique;
         }
-        if ($volume) {
-            return;
-        }
-
         if($this->document->exist('lots') && count($this->document->lots) && (!$this->document->hasDocumentDouanier() || $superficie)) {
     		return;
     	}
