@@ -28,7 +28,7 @@ class ParcellaireDouaneNatifCsvFile extends ParcellaireCsvFile
     const CSV_MOTIF_DENCEPAGEMENT = 21;
     const CSV_SERVICE_GESTIONNAIRE = 22;
 
-    public function convert()
+    public function convert($verbose = false)
     {
         $configuration = ConfigurationClient::getInstance()->getCurrent();
 

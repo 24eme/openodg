@@ -14,7 +14,7 @@ class DRevConfiguration extends DeclarationConfiguration {
 
     public function getCampagneDebutMois() {
 
-        return 10;
+        return 9;
     }
 
     public function getModuleName() {
