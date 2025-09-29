@@ -16,4 +16,4 @@ all:
   donnees_viticoles:
     regions:
       IGPTARN : "IGPTARN"
-      AOPGAILLAC: "AOPGAILLAC"
+      AOCGAILLAC: "AOCGAILLAC"

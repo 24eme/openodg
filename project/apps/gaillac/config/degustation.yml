@@ -5,7 +5,7 @@ all:
       specificite_lot_pdf: true
       always_identifiant_table: true
       is_acceptable:
-        aopgaillac : true
+        aocgaillac : true
         igptarn : false
       conformite:
         - CONFORME

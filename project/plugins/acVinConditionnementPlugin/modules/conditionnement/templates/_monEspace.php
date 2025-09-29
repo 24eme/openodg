@@ -5,7 +5,7 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($conditionnement && $conditionnement->validation): ?>panel-success<?php elseif($conditionnement): ?>panel-primary<?php else : ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">Déclaration&nbsp;de&nbsp;Conditionnement</h3>
+            <h3 class="panel-title">Déclaration&nbsp;de&nbsp;Conditionnement <?php echo $periode ?></h3>
         </div>
         <?php if ($conditionnement && $conditionnement->validation): ?>
             <div class="panel-body">

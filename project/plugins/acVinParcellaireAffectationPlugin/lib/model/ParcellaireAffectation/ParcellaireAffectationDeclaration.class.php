@@ -70,7 +70,7 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
     public function getParcelles($hashproduitFilter = null) {
         $parcelles = array();
         foreach($this as $keyProduit => $produit) {
-            if ($hashproduitFilter && $keyProduit != $hashproduitFilter) {
+            if ($hashproduitFilter && strpos($hashproduitFilter, '/') !== false && strpos($keyProduit, $hashproduitFilter) === false) {
                 continue;
             }
             foreach ($produit->detail as $parcelle) {
@@ -98,7 +98,6 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
         foreach($this as $hash => $produit) {
             $produits[$hash] = $produit->libelle;
         }
-        ksort($produits);
         return $produits;
     }
 }

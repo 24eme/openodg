@@ -48,7 +48,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $declarant->siret = ($etablissement->getSociete()) ? $etablissement->getSociete()->siret : $etablissement->siret;
 
         $declarant->adresse = $compte->adresse;
-        $declarant->adresse_complementaire = (property_exists($compte, 'adresse_complementaire')) ? $compte->adresse_complementaire : "";
+        $declarant->adresse_complementaire = ($compte) ? (property_exists($compte, 'adresse_complementaire')) ? $compte->adresse_complementaire : "" : "";
         $declarant->commune = $compte->commune;
         $declarant->code_postal = $compte->code_postal;
         $declarant->telephone_bureau = $compte->telephone_bureau;
@@ -108,7 +108,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         }
         $produits = array();
         foreach($this->getProduits() as $p) {
-            foreach($p->getConfig($date)->getProduits() as $c) {
+            foreach($p->getConfig($date)->getProduitsInterGenre() as $c) {
                 $cepages = $c->getCepagesAutorises();
                 if($cepages instanceof acCouchdbJson) {
                     $cepages = (array) $c->getCepagesAutorises()->toArray(true, false);
