@@ -29,4 +29,23 @@ class Controle extends BaseControle
         }
         return $this->parcellaire;
     }
+
+    public function updateParcelles(array $parcellesIds)
+    {
+        $this->remove('parcelles');
+        $this->add('parcelles');
+        if ($parcellesIds) {
+            $parcelles = $this->getParcellaire()->getParcelles();
+            foreach ($parcellesIds as $pId) {
+                if ($parcelles->exist($pId)) {
+                    $this->parcelles->add($pId, $parcelles->get($pId));
+                }
+            }
+        }
+    }
+
+    public function hasParcelle($parcelleId)
+    {
+        return $this->parcelles->exist($parcelleId);
+    }
 }

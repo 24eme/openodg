@@ -14,4 +14,19 @@ class controleActions extends sfActions
 
         return $this->redirect('controle_parcelles', array('id' => $this->controle->_id));
     }
+
+    public function executeParcelles(sfWebRequest $request)
+    {
+    	$this->controle = $this->getRoute()->getControle();
+
+        if(!$this->getUser()->isAdmin()) {
+            throw new sfError403Exception("Accès admin uniquement");
+        }
+
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->controle->updateParcelles($request->getPostParameter('parcelles', []));
+            $this->controle->save();
+            return $this->redirect('controle_parcelles', array('id' => $this->controle->_id));
+        }
+    }
 }
