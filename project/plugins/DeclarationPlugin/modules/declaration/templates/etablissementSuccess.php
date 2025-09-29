@@ -101,6 +101,9 @@
     <?php if(class_exists("ParcellaireAffectationCremantConfiguration") && ParcellaireAffectationCremantConfiguration::getInstance()->isModuleEnabled()): ?>
     <?php include_component('parcellaireAffectationCremant', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireAffectationCremantConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
+    <?php if(class_exists("ControleConfiguration") && ControleConfiguration::getInstance()->isModuleEnabled()): ?>
+    <?php include_component('controle', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ControleConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php endif; ?>
     <?php if(class_exists("IntentionCremantConfiguration") && IntentionCremantConfiguration::getInstance()->isModuleEnabled()): ?>
     <?php include_component('intentionCremant', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : IntentionCremantConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>

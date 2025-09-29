@@ -357,7 +357,7 @@ class ParcellaireClient extends acCouchdbClient {
             if(!isset($res[$parcelle->commune])) {
                 $res[$parcelle->commune] = array();
             }
-            $res[$parcelle->commune][$parcelle->getParcelleId()] = $parcelle;
+            $res[$parcelle->commune][$pid] = $parcelle;
         }
         foreach ($res as $key => $parcelleByCommune) {
             uasort($parcelleByCommune, "ParcellaireClient::sortParcellesForCommune");
