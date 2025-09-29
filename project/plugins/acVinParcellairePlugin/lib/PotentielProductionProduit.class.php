@@ -251,7 +251,8 @@ class PotentielProductionProduit {
         }else{
             $real_parcellaire = $parcellaire2ref->getParcellaire();
         }
-        foreach($parcellaire2ref->getParcelles() as $p) {
+        $synthese_cepage = [];
+        foreach($parcellaire2ref->getParcelles($filter_produit_hash) as $p) {
             if ($filter_produit_hash === true && !$p->produit_hash) {
                 continue;
             }
@@ -265,18 +266,29 @@ class PotentielProductionProduit {
                 continue;
             }
             $cepage = $p->getCepage();
+            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
+                $cepage .= ' - XXXXjeunes vignes';
+            }
+
+            if (!isset($synthese_cepage[$cepage])) {
+                $synthese_cepage[$cepage] = ['superficie_max' => 0, 'parcelles_id' => []];
+            }
+            $synthese_cepage[$cepage]['superficie_max'] += $p->superficie;
+            $synthese_cepage[$cepage]['parcelles_id'][] = $p->getParcelleId();
+        }
+
+        foreach($synthese_cepage as $cepage => $cepages_data) {
             $libelles = array();
-            foreach($real_parcellaire->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
-                $libelles[] = preg_replace('/ +$/', '', $prod->formatProduitLibelle("%a% %m% %l% - %co% %ce%"));
+            $prods = $real_parcellaire->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage);
+            foreach($prods as $prod) {
+                $libelles[] = preg_replace('/ +$/', '', $prod->getLibelleFormat([], "%a% %m% %l% - %co% %ce%"));
             }
             if (!count($libelles)) {
                 $libelles[] = '';
             }
-            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
+            if (strpos($cepage, ' - XXXXjeunes vignes') !== false) {
                 $libelles[] = 'XXXXjeunes vignes';
-                $cepage .= ' - XXXXjeunes vignes';
             }
-            sort($libelles);
             foreach($libelles as $libelle) {
                 if (!isset($synthese[$libelle])) {
                     $synthese[$libelle] = array();
@@ -292,10 +304,10 @@ class PotentielProductionProduit {
                     $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] = 0;
                     $synthese[$libelle]['Cepage'][$cepage]['parcelles_id'] = [];
                 }
-                $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] += $p->superficie;
+                $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] += $cepages_data['superficie_max'];
                 if (strpos($cepage, '- jeunes vignes') === false) {
-                    $synthese[$libelle]['Total']['Total']['superficie_max'] += $p->superficie;
-                    $synthese[$libelle]['Cepage'][$cepage]['parcelles_id'][] = $p->getParcelleId();
+                    $synthese[$libelle]['Total']['Total']['superficie_max'] += $cepages_data['superficie_max'];
+                    $synthese[$libelle]['Cepage'][$cepage]['parcelles_id'] = array_merge($synthese[$libelle]['Cepage'][$cepage]['parcelles_id'], $cepages_data['parcelles_id']);
                 }
             }
         }

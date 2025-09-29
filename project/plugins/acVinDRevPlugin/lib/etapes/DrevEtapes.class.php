@@ -117,6 +117,10 @@ class DrevEtapes extends Etapes
 			return true;
 		}
 
+        if($etape == self::ETAPE_REVENDICATION && DRevConfiguration::getInstance()->hasEtapesAOC()) {
+            return false;
+        }
+
 		if($etape == self::ETAPE_REVENDICATION && !count($doc->getProduitsWithoutLots())) {
 
 			return true;
