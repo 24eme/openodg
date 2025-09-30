@@ -26,7 +26,7 @@ class ProdouaneScrappyClient {
         $response = file_get_contents($url);
 
         if(!$response) {
-            $retour[] = $url . " response is empty";
+            $retour[] = "L'api ne semble pas fonctionner la réponse est vide";
             return 1;
         }
 
@@ -48,7 +48,8 @@ class ProdouaneScrappyClient {
         $response = file_get_contents($url);
 
         if(!$response) {
-            $retour[] = "La réponse pour l'url $url est vide";
+            $retour[] = "L'api ne semble pas fonctionner la réponse est vide";
+            return [];
         }
 
         $res = json_decode($response);
