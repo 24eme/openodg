@@ -26,7 +26,19 @@ class controleActions extends sfActions
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->controle->updateParcelles($request->getPostParameter('parcelles', []));
             $this->controle->save();
-            return $this->redirect('controle_parcelles', array('id' => $this->controle->_id));
+            return $this->redirect('controle_redirectToApp', array('id' => $this->controle->_id));
         }
+    }
+
+    public function executeRedirectToApp(sfWebRequest $request)
+    {
+        $this->controle = $this->getRoute()->getControle();
+        $this->json = json_encode($this->controle->getData(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+    }
+
+    public function executeAppTerrain(sfWebRequest $request)
+    {
+        $this->controle = $this->getRoute()->getControle();
+        $this->setLayout('appLayout');
     }
 }
