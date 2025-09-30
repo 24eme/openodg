@@ -167,3 +167,19 @@ controle_parcelles:
     type:     object
   requirements:
     sf_method: [get, post]
+
+controle_redirectToApp:
+  url: /controle/:id/redirecttoapp
+  param: { module: controle, action: redirectToApp }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+
+controle_appterrain:
+  url: /controle/:id/appterrain
+  param: { module: controle, action: appTerrain }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
