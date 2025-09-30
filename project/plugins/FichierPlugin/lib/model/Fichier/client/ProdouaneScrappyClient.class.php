@@ -22,7 +22,14 @@ class ProdouaneScrappyClient {
 
     public static function scrape($type, $millesime, $cvi, array & $retour) {
         $url = self::getUrl('scrape', $type, $millesime, $cvi, true);
+
         $response = file_get_contents($url);
+
+        if(!$response) {
+            $retour[] = $url . " response is empty";
+            return 1;
+        }
+
         $res = json_decode($response);
         if (isset($res->msg)) {
             $retour[] = $res->msg;
@@ -39,7 +46,13 @@ class ProdouaneScrappyClient {
     public static function list($type, $millesime, $cvi, array & $retour) {
         $url = self::getUrl('list', $type, $millesime, $cvi, true);
         $response = file_get_contents($url);
+
+        if(!$response) {
+            $retour[] = "La réponse pour l'url $url est vide";
+        }
+
         $res = json_decode($response);
+
         if (isset($res->msg)) {
             $retour[] = $res->msg;
         }
