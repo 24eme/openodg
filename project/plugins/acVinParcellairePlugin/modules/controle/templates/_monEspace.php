@@ -4,12 +4,13 @@
 <?php use_helper('Date'); ?>
 
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel">
+    <div class="block_declaration panel <?php if($controle): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
             <h3 class="panel-title">Contrôle <?php echo $periode ?></h3>
         </div>
 
-      <?php if (!$parcellaire): ?>
+
+    <?php if (!$parcellaire): ?>
       <div class="panel-body">
           <p class="explications">Les données parcellaire ne sont pas présente sur la plateforme.<br/><br/>Il n'est donc pas possible de contôler les parcelles de cet opérateur : <a href="<?php echo url_for("parcellaire_declarant", $etablissement) ?>">Voir le parcellaire</a></p>
       </div>
@@ -17,7 +18,7 @@
     <div class="panel-body">
         <p class="explications">Identifier les parcelles à contrôler pour la période <?php echo $periode ?>.</p>
         <div class="actions">
-            <a class="btn btn-block btn-default" href="#">Démarrer le contrôle</a>
+            <a class="btn btn-block btn-default" href="<?php echo url_for('controle_nouveau', array('sf_subject' => $etablissement)) ?>">Démarrer le contrôle</a>
         </div>
     </div>
     <?php endif; ?>

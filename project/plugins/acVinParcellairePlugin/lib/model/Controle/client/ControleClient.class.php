@@ -27,7 +27,7 @@ class ControleClient extends acCouchdbClient
 
     public function findOrCreate($identifiant, $date = null, $type = self::TYPE_COUCHDB)
     {
-        if (! $date) {
+        if (!$date) {
             $date = date('Ymd');
         }
         $controle = $this->findPreviousByIdentifiantAndDate($identifiant, $date);

@@ -67,8 +67,10 @@ class ParcellaireClient extends acCouchdbClient {
         $nb = 0;
         $files = ProdouaneScrappyClient::listAndSaveInTmp('parcellaire', date('Y'), $etablissement->cvi, $errors);
         if (!count($files)) {
+            $errors[] = "Aucun fichier trouvé";
             return false;
         }
+
         $parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, date('Y-m-d'),'PRODOUANE');
 
         foreach ($files as $f) {

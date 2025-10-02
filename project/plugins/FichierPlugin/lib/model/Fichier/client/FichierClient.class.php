@@ -89,16 +89,19 @@ class FichierClient extends acCouchdbClient {
             throw new sfException("$type is not allowed for scrapy file");
         }
 
-        return ProdouaneScrappyClient::scrape($type, $annee, $etablissement->cvi);
+        $retour = [];
 
+        return ProdouaneScrappyClient::scrape($type, $annee, $etablissement->cvi, $retour);
     }
 
     public function getScrapyFiles($etablissement, $type, $annee, $listonly = false, $context = null)
     {
+        $retour = [];
+
         if ($listonly) {
-            return ProdouaneScrappyClient::list($type, $annee, $etablissement->cvi);
+            return ProdouaneScrappyClient::list($type, $annee, $etablissement->cvi, $retour);
         }
-        return ProdouaneScrappyClient::listAndSaveInTmp($type, $annee, $etablissement->cvi);
+        return ProdouaneScrappyClient::listAndSaveInTmp($type, $annee, $etablissement->cvi, $retour);
     }
 
     public function findByArgs($type, $identifiant, $annee)
