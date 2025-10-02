@@ -1,5 +1,18 @@
 <?php use_helper('Float'); ?>
 
+<ol class="breadcrumb">
+    <li><a href="<?php echo url_for('parcellaire'); ?>">Parcellaire</a></li>
+    <li><a href="<?php echo url_for('parcellaire_declarant', $controle->getEtablissementObject()); ?>">Parcellaire de <?php echo $controle->getEtablissementObject()->getNom() ?> (<?php echo $controle->getEtablissementObject()->identifiant ?>) </a></li>
+    <li><span class="text-muted"><?php echo $controle->_id; ?></span></li>
+</ol>
+
+<div class="page-header no-border">
+    <h2>Sélection des parcelles à controler</h2>
+</div>
+
+
+<p>Superficie sélectionnée : <span id="total_surfaces_selectionnees">0</span> <span class="text-muted small"><?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?></span></p>
+
 <form action="<?php echo url_for("controle_parcelles", $controle) ?>" method="post" class="form-horizontal">
 
     <table class="table table-bordered table-condensed table-striped tableParcellaire">
