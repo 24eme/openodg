@@ -168,9 +168,9 @@ controle_parcelles:
   requirements:
     sf_method: [get, post]
 
-controle_redirectToApp:
-  url: /controle/:id/redirecttoapp
-  param: { module: controle, action: redirectToApp }
+controle_saveinlocalstorage:
+  url: /controle/:id/saveinlocalstorage
+  param: { module: controle, action: saveInLocalStorage }
   class: ControleRoute
   options:
     model:    Controle
