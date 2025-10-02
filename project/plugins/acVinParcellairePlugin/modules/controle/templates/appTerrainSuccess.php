@@ -233,10 +233,11 @@
         <table class="table table-bordered table-condensed table-striped tableParcellaire">
             <thead>
                 <tr>
-                    <th class="col-xs-5">Opérateur</th>
+                    <th class="col-xs-4">Opérateur</th>
                     <th class="col-xs-5">Infos</th>
                     <th class="col-xs-1 text-center">Parcelles</th>
-                    <th class="col-xs-1 text-center">Statut</th>
+                    <th class="col-xs-1 text-center">Détail</th>
+                    <th class="col-xs-1 text-center">Audit</th>
                 </tr>
             </thead>
             <tbody>
@@ -253,7 +254,10 @@
                         {{ Object.keys(controle.parcelles).length }}
                     </td>
                     <td class="text-center">
-                        <a href="#" @click.prevent="setControleCourant(key)">A contrôler</a>
+                        <a href="#" @click.prevent="setControleCourant(key)"><span class="glyphicon glyphicon-search"></span></a>
+                    </td>
+                    <td class="text-center">
+                        <a href="#"><span class="glyphicon glyphicon-edit"></span></a>
                     </td>
                 </tr>
             </tbody>
