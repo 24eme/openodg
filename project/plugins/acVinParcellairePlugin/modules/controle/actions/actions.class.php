@@ -38,7 +38,6 @@ class controleActions extends sfActions
 
     public function executeAppTerrain(sfWebRequest $request)
     {
-        $this->controle = $this->getRoute()->getControle();
         $this->setLayout('appLayout');
     }
 }

@@ -177,9 +177,5 @@ controle_saveinlocalstorage:
     type:     object
 
 controle_appterrain:
-  url: /controle/:id/appterrain
+  url: /controle/appterrain
   param: { module: controle, action: appTerrain }
-  class: ControleRoute
-  options:
-    model:    Controle
-    type:     object
