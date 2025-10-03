@@ -1,7 +1,16 @@
 <?php
 class Controle extends BaseControle
 {
+    protected $config = null;
     protected $parcellaire = null;
+
+    public function getConfig()
+    {
+        if (!$this->config) {
+            $this->config = ControleConfiguration::getInstance();
+        }
+        return $this->config;
+    }
 
     protected function initDocuments()
     {

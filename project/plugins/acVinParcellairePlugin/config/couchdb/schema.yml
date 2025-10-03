@@ -203,3 +203,15 @@ Controle:
                   produit_hash: { }
                   source_produit_libelle: { }
                   parcelle_id: {}
+                  controle:
+                    type: collection
+                    definition:
+                      fields:
+                        points:
+                          type: collection
+                          definition:
+                            fields:
+                              '*': {}
+                        observations: {}
+                        superficie_a_retirer: {}
+                        saisie: {}
