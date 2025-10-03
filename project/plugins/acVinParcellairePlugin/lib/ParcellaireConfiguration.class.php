@@ -174,6 +174,9 @@ class ParcellaireConfiguration {
         return $this->configuration['potentiel_de_production'][$k]['synthese_libelle'];
     }
     public function getGroupeCategories($k) {
+        if (!isset($this->configuration['potentiel_de_production'][$k]) || isset($this->configuration['potentiel_de_production'][$k]['categories'])) {
+            return [];
+        }
         return $this->configuration['potentiel_de_production'][$k]['categories'];
     }
     public function getGroupeFilterParcellaireProduitHash($k) {
@@ -195,6 +198,9 @@ class ParcellaireConfiguration {
         return $this->configuration['potentiel_de_production'][$k]['parcellaire2reference'] == 'ParcellaireAffectation';
     }
     public function getGroupeRegles($k) {
+        if (!isset($this->configuration['potentiel_de_production'][$k]) || !isset($this->configuration['potentiel_de_production'][$k]['regles'])) {
+            return [];
+        }
         return $this->configuration['potentiel_de_production'][$k]['regles'];
     }
     public function getHashProduitAffectation($k) {
