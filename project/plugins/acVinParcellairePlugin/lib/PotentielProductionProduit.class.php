@@ -19,6 +19,17 @@ class PotentielProductionProduit {
         $this->produit = $produit_configuration;
         $this->key = ParcellaireConfiguration::getInstance()->getGroupeKeyByProduitConf($produit_configuration);
 
+        if (isset($_GET['verbose'])) {
+            echo "<pre>";
+            echo "CONSTRUCT PotentielProductionProduit:\n";
+            echo "======================\n";
+            echo "key: ".$this->key."\n";
+            echo "libelle: ".$this->libelle.":\n";
+            echo "conf: ".$produit_configuration->getHash()."\n";
+            echo "\n";
+            echo "</pre>";
+        }
+
         $this->initSynthese();
         $this->initEncepagement();
         if (strpos($this->libelle, 'XXX') === false) {
@@ -75,6 +86,13 @@ class PotentielProductionProduit {
     }
 
     public function initPotentiel() {
+        if (isset($_GET['verbose'])) {
+            echo "<pre>";
+            echo "== initPotentiel ==\n";
+            echo "key:".$this->key.":\n";
+            echo "superficie encepagement:".$this->superficie_encepagement.":\n";
+            echo "</pre>";
+        }
 
         if (!$this->key) {
             return;
@@ -92,7 +110,6 @@ class PotentielProductionProduit {
         if (isset($_GET['verbose'])) {
             echo "<pre>";
             echo "règle ".$this->key.":\n";
-            echo "=============================\n";
             echo "</pre>";
         }
         foreach(ParcellaireConfiguration::getInstance()->getGroupeRegles($this->key) as $regle) {
@@ -161,6 +178,13 @@ class PotentielProductionProduit {
             $this->superficie_encepagement = round(array_sum($this->cepages_superficie), 5);
         }
 
+        if (isset($_GET['verbose'])) {
+            echo "<pre>";
+            echo "== Fin init ==\n";
+            echo "key:".$this->key.":\n";
+            echo "=====================\n";
+            echo "</pre>";
+        }
     }
 
     public function getCepagesFromCategorie($cat) {
