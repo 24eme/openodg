@@ -278,8 +278,8 @@
           </div>
 
        </form>
-
-        <button class="btn btn-primary pull-right" @click="saveControle()">Valider</button>
+       <button class="btn btn-default" @click="parcelleCourante = null"><span class="glyphicon glyphicon-chevron-left"></span> Retour</button>
+       <button class="btn btn-primary pull-right" @click="saveControle()">Valider</button>
 
     </div>
 
