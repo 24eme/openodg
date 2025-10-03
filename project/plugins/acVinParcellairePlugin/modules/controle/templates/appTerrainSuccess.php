@@ -1,6 +1,104 @@
 <div id="app">
+    <!-- PAGE AUDIT -->
+    <div v-if="saisieAudit">
+        <div class="well">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">&nbsp;</div>
+                        <div style="margin-bottom: 5px" class="col-xs-9">
+                            <h4 class="strong">{{ controleCourant.declarant.nom }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">
+                            Ids&nbsp;:
+                        </div>
+                        <div style="margin-bottom: 5px" class="col-xs-9">
+                            <span class="text-muted">{{ controleCourant.identifiant }} - CVI : {{ controleCourant.declarant.cvi }} - SIRET : {{ controleCourant.declarant.siret }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">
+                            Adresse&nbsp;:
+                        </div>
+                        <div style="margin-bottom: 5px" class="col-xs-9">
+                            <address style="margin-bottom: 0;">
+                                {{ controleCourant.declarant.adresse }} {{ controleCourant.declarant.code_postal }} {{ controleCourant.declarant.commune }}
+                            </address>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">
+                            Contact&nbsp;:
+                        </div>
+                        <div style="margin-bottom: 5px" class="col-xs-9">
+                            <a href="mailto:{{ controleCourant.declarant.email }}">{{ controleCourant.declarant.email }}</a> / <a href="callto:{{ controleCourant.declarant.telephone_bureau }}">{{ controleCourant.declarant.telephone_bureau }}</a> / <a href="callto:{{ controleCourant.declarant.telephone_mobile }}">{{ controleCourant.declarant.telephone_mobile }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2>Synthèse terrain</h2>
+        <form class="form-horizontal">
 
-    <div v-if="controleCourant && !parcelleCourante">
+           <div class="form-group">
+               <label class="col-sm-2 control-label">Tous les points controlés</label>
+               <div class="col-sm-10">
+                   <label class="radio-inline">
+                     <input type="radio" value="1" v-model="controleCourant.audit.all_points_controles" /> Oui
+                   </label>
+                   <label class="radio-inline">
+                     <input type="radio" value="0" v-model="controleCourant.audit.all_points_controles" /> Non
+                   </label>
+               </div>
+           </div>
+
+           <div class="form-group">
+               <label class="col-sm-2 control-label">Tous les points conformes</label>
+               <div class="col-sm-10">
+                   <label class="radio-inline">
+                     <input type="radio" value="1" v-model="controleCourant.audit.all_points_conformes" /> Oui
+                   </label>
+                   <label class="radio-inline">
+                     <input type="radio" value="0" v-model="controleCourant.audit.all_points_conformes" /> Non
+                   </label>
+               </div>
+           </div>
+
+           <div class="form-group">
+               <label class="col-sm-2 control-label">Observations</label>
+               <div class="col-sm-10">
+                   <textarea rows="5" class="form-control" v-model="controleCourant.audit.observations"></textarea>
+               </div>
+           </div>
+
+           <div class="form-group">
+               <label class="col-sm-2 control-label">Observations Opérateur</label>
+               <div class="col-sm-10">
+                   <textarea rows="3" class="form-control" v-model="controleCourant.audit.operateur_observations"></textarea>
+               </div>
+           </div>
+
+          <div class="form-group">
+              <label class="col-sm-2 control-label">Signature Opérateur</label>
+              <div class="col-sm-5">
+                  <input type="text" class="form-control input-lg" v-model="controleCourant.audit.operateur_signature" />
+              </div>
+          </div>
+
+       </form>
+        <button class="btn btn-default" @click="saisieAudit = null"><span class="glyphicon glyphicon-chevron-left"></span> Retour</button>
+        <button class="btn btn-primary pull-right" @click="saveAudit()">Valider</button>
+    </div>
+    <!-- PAGE OPERATEUR -->
+    <div v-else-if="controleCourant && !parcelleCourante">
         <div class="well">
             <div class="row">
                 <div class="col-xs-12">
@@ -76,8 +174,10 @@
         </table>
 
         <button class="btn btn-default" @click="controleCourant = null"><span class="glyphicon glyphicon-chevron-left"></span> Retour</button>
+        <button class="btn btn-primary pull-right" @click="pageAudit()" :disabled="nbParcellesControlees() != Object.keys(controleCourant.parcelles).length"><span class="glyphicon glyphicon-edit"></span> Saisir l'audit</button>
     </div>
 
+    <!-- PAGE CONTROLE PARCELLE -->
     <div v-else-if="controleCourant && parcelleCourante">
         <div class="well">
             <div class="row">
@@ -183,16 +283,16 @@
 
     </div>
 
+    <!-- PAGE LISTING DES CONTROLES -->
     <div v-else>
         <h2>Opérateurs à contrôler</h2>
         <table class="table table-bordered table-condensed table-striped tableParcellaire">
             <thead>
                 <tr>
-                    <th class="col-xs-4">Opérateur</th>
+                    <th class="col-xs-5">Opérateur</th>
                     <th class="col-xs-5">Infos</th>
                     <th class="col-xs-1 text-center">Parcelles</th>
                     <th class="col-xs-1 text-center">Détail</th>
-                    <th class="col-xs-1 text-center">Audit</th>
                 </tr>
             </thead>
             <tbody>
@@ -210,9 +310,6 @@
                     </td>
                     <td class="text-center">
                         <a href="#" @click.prevent="setControleCourant(key)"><span class="glyphicon glyphicon-search"></span></a>
-                    </td>
-                    <td class="text-center">
-                        <a href="#"><span class="glyphicon glyphicon-edit"></span></a>
                     </td>
                 </tr>
             </tbody>
