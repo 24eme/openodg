@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <h2>Parcelles ({{ Object.keys(controleCourant.parcelles).length }})</h2>
+        <h2>Parcelles contrôlées ({{ nbParcellesControlees() }} / {{ Object.keys(controleCourant.parcelles).length }})</h2>
         <table class="table table-bordered table-condensed table-striped tableParcellaire">
             <thead>
                 <tr>
@@ -60,7 +60,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(parcelle, key) in controleCourant.parcelles">
+                <tr v-for="(parcelle, key) in controleCourant.parcelles" :class="{ 'success': parcelle.controle.saisie == 1 }">
                     <td>{{ parcelle.commune }}</td>
                     <td>{{ parcelle.lieu }}</td>
                     <td class="text-center">{{ parcelle.section }} {{ parcelle.numero_parcelle }}<br /><span class="text-muted">{{ parcelle.parcelle_id }}</span></td>
@@ -69,7 +69,7 @@
                     <td class="text-right">{{ echoFloat(parcelle.superficie) }}</td>
                     <td class="text-center">{{ parcelle.ecart_pieds }} / {{ parcelle.ecart_rang }}</td>
                     <td class="text-center">
-                        <a href="#" @click.prevent="setParcelleCourante(key)">Saisir</a>
+                        <a href="#" @click.prevent="setParcelleCourante(key)"><span v-show="!parcelle.controle.saisie">Saisir</span><span v-show="parcelle.controle.saisie">Voir</span></a>
                     </td>
                 </tr>
             </tbody>
@@ -150,58 +150,14 @@
         </table>
         <h2>Points de contrôle</h2>
         <form class="form-horizontal">
-           <div class="form-group">
-               <label class="col-sm-2 control-label">Point 1</label>
+           <div class="form-group" v-for="(val, key) in parcelleCourante.controle.points" :key="key">
+               <label class="col-sm-2 control-label">{{ key }}</label>
                <div class="col-sm-10">
                    <label class="radio-inline">
-                     <input type="radio" value="C"> C
+                     <input type="radio" value="C" v-model="parcelleCourante.controle.points[key]" /> C
                    </label>
                    <label class="radio-inline">
-                     <input type="radio" value="NC"> NC
-                   </label>
-               </div>
-           </div>
-           <div class="form-group">
-               <label class="col-sm-2 control-label">Point 2</label>
-               <div class="col-sm-10">
-                   <label class="radio-inline">
-                     <input type="radio" value="C"> C
-                   </label>
-                   <label class="radio-inline">
-                     <input type="radio" value="NC"> NC
-                   </label>
-               </div>
-           </div>
-           <div class="form-group">
-               <label class="col-sm-2 control-label">Point 3</label>
-               <div class="col-sm-10">
-                   <label class="radio-inline">
-                     <input type="radio" value="C"> C
-                   </label>
-                   <label class="radio-inline">
-                     <input type="radio" value="NC"> NC
-                   </label>
-               </div>
-           </div>
-           <div class="form-group">
-               <label class="col-sm-2 control-label">Point 4</label>
-               <div class="col-sm-10">
-                   <label class="radio-inline">
-                     <input type="radio" value="C"> C
-                   </label>
-                   <label class="radio-inline">
-                     <input type="radio" value="NC"> NC
-                   </label>
-               </div>
-           </div>
-           <div class="form-group">
-               <label class="col-sm-2 control-label">Point 5</label>
-               <div class="col-sm-10">
-                   <label class="radio-inline">
-                     <input type="radio" value="C"> C
-                   </label>
-                   <label class="radio-inline">
-                     <input type="radio" value="NC"> NC
+                     <input type="radio" value="NC" v-model="parcelleCourante.controle.points[key]" /> NC
                    </label>
                </div>
            </div>
@@ -210,21 +166,20 @@
            <div class="form-group">
                <label class="col-sm-2 control-label">Observations</label>
                <div class="col-sm-10">
-                   <textarea rows="4" class="form-control" placeholder="Saisir les observations terrain"></textarea>
+                   <textarea rows="4" class="form-control" placeholder="Saisir les observations terrain" v-model="parcelleCourante.controle.observations"></textarea>
                </div>
            </div>
 
           <div class="form-group">
-              <label class="col-sm-2 control-label">Superficie à retirer (hl)</label>
+              <label class="col-sm-2 control-label">Superficie à retirer (ha)</label>
               <div class="col-sm-10">
-                  <input type="text" class="form-control" />
+                  <input type="text" class="form-control" v-model="parcelleCourante.controle.superficie_a_retirer" />
               </div>
           </div>
 
        </form>
 
-        <button class="btn btn-default" @click="parcelleCourante = null"><span class="glyphicon glyphicon-chevron-left"></span> Retour</button>
-        <button class="btn btn-primary pull-right">Sauvegarder</button>
+        <button class="btn btn-primary pull-right" @click="saveControle()">Valider</button>
 
     </div>
 
@@ -290,9 +245,28 @@ createApp({
     setParcelleCourante(id) {
         this.parcelleCourante = (this.controleCourant)? this.controleCourant.parcelles[id] : null;
     },
+    saveControle() {
+        this.parcelleCourante.controle.saisie = 1;
+        this.parcelleCourante = null
+    },
+    nbParcellesControlees() {
+        return (Object.keys(this.controleCourant.parcelles || {}).filter(k => this.controleCourant.parcelles[k].controle.saisie == 1)).length;
+    },
     echoFloat(val, nbDecimal = 5) {
         return val ? Number(val).toFixed(nbDecimal) : '';
     },
+  },
+  watch: {
+    controleCourant: {
+      handler(newVal) {
+        if (newVal) {
+            const controles = JSON.parse(localStorage.getItem("controles")) || {};
+            controles[newVal._id] = newVal;
+            localStorage.setItem("controles", JSON.stringify(controles));
+        }
+      },
+      deep: true
+    }
   },
 }).mount("#app");
 

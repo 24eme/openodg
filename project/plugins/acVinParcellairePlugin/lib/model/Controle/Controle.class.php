@@ -1,7 +1,16 @@
 <?php
 class Controle extends BaseControle
 {
+    protected $config = null;
     protected $parcellaire = null;
+
+    public function getConfig()
+    {
+        if (!$this->config) {
+            $this->config = ControleConfiguration::getInstance();
+        }
+        return $this->config;
+    }
 
     protected function initDocuments()
     {
@@ -38,10 +47,20 @@ class Controle extends BaseControle
             $parcelles = $this->getParcellaire()->getParcelles();
             foreach ($parcellesIds as $pId) {
                 if ($parcelles->exist($pId)) {
-                    $this->parcelles->add($pId, $parcelles->get($pId));
+                    $this->setPointsControle($this->parcelles->add($pId, $parcelles->get($pId)));
                 }
             }
         }
+    }
+
+    public function setPointsControle($parcelle)
+    {
+        $conf = $this->getConfig();
+        $points = $conf->getFromConfig('points') ?? [];
+        foreach ($points as $point) {
+            $parcelle->controle->points->add($point, null);
+        }
+        return $parcelle;
     }
 
     public function hasParcelle($parcelleId)

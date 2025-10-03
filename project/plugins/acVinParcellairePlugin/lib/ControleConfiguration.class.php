@@ -16,22 +16,8 @@ class ControleConfiguration extends DeclarationConfiguration {
         return 'controle';
     }
 
-    private function getFromConfig($type, $value = null)
+    public function getFromConfig($type)
     {
-      $items = sfConfig::get('app_controle_'.$type);
-      $entries = array();
-      foreach ($items as $item) {
-          $entry = new stdClass();
-          $entry->id = $item;
-          $entry->text = $item;
-          $entries[] = $entry;
-      }
-      if ($value) {
-          $entry = new stdClass();
-          $entry->id = $value;
-          $entry->text = $value;
-          $entries[] = $entry;
-      }
-      return $entries;
+      return sfConfig::get('app_controle_'.$type);
     }
 }
