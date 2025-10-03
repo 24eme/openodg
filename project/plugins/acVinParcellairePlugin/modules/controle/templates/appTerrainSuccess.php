@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <h2>Parcelles ({{ Object.keys(controleCourant.parcelles).length }})</h2>
+        <h2>Parcelles contrôlées ({{ nbParcellesControlees() }} / {{ Object.keys(controleCourant.parcelles).length }})</h2>
         <table class="table table-bordered table-condensed table-striped tableParcellaire">
             <thead>
                 <tr>
@@ -60,7 +60,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(parcelle, key) in controleCourant.parcelles">
+                <tr v-for="(parcelle, key) in controleCourant.parcelles" :class="{ 'success': parcelle.controle.saisie == 1 }">
                     <td>{{ parcelle.commune }}</td>
                     <td>{{ parcelle.lieu }}</td>
                     <td class="text-center">{{ parcelle.section }} {{ parcelle.numero_parcelle }}<br /><span class="text-muted">{{ parcelle.parcelle_id }}</span></td>
@@ -69,7 +69,7 @@
                     <td class="text-right">{{ echoFloat(parcelle.superficie) }}</td>
                     <td class="text-center">{{ parcelle.ecart_pieds }} / {{ parcelle.ecart_rang }}</td>
                     <td class="text-center">
-                        <a href="#" @click.prevent="setParcelleCourante(key)">Saisir</a>
+                        <a href="#" @click.prevent="setParcelleCourante(key)"><span v-show="!parcelle.controle.saisie">Saisir</span><span v-show="parcelle.controle.saisie">Voir</span></a>
                     </td>
                 </tr>
             </tbody>
