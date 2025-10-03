@@ -296,7 +296,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(controle, key) in controles">
+                <tr v-for="(controle, key) in controles" :class="{ 'success': controle.audit.saisie == 1 }">
                     <td>
                         <strong>{{ controle.declarant.nom }}</strong> <span class="small">{{ controle.identifiant }}</span><br />
                         <span class="text-muted">CVI {{ controle.declarant.cvi }} - SIRET {{ controle.declarant.siret }}</span>
