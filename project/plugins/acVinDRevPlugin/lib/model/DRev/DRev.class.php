@@ -2739,7 +2739,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $p->add('volume_revendique_seuil', floatval($produit['volume_max']));
-            $this->save();
         }
         return $ret;
 
