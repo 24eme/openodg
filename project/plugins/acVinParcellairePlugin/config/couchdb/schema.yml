@@ -172,6 +172,16 @@ Controle:
             telephone_mobile: { }
             fax: { }
             email: { }
+      audit:
+        type: collection
+        definition:
+          fields:
+            all_points_controles: {}
+            all_points_conformes: {}
+            observations: {}
+            operateur_observations: {}
+            operateur_signature: {}
+            saisie: {}
       parcelles:
         type: collection
         definition:

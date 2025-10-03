@@ -231,7 +231,8 @@ createApp({
     return {
       controles: {},
       controleCourant: null,
-      parcelleCourante: null
+      parcelleCourante: null,
+      saisieAudit: null,
     };
   },
   mounted() {
@@ -248,6 +249,22 @@ createApp({
     saveControle() {
         this.parcelleCourante.controle.saisie = 1;
         this.parcelleCourante = null
+    },
+    saveAudit() {
+        this.controleCourant.audit.saisie = 1;
+        this.saisieAudit = null
+    },
+    pageAudit() {
+        if (!this.controleCourant.audit.saisie) {
+            let obs = '';
+            for (let p in this.controleCourant.parcelles) {
+                if (this.controleCourant.parcelles[p].controle.observations) {
+                    obs += this.controleCourant.parcelles[p].parcelle_id+' : '+this.controleCourant.parcelles[p].controle.observations+'\n';
+                }
+            }
+            this.controleCourant.audit.observations = obs;
+        }
+        this.saisieAudit = 1
     },
     nbParcellesControlees() {
         return (Object.keys(this.controleCourant.parcelles || {}).filter(k => this.controleCourant.parcelles[k].controle.saisie == 1)).length;
