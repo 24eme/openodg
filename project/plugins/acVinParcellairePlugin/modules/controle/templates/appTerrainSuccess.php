@@ -254,10 +254,10 @@
                <label class="col-sm-2 control-label">{{ key }}</label>
                <div class="col-sm-10">
                    <label class="radio-inline">
-                     <input type="radio" value="C" v-model="parcelleCourante.controle.points[key]" /> C
+                     <input type="radio" value="C" v-model="parcelleCourante.controle.points[key]" /> Conforme
                    </label>
                    <label class="radio-inline">
-                     <input type="radio" value="NC" v-model="parcelleCourante.controle.points[key]" /> NC
+                     <input type="radio" value="NC" v-model="parcelleCourante.controle.points[key]" /> Non Conforme
                    </label>
                </div>
            </div>
