@@ -1,5 +1,18 @@
 <?php use_helper('Float'); ?>
 
+<ol class="breadcrumb">
+    <li><a href="<?php echo url_for('parcellaire'); ?>">Parcellaire</a></li>
+    <li><a href="<?php echo url_for('parcellaire_declarant', $controle->getEtablissementObject()); ?>">Parcellaire de <?php echo $controle->getEtablissementObject()->getNom() ?> (<?php echo $controle->getEtablissementObject()->identifiant ?>) </a></li>
+    <li><span class="text-muted"><?php echo $controle->_id; ?></span></li>
+</ol>
+
+<div class="page-header no-border">
+    <h2>Sélection des parcelles à controler</h2>
+</div>
+
+
+<p>Superficie sélectionnée : <span id="total_surfaces_selectionnees">0</span> <span class="text-muted small"><?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?></span></p>
+
 <form action="<?php echo url_for("controle_parcelles", $controle) ?>" method="post" class="form-horizontal">
 
     <table class="table table-bordered table-condensed table-striped tableParcellaire">
@@ -25,13 +38,13 @@
                 <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
                 <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
                 <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie(ParcellaireConfiguration::getInstance()->isAres()? ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE : null)); ?></td>
-                <td class="text-center"><input <?php if ($controle->hasParcelle($parcelle->getParcelleId())): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getParcelleId() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
+                <td class="text-center"><input <?php if ($controle->hasParcelle($parcelle->getParcelleId())): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" data-superficie="<?php echo $parcelle->getSuperficie(ParcellaireConfiguration::getInstance()->isAres()? ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE : null) ?>" value="<?php echo $parcelle->getParcelleId() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
             </tr>
         <?php  endforeach; ?>
         </tbody>
     </table>
     <div class="row row-margin row-button">
         <div class="col-xs-8"></div>
-        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Continuer <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Sauvegarder</div>
     </div>
 </form>
