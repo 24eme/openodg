@@ -23,27 +23,25 @@
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
     </head>
-    <body role="document">
+    <body role="document" style="background: none;">
 
         <div id="header">
-            <?php echo include_partial('global/header'); ?>
-
-            <?php include_component('global', 'nav'); ?>
+            <header class="container" role="banner" style="background:none;">
+                <div id="logo">
+                  <a href="/" title="Plateforme des Syndicats des Vins de Provence | Retour à la page d'accueil">
+                      <img src="/images/logo_provence.png?20241029" alt="Syndicats des Vins de Provence">
+                  </a>
+              </div>
+              <div id="titre">
+                  <h1 style="color:red; text-align:center;">VUEJS APP CONTROLE TERRAIN</h1>
+              </div>
+            </header>
         </div>
 
-        <section id="content" class="container">
-                  <div><p style="color:red; text-align:center; font-weight: bold;">VUEJS APP</p></div>
-
+        <section id="" class="container">
                 <?php echo $sf_content ?>
         </section>
 
-        <footer id="footer" class="container hidden-xs hidden-sm text-center" role="contentinfo">
-            <nav role="navigation">
-                <ul class="list-inline" style="font-size: 13px;">
-                    <li><a href="<?php echo url_for('contact') ?>">Contact</a></li>
-                    <li><a href="<?php echo url_for('mentions_legales') ?>">Mentions légales</a></li>
-                </ul>
-            </nav>
-        </footer>
+
     </body>
 </html>
