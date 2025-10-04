@@ -1,7 +1,113 @@
 <script>
-    var listingTemplate = { template: "<?php echo str_replace(['"', "\n"], ['\"', ""], get_partial('controle/terrainListing')) ?>"}
-    var operateurTemplate = { template: "<?php echo str_replace(['"', "\n"], ['\"', ""], get_partial('controle/terrainOperateur')) ?>" }
-    var parcelleTemplate = { template: "<?php echo str_replace(['"', "\n"], ['\"', ""], get_partial('controle/terrainParcelle')) ?>" }
-    var auditTemplate = { template: "<?php echo str_replace(['"', "\n"], ['\"', ""], get_partial('controle/terrainAudit')) ?>" }
+    const { createWebHashHistory, createRouter, useRoute, useRouter } = VueRouter
+    const { createApp } = Vue;
+
+    const templates = [];
+
+    <?php foreach(['listing', 'operateur', 'parcelle', 'audit'] as $template): ?>
+        templates["<?php echo $template ?>"] = { template: "<?php echo str_replace(['"', "\n"], ['\"', ""], get_partial('controle/terrain'.ucfirst($template))) ?>" }
+    <?php endforeach; ?>
+
+    const controles = JSON.parse(localStorage.getItem("controles")) || {}
+
+    const routes = [
+      { path: '/', name: "listing", component: templates.listing },
+      { path: '/:id', name: "operateur", component: templates.operateur },
+      { path: '/:id/audit', name: "audit", component: templates.audit },
+      { path: '/:id/parcelle/:parcelle', name: "parcelle", component: templates.parcelle },
+    ]
+
+    const router = createRouter({
+      history: createWebHashHistory(),
+      routes,
+    })
+
+    const app = createApp({
+        data() {
+          return {
+              controles: controles,
+            }
+        },
+        template: '<RouterView />',
+        watch: {
+          controles: {
+            handler(newControles) {
+              console.log(newControles)
+              if (newControles) {
+                  localStorage.setItem("controles", JSON.stringify(newControles));
+              }
+            },
+            deep: true
+          }
+        },
+      });
+    app.use(router)
+    app.mount('#content')
+
+    templates.listing.data = function() {
+        return {
+          controles: controles
+        }
+    };
+
+    templates.operateur.data = function() {
+        const route = useRoute()
+
+        return {
+          controleCourant: controles[route.params.id]
+        }
+    };
+    templates.operateur.methods = {
+      nbParcellesControlees() {
+        return (Object.keys(this.controleCourant.parcelles || {}).filter(k => this.controleCourant.parcelles[k].controle.saisie == 1)).length;
+      },
+      startAudit() {
+        router.push({ name: 'audit', params: { id: this.controleCourant._id } })
+      },
+      echoFloat(val, nbDecimal = 5) {
+        return val ? Number(val).toFixed(nbDecimal) : '';
+      }
+    };
+
+    templates.parcelle.data = function() {
+        const route = useRoute()
+
+        return {
+          controleCourant: controles[route.params.id],
+          parcelleCourante: controles[route.params.id].parcelles[route.params.parcelle]
+        }
+    };
+    templates.parcelle.methods = {
+      save() {
+        this.parcelleCourante.controle.saisie = 1;
+        router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+      },
+      echoFloat(val, nbDecimal = 5) {
+        return val ? Number(val).toFixed(nbDecimal) : '';
+      }
+    };
+
+    templates.audit.data = function() {
+        const route = useRoute()
+        if(!controles[route.params.id].audit) {
+          controles[route.params.id].audit = {}
+        }
+        if (!controles[route.params.id].audit.saisie) {
+            let obs = '';
+            for (let p in controles[route.params.id].parcelles) {
+                if (controles[route.params.id].parcelles[p].controle.observations) {
+                    obs += controles[route.params.id].parcelles[p].parcelle_id+' : '+controles[route.params.id].parcelles[p].controle.observations+'\n';
+                }
+            }
+            controles[route.params.id].audit.observations = obs;
+        }
+        return {
+          controleCourant: controles[route.params.id]
+        }
+    };
+    templates.audit.methods = {
+      save() {
+        router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+      }
+    };
 </script>
-<script src="/js/appterrain.js"></script>
