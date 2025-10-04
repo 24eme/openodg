@@ -21,7 +21,7 @@
         <link href="/css/style_provence.css?201803141452" rel="stylesheet" type="text/css">
 
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-
+        <script src="/js/lib/vue/vue-router.global.js"></script>
     </head>
     <body role="document" style="background: none;">
 
@@ -38,10 +38,8 @@
             </header>
         </div>
 
-        <section id="" class="container">
-                <?php echo $sf_content ?>
+        <section id="content" class="container">
+            <?php echo $sf_content ?>
         </section>
-
-
     </body>
 </html>
