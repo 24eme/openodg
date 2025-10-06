@@ -370,7 +370,7 @@ class PotentielProductionProduit {
         if (!$this->key) {
             return null;
         }
-        return ParcellaireConfiguration::getInstance()->getHashProduitAffectation($this->key);
+        return ParcellaireConfiguration::getInstance()->getConfProduithashByKey($this->key);
     }
 
     public function getProduitHash() {
