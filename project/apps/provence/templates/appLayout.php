@@ -20,8 +20,8 @@
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
         <link href="/css/style_provence.css?201803141452" rel="stylesheet" type="text/css">
 
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <script src="/js/lib/vue/vue-router.global.js"></script>
+        <script src="/js/lib/vue/vue.global.prod.js"></script>
+        <script src="/js/lib/vue/vue-router.global.prod.js"></script>
     </head>
     <body role="document" style="background: none;">
 
