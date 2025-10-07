@@ -162,12 +162,24 @@ class ParcellaireConfiguration {
         }
         if (isset($this->configuration['potentiel_de_production'])) {
           foreach($this->configuration['potentiel_de_production'] as $k => $pp) {
-            if (isset($pp['produit_hash']) && strpos($prod->getHash(), $pp['produit_hash']) !== false) {
+            $index = strpos($prod->getHash(), $pp['produit_hash']);
+            if (isset($pp['produit_hash']) && $index !== false) {
+                $this->configuration['potentiel_de_production'][$k]['conf_produit_hash'] = str_replace('/declaration/', '', substr($prod->getHash(), 0, $index + strlen($pp['produit_hash'])));
                 return $k;
             }
           }
         }
         return null;
+    }
+
+    public function getConfProduithashByKey($k) {
+        if (!$k) {
+            return null;
+        }
+        if (!isset($this->configuration['potentiel_de_production'][$k])) {
+            throw new sfException('call getGroupeKeyByProduitConf before');
+        }
+        return $this->configuration['potentiel_de_production'][$k]['conf_produit_hash'];
     }
 
     public function getGroupeSyntheseLibelle($k) {

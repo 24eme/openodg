@@ -19,6 +19,17 @@ class PotentielProductionProduit {
         $this->produit = $produit_configuration;
         $this->key = ParcellaireConfiguration::getInstance()->getGroupeKeyByProduitConf($produit_configuration);
 
+        if (isset($_GET['verbose'])) {
+            echo "<pre>";
+            echo "CONSTRUCT PotentielProductionProduit:\n";
+            echo "======================\n";
+            echo "key: ".$this->key."\n";
+            echo "libelle: ".$this->libelle.":\n";
+            echo "conf: ".$produit_configuration->getHash()."\n";
+            echo "\n";
+            echo "</pre>";
+        }
+
         $this->initSynthese();
         $this->initEncepagement();
         if (strpos($this->libelle, 'XXX') === false) {
@@ -75,6 +86,13 @@ class PotentielProductionProduit {
     }
 
     public function initPotentiel() {
+        if (isset($_GET['verbose'])) {
+            echo "<pre>";
+            echo "== initPotentiel ==\n";
+            echo "key:".$this->key.":\n";
+            echo "superficie encepagement:".$this->superficie_encepagement.":\n";
+            echo "</pre>";
+        }
 
         if (!$this->key) {
             return;
@@ -92,7 +110,6 @@ class PotentielProductionProduit {
         if (isset($_GET['verbose'])) {
             echo "<pre>";
             echo "règle ".$this->key.":\n";
-            echo "=============================\n";
             echo "</pre>";
         }
         foreach(ParcellaireConfiguration::getInstance()->getGroupeRegles($this->key) as $regle) {
@@ -161,6 +178,13 @@ class PotentielProductionProduit {
             $this->superficie_encepagement = round(array_sum($this->cepages_superficie), 5);
         }
 
+        if (isset($_GET['verbose'])) {
+            echo "<pre>";
+            echo "== Fin init ==\n";
+            echo "key:".$this->key.":\n";
+            echo "=====================\n";
+            echo "</pre>";
+        }
     }
 
     public function getCepagesFromCategorie($cat) {
@@ -251,6 +275,7 @@ class PotentielProductionProduit {
         }else{
             $real_parcellaire = $parcellaire2ref->getParcellaire();
         }
+        $synthese_cepage = [];
         foreach($parcellaire2ref->getParcelles($filter_produit_hash) as $p) {
             if ($filter_produit_hash === true && !$p->produit_hash) {
                 continue;
@@ -265,18 +290,29 @@ class PotentielProductionProduit {
                 continue;
             }
             $cepage = $p->getCepage();
+            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
+                $cepage .= ' - XXXXjeunes vignes';
+            }
+
+            if (!isset($synthese_cepage[$cepage])) {
+                $synthese_cepage[$cepage] = ['superficie_max' => 0, 'parcelles_id' => []];
+            }
+            $synthese_cepage[$cepage]['superficie_max'] += $p->superficie;
+            $synthese_cepage[$cepage]['parcelles_id'][] = $p->getParcelleId();
+        }
+
+        foreach($synthese_cepage as $cepage => $cepages_data) {
             $libelles = array();
-            foreach($real_parcellaire->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
-                $libelles[] = preg_replace('/ +$/', '', $prod->formatProduitLibelle("%a% %m% %l% - %co% %ce%"));
+            $prods = $real_parcellaire->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage);
+            foreach($prods as $prod) {
+                $libelles[] = preg_replace('/ +$/', '', $prod->getLibelleFormat([], "%a% %m% %l% - %co% %ce%"));
             }
             if (!count($libelles)) {
                 $libelles[] = '';
             }
-            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
+            if (strpos($cepage, ' - XXXXjeunes vignes') !== false) {
                 $libelles[] = 'XXXXjeunes vignes';
-                $cepage .= ' - XXXXjeunes vignes';
             }
-            sort($libelles);
             foreach($libelles as $libelle) {
                 if (!isset($synthese[$libelle])) {
                     $synthese[$libelle] = array();
@@ -292,10 +328,10 @@ class PotentielProductionProduit {
                     $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] = 0;
                     $synthese[$libelle]['Cepage'][$cepage]['parcelles_id'] = [];
                 }
-                $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] += $p->superficie;
+                $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] += $cepages_data['superficie_max'];
                 if (strpos($cepage, '- jeunes vignes') === false) {
-                    $synthese[$libelle]['Total']['Total']['superficie_max'] += $p->superficie;
-                    $synthese[$libelle]['Cepage'][$cepage]['parcelles_id'][] = $p->getParcelleId();
+                    $synthese[$libelle]['Total']['Total']['superficie_max'] += $cepages_data['superficie_max'];
+                    $synthese[$libelle]['Cepage'][$cepage]['parcelles_id'] = array_merge($synthese[$libelle]['Cepage'][$cepage]['parcelles_id'], $cepages_data['parcelles_id']);
                 }
             }
         }
@@ -334,7 +370,7 @@ class PotentielProductionProduit {
         if (!$this->key) {
             return null;
         }
-        return ParcellaireConfiguration::getInstance()->getHashProduitAffectation($this->key);
+        return ParcellaireConfiguration::getInstance()->getConfProduithashByKey($this->key);
     }
 
     public function getProduitHash() {
