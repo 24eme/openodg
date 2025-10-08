@@ -87,12 +87,14 @@ class Parcellaire extends BaseParcellaire {
         return $this->getConfiguration()->declaration->getProduits();
     }
 
+    private $cache_declarationparcelles = null;
     public function getDeclarationParcelles() {
-        $parcelles = [];
-        foreach($this->declaration->getParcelles() as $k => $p) {
-            $parcelles[$p->getParcelleId()] = $p;
+        if ($this->cache_declarationparcelles === null ) {
+            foreach($this->declaration->getParcelles() as $k => $p) {
+                $this->cache_declarationparcelles[$p->getParcelleId()] = $p;
+            }
         }
-        return $parcelles;
+        return $this->cache_declarationparcelles;
     }
 
     private $idunumbers = null;
