@@ -174,6 +174,9 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
     public function getLieuDetailForAutocomplete() {
         $lieuxDetail = array();
         foreach ($this->getAppellationNode()->getLieuxEditable() as $libelle) {
+            if(!$libelle) {
+                continue;
+            }
         	$lieuxDetail[] = $libelle;
         }
         $entries = array();
