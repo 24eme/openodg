@@ -157,7 +157,8 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
                         continue;
                     }
                     if ($this->getDocument()->exist($d_hash)) {
-                        $prods = array_merge($prods, $this->getDocument()->get($d_hash)->getProduits($date, $interpro, $departement, $attributes));
+                        $prods2add = $this->getDocument()->get($d_hash)->getProduits($date, $interpro, $departement, $attributes);
+                        $prods = array_merge($prods, $prods2add);
                     }
                 }
             }

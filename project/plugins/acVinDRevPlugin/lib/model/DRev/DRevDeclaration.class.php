@@ -130,10 +130,10 @@ class DRevDeclaration extends BaseDRevDeclaration
         return strcmp($ka, $kb);
     }
 
-	public function getProduitsWithoutLots($region = null){
+	public function getProduitsWithoutLots($region = null, $with_empty = false){
 		if($region){
 
-			return $this->getProduitsWithoutLotsByRegion($region);
+			return $this->getProduitsWithoutLotsByRegion($region, $with_empty);
 		}
 
 		$produits = array();
@@ -142,7 +142,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 			if($produit->getConfig()->isRevendicationParLots()){
 				continue;
 			}
-            if (!$produit->hasVolumeOrSuperficieRevendicables()) {
+            if (! $with_empty && !$produit->hasVolumeOrSuperficieRevendicables()) {
                 continue;
             }
             $produits[$produit->getHash()] = $produit;
@@ -150,7 +150,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 
         //Tri des produits par région pour le récap plus lisible
 		foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
-			$produitsByRegion = $this->getProduitsWithoutLotsByRegion($region);
+			$produitsByRegion = $this->getProduitsWithoutLotsByRegion($region, $with_empty);
 			foreach($produitsByRegion as $hash => $produit) {
 				unset($produits[$hash]);
 			}
@@ -161,14 +161,14 @@ class DRevDeclaration extends BaseDRevDeclaration
 		return $produits;
 	}
 
-	protected function getProduitsWithoutLotsByRegion($region) {
+	protected function getProduitsWithoutLotsByRegion($region, $with_empty = false) {
 		$produits = array();
 		foreach ($this->getProduits($region) as $produit) {
 			if($produit->getConfig()->isRevendicationParLots()){
 
 				continue;
 			}
-            if (!$produit->hasVolumeOrSuperficieRevendicables()) {
+            if (! $with_empty && !$produit->hasVolumeOrSuperficieRevendicables()) {
                 continue;
             }
 			$produits[$produit->getHash()] = $produit;

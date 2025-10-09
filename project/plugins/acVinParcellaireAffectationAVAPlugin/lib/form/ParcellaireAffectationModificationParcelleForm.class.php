@@ -26,23 +26,6 @@ class ParcellaireAffectationModificationParcelleForm extends ParcellaireAffectat
         return $this->getObject()->getAppellation();
     }
 
-
-    public function getLieuDetailForAutocomplete() {
-        $lieuxDetail = array();
-        foreach ($this->getAppellationNode()->getLieuxEditable() as $libelle) {
-            $lieuxDetail[] = $libelle;
-        }
-        $entries = array();
-        foreach($lieuxDetail as $lieu) {
-            $entry = new stdClass();
-            $entry->id = trim($lieu);
-            $entry->text = trim($lieu);
-            $entries[] = $entry;
-        }
-        sort($entries);
-        return $entries;
-    }
-
     public function getLieuCadastralForAutocomplete() {
         $lieuCadastralDetail = array();
 

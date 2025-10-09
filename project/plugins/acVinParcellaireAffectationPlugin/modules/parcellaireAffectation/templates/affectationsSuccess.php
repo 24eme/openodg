@@ -175,7 +175,7 @@ if(isset($coop)):
         </table>
 <?php endif; ?>
     <?php else: ?>
-        <p class="m-5"><i>Pas de parcelles affectables trouvées : voir l'<a href="<?php echo url_for('habilitation_visualisation', $parcellaireAffectation->getHabilitation()); ?>">habilitation</a> ou le <a href="<?php echo url_for('parcellaire_visualisation',  $parcellaireAffectation->getParcellaire()); ?>">parcellaire</a></i></p>
+        <p class="m-5"><i>Pas de parcelles affectables trouvées : voir l'<a href="<?php echo url_for('habilitation_visualisation', ['id' => $parcellaireAffectation->getHabilitation()->_id]); ?>">habilitation</a> ou le <a href="<?php echo url_for('parcellaire_visualisation', ['id' => $parcellaireAffectation->getParcellaire()->_id]); ?>">parcellaire</a></i></p>
     <?php endif; ?>
     <script>
         document.addEventListener('DOMContentLoaded', function (e) {
