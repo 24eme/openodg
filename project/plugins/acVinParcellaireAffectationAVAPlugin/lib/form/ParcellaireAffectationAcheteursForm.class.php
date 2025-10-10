@@ -16,7 +16,7 @@ class ParcellaireAffectationAcheteursForm extends acCouchdbForm {
 
         return sprintf("%s - %s - %s",
             ParcellaireAffectationClient::getAppellationLibelle($cepage->getCouleur()->getLieu()->getAppellation()->getKey()),
-            $lieu_libelle,
+            ($lieu_libelle) ? $lieu_libelle : "Sans lieu-dit",
             $cepage->libelle
         );
     }
