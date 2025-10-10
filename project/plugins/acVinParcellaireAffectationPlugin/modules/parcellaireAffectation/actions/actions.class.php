@@ -128,9 +128,7 @@ class parcellaireAffectationActions extends sfActions {
     	}
 
         $this->hashproduit = $request->getParameter('hashproduit', null);
-        if (!$this->hashproduit) {
-            $this->parcellaireAffectation->updateParcellesAffectation();
-        }
+        $this->parcellaireAffectation->updateParcellesAffectation();
         $this->produits = $this->parcellaireAffectation->getProduits();
         if (!$this->hashproduit && (count($this->produits) >= 1)) {
             $this->hashproduit = array_key_first($this->produits);
