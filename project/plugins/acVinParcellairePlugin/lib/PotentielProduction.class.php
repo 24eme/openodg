@@ -85,6 +85,9 @@ class PotentielProduction {
         }
         foreach(array_keys($cepages) as $cepage) {
             foreach($this->parcellaire->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
+                if (strpos($prod->getHash(), '/VDB/') !== false) {
+                    continue;
+                }
                 $l = preg_replace('/ +$/', '', $prod->getLibelleFormat([], "%a% %m% %l% - %co% %ce%"));
                 $libelles[$l] = $prod;
             }
