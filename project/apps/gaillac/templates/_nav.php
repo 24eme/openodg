@@ -57,7 +57,7 @@
                     <?php endif; ?>
                     <li class="<?php if($route instanceof InterfaceFacturationRoute): ?>active<?php endif; ?>"><a href="<?php if($compte  && !$route instanceof InterfaceFacturationRoute): ?><?php echo url_for('facturation_declarant', $compte); ?><?php endif; ?>">Facturation</a></li>
                     <li class="<?php if($route && preg_match('/compte/', $route->getParameters()['module'])): ?>active<?php endif; ?>"><a tabindex="-1" href="<?php echo url_for("compte_teledeclarant_modification") ?>" title="Mon compte">Mon compte</a></li>
-                    <li><a href="https://login.vins-gaillac.com/cas/login?service=https%3A%2F%2Fwww.vins-gaillac.com%2Fconnexion%2F%3Flegal%3D1">Extranet</a></li>
+                    <!-- <li><a href="https://login.vins-gaillac.com/cas/login?service=https%3A%2F%2Fwww.vins-gaillac.com%2Fconnexion%2F%3Flegal%3D1">Extranet</a></li> -->
                 </ul>
             <?php endif; ?>
             <ul class="nav navbar-nav navbar-right">

@@ -44,11 +44,13 @@ class PotentielProduction {
         }
         $affectation_cache_id = ($affectation) ? $affectation->_id.$affectation->_rev : '';
 
-        if (!isset(self::$potentiels[$parcellaire_cache_id.$affectation_cache_id.$affectation_be_validated])) {
-            self::$potentiels[$parcellaire_cache_id.$affectation_cache_id.$affectation_be_validated] = CacheFunction::cache('model', "PotentielProduction::createPotentielProduction", array($parcellaire_cache_id, $affectation_cache_id, $affectation_be_validated));
+        $cachekey = implode('-', [$parcellaire_cache_id, $affectation_cache_id, $affectation_be_validated]);
+
+        if (!isset(self::$potentiels[$cachekey])) {
+            self::$potentiels[$cachekey] = CacheFunction::cache('model', "PotentielProduction::createPotentielProduction", array($parcellaire_cache_id, $affectation_cache_id, $affectation_be_validated));
         }
 
-        return self::$potentiels[$parcellaire_cache_id.$affectation_cache_id.$affectation_be_validated];
+        return self::$potentiels[$cachekey];
     }
 
     public static function createPotentielProduction($parcellaire_id, $affectation_id, $affectation_be_validated = true) {
@@ -83,6 +85,9 @@ class PotentielProduction {
         }
         foreach(array_keys($cepages) as $cepage) {
             foreach($this->parcellaire->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
+                if (strpos($prod->getHash(), '/VDB/') !== false) {
+                    continue;
+                }
                 $l = preg_replace('/ +$/', '', $prod->getLibelleFormat([], "%a% %m% %l% - %co% %ce%"));
                 $libelles[$l] = $prod;
             }
