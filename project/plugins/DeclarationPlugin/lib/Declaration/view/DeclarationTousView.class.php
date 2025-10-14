@@ -46,4 +46,14 @@ class DeclarationTousView extends acCouchdbView
                             ->reduce(false)
                             ->getView($this->design, $this->view);
     }
+
+    public function getByTypeCampagne($typeDoc, $campagne, $region = "") {
+        if (!$region) {
+            $region = self::FILTER_KEY_DEFAULT_REGION;
+        }
+        return $this->client->startkey([$region, $typeDoc, "".$campagne])
+                            ->endkey(array($region, $typeDoc, "".$campagne, array()))
+                            ->reduce(false)
+                            ->getView($this->design, $this->view);
+    }
 }

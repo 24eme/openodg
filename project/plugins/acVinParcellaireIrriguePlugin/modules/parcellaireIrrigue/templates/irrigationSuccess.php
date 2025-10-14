@@ -106,7 +106,7 @@
         <div class="col-xs-4"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireIrrigue->identifiant, 'campagne' => $parcellaireIrrigue->campagne)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
             <?php if($parcellaireIrrigue->isValidee()): ?>
-                <a href="<?php echo url_for('parcellaireirrigue_export_pdf', $parcellaireIrrigue) ?>" class="btn btn-success">
+                <a href="<?php echo url_for('parcellaireirrigue_export_pdf_last',array('identifiant' => $parcellaireIrrigue->identifiant, 'periode' => $parcellaireIrrigue->periode)) ?>" class="btn btn-success">
                     <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
                 </a>
             <?php endif; ?>
@@ -115,7 +115,6 @@
     </div>
     <?php include_partial('parcellaireIrrigue/popupConfirmationValidation', array('form' => $form)); ?>
 </form>
-</div>
 
 <?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
 <script type="text/javascript">

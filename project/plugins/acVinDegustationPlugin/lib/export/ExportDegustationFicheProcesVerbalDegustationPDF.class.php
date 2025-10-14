@@ -1,16 +1,9 @@
 <?php
 
-class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportPDF {
-
-    protected $degustation = null;
+class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportDegustationPDF {
 
     public function __construct($degustation, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
-        $this->degustation = $degustation;
-
-        if (!$filename) {
-            $filename = $this->getFileName(true);
-        }
-        parent::__construct($type, $use_cache, $file_dir, $filename);
+        parent::__construct($degustation, $type, $use_cache, $file_dir, $filename);
     }
 
     public function create() {
@@ -79,11 +72,6 @@ class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportPDF {
     protected function getFooterText() {
         $footer= sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
         return $footer;
-    }
-
-    protected function getConfig() {
-
-        return new ExportDegustationFicheProcesVerbalDegustationPDFConfig();
     }
 
     public function getFileName($with_rev = false) {

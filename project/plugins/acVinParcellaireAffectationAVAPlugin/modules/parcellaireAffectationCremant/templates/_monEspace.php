@@ -53,8 +53,8 @@
                     </p>
                 <?php endif; ?>
             </div>
-            <div class="panel-bottom-documents <?php if(date('Y-m-d') > DRevConfiguration::getInstance()->getDateOuvertureFin()): ?> panel-bottom-documents-demarrage <?php endif; ?> ">
-                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'drev')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+            <div class="panel-bottom-documents <?php if(date('Y-m-d') > ParcellaireAffectationCremantConfiguration::getInstance()->getDateOuvertureFin()): ?> panel-bottom-documents-demarrage <?php endif; ?>">
+                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireaffectationcremant')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
             </div>
         <?php else:  ?>
         <div class="panel-body">

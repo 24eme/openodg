@@ -118,13 +118,22 @@ class DRevDeclaration extends BaseDRevDeclaration
                 $produits[$items->getHash()] = $items;
             }
         }
+        uksort($produits, "DRevDeclaration::sortProduitHash");
         return $produits;
     }
 
-	public function getProduitsWithoutLots($region = null){
+    public static function sortProduitHash($ka, $kb) {
+        $ka = str_replace('/MOU/', '/VMOU/', $ka);
+        $ka = str_replace('/MEFF/', '/VEFF/', $ka);
+        $kb = str_replace('/MOU/', '/VMOU/', $kb);
+        $kb = str_replace('/MEFF/', '/VEFF/', $kb);
+        return strcmp($ka, $kb);
+    }
+
+	public function getProduitsWithoutLots($region = null, $with_empty = false){
 		if($region){
 
-			return $this->getProduitsWithoutLotsByRegion($region);
+			return $this->getProduitsWithoutLotsByRegion($region, $with_empty);
 		}
 
 		$produits = array();
@@ -133,7 +142,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 			if($produit->getConfig()->isRevendicationParLots()){
 				continue;
 			}
-            if (!$produit->hasVolumeOrSuperficieRevendicables()) {
+            if (! $with_empty && !$produit->hasVolumeOrSuperficieRevendicables()) {
                 continue;
             }
             $produits[$produit->getHash()] = $produit;
@@ -141,29 +150,30 @@ class DRevDeclaration extends BaseDRevDeclaration
 
         //Tri des produits par région pour le récap plus lisible
 		foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
-			$produitsByRegion = $this->getProduitsWithoutLotsByRegion($region);
+			$produitsByRegion = $this->getProduitsWithoutLotsByRegion($region, $with_empty);
 			foreach($produitsByRegion as $hash => $produit) {
 				unset($produits[$hash]);
 			}
 			uasort($produitsByRegion, "DrevDeclaration::sortByLibelle");
 			$produits = array_merge($produits,$produitsByRegion);
 		}
-
+        uksort($produits, "DRevDeclaration::sortProduitHash");
 		return $produits;
 	}
 
-	protected function getProduitsWithoutLotsByRegion($region) {
+	protected function getProduitsWithoutLotsByRegion($region, $with_empty = false) {
 		$produits = array();
 		foreach ($this->getProduits($region) as $produit) {
 			if($produit->getConfig()->isRevendicationParLots()){
 
 				continue;
 			}
-            if (!$produit->hasVolumeOrSuperficieRevendicables()) {
+            if (! $with_empty && !$produit->hasVolumeOrSuperficieRevendicables()) {
                 continue;
             }
 			$produits[$produit->getHash()] = $produit;
 		}
+        uksort($produits, "DRevDeclaration::sortProduitHash");
 		return $produits;
 	}
 

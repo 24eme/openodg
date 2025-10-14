@@ -32,7 +32,7 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
      *
      * @throws Exception Si une parcelle n'est pas conforme
      */
-    public function convert()
+    public function convert($verbose = false)
     {
         $configuration = ConfigurationClient::getInstance()->getCurrent();
 
@@ -89,6 +89,8 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
             $libelle = str_replace(['VDB ', 'VCI '], '', $libelle);
             $libelle = str_replace(' PG', ' PINOT GRIS', $libelle);
             $libelle = str_replace('ALSACE ST-HIPPOLYTE', 'ALSACE COMMUNALE SAINT HIPPOLYTE', $libelle);
+            $libelle = str_replace('ALSACE SAINT HIPPOLYTE', 'ALSACE COMMUNALE SAINT HIPPOLYTE', $libelle);
+            $libelle = str_replace('ALSACE RODERN', 'ALSACE COMMUNALE RODERN', $libelle);
             $libelle = str_replace(['VAL LOIRE', 'VDP JARDIN DE FRANCE', 'VINS DE PAYS DU JARDIN DE LA FRANCE'], 'IGP Val de Loire', $libelle);
             $libelle = str_replace('CX ', 'COTEAUX ', $libelle);
             $libelle = str_replace('COTEAUX LAYON', 'COTEAUX DU LAYON', $libelle);
@@ -177,6 +179,10 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
                 $libelle = preg_replace('/ ?\.?(B|RS|R|N|G)$/', '', $libelle);
                 $produit = $configuration->identifyProductByLibelle($libelle);
                 $nb_reconnaissance++;
+            }
+            if (!$produit && $verbose) {
+                $produit = $configuration->identifyProductByLibelle($libelle, true);
+                print_r(['libelle' => $libelle, 'parcelle' => $parcelle, 'has produit' => ($produit)]);exit;
             }
 
             $hash = ($produit) ? $produit->getHash() : null ;

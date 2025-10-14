@@ -41,7 +41,6 @@
     </div>
 
     <?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation, 'coop' => $coop)); ?>
-
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="row">
@@ -70,7 +69,7 @@
             <?php if(count($destinatairesIncomplete)): ?>
             <button type="button" data-toggle="modal" data-target="#parcellaireaffectation-information-incomplete" <?php if (isset($validation) && $validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Terminer votre déclaration</button>
             <?php else: ?>
-            <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#parcellaireaffectation-confirmation-validation" <?php if (isset($validation) && $validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider votre déclaration</button>
+            <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#parcellaireaffectation-confirmation-validation" <?php if (isset($validation) && $validation->hasErreurs() && $parcellaireAffectation->isTeledeclare() && (!$sf_user->isAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider votre déclaration</button>
             <?php endif; ?>
         </div>
     </div>

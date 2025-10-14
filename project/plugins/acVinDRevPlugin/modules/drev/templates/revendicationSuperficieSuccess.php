@@ -3,8 +3,7 @@
 
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE, 'drev' => $drev, 'ajax' => true)) ?>
-
-    <div class="page-header"><h2>Revendication <?php echo $drev->periode; ?> de la superficie</h2></div>
+    <div class="page-header"><h2><?php if(DrevConfiguration::getInstance()->isSaisieSuperficieRevendique()): ?>Revendication <?php echo $drev->periode; ?> de la superficie<?php else: ?>Produits à revendiquer<?php endif; ?></h2></div>
 
     <?php echo include_partial('global/flash'); ?>
 
@@ -19,15 +18,16 @@
 	<?php if (count($form['produits']) > 0): ?>
     <table class="table table-bordered table-striped table-condensed">
         <thead>
-        	<tr>
+            <tr class="<?php if(!DrevConfiguration::getInstance()->isSaisieSuperficieRevendique()): ?>only_produit hidden<?php endif; ?>">
                 <th class="text-center col-xs-2"></th>
                 <th class="text-center info"><?php echo $drev->getDocumentDouanierTypeLibelle(); ?></th>
                 <th colspan="<?php echo ($can_have_vci) ? 2 : 1 ; ?>" class="text-center">Déclaration de Revendication</th>
             </tr>
             <tr>
-                <th class="text-left col-xs-4"><?php if (count($form['produits']) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
-                <th class="text-center col-xs-2 info"><div style="position: relative;">Superficie récoltée totale<br /><small class="text-muted">(ha)</small> &nbsp;<a title="<?php echo getPointAideText('drev', 'superficie_totale') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: -8px; right: -8px;"><span class="glyphicon glyphicon-question-sign"></span></a></div></th>
-                <th style="position: relative;" class="text-center col-xs-2">Superficie revendiquée<br /><small class="text-muted">(ha)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'superficie_revendique') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="text-left <?php if(DrevConfiguration::getInstance()->isSaisieSuperficieRevendique()): ?>col-xs-4<?php else: ?>col-xs-8<?php endif; ?>"><?php if (count($form['produits']) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?> <?php if(!DrevConfiguration::getInstance()->isSaisieSuperficieRevendique() && $sf_user->isAdmin()): ?><button type="button" class="btn btn-sm btn-link pull-right" style="opacity: 0.25;" onclick="document.querySelectorAll('.only_produit').forEach(function(item) { item.classList.toggle('hidden'); });"><span class="glyphicon glyphicon-eye-open"></span></button><?php endif; ?></th>
+
+                <th class="text-center col-xs-2 info <?php if(!DrevConfiguration::getInstance()->isSaisieSuperficieRevendique()): ?>only_produit hidden<?php endif; ?>"><div style="position: relative;">Superficie récoltée totale<br /><small class="text-muted">(ha)</small> &nbsp;<a title="<?php echo getPointAideText('drev', 'superficie_totale') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: -8px; right: -8px;"><span class="glyphicon glyphicon-question-sign"></span></a></div></th>
+                <th style="position: relative;" class="text-center col-xs-2 <?php if(!DrevConfiguration::getInstance()->isSaisieSuperficieRevendique()): ?>only_produit hidden<?php endif; ?>">Superficie revendiquée<br /><small class="text-muted">(ha)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'superficie_revendique') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <?php if ($can_have_vci): ?>
                 <th style="position: relative;" class="text-center col-xs-2">Possède du stock VCI<br />&nbsp;<a title="<?php echo getPointAideText('drev', 'possede_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <?php endif; ?>
@@ -47,12 +47,12 @@
                         <?php endif; ?>
                         <a class="text-muted transparence-lg show-on-tr-hover pull-right ajax" href="<?php echo url_for('drev_revendication_cepage_suppression', array('id' => $drev->_id, 'hash' => str_replace('/', '__', $produit->getParent()->getHash()))) ?>" onclick='return confirm("Êtes vous sûr de vouloir supprimer le produit <?php echo $produit->getLibelleComplet() ?> de votre DRev <?php echo $drev->periode ?> ?");'><span class="glyphicon glyphicon-remove"></span></a>
                     </td>
-                    <td class="info"><?php echo $formProduit['recolte']['superficie_total']->render(array( 'placeholder' => "ha")) ?></td>
-                    <td><?php echo $formProduit['superficie_revendique']->render(array( 'placeholder' => "ha")) ?></td>
+                    <td class="info <?php if(!DrevConfiguration::getInstance()->isSaisieSuperficieRevendique()): ?>only_produit hidden<?php endif; ?>"><?php echo $formProduit['recolte']['superficie_total']->render(array( 'placeholder' => "ha")) ?></td>
+                    <td class="<?php if(!DrevConfiguration::getInstance()->isSaisieSuperficieRevendique()): ?>only_produit hidden<?php endif; ?>"><?php echo $formProduit['superficie_revendique']->render(array( 'placeholder' => "ha")) ?></td>
                     <?php if ($can_have_vci): ?>
                     <td class="text-center pointer_checkbox"><?php echo (isset($formProduit['has_stock_vci'])) ? $formProduit['has_stock_vci']->render() : ""; ?></td>
                     <?php endif; ?>
-                </tr>
+                    </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
@@ -76,7 +76,7 @@
         <?php endif; ?>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="submit" class="btn btn-primary btn-upper">Valider et continuer</span>  <span class="glyphicon glyphicon-chevron-right"></span></button>
+            <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
         </div>
     </div>
   </form>

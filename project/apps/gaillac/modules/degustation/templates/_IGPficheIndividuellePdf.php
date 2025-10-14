@@ -1,4 +1,5 @@
 <?php use_helper('TemplatingPDF'); ?>
+<?php use_helper('Date'); ?>
 <?php use_helper('Lot') ?>
 <style>
 <?php echo style(); ?>
@@ -62,8 +63,6 @@
 
 
 </style>
-
-
 <div class="encart-nom"><small>NOM & PRENOM DU DEGUSTATEUR : </small>............................................................................................................................................................&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small>SIGNATURE :</small></div>
 
 <table border=0 cellspacing=0 cellpadding=0>
@@ -80,17 +79,17 @@
     <tr class="align-mid">
         <td class="td align-right text-middle-size" colspan="2"><b>Limpidité</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot): ?>
-        <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Oui</td>
-        <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Limite</td>
-        <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
+            <td class="td"><?php if($lot): ?>Oui<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Limite<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Non<?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr class="align-mid">
-        <td class="td align-right text-middle-size" colspan="2"><b>Nuance&nbsp;brune/marron</b>&nbsp;&nbsp;</td>
+        <td class="td align-right text-middle-size" colspan="2"><b>Nuance&nbsp;brune/marron **</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot): ?>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Oui</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Limite</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
+            <td class="td"><?php if($lot): ?>Oui<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Limite<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Non<?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr>
@@ -107,9 +106,9 @@
     <tr class="align-mid">
         <td class="td align-right text-middle-size" colspan="2"><b>Franchise</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot): ?>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Oui</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Limite</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
+            <td class="td"><?php if($lot): ?>Oui<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Limite<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Non<?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr>
@@ -122,9 +121,9 @@
     <tr class="align-mid">
         <td class="td align-right text-middle-size" colspan="2"><b>Intensité</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot): ?>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Forte</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Moyenne</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Faible</td>
+            <td class="td"><?php if($lot): ?>Forte<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Moyenne<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Faible<?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr>
@@ -133,17 +132,17 @@
     <tr class="align-mid">
         <td class="td align-right text-middle-size" colspan="2"><b>Caractère&nbsp;primeur</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot): ?>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Oui</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Limite</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
+            <td class="td"><?php if($lot): ?>Oui<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Limite<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Non<?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr class="align-mid">
         <td class="td align-right text-middle-size" colspan="2"><b>Typicité&nbsp;cépage</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot): ?>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Oui</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Limite</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
+            <td class="td"><?php if($lot): ?>Oui<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Limite<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Non<?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr>
@@ -153,9 +152,9 @@
     <tr class="align-mid">
         <td class="td align-right text-middle-size" colspan="2"><b>Franchise</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot): ?>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Oui</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Limite</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
+            <td class="td"><?php if($lot): ?>Oui<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Limite<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Non<?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr>
@@ -168,31 +167,31 @@
     <tr class="align-mid">
         <td class="td align-right text-middle-size" colspan="2"><b>Equilibre</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot): ?>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Oui</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Limite</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
+            <td class="td"><?php if($lot): ?>Oui<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Limite<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Non<?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr>
         <td class="td align-right" colspan="2">&nbsp;<small><i>Si&nbsp;déséquilibre,&nbsp;précisez&nbsp;:&nbsp;&nbsp;&nbsp;</i></small></td>
         <?php foreach ($lots as $lot): ?>
-            <td class="td align-mid <?php if(! $lot): ?>text-muted<?php endif;?>" colspan="3"><i><small>Acide&nbsp;&nbsp;Plat&nbsp;&nbsp;Amer&nbsp;&nbsp;Astringent&nbsp;&nbsp;Alcooleux</small></i></td>
+            <td class="td align-mid" colspan="3"><?php if($lot): ?><i><small>Acide&nbsp;&nbsp;Plat&nbsp;&nbsp;Amer&nbsp;&nbsp;Astringent&nbsp;&nbsp;Alcooleux</small></i><?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr class="align-mid">
         <td class="td align-right text-middle-size" colspan="2"><b>Volume</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot): ?>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Bon</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Moyen</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Fluide</td>
+            <td class="td"><?php if($lot): ?>Bon<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Moyen<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Fluide<?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr class="align-mid">
         <td class="td align-right text-middle-size" colspan="2"><b>Qualité&nbsp;des&nbsp;tanins</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot): ?>
-            <td class="td <?php if( (! $lot) || ! stripos($lot->getCouleurLibelle(), 'rouge')): ?>text-muted<?php endif;?>">Bon</td>
-            <td class="td <?php if( (! $lot) || ! stripos($lot->getCouleurLibelle(), 'rouge')): ?>text-muted<?php endif;?>">Moyen</td>
-            <td class="td <?php if( (! $lot) || ! stripos($lot->getCouleurLibelle(), 'rouge')): ?>text-muted<?php endif;?>">Mauvais</td>
+            <td class="td"><?php if( ($lot) && stripos($lot->getCouleurLibelle(), 'rouge')): ?>Bon<?php endif;?></td>
+            <td class="td"><?php if( ($lot) && stripos($lot->getCouleurLibelle(), 'rouge')): ?>Moyen<?php endif;?></td>
+            <td class="td"><?php if( ($lot) && stripos($lot->getCouleurLibelle(), 'rouge')): ?>Mauvais<?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr>
@@ -202,17 +201,17 @@
     <tr class="align-mid">
         <td class="td align-right text-middle-size" colspan="2"><b>Caractère&nbsp;primeur</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot): ?>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Oui</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Limite</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
+            <td class="td"><?php if($lot): ?>Oui<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Limite<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Non<?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr class="align-mid">
         <td class="td align-right text-middle-size" colspan="2"><b>Typicité&nbsp;cépage</b>&nbsp;&nbsp;</td>
         <?php foreach ($lots as $lot): ?>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Oui</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Limite</td>
-            <td class="td <?php if(! $lot): ?>text-muted<?php endif;?>">Non</td>
+            <td class="td"><?php if($lot): ?>Oui<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Limite<?php endif;?></td>
+            <td class="td"><?php if($lot): ?>Non<?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr>
@@ -222,17 +221,17 @@
     <tr>
         <td class="td align-mid text-middle-size" colspan="2">&nbsp;<b>AGRÉMENT&nbsp;CÉPAGE&nbsp;*</b></td>
         <?php foreach ($lots as $lot): ?>
-            <td class="td align-mid <?php if(! $lot): ?>text-muted<?php endif;?>" colspan="3">OUI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NON</td>
+            <td class="td align-mid" colspan="3"><?php if($lot): ?>OUI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NON<?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr>
         <td class="td align-mid text-middle-size" colspan="2">&nbsp;<b>AGRÉMENT&nbsp;PRIMEUR&nbsp;*</b></td>
         <?php foreach ($lots as $lot): ?>
-            <td class="td align-mid <?php if(! $lot): ?>text-muted<?php endif;?>" colspan="3">OUI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NON</td>
+            <td class="td align-mid" colspan="3"><?php if($lot):?>OUI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NON<?php endif;?></td>
         <?php endforeach; ?>
     </tr>
     <tr>
-        <td class="td align-mid text-middle-size text-red" colspan="2">&nbsp;<b>C&nbsp;-&nbsp;NCMI&nbsp;-&nbsp;NCMa&nbsp;-&nbsp;NCG&nbsp;</b></td>
+        <td class="td align-mid text-middle-size" colspan="2">&nbsp;<b>C&nbsp;-&nbsp;NCMI&nbsp;-&nbsp;NCMa&nbsp;-&nbsp;NCG&nbsp;</b></td>
         <td class="td align-mid" colspan="3"></td>
         <td class="td align-mid" colspan="3"></td>
         <td class="td align-mid" colspan="3"></td>
@@ -248,5 +247,5 @@
 
 </table>
 <div>
-    <small><i>* Rayer la mention inutile</i></small>
+    <small><i>* Rayer la mention inutile</i></small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small><i>** Brune pour les vins rouges, marron pour les vins blancs</i></small>
 </div>

@@ -57,6 +57,10 @@ class declarationActions extends sfActions {
 
         $doc_type = $matches[1];
 
+        if($doc_type == "MOUVEMENTSFACTURE") {
+            return $this->redirect("facturation_libre_edition", array("id" => $doc_id));
+        }
+
         if ($doc_type == "DEGUSTATION") {
             return $this->redirect('degustation_visualisation', ['id' => $doc_id]);
         }
@@ -159,16 +163,15 @@ class declarationActions extends sfActions {
 
     public function executeExport(sfWebRequest $request) {
 
-        $this->regionParam = null;
-        if($this->getUser() && $this->getUser()->getRegion()){
-          $this->regionParam = $this->getUser()->getRegion();
-        }
-
-        if($this->regionParam){
-          $regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($this->regionParam);
-          if($regionRadixProduits){
-            $request->setParameter('produits-filtre',$regionRadixProduits);
-          }
+        $this->regionParam = $request->getParameter('region',null);
+        if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getRegion())){
+            $regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($region);
+            if($regionRadixProduits){
+                $params = $request->getGetParameters();
+                $params['region'] = $region;
+                unset($params['query']['region']);
+                return $this->redirect('declaration_export', $params);
+            }
         }
 
         $this->buildSearch($request);
@@ -282,7 +285,7 @@ class declarationActions extends sfActions {
             $view = acCouchdbManager::getClient()
                     ->reduce(false);
             if ($this->query['Campagne_min'] == $this->query['Campagne_max']){
-                $view = $view->startkey(array($region, $type, $this->query['Campagne_min'], ''));
+                $view = $view->startkey(array($region, $type, $this->query['Campagne_min']));
                 $view = $view->endkey(array($region, $type, $this->query['Campagne_max'], 'zzzzzzz'));
             }else{
                 $view = $view->startkey(array($region, $type, $this->query['Campagne_min']));

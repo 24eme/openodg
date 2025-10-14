@@ -32,10 +32,12 @@ class ExportDeclarationLotsPDF extends ExportPDF {
         return '';
     }
 
-
     protected function getConfig() {
-
-        return new ExportDeclarationLotsPDFConfig();
+        $config = new ExportDeclarationLotsPDFConfig();
+        if($this->declaration->region && file_exists(sfConfig::get('sf_web_dir').'/images/pdf/logo_'.strtolower($this->declaration->region).'.jpg')) {
+            $config->header_logo = 'logo_'.strtolower($this->declaration->region).'.jpg';
+        }
+        return $config;
     }
 
     protected function getFooterText() {
