@@ -63,25 +63,19 @@ class MouvementLotView extends acCouchdbView
         $history = LotsClient::getInstance()->getHistory($lot->declarant_identifiant, $lot->unique_id);
         $nb = 0;
         foreach($history as $h) {
-            if(!in_array($h->value->statut, [Lot::STATUT_AFFECTE_SRC, Lot::STATUT_AFFECTABLE, Lot::STATUT_AFFECTABLE_PRELEVE])) {
-                continue;
-            }
-            if (!in_array($h->value->statut, [Lot::STATUT_NONCONFORME])) {
-                continue;
-            }
             if ($h->value->document_ordre >= $lot->document_ordre) {
                 continue;
             }
-            // Cas des changements de dénom non conforme
-            // il ne faut pas réinitialiser le compteur quand un non conforme est redégusté après un déclassement / chgt dénom (partiel)
+            if (!in_array($h->value->statut, [Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME])) {
+                continue;
+            }
             if ($h->value->statut == Lot::STATUT_CONFORME) {
                 $nb = 0;
                 continue;
             }
             $nb++;
          }
-
-         return $nb;
+         return $nb + 1;
      }
 
 

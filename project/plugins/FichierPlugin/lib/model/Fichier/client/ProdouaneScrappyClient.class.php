@@ -80,10 +80,13 @@ class ProdouaneScrappyClient {
         return $dest_dir_path.'/'.$filename;
     }
 
-    public static function listAndSaveInTmp($type, $millesime, $cvi, array & $retour) {
+    public static function listAndSaveInTmp($type, $millesime, $cvi, array & $retour, $keepLog = false) {
         $files = [];
         $urlfiles = self::list($type, $millesime, $cvi, $retour);
         foreach($urlfiles as $f) {
+            if(!$keepLog && preg_match("/\.log$/", $f)) {
+                continue;
+            }
             $ftmp = self::saveFile($type, $millesime, $cvi, $f, "/tmp");
             if ($ftmp) {
                 $files[] = $ftmp;

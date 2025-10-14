@@ -125,10 +125,6 @@ abstract class _ParcellaireAffectationDeclarationNoeud extends acCouchdbDocument
         $lieux = array();
 
         foreach ($this->getProduitsCepageDetails() as $detail) {
-            if(!$detail->lieu) {
-                continue;
-            }
-
             $lieux[KeyInflector::slugify(trim($detail->lieu))] = $detail->lieu;
         }
 
