@@ -172,6 +172,16 @@ Controle:
             telephone_mobile: { }
             fax: { }
             email: { }
+      audit:
+        type: collection
+        definition:
+          fields:
+            all_points_controles: {}
+            all_points_conformes: {}
+            observations: {}
+            operateur_observations: {}
+            operateur_signature: {}
+            saisie: {}
       parcelles:
         type: collection
         definition:
@@ -203,3 +213,15 @@ Controle:
                   produit_hash: { }
                   source_produit_libelle: { }
                   parcelle_id: {}
+                  controle:
+                    type: collection
+                    definition:
+                      fields:
+                        points:
+                          type: collection
+                          definition:
+                            fields:
+                              '*': {}
+                        observations: {}
+                        superficie_a_retirer: {}
+                        saisie: {}

@@ -162,7 +162,8 @@ class ParcellaireConfiguration {
         }
         if (isset($this->configuration['potentiel_de_production'])) {
           foreach($this->configuration['potentiel_de_production'] as $k => $pp) {
-            if (isset($pp['produit_hash']) && strpos($prod->getHash(), $pp['produit_hash']) !== false) {
+            $index = strpos($prod->getHash(), $pp['produit_hash']);
+            if (isset($pp['produit_hash']) && $index !== false) {
                 return $k;
             }
           }

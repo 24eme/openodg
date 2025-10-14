@@ -149,3 +149,33 @@ parcellaire_export_geojson:
   options:
     model: Parcellaire
     type: object
+
+controle_nouveau:
+  url: /controle/nouveau/:identifiant
+  param: { module: controle, action: nouveau }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+
+controle_parcelles:
+  url: /controle/:id/parcelles
+  param: { module: controle, action: parcelles }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+controle_saveinlocalstorage:
+  url: /controle/:id/saveinlocalstorage
+  param: { module: controle, action: saveInLocalStorage }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+
+controle_appterrain:
+  url: /controle/appterrain
+  param: { module: controle, action: appTerrain }

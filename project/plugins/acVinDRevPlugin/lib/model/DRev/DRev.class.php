@@ -53,7 +53,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getProduits($region = null, $with_details = true) {
-        if (!$this->exist('declaration') || !count($this->get('declaration'))) {
+        if (!$this->exist('declaration') || !count($this->get('declaration')) || count($this->getProduitsLots()) ) {
             $this->updateDeclaration();
         }
         return $this->declaration->getProduits($region, $with_details);
@@ -644,7 +644,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           throw new sfException('Document validé');
       }
 
-      if (!count($this->getProduitsWithoutLots()) > 0 || !$this->declaration->getTotalVolumeRevendique() > 0)  {
+      if (count($this->getProduitsWithoutLots()) == 0 || !($this->declaration->getTotalVolumeRevendique() > 0))  {
           $this->remove('declaration');
           $this->add('declaration');
       }
@@ -2739,7 +2739,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $p->add('volume_revendique_seuil', floatval($produit['volume_max']));
-            $this->save();
         }
         return $ret;
 

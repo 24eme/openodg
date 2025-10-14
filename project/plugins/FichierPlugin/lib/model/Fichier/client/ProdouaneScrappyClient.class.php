@@ -22,7 +22,14 @@ class ProdouaneScrappyClient {
 
     public static function scrape($type, $millesime, $cvi, array & $retour) {
         $url = self::getUrl('scrape', $type, $millesime, $cvi, true);
+
         $response = file_get_contents($url);
+
+        if(!$response) {
+            $retour[] = "L'api ne semble pas fonctionner la réponse est vide";
+            return 1;
+        }
+
         $res = json_decode($response);
         if (isset($res->msg)) {
             $retour[] = $res->msg;
@@ -39,7 +46,14 @@ class ProdouaneScrappyClient {
     public static function list($type, $millesime, $cvi, array & $retour) {
         $url = self::getUrl('list', $type, $millesime, $cvi, true);
         $response = file_get_contents($url);
+
+        if(!$response) {
+            $retour[] = "L'api ne semble pas fonctionner la réponse est vide";
+            return [];
+        }
+
         $res = json_decode($response);
+
         if (isset($res->msg)) {
             $retour[] = $res->msg;
         }
@@ -66,10 +80,13 @@ class ProdouaneScrappyClient {
         return $dest_dir_path.'/'.$filename;
     }
 
-    public static function listAndSaveInTmp($type, $millesime, $cvi, array & $retour) {
+    public static function listAndSaveInTmp($type, $millesime, $cvi, array & $retour, $keepLog = false) {
         $files = [];
         $urlfiles = self::list($type, $millesime, $cvi, $retour);
         foreach($urlfiles as $f) {
+            if(!$keepLog && preg_match("/\.log$/", $f)) {
+                continue;
+            }
             $ftmp = self::saveFile($type, $millesime, $cvi, $f, "/tmp");
             if ($ftmp) {
                 $files[] = $ftmp;

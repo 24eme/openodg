@@ -74,11 +74,15 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $this->set('_id', $id);
     }
 
+    private $configurations = [];
     public function getConfiguration($date = null) {
         if (!$date) {
             $date = $this->date;
         }
-        return acCouchdbManager::getClient('Configuration')->getConfiguration($date);
+        if (!isset($this->configurations[$date])) {
+            $this->configurations[$date] = acCouchdbManager::getClient('Configuration')->getConfiguration($date);
+        }
+        return $this->configurations[$date];
     }
 
     public function getProduitsConfig($date = null) {

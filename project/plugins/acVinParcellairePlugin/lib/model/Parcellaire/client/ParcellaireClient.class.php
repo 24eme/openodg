@@ -67,8 +67,10 @@ class ParcellaireClient extends acCouchdbClient {
         $nb = 0;
         $files = ProdouaneScrappyClient::listAndSaveInTmp('parcellaire', date('Y'), $etablissement->cvi, $errors);
         if (!count($files)) {
+            $errors[] = "Aucun fichier trouvé";
             return false;
         }
+
         $parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, date('Y-m-d'),'PRODOUANE');
 
         foreach ($files as $f) {
@@ -268,9 +270,7 @@ class ParcellaireClient extends acCouchdbClient {
             }
 
             $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = ['parcelle' => $p, 'debug' => $debug_score];
-            if ($allready_selected !== null) {
-                $allready_selected[$p->getParcelleId()] = $p->getParcelleId();
-            }
+
         }
 
         krsort($parcellesMatch);
@@ -279,6 +279,10 @@ class ParcellaireClient extends acCouchdbClient {
                 if ($pMatch['parcelle']->cepage != $parcelle->cepage) {
                     continue;
                 }
+
+            }
+            if ($allready_selected !== null) {
+                $allready_selected[$pMatch['parcelle']->getParcelleId()] = $pMatch['parcelle']->getParcelleId();
             }
             return $pMatch['parcelle'];
         }
