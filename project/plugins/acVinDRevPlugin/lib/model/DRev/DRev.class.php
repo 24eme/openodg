@@ -647,6 +647,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           throw new sfException('Document validé');
       }
 
+      if (! $this->hasDocumentDouanier()) {
+          return;
+      }
+
       if (count($this->getProduitsWithoutLots()) == 0 || !($this->declaration->getTotalVolumeRevendique() > 0))  {
           $this->remove('declaration');
           $this->add('declaration');
