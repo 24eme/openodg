@@ -17,11 +17,21 @@ class DRDouaneJsonFile extends DouaneImportCsvFile {
             $this->campagne = $jsonDr->campagne;
             $this->cvi = $jsonDr->numeroCVIRecoltant;
             $doc = $this->getEtablissementRows();
+            $drev = $this->getRelatedDrev();
             $has_volume_cave = false;
             $has_volume_coop = false;
             $has_volume_nego = false;
             foreach($jsonDr->declarationProduitsRecoltes->produitsRecoltes as $colonneId => $jsonProduit) {
-                $has_volume_cave = true;
+                $has_volume_familles = $this->getFamilleFromProduit($jsonProduit);
+                if($has_volume_familles[0]) {
+                    $has_volume_cave = true;
+                }
+                if($has_volume_familles[1]) {
+                    $has_volume_coop = true;
+                }
+                if($has_volume_familles[2]) {
+                    $has_volume_nego = true;
+                }
             }
             $famille = $this->getFamilleCalculeeFromLigneDouane($has_volume_cave, $has_volume_coop, $has_volume_nego);
             foreach($jsonDr->declarationProduitsRecoltes->produitsRecoltes as $colonneId => $jsonProduit) {
@@ -38,13 +48,15 @@ class DRDouaneJsonFile extends DouaneImportCsvFile {
                     $produitsKey[] = null;
                 }
 
+                $has_volume_familles = $this->getFamilleFromProduit($jsonProduit);
+
                 $startCsvLine = implode(';', $doc).';;;'.implode(';', $produitsKey);
                 $endCsvLine = ($colonneId + 1).";".Organisme::getCurrentOrganisme();
                 $endCsvLine .= ";".(($produit) ? $produit->getHash() : null);
                 $endCsvLine .= ";".(($drev) ? $drev->_id : null);
-                $endCsvLine .= ";".(($drev && $drev->hasLotsProduitFilter($hashes[$k])) ? 'FILTERED:'.$drev->_id : null);
+                $endCsvLine .= ";".(($drev && $drev->hasLotsProduitFilter($produit->getHash())) ? 'FILTERED:'.$drev->_id : null);
                 $endCsvLine .= ";".(($this->doc) ? $this->doc->_id : null);
-                $endCsvLine .= ';'.$this->getFamilleCalculeeFromLigneDouane(true, false, false);
+                $endCsvLine .= ';'.$this->getFamilleCalculeeFromLigneDouane($has_volume_familles[0], $has_volume_familles[1], $has_volume_familles[2]);
                 $endCsvLine .= ';'.substr($this->campagne, 0, 4);
                 $endCsvLine .= ';'.$famille;
                 $endCsvLine .= ';'.implode('|', $labels);
@@ -93,7 +105,14 @@ class DRDouaneJsonFile extends DouaneImportCsvFile {
                 }
             }
         }
-        print_r($csv);
         return $csv;
+    }
+
+    public function getFamilleFromProduit($jsonProduit) {
+        $has_volume_cave = isset($jsonProduit->conserveCaveParticuliereExploitant) && $jsonProduit->conserveCaveParticuliereExploitant;
+        $has_volume_coop = isset($jsonProduit->destinationApportsCaveCoop) && count($jsonProduit->destinationApportsCaveCoop);
+        $has_volume_nego = (isset($jsonProduit->destinationVentesRaisins) && count($jsonProduit->destinationVentesRaisins)) || (isset($jsonProduit->destinationVentesMouts) && count($jsonProduit->destinationVentesMouts));
+
+        return [$has_volume_cave, $has_volume_coop, $has_volume_nego];
     }
 }
