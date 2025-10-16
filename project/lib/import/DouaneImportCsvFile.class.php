@@ -86,6 +86,9 @@ class DouaneImportCsvFile {
       if (is_a($this, 'DRDouaneCsvFile')) {
         return "DR";
       }
+      if (is_a($this, 'DRDouaneJsonFile')) {
+        return "DR";
+      }
     }
 
     public static function cleanRaisonSociale($s) {
