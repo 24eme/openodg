@@ -569,7 +569,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	}
 
     	$typeDocumentDouanier = $this->getDocumentDouanierType();
-        $douaneFiles = array_merge($this->getDocumentsDouaniers('csv'), $this->getDocumentsDouaniers('json'));
+        $douaneFiles = $this->getDocumentsDouaniers('csv');
+        if(!count($douaneFiles)) {
+            $douaneFiles = $this->getDocumentsDouaniers('json');
+        }
 
         if (!count($douaneFiles)) {
     		$docDouanier = $this->getDocumentDouanier();
