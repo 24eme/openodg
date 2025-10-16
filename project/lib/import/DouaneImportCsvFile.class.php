@@ -49,7 +49,11 @@ class DouaneImportCsvFile {
     public static function getNewInstanceFromType($type, $file, $doc = null, $drev_produit_filter = null, $cvi = null)  {
         switch ($type) {
             case 'DR':
-                return new DRDouaneCsvFile($file, $doc, $drev_produit_filter, $cvi);
+                if(preg_match('/.json$/', $file)) {
+                    return new DRDouaneJsonFile($file, $doc, $drev_produit_filter, $cvi);
+                } else {
+                    return new DRDouaneCsvFile($file, $doc, $drev_produit_filter, $cvi);
+                }
             case 'SV11':
                 return new SV11DouaneCsvFile($file, $doc, $drev_produit_filter, $cvi);
             case 'SV12':
@@ -84,6 +88,9 @@ class DouaneImportCsvFile {
         return "SV12";
       }
       if (is_a($this, 'DRDouaneCsvFile')) {
+        return "DR";
+      }
+      if (is_a($this, 'DRDouaneJsonFile')) {
         return "DR";
       }
     }

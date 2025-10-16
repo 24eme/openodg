@@ -65,6 +65,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach ($this->getProduits(null, false) as $hash => $p) {
             $regions[$p->getRegion()] = 1;
         }
+        foreach ($this->getLots() as $lot) {
+            $regions[$lot->getRegion()] = 1;
+        }
         $docDouanier = $this->getDocumentDouanier();
         if ($docDouanier) {
             foreach ($docDouanier->getProduits() as $hash => $p) {
@@ -566,23 +569,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	}
 
     	$typeDocumentDouanier = $this->getDocumentDouanierType();
-    	$csvFiles = $this->getDocumentsDouaniers('csv');
+        $douaneFiles = array_merge($this->getDocumentsDouaniers('csv'), $this->getDocumentsDouaniers('json'));
 
-    	if (!count($csvFiles)) {
+        if (!count($douaneFiles)) {
     		$docDouanier = $this->getDocumentDouanier();
     		if ($docDouanier &&  $docDouanier->exist('donnees') && count($docDouanier->donnees) >= 1) {
     			$className = DeclarationClient::getInstance()->getExportCsvClassName($typeDocumentDouanier);
     			$csvOrigine = new $className($docDouanier, false);
-    			$this->csv_douanier = $csvOrigine->getCsv();
+                $this->csv_douanier = $csvOrigine->getCsv();
     		}
             return $this->csv_douanier;
     	}
 
         $csvContent = '';
-        foreach($csvFiles as $a_csv_file) {
-    	    $csvOrigine = DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $a_csv_file);
-            if ($csvOrigine) {
-    	        $csvContent .= $csvOrigine->convert();
+        foreach($douaneFiles as $douaneFile) {
+            $douaneFileParser = DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $douaneFile);
+            if ($douaneFileParser) {
+                $csvContent .= $douaneFileParser->convert();
             }
         }
 
@@ -590,7 +593,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     		return null;
     	}
     	$path = sfConfig::get('sf_cache_dir').'/dr/';
-    	$filename = $csvOrigine->getCsvType().'-'.$this->identifiant.'-'.$this->periode.'.csv';
+        $filename = $douaneFileParser->getCsvType().'-'.$this->identifiant.'-'.$this->periode.'.csv';
     	if (!is_dir($path)) {
             umask(0);
     		if (!mkdir($path, 02775)) {
@@ -599,7 +602,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             chmod($path, 02775);
     	}
     	file_put_contents($path.$filename, $csvContent);
-    	$csv = DouaneCsvFile::getNewInstanceFromType($csvOrigine->getCsvType(), $path.$filename);
+        $csv = DouaneCsvFile::getNewInstanceFromType($douaneFileParser->getCsvType(), $path.$filename);
         $this->csv_douanier = $csv->getCsv();
 
     	return $this->csv_douanier;
@@ -642,6 +645,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
       if(count($this->getProduitsWithoutLots()) > 0 && $this->isValidee()) {
           throw new sfException('Document validé');
+      }
+
+      if (! $this->hasDocumentDouanier()) {
+          return;
       }
 
       if (count($this->getProduitsWithoutLots()) == 0 || !($this->declaration->getTotalVolumeRevendique() > 0))  {
