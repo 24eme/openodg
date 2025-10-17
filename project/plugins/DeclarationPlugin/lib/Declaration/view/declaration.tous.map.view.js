@@ -203,37 +203,43 @@ function(doc) {
             }
      }
 
-     if(doc.lots){
-       statutProduit = statut;
-       var produitsHash = [];
-       for(lotKey in doc.lots) {
-          var lot = doc.lots[lotKey];
-          if(lot.produit_hash) {
-            var pHash = lot.produit_hash.replace('/declaration/', '');
-            produitsHash[pHash] = pHash;
+    if(doc.lots){
+      statutProduit = statut;
+      var produitsHash = [];
+
+      for(lotKey in doc.lots) {
+        var lot = doc.lots[lotKey];
+        if(lot.produit_hash) {
+          var pHash = lot.produit_hash.replace('/declaration/', '');
+          produitsHash[pHash] = pHash;
+        }
+      }
+
+      for(produitHash in produitsHash) {
+        statutProduit = statut;
+
+        if (doc.declaration && doc.declaration[produitHash]) {
+          for(detailKey in doc.declaration[produitHash]) {
+            if(doc.declaration[produitHash][detailKey].validation_odg){
+              statutProduit = "Approuvé";
+            }
+            if(doc.declaration[produitHash][detailKey].statut_odg){
+              statutProduit = doc.declaration[produitHash][detailKey].statut_odg;
+            }
           }
-       }
-       for(produitHash in produitsHash) {
-       	  if (doc.declaration && doc.declaration[produitHash]) {
-		  for(detailKey in doc.declaration[produitHash]) {
-		    if(doc.declaration[produitHash][detailKey].validation_odg){
-		      statutProduit = "Approuvé";
-		    }
-		    if(doc.declaration[produitHash][detailKey].statut_odg){
-		      statutProduit = doc.declaration[produitHash][detailKey].statut_odg;
-		    }
-		    emit(['', type, campagne, doc.identifiant, mode, statutProduit, produitHash, date, infos, raison_sociale, commune, email, cvi], 1);
-		    for (regionid in regions) {
-		      if (regions[regionid].toLowerCase().includes("aop")) {
-		        continue;
-		      }
-		      emit([regions[regionid], type, campagne, doc.identifiant, mode, statutProduit, produitHash, date, infos, raison_sociale, commune, email, cvi], 1);
-		    }
-		    nb_emits = nb_emits + 1;
-		  }
+        }
+
+        emit(['', type, campagne, doc.identifiant, mode, statutProduit, produitHash, date, infos, raison_sociale, commune, email, cvi], 1);
+        for (regionid in regions) {
+          if (regions[regionid].toLowerCase().includes("aop")) {
+            continue;
           }
-       }
-     }
+          emit([regions[regionid], type, campagne, doc.identifiant, mode, statutProduit, produitHash, date, infos, raison_sociale, commune, email, cvi], 1);
+        }
+
+        nb_emits = nb_emits + 1;
+      }
+    }
 
      if(!nb_emits){
          emit(['', type, campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
