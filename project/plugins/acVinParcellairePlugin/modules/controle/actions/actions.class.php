@@ -23,6 +23,8 @@ class controleActions extends sfActions
             throw new sfError403Exception("Accès admin uniquement");
         }
 
+        $this->parcellaire = $this->controle->getParcellaire();
+
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->controle->updateParcelles($request->getPostParameter('parcelles', []));
             $this->controle->save();
