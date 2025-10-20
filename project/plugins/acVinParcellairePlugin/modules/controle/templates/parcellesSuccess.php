@@ -10,6 +10,13 @@
     <h2>Sélection des parcelles à controler</h2>
 </div>
 
+<?php if($parcellaire && $parcellaire->getGeoJson() != false): ?>
+    <div id="jump">
+        <a name="carte"></a>
+        <?php include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire, 'js' => 'parcelles-maker-selections.js')); ?>
+    </div>
+<?php endif; ?>
+
 
 <p>Superficie sélectionnée : <span id="total_surfaces_selectionnees">0</span> <span class="text-muted small"><?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?></span></p>
 
