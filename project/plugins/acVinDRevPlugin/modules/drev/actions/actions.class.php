@@ -763,6 +763,10 @@ class drevActions extends sfActions {
           $params = array_merge($params,array('region' => $this->regionParam));
         }
 
+        if ($this->drev->isValideeOdg()) {
+            return $this->redirect('drev_visualisation', $params);
+        }
+
         try {
             $this->drev->validateOdg(null,$this->regionParam);
             $this->drev->save();
