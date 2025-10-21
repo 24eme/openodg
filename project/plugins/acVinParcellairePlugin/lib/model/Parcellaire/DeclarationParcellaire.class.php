@@ -153,6 +153,33 @@ class DeclarationParcellaire extends acCouchdbDocument {
         }
     }
 
+    public function getParcelleById($id) {
+        $p = $this->getParcelles();
+
+        if(!isset($p[$id])) {
+            return null;
+        }
+        return $p[$id];
+    }
+
+    public function findProduitParcelle($parcelle) {
+        $hash = str_replace('/declaration/', '', $parcelle->produit_hash);
+        if (!$this->declaration->exist($hash)) {
+            return null;
+        }
+        if (!$this->declaration->get($hash)->detail->exist($parcelle->getParcelleId())) {
+            return null;
+        }
+
+        $p = $this->declaration->get($hash)->detail->get($parcelle->getParcelleId());
+
+        if($p && $p->cepage == $parcelle->cepage && $p->campagne_plantation == $parcelle->campagne_plantation) {
+            return $p;
+        }
+
+        return null;
+    }
+
     public function findParcelle($parcelle, $scoreMin = 1, $with_cepage_match = false, &$allready_selected = null) {
 
         return ParcellaireClient::findParcelle($this, $parcelle, $scoreMin, $with_cepage_match, $allready_selected);

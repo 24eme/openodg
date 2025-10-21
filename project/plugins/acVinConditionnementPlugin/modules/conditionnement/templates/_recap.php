@@ -6,24 +6,17 @@
 
 
         <?php if($conditionnement->exist('lots')): ?>
-          <h3 id="table_igp_title">Déclaration des lots IGP</h3>
-          <?php
-          $lots = $conditionnement->getLotsByCouleur();
-          ?>
-          <div class="row">
-              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
+            <?php if(!$conditionnement->validation_odg && $sf_user->isAdmin()): ?>
+              <div class="pull-right">
+                <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
+              </span>
+              </div>
+            <?php endif; ?>
+          <h3 id="table_igp_title">Déclaration des lots</h3>
+          <?php $lots = $conditionnement->getLotsByCouleur(); ?>
+          <div class="mb-2">
+              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" class="hamzastyle" style="width: 100%;">
           </div>
-          <br/>
-          <?php if(!$conditionnement->validation_odg && $sf_user->isAdmin()): ?>
-          <div class="row text-right">
-            <div class="col-xs-3 col-xs-offset-9">
-              <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
-            </span>
-
-            </div>
-          </div>
-          <br/>
-          <?php endif; ?>
           <table class="table table-bordered table-striped table_igp">
             <thead>
               <tr>
@@ -68,7 +61,7 @@
                         </td>
                         <td class="text-right"><?php echo $lot->centilisation; ?></td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
-                        <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
+                        <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::getLotDestinationsType($lot->destination_type) : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
                         <?php if ($sf_user->isAdmin()): ?>
                           <td class="text-center">
                             <?php if(isset($form['lots'])): ?>
@@ -117,7 +110,18 @@
 
 <?php if (DRevConfiguration::getInstance()->hasDegustation()): ?>
 <h3>Contrôle</h3>
-<p>Date de controle souhaitée (hors lots en élevage) : <?php if ($conditionnement->exist('date_degustation_voulue')): ?><?php echo $conditionnement->get('date_degustation_voulue'); ?><?php else: ?><?php echo date('d/m/Y'); ?><?php endif; ?></p>
+<?php if(isset($form["date_degustation_voulue"])): ?>
+    <?php echo $form["date_degustation_voulue"]->renderError(); ?>
+    <div class="form-group" style="margin-bottom: 20px;">
+        <?php echo $form["date_degustation_voulue"]->renderLabel("Date de controle des vins souhaitée :", array("class" => "col-xs-3 control-label")); ?>
+        <div class="input-group date-picker-week col-xs-3">
+        <?php echo $form["date_degustation_voulue"]->render(array("class" => "form-control", "placeholder" => "", "required" => "true")); ?>
+        <div class="input-group-addon">
+            <span class="glyphicon-calendar glyphicon"></span>
+        </div>
+        </div>
+    </div>
+<?php endif; ?>
 
 <?php if(isset($form["date_commission"])): ?>
     <?php echo $form["date_commission"]->renderError(); ?>

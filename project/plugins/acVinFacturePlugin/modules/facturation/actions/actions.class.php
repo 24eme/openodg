@@ -135,6 +135,8 @@ class facturationActions extends sfActions
                 }
             }
 
+            $this->hasPaiements = FactureConfiguration::getInstance()->hasPaiements();
+
             $this->form = new FactureGenerationForm();
 
             if(class_exists("Societe")) {
@@ -505,7 +507,7 @@ class facturationActions extends sfActions
     }
 
     public function executeEditionLibre(sfWebRequest $request) {
-        $this->factureMouvements = MouvementsFactureClient::getInstance()->find('MOUVEMENTSFACTURE-' . $request->getParameter('id'));
+        $this->factureMouvements = MouvementsFactureClient::getInstance()->find('MOUVEMENTSFACTURE-' . str_replace('MOUVEMENTSFACTURE-', '', $request->getParameter('id')));
 
         $this->form = new FactureMouvementsEditionForm($this->factureMouvements);
 
@@ -575,6 +577,7 @@ class facturationActions extends sfActions
         if ($request->getParameter('campagne')) {
             $this->campagne = $request->getParameter('campagne');
         }
+        $this->hasPaiements = FactureConfiguration::getInstance()->hasPaiements();
         $this->factures = FactureClient::getInstance()->getAllFactures($this->campagne);
     }
 

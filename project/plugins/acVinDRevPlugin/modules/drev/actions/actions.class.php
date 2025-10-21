@@ -95,6 +95,7 @@ class drevActions extends sfActions {
     public function executeDevalidation(sfWebRequest $request) {
 
         $drev = $this->getRoute()->getDRev();
+
         if (!$this->getUser()->isAdmin()) {
           $this->secure(DRevSecurity::DEVALIDATION , $drev);
         }
@@ -475,16 +476,10 @@ class drevActions extends sfActions {
         	return $this->redirect('drev_dr_upload', $this->drev);
         }
 
-        if(!count($this->drev->getProduitsWithoutLots()) && !$request->getParameter('prec')) {
-
-            return $this->redirect('drev_validation', $this->drev);
-        }
-        $produits = $this->drev->getProduitsLots();
-
-
-        if(!count($this->drev->getProduitsWithoutLots()) && $request->getParameter('prec')) {
-
-            return $this->redirect('drev_lots', $this->drev);
+        if(! count($this->drev->declaration->getProduitsWithoutLots(null, true))) {
+            return $request->getParameter('prec')
+                ? $this->redirect('drev_lots', $this->drev)
+                : $this->redirect('drev_validation', $this->drev);
         }
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION))) {
@@ -498,8 +493,9 @@ class drevActions extends sfActions {
             $this->appellation_hash = str_replace('-', '/', str_replace('-' . $this->appellation_field, '', $this->appellation));
         }
 
-        $this->form = new DRevRevendicationForm($this->drev, array('disabled_dr' => true));
+        $this->form = new DRevRevendicationForm($this->drev, array('disabled_dr' => true, 'with_empty' => true));
         $this->ajoutForm = new DRevRevendicationAjoutProduitForm($this->drev);
+
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
 
@@ -765,6 +761,10 @@ class drevActions extends sfActions {
         $params = array('sf_subject' => $this->drev, 'service' => $service);
         if($this->regionParam){
           $params = array_merge($params,array('region' => $this->regionParam));
+        }
+
+        if ($this->drev->isValideeOdg()) {
+            return $this->redirect('drev_visualisation', $params);
         }
 
         try {

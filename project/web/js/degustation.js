@@ -168,9 +168,9 @@
         });
 
         if(document.querySelectorAll(".table_filterable tbody tr.searchable.hidden").length == document.querySelectorAll(".table_filterable tbody tr.searchable").length) {
-            clear.classList.remove('hidden');
+            clear?.classList.remove('hidden');
         } else {
-            clear.classList.add('hidden');
+            clear?.classList.add('hidden');
         }
 
         if(this.value) {

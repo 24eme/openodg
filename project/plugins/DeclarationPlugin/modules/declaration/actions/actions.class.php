@@ -57,6 +57,10 @@ class declarationActions extends sfActions {
 
         $doc_type = $matches[1];
 
+        if($doc_type == "MOUVEMENTSFACTURE") {
+            return $this->redirect("facturation_libre_edition", array("id" => $doc_id));
+        }
+
         if ($doc_type == "DEGUSTATION") {
             return $this->redirect('degustation_visualisation', ['id' => $doc_id]);
         }
@@ -281,7 +285,7 @@ class declarationActions extends sfActions {
             $view = acCouchdbManager::getClient()
                     ->reduce(false);
             if ($this->query['Campagne_min'] == $this->query['Campagne_max']){
-                $view = $view->startkey(array($region, $type, $this->query['Campagne_min'], ''));
+                $view = $view->startkey(array($region, $type, $this->query['Campagne_min']));
                 $view = $view->endkey(array($region, $type, $this->query['Campagne_max'], 'zzzzzzz'));
             }else{
                 $view = $view->startkey(array($region, $type, $this->query['Campagne_min']));

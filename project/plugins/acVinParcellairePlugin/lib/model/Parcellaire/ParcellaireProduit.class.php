@@ -25,7 +25,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         $details = array();
 
         foreach ($this->detail as $item) {
-            $details = array_merge($details, $item->getProduitsDetails());
+            $details[$item->getHash()] = $item;
         }
 
     	return $details;

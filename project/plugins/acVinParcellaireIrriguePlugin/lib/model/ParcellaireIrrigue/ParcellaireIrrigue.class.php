@@ -119,7 +119,11 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
   	$this->storeParcelles();
 
     foreach($irrigations as $hash => $oldparcelle) {
-        $parcelle = $this->findParcelle($oldparcelle);
+        if($oldparcelle->isRealParcelleIdFromParcellaire()) {
+            $parcelle = $this->findParcelleByParcelleId($oldparcelle);
+        } else {
+            $parcelle = $this->findParcelle($oldparcelle);
+        }
         if(!$parcelle) {
             continue;
         }
