@@ -107,6 +107,7 @@
     };
     templates.audit.methods = {
       save() {
+        this.controleCourant.audit.saisie = 1;
         router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
       }
     };
