@@ -155,6 +155,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             }
         }
 
+        $drev->resetAndImportFromDocumentDouanier();
         $drev->updateVCIFromPrecedente();
 
         return $drev;
