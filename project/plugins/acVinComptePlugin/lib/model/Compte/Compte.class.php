@@ -81,7 +81,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function getCodeCreation() {
-        if(strpos("{TEXT}") === false) {
+        if(strpos($this->mot_de_passej, "{TEXT}") === false) {
             return null;
         }
 
