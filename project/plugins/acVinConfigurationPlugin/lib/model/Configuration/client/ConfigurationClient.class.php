@@ -5,9 +5,6 @@ class ConfigurationClient extends acCouchdbClient {
 	protected $configurations = array();
 
     protected $countries = null;
-    protected $campagne_vinicole_manager = null;
-    protected $campagne_parcellaire_manager = null;
-    protected $campagne_facturation_manager = null;
 
     const VALUE_LIBELLE_CERTIFICATION = 0;
     const VALUE_LIBELLE_GENRE = 1;
@@ -95,19 +92,11 @@ class ConfigurationClient extends acCouchdbClient {
 	}
 
     public function getCampagneParcellaire($format = CampagneManager::FORMAT_COMPLET) {
-        if(is_null($this->campagne_parcellaire_manager)) {
-            $this->campagne_parcellaire_manager = new CampagneManager('03-01', $format);
-        }
-        return $this->campagne_parcellaire_manager;
+        return new CampagneManager('03-01', $format);
     }
 
     public function getCampagneVinicole($format = CampagneManager::FORMAT_COMPLET) {
-        if(is_null($this->campagne_vinicole_manager)) {
-
-            $this->campagne_vinicole_manager = new CampagneManager('09-01', $format);
-        }
-
-        return $this->campagne_vinicole_manager;
+        return new CampagneManager('09-01', $format);
     }
 
     public function buildCampagne($date) {
