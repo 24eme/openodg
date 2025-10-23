@@ -94,14 +94,14 @@ class ConfigurationClient extends acCouchdbClient {
         return $this->getCampagneVinicole($format);
 	}
 
-    public function getCampagneParcellaire($format = CampagneManager::FORMAT_PREMIERE_ANNEE) {
+    public function getCampagneParcellaire($format = CampagneManager::FORMAT_COMPLET) {
         if(is_null($this->campagne_parcellaire_manager)) {
             $this->campagne_parcellaire_manager = new CampagneManager('03-01', $format);
         }
         return $this->campagne_parcellaire_manager;
     }
 
-    public function getCampagneVinicole($format = CampagneManager::FORMAT_PREMIERE_ANNEE) {
+    public function getCampagneVinicole($format = CampagneManager::FORMAT_COMPLET) {
         if(is_null($this->campagne_vinicole_manager)) {
 
             $this->campagne_vinicole_manager = new CampagneManager('09-01', $format);
