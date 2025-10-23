@@ -1039,7 +1039,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $dateLimite = new DateTimeImmutable($c."-08-31");
         $dateValidation = new DateTimeImmutable($this->validation);
 
-        $result = $dateLimite > $dateValidation;
+        $result = $dateLimite >= $dateValidation;
 
         if ($not) {
             $result = ! $result;
