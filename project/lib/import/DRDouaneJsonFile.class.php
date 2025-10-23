@@ -54,7 +54,7 @@ class DRDouaneJsonFile extends DouaneImportCsvFile {
                 $endCsvLine = ($colonneId + 1).";".Organisme::getCurrentOrganisme();
                 $endCsvLine .= ";".(($produit) ? $produit->getHash() : null);
                 $endCsvLine .= ";".(($drev) ? $drev->_id : null);
-                $endCsvLine .= ";".(($drev && $drev->hasLotsProduitFilter($produit->getHash())) ? 'FILTERED:'.$drev->_id : null);
+                $endCsvLine .= ";".(($drev && $produit && $drev->hasLotsProduitFilter($produit->getHash())) ? 'FILTERED:'.$drev->_id : null);
                 $endCsvLine .= ";".(($this->doc) ? $this->doc->_id : null);
                 $endCsvLine .= ';'.$this->getFamilleCalculeeFromLigneDouane($has_volume_familles[0], $has_volume_familles[1], $has_volume_familles[2]);
                 $endCsvLine .= ';'.substr($this->campagne, 0, 4);
