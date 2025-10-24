@@ -99,8 +99,15 @@ class DRDouaneJsonFile extends DouaneImportCsvFile {
 
                 if(isset($jsonProduit->destinationApportsCaveCoop)) {
                     foreach($jsonProduit->destinationApportsCaveCoop as $coop) {
-                        $csv .= $startCsvLine.";08;".DRCsvFile::getCategorieLibelle("DR", "08").";".$coop->volObtenuApportRaisins.";".$coop->numeroEvvCaveCoop.";;;;".$endCsvLine."\n";
-                        $csv .= $startCsvLine.";08kg;".DRCsvFile::getCategorieLibelle("DR", "08kg").";".$coop->quantiteApportRaisins.";".$coop->numeroEvvCaveCoop.";;;;".$endCsvLine."\n";
+                        if (isset($coop->volObtenuApportRaisins) && $coop->volObtenuApportRaisins) {
+                            $csv .= $startCsvLine.";08;".DRCsvFile::getCategorieLibelle("DR", "08").";".$coop->volObtenuApportRaisins.";".$coop->numeroEvvCaveCoop.";;;;".$endCsvLine."\n";
+                        }
+                        if (isset($coop->quantiteApportRaisins) && $coop->quantiteApportRaisins) {
+                            $csv .= $startCsvLine.";08kg;".DRCsvFile::getCategorieLibelle("DR", "08kg").";".$coop->quantiteApportRaisins.";".$coop->numeroEvvCaveCoop.";;;;".$endCsvLine."\n";
+                        }
+                        if (isset($coop->volObtenuApportMouts) && $coop->volObtenuApportMouts) {
+                            $csv .= $startCsvLine.";08;".DRCsvFile::getCategorieLibelle("DR", "08").";".$coop->volObtenuApportMouts.";".$coop->numeroEvvCaveCoop.";;;;".$endCsvLine."\n";
+                        }
                     }
                 }
             }

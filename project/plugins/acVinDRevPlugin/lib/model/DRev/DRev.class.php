@@ -766,7 +766,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 }
             }
 
-            if(isset($produitConfigAlt) && $produitConfigAlt && $produitConfigAlt->isActif()) {
+            if(isset($produitConfigAlt) && $produitConfigAlt && $produitConfigAlt->isActif() && $produitConfigAlt->getHash() != $produitConfig->getHash()) {
                 $produitConfig = $produitConfigAlt;
                 $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT] = null;
             }
