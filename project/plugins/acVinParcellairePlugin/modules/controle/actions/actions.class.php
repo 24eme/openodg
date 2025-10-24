@@ -1,6 +1,12 @@
 <?php
 class controleActions extends sfActions
 {
+
+    public function executeIndex(sfWebRequest $request)
+    {
+        $this->controles = ControleClient::getInstance()->findAllByStatus();
+    }
+
     public function executeNouveau(sfWebRequest $request)
     {
     	$this->etablissement = $this->getRoute()->getEtablissement();
@@ -42,4 +48,17 @@ class controleActions extends sfActions
     {
         $this->setLayout('appLayout');
     }
+
+    public function executeSetDateTournee(sfWebRequest $request)
+    {
+        $this->controle = $this->getRoute()->getControle();
+        if (!$request->getParameter('date')) {
+            return sfView::SUCCESS;
+        }
+        $this->controle->date_tournee = $request->getParameter('date');
+        $this->controle->save();
+        return $this->redirect('controle_index');
+    }
+
+
 }

@@ -26,9 +26,25 @@ class Controle extends BaseControle
         $this->storeDeclarant();
     }
 
-    protected function doSave()
-    {
-        return;
+    public function storeDeclarant() {
+        parent::storeDeclarant();
+        $etablissement = $this->getEtablissementObject();
+        if($etablissement->exist('secteur')) {
+            $this->document->secteur = $etablissement->secteur;
+        }
+        foreach($etablissement->liaisons_operateurs as $liaison) {
+            if($liaison->type_liaison == EtablissementClient::TYPE_LIAISON_COOPERATIVE) {
+                $this->liaisons_operateurs->add($liaison->getKey(), $liaison);
+            }
+        }
+    }
+
+    public function getLibelleLiaison() {
+        $libelles = [];
+        foreach($this->liaisons_operateurs as $liaison) {
+            $libelles[] = $liaison->libelle_etablissement;
+        }
+        return implode(', ', $libelles);
     }
 
     public function getParcellaire()
@@ -67,4 +83,16 @@ class Controle extends BaseControle
     {
         return $this->parcelles->exist($parcelleId);
     }
+
+    protected function doSave()
+    {
+        return;
+    }
+
+    public function save()
+    {
+        $this->storeDeclarant();
+        return parent::save();
+    }
+
 }
