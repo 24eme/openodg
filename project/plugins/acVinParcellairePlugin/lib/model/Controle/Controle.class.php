@@ -92,7 +92,31 @@ class Controle extends BaseControle
     public function save()
     {
         $this->storeDeclarant();
+        $this->generateMouvementsStatuts();
         return parent::save();
+    }
+
+    public function getStatutComputed()
+    {
+        if($this->date_tournee) {
+            return ControleClient::CONTROLE_STATUT_PLANIFIE;
+        }
+        if(count($this->parcelles)) {
+            return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
+        }
+
+        return ControleClient::CONTROLE_STATUT_A_ORGANISER;
+
+    }
+
+    public function generateMouvementsStatuts()
+    {
+        if ($this->exist('mouvements_statuts')) {
+            $this->remove('mouvements_statuts');
+        }
+        $this->add('mouvements_statuts');
+        $this->mouvements_statuts->add(null,  ['CONTROLE', $this->getDocumentDefinitionModel(), $this->getStatutComputed(), $this->identifiant] );
+        print_r(['generateMouvementsStatuts', $this->mouvements_statuts]);
     }
 
 }

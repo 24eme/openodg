@@ -66,19 +66,8 @@ class ControleClient extends acCouchdbClient
             self::CONTROLE_STATUT_TERMINE => [],
         ];
         foreach ($this->findAll($limit, $hydrate) as $c) {
-            if($c->date_tournee) {
-                $controles[self::CONTROLE_STATUT_PLANIFIE][] = $c;
-                continue;
-            }
-            if(count($c->parcelles)) {
-                $controles[self::CONTROLE_STATUT_A_PLANIFIER][] = $c;
-                continue;
-            }
-
-            $controles[self::CONTROLE_STATUT_A_ORGANISER][] = $c;
-
+            $controles[$c->mouvements_statuts[0][2]][] = $c;
         }
-
         return $controles;
     }
 

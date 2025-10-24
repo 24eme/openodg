@@ -192,5 +192,5 @@ controle_set_date_tournee:
 
 
 controle_appterrain:
-  url: /controle/appterrain
+  url: /controle/appterrain/:date
   param: { module: controle, action: appTerrain }

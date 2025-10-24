@@ -253,3 +253,12 @@ Controle:
                         observations: {}
                         superficie_a_retirer: {}
                         saisie: {}
+      mouvements_statuts:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: array_collection
+              definition:
+                fields:
+                  '*': {}

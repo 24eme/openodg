@@ -1,5 +1,28 @@
 <h2>Controle terrrain à venir</h2>
 
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th class="col-4">Date du controle</th>
+        <th class="col-2">Nb opérateurs</th>
+        <th class="col-2">Nb parcelles</th>
+        <th class="col-1"></th>
+    </tr>
+    </thead>
+    <tbody>
+<?php foreach ($stats as $date_tournee => $stat): ?>
+    <tr>
+        <td><?php echo $date_tournee; ?></td>
+        <td><?php echo count($stat['operateurs']); ?></td>
+        <td><?php echo $stat['nb_parcelles']; ?></td>
+        <td><a href="<?php echo url_for('controle_appterrain', array('date' => $date_tournee)); ?>" class="btn btn-sm btn-default">Affecter une date</a></td>
+    </tr>
+<?php endforeach; ?>
+    </tbody>
+</table>
+
+
+
 <h2>Opérateur dont le controle doit être planifié</h2>
 
 <table class="table table-bordered table-striped">

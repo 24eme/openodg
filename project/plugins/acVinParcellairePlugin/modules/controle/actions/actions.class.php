@@ -2,9 +2,26 @@
 class controleActions extends sfActions
 {
 
+    private function getControlesPlanifies($date = null) {
+        $stats = [];
+        foreach($this->controles[ControleClient::CONTROLE_STATUT_PLANIFIE] as $c) {
+            if ($date && $date != $c->date_tournee) {
+                continue;
+            }
+            if (!isset($stats[$c->date_tournee])) {
+                $stats[$c->date_tournee] = ['nb_parcelles' => 0, 'operateurs' => [], 'controles' => []];
+            }
+            $stats[$c->date_tournee]['nb_parcelles'] += count($c->parcelles);
+            $stats[$c->date_tournee]['operateurs'][] = $c->declarant->nom;
+            $stats[$c->date_tournee]['controles'][] = $c;
+        }
+        return $stats;
+    }
+
     public function executeIndex(sfWebRequest $request)
     {
         $this->controles = ControleClient::getInstance()->findAllByStatus();
+        $this->stats = $this->getControlesPlanifies();
     }
 
     public function executeNouveau(sfWebRequest $request)
@@ -46,6 +63,8 @@ class controleActions extends sfActions
 
     public function executeAppTerrain(sfWebRequest $request)
     {
+        $this->date_tournee = $request->getParameter('date');
+        $this->controles = $this->getControlesPlanifies($this->date_tournee);
         $this->setLayout('appLayout');
     }
 
