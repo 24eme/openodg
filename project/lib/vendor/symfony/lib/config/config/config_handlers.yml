@@ -4,9 +4,6 @@ config/autoload.yml:
 config/databases.yml:
   class:    sfDatabaseConfigHandler
 
-config/databases.*.yml:
-  class:    sfDatabaseConfigHandler
-
 config/settings.yml:
   class:    sfDefineEnvironmentConfigHandler
   param:
@@ -28,6 +25,11 @@ config/filters.yml:
 
 config/routing.yml:
   class:    sfRoutingConfigHandler
+
+config/services.yml:
+  class:    sfServiceConfigHandler
+  param:
+    base_class: sfServiceContainer
 
 modules/*/config/generator.yml:
   class:    sfGeneratorConfigHandler
