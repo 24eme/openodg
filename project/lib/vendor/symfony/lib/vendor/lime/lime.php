@@ -13,7 +13,6 @@
  *
  * @package    lime
  * @author     Fabien Potencier <fabien.potencier@gmail.com>
- * @version    SVN: $Id: lime.php 29529 2010-05-19 13:41:48Z fabien $
  */
 class lime_test
 {
@@ -68,7 +67,7 @@ class lime_test
     return self::$all_results;
   }
 
-static public function to_xml($results = null, $failed = null)
+  static public function to_xml($results = null)
   {
     if (is_null($results))
     {
@@ -87,28 +86,24 @@ static public function to_xml($results = null, $failed = null)
 
     foreach ($results as $result)
     {
-        $nb_errors = count($result['stats']['errors']);
-        if(isset($failed) && is_array($failed) && in_array($result['file'], $failed)) {
-            $nb_errors++;
-        }
       $testsuites->appendChild($testsuite = $dom->createElement('testsuite'));
       $testsuite->setAttribute('name', basename($result['file'], '.php'));
       $testsuite->setAttribute('file', $result['file']);
       $testsuite->setAttribute('failures', count($result['stats']['failed']));
-      $testsuite->setAttribute('errors', $nb_errors);
+      $testsuite->setAttribute('errors', count($result['stats']['errors']));
       $testsuite->setAttribute('skipped', count($result['stats']['skipped']));
       $testsuite->setAttribute('tests', $result['stats']['plan']);
       $testsuite->setAttribute('assertions', $result['stats']['plan']);
 
       $failures += count($result['stats']['failed']);
-      $errors += $nb_errors;
+      $errors += count($result['stats']['errors']);
       $skipped += count($result['stats']['skipped']);
       $assertions += $result['stats']['plan'];
 
       foreach ($result['tests'] as $test)
       {
         $testsuite->appendChild($testcase = $dom->createElement('testcase'));
-        $testcase->setAttribute('name', $test['message']);
+        $testcase->setAttribute('name', utf8_encode($test['message']));
         $testcase->setAttribute('file', $test['file']);
         $testcase->setAttribute('line', $test['line']);
         $testcase->setAttribute('assertions', 1);
@@ -195,6 +190,27 @@ static public function to_xml($results = null, $failed = null)
   }
 
   /**
+   * Compares two values and returns true if they are equal
+   *
+   * @param mixed  $exp1    left value
+   * @param mixed  $exp2    right value
+   * @return bool
+   */
+  private function equals($exp1, $exp2)
+  {
+    if (is_object($exp1) || is_object($exp2)) {
+      return $exp1 === $exp2;
+    } else if (is_float($exp1) && is_float($exp2)) {
+      return abs($exp1 - $exp2) < self::EPSILON;
+    } else if (is_string($exp1) && is_numeric($exp1) || is_string($exp2) && is_numeric($exp2)) {
+      return $exp1 == $exp2;
+    } else if (is_string($exp1) || is_string($exp2)) {
+      return (string) $exp1 === (string) $exp2;
+    }
+    return $exp1 == $exp2;
+  }
+
+  /**
    * Compares two values and passes if they are equal (==)
    *
    * @param mixed  $exp1    left value
@@ -205,18 +221,7 @@ static public function to_xml($results = null, $failed = null)
    */
   public function is($exp1, $exp2, $message = '')
   {
-    if (is_object($exp1) || is_object($exp2))
-    {
-      $value = $exp1 === $exp2;
-    }
-    else if (is_float($exp1) && is_float($exp2))
-    {
-      $value = abs($exp1 - $exp2) < self::EPSILON;
-    }
-    else
-    {
-      $value = $exp1 == $exp2;
-    }
+    $value = $this->equals($exp1, $exp2);
 
     if (!$result = $this->ok($value, $message))
     {
@@ -237,9 +242,11 @@ static public function to_xml($results = null, $failed = null)
    */
   public function isnt($exp1, $exp2, $message = '')
   {
-    if (!$result = $this->ok($exp1 != $exp2, $message))
+    $value = $this->equals($exp1, $exp2);
+
+    if (!$result = $this->ok(!$value, $message))
     {
-      $this->set_last_test_errors(array(sprintf("      %s", var_export($exp2, true)), '          ne', sprintf("      %s", var_export($exp2, true))));
+      $this->set_last_test_errors(array(sprintf("      %s", var_export($exp1, true)), '          ne', sprintf("      %s", var_export($exp2, true))));
     }
 
     return $result;
@@ -512,11 +519,11 @@ static public function to_xml($results = null, $failed = null)
   {
     $this->output->error($message, $file, $line, $traces);
 
-  	$this->results['stats']['errors'][] = array(
-  	  'message' => $message,
-  	  'file' => $file,
-  	  'line' => $line,
-  	);
+    $this->results['stats']['errors'][] = array(
+      'message' => $message,
+      'file' => $file,
+      'line' => $line,
+    );
   }
 
   protected function update_stats()
@@ -534,13 +541,19 @@ static public function to_xml($results = null, $failed = null)
     $this->results['tests'][$this->test_nb]['error'] = implode("\n", $errors);
   }
 
+  private function is_test_object($object)
+  {
+    return $object instanceof lime_test || $object instanceof sfTestFunctionalBase || $object instanceof sfTester;
+  }
+
   protected function find_caller($traces)
   {
     // find the first call to a method of an object that is an instance of lime_test
     $t = array_reverse($traces);
     foreach ($t as $trace)
     {
-      if (isset($trace['object']) && $trace['object'] instanceof lime_test)
+      // In internal calls, like error_handle, 'file' will be missing
+      if (isset($trace['object']) && $this->is_test_object($trace['object']) && isset($trace['file']))
       {
         return array($trace['file'], $trace['line']);
       }
@@ -551,7 +564,7 @@ static public function to_xml($results = null, $failed = null)
     return array($traces[$last]['file'], $traces[$last]['line']);
   }
 
-  public function handle_error($code, $message, $file, $line, $context)
+  public function handle_error($code, $message, $file, $line, $context = null)
   {
     if (!$this->options['error_reporting'] || ($code & error_reporting()) == 0)
     {
@@ -574,6 +587,10 @@ static public function to_xml($results = null, $failed = null)
     $this->error($type.': '.$message, $file, $line, $trace);
   }
 
+  /**
+   * @param Throwable|Exception $exception
+   * @return bool
+   */
   public function handle_exception($exception)
   {
     $this->error(get_class($exception).': '.$exception->getMessage(), $exception->getFile(), $exception->getLine(), $exception->getTrace());
@@ -690,33 +707,33 @@ class lime_output
     {
       $colorizer = $this->colorizer;
       $message = preg_replace_callback(
-      		  '/(?:^|\.)((?:not ok|dubious|errors) *\d*)\b/',
-      		  function ($match) use ($colorizer) {
-      			    return $colorizer->colorize($match[1], 'ERROR');
-      			  },
-      			  $message
-      			);
+        '/(?:^|\.)((?:not ok|dubious|errors) *\d*)\b/',
+        function ($match) use ($colorizer) {
+          return $colorizer->colorize($match[1], 'ERROR');
+        },
+        $message
+      );
       $message = preg_replace_callback(
-      		  '/(?:^|\.)(ok *\d*)\b/',
-      		  function ($match) use ($colorizer) {
-      			    return $colorizer->colorize($match[1], 'INFO');
-      			  },
-      			  $message
-      			);
+        '/(?:^|\.)(ok *\d*)\b/',
+        function ($match) use ($colorizer) {
+          return $colorizer->colorize($match[1], 'INFO');
+        },
+        $message
+      );
       $message = preg_replace_callback(
-      		  '/"(.+?)"/',
-      		  function ($match) use ($colorizer) {
-      			    return $colorizer->colorize($match[1], 'PARAMETER');
-      			  },
-      			  $message
-      			);
+        '/"(.+?)"/',
+        function ($match) use ($colorizer) {
+          return $colorizer->colorize($match[1], 'PARAMETER');
+        },
+        $message
+      );
       $message = preg_replace_callback(
-      		  '/(\->|\:\:)?([a-zA-Z0-9_]+?)\(\)/',
-      		  function ($match) use ($colorizer) {
-      			    return $colorizer->colorize($match[1].$match[2], 'PARAMETER');
-      			  },
-      			  $message
-      			);
+        '/(\->|\:\:)?([a-zA-Z0-9_]+?)\(\)/',
+        function ($match) use ($colorizer) {
+          return $colorizer->colorize($match[1].$match[2].'()', 'PARAMETER');
+        },
+        $message
+      );
     }
 
     echo ($colorizer_parameter ? $this->colorizer->colorize($message, $colorizer_parameter) : $message)."\n";
@@ -815,6 +832,7 @@ class lime_harness extends lime_registration
   public $php_cli = null;
   public $stats   = array();
   public $output  = null;
+  public $full_output = false;
 
   public function __construct($options = array())
   {
@@ -829,6 +847,7 @@ class lime_harness extends lime_registration
       'force_colors' => false,
       'output'       => null,
       'verbose'      => false,
+      'test_path'    => sys_get_temp_dir(),
     ), $options);
 
     $this->php_cli = $this->find_php_cli($this->options['php_cli']);
@@ -892,7 +911,7 @@ class lime_harness extends lime_registration
 
   public function to_xml()
   {
-    return lime_test::to_xml($this->to_array(), $this->get_failed_files());
+    return lime_test::to_xml($this->to_array());
   }
 
   public function run()
@@ -919,8 +938,8 @@ class lime_harness extends lime_registration
 
       $relative_file = $this->get_relative_file($file);
 
-      $test_file = tempnam(sys_get_temp_dir(), 'lime');
-      $result_file = tempnam(sys_get_temp_dir(), 'lime');
+      $test_file = tempnam($this->options['test_path'], 'lime_test').'.php';
+      $result_file = tempnam($this->options['test_path'], 'lime_result');
       file_put_contents($test_file, <<<EOF
 <?php
 function lime_shutdown()
@@ -976,7 +995,14 @@ EOF
         }
       }
 
-      $this->output->echoln(sprintf('%s%s%s', substr($relative_file, -min(67, strlen($relative_file))), str_repeat('.', 70 - min(67, strlen($relative_file))), $stats['status']));
+      if (true === $this->full_output)
+      {
+        $this->output->echoln(sprintf('%s%s%s', $relative_file, '.....', $stats['status']));
+      }
+      else
+      {
+        $this->output->echoln(sprintf('%s%s%s', substr($relative_file, -min(67, strlen($relative_file))), str_repeat('.', 70 - min(67, strlen($relative_file))), $stats['status']));
+      }
 
       if ('dubious' == $stats['status'])
       {
@@ -1076,7 +1102,10 @@ EOF
 
             $this->output->comment(sprintf('  at %s line %s', $this->get_relative_file($testsuite['tests'][$testcase]['file']).$this->extension, $testsuite['tests'][$testcase]['line']));
             $this->output->info('  '.$testsuite['tests'][$testcase]['message']);
-            $this->output->echoln($testsuite['tests'][$testcase]['error'], null, false);
+            if (isset($testsuite['tests'][$testcase]['error']))
+            {
+              $this->output->echoln($testsuite['tests'][$testcase]['error'], null, false);
+            }
           }
         }
       }
