@@ -26,9 +26,25 @@ class Controle extends BaseControle
         $this->storeDeclarant();
     }
 
-    protected function doSave()
-    {
-        return;
+    public function storeDeclarant() {
+        parent::storeDeclarant();
+        $etablissement = $this->getEtablissementObject();
+        if($etablissement->exist('secteur')) {
+            $this->document->secteur = $etablissement->secteur;
+        }
+        foreach($etablissement->liaisons_operateurs as $liaison) {
+            if($liaison->type_liaison == EtablissementClient::TYPE_LIAISON_COOPERATIVE) {
+                $this->liaisons_operateurs->add($liaison->getKey(), $liaison);
+            }
+        }
+    }
+
+    public function getLibelleLiaison() {
+        $libelles = [];
+        foreach($this->liaisons_operateurs as $liaison) {
+            $libelles[] = $liaison->libelle_etablissement;
+        }
+        return implode(', ', $libelles);
     }
 
     public function getParcellaire()
@@ -67,4 +83,40 @@ class Controle extends BaseControle
     {
         return $this->parcelles->exist($parcelleId);
     }
+
+    protected function doSave()
+    {
+        return;
+    }
+
+    public function save()
+    {
+        $this->storeDeclarant();
+        $this->generateMouvementsStatuts();
+        return parent::save();
+    }
+
+    public function getStatutComputed()
+    {
+        if($this->date_tournee) {
+            return ControleClient::CONTROLE_STATUT_PLANIFIE;
+        }
+        if(count($this->parcelles)) {
+            return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
+        }
+
+        return ControleClient::CONTROLE_STATUT_A_ORGANISER;
+
+    }
+
+    public function generateMouvementsStatuts()
+    {
+        if ($this->exist('mouvements_statuts')) {
+            $this->remove('mouvements_statuts');
+        }
+        $this->add('mouvements_statuts');
+        $this->mouvements_statuts->add(null,  ['CONTROLE', $this->getDocumentDefinitionModel(), $this->getStatutComputed(), $this->identifiant] );
+        print_r(['generateMouvementsStatuts', $this->mouvements_statuts]);
+    }
+
 }

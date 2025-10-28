@@ -1,3 +1,6 @@
+<script id="dataJson" type="application/json">
+<?php echo $sf_data->getRaw('json') ?>
+</script>
 <script>
     const { createWebHashHistory, createRouter, useRoute, useRouter } = VueRouter
     const { createApp } = Vue;
@@ -8,7 +11,20 @@
         templates["<?php echo $template ?>"] = { template: "<?php echo str_replace(['"', "\n"], ['\"', ""], get_partial('controle/terrain'.ucfirst($template))) ?>" }
     <?php endforeach; ?>
 
-    const controles = JSON.parse(localStorage.getItem("controles")) || {}
+    let controles = JSON.parse(localStorage.getItem("controles")) || {}
+    const server_controle = JSON.parse(document.getElementById("dataJson").textContent);
+    let localstorage_updated = false;
+    for (let i in server_controle) {
+        if (controles[server_controle[i]._id]) {
+            console.log(['ignore controle exists', controles[server_controle[i]._id]]);
+            continue;
+        }
+        controles[server_controle[i]._id] = server_controle[i];
+        localstorage_updated = true;
+    }
+    if (localstorage_updated) {
+        localStorage.setItem("controles", JSON.stringify(controles));
+    }
 
     const routes = [
       { path: '/', name: "listing", component: templates.listing },
