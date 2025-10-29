@@ -35,7 +35,7 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
             }
             $allowed = true;
         }
-        if (isset($this->accesses['allow_stalker']) && $this->accesses['allow_stalker']) {
+        if (!$allowed && isset($this->accesses['allow_stalker']) && $this->accesses['allow_stalker']) {
             if ($myUser->isStalker()) {
                 $region = Organisme::getInstance()->getCurrentRegion();
                 if ($region) {
