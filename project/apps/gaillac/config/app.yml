@@ -8,9 +8,12 @@ all:
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4
+  parcellaire_irrigable:
+    ressources: ["Contrôle"]
+    materiels: ["Contrôle"]
   societe:
-    format_identifiant: "GAI%06d"
+    format_identifiant: "GLC%06d"
   donnees_viticoles:
     regions:
       IGPTARN : "IGPTARN"
-      AOPGAILLAC: "AOPGAILLAC"
+      AOCGAILLAC: "AOCGAILLAC"

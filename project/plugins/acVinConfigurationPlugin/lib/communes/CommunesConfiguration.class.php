@@ -45,6 +45,16 @@ class CommunesConfiguration {
         if (isset($this->config['insee2secteur'])) {
             $this->secteurs = $this->config['insee2secteur'];
         }
+        $this->dep2secteur = [];
+        foreach($this->secteurs as $insee => $secteur) {
+            $dep = substr($insee, 0, 2);
+            if (!isset($this->dep2secteur[$dep])) {
+                $this->dep2secteur[$dep] = [];
+            }
+            if (!in_array($secteur, $this->dep2secteur[$dep])) {
+                $this->dep2secteur[$dep][] = $secteur;
+            }
+        }
     }
 
     public function getByCodeCommune() {
@@ -80,11 +90,25 @@ class CommunesConfiguration {
         return (count($this->secteurs));
     }
 
-    public function getSecteurFromInsee($i) {
+    public function getSecteurFromInsee($i, $code_postal = null) {
         if (!isset($this->secteurs[$i])) {
+            $dep = substr($i, 0, 2);
+            if (!$dep) {
+                $dep = substr($code_postal, 0, 2);
+            }
+            if (isset($this->dep2secteur[$dep]) && count($this->dep2secteur[$dep]) === 1) {
+                return $this->dep2secteur[$dep][0];
+            }
             return null;
         }
         return $this->secteurs[$i];
+    }
+
+    public function hasSecteurAuto() {
+        if (isset($this->config['secteur_auto'])) {
+            return $this->config['secteur_auto'];
+        }
+        return false;
     }
 
 }

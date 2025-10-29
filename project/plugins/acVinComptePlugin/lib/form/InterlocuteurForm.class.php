@@ -37,10 +37,10 @@ class InterlocuteurForm extends CompteGeneriqueForm {
         $this->setWidget('fonction', new bsWidgetFormInput());
         $this->setWidget('commentaire', new bsWidgetFormTextarea(array(), array('style' => 'width: 100%;resize:none;')));
 
-        $this->widgetSchema->setLabel('civilite', 'Civilite *');
-        $this->widgetSchema->setLabel('nom', 'Nom *');
+        $this->widgetSchema->setLabel('civilite', 'Civilite');
+        $this->widgetSchema->setLabel('nom', 'Nom');
         $this->widgetSchema->setLabel('prenom', 'Prenom');
-        $this->widgetSchema->setLabel('fonction', 'Fonction *');
+        $this->widgetSchema->setLabel('fonction', 'Fonction');
         $this->widgetSchema->setLabel('commentaire', 'Commentaire');
         
 

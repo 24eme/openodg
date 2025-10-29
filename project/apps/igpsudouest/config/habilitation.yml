@@ -1,0 +1,10 @@
+all:
+  configuration:
+    habilitation:
+      activites:
+         PRODUCTEUR: "Producteur de raisins"
+         VINIFICATEUR: "Vinificateur"
+         CONDITIONNEUR: "Conditionneur"
+         NEGOCIANT: "Négociant"
+         VRAC: "Vrac export"
+         ELEVEUR: "Éleveur"

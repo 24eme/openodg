@@ -26,9 +26,9 @@
                     ?>
                     <tr <?php if ($isTotal) { echo ' style="font-weight: bold;"'; } ?>>
                       <td>
-                          <strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $synthese['libelle']; ?></strong>
+                          <strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $synthese['libelle']; ?></a></strong>
                           <?php if (!$isTotal) : ?>
-                              <small class="pull-right">&nbsp;<?php if($synthese['superficie_totale']): ?><?php echoFloat(round($synthese['volume_total'] / $synthese['superficie_totale'], 2), true); ?>&nbsp;hl/ha</small><?php endif; ?>
+                              <small class="pull-right">&nbsp;<?php if($synthese['superficie_totale']): ?><?php echoFloat(round($synthese['volume_total'] / $synthese['superficie_totale'], 2), true); ?>&nbsp;hl/ha<?php endif; ?></small>
                           <?php endif; ?>
                       </td>
                       <td class="text-right">
@@ -46,7 +46,6 @@
                          <?php else: ?>
                           <td></td>
                         <?php endif; ?>
-                      </td>
                       <td class="text-right">
                               <?php  if ($synthese['nb_lots'] > 0): ?>
                                   <?php if ($isTotal): ?>
@@ -79,19 +78,17 @@
 <?php if ($has_sum) : ?>
           <h3 id="table_igp_title">Déclaration des lots IGP</h3>
           <div class="row">
-              <input type="hidden" data-placeholder="Sélectionner un produit ou un numéro de dossier" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
-          </div>
-          <br/>
-          <?php if(!$drev->validation_odg && $sf_user->isAdmin()): ?>
-          <div class="row text-right">
-            <div class="col-xs-3 col-xs-offset-9">
-              <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
-            </span>
+              <div class="<?php if(!$drev->validation_odg && $sf_user->isAdmin()): ?>col-xs-9<?php else: ?>col-xs-12<?php endif; ?>">
+              <input type="hidden" data-placeholder="Filtrer le tableau sur un produit, un millésime ou un numéro de dossier" data-hamzastyle-container=".table_igp" class="hamzastyle mb-2" style="width: 100%; border-radius: 0;">
+                </div>
+                <?php if(!$drev->validation_odg && $sf_user->isAdmin()): ?>
+                  <div class="col-xs-3 text-right pr-5">
+                    <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
+                  </span>
 
-            </div>
+                  </div>
+                <?php endif; ?>
           </div>
-          <br/>
-          <?php endif; ?>
           <table class="table table-bordered table-striped table_igp">
             <thead>
               <tr>
@@ -117,7 +114,7 @@
                   foreach ($drev->getLotsByUniqueAndDate() as $lot) :
                     $totalVolume+=$lot->volume;
                     ?>
-                    <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle, $lot->numero_dossier), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
+                    <tr class="<?php echo isVersionnerCssClass($lot, 'produit_libelle') ?> hamzastyle-item" data-callbackfct="$.calculTotal()" data-words='<?php echo json_encode(array($lot->produit_libelle, $lot->produit_libelle." ".$lot->millesime, $lot->millesime, $lot->numero_dossier), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'  >
                       <td>
                         <?php $drevDocOrigine = $lot->getDrevDocOrigine(); ?>
                         <?php if($drevDocOrigine): ?><a class="link pull-right" href="<?php echo url_for('drev_visualisation', $drevDocOrigine); ?>"><?php endif; ?>
@@ -138,7 +135,7 @@
                           <?php endif; ?>
                         </td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume, true); ?></span><small class="text-muted">&nbsp;hl</small></td>
-                        <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
+                        <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::getLotDestinationsType($lot->destination_type) : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
                         <?php if ($sf_user->isAdmin()): ?>
                         <td class="text-center">
                         <?php if($sf_user->isAdmin() && !$drev->validation_odg && ($lot->id_document == $drev->_id) && isset($form['lots']) && isset($form['lots'][$lot->getKey()])): ?>
@@ -169,6 +166,9 @@
                       <?php
                       $firstRow=false;
                     endforeach; ?>
+                <?php if (!$totalVolume): ?>
+                <tr><td colspan="<?php echo $drev->isValidee() ? 8 : 5; ?>"><center><i>Aucun lot déclaré</i></center></td></tr>
+                <?php endif; ?>
                 <tr>
                 <?php
                     $colspan = 2;
@@ -187,7 +187,7 @@
               </tbody>
             </table>
 
-
+        <?php if ($totalVolume): ?>
           <h3 id="table_igp_title">Prélèvement</h3>
           <?php if(!$drev->isValidee()): ?>
             <table class="table table-bordered table-striped table_igp">
@@ -237,33 +237,33 @@
             </tbody>
           </table>
         <?php endif; ?>
+    <?php endif; ?>
 <?php endif; ?>
 
-<div class="row">
-    <div class="col-xs-12" style="margin-bottom: 20px;">
 <?php if($drev->isValideeOdg() && $drev->isModifiable()): ?>
-          <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer de nouveaux lots IGP</a>
-<?php elseif(!$drev->isValideeOdg()): ?>
-        <div class="pull-right">
+    <div class="text-right" style="margin-bottom: 20px;">
+          <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer de nouveaux lots IGP</a>
+     </div>
+<?php elseif($drev->isValidee() && !$drev->isValideeOdg()): ?>
+        <div class="text-right" style="margin-bottom: 20px;">
           <p class="text-danger">Des lots sont en attente d'approbation</p>
           <p>Vous ne pouvez donc pas en ajouter de nouveaux</p>
         </div>
-<?php else: ?>
-        <div class="pull-right">
-          <p class="text-danger">Cette DREV n'est la dernière et donc pas modifiable</p>
+<?php elseif($drev->isValideeOdg()): ?>
+        <div class="text-right" style="margin-bottom: 20px;">
+          <p class="text-danger">Cette DREV n'est pas la dernière et donc pas modifiable</p>
         </div>
 <?php endif; ?>
-    </div>
-</div>
-        <hr/>
+
         <?php if($drev->hasVolumeSeuilAndSetIfNecessary()): ?>
         <?php include_partial('drev/vip2c', array('drev' => $drev, 'form' => $form, 'vip2c' => $vip2c)); ?>
         <hr/>
         <?php endif; ?>
 
-        <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
-        <h3>Contrôle</h3>
-        <?php if(isset($form["date_degustation_voulue"])): ?>
+    <?php if (count($drev->lots) > 0): ?>
+        <hr/>
+        <?php if (DrevConfiguration::getInstance()->hasDegustation() && isset($form["date_degustation_voulue"])): ?>
+        <h3>Contrôle IGP</h3>
             <?php echo $form["date_degustation_voulue"]->renderError(); ?>
             <div class="form-group" style="margin-bottom: 20px;">
                 <?php echo $form["date_degustation_voulue"]->renderLabel("Date de controle des vins souhaitée :", array("class" => "col-xs-3 control-label")); ?>
@@ -306,5 +306,5 @@
             </div>
         <?php elseif($drev->date_commission): ?>
             <p>Date de la commission : <?php echo ($drev->exist('date_commission')) ? date_format(date_create($drev->get('date_commission')), 'd/m/Y') : null; ?></p>
-            <?php endif ?>
         <?php endif; ?>
+    <?php endif;?>

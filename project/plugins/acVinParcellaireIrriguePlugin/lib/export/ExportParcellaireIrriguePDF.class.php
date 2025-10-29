@@ -57,6 +57,9 @@ class ExportParcellaireIrriguePDF extends ExportPDF {
             $currentPage[$libelleTableau] = array();
             $unite += $uniteTableau;
             foreach($parcelles as $parcelle) {
+                if ($parcelle->date_irrigation === null) {
+                    continue;
+                }
                if(($unite + $uniteLigne) > $uniteParPage) {
                    $parcellesByPage[] = $currentPage;
                    $currentPage = array();

@@ -27,7 +27,7 @@
 <div></div>
 <?php $i = 1; $table_header = true; $table_num = 1;
  foreach($lots as $lotInfo): ?>
-   <?php if ($i % 10 == 0 ) : $table_header = true; $table_num++; ?>
+   <?php if ($i % 11 == 0 ) : $table_header = true; $table_num++; ?>
 </table>
      <br pagebreak="true" />
      <strong>Table : &nbsp;<?php echo $lots[0]->getNumeroTableStr(); ?> <small>(suite)</small></strong><small><br /><br /></small>

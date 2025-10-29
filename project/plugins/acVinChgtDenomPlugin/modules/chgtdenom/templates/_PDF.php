@@ -27,6 +27,8 @@
 <br/><br/>
 <?php if ($changement === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT): ?>
     <table><tr><td><strong>Objet :</strong> Déclassement d'un lot</td></tr></table>
+<?php elseif ($chgtdenom->isRepli()):?>
+    <table><tr><td><strong>Objet :</strong> Repli d'un lot</td></tr></table>
 <?php else : ?>
     <table><tr><td><strong>Objet :</strong> Changement de dénomination d'un lot</td></tr></table>
 <?php endif ?>
@@ -34,7 +36,7 @@
 
 <table><tr><td>Madame, Monsieur,</td></tr></table>
 
-<table><tr><td>Nous vous prions de bien vouloir trouver ci-dessous la confirmation du <?php if ($changement === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT): ?>déclassement<?php else: ?>changement de dénomination<?php endif ?> de votre lot :</td></tr></table>
+<table><tr><td>Nous vous prions de bien vouloir trouver ci-dessous la confirmation du <?php if ($changement === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT): ?>déclassement<?php elseif ($chgtdenom->isRepli()): ?>repli<?php else: ?>changement de dénomination<?php endif ?> de votre lot :</td></tr></table>
 
 <br/><br/>
 

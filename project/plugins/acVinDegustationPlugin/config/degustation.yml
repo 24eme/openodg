@@ -10,9 +10,11 @@ all:
       anonymat4labo: false
       notation: true
       anonymisation_manuelle: false
+      tournees_par_secteur: false
       conformite: []
       typicite_cepage: true
       tournee_autonome: false
       has_notification : false
       anonymisation_format: %s%02d
       has_degustateurs_prerempli: false
+      has_degustateur_par_region: false

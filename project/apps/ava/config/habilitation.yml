@@ -40,9 +40,9 @@ all:
           ANNULE: "Annulé"
         automatique:
           VALIDE_QUALISUD: VALIDE
-          REFUSE_QUALISUD: REFUS
+          REFUSE_QUALISUD: REFUSE
           VALIDE_INAO: VALIDE
-          REFUSE_INAO: REFUS
+          REFUSE_INAO: REFUSE
         habilitations:
           HABILITATION:
             COMPLET: DEMANDE_HABILITATION

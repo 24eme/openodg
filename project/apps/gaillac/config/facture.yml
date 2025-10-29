@@ -3,8 +3,9 @@ all:
     facture:
       echeances: false
       export_sage_width_txt: true
-      modalite_paiement: "- comptant  par virement \\ - virement en 3, 6, 8 ou 9 fois de mars 2020 à novembre 2020 \\ - prélèvement automatique en 9 fois de mars 2020 à novembre 2020 \\"
-      uniq_template_prefix: "TEMPLATE-FACTURE"
-      paiements: true
-      export_type: "sage"
+      modalite_paiement: "30 jours par virement"
+      uniq_template_prefix: "TEMPLATE-FACTURE-%region%"
+      paiements: false
+      export_type: "isa"
       liste_dernier_exercice: true
+      facturation_region: true

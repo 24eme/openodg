@@ -24,12 +24,14 @@ class importOperateursHabilitationsIGPTarnCsvTask extends sfBaseTask
     const CSV_GROUPEMENT = 19;
     const CSV_PORTEUR_DEMARCHE = 20;
 
-    const hash_produit = 'certifications/IGP/genres/TRANQ/appellations/CDT';
+    const hash_produit_cdt = 'certifications/IGP/genres/TRANQ/appellations/CDT';
+    const hash_produit_cmt = 'certifications/IGP/genres/TRANQ/appellations/CMT';
 
     protected function configure()
     {
         $this->addArguments(array(
             new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('csvemail', sfCommandArgument::REQUIRED, "Fichier csv pour les mail"),
         ));
 
         $this->addOptions(array(
@@ -46,6 +48,8 @@ class importOperateursHabilitationsIGPTarnCsvTask extends sfBaseTask
 EOF;
     }
 
+    private $id2emails = [];
+
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
@@ -56,6 +60,21 @@ EOF;
 
         if (! $csvfile) {
             throw new sfException("Impossible d'ouvrir le fichier " . $arguments['csv']);
+        }
+
+        if ($arguments['csvemail']) {
+            $emailfile = fopen($arguments['csvemail'], 'r');
+            while(($data = fgetcsv($emailfile, 1000, ";")) !== false) {
+                if (strpos($data[2], '@') === false) {
+                    continue;
+                }
+                if ($data[0]) {
+                    $this->id2emails[$data[0]] = $data[2];
+                }
+                if ($data[1]) {
+                    $this->id2emails[$data[1]] = $data[2];
+                }
+            }
         }
 
         while(($data = fgetcsv($csvfile, 1000, ";")) !== false) {
@@ -78,8 +97,11 @@ EOF;
         if ($data[self::CSV_NOCVI]) {
             $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_NOCVI]));
         }
-        if (!$e && $data[self::CSV_SIRET]) {
+        if (!$e && !$data[self::CSV_NOCVI] && $data[self::CSV_SIRET]) {
             $e = EtablissementClient::getInstance()->findByCVI(str_replace(' ', '', $data[self::CSV_SIRET]));
+            if ($e && $e->cvi)  {
+                $e = null;
+            }
         }
         if ($e) {
             echo("Etablissement existe " . $e->_id . ", ". $data[self::CSV_NOCVI]." ".$data[self::CSV_SIRET]."\n");
@@ -91,7 +113,7 @@ EOF;
         if (!$societe) {
 
             $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
-            $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_OPERATEUR]);
+            $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR);
 
             $societe = SocieteClient::getInstance()->find($newSociete->_id);
 
@@ -114,6 +136,14 @@ EOF;
                 $societe->telephone_bureau = $tel;
             }
             $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
+
+            $cvi = EtablissementClient::repairCVI($data[self::CSV_NOCVI]);
+            if ($cvi && isset($this->id2emails[$cvi]) && $this->id2emails[$cvi]) {
+                $societe->email = $this->id2emails[$cvi];
+            }
+            if (!$societe->email && isset($this->id2emails[$societe->siret]) && $this->id2emails[$societe->siret]) {
+                $societe->email = $this->id2emails[$societe->siret];
+            }
 
             try {
                 $societe->save();
@@ -193,14 +223,20 @@ EOF;
             $activites[] = HabilitationClient::ACTIVITE_CONDITIONNEUR;
         }
 
-        if($date_demande && $date_demande < $date_decision) {
-            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_demande, $activites, [], HabilitationClient::STATUT_DEMANDE_HABILITATION, "Cheptel numéro : ".$data[self::CSV_NOCHEPTEL]);
+        if ($data[self::CSV_NOCDC] == 'IGV02') {
+            $hash = self::hash_produit_cmt;
+        }else{
+            $hash = self::hash_produit_cdt;
         }
 
-        HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_decision, $activites, [], $statut);
+        if($date_demande && $date_demande < $date_decision) {
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, $hash, $date_demande, $activites, [], HabilitationClient::STATUT_DEMANDE_HABILITATION, "Cheptel numéro : ".$data[self::CSV_NOCHEPTEL]);
+        }
+
+        HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, $hash, $date_decision, $activites, [], $statut);
 
         if($suspendu) {
-            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, date('Y-m-d'), $activites, [], HabilitationClient::STATUT_RETRAIT);
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, $hash, date('Y-m-d'), $activites, [], HabilitationClient::STATUT_RETRAIT);
         }
     }
 }

@@ -388,7 +388,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeDemandeEdition(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true, 'allow_habilitation' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
         $this->historique = $this->habilitation->getFullHistorique();
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));

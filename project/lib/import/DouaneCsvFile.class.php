@@ -58,6 +58,7 @@ class DouaneCsvFile
           '06kg' => '6. Récolte sous forme de raisins en kg',
           '07' => "7. Récolte sous forme de moûts",
           '08' => "8. Récolte à une cave coopérative par l'adhérent",
+          '08kg' => "8. Récolte à une cave coopérative par l'adhérent en kg",
           '09' => "9. Récolte en cave particulière",
           '10' => "10. Volume en vinification",
           '11' => "11. Volume en concentration",

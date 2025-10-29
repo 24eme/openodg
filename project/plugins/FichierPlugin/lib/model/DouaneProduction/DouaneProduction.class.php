@@ -89,8 +89,8 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
     /**** MOUVEMENTS ****/
 
-    public function getTemplateFacture() {
-        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
+    public function getTemplateFacture($region = null) {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne(), $region);
     }
 
     public function getMouvementsFactures() {
@@ -98,9 +98,9 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         return $this->_get('mouvements');
     }
 
-    public function getMouvementsFacturesCalcule() {
+    public function getMouvementsFacturesCalcule($region = null) {
 
-      $templateFacture = $this->getTemplateFacture();
+      $templateFacture = $this->getTemplateFacture($region);
 
       if(!$templateFacture) {
           return array();
@@ -476,7 +476,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                 $match = $match && $this->matchFilterProduit($produit, $filter);
             } elseif ($type === 'region') {
                 $region = $filter;
-                $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit->produit);
+                $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit);
             } elseif($type === 'famille') {
                 $match = $match && DRevClient::getInstance()->matchFilterFamille($this->declarant->famille, $filter);
             }
@@ -490,11 +490,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         $produitExclude = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
 
-        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produit->produit)) {
+        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produit)) {
 
             return false;
         }
-        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produit->produit)) {
+        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produit)) {
 
             return false;
         }
@@ -515,7 +515,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             if ($famille_exclue && $donnee->colonne_famille == $famille_exclue) {
                 continue;
             }
-            if($produitFilter && !$this->matchFilter($donnee, $produitFilter)) {
+            if($produitFilter && !$this->matchFilter($donnee->produit, $produitFilter)) {
                 continue;
             }
             if(preg_replace('/^0/', '', strtolower($donnee->categorie)) !== preg_replace('/^0/', '', str_replace("L", "", strtolower($numLigne)))) {
@@ -911,9 +911,8 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
     public function getTiers($include_non_reconnu = false, $relation_voulue = null, $hydrate = acCouchdbClient::HYDRATE_JSON): array {
         $cvis = array();
-        foreach($this->getCsv() as $data) {
-            $cvi = $data[DouaneCsvFile::CSV_TIERS_CVI];
-            $cvi = str_replace('"', '', $cvi);
+        foreach($this->getDonnees() as $data) {
+            $cvi = str_replace('"', '', $data->tiers_cvi);
             if(!$cvi) {
                 continue;
             }
@@ -922,18 +921,18 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             }
             if ($relation_voulue != null &&
                     $relation_voulue == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR &&
-                        (! ($data[DouaneCsvFile::CSV_LIGNE_CODE] === "06" ||
-                            $data[DouaneCsvFile::CSV_LIGNE_CODE] === "07"))) {
+                        (! ($data->categorie === "06" ||
+                            $data->categorie === "07"))) {
                 continue;
             }
             if ($relation_voulue != null &&
                     $relation_voulue == EtablissementFamilles::FAMILLE_COOPERATIVE &&
-                        (! ($data[DouaneCsvFile::CSV_LIGNE_CODE] === "09"))) {
+                        (! ($data->code === "09"))) {
                 continue;
             }
             $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
             if(!$etablissement) {
-                $cvis[$cvi] = $data[DouaneCsvFile::CSV_TIERS_LIBELLE];
+                $cvis[$cvi] = $data->tiers_raison_sociale;
                 continue;
             }
 

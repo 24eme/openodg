@@ -1,26 +1,4 @@
-<?php $route = ($sf_request->getAttribute('sf_route')) ? $sf_request->getAttribute('sf_route')->getRawValue() : NULL; ?>
-<?php $etablissement = null ?>
-<?php $compte = null; ?>
-
-<?php if($route instanceof EtablissementRoute): ?>
-    <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $compte = $etablissement->getMasterCompte(); ?>
-<?php endif; ?>
-<?php if($route instanceof CompteRoute): ?>
-    <?php $compte = $route->getCompte(); ?>
-    <?php //$etablissement = $compte->getEtablissementObj(); ?>
-<?php endif; ?>
-<?php if($route instanceof SocieteRoute): ?>
-    <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $compte = $route->getSociete()->getMasterCompte(); ?>
-<?php endif; ?>
-
-<?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) &&  !$sf_user->hasCredential(myUser::CREDENTIAL_DREV_ADMIN) && !$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && !$sf_user->hasCredential(myUser::CREDENTIAL_STALKER) && (!$compte || !$etablissement)): ?>
-    <?php $compte = $sf_user->getCompte(); ?>
-    <?php $etablissement = $compte->getSociete()->getEtablissementPrincipal(); ?>
-<?php endif; ?>
-
-
+<?php $route = $route->getRawValue(); ?>
 <nav id="menu_navigation" class="navbar navbar-default">
     <div class="container">
         <div class="navbar-header hidden-lg hidden-md">

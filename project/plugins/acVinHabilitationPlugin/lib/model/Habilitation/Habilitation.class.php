@@ -48,7 +48,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $declarant->siret = ($etablissement->getSociete()) ? $etablissement->getSociete()->siret : $etablissement->siret;
 
         $declarant->adresse = $compte->adresse;
-        $declarant->adresse_complementaire = (property_exists($compte, 'adresse_complementaire')) ? $compte->adresse_complementaire : "";
+        $declarant->adresse_complementaire = ($compte) ? (property_exists($compte, 'adresse_complementaire')) ? $compte->adresse_complementaire : "" : "";
         $declarant->commune = $compte->commune;
         $declarant->code_postal = $compte->code_postal;
         $declarant->telephone_bureau = $compte->telephone_bureau;
@@ -74,11 +74,15 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $this->set('_id', $id);
     }
 
+    private $configurations = [];
     public function getConfiguration($date = null) {
         if (!$date) {
             $date = $this->date;
         }
-        return acCouchdbManager::getClient('Configuration')->getConfiguration($date);
+        if (!isset($this->configurations[$date])) {
+            $this->configurations[$date] = acCouchdbManager::getClient('Configuration')->getConfiguration($date);
+        }
+        return $this->configurations[$date];
     }
 
     public function getProduitsConfig($date = null) {
@@ -107,15 +111,12 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
             $date = $this->getDate();
         }
         $produits = array();
+        $produits_cepage_conf = $this->getConfiguration($date)->getProduitsByCepage($cepage);
         foreach($this->getProduits() as $p) {
-            foreach($p->getConfig($date)->getProduits() as $c) {
-                $cepages = $c->getCepagesAutorises();
-                if($cepages instanceof acCouchdbJson) {
-                    $cepages = (array) $c->getCepagesAutorises()->toArray(true, false);
-                }
-                if (in_array($cepage, $cepages)) {
-                    $produits[] = $c;
-                    continue;
+            $h = preg_replace('/.*\/appellations\//', '/appellations/', $p->getHash());
+            foreach ($produits_cepage_conf as $c => $cp) {
+                if (strpos($cp->getHash(), $h) !== false) {
+                    $produits[] = $cp;
                 }
             }
         }
@@ -163,20 +164,22 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     public function addProduit($hash, $date = null) {
         $hash = preg_replace("|/declaration/|", '', $hash);
         if(!$this->getConfiguration($date)->exist('/declaration/'.$hash)){
-            return null;
+          return null;
         }
         $prod = $this->getConfiguration($date)->get('/declaration/'.$hash);
+        $exist = $this->declaration->exist($hash);
         $produit = $this->getProduitByProduitConf($prod);
-        if(!$produit) {
-            $produit_libelle = $produit->getLibelle();
+        if(!$exist) {
             $produit->initActivites();
             if($date == $this->date || !$date) {
-                $this->addHistoriqueNewProduit($produit_libelle);
+                $this->addHistoriqueNewProduit($produit->getLibelle());
             }
             $this->declaration->reorderByConf();
+            $produit = $this->get($produit->getHash());
         }
         return $produit;
     }
+
 
     public function getProduitByProduitConf($prodconf) {
         $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prodconf);
@@ -321,7 +324,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prodconf);
         $hash_produit = preg_replace("|/declaration/|", '', $node->getHash());
         $hash_produit = str_replace('/VDN/appellations/VDR', '/TRANQ/appellations/RTA', $hash_produit);
-        $hash_produit = str_replace(['/EFF/', '/MOU/'], '/TRANQ/', $hash_produit);
+        $hash_produit = str_replace(['/EFF/', '/MOU/', 'VMQ', 'VDB'], '/TRANQ/', $hash_produit);
 
         if (!$this->addProduit($hash_produit, $date)) {
             return false;

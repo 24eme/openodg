@@ -23,7 +23,7 @@
         <?php include_stylesheets() ?>
 
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
-        <link href="/css/style_igp.css" rel="stylesheet" type="text/css">
+        <link href="/css/style_assvas.css" rel="stylesheet" type="text/css">
 
         <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
         <script type="text/javascript" src="/js/lib/device.min.js"></script>
@@ -45,7 +45,7 @@
         <!-- ####### PLEASE KEEP ####### -->
 
             <div id="header" class="hidden-print">
-                <?php include_partial('global/nav'); ?>
+                <?php include_component('global', 'nav'); ?>
             </div>
 
                 <section id="content" class="container">
