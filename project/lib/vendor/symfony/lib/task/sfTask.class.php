@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- *
+ * 
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -11,620 +11,654 @@
 /**
  * Abstract class for all tasks.
  *
+ * @package    symfony
+ * @subpackage task
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @version    SVN: $Id: sfTask.class.php 33151 2011-10-24 08:55:03Z fabien $
  */
 abstract class sfTask
 {
-    protected $namespace = '';
-    protected $name;
-    protected $aliases = [];
-    protected $briefDescription = '';
-    protected $detailedDescription = '';
-    protected $arguments = [];
-    protected $options = [];
+  protected
+    $namespace           = '',
+    $name                = null,
+    $aliases             = array(),
+    $briefDescription    = '',
+    $detailedDescription = '',
+    $arguments           = array(),
+    $options             = array(),
+    $dispatcher          = null,
+    $formatter           = null;
 
-    /** @var sfEventDispatcher */
-    protected $dispatcher;
+  /**
+   * Constructor.
+   *
+   * @param sfEventDispatcher $dispatcher  An sfEventDispatcher instance
+   * @param sfFormatter       $formatter   An sfFormatter instance
+   */
+  public function __construct(sfEventDispatcher $dispatcher, sfFormatter $formatter)
+  {
+    $this->initialize($dispatcher, $formatter);
 
-    /** @var sfFormatter */
-    protected $formatter;
+    $this->configure();
+  }
 
-    /**
-     * Constructor.
-     *
-     * @param sfEventDispatcher $dispatcher An sfEventDispatcher instance
-     * @param sfFormatter       $formatter  An sfFormatter instance
-     */
-    public function __construct(sfEventDispatcher $dispatcher, sfFormatter $formatter)
+  /**
+   * Initializes the sfTask instance.
+   *
+   * @param sfEventDispatcher $dispatcher  A sfEventDispatcher instance
+   * @param sfFormatter       $formatter   A sfFormatter instance
+   */
+  public function initialize(sfEventDispatcher $dispatcher, sfFormatter $formatter)
+  {
+    $this->dispatcher = $dispatcher;
+    $this->formatter  = $formatter;
+  }
+
+  /**
+   * Configures the current task.
+   */
+  protected function configure()
+  {
+  }
+
+  /**
+   * Returns the formatter instance.
+   *
+   * @return sfFormatter The formatter instance
+   */
+  public function getFormatter()
+  {
+    return $this->formatter;
+  }
+
+  /**
+   * Sets the formatter instance.
+   *
+   * @param sfFormatter The formatter instance
+   */
+  public function setFormatter(sfFormatter $formatter)
+  {
+    $this->formatter = $formatter;
+  }
+
+  /**
+   * Runs the task from the CLI.
+   *
+   * @param sfCommandManager $commandManager  An sfCommandManager instance
+   * @param mixed            $options         The command line options
+   *
+   * @return integer 0 if everything went fine, or an error code
+   */
+  public function runFromCLI(sfCommandManager $commandManager, $options = null)
+  {
+    $commandManager->getArgumentSet()->addArguments($this->getArguments());
+    $commandManager->getOptionSet()->addOptions($this->getOptions());
+
+    return $this->doRun($commandManager, $options);
+  }
+
+  /**
+   * Runs the task.
+   *
+   * @param array|string $arguments  An array of arguments or a string representing the CLI arguments and options
+   * @param array        $options    An array of options
+   *
+   * @return integer 0 if everything went fine, or an error code
+   */
+  public function run($arguments = array(), $options = array())
+  {
+    $commandManager = new sfCommandManager(new sfCommandArgumentSet($this->getArguments()), new sfCommandOptionSet($this->getOptions()));
+
+    if (is_array($arguments) && is_string(key($arguments)))
     {
-        $this->initialize($dispatcher, $formatter);
+      // index arguments by name for ordering and reference
+      $indexArguments = array();
+      foreach ($this->arguments as $argument)
+      {
+        $indexArguments[$argument->getName()] = $argument;
+      }
 
-        $this->configure();
+      foreach ($arguments as $name => $value)
+      {
+        if (false !== $pos = array_search($name, array_keys($indexArguments)))
+        {
+          if ($indexArguments[$name]->isArray())
+          {
+            $value = join(' ', (array) $value);
+            $arguments[$pos] = isset($arguments[$pos]) ? $arguments[$pos].' '.$value : $value;
+          }
+          else
+          {
+            $arguments[$pos] = $value;
+          }
+
+          unset($arguments[$name]);
+        }
+      }
+
+      ksort($arguments);
     }
 
-    /**
-     * Initializes the sfTask instance.
-     *
-     * @param sfEventDispatcher $dispatcher A sfEventDispatcher instance
-     * @param sfFormatter       $formatter  A sfFormatter instance
-     */
-    public function initialize(sfEventDispatcher $dispatcher, sfFormatter $formatter)
+    // index options by name for reference
+    $indexedOptions = array();
+    foreach ($this->options as $option)
     {
-        $this->dispatcher = $dispatcher;
-        $this->formatter = $formatter;
+      $indexedOptions[$option->getName()] = $option;
     }
 
-    /**
-     * Returns the formatter instance.
-     *
-     * @return sfFormatter The formatter instance
-     */
-    public function getFormatter()
+    foreach ($options as $name => $value)
     {
-        return $this->formatter;
-    }
-
-    /**
-     * Sets the formatter instance.
-     *
-     * @param sfFormatter $formatter The formatter instance
-     */
-    public function setFormatter(sfFormatter $formatter)
-    {
-        $this->formatter = $formatter;
-    }
-
-    /**
-     * Runs the task from the CLI.
-     *
-     * @param sfCommandManager $commandManager An sfCommandManager instance
-     * @param mixed            $options        The command line options
-     *
-     * @return int 0 if everything went fine, or an error code
-     */
-    public function runFromCLI(sfCommandManager $commandManager, $options = null)
-    {
-        $commandManager->getArgumentSet()->addArguments($this->getArguments());
-        $commandManager->getOptionSet()->addOptions($this->getOptions());
-
-        return $this->doRun($commandManager, $options);
-    }
-
-    /**
-     * Runs the task.
-     *
-     * @param array|string $arguments An array of arguments or a string representing the CLI arguments and options
-     * @param array        $options   An array of options
-     *
-     * @return int 0 if everything went fine, or an error code
-     */
-    public function run($arguments = [], $options = [])
-    {
-        $commandManager = new sfCommandManager(new sfCommandArgumentSet($this->getArguments()), new sfCommandOptionSet($this->getOptions()));
-
-        if (is_array($arguments) && is_string(key($arguments))) {
-            // index arguments by name for ordering and reference
-            $indexArguments = [];
-            foreach ($this->arguments as $argument) {
-                $indexArguments[$argument->getName()] = $argument;
-            }
-
-            foreach ($arguments as $name => $value) {
-                if (false !== $pos = array_search($name, array_keys($indexArguments))) {
-                    if ($indexArguments[$name]->isArray()) {
-                        $value = implode(' ', (array) $value);
-                        $arguments[$pos] = isset($arguments[$pos]) ? $arguments[$pos].' '.$value : $value;
-                    } else {
-                        $arguments[$pos] = $value;
-                    }
-
-                    unset($arguments[$name]);
-                }
-            }
-
-            ksort($arguments);
+      if (is_string($name))
+      {
+        if (false === $value || null === $value || (isset($indexedOptions[$name]) && $indexedOptions[$name]->isArray() && !$value))
+        {
+          unset($options[$name]);
+          continue;
         }
 
-        // index options by name for reference
-        $indexedOptions = [];
-        foreach ($this->options as $option) {
-            $indexedOptions[$option->getName()] = $option;
-        }
+        // convert associative array
+        $value = true === $value ? $name : sprintf('%s=%s', $name, isset($indexedOptions[$name]) && $indexedOptions[$name]->isArray() ? join(' --'.$name.'=', (array) $value) : $value);
+      }
 
-        foreach ($options as $name => $value) {
-            if (is_string($name)) {
-                if (false === $value || null === $value || (isset($indexedOptions[$name]) && $indexedOptions[$name]->isArray() && !$value)) {
-                    unset($options[$name]);
+      // add -- before each option if needed
+      if (0 !== strpos($value, '--'))
+      {
+        $value = '--'.$value;
+      }
 
-                    continue;
-                }
-
-                // convert associative array
-                $value = true === $value ? $name : sprintf('%s=%s', $name, isset($indexedOptions[$name]) && $indexedOptions[$name]->isArray() ? implode(' --'.$name.'=', (array) $value) : $value);
-            }
-
-            // add -- before each option if needed
-            if (0 !== strpos($value, '--')) {
-                $value = '--'.$value;
-            }
-
-            $options[] = $value;
-            unset($options[$name]);
-        }
-
-        return $this->doRun($commandManager, is_string($arguments) ? $arguments : implode(' ', array_merge($arguments, $options)));
+      $options[] = $value;
+      unset($options[$name]);
     }
 
-    /**
-     * Returns the argument objects.
-     *
-     * @return sfCommandArgument[] an array of sfCommandArgument objects
-     */
-    public function getArguments()
+    return $this->doRun($commandManager, is_string($arguments) ? $arguments : implode(' ', array_merge($arguments, $options)));
+  }
+
+  /**
+   * Returns the argument objects.
+   *
+   * @return sfCommandArgument An array of sfCommandArgument objects.
+   */
+  public function getArguments()
+  {
+    return $this->arguments;
+  }
+
+  /**
+   * Adds an array of argument objects.
+   *
+   * @param array $arguments  An array of arguments
+   */
+  public function addArguments($arguments)
+  {
+    $this->arguments = array_merge($this->arguments, $arguments);
+  }
+
+  /**
+   * Add an argument.
+   *
+   * This method always use the sfCommandArgument class to create an option.
+   *
+   * @see sfCommandArgument::__construct()
+   */
+  public function addArgument($name, $mode = null, $help = '', $default = null)
+  {
+    $this->arguments[] = new sfCommandArgument($name, $mode, $help, $default);
+  }
+
+  /**
+   * Returns the options objects.
+   *
+   * @return sfCommandOption An array of sfCommandOption objects.
+   */
+  public function getOptions()
+  {
+    return $this->options;
+  }
+
+  /**
+   * Adds an array of option objects.
+   *
+   * @param array $options    An array of options
+   */
+  public function addOptions($options)
+  {
+    $this->options = array_merge($this->options, $options);
+  }
+
+  /**
+   * Add an option.
+   *
+   * This method always use the sfCommandOption class to create an option.
+   *
+   * @see sfCommandOption::__construct()
+   */
+  public function addOption($name, $shortcut = null, $mode = null, $help = '', $default = null)
+  {
+    $this->options[] = new sfCommandOption($name, $shortcut, $mode, $help, $default);
+  }
+
+  /**
+   * Returns the task namespace.
+   *
+   * @return string The task namespace
+   */
+  public function getNamespace()
+  {
+    return $this->namespace;
+  }
+
+  /**
+   * Returns the task name
+   *
+   * @return string The task name
+   */
+  public function getName()
+  {
+    if ($this->name)
     {
-        return $this->arguments;
+      return $this->name;
     }
 
-    /**
-     * Adds an array of argument objects.
-     *
-     * @param sfCommandArgument[] $arguments An array of arguments
-     */
-    public function addArguments($arguments)
+    $name = get_class($this);
+
+    if ('sf' == substr($name, 0, 2))
     {
-        $this->arguments = array_merge($this->arguments, $arguments);
+      $name = substr($name, 2);
     }
 
-    /**
-     * Add an argument.
-     *
-     * This method always use the sfCommandArgument class to create an option.
-     *
-     * @see sfCommandArgument::__construct()
-     *
-     * @param string     $name
-     * @param int        $mode
-     * @param string     $help
-     * @param mixed|null $default
-     */
-    public function addArgument($name, $mode = null, $help = '', $default = null)
+    if ('Task' == substr($name, -4))
     {
-        $this->arguments[] = new sfCommandArgument($name, $mode, $help, $default);
+      $name = substr($name, 0, -4);
     }
 
-    /**
-     * Returns the options objects.
-     *
-     * @return sfCommandOption[] an array of sfCommandOption objects
-     */
-    public function getOptions()
+    return str_replace('_', '-', sfInflector::underscore($name));
+  }
+
+  /**
+   * Returns the fully qualified task name.
+   *
+   * @return string The fully qualified task name
+   */
+  final function getFullName()
+  {
+    return $this->getNamespace() ? $this->getNamespace().':'.$this->getName() : $this->getName();
+  }
+
+  /**
+   * Returns the brief description for the task.
+   *
+   * @return string The brief description for the task
+   */
+  public function getBriefDescription()
+  {
+    return $this->briefDescription;
+  }
+
+  /**
+   * Returns the detailed description for the task.
+   *
+   * It also formats special string like [...|COMMENT]
+   * depending on the current formatter.
+   *
+   * @return string The detailed description for the task
+   */
+  public function getDetailedDescription()
+  {
+    return preg_replace('/\[(.+?)\|(\w+)\]/se', '$this->formatter->format("$1", "$2")', $this->detailedDescription);
+  }
+
+  /**
+   * Returns the aliases for the task.
+   *
+   * @return array An array of aliases for the task
+   */
+  public function getAliases()
+  {
+    return $this->aliases;
+  }
+
+  /**
+   * Returns the synopsis for the task.
+   *
+   * @return string The synopsis
+   */
+  public function getSynopsis()
+  {
+    $options = array();
+    foreach ($this->getOptions() as $option)
     {
-        return $this->options;
+      $shortcut = $option->getShortcut() ? sprintf('-%s|', $option->getShortcut()) : '';
+      $options[] = sprintf('['.($option->isParameterRequired() ? '%s--%s="..."' : ($option->isParameterOptional() ? '%s--%s[="..."]' : '%s--%s')).']', $shortcut, $option->getName());
     }
 
-    /**
-     * Adds an array of option objects.
-     *
-     * @param array $options An array of options
-     */
-    public function addOptions($options)
+    $arguments = array();
+    foreach ($this->getArguments() as $argument)
     {
-        $this->options = array_merge($this->options, $options);
+      $arguments[] = sprintf($argument->isRequired() ? '%s' : '[%s]', $argument->getName().($argument->isArray() ? '1' : ''));
+
+      if ($argument->isArray())
+      {
+        $arguments[] = sprintf('... [%sN]', $argument->getName());
+      }
     }
 
-    /**
-     * Add an option.
-     *
-     * This method always use the sfCommandOption class to create an option.
-     *
-     * @see sfCommandOption::__construct()
-     *
-     * @param string     $name
-     * @param string     $shortcut
-     * @param int        $mode
-     * @param string     $help
-     * @param mixed|null $default
-     */
-    public function addOption($name, $shortcut = null, $mode = null, $help = '', $default = null)
+    return sprintf('%%s %s %s %s', $this->getFullName(), implode(' ', $options), implode(' ', $arguments));
+  }
+
+  protected function process(sfCommandManager $commandManager, $options)
+  {
+    $commandManager->process($options);
+    if (!$commandManager->isValid())
     {
-        $this->options[] = new sfCommandOption($name, $shortcut, $mode, $help, $default);
+      throw new sfCommandArgumentsException(sprintf("The execution of task \"%s\" failed.\n- %s", $this->getFullName(), implode("\n- ", $commandManager->getErrors())));
     }
+  }
 
-    /**
-     * Returns the task namespace.
-     *
-     * @return string The task namespace
-     */
-    public function getNamespace()
+  protected function doRun(sfCommandManager $commandManager, $options)
+  {
+    $event = $this->dispatcher->filter(new sfEvent($this, 'command.filter_options', array('command_manager' => $commandManager)), $options);
+    $options = $event->getReturnValue();
+
+    $this->process($commandManager, $options);
+
+    $event = new sfEvent($this, 'command.pre_command', array('arguments' => $commandManager->getArgumentValues(), 'options' => $commandManager->getOptionValues()));
+    $this->dispatcher->notifyUntil($event);
+    if ($event->isProcessed())
     {
-        return $this->namespace;
+      return $event->getReturnValue();
     }
 
-    /**
-     * Returns the task name.
-     *
-     * @return string The task name
-     */
-    public function getName()
+    $ret = $this->execute($commandManager->getArgumentValues(), $commandManager->getOptionValues());
+
+    $this->dispatcher->notify(new sfEvent($this, 'command.post_command'));
+
+    return $ret;
+  }
+
+  /**
+   * Logs a message.
+   *
+   * @param mixed $messages  The message as an array of lines of a single string
+   */
+  public function log($messages)
+  {
+    if (!is_array($messages))
     {
-        if ($this->name) {
-            return $this->name;
-        }
-
-        $name = get_class($this);
-
-        if ('sf' == substr($name, 0, 2)) {
-            $name = substr($name, 2);
-        }
-
-        if ('Task' == substr($name, -4)) {
-            $name = substr($name, 0, -4);
-        }
-
-        return str_replace('_', '-', sfInflector::underscore($name));
+      $messages = array($messages);
     }
 
-    /**
-     * Returns the fully qualified task name.
-     *
-     * @return string The fully qualified task name
-     */
-    final public function getFullName()
+    $this->dispatcher->notify(new sfEvent($this, 'command.log', $messages));
+  }
+
+  /**
+   * Logs a message in a section.
+   *
+   * @param string  $section  The section name
+   * @param string  $message  The message
+   * @param int     $size     The maximum size of a line
+   * @param string  $style    The color scheme to apply to the section string (INFO, ERROR, or COMMAND)
+   */
+  public function logSection($section, $message, $size = null, $style = 'INFO')
+  {
+    $this->dispatcher->notify(new sfEvent($this, 'command.log', array($this->formatter->formatSection($section, $message, $size, $style))));
+  }
+
+  /**
+   * Logs a message as a block of text.
+   *
+   * @param string|array $messages The message to display in the block
+   * @param string       $style    The style to use
+   */
+  public function logBlock($messages, $style)
+  {
+    if (!is_array($messages))
     {
-        return $this->getNamespace() ? $this->getNamespace().':'.$this->getName() : $this->getName();
+      $messages = array($messages);
     }
 
-    /**
-     * Returns the brief description for the task.
-     *
-     * @return string The brief description for the task
-     */
-    public function getBriefDescription()
+    $style = str_replace('_LARGE', '', $style, $count);
+    $large = (Boolean) $count;
+
+    $len = 0;
+    $lines = array();
+    foreach ($messages as $message)
     {
-        return $this->briefDescription;
+      $lines[] = sprintf($large ? '  %s  ' : ' %s ', $message);
+      $len = max($this->strlen($message) + ($large ? 4 : 2), $len);
     }
 
-    /**
-     * Returns the detailed description for the task.
-     *
-     * It also formats special string like [...|COMMENT]
-     * depending on the current formatter.
-     *
-     * @return string The detailed description for the task
-     */
-    public function getDetailedDescription()
+    $messages = $large ? array(str_repeat(' ', $len)) : array();
+    foreach ($lines as $line)
     {
-        $formatter = $this->getFormatter();
-
-        return preg_replace_callback('/\[(.+?)\|(\w+)\]/s', function ($match) use ($formatter) {
-            return $formatter->format($match['1'], $match['2']);
-        }, $this->detailedDescription);
+      $messages[] = $line.str_repeat(' ', $len - $this->strlen($line));
     }
-
-    /**
-     * Returns the aliases for the task.
-     *
-     * @return array An array of aliases for the task
-     */
-    public function getAliases()
+    if ($large)
     {
-        return $this->aliases;
+      $messages[] = str_repeat(' ', $len);
     }
 
-    /**
-     * Returns the synopsis for the task.
-     *
-     * @return string The synopsis
-     */
-    public function getSynopsis()
+    foreach ($messages as $message)
     {
-        $options = [];
-        foreach ($this->getOptions() as $option) {
-            $shortcut = $option->getShortcut() ? sprintf('-%s|', $option->getShortcut()) : '';
-            $options[] = sprintf('['.($option->isParameterRequired() ? '%s--%s="..."' : ($option->isParameterOptional() ? '%s--%s[="..."]' : '%s--%s')).']', $shortcut, $option->getName());
-        }
-
-        $arguments = [];
-        foreach ($this->getArguments() as $argument) {
-            $arguments[] = sprintf($argument->isRequired() ? '%s' : '[%s]', $argument->getName().($argument->isArray() ? '1' : ''));
-
-            if ($argument->isArray()) {
-                $arguments[] = sprintf('... [%sN]', $argument->getName());
-            }
-        }
-
-        return sprintf('%%s %s %s %s', $this->getFullName(), implode(' ', $options), implode(' ', $arguments));
+      $this->log($this->formatter->format($message, $style));
     }
+  }
 
-    /**
-     * Logs a message.
-     *
-     * @param mixed $messages The message as an array of lines of a single string
-     */
-    public function log($messages)
+  /**
+   * Asks a question to the user.
+   *
+   * @param string|array $question The question to ask
+   * @param string       $style    The style to use (QUESTION by default)
+   * @param string       $default  The default answer if none is given by the user
+   *
+   * @param string       The user answer
+   */
+  public function ask($question, $style = 'QUESTION', $default = null)
+  {
+    if (false === $style)
     {
-        if (!is_array($messages)) {
-            $messages = [$messages];
-        }
-
-        $this->dispatcher->notify(new sfEvent($this, 'command.log', $messages));
+      $this->log($question);
     }
-
-    /**
-     * Logs a message in a section.
-     *
-     * @param string $section The section name
-     * @param string $message The message
-     * @param int    $size    The maximum size of a line
-     * @param string $style   The color scheme to apply to the section string (INFO, ERROR, or COMMAND)
-     */
-    public function logSection($section, $message, $size = null, $style = 'INFO')
+    else
     {
-        $this->dispatcher->notify(new sfEvent($this, 'command.log', [$this->formatter->formatSection($section, $message, $size, $style)]));
+      $this->logBlock($question, null === $style ? 'QUESTION' : $style);
     }
 
-    /**
-     * Logs a message as a block of text.
-     *
-     * @param array|string $messages The message to display in the block
-     * @param string       $style    The style to use
-     */
-    public function logBlock($messages, $style)
+    $ret = trim(fgets(STDIN));
+
+    return $ret ? $ret : $default;
+  }
+
+  /**
+   * Asks a confirmation to the user.
+   *
+   * The question will be asked until the user answer by nothing, yes, or no.
+   *
+   * @param string|array $question The question to ask
+   * @param string       $style    The style to use (QUESTION by default)
+   * @param Boolean      $default  The default answer if the user enters nothing
+   *
+   * @param Boolean      true if the user has confirmed, false otherwise
+   */
+  public function askConfirmation($question, $style = 'QUESTION', $default = true)
+  {
+    $answer = 'z';
+    while ($answer && !in_array(strtolower($answer[0]), array('y', 'n')))
     {
-        if (!is_array($messages)) {
-            $messages = [$messages];
-        }
-
-        $style = str_replace('_LARGE', '', $style, $count);
-        $large = (bool) $count;
-
-        $len = 0;
-        $lines = [];
-        foreach ($messages as $message) {
-            $lines[] = sprintf($large ? '  %s  ' : ' %s ', $message);
-            $len = max($this->strlen($message) + ($large ? 4 : 2), $len);
-        }
-
-        $messages = $large ? [str_repeat(' ', $len)] : [];
-        foreach ($lines as $line) {
-            $messages[] = $line.str_repeat(' ', $len - $this->strlen($line));
-        }
-        if ($large) {
-            $messages[] = str_repeat(' ', $len);
-        }
-
-        foreach ($messages as $message) {
-            $this->log($this->formatter->format($message, $style));
-        }
+      $answer = $this->ask($question, $style);
     }
 
-    /**
-     * Asks a question to the user.
-     *
-     * @param array|string $question The question to ask
-     * @param string       $style    The style to use (QUESTION by default)
-     * @param string       $default  The default answer if none is given by the user
-     *
-     * @return string The user answer
-     */
-    public function ask($question, $style = 'QUESTION', $default = null)
+    if (false === $default)
     {
-        if (false === $style) {
-            $this->log($question);
-        } else {
-            $this->logBlock($question, null === $style ? 'QUESTION' : $style);
-        }
-
-        $ret = trim(fgets(STDIN));
-
-        return $ret ?: $default;
+      return $answer && 'y' == strtolower($answer[0]);
     }
-
-    /**
-     * Asks a confirmation to the user.
-     *
-     * The question will be asked until the user answer by nothing, yes, or no.
-     *
-     * @param array|string $question The question to ask
-     * @param string       $style    The style to use (QUESTION by default)
-     * @param bool         $default  The default answer if the user enters nothing
-     *
-     * @return bool true if the user has confirmed, false otherwise
-     */
-    public function askConfirmation($question, $style = 'QUESTION', $default = true)
+    else
     {
-        $answer = 'z';
-        while ($answer && !in_array(strtolower($answer[0]), ['y', 'n'])) {
-            $answer = $this->ask($question, $style);
-        }
-
-        if (false === $default) {
-            return $answer && 'y' == strtolower($answer[0]);
-        }
-
-        return !$answer || 'y' == strtolower($answer[0]);
+      return !$answer || 'y' == strtolower($answer[0]);
     }
+  }
 
-    /**
-     * Asks for a value and validates the response.
-     *
-     * Available options:
-     *
-     *  * value:    A value to try against the validator before asking the user
-     *  * attempts: Max number of times to ask before giving up (false by default, which means infinite)
-     *  * style:    Style for question output (QUESTION by default)
-     *
-     * @param array|string $question
-     *
-     * @throws sfValidatorError
-     */
-    public function askAndValidate($question, sfValidatorBase $validator, array $options = [])
+  /**
+   * Asks for a value and validates the response.
+   *
+   * Available options:
+   *
+   *  * value:    A value to try against the validator before asking the user
+   *  * attempts: Max number of times to ask before giving up (false by default, which means infinite)
+   *  * style:    Style for question output (QUESTION by default)
+   *
+   * @param   string|array    $question
+   * @param   sfValidatorBase $validator
+   * @param   array           $options
+   *
+   * @return  mixed
+   */
+  public function askAndValidate($question, sfValidatorBase $validator, array $options = array())
+  {
+    if (!is_array($question))
     {
-        if (!is_array($question)) {
-            $question = [$question];
-        }
-
-        $options = array_merge([
-            'value' => null,
-            'attempts' => false,
-            'style' => 'QUESTION',
-        ], $options);
-
-        // does the provided value passes the validator?
-        if ($options['value']) {
-            try {
-                return $validator->clean($options['value']);
-            } catch (sfValidatorError $error) {
-            }
-        }
-
-        // no, ask the user for a valid user
-        /** @var sfValidatorError|null $error */
-        $error = null;
-        while (false === $options['attempts'] || $options['attempts']--) {
-            if (null !== $error) {
-                $this->logBlock($error->getMessage(), 'ERROR');
-            }
-
-            $value = $this->ask($question, $options['style'], null);
-
-            try {
-                return $validator->clean($value);
-            } catch (sfValidatorError $error) {
-            }
-        }
-
-        throw $error;
+      $question = array($question);
     }
 
-    /**
-     * Returns an XML representation of a task.
-     *
-     * @return string An XML string representing the task
-     */
-    public function asXml()
+    $options = array_merge(array(
+      'value'    => null,
+      'attempts' => false,
+      'style'    => 'QUESTION',
+    ), $options);
+
+    // does the provided value passes the validator?
+    if ($options['value'])
     {
-        $dom = new DOMDocument('1.0', 'UTF-8');
-        $dom->formatOutput = true;
-        $dom->appendChild($taskXML = $dom->createElement('task'));
-        $taskXML->setAttribute('id', $this->getFullName());
-        $taskXML->setAttribute('namespace', $this->getNamespace() ?: '_global');
-        $taskXML->setAttribute('name', $this->getName());
-
-        $taskXML->appendChild($usageXML = $dom->createElement('usage'));
-        $usageXML->appendChild($dom->createTextNode(sprintf($this->getSynopsis(), '')));
-
-        $taskXML->appendChild($descriptionXML = $dom->createElement('description'));
-        $descriptionXML->appendChild($dom->createTextNode(implode("\n ", explode("\n", $this->getBriefDescription()))));
-
-        $taskXML->appendChild($helpXML = $dom->createElement('help'));
-        $help = $this->detailedDescription;
-        $help = str_replace(['|COMMENT', '|INFO'], ['|strong', '|em'], $help);
-        $help = preg_replace('/\[(.+?)\|(\w+)\]/s', '<$2>$1</$2>', $help);
-        $helpXML->appendChild($dom->createTextNode(implode("\n ", explode("\n", $help))));
-
-        $taskXML->appendChild($aliasesXML = $dom->createElement('aliases'));
-        foreach ($this->getAliases() as $alias) {
-            $aliasesXML->appendChild($aliasXML = $dom->createElement('alias'));
-            $aliasXML->appendChild($dom->createTextNode($alias));
-        }
-
-        $taskXML->appendChild($argumentsXML = $dom->createElement('arguments'));
-        foreach ($this->getArguments() as $argument) {
-            $argumentsXML->appendChild($argumentXML = $dom->createElement('argument'));
-            $argumentXML->setAttribute('name', $argument->getName());
-            $argumentXML->setAttribute('is_required', $argument->isRequired() ? 1 : 0);
-            $argumentXML->setAttribute('is_array', $argument->isArray() ? 1 : 0);
-            $argumentXML->appendChild($helpXML = $dom->createElement('description'));
-            $helpXML->appendChild($dom->createTextNode($argument->getHelp()));
-
-            $argumentXML->appendChild($defaultsXML = $dom->createElement('defaults'));
-            $defaults = is_array($argument->getDefault()) ? $argument->getDefault() : ($argument->getDefault() ? [$argument->getDefault()] : []);
-            foreach ($defaults as $default) {
-                $defaultsXML->appendChild($defaultXML = $dom->createElement('default'));
-                $defaultXML->appendChild($dom->createTextNode($default));
-            }
-        }
-
-        $taskXML->appendChild($optionsXML = $dom->createElement('options'));
-        foreach ($this->getOptions() as $option) {
-            $optionsXML->appendChild($optionXML = $dom->createElement('option'));
-            $optionXML->setAttribute('name', '--'.$option->getName());
-            $optionXML->setAttribute('shortcut', $option->getShortcut() ? '-'.$option->getShortcut() : '');
-            $optionXML->setAttribute('accept_parameter', $option->acceptParameter() ? 1 : 0);
-            $optionXML->setAttribute('is_parameter_required', $option->isParameterRequired() ? 1 : 0);
-            $optionXML->setAttribute('is_multiple', $option->isArray() ? 1 : 0);
-            $optionXML->appendChild($helpXML = $dom->createElement('description'));
-            $helpXML->appendChild($dom->createTextNode($option->getHelp()));
-
-            if ($option->acceptParameter()) {
-                $optionXML->appendChild($defaultsXML = $dom->createElement('defaults'));
-                $defaults = is_array($option->getDefault()) ? $option->getDefault() : ($option->getDefault() ? [$option->getDefault()] : []);
-                foreach ($defaults as $default) {
-                    $defaultsXML->appendChild($defaultXML = $dom->createElement('default'));
-                    $defaultXML->appendChild($dom->createTextNode($default));
-                }
-            }
-        }
-
-        return $dom->saveXML();
+      try
+      {
+        return $validator->clean($options['value']);
+      }
+      catch (sfValidatorError $error)
+      {
+      }
     }
 
-    /**
-     * Configures the current task.
-     */
-    protected function configure()
+    // no, ask the user for a valid user
+    $error = null;
+    while (false === $options['attempts'] || $options['attempts']--)
     {
+      if (null !== $error)
+      {
+        $this->logBlock($error->getMessage(), 'ERROR');
+      }
+
+      $value = $this->ask($question, $options['style'], null);
+
+      try
+      {
+        return $validator->clean($value);
+      }
+      catch (sfValidatorError $error)
+      {
+      }
     }
 
-    protected function process(sfCommandManager $commandManager, $options)
+    throw $error;
+  }
+
+  /**
+   * Returns an XML representation of a task.
+   *
+   * @return string An XML string representing the task
+   */
+  public function asXml()
+  {
+    $dom = new DOMDocument('1.0', 'UTF-8');
+    $dom->formatOutput = true;
+    $dom->appendChild($taskXML = $dom->createElement('task'));
+    $taskXML->setAttribute('id', $this->getFullName());
+    $taskXML->setAttribute('namespace', $this->getNamespace() ? $this->getNamespace() : '_global');
+    $taskXML->setAttribute('name', $this->getName());
+
+    $taskXML->appendChild($usageXML = $dom->createElement('usage'));
+    $usageXML->appendChild($dom->createTextNode(sprintf($this->getSynopsis(), '')));
+
+    $taskXML->appendChild($descriptionXML = $dom->createElement('description'));
+    $descriptionXML->appendChild($dom->createTextNode(implode("\n ", explode("\n", $this->getBriefDescription()))));
+
+    $taskXML->appendChild($helpXML = $dom->createElement('help'));
+    $help = $this->detailedDescription;
+    $help = str_replace(array('|COMMENT', '|INFO'), array('|strong', '|em'), $help);
+    $help = preg_replace('/\[(.+?)\|(\w+)\]/s', '<$2>$1</$2>', $help);
+    $helpXML->appendChild($dom->createTextNode(implode("\n ", explode("\n", $help))));
+
+    $taskXML->appendChild($aliasesXML = $dom->createElement('aliases'));
+    foreach ($this->getAliases() as $alias)
     {
-        $commandManager->process($options);
-        if (!$commandManager->isValid()) {
-            throw new sfCommandArgumentsException(sprintf("The execution of task \"%s\" failed.\n- %s", $this->getFullName(), implode("\n- ", $commandManager->getErrors())));
-        }
+      $aliasesXML->appendChild($aliasXML = $dom->createElement('alias'));
+      $aliasXML->appendChild($dom->createTextNode($alias));
     }
 
-    protected function doRun(sfCommandManager $commandManager, $options)
+    $taskXML->appendChild($argumentsXML = $dom->createElement('arguments'));
+    foreach ($this->getArguments() as $argument)
     {
-        $event = $this->dispatcher->filter(new sfEvent($this, 'command.filter_options', ['command_manager' => $commandManager]), $options);
-        $options = $event->getReturnValue();
+      $argumentsXML->appendChild($argumentXML = $dom->createElement('argument'));
+      $argumentXML->setAttribute('name', $argument->getName());
+      $argumentXML->setAttribute('is_required', $argument->isRequired() ? 1 : 0);
+      $argumentXML->setAttribute('is_array', $argument->isArray() ? 1 : 0);
+      $argumentXML->appendChild($helpXML = $dom->createElement('description'));
+      $helpXML->appendChild($dom->createTextNode($argument->getHelp()));
 
-        $this->process($commandManager, $options);
-
-        $event = new sfEvent($this, 'command.pre_command', ['arguments' => $commandManager->getArgumentValues(), 'options' => $commandManager->getOptionValues()]);
-        $this->dispatcher->notifyUntil($event);
-        if ($event->isProcessed()) {
-            return $event->getReturnValue();
-        }
-
-        $ret = $this->execute($commandManager->getArgumentValues(), $commandManager->getOptionValues());
-
-        $this->dispatcher->notify(new sfEvent($this, 'command.post_command'));
-
-        return $ret;
+      $argumentXML->appendChild($defaultsXML = $dom->createElement('defaults'));
+      $defaults = is_array($argument->getDefault()) ? $argument->getDefault() : ($argument->getDefault() ? array($argument->getDefault()) : array());
+      foreach ($defaults as $default)
+      {
+        $defaultsXML->appendChild($defaultXML = $dom->createElement('default'));
+        $defaultXML->appendChild($dom->createTextNode($default));
+      }
     }
 
-    /**
-     * Executes the current task.
-     *
-     * @param array $arguments An array of arguments
-     * @param array $options   An array of options
-     *
-     * @return int 0 if everything went fine, or an error code
-     */
-    abstract protected function execute($arguments = [], $options = []);
-
-    protected function strlen($string)
+    $taskXML->appendChild($optionsXML = $dom->createElement('options'));
+    foreach ($this->getOptions() as $option)
     {
-        if (!function_exists('mb_strlen')) {
-            return strlen($string);
-        }
+      $optionsXML->appendChild($optionXML = $dom->createElement('option'));
+      $optionXML->setAttribute('name', '--'.$option->getName());
+      $optionXML->setAttribute('shortcut', $option->getShortcut() ? '-'.$option->getShortcut() : '');
+      $optionXML->setAttribute('accept_parameter', $option->acceptParameter() ? 1 : 0);
+      $optionXML->setAttribute('is_parameter_required', $option->isParameterRequired() ? 1 : 0);
+      $optionXML->setAttribute('is_multiple', $option->isArray() ? 1 : 0);
+      $optionXML->appendChild($helpXML = $dom->createElement('description'));
+      $helpXML->appendChild($dom->createTextNode($option->getHelp()));
 
-        if (false === $encoding = mb_detect_encoding($string)) {
-            return strlen($string);
+      if ($option->acceptParameter())
+      {
+        $optionXML->appendChild($defaultsXML = $dom->createElement('defaults'));
+        $defaults = is_array($option->getDefault()) ? $option->getDefault() : ($option->getDefault() ? array($option->getDefault()) : array());
+        foreach ($defaults as $default)
+        {
+          $defaultsXML->appendChild($defaultXML = $dom->createElement('default'));
+          $defaultXML->appendChild($dom->createTextNode($default));
         }
-
-        return mb_strlen($string, $encoding);
+      }
     }
+
+    return $dom->saveXml();
+  }
+
+  /**
+   * Executes the current task.
+   *
+   * @param array    $arguments  An array of arguments
+   * @param array    $options    An array of options
+   *
+   * @return integer 0 if everything went fine, or an error code
+   */
+   abstract protected function execute($arguments = array(), $options = array());
+
+   protected function strlen($string)
+   {
+     if (!function_exists('mb_strlen')) {
+         return strlen($string);
+     }
+
+     if (false === $encoding = mb_detect_encoding($string)) {
+         return strlen($string);
+     }
+
+     return mb_strlen($string, $encoding);
+   }
 }

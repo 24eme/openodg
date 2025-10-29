@@ -16,6 +16,8 @@
  *
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     Sean Kerr <sean@code-box.org>
+ *
+ * @version    SVN: $Id$
  */
 abstract class sfConfigHandler
 {
@@ -39,7 +41,7 @@ abstract class sfConfigHandler
      *
      * @param array $parameters An associative array of initialization parameters
      *
-     * @throws sfInitializationException If an error occurs while initializing this ConfigHandler
+     * @throws <b>sfInitializationException</b> If an error occurs while initializing this ConfigHandler
      */
     public function initialize($parameters = null)
     {
@@ -54,8 +56,8 @@ abstract class sfConfigHandler
      *
      * @return string Data to be written to a cache file
      *
-     * @throws sfConfigurationException If a requested configuration file does not exist or is not readable
-     * @throws sfParseException         If a requested configuration file is improperly formatted
+     * @throws <b>sfConfigurationException</b> If a requested configuration file does not exist or is not readable
+     * @throws <b>sfParseException</b> If a requested configuration file is improperly formatted
      */
     abstract public function execute($configFiles);
 
