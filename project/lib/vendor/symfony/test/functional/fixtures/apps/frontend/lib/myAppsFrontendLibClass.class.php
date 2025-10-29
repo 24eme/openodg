@@ -2,8 +2,8 @@
 
 class myAppsFrontendLibClass
 {
-    public static function ping()
-    {
-        return 'pong';
-    }
+  static public function ping()
+  {
+    return 'pong';
+  }
 }

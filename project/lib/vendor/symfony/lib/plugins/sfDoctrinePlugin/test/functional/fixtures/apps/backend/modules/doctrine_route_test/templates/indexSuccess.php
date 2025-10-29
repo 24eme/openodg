@@ -1,3 +1,1 @@
-<?php
-
-echo get_class($object);
+<?php echo get_class($object) ?>

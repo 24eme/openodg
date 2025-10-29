@@ -11,74 +11,78 @@
 /**
  * sfTester is the base class for all tester classes.
  *
+ * @package    symfony
+ * @subpackage test
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @version    SVN: $Id: sfTester.class.php 13691 2008-12-03 22:17:01Z Kris.Wallsmith $
  */
 abstract class sfTester
 {
-    protected $inABlock = false;
-    protected $browser;
-    protected $tester;
+  protected
+    $inABlock = false,
+    $browser  = null,
+    $tester   = null;
 
-    /**
-     * Constructor.
-     *
-     * @param sfTestFunctionalBase $browser A browser
-     * @param lime_test            $tester  A tester object
-     */
-    public function __construct(sfTestFunctionalBase $browser, $tester)
-    {
-        $this->browser = $browser;
-        $this->tester = $tester;
-    }
+  /**
+   * Constructor.
+   *
+   * @param sfTestFunctionalBase $browser A browser
+   * @param lime_test            $tester  A tester object
+   */
+  public function __construct(sfTestFunctionalBase $browser, $tester)
+  {
+    $this->browser = $browser;
+    $this->tester  = $tester;
+  }
 
-    public function __call($method, $arguments)
-    {
-        call_user_func_array([$this->browser, $method], $arguments);
+  /**
+   * Prepares the tester.
+   */
+  abstract public function prepare();
 
-        return $this->getObjectToReturn();
-    }
+  /**
+   * Initializes the tester.
+   */
+  abstract public function initialize();
 
-    /**
-     * Prepares the tester.
-     */
-    abstract public function prepare();
+  /**
+   * Begins a block.
+   *
+   * @return sfTester This sfTester instance
+   */
+  public function begin()
+  {
+    $this->inABlock = true;
 
-    /**
-     * Initializes the tester.
-     */
-    abstract public function initialize();
+    return $this->browser->begin();
+  }
 
-    /**
-     * Begins a block.
-     *
-     * @return sfTester This sfTester instance
-     */
-    public function begin()
-    {
-        $this->inABlock = true;
+  /**
+   * Ends a block.
+   *
+   * @param sfTestFunctionalBase
+   */
+  public function end()
+  {
+    $this->inABlock = false;
 
-        return $this->browser->begin();
-    }
+    return $this->browser->end();
+  }
 
-    /**
-     * Ends a block.
-     *
-     * @param sfTestFunctionalBase
-     */
-    public function end()
-    {
-        $this->inABlock = false;
+  /**
+   * Returns the object that each test method must return.
+   *
+   * @return sfTestFunctionalBase|sfTester
+   */
+  public function getObjectToReturn()
+  {
+    return $this->inABlock ? $this : $this->browser;
+  }
 
-        return $this->browser->end();
-    }
+  public function __call($method, $arguments)
+  {
+    call_user_func_array(array($this->browser, $method), $arguments);
 
-    /**
-     * Returns the object that each test method must return.
-     *
-     * @return sfTester|sfTestFunctionalBase
-     */
-    public function getObjectToReturn()
-    {
-        return $this->inABlock ? $this : $this->browser;
-    }
+    return $this->getObjectToReturn();
+  }
 }
