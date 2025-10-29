@@ -3,30 +3,17 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- *
+ * 
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-require_once __DIR__.'/../../bootstrap/unit.php';
+require_once(dirname(__FILE__).'/../../bootstrap/unit.php');
 
 class myResponse extends sfResponse
 {
-    public function __serialize()
-    {
-    }
-
-    public function __unserialize($data)
-    {
-    }
-
-    public function serialize()
-    {
-    }
-
-    public function unserialize($serialized)
-    {
-    }
+  function serialize() {}
+  function unserialize($serialized) {}
 }
 
 class fakeResponse
@@ -39,7 +26,7 @@ $dispatcher = new sfEventDispatcher();
 
 // ->initialize()
 $t->diag('->initialize()');
-$response = new myResponse($dispatcher, ['foo' => 'bar']);
+$response = new myResponse($dispatcher, array('foo' => 'bar'));
 $options = $response->getOptions();
 $t->is($options['foo'], 'bar', '->initialize() takes an array of options as its second argument');
 $t->is($options['logging'], false, '->getOptions() returns options for response instance');
@@ -62,6 +49,6 @@ $t->diag('->serialize() ->unserialize()');
 $t->ok(new myResponse($dispatcher) instanceof Serializable, 'sfResponse implements the Serializable interface');
 
 // new methods via sfEventDispatcher
-require_once $_test_dir.'/unit/sfEventDispatcherTest.class.php';
+require_once($_test_dir.'/unit/sfEventDispatcherTest.class.php');
 $dispatcherTest = new sfEventDispatcherTest($t);
 $dispatcherTest->launchTests($dispatcher, $response, 'response');

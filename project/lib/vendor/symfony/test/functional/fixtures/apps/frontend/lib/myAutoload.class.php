@@ -2,14 +2,15 @@
 
 class myAutoload
 {
-    public static function autoload($class)
+  static public function autoload($class)
+  {
+    if ('myAutoloadedClass' == $class)
     {
-        if ('myAutoloadedClass' == $class) {
-            require_once __DIR__.'/myAutoloadedClass.class.php';
+      require_once(dirname(__FILE__).'/myAutoloadedClass.class.php');
 
-            return true;
-        }
-
-        return false;
+      return true;
     }
+
+    return false;
+  }
 }

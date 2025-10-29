@@ -9,8 +9,9 @@
  */
 
 $app = 'frontend';
-if (!include __DIR__.'/../bootstrap/functional.php') {
-    return;
+if (!include(dirname(__FILE__).'/../bootstrap/functional.php'))
+{
+  return;
 }
 
 $b = new sfTestBrowser();
@@ -24,12 +25,14 @@ $b->
     checkElement('link[href="/css/main.css"]')->
     checkElement('link[href="/css/multiple_media.css"][media="print,handheld"]')->
     matches('#'.preg_quote('<!--[if lte IE 6]><link rel="stylesheet" type="text/css" media="screen" href="/css/ie6.css" /><![endif]-->').'#')->
-  end();
+  end()
+;
 
 // default 404
 $b->
   get('/nonexistant')->
-  with('response')->isStatusCode(404);
+  with('response')->isStatusCode(404)
+;
 /*
 $b->
   get('/nonexistant/')->
@@ -58,14 +61,16 @@ $b->
   with('response')->begin()->
     isStatusCode(404)->
     checkElement('body', '/404/')->
-  end();
+  end()
+;
 sfConfig::set('sf_cache', false);
 sfConfig::set('sf_etag', false);
 
 // unexistant action
 $b->
   get('/default/nonexistantaction')->
-  with('response')->isStatusCode(404);
+  with('response')->isStatusCode(404)
+;
 
 // module.yml: enabled
 $b->
@@ -78,7 +83,8 @@ $b->
     checkElement('body', '/module is unavailable/i')->
     checkElement('body', '!/congratulations/i')->
     checkElement('link[href="/sf/sf_default/css/screen.css"]')->
-  end();
+  end()
+;
 
 // view.yml: has_layout
 $b->
@@ -87,7 +93,8 @@ $b->
     isStatusCode(200)->
     checkElement('body', '/no layout/i')->
     checkElement('head title', false)->
-  end();
+  end()
+;
 
 // security.yml: is_secure
 $b->
@@ -102,7 +109,8 @@ $b->
     // check that there is no double output caused by the forwarding in a filter
     checkElement('body', 1)->
     checkElement('link[href="/sf/sf_default/css/screen.css"]')->
-  end();
+  end()
+;
 
 // security.yml: case sensitivity
 $b->
@@ -113,7 +121,8 @@ $b->
   with('response')->begin()->
     isStatusCode(200)->
     checkElement('body', '/Login Required/i')->
-  end();
+  end()
+;
 
 $b->
   get('/configSecurityIsSecureAction/Index')->
@@ -123,13 +132,15 @@ $b->
   with('response')->begin()->
     isStatusCode(200)->
     checkElement('body', '/Login Required/i')->
-  end();
+  end()
+;
 
 // Max forwards
 $b->
   get('/configSettingsMaxForwards/selfForward')->
   with('response')->isStatusCode(500)->
-  throwsException(null, '/Too many forwards have been detected for this request/i');
+  throwsException(null, '/Too many forwards have been detected for this request/i')
+;
 
 // filters.yml: add a filter
 $b->
@@ -138,7 +149,8 @@ $b->
     isStatusCode(200)->
     checkElement('body', '/in a filter/i')->
     checkElement('body', '!/congratulation/i')->
-  end();
+  end()
+;
 
 // css and js inclusions
 $b->
@@ -147,7 +159,8 @@ $b->
     isStatusCode(200)->
     checkElement('head link[rel="stylesheet"]', false)->
     checkElement('head script[type="text/javascript"]', false)->
-  end();
+  end()
+;
 
 // libraries autoloading
 $b->
@@ -158,7 +171,8 @@ $b->
     checkElement('#lib2', 'pong')->
     checkElement('#lib3', 'pong')->
     checkElement('#lib4', 'nopong')->
-  end();
+  end()
+;
 
 // libraries autoloading in a plugin
 $b->
@@ -168,7 +182,8 @@ $b->
     checkElement('#lib1', 'pong')->
     checkElement('#lib2', 'pong')->
     checkElement('#lib3', 'pong')->
-  end();
+  end()
+;
 
 // renderText
 $b->
@@ -176,7 +191,8 @@ $b->
   with('response')->begin()->
     isStatusCode(200)->
     matches('/foo/')->
-  end();
+  end()
+;
 
 // view.yml when changing template
 $b->
@@ -185,7 +201,8 @@ $b->
     isStatusCode(200)->
     isHeader('Content-Type', 'text/html; charset=utf-8')->
     checkElement('head title', 'foo title')->
-  end();
+  end()
+;
 
 // view.yml with other than default content-type
 $b->
@@ -195,7 +212,8 @@ $b->
     isStatusCode(200)->
     matches('/<head>/')->
     matches('/plaintext/')->
-  end();
+  end()
+;
 
 // view.yml with other than default content-type and no layout
 $b->
@@ -204,7 +222,8 @@ $b->
     isStatusCode(200)->
     isHeader('Content-Type', 'image/jpg')->
     matches('/image/')->
-  end();
+  end()
+;
 
 // getPresentationFor()
 $b->
@@ -213,4 +232,5 @@ $b->
     isStatusCode(200)->
     checkElement('#foo', 'foo')->
     checkElement('#foo_bis', 'foo')->
-  end();
+  end()
+;

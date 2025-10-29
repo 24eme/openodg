@@ -11,11 +11,14 @@
 /**
  * sfValidatorUrl validates Urls.
  *
+ * @package    symfony
+ * @subpackage validator
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @version    SVN: $Id: sfValidatorUrl.class.php 22149 2009-09-18 14:09:53Z Kris.Wallsmith $
  */
 class sfValidatorUrl extends sfValidatorRegex
 {
-    public const REGEX_URL_FORMAT = '~^
+  const REGEX_URL_FORMAT = '~^
       (%s)://                                 # protocol
       (
         ([a-z0-9-]+\.)+[a-z]{2,6}             # a domain name
@@ -26,31 +29,31 @@ class sfValidatorUrl extends sfValidatorRegex
       (/?|/\S+)                               # a /, nothing or a / with something
     $~ix';
 
-    /**
-     * Generates the current validator's regular expression.
-     *
-     * @return string
-     */
-    public function generateRegex()
-    {
-        return sprintf(self::REGEX_URL_FORMAT, implode('|', $this->getOption('protocols')));
-    }
+  /**
+   * Available options:
+   *
+   *  * protocols: An array of acceptable URL protocols (http, https, ftp and ftps by default)
+   *
+   * @param array $options   An array of options
+   * @param array $messages  An array of error messages
+   *
+   * @see sfValidatorRegex
+   */
+  protected function configure($options = array(), $messages = array())
+  {
+    parent::configure($options, $messages);
 
-    /**
-     * Available options:.
-     *
-     *  * protocols: An array of acceptable URL protocols (http, https, ftp and ftps by default)
-     *
-     * @param array $options  An array of options
-     * @param array $messages An array of error messages
-     *
-     * @see sfValidatorRegex
-     */
-    protected function configure($options = [], $messages = [])
-    {
-        parent::configure($options, $messages);
+    $this->addOption('protocols', array('http', 'https', 'ftp', 'ftps'));
+    $this->setOption('pattern', new sfCallable(array($this, 'generateRegex')));
+  }
 
-        $this->addOption('protocols', ['http', 'https', 'ftp', 'ftps']);
-        $this->setOption('pattern', new sfCallable([$this, 'generateRegex']));
-    }
+  /**
+   * Generates the current validator's regular expression.
+   *
+   * @return string
+   */
+  public function generateRegex()
+  {
+    return sprintf(self::REGEX_URL_FORMAT, implode('|', $this->getOption('protocols')));
+  }
 }
