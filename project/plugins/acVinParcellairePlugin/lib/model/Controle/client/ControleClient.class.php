@@ -4,6 +4,12 @@ class ControleClient extends acCouchdbClient
     const TYPE_MODEL = "Controle";
     const TYPE_COUCHDB = "CONTROLE";
 
+    const CONTROLE_STATUT_A_ORGANISER = "A_ORGANISER";
+    const CONTROLE_STATUT_A_PLANIFIER = "A_PLANIFIER";
+    const CONTROLE_STATUT_PLANIFIE = "PLANIFIE";
+    const CONTROLE_STATUT_EN_MANQUEMENT = "EN_MANQUEMENT";
+    const CONTROLE_STATUT_TERMINE = "TERMINE";
+
     public static function getInstance()
     {
         return acCouchdbManager::getClient("Controle");
@@ -39,35 +45,6 @@ class ControleClient extends acCouchdbClient
         return $controle;
     }
 
-    public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
-    {
-        $h = $this->getHistory($identifiant, $date, $hydrate);
-        if (!count($h)) {
-            return NULL;
-        }
-        $h = $h->getDocs();
-        end($h);
-        $doc = $h[key($h)];
-        return $doc;
-    }
-
-    public function getLastByCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
-    {
-        $date = ConfigurationClient::getInstance()->getCampagneVinicole()->getDateFinByCampagne($campagne);
-        return $this->findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate);
-    }
-
-    public function getLast($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
-    {
-        return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99');
-    }
-
-    public function getHistory($identifiant, $date = '9999-99-99', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $dateDebut = "0000-00-00")
-    {
-        return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $dateDebut)))
-                    ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
-    }
-
     public function findAll($limit = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
     {
     	$view = $this
@@ -78,4 +55,20 @@ class ControleClient extends acCouchdbClient
     	}
     	return $view->execute($hydrate)->getDatas();
     }
+
+    public function findAllByStatus($limit = null , $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
+    {
+        $controles = [
+            self::CONTROLE_STATUT_A_ORGANISER => [],
+            self::CONTROLE_STATUT_A_PLANIFIER => [],
+            self::CONTROLE_STATUT_PLANIFIE => [],
+            self::CONTROLE_STATUT_EN_MANQUEMENT => [],
+            self::CONTROLE_STATUT_TERMINE => [],
+        ];
+        foreach ($this->findAll($limit, $hydrate) as $c) {
+            $controles[$c->mouvements_statuts[0][2]][] = $c;
+        }
+        return $controles;
+    }
+
 }
