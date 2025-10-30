@@ -244,9 +244,9 @@ info.update = function (layer) {
       ecartPied += '<td>'+parcelle["Ecart pied"]+'</td>';
       ecartRang +='<td>'+parcelle["Ecart rang"]+'</td>';
       if (parcelleSelected) {
-        btnSelection +='<td align="center"><input class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" checked /></td>';
+        btnSelection +='<td align="center"><label class="switch"><input class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" checked/><span class="slider round"></span></label></td>';
       } else {
-        btnSelection +='<td align="center"><input class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" /></td>';
+        btnSelection +='<td align="center"><label class="switch"><input class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" /><span class="slider round"></span></label></td>';
       }
 
   });
