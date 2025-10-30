@@ -22,7 +22,7 @@
 
 <form action="<?php echo url_for("controle_parcelles", $controle) ?>" method="post" class="form-horizontal">
 
-    <table class="table table-bordered table-condensed table-striped tableParcellaire">
+    <table id="tableParcelle" class="table table-bordered table-condensed table-striped tableParcellaire">
         <thead>
             <tr>
                 <th class="col-xs-2">Commune</th>

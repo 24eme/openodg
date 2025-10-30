@@ -236,17 +236,17 @@ info.update = function (layer) {
   props.parcellaires.forEach(function(parcelle, ordre) {
     var parcelleId = parcelle.IDU+'-'+String(ordre).padStart(2, '0');
     var parcelleSelected = document.querySelector('input[type="checkbox"][value="'+parcelleId+'"]').checked;
-      Commune += '<td>'+parcelle['Commune']+'</td>';
-      numParcelles += '<td>'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
-      Cepages += '<td><span class="text-muted">'+parcelle.Produit+'</span><br/>'+parcelle.Cepage+'</td>';
-      compagnes += '<td>'+parcelle.Campagne+'</td>';
-      Superficies += '<td>'+parcelle.Superficie+'</td>';
-      ecartPied += '<td>'+parcelle["Ecart pied"]+'</td>';
-      ecartRang +='<td>'+parcelle["Ecart rang"]+'</td>';
+      Commune += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle['Commune']+'</td>';
+      numParcelles += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
+      Cepages += '<td class="colonneInput" data-id="input-'+ordre+'"><span class="text-muted">'+parcelle.Produit+'</span><br/>'+parcelle.Cepage+'</td>';
+      compagnes += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle.Campagne+'</td>';
+      Superficies += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle.Superficie+'</td>';
+      ecartPied += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle["Ecart pied"]+'</td>';
+      ecartRang +='<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle["Ecart rang"]+'</td>';
       if (parcelleSelected) {
-        btnSelection +='<td align="center"><label class="switch"><input class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" checked/><span class="slider round"></span></label></td>';
+        btnSelection +='<td align="center"><label class="switch"><input id="input-'+ordre+'" class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" checked/><span class="slider round"></span></label></td>';
       } else {
-        btnSelection +='<td align="center"><label class="switch"><input class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" /><span class="slider round"></span></label></td>';
+        btnSelection +='<td align="center"><label class="switch"><input id="input-'+ordre+'" class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" /><span class="slider round"></span></label></td>';
       }
 
   });
@@ -400,4 +400,34 @@ $(document).ready(function(){
         }
     }
    });
+})
+
+$(document).delegate("#tableParcelle tr", "click", function(e) {
+  var inputControle = $(this).find('td:nth-child(8) input')[0];
+
+  inputControle.checked = !inputControle.checked;
+  if (inputControle.checked) {
+    $(this)[0].classList.add("success");
+  } else {
+    $(this)[0].classList.remove("success");
+  }
+})
+
+$(document).delegate(".colonneInput", "click", function(e) {
+  var eTargetId = $(this)[0].dataset.id;
+  var targetInput = document.getElementById(eTargetId);
+  var targetTd = targetInput.parentElement.parentElement;
+
+  targetInput.checked = !targetInput.checked;
+  if (targetInput.checked) {
+    document.querySelectorAll('[data-id='+eTargetId+']').forEach(function (td) {
+      td.classList.add("success");
+    });
+    targetTd.classList.add("success");
+  } else {
+    document.querySelectorAll('[data-id='+eTargetId+']').forEach(function (td) {
+      td.classList.remove("success");
+    });
+    targetTd.classList.remove("success");
+  }
 })
