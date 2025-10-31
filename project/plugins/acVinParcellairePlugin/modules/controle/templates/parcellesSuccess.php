@@ -46,9 +46,9 @@
                 <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
                 <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie(ParcellaireConfiguration::getInstance()->isAres()? ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE : null)); ?></td>
 
-                <td class="text-center">
+                <td class="text-center inputTd">
                     <label class="switch-xl">
-                        <input <?php if ($controle->hasParcelle($parcelle->getParcelleId())): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" data-superficie="<?php echo $parcelle->getSuperficie(ParcellaireConfiguration::getInstance()->isAres()? ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE : null) ?>" value="<?php echo $parcelle->getParcelleId() ?>"/>
+                        <input <?php if ($controle->hasParcelle($parcelle->getParcelleId())): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" data-superficie="<?php echo $parcelle->getSuperficie(ParcellaireConfiguration::getInstance()->isAres()? ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE : null) ?>" value="<?php echo $parcelle->getParcelleId() ?>" data-parcelleid="<?php echo $parcelle->getParcelleId() ?>" />
                         <span class="slider-xl round"></span>
                     </label>
                 </td>
