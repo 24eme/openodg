@@ -27,3 +27,5 @@
         </tr>
     </tbody>
 </table>
+
+  <button @click="downloadKml">Télécharger KML</button>
