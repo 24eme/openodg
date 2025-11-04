@@ -25,7 +25,6 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
         }
 
         $allowed = $myUser->isAdmin();
-        $allowed = $allowed || (isset($this->accesses['allow_stalker']) && $this->accesses['allow_stalker'] && $myUser->isStalker());
         $allowed = $allowed || (isset($this->accesses['allow_habilitation']) && $this->accesses['allow_habilitation'] && $myUser->hasHabilitation());
         $allowed = $allowed || (isset($this->accesses['allow_admin_odg']) && $this->accesses['allow_admin_odg'] && $myUser->isAdminODG());
 
@@ -36,6 +35,18 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
             }
             $allowed = true;
         }
+        if (!$allowed && isset($this->accesses['allow_stalker']) && $this->accesses['allow_stalker']) {
+            if ($myUser->isStalker()) {
+                $region = Organisme::getInstance()->getCurrentRegion();
+                if ($region) {
+                    if (!DrevConfiguration::getInstance()->hasHabilitationINAO() && !HabilitationClient::getInstance()->isRegionInHabilitation($this->etablissement->identifiant, $region)) {
+                        throw new sfError403RegionException($compteUser);
+                    }
+                }
+                $allowed = true;
+            }
+        }
+
         if (!$allowed) {
             if ($myUser->hasTeledeclaration()) {
                 $allowed = ($compteUser->identifiant == $this->getEtablissement()->getSociete()->getMasterCompte()->identifiant);
