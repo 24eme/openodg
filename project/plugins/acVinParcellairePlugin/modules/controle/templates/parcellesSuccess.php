@@ -49,8 +49,10 @@
                     <label class="switch-xl">
                         <input <?php if ($controle->hasParcelle($parcelle->getParcelleId())): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" data-superficie="<?php echo $parcelle->getSuperficie(ParcellaireConfiguration::getInstance()->isAres()? ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE : null) ?>" value="<?php echo $parcelle->getParcelleId() ?>" data-parcelleid="<?php echo $parcelle->getParcelleId() ?>" />
                         <span class="slider-xl round"></span>
-                        <button type="button" class="btn btn-link" onclick="event.stopPropagation();showParcelle('<?php echo $parcelle->idu; ?>');stopPropagation;"><i class="glyphicon glyphicon-map-marker"></i></button>
                     </label>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-link" onclick="event.stopPropagation();showParcelle('<?php echo $parcelle->idu; ?>');"><i class="glyphicon glyphicon-map-marker"></i></button>
                 </td>
             </tr>
         <?php  endforeach; ?>
