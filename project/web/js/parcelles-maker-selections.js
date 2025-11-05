@@ -369,6 +369,7 @@ $(window).on("load", function() {
     if($("input#hamzastyle").val()){
         filterMap();
     }
+    updateSuperficieSelectionnee();
     document.querySelectorAll('.inputTd').forEach(function (td) {
       var input = td.querySelector('input');
       colorOnValidateStatusParcelle(input.dataset.parcelleid.split('-')[0], input.checked);
@@ -406,6 +407,14 @@ $(document).ready(function(){
    });
 })
 
+function updateSuperficieSelectionnee() {
+  let total = 0;
+  document.querySelectorAll("#tableParcelle input:checked").forEach( function (input) {
+    total += parseFloat(input.dataset.superficie);
+  });
+  document.querySelector('#total_surfaces_selectionnees').textContent = total.toFixed(4);
+}
+
 $(document).delegate("#tableParcelle td", "click", function checkRow (e) {
   var inputControle = $(this).parent('tr').find('td:nth-child(8) input')[0];
 
@@ -440,4 +449,5 @@ $(document).delegate("input[type=checkbox]", "change", function (e) {
     }
   });
   colorOnValidateStatusParcelle(origin.dataset.parcelleid.split('-')[0], origin.checked);
+  updateSuperficieSelectionnee();
 })
