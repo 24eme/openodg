@@ -558,6 +558,16 @@
       })
     }
 
+    $.btn_switch = function() {
+      var switchSelector = '#btn-degustable-all';
+      var origin = document.querySelector('#btn-degustable-all');
+      origin.addEventListener("change", function (e) {
+        document.querySelectorAll('.switch:not(#btn-degustable-all)').forEach( function (el) {
+          el.checked = origin.checked;
+        });
+      });
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -583,6 +593,7 @@
         $.initValidationDeclaration();
         $.initSocieteChoixEtablissement();
         $.btn_bsswitch();
+        $.btn_switch();
 
     });
 
