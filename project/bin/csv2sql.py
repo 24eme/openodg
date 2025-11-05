@@ -78,11 +78,14 @@ if os.path.exists(sys.argv[2]+"/dr.csv") and os.path.getsize(sys.argv[2]+"/dr.cs
   try:
     sys.stderr.write(sys.argv[2]+"/dr.csv\n")
     reader = pd.read_csv(sys.argv[2]+"/dr.csv", chunksize=read_chunksize, encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype = 'str')
+    i = 0
     for chunk in reader:
+      mode = 'replace' if i == 0 else 'append'
+      i += 1
       chunk = convert_float_columns(chunk)
       chunk['CVI'] = chunk['CVI'].str.zfill(10)
       chunk['CVI Tiers'] = chunk['CVI Tiers'].str.zfill(10)
-      chunk.to_sql('dr', con=engine, if_exists='replace', chunksize=read_chunksize, method="multi")
+      chunk.to_sql('dr', con=engine, if_exists=mode, chunksize=read_chunksize, method="multi")
   except Exception as e:
     sys.stderr.write("ERROR: unable to read csv file:\n\t"+str(e)+"\n");
 
@@ -90,11 +93,14 @@ if os.path.exists(sys.argv[2]+"/sv12.csv") and os.path.getsize(sys.argv[2]+"/sv1
   try:
     sys.stderr.write(sys.argv[2]+"/sv12.csv\n")
     reader = pd.read_csv(sys.argv[2]+"/sv12.csv", chunksize=read_chunksize, encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype = 'str')
+    i = 0
     for chunk in reader:
+      mode = 'replace' if i == 0 else 'append'
+      i += 1
       chunk = convert_float_columns(chunk)
       chunk['CVI'] = chunk['CVI'].str.zfill(10)
       chunk['CVI Tiers'] = chunk['CVI Tiers'].str.zfill(10)
-      chunk.to_sql('sv12', con=engine, if_exists='replace', chunksize=read_chunksize, method="multi")
+      chunk.to_sql('sv12', con=engine, if_exists=mode, chunksize=read_chunksize, method="multi")
   except Exception as e:
     sys.stderr.write("ERROR: unable to read csv file:\n\t"+str(e)+"\n");
 
@@ -102,11 +108,14 @@ if os.path.exists(sys.argv[2]+"/sv11.csv") and os.path.getsize(sys.argv[2]+"/sv1
   try:
     sys.stderr.write(sys.argv[2]+"/sv11.csv\n")
     reader = pd.read_csv(sys.argv[2]+"/sv11.csv", chunksize=read_chunksize, encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype = 'str')
+    i = 0
     for chunk in reader:
+      mode = 'replace' if i == 0 else 'append'
+      i += 1
       chunk = convert_float_columns(chunk)
       chunk['CVI'] = chunk['CVI'].str.zfill(10)
       chunk['CVI Tiers'] = chunk['CVI Tiers'].str.zfill(10)
-      chunk.to_sql('sv11', con=engine, if_exists='replace', chunksize=read_chunksize, method="multi")
+      chunk.to_sql('sv11', con=engine, if_exists=mode, chunksize=read_chunksize, method="multi")
   except Exception as e:
     sys.stderr.write("ERROR: unable to read csv file:\n\t"+str(e)+"\n");
 
@@ -114,11 +123,14 @@ if os.path.exists(sys.argv[2]+"/production.csv") and os.path.getsize(sys.argv[2]
   try:
     sys.stderr.write(sys.argv[2]+"/production.csv\n")
     reader = pd.read_csv(sys.argv[2]+"/production.csv", chunksize=read_chunksize, encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype = 'str')
+    i = 0
     for chunk in reader:
+      mode = 'replace' if i == 0 else 'append'
+      i += 1
       chunk = convert_float_columns(chunk)
       chunk['CVI'] = chunk['CVI'].str.zfill(10)
       chunk['CVI Tiers'] = chunk['CVI Tiers'].str.zfill(10)
-      chunk.to_sql('production', con=engine, if_exists='replace', chunksize=read_chunksize, method="multi")
+      chunk.to_sql('production', con=engine, if_exists=mode, chunksize=read_chunksize, method="multi")
   except Exception as e:
     sys.stderr.write("ERROR: unable to read csv file:\n\t"+str(e)+"\n");
 

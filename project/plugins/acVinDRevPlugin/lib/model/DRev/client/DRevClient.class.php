@@ -45,10 +45,10 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $denom;
     }
 
-    public static $lotDestinationsType = array(
+    private static $lotDestinationsType = array(
         DRevClient::LOT_DESTINATION_CONDITIONNEMENT => "Conditionnement",
-        DRevClient::LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE => "Conditionnement sur conservatoire",
         DRevClient::LOT_DESTINATION_TRANSACTION => "Vrac Export",
+        DRevClient::LOT_DESTINATION_VRAC => "Vrac",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE => "Vrac France",
         DRevClient::LOT_DESTINATION_VRAC_EXPORT => "Vrac Export",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT => "Vrac France et Conditionnement",
@@ -56,6 +56,17 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         DRevClient::LOT_DESTINATION_VRAC_EXPORT_ET_CONDITIONNEMENT => "Vrac Export et Conditionnement",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE_VRAC_EXPORT_CONDITIONNEMENT => "Vrac Export, Vrac France et Conditionnement"
     );
+
+    public static function getLotDestinationsTypes() {
+        if (Organisme::getInstance()->isOC()) {
+            return array_merge([DRevClient::LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE => "Conditionnement sur conservatoire"], self::$lotDestinationsType);
+        }
+        return self::$lotDestinationsType;
+    }
+    public static function getLotDestinationsType($t) {
+        $destinations = self::getLotDestinationsTypes();
+        return isset($destinations[$t]) ? $destinations[$t] : null;
+    }
 
     public $cache_find_drev = null;
 
@@ -144,6 +155,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             }
         }
 
+        $drev->resetAndImportFromDocumentDouanier();
         $drev->updateVCIFromPrecedente();
 
         return $drev;
@@ -221,13 +233,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             $filters = $filterparameters->getParameters();
         }
         foreach ($filters as $type => $filter) {
-            if ($type === 'appellations') {
-                throw new sfException('not implemented');
-            } elseif ($type === 'millesime') {
-                throw new sfException('not implemented');
-            } elseif ($type === 'deja') {
-                throw new sfException('not implemented');
-            } elseif ($type === 'region') {
+            if ($type === 'region') {
                 if ($drev->exist('region')) {
                     $region = str_replace('/region/', '', $filter);
                     $match = $match && strpos($drev->region, $region) !== false;
@@ -245,9 +251,17 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $match;
     }
 
+    private $etablissements = [];
+    private function getCachedEtablissement($id) {
+        $id = 'ETABLISSEMENT-'.str_replace('ETABLISSEMENT-', '', $id);
+        if (array_key_exists($id, $this->etablissements) === false) {
+            $this->etablissements[$id] = EtablissementClient::getInstance()->find($id);
+        }
+        return $this->etablissements[$id];
+    }
+
     public function matchFilterLot($lot, TemplateFactureCotisationCallbackParameters $produitFilter = null)
     {
-        $etablissements = [];
         $match = true;
 
         if ($produitFilter === null) {
@@ -265,15 +279,26 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
                 // On gère que l'option (NOT)? /deja/CONFORME pour le moment
                 // Pas NONCONFORME
                 $match = $match && $this->matchFilterConformite($lot, $filter);
+            } elseif ($type === 'secteur') {
+                $filter = preg_replace("/^NOT /", "", $filter, -1, $exclude);
+                $e = $this->getCachedEtablissement($lot->declarant_identifiant);
+                $res = false;
+                $filters = explode('|', $filter);
+                foreach($filters as $afilter) {
+                    $res = $res || ($e->secteur && $e->secteur == $afilter);
+                }
+                if ($exclude) {
+                    $res = !$res;
+                }
+                $match = $match && $res;
             } elseif ($type === 'region') {
                 $region = str_replace('/region/', '', $filter);
                 $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->getProduitHash());
             } elseif($type === 'famille') {
-                if (array_key_exists($lot->declarant_identifiant, $etablissements) === false) {
-                    $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->find($lot->declarant_identifiant);
+                if (isset($lot->declarant_identifiant)) {
+                    $e = $this->getCachedEtablissement($lot->declarant_identifiant);
+                    $match = $match && $this->matchFilterFamille($e->famille, $filter);
                 }
-
-                $match = $match && $this->matchFilterFamille($etablissements[$lot->declarant_identifiant]->famille, $filter);
             }
         }
 

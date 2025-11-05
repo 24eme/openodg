@@ -114,7 +114,7 @@ function pictoDegustable($lot) {
         throw new Exception("Lot ".$lot->getDocument()->_id.":".$lot->getHash()." non trouvé");
     }
 
-    if($lotOrigine->id_document_affectation) {
+    if($lotOrigine->id_document_affectation && $lotOrigine->date_commission <= date("Y-m-d")) {
         return '<span title="Dégusté" class="glyphicon glyphicon-ok-circle text-success"></span>';
     }
 
@@ -157,8 +157,8 @@ function showLotStatusCartouche($lot_ou_mvt_value, $with_details = true) {
     if($detail && $with_details) {
         $text .= "<span data-toggle=\"tooltip\" data-html=\"true\" title=\"$detail\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-".$labelClass."'>".$detail."</span>";
     }
-    if (isset($lot_ou_mvt_value->region) && $lot_ou_mvt_value->region === "AOPGAILLAC") {
-        $text = str_ireplace("conform", "acceptabl", $text);
+    if (isset($lot_ou_mvt_value->region) && $lot_ou_mvt_value->region === "AOCGAILLAC") {
+        $text = str_ireplace("conform", "Acceptabl", $text);
     }
     return $text;
 }

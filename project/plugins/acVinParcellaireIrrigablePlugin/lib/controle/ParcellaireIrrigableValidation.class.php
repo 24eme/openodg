@@ -19,12 +19,15 @@ class ParcellaireIrrigableValidation extends DocumentValidation {
         /*
          * Error
          */
-    	$this->addControle(self::TYPE_ERROR, 'parcellaireirrigable_materiel_ressource_required', "Vous devez renseigner le matériel et la ressource de toutes vos parcelles");
+         if(ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource()){
+             $this->addControle(self::TYPE_ERROR, 'parcellaireirrigable_materiel_ressource_required', "Vous devez renseigner le matériel et la ressource de toutes vos parcelles");
+         }
+
 
         /*
          * Engagements
          */
-         $this->addControle(self::TYPE_ENGAGEMENT, ParcellaireIrrigableDocuments::ENGAGEMENT_A_NE_PAS_IRRIGUER, "Je m'engage à ne pas irriguer les parcelles ayant fait l'objet d'une déclaration préalable d’affectation parcellaire en vue de la revendication potententielle de dénominations géographiques complémentaires: lieux-dits, VT/SGN, Communales, Grands Crus.");
+         $this->addControle(self::TYPE_ENGAGEMENT, ParcellaireIrrigableDocuments::ENGAGEMENT_A_NE_PAS_IRRIGUER, "Je m'engage à ne pas irriguer les parcelles ayant fait l'objet d'une déclaration préalable d’affectation parcellaire en vue de la revendication potentielle d'AOC Alsace Communale, AOC Alsace Lieu-dit, AOC Alsace Grand Cru et mentions VT/SGN.");
     }
 
     public function controle() {
@@ -42,7 +45,7 @@ class ParcellaireIrrigableValidation extends DocumentValidation {
         		}
         	}
         }
-        if ($missed) {
+        if ($missed && ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource()) {
         	$this->addPoint(self::TYPE_ERROR, 
         					'parcellaireirrigable_materiel_ressource_required', 
         					'<a href="' . $this->generateUrl('parcellaireirrigable_irrigations', array('id' => $this->document->_id)) . "\" class='alert-link' >Cliquer ici pour modifier la déclaration.</a>", 

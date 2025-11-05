@@ -63,13 +63,10 @@ class MouvementLotView extends acCouchdbView
         $history = LotsClient::getInstance()->getHistory($lot->declarant_identifiant, $lot->unique_id);
         $nb = 0;
         foreach($history as $h) {
-            if(!in_array($h->value->statut, [Lot::STATUT_AFFECTE_SRC, Lot::STATUT_AFFECTABLE, Lot::STATUT_AFFECTABLE_PRELEVE])) {
-                continue;
-            }
-            if ($h->value->document_type == 'ChgtDenom') {
-                continue;
-            }
             if ($h->value->document_ordre >= $lot->document_ordre) {
+                continue;
+            }
+            if (!in_array($h->value->statut, [Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME])) {
                 continue;
             }
             if ($h->value->statut == Lot::STATUT_CONFORME) {
@@ -78,8 +75,7 @@ class MouvementLotView extends acCouchdbView
             }
             $nb++;
          }
-
-         return $nb;
+         return $nb + 1;
      }
 
 
@@ -144,8 +140,7 @@ class MouvementLotView extends acCouchdbView
 
 
   public static function getDestinationLibelle($lot) {
-    $libelles = DRevClient::$lotDestinationsType;
-    return (isset($libelles[$lot->destination_type]))? $libelles[$lot->destination_type] : '';
+    return DRevClient::getLotDestinationsType($lot->destination_type);
   }
 
 }

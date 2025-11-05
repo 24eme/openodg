@@ -222,4 +222,5 @@ ParcellaireIntentionAffectation:
                               produit_hash: { }
                               source_produit_libelle: { }
                               parcelle_id: { }
+      region: { required: false }
       observations: {  }

@@ -267,4 +267,10 @@ all:
           name: "Alsace Grand Cru Kaefferkopf"
           color: "#d10500"
           denomination_id: "01765"
-      engagements: true
+      jeunesVignes:
+        vtsgn: 9
+        grdcru_communale_lieudit: 3
+        alsace_cremant: 2
+      irrigable:
+        engagements: true
+        hasIrrigableMaterielRessource: false

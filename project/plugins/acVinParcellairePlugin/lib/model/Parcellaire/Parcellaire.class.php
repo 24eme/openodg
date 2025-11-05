@@ -87,12 +87,14 @@ class Parcellaire extends BaseParcellaire {
         return $this->getConfiguration()->declaration->getProduits();
     }
 
+    private $cache_declarationparcelles = null;
     public function getDeclarationParcelles() {
-        $parcelles = [];
-        foreach($this->declaration->getParcelles() as $k => $p) {
-            $parcelles[$p->getParcelleId()] = $p;
+        if ($this->cache_declarationparcelles === null ) {
+            foreach($this->declaration->getParcelles() as $k => $p) {
+                $this->cache_declarationparcelles[$p->getParcelleId()] = $p;
+            }
         }
-        return $parcelles;
+        return $this->cache_declarationparcelles;
     }
 
     private $idunumbers = null;
@@ -106,18 +108,20 @@ class Parcellaire extends BaseParcellaire {
         return $this->idunumbers[$idu]++;
     }
 
-    public function getParcelles() {
+    public function hasParcelles() {
         if ($this->exist('parcelles')) {
-            $p = $this->_get('parcelles');
-            if (count($p)) {
-                return $this->_get('parcelles');
-            }
+            return boolval($this->_get('parcelles'));
         }
+        return boolval(count($this->declaration));
+    }
+
+    public function getParcelles() {
+        if ($this->hasParcelles()) {
+            return $this->_get('parcelles');
+        }
+        $this->add('parcelles');
         foreach($this->declaration->getParcelles() as $dp) {
             $id = $dp->getParcelleId();
-            if (!$this->exist('parcelles') || !$this->_get('parcelles')) {
-                $this->add('parcelles', null);
-            }
             $p = $this->_get('parcelles')->add($id);
             $dp->produit_hash = preg_replace('/\/detail\/.*/', '', $dp->getHash());
             ParcellaireClient::CopyParcelle($p, $dp, true);
@@ -237,9 +241,9 @@ class Parcellaire extends BaseParcellaire {
         return $this->parcelles_idu;
     }
 
-    public function findParcelle($parcelle, $scoreMin = 1, &$allready_selected = null) {
+    public function findParcelle($parcelle, $scoreMin = 1, $with_cepage_match = false, &$allready_selected = null) {
 
-        return ParcellaireClient::findParcelle($this, $parcelle, $scoreMin, $allready_selected);
+        return ParcellaireClient::findParcelle($this, $parcelle, $scoreMin, $with_cepage_match, $allready_selected);
     }
 
     public function getDateFr() {
@@ -294,14 +298,13 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) {
-        return $this->getProduitsByCepageFromHabilitationOrConfiguration($cepage);
-            if (!$this->cache_produitsbycepagefromhabilitationorconfiguration) {
-                $this->cache_produitsbycepagefromhabilitationorconfiguration = array();
-            }
-            if(!isset($this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage])) {
-                $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage] = $this->getProduitsByCepageFromHabilitationOrConfiguration($cepage);
-            }
-            return $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage];
+        if (!$this->cache_produitsbycepagefromhabilitationorconfiguration) {
+            $this->cache_produitsbycepagefromhabilitationorconfiguration = array();
+        }
+        if(!isset($this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage])) {
+            $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage] = $this->getProduitsByCepageFromHabilitationOrConfiguration($cepage);
+        }
+        return $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage];
     }
 
     public function getProduitsByCepageFromHabilitationOrConfiguration($cepage) {
@@ -548,9 +551,17 @@ class Parcellaire extends BaseParcellaire {
         return $kml;
     }
 
+    public function getCommunes(){
+        $communes = [];
+        foreach ($this->getParcelles() as $p) {
+            $communes[$p->code_commune] = $p->code_commune;
+        }
+        return array_keys($communes);
+    }
+
     public function getMergedAires() {
 
-        return AireClient::getInstance()->getMergedAiresForInseeCommunes($this->declaration->getCommunes());
+        return AireClient::getInstance()->getMergedAiresForInseeCommunes($this->getCommunes());
     }
 
 }

@@ -46,8 +46,10 @@
                 <th class="col-xs-1">Date</th>
                 <th class="col-xs-1">Numéro</th>
                 <th class="col-xs-2">Type</th>
-                <th class="col-xs-4 text-right">Montant TTC Facture</th>
+                <th class="<?php if ($hasPaiements): ?>col-xs-4<?php else: ?>col-xs-6<?php endif;?> text-right">Montant TTC Facture</th>
+                <?php if ($hasPaiements):?>
                 <th class="col-xs-2 text-right">Montant payé</th>
+                <?php endif;?>
                 <?php if($sf_user->hasFactureAdmin()): ?>
                 <th style="width: 0;"></th>
                 <?php endif; ?>
@@ -64,11 +66,13 @@
                 <td>N°&nbsp;<?php echo $facture->numero_odg ?></td>
                 <td><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></td>
                 <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->total_ttc)); ?>&nbsp;€</td>
+                <?php if ($hasPaiements):?>
                 <td class="text-right">
                     <?php if($facture->getMontantPaiement() != 0 || (!$facture->isAvoir() && !$facture->isRedressee())): ?>
                         <a class="<?php if(!$facture->getMontantPaiement()): ?>transparence-xs<?php endif ?>" title="<?php if(!$facture->getMontantPaiement()): ?>Saisir un paiement<?php else: ?>Voir ou modifier le(s) paiements<?php endif ?>" href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>"><?php echo echoFloat($facture->getMontantPaiement()*1); ?>&nbsp;€</a>
                     <?php endif; ?>
                 </td>
+                <?php endif;?>
                 <?php if($sf_user->hasFactureAdmin()): ?>
                 <td class="text-center">
                   <span class="dropdown">

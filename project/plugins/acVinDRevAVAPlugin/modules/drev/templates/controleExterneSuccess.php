@@ -28,7 +28,7 @@
                     <h3>AOC Alsace</h3>
                     <div class="col-xs-offset-1">
                         <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
-                        <div class="form-group <?php if ($form[DRev::BOUTEILLE_ALSACE]["date"]->hasError() || $focus): ?>has-error<?php endif; ?>">
+                        <div class="form-group <?php if ($form[DRev::BOUTEILLE_ALSACE]["date"]->hasError() || $focus == "aoc_alsace"): ?>has-error<?php endif; ?>">
                             <?php if ($form[DRev::BOUTEILLE_ALSACE]["date"]->hasError()): ?>
                                 <div class="alert alert-danger" role="alert"><?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->getError(); ?></div>
                             <?php endif; ?>
@@ -54,14 +54,18 @@
                     <h3>AOC Alsace Grand Cru</h3>
                     <div class="col-xs-offset-1">
                         <p>Semaine à partir de laquelle le vin est prêt à être dégusté</p>
-                        <div class="form-group <?php if ($form[DRev::BOUTEILLE_GRDCRU]["date"]->hasError()): ?>has-error<?php endif; ?>">
+                        <div class="form-group <?php if ($form[DRev::BOUTEILLE_GRDCRU]["date"]->hasError() || $focus == "aoc_grdcru"): ?>has-error<?php endif; ?>">
                             <?php if ($form[DRev::BOUTEILLE_GRDCRU]["date"]->hasError()): ?>
                                 <div class="alert alert-danger" role="alert"><?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->getError(); ?></div>
                             <?php endif; ?>
                             <?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                             <div class="col-xs-7">
                                 <div class="input-group date-picker-week">
-                                    <?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->render(array("class" => "form-control")); ?>
+                                    <?php if ($focus == "aoc_grdcru"): ?>
+                                        <?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->render(array("class" => "form-control", "autofocus" => "autofocus")); ?>
+                                    <?php else: ?>
+                                        <?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->render(array("class" => "form-control")); ?>
+                                    <?php endif; ?>
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </div>

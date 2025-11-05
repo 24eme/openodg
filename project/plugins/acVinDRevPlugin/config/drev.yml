@@ -6,8 +6,10 @@ all:
       denomination_auto: false
       exploitation_save: true
       validation_odg: false
+      notif_pour_approbation: false
       cgu: false
       etape_superficie: true
+      saisie_superficie_revendique: true
       dr_douane_required: true
       degustation: false
       engagement_pdf: false
@@ -16,7 +18,3 @@ all:
       send_email_operateur: true
       send_to_innovagro: false
       specificites:
-        bio: "bio"
-        HVE: "HVE"
-        primeur: "primeur"
-        autre: "Autre"
