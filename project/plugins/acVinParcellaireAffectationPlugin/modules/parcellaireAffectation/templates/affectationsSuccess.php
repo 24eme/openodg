@@ -53,7 +53,7 @@ if(isset($coop)):
 </ul>
 
 <form id="validation-form" action="" method="post" class="form-horizontal">
-    <?php if (!$parcellaireAffectation->hasDgc()): ?>
+    <?php if (!$parcellaireAffectation->hasDgc() && $hashproduit): ?>
         <h3>Affectation <?php echo $produits[$hashproduit]; ?></h3>
     <?php endif; ?>
     <?php echo $form->renderHiddenFields(); ?>

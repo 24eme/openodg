@@ -204,6 +204,9 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getConfig() {
+        if($this->getDocument()->exist('campagne') && $this->campagne && $this->campagne != $this->getDocument()->campagne && $this->produit_hash) {
+            return ConfigurationClient::getConfigurationByCampagne($this->campagne)->get($this->produit_hash);
+        }
         if ($this->produit_hash) {
             return $this->getDocument()->getConfiguration()->get($this->produit_hash);
         }

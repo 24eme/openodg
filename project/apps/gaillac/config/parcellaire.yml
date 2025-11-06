@@ -215,7 +215,7 @@ all:
         gaillac_mousseux_ancestrale:
           synthese_libelle: "Gaillac Méthode Ancestrale - Blanc"
           filter_parcellaire_produit_hash: 'certifications/AOP/'
-          produit_hash: 'appellations/GLC/mentions/MA/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT'
+          produit_hash: 'certifications/AOP/genres/MOU/appellations/GLC/mentions/MA/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT'
           has_affectation: true
           denomination_aire: "AOC Gaillac"
           parcellaire2reference: 'ParcellaireAffectation'
@@ -235,7 +235,7 @@ all:
         gaillac_mousseux_ancestrale_doux:
           synthese_libelle: "Gaillac Méthode Ancestrale - Doux"
           filter_parcellaire_produit_hash: 'certifications/AOP/'
-          produit_hash: 'appellations/GLC/mentions/MA/lieux/DEFAUT/couleurs/blanc_doux/cepages/DEFAUT'
+          produit_hash: 'certifications/AOP/genres/MOU/appellations/GLC/mentions/MA/lieux/DEFAUT/couleurs/blanc_doux/cepages/DEFAUT'
           has_affectation: true
           denomination_aire: "AOC Gaillac"
           parcellaire2reference: 'ParcellaireAffectation'
@@ -255,7 +255,7 @@ all:
         gaillac_mousseux_tranditionnel:
           synthese_libelle: "Gaillac Méthode Traditionnelle - Blanc"
           filter_parcellaire_produit_hash: 'certifications/AOP/'
-          produit_hash: 'appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT'
+          produit_hash: 'certifications/AOP/genres/MOU/appellations/GLC/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT'
           has_affectation: true
           denomination_aire: "AOC Gaillac"
           parcellaire2reference: 'ParcellaireAffectation'
