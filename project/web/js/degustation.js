@@ -3,21 +3,38 @@
 
     $('#mailPreviewModal').modal('show');
 
-    var origin = document.querySelector('#btn-preleve-all');
-
-    origin.addEventListener("click", function (e) {
-      if (origin.dataset.status == "prelever") {
-        origin.innerHTML = '<i class="glyphicon glyphicon-remove-sign"></i> Tout retirer';
-        origin.dataset.status = 'retirer';
-      } else {
-        origin.innerHTML = '<i class="glyphicon glyphicon-ok-sign"></i> Tout prélever';
-        origin.dataset.status = 'prelever';
-      }
-
-      document.querySelectorAll('.switch').forEach(function (el) {
-        el.checked = !el.checked;
+    var originPrelev = document.querySelector('#btn-preleve-all');
+    if (originPrelev) {
+      originPrelev.addEventListener("click", function (e) {
+        if (originPrelev.dataset.status == "prelever") {
+          originPrelev.innerHTML = '<i class="glyphicon glyphicon-remove-sign"></i> Tout retirer';
+          originPrelev.dataset.status = 'retirer';
+        } else {
+          originPrelev.innerHTML = '<i class="glyphicon glyphicon-ok-sign"></i> Tout prélever';
+          originPrelev.dataset.status = 'prelever';
+        }
+        document.querySelectorAll('.switch').forEach(function (el) {
+          el.checked = !el.checked;
+        });
       });
-    });
+    }
+
+    var originAttabler = document.querySelector('#btn-attabler-all');
+    if (originAttabler) {
+      originAttabler.addEventListener("click", function (e) {
+        if (originAttabler.dataset.status == "attabler") {
+          originAttabler.innerHTML = '<i class="glyphicon glyphicon-ok-sign"></i> Tout enlever de la table ' + originAttabler.dataset.table;
+          originAttabler.dataset.status = 'retirer';
+        } else {
+          originAttabler.innerHTML = '<i class="glyphicon glyphicon-remove-sign"></i> Tous sur la table ' + originAttabler.dataset.table;
+          originAttabler.dataset.status = 'attabler';
+        }
+        document.querySelectorAll('.switch').forEach(function (el) {
+          el.checked = !el.checked;
+        });
+      });
+    }
+
 
     $('#popupLeurreForm').each(function(){
       $('#vin_sans_cepage').click(function(){
