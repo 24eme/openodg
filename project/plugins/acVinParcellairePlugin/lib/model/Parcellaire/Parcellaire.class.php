@@ -109,14 +109,22 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function hasParcelles() {
-        if ($this->exist('parcelles')) {
-            return boolval($this->_get('parcelles'));
+        if ($this->hasRealParcelles()) {
+            return true;
         }
+        return $this->hasTheoriticalParcelles();
+    }
+
+    public function hasRealParcelles() {
+        return $this->exist('parcelles') && count($this->_get('parcelles'));
+    }
+
+    public function hasTheoriticalParcelles() {
         return boolval(count($this->declaration));
     }
 
     public function getParcelles() {
-        if ($this->hasParcelles()) {
+        if ($this->hasRealParcelles()) {
             return $this->_get('parcelles');
         }
         $this->add('parcelles');
