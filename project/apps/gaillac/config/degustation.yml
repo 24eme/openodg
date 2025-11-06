@@ -2,7 +2,7 @@ all:
   configuration:
     degustation:
       anonymat4labo: true
-      specificite_lot_pdf: true
+      specificite_lot_pdf: false
       always_identifiant_table: true
       is_acceptable:
         aocgaillac : true
