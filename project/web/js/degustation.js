@@ -3,11 +3,21 @@
 
     $('#mailPreviewModal').modal('show');
 
-    $('#btn-preleve-all').on('click', function (event) {
-      $('.bsswitch').each(function(index, element) {
-        $(element).bootstrapSwitch('state', true)
-      })
-    })
+    var origin = document.querySelector('#btn-preleve-all');
+
+    origin.addEventListener("click", function (e) {
+      if (origin.dataset.status == "prelever") {
+        origin.innerHTML = '<i class="glyphicon glyphicon-remove-sign"></i> Tout retirer';
+        origin.dataset.status = 'retirer';
+      } else {
+        origin.innerHTML = '<i class="glyphicon glyphicon-ok-sign"></i> Tout prélever';
+        origin.dataset.status = 'prelever';
+      }
+
+      document.querySelectorAll('.switch').forEach(function (el) {
+        el.checked = !el.checked;
+      });
+    });
 
     $('#popupLeurreForm').each(function(){
       $('#vin_sans_cepage').click(function(){
