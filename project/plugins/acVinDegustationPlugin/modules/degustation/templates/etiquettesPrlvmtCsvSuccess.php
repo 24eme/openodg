@@ -22,7 +22,7 @@ foreach ($degustation->getEtiquettesFromLots(7) as $plancheLots) {
         echo str_replace(';', ' ', $lotInfo->lot->numero_anonymat).";";
         echo str_replace(';', ' ', $lotInfo->adresse_logement).";";
         echo str_replace(';', ' ', $lotInfo->etablissement->adresse)." ".str_replace(';', ' ', $lotInfo->etablissement->code_postal)." ".str_replace(';', ' ', $lotInfo->etablissement->commune).";";
-        echo ($lotInfo->etablissement->telephone_mobile)  ? str_replace(';', ' ', $lotInfo->etablissement->telephone_mobile) : str_replace(';', ' ', $lotInfo->etablissement->telephone_bureau); echo .";";
+        echo ($lotInfo->etablissement->telephone_mobile)  ? str_replace(';', ' ', $lotInfo->etablissement->telephone_mobile) : str_replace(';', ' ', $lotInfo->etablissement->telephone_bureau); echo ";";
         echo str_replace(';', ' ', $lotInfo->etablissement->email).";";
         echo str_replace(';', ' ', $lotInfo->etablissement->getLaboLibelle()).";";
         echo "\n";
