@@ -632,7 +632,7 @@ class Email {
 
         $email = $email->setReplyTo($reply_to);
 
-        if ($sender_in_copy) {
+        if (sfConfig::get('app_email_plugin_all_copy') && $sender_in_copy) {
             if (sfConfig::get('app_email_plugin_cc_adresse')) {
                 $email = $email->setCc([
                     sfConfig::get('app_email_plugin_cc_adresse') => sfConfig::get('app_email_plugin_cc_name')
