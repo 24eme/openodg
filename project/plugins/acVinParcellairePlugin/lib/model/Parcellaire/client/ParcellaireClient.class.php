@@ -51,14 +51,26 @@ class ParcellaireClient extends acCouchdbClient {
      */
     public function retrieveParcellaireFromScrapy(Etablissement $etablissement, Array &$errors, $contextInstance = null, $scrapping = true)
     {
-        if ($scrapping && ProdouaneScrappyClient::scrape('parcellaire', date('Y'), $etablissement->cvi) != ProdouaneScrappyClient::SCRAPING_SUCCESS) {
+        $parcellaire = null;
+        $ret = $this->scrapeCVIAndSaveInParcellaire($etablissement, $errors, $parcellaire, $contextInstance, $scrapping);
+        if ($ret) {
+            $ret = $this->loadParcellaireCSV($parcellaire, false, $contextInstance);
+        }
+        return $ret;
+    }
+
+    public function scrapeCVIAndSaveInParcellaire(Etablissement $etablissement, Array &$errors, & $parcellaire, $contextInstance = null, $scrapping = true)
+    {
+        if ($scrapping && ProdouaneScrappyClient::scrape('parcellaire', date('Y'), $etablissement->cvi, $errors) != ProdouaneScrappyClient::SCRAPING_SUCCESS) {
             return false;
         }
         $nb = 0;
-        $files = ProdouaneScrappyClient::listAndSaveInTmp('parcellaire', date('Y'), $etablissement->cvi);
+        $files = ProdouaneScrappyClient::listAndSaveInTmp('parcellaire', date('Y'), $etablissement->cvi, $errors);
         if (!count($files)) {
+            $errors[] = "Aucun fichier trouvé";
             return false;
         }
+
         $parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, date('Y-m-d'),'PRODOUANE');
 
         foreach ($files as $f) {
@@ -82,15 +94,14 @@ class ParcellaireClient extends acCouchdbClient {
             }
             unlink($f);
         }
-        $this->loadParcellaireCSV($parcellaire, $contextInstance);
         return ($nb > 1);
      }
 
-    public function loadParcellaireCSV(Parcellaire $parcellaire, $contextInstance = null) {
+    public function loadParcellaireCSV(Parcellaire $parcellaire, $verbose = false, $contextInstance = null) {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         try {
             $parcellairecsv = ParcellaireCsvFile::getInstance($parcellaire);
-            $parcellairecsv->convert();
+            $parcellairecsv->convert($verbose);
         } catch (Exception $e) {
             $contextInstance->getLogger()->info("loadParcellaireCSV() : exception ".$e->getMessage());
             if (sfConfig::get('sf_environment') == 'dev') {
@@ -259,9 +270,7 @@ class ParcellaireClient extends acCouchdbClient {
             }
 
             $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = ['parcelle' => $p, 'debug' => $debug_score];
-            if ($allready_selected !== null) {
-                $allready_selected[$p->getParcelleId()] = $p->getParcelleId();
-            }
+
         }
 
         krsort($parcellesMatch);
@@ -270,6 +279,10 @@ class ParcellaireClient extends acCouchdbClient {
                 if ($pMatch['parcelle']->cepage != $parcelle->cepage) {
                     continue;
                 }
+
+            }
+            if ($allready_selected !== null) {
+                $allready_selected[$pMatch['parcelle']->getParcelleId()] = $pMatch['parcelle']->getParcelleId();
             }
             return $pMatch['parcelle'];
         }
@@ -348,7 +361,7 @@ class ParcellaireClient extends acCouchdbClient {
             if(!isset($res[$parcelle->commune])) {
                 $res[$parcelle->commune] = array();
             }
-            $res[$parcelle->commune][$parcelle->getParcelleId()] = $parcelle;
+            $res[$parcelle->commune][$pid] = $parcelle;
         }
         foreach ($res as $key => $parcelleByCommune) {
             uasort($parcelleByCommune, "ParcellaireClient::sortParcellesForCommune");

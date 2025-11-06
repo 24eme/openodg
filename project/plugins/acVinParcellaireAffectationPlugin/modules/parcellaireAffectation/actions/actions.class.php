@@ -127,11 +127,12 @@ class parcellaireAffectationActions extends sfActions {
     		$this->parcellaireAffectation->save();
     	}
 
+        $this->hashproduit = $request->getParameter('hashproduit', null);
         $this->parcellaireAffectation->updateParcellesAffectation();
-
-
         $this->produits = $this->parcellaireAffectation->getProduits();
-        $this->hashproduit = $request->getParameter('hashproduit', (count($this->produits) >= 1)? array_key_first($this->produits) : null);
+        if (!$this->hashproduit && (count($this->produits) >= 1)) {
+            $this->hashproduit = array_key_first($this->produits);
+        }
 
 		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation, $this->destinataire, $this->hashproduit);
 

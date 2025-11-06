@@ -54,6 +54,14 @@ parcellaire_import_csv:
     model: Etablissement
     type: object
 
+parcellaire_convert_csv:
+  url: /parcellaire/convert/:parcellaire_id
+  param: { module: parcellaire, action: convert }
+  class: ParcellaireDeclarantRoute
+  options:
+    model: Etablissement
+    type: object
+
 parcellaire_map:
   url: /parcellaire/map/:identifiant
   param: { module: parcellaire, action: map}
@@ -141,3 +149,48 @@ parcellaire_export_geojson:
   options:
     model: Parcellaire
     type: object
+
+controle_index:
+  url: /controles
+  param: { module: controle, action: index }
+
+controle_nouveau:
+  url: /controle/nouveau/:identifiant
+  param: { module: controle, action: nouveau }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+
+controle_parcelles:
+  url: /controle/:id/parcelles
+  param: { module: controle, action: parcelles }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+controle_saveinlocalstorage:
+  url: /controle/:id/saveinlocalstorage
+  param: { module: controle, action: saveInLocalStorage }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+
+controle_set_date_tournee:
+  url: /controle/:id/setdate
+  param: { module: controle, action: setDateTournee }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+
+controle_appterrain:
+  url: /controle/appterrain/:date
+  param: { module: controle, action: appTerrain }

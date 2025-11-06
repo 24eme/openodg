@@ -32,8 +32,12 @@ class DRevValidationForm extends acCouchdbForm
                 $this->setWidget('date_degustation_voulue', new sfWidgetFormInput(array(), array()));
                 $this->setValidator('date_degustation_voulue', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true, 'min' => date('Y-m-d'))));
 
-                if ($this->getDocument()->exist('date_degustation_voulue') && $this->getDocument()->date_degustation_voulue !== null) {
-                    $this->setDefault('date_degustation_voulue', DateTime::createFromFormat('Y-m-d', $this->getDocument()->date_degustation_voulue)->format('d/m/Y'));
+                if ($this->getDocument()->exist('date_degustation_voulue')) {
+                    $date = date("Y-m-d");
+                    if ($this->getDocument()->date_degustation_voulue > $date) {
+                        $date = $this->getDocument()->date_degustation_voulue;
+                    }
+                    $this->setDefault('date_degustation_voulue', DateTime::createFromFormat('Y-m-d', $date)->format('d/m/Y'));
                 } elseif ($this->getDocument()->isPapier() || $this->isAdmin) {
                     $this->setDefault('date_degustation_voulue', (new DateTime())->format('d/m/Y'));
                 }
@@ -46,7 +50,11 @@ class DRevValidationForm extends acCouchdbForm
 
             $degustations = self::getDegustationChoices();
             if ($this->getDocument()->exist('date_commission') && $this->getDocument()->date_commission) {
-                $this->setDefault('date_commission', DateTime::createFromFormat('Y-m-d', $this->getDocument()->date_commission)->format('d/m/Y'));
+                $date = date("Y-m-d");
+                if ($this->getDocument()->date_commission > $date) {
+                    $date = $this->getDocument()->date_commission;
+                }
+                $this->setDefault('date_commission', DateTime::createFromFormat('Y-m-d', $date)->format('d/m/Y'));
             } elseif(count($degustations) > 0) {
                 $this->setDefault('date_commission', array_key_first($degustations));
                 $this->setWidget('degustation',new bsWidgetFormChoice( array('choices' => $degustations), array('required' => true)));

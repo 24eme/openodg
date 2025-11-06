@@ -44,12 +44,12 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
 
         $cpt = 1;
         $index2L = array(
-            5 => '06kg',
-            6 => '07',
-            7 => '04',
-            9 => '15VF',
-           10 => '15M',
-           12  => '15'
+            5 => ['06kg'],
+            6 => ['07'],
+            7 => ['04'],
+            9 => ['06','15VF'],
+           10 => ['15M'],
+           12  => ['15']
         );
 
         $drev_filter = $this->getRelatedDrev();
@@ -83,10 +83,10 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = $values[0]; //Code douane
                 $produit[] = $values[1]; //Libelle produit
                 $produit[] = $values[2]; //Mention valorisante
-                $produit[] = $index2L[$v]; //Code categorie
-                $lligne = isset($libellesLigne[$v]) ? " - ".preg_replace('/ \(ha\)/i', '', self::cleanStr($libellesLigne[$v])) : '';
-                $produit[] = DouaneCsvFile::getCategorieLibelle('SV12', $index2L[$v]).$lligne;
-                if ($index2L[$v] == "04") {
+                $categorie_index = count($produit);
+                $produit[] = null; //Code categorie
+                $produit[] = null; //libelle categorie
+                if ($index2L[$v][0] == "04") {
                     $produit[] = self::numerizeVal($values[$v], 4);
                 } else {
                     $produit[] = self::numerizeVal($values[$v], 2);
@@ -106,7 +106,12 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
                 $produit[] = implode('|', DouaneImportCsvFile::extractLabels($values[2]));
                 $produit[] = $this->getHabilitationStatus(HabilitationClient::ACTIVITE_VINIFICATEUR, $p);
-                $produits[] = $produit;
+                foreach($index2L[$v] as $categ) {
+                    $produit[$categorie_index] = $categ;
+                    $lligne = isset($libellesLigne[$v]) ? " - ".preg_replace('/ \(ha\)/i', '', self::cleanStr($libellesLigne[$v])) : '';
+                    $produit[$categorie_index + 1] = DouaneCsvFile::getCategorieLibelle('SV12', $categ).$lligne;
+                    $produits[] = $produit;
+                }
             }
             $cpt++;
         }

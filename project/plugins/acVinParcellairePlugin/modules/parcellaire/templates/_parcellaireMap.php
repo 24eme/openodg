@@ -30,4 +30,4 @@
     aires.push({'color': '<?php echo $aire->getColor(); ?>', 'name': '<?php echo $aire->getName() ?>', 'geojson': '<?php echo addslashes($aire->getRawValue()->geojson); ?>'});
     <?php endforeach; ?>
 </script>
-<?php use_javascript('parcelles-maker.js?'.$_ENV['GIT_LAST_COMMIT']); ?>
+<?php use_javascript((isset($js))?  $js.'?'.$_ENV['GIT_LAST_COMMIT'] : 'parcelles-maker.js?'.$_ENV['GIT_LAST_COMMIT']); ?>

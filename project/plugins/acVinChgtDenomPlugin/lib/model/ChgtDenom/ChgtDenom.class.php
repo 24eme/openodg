@@ -14,7 +14,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function __construct() {
         parent::__construct();
         $this->initDocuments();
-				$this->cm = new CampagneManager('08-01');
+                $this->cm = ConfigurationClient::getInstance()->getCampagneVinicole();
     }
 
     public function __clone() {
@@ -956,17 +956,20 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     private function produitFilter($produitFilter = null, $chgtdenom = null)
     {
-      $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
-			$produitExclude = (bool) $produitExclude;
-			$regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
-			if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
-					return false;
-			}
-			if($produitFilter && $produitExclude && preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
-					return false;
-			}
-
-            return true;
+        $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
+        $produitFilter = preg_replace('/ *NOT same( |$)/', '', $produitFilter, -1, $hasExcludeSame);
+        $produitExclude = (bool) $produitExclude;
+        $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
+        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
+            return false;
+        }
+        if($produitFilter && $produitExclude && preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
+            return false;
+        }
+        if ($hasExcludeSame && $chgtdenom->changement_produit_hash == $chgtdenom->origine_produit_hash) {
+            return false;
+        }
+        return true;
     }
 
     public function getVolumeFacturable(TemplateFactureCotisationCallbackParameters $filter)
@@ -1033,10 +1036,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $not = strpos($filter, 'NOT') === 0;
 
         $c = substr($this->changement_origine_lot_unique_id, 0, 4) + 1;
-        $dateLimite = new DateTimeImmutable($c."-07-31");
+        $dateLimite = new DateTimeImmutable($c."-08-31");
         $dateValidation = new DateTimeImmutable($this->validation);
 
-        $result = $dateLimite > $dateValidation;
+        $result = $dateLimite >= $dateValidation;
 
         if ($not) {
             $result = ! $result;

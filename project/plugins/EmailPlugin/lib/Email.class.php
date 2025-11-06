@@ -99,7 +99,7 @@ class Email {
         $to = array($drev->declarant->email);
         $subject = 'Validation de votre Déclaration de Revendication';
         $body = $this->getBodyFromPartial('send_drev_confirmee', array('drev' => $drev));
-        $message = $this->newMailInstance()
+        $message = $this->newMailInstance(!DRevConfiguration::getInstance()->hasEmailODGInCopyDisabled())
                 ->setTo($to)
                 ->setSubject($subject)
                 ->setBody($body)
@@ -608,7 +608,7 @@ class Email {
         return array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
     }
 
-    public function newMailInstance($organisme_type = null) {
+    public function newMailInstance($organisme_type = null, $sender_in_copy = true) {
 
         $email = Swift_Message::newInstance()
                         ->setFrom($this->getFrom())
@@ -629,13 +629,17 @@ class Email {
                 $reply_to[Organisme::getInstance()->getEmail()] = Organisme::getInstance()->getNom();
             }
         }
-        if ( ! count($reply_to) ) {
-            $email = $emails->setReplyTo($reply_to);
-        }
 
-        if (sfConfig::get('app_email_plugin_cc_adresse')) {
-            $cc[sfConfig::get('app_email_plugin_cc_adresse')] = sfConfig::get('app_email_plugin_cc_name');
-            $email = $emails->setCc($cc);
+        $email = $email->setReplyTo($reply_to);
+
+        if (sfConfig::get('app_email_plugin_all_copy') && $sender_in_copy) {
+            if (sfConfig::get('app_email_plugin_cc_adresse')) {
+                $email = $email->setCc([
+                    sfConfig::get('app_email_plugin_cc_adresse') => sfConfig::get('app_email_plugin_cc_name')
+                ]);
+            } else {
+                $email = $email->setCc($reply_to);
+            }
         }
 
         return $email;

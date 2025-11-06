@@ -285,7 +285,7 @@ class declarationActions extends sfActions {
             $view = acCouchdbManager::getClient()
                     ->reduce(false);
             if ($this->query['Campagne_min'] == $this->query['Campagne_max']){
-                $view = $view->startkey(array($region, $type, $this->query['Campagne_min'], ''));
+                $view = $view->startkey(array($region, $type, $this->query['Campagne_min']));
                 $view = $view->endkey(array($region, $type, $this->query['Campagne_max'], 'zzzzzzz'));
             }else{
                 $view = $view->startkey(array($region, $type, $this->query['Campagne_min']));
