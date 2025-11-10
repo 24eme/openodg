@@ -26,7 +26,7 @@
     <body role="document" style="background: none;">
 
         <div id="header">
-            <header class="container" role="banner" style="background:none;">
+            <!--<header class="container" role="banner" style="background:none;">
                 <div id="logo">
                   <a href="/" title="Plateforme des Syndicats des Vins de Provence | Retour à la page d'accueil">
                       <img src="/images/logo_provence.png?20241029" alt="Syndicats des Vins de Provence">
@@ -35,7 +35,7 @@
               <div id="titre">
                   <h1 style="color:red; text-align:center;">VUEJS APP CONTROLE TERRAIN</h1>
               </div>
-            </header>
+            </header>-->
         </div>
 
         <section id="content" class="container">
