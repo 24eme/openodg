@@ -1,5 +1,5 @@
-document.querySelectorAll("table tr").forEach(function (tr) {
-  if ( tr.querySelector('input')) {
+document.querySelectorAll("table-apporteursCoop tr").forEach(function (tr) {
+  if (tr.querySelector('input')) {
     tr.querySelector('input').addEventListener('change', function (e) {
       tr.querySelector('.texteStatut').textContent = e.currentTarget.checked ? "Apporteur" : "Démissionaire";
     });
@@ -10,6 +10,16 @@ document.querySelectorAll("table tr").forEach(function (tr) {
     });
   }
 });
+
+document.querySelectorAll(".tableIntentionAffectation tr").forEach(function (tr) {
+  if (tr.querySelector('input')) {
+    tr.querySelector('.switch').addEventListener('change', function (e) {
+      tr.querySelector('.affecte_superficie').disabled = !e.currentTarget.checked;
+      tr.querySelector('.affecte_superficie').dispatchEvent(new Event('change'));
+    });
+  }
+});
+
 
 $(document).ready(function()
 {
@@ -69,7 +79,7 @@ $(document).ready(function()
               $(this).parents('table').find('.affecte_superficie').each(function() {somme_superficie += parseFloat($(this).val())});
               $(this).parents('table').find('.total_superficie').eq(0).html(somme_superficie.toFixed(4));
               somme_superficie = 0;
-              $(this).parents('table').find('.affecte_superficie:not([disabled])').each(function() {somme_superficie += parseFloat($(this).val())});
+              $(this).parents('table').find('.affecte_superficie:not(:disabled)').each(function() {somme_superficie += parseFloat($(this).val())});
               $(this).parents('table').find('.total_affecte').eq(0).html(somme_superficie.toFixed(4));
           });
         }
@@ -82,14 +92,14 @@ $(document).ready(function()
             $('.total_superficie').each(function() {
                 var somme_superficie = 0;
                 $(this).closest('table').find(".superficie2compute").each(function() {
-                    if ($(this).parent().parent().find('.bsswitch:checked').length) {
+                    if ($(this).parent().parent().find('.switch:checked').length) {
                         somme_superficie += parseFloat($(this).html().replace(',', '.'));
                     }
                 });
                 $(this).html(somme_superficie.toFixed(4).replace('.', ','));
             });
         }
-        $('input.bsswitch').on('update', function () { compute_superficies()});
+        $('input.switch').on('update', function () { compute_superficies()});
         compute_superficies();
     }
 

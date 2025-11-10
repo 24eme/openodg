@@ -12,7 +12,7 @@ Ceux qui ne vous ont rien apportés cette année mais qui reste adhérent doiven
 <a class="btn btn-secondary" href="<?php echo url_for("parcellaireaffectationcoop_ajout_apporteurs", $parcellaireAffectationCoop); ?>">Ajouter un apporteur</a>
 
 <form action="" method="post" class="form-horizontal">
-    <table class="table table-condensed table-striped table-bordered">
+    <table class="table table-condensed table-striped table-bordered table-apporteursCoop">
         <tr>
             <th class="text-right col-xs-2">Statut</th>
             <th class="text-right col-xs-1">Provenance</th>
