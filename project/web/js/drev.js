@@ -541,6 +541,23 @@
 
     }
 
+    $.btn_bsswitch = function() {
+      var switchSelector = '#btn-degustable-all-bs';
+      $(switchSelector).bootstrapSwitch();
+
+      $(switchSelector).on('switchChange.bootstrapSwitch', function(event, state) {
+
+        $('.bsswitch:not("'+switchSelector+'")').each(function(index, element) {
+
+          if(state){
+            $(element).bootstrapSwitch('state', true)
+          }else{
+            $(element).bootstrapSwitch('state', false)
+          }
+        })
+      })
+    }
+
     $.btn_switch = function() {
       var origin = document.querySelector('#btn-degustable-all');
       if (origin) {
@@ -554,7 +571,6 @@
 
     $.lien_denom_switch = function() {
       var origin = document.querySelector('#lien-denomination-all');
-
       if (origin) {
         origin.addEventListener("click", function (e) {
           var event = new Event('change');
@@ -605,6 +621,7 @@
         $.initRecapEventsAccordion();
         $.initValidationDeclaration();
         $.initSocieteChoixEtablissement();
+        $.btn_bsswitch();
         $.btn_switch();
         $.lien_denom_switch();
 

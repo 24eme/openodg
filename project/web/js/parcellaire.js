@@ -1,3 +1,16 @@
+document.querySelectorAll("table tr").forEach(function (tr) {
+  if ( tr.querySelector('input')) {
+    tr.querySelector('input').addEventListener('change', function (e) {
+      tr.querySelector('.texteStatut').textContent = e.currentTarget.checked ? "Apporteur" : "Démissionaire";
+    });
+    tr.addEventListener('click', function (el) {
+      console.log(tr.querySelector("input"));
+      tr.querySelector("input").checked = !tr.querySelector("input").checked;
+      tr.querySelector("input").dispatchEvent(new Event('change'));
+    });
+  }
+});
+
 $(document).ready(function()
 {
     $("#parcellaire_infos_modification_btn").click(function() {
@@ -80,4 +93,9 @@ $(document).ready(function()
         compute_superficies();
     }
 
+
+    var event = new Event('change');
+    document.querySelectorAll(".switch").forEach( function (el) {
+      el.dispatchEvent(event);
+    });
 });
