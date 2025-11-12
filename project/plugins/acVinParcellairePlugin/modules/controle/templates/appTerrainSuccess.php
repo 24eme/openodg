@@ -32,7 +32,7 @@
         });
         return mydlm;
     }
-    const array_parcelles = parseString('<?php echo addslashes(json_encode(current(current($controles->getRawValue())['geojson']))) ?>');
+    const array_parcelles = parseString('<?php echo addslashes(json_encode(current($controles->getRawValue())['geojson'])) ?>');
 
     const routes = [
       { path: '/', name: "listing", component: templates.listing },
@@ -138,64 +138,101 @@
       }
     };
      templates.map.mounted = function() {
-        console.log('test');
-            const map = new L.map('map');
-            map.setView([43.8293, 7.2977], 13);
-            const tileLayer = L.tileLayer.offline('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                {
-                minZoom: 11,
-                maxZoom: 17,
-                subdomains: "abc",
-                attribution: 'Map data &copy;' +
-                '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
-                '<a href="https://cadastre.data.gouv.fr/">Cadastre</a>, ' +
-                'Imagery © <a href="https://www.ign.fr/">IGN</a>'
+        const map = new L.map('map');
+        map.setView([43.8293, 7.2977], 8);
+        const tileLayer = L.tileLayer.offline('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            {
+            minZoom: 8,
+            maxZoom: 19,
+            subdomains: "abc",
+            attribution: 'Map data &copy;' +
+            '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
+            '<a href="https://cadastre.data.gouv.fr/">Cadastre</a>, ' +
+            'Imagery © <a href="https://www.ign.fr/">IGN</a>'
+        });
+        tileLayer.addTo(map)
+
+        // GPS
+        const gps = new L.Control.Gps({
+            autoCenter:true
+        });//inizialize control
+
+        gps
+        .on('gps:located', function(e) {
+            // e.marker.bindPopup(e.latlng.toString()).openPopup()
+        })
+        .on('gps:disabled', function(e) {
+            e.marker.closePopup()
+        });
+
+        gps.addTo(map);
+        // Fin GPS
+
+        const parcellesLayer = L.geoJSON(array_parcelles);
+        parcellesLayer.addTo(map);
+        map.fitBounds(parcellesLayer.getBounds());
+
+        const controlSaveTiles = L.control.savetiles(tileLayer, {
+            confirm(layer, succescallback) {
+                // eslint-disable-next-line no-alert
+                if (window.confirm(`Save ${layer._tilesforSave.length}`)) {
+                    succescallback();
+                }
+            },
+            confirmRemoval(layer, successCallback) {
+                // eslint-disable-next-line no-alert
+                if (window.confirm("Remove all the tiles?")) {
+                    successCallback();
+                }
+            },
+            saveText:
+            '<span class="glyphicon glyphicon-floppy-disk"></span>',
+            rmText:
+            '<span class="glyphicon glyphicon-trash"></span>'
+        });
+
+        let tilesToSave = [];
+        controlSaveTiles.addTo(map);
+        for(layerIndex in parcellesLayer._layers) {
+            let layer = parcellesLayer._layers[layerIndex];
+            for(let zoom = 18; zoom >=8; zoom--) {
+                    const area = L.bounds(map.project(layer.getBounds().getNorthWest(), zoom), map.project(layer.getBounds().getSouthEast(), zoom));
+                    tilesToSave = tilesToSave.concat(tileLayer.getTileUrls(area, zoom));
+            }
+        }
+
+        let uniqTiles = [];
+        for(tile of tilesToSave) {
+            uniqTiles[tile.key] = tile
+        }
+        let tiles = [];
+        for(tileIndex in uniqTiles) {
+            tiles.push(uniqTiles[tileIndex])
+        }
+        const loader = () => __awaiter(this, void 0, void 0, function* () {
+                const tile = tiles.shift();
+                if (tile === undefined) {
+                    return Promise.resolve();
+                }
+                const blob = yield controlSaveTiles._loadTile(tile);
+                if (blob) {
+                    yield controlSaveTiles._saveTile(tile, blob);
+                }
+                return loader();
             });
-            tileLayer.addTo(map)
-
-            // GPS
-            const gps = new L.Control.Gps({
-                autoCenter:true
-            });//inizialize control
-
-            gps
-            .on('gps:located', function(e) {
-                // e.marker.bindPopup(e.latlng.toString()).openPopup()
-            })
-            .on('gps:disabled', function(e) {
-                e.marker.closePopup()
-            });
-
-            gps.addTo(map);
-            // Fin GPS
-
-            const parcellesLayer = L.geoJSON(array_parcelles);
-            parcellesLayer.addTo(map);
-
-            console.log(array_parcelles)
-
-            map.fitBounds(parcellesLayer.getBounds());
-
-            const controlSaveTiles = L.control.savetiles(tileLayer, {
-                zoomlevels: [13, 14, 15, 16, 17], // optional zoomlevels to save, default current zoomlevel
-                confirm(layer, succescallback) {
-                    // eslint-disable-next-line no-alert
-                    if (window.confirm(`Save ${layer._tilesforSave.length}`)) {
-                        succescallback();
-                    }
-                },
-                confirmRemoval(layer, successCallback) {
-                    // eslint-disable-next-line no-alert
-                    if (window.confirm("Remove all the tiles?")) {
-                        successCallback();
-                    }
-                },
-                saveText:
-                '<span class="glyphicon glyphicon-floppy-disk"></span>',
-                rmText:
-                '<span class="glyphicon glyphicon-trash"></span>'
-            });
-
-            controlSaveTiles.addTo(map);
+        const parallel = Math.min(tiles.length, controlSaveTiles.options.parallel);
+        for (let i = 0; i < parallel; i += 1) {
+            loader();
+        }
     };
+
+    function __awaiter(thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    }
 </script>
