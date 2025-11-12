@@ -125,7 +125,7 @@ $('#parcellaireirrigable-confirmation-validation').modal('show')
 </script>
 <?php endif; ?>
 <script>
-    document.querySelectorAll('form input').forEach(function(item) {
+    document.querySelectorAll('form .switch').forEach(function(item) {
         item.addEventListener('change-native', function(e) {
             document.querySelector('#btn-validation-document').classList.remove('transparence-lg');
         });

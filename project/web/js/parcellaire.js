@@ -15,17 +15,19 @@ document.querySelectorAll(".tableIntentionAffectation tr").forEach(function (tr)
   }
 });
 
-function changeButtonActiveAll(mention, span, check, btnActiveAll = false) {
+function changeButtonActiveAll(mention, span, check, btnActiveAll = false, onlyText = false) {
   if (!btnActiveAll) {
     var btnActiveAll = document.querySelector('#btn-switchactive-all');
   }
   btnActiveAll.dataset.status = mention;
   btnActiveAll.innerHTML = span;
   var target = document.querySelector(btnActiveAll.dataset.target);
-  target.querySelectorAll('.switch').forEach(function (el) {
-    el.checked = check;
-    el.checked ? el.parentElement.parentElement.parentElement.classList.add("success") : el.parentElement.parentElement.parentElement.classList.remove("success");
-  });
+  if (! onlyText) {
+    target.querySelectorAll('.switch').forEach(function (el) {
+      el.checked = check;
+      el.checked ? el.parentElement.parentElement.parentElement.classList.add("success") : el.parentElement.parentElement.parentElement.classList.remove("success");
+    });
+  }
 }
 
 var btnActiveAll = document.querySelector('#btn-switchactive-all');
@@ -46,9 +48,22 @@ document.querySelectorAll(".tableParcellaire tr td").forEach(function (td) {
       elem.checked = !elem.checked;
       elem.checked ? elem.parentElement.parentElement.parentElement.classList.add('success') : elem.parentElement.parentElement.parentElement.classList.remove('success');
       elem.dispatchEvent(new Event('change'));
+      elem.dispatchEvent(new CustomEvent('change-native'));
     });
   }
 });
+
+document.querySelectorAll(".tableParcellaire input").forEach(function (el) {
+  el.addEventListener('change', function (e) {
+    var btnActiveAll = document.querySelector('#btn-switchactive-all');
+    if (document.querySelectorAll('.tableParcellaire input:checked').length == document.querySelectorAll('.tableParcellaire input').length) {
+      changeButtonActiveAll('retirer', "<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune", true, btnActiveAll, true);
+    } else {
+      changeButtonActiveAll('affecter', "<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont " + btnActiveAll.dataset.terme, false, btnActiveAll, true);
+    }
+  });
+});
+
 
 $(document).ready(function()
 {
