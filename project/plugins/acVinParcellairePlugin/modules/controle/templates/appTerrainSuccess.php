@@ -140,15 +140,23 @@
      templates.map.mounted = function() {
         const map = new L.map('map');
         map.setView([43.8293, 7.2977], 8);
-        const tileLayer = L.tileLayer.offline('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            {
-            minZoom: 8,
-            maxZoom: 19,
-            subdomains: "abc",
-            attribution: 'Map data &copy;' +
-            '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
-            '<a href="https://cadastre.data.gouv.fr/">Cadastre</a>, ' +
-            'Imagery © <a href="https://www.ign.fr/">IGN</a>'
+        const tileLayer = L.tileLayer('https://data.geopf.fr/wmts?'+
+        '&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM'+
+        '&LAYER={ignLayer}&STYLE={style}&FORMAT={format}'+
+        '&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
+        {
+          ignApiKey: 'pratique',
+          ignLayer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+          style: 'normal',
+          format: 'image/jpeg',
+          service: 'WMTS',
+          minZoom: 8,
+          maxZoom: 19,
+          attribution: 'Map data &copy;' +
+          '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
+          '<a href="https://cadastre.data.gouv.fr/">Cadastre</a>, ' +
+          'Imagery © <a href="https://www.ign.fr/">IGN</a>',
+           id: 'mapbox.light'
         });
         tileLayer.addTo(map)
 
@@ -172,67 +180,59 @@
         parcellesLayer.addTo(map);
         map.fitBounds(parcellesLayer.getBounds());
 
-        const controlSaveTiles = L.control.savetiles(tileLayer, {
-            confirm(layer, succescallback) {
-                // eslint-disable-next-line no-alert
-                if (window.confirm(`Save ${layer._tilesforSave.length}`)) {
-                    succescallback();
-                }
-            },
-            confirmRemoval(layer, successCallback) {
-                // eslint-disable-next-line no-alert
-                if (window.confirm("Remove all the tiles?")) {
-                    successCallback();
-                }
-            },
-            saveText:
-            '<span class="glyphicon glyphicon-floppy-disk"></span>',
-            rmText:
-            '<span class="glyphicon glyphicon-trash"></span>'
-        });
-
-        let tilesToSave = [];
-        controlSaveTiles.addTo(map);
+        /*let tilesUrl = []
         for(layerIndex in parcellesLayer._layers) {
             let layer = parcellesLayer._layers[layerIndex];
-            for(let zoom = 18; zoom >=8; zoom--) {
-                    const area = L.bounds(map.project(layer.getBounds().getNorthWest(), zoom), map.project(layer.getBounds().getSouthEast(), zoom));
-                    tilesToSave = tilesToSave.concat(tileLayer.getTileUrls(area, zoom));
+            for(let zoom = 19; zoom >=8; zoom--) {
+                const area = L.bounds(map.project(layer.getBounds().getNorthWest(), zoom), map.project(layer.getBounds().getSouthEast(), zoom));
+                for(tile of getTileUrls(tileLayer, area, zoom)) {
+                    tilesUrl[tile.url] = tile.url
+                }
             }
         }
-
-        let uniqTiles = [];
-        for(tile of tilesToSave) {
-            uniqTiles[tile.key] = tile
-        }
-        let tiles = [];
-        for(tileIndex in uniqTiles) {
-            tiles.push(uniqTiles[tileIndex])
-        }
-        const loader = () => __awaiter(this, void 0, void 0, function* () {
-                const tile = tiles.shift();
-                if (tile === undefined) {
-                    return Promise.resolve();
-                }
-                const blob = yield controlSaveTiles._loadTile(tile);
-                if (blob) {
-                    yield controlSaveTiles._saveTile(tile, blob);
-                }
-                return loader();
-            });
-        const parallel = Math.min(tiles.length, controlSaveTiles.options.parallel);
-        for (let i = 0; i < parallel; i += 1) {
-            loader();
-        }
+        for(tileUrl in tilesUrl) {
+            fetch(tileUrl+'?'+tileUrl, { cache: "force-cache" })
+        }*/
     };
 
-    function __awaiter(thisArg, _arguments, P, generator) {
-        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-        return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-            step((generator = generator.apply(thisArg, _arguments || [])).next());
-        });
+    function getTileUrls(tileLayer, bounds, zoom) {
+            var _a;
+            const tiles = [];
+            const tilePoints = getTilePoints(bounds, tileLayer.getTileSize());
+            for (let index = 0; index < tilePoints.length; index += 1) {
+                const tilePoint = tilePoints[index];
+                const data = Object.assign(Object.assign({}), { x: tilePoint.x, y: tilePoint.y, z: zoom });
+                tiles.push({
+                    key: getTileUrl(tileLayer._url, Object.assign(Object.assign({}, data), { s: (_a = tileLayer.options.subdomains) === null || _a === void 0 ? void 0 : _a[0] })),
+                    url: getTileUrl(tileLayer._url, Object.assign(Object.assign({}, data), {
+                        // @ts-ignore: Undefined
+                        s: tileLayer._getSubdomain(tilePoint) })),
+                    z: zoom,
+                    x: tilePoint.x,
+                    y: tilePoint.y,
+                    urlTemplate: L._url,
+                    createdAt: Date.now(),
+                });
+            }
+            return tiles;
+    }
+
+    function getTilePoints(area, tileSize) {
+        const points = [];
+        if (!area.min || !area.max) {
+            return points;
+        }
+        const topLeftTile = area.min.divideBy(tileSize.x).floor();
+        const bottomRightTile = area.max.divideBy(tileSize.x).floor();
+        for (let j = topLeftTile.y; j <= bottomRightTile.y; j += 1) {
+            for (let i = topLeftTile.x; i <= bottomRightTile.x; i += 1) {
+                points.push(new L.Point(i, j));
+            }
+        }
+        return points;
+    }
+
+    function getTileUrl(urlTemplate, data) {
+        return L.Util.template(urlTemplate, Object.assign(Object.assign({}, data), { r: L.Browser.retina ? '@2x' : '' }));
     }
 </script>
