@@ -43,8 +43,8 @@
             <h3><?php echo $commune; ?></h3>
         </div>
         <div class="col-xs-6">
-           <p class="text-right" style="margin-top: 20px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irriguées</a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune</a></p>
-       </div>
+            <p class="text-right" style="margin-top: 20px;"><a id="btn-switchactive-all" href="javascript:void(0)" data-status="affecter" data-terme="irriguées" data-target="#parcelles_<?php echo $commune; ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irriguées</a></p>
+        </div>
     </div>
     <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
 		<thead>
@@ -69,7 +69,7 @@
                 $produitKey = str_replace('/declaration/', '', $parcelle->getProduit()->getHash());
 			if (isset($form[$parcelle->getParcelleId()])):
 		?>
-			<tr class="vertical-center" id="tr_<?php $parcelle->getParcelleId();?>">
+			<tr style="cursor: pointer;" class="vertical-center" id="tr_<?php $parcelle->getParcelleId();?>">
                 <td><?php echo $parcelle->lieu; ?></td>
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
                 <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
@@ -91,7 +91,10 @@
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$parcelle->getParcelleId()]['irrigation']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$parcelle->getParcelleId()]['irrigation']->renderError() ?>
                         <div class="col-xs-12">
-			            	<?php echo $form[$parcelle->getParcelleId()]['irrigation']->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                            <label class="switch-xl">
+                                <?php echo $form[$parcelle->getParcelleId()]['irrigation']->render(array('class' => "switch")); ?>
+                                <span class="slider-xl round"></span>
+                            </label>
                         </div>
                     </div>
             	</td>

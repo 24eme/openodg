@@ -12,7 +12,7 @@ Ceux qui ne vous ont rien apportés cette année mais qui reste adhérent doiven
 <a class="btn btn-secondary" href="<?php echo url_for("parcellaireaffectationcoop_ajout_apporteurs", $parcellaireAffectationCoop); ?>">Ajouter un apporteur</a>
 
 <form action="" method="post" class="form-horizontal">
-    <table class="table table-condensed table-striped table-bordered table-apporteursCoop">
+    <table class="table table-condensed table-striped table-bordered table-apporteursCoop tableParcellaire">
         <tr>
             <th class="text-right col-xs-2">Statut</th>
             <th class="text-right col-xs-1">Provenance</th>
@@ -24,7 +24,7 @@ Ceux qui ne vous ont rien apportés cette année mais qui reste adhérent doiven
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     <?php foreach ($parcellaireAffectationCoop->apporteurs as $idApporteur => $apporteur): ?>
-        <tr class="vertical-center cursor-pointer rows">
+        <tr style="cursor: pointer;" class="vertical-center cursor-pointer rows">
             <td class="apporteurStatut" style="display: flex; justify-content: space-between;">
                 <div style="margin-bottom: 0;" class="form-group">
                     <div class="col-xs-12">
