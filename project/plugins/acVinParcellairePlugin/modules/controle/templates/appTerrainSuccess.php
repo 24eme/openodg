@@ -78,12 +78,13 @@
 
     templates.listing.methods = {
         downloadKml() {
-          console.log('generate KML');
-          console.log(templates.kml.template);
-
           kml_content = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document>';
           kml_content += '<Style id="parcelle-style"><LineStyle><width>2</width></LineStyle><PolyStyle><color>7d0000ff</color></PolyStyle></Style>';
-          kml_content += '<Placemark><name>Parcelle XXX</name><description><![CDATA[     <p>Commune : FREJUS</p>    ]]></description><styleUrl>#parcelle-style</styleUrl><Polygon><outerBoundaryIs><LinearRing><coordinates>6.7420965,43.4476673 6.7420485,43.4476612 6.7419611,43.4476943 6.7417352,43.4478341 6.7417362,43.4478928 6.7419743,43.4481384 6.7421041,43.448412 6.7420871,43.4484471 6.7420664,43.4484517 6.7419409,43.4484799 6.741613,43.4485341 6.7416161,43.4485522 6.7409962,43.4486732 6.7408667,43.4484866 6.7407628,43.4483038 6.7406712,43.4481339 6.7406082,43.4479829 6.7405484,43.4478421 6.740525,43.4477304 6.7405015,43.4476201 6.7404955,43.4474949 6.7404746,43.447319 6.7404541,43.4470351 6.7404222,43.4467176 6.7404739,43.446705 6.7405246,43.4466928 6.7406421,43.446703 6.7408273,43.4467443 6.7410803,43.4468214 6.7411159,43.4468339 6.7411431,43.4468607 6.7412683,43.4470474 6.7412876,43.4470645 6.7413263,43.4470877 6.741348,43.4471114 6.7413776,43.4471539 6.7414119,43.4471777 6.7415185,43.4472089 6.7417517,43.4472836 6.7418822,43.4473177 6.7419195,43.4473323 6.7420263,43.4473746 6.7421197,43.4474113 6.7421016,43.4476336 6.7420965,43.4476673</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark>';
+          for(let keyc in controles) {
+              for(let keyp in controles[keyc].parcelles) {
+                  kml_content += controles[keyc].parcelles[keyp].kml_placemark;
+              }
+          }
           kml_content += '</Document></kml>';
 
           const blob = new Blob([kml_content], { type: 'application/vnd.google-earth.kml+xml' });
