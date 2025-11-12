@@ -76,6 +76,29 @@
         }
     };
 
+    templates.listing.methods = {
+        downloadKml() {
+          kml_content = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document>';
+          kml_content += '<Style id="parcelle-style"><LineStyle><width>2</width></LineStyle><PolyStyle><color>7d0000ff</color></PolyStyle></Style>';
+          for(let keyc in controles) {
+              for(let keyp in controles[keyc].parcelles) {
+                  kml_content += controles[keyc].parcelles[keyp].kml_placemark;
+              }
+          }
+          kml_content += '</Document></kml>';
+
+          const blob = new Blob([kml_content], { type: 'application/vnd.google-earth.kml+xml' });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `parcelles.kml`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        }
+    };
+
     templates.operateur.data = function() {
         const route = useRoute()
 

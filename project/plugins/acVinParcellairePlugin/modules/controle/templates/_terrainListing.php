@@ -21,3 +21,5 @@
         </div>
     </RouterLink>
 </div>
+
+<center><button class="btn" @click="downloadKml">Télécharger KML</button></center>
