@@ -36,7 +36,7 @@ if (btnActiveAll) {
     if (btnActiveAll.dataset.status == 'affecter') {
       changeButtonActiveAll('retirer', "<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune", true, btnActiveAll);
     } else {
-      changeButtonActiveAll('affecter', "<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont " + btnActiveAll.dataset.terme, false, btnActiveAll);
+      changeButtonActiveAll('affecter', "<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune " + btnActiveAll.dataset.terme, false, btnActiveAll);
     }
   });
 }
@@ -59,7 +59,7 @@ document.querySelectorAll(".tableParcellaire input").forEach(function (el) {
     if (document.querySelectorAll('.tableParcellaire input:checked').length == document.querySelectorAll('.tableParcellaire input').length) {
       changeButtonActiveAll('retirer', "<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune", true, btnActiveAll, true);
     } else {
-      changeButtonActiveAll('affecter', "<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont " + btnActiveAll.dataset.terme, false, btnActiveAll, true);
+      changeButtonActiveAll('affecter', "<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune " + btnActiveAll.dataset.terme, false, btnActiveAll, true);
     }
   });
 });
@@ -148,7 +148,7 @@ $(document).ready(function()
     }
 
 
-    document.querySelectorAll(".table-apporteursCoop .switch").forEach( function (el) {
+    document.querySelectorAll(".switch").forEach( function (el) {
       var event = new Event('change');
       el.dispatchEvent(event);
     });
