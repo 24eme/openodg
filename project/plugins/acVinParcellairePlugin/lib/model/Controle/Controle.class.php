@@ -96,6 +96,10 @@ class Controle extends BaseControle
         return parent::save();
     }
 
+    public function getParcelles() {
+        return $this->_get('parcelles');
+    }
+
     public function getStatutComputed()
     {
         if($this->date_tournee) {
