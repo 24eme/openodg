@@ -119,4 +119,9 @@ class Controle extends BaseControle
         print_r(['generateMouvementsStatuts', $this->mouvements_statuts]);
     }
 
+    public function getGeoJson() {
+
+        return $this->getParcellaire()->getGeoJson();
+    }
+
 }

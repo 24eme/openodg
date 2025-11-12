@@ -1,4 +1,4 @@
-<h3 class="mt-0"><RouterLink :to="{ name: 'listing' }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ controleCourant.declarant.nom }}</h3>
+<h3 class="mt-0"><RouterLink :to="{ name: 'listing' }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ controleCourant.declarant.nom }} <RouterLink :to="{ name: 'map' }" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink></h3>
 <hr class="mt-2" />
 
 <?php include_partial('controle/terrainBlocDeclarant'); ?>

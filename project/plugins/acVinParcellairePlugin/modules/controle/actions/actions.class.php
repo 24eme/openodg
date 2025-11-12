@@ -10,11 +10,12 @@ class controleActions extends sfActions
                 continue;
             }
             if (!isset($stats[$c->date_tournee])) {
-                $stats[$c->date_tournee] = ['nb_parcelles' => 0, 'operateurs' => [], 'controles' => []];
+                $stats[$c->date_tournee] = ['nb_parcelles' => 0, 'operateurs' => [], 'controles' => [], 'geojson' => []];
             }
             $stats[$c->date_tournee]['nb_parcelles'] += count($c->parcelles);
             $stats[$c->date_tournee]['operateurs'][] = $c->declarant->nom;
             $stats[$c->date_tournee]['controles'][] = $c->getData();
+            $stats[$c->date_tournee]['geojson'][] = $c->getGeoJson();
         }
         return $stats;
     }

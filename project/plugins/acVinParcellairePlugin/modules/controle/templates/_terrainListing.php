@@ -1,3 +1,6 @@
+<h3 class="mt-0"><span class="glyphicon glyphicon-th-list"></span> Tournée du 12/11/2025 <RouterLink :to="{ name: 'map' }" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink></h3>
+<hr class="mt-2" />
+
 <h2>Opérateurs à contrôler</h2>
 
 <div class="list-group mt-5">
