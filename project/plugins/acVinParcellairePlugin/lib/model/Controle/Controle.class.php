@@ -124,8 +124,18 @@ class Controle extends BaseControle
     }
 
     public function getGeoJson() {
-
         return $this->getParcellaire()->getGeoJson();
+    }
+
+    private $to_dump = false;
+    public function isDump() {
+        return $this->to_dump;
+    }
+    public function getDataToDump() {
+        $this->to_dump = true;
+        $d = $this->getData();
+        $this->to_dump = false;
+        return $d;
     }
 
 }

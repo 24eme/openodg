@@ -2,9 +2,12 @@
 class ControleParcelle extends BaseControleParcelle
 {
     public function  getData() {
+
         $data = parent::getData();
-        $data->geojson = $this->getGeoJson();
-        $data->kml_placemark = $this->getKMLPlacemark();
+        if ($this->getDocument()->isDump()) {
+            $data->geojson = $this->getGeoJson();
+            $data->kml_placemark = $this->getKMLPlacemark();
+        }
         return $data;
     }
 
