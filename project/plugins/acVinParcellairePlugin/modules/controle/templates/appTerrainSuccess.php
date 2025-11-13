@@ -25,18 +25,19 @@
     if (localstorage_updated) {
         localStorage.setItem("controles", JSON.stringify(controles));
     }
-    function parseString(dlmString){
-        let mydlm = [];
-        dlmString.split("|").forEach(function(str){
-            mydlm.push(JSON.parse(str));
-        });
-        return mydlm;
-    }
-    const array_parcelles = parseString('<?php echo addslashes(json_encode(current($controles->getRawValue())['geojson'])) ?>');
+    // function parseString(dlmString){
+    //     let mydlm = [];
+    //     dlmString.split("|").forEach(function(str){
+    //         mydlm.push(JSON.parse(str));
+    //     });
+    //     return mydlm;
+    // }
+    // const array_parcelles = parseString('<?php //echo addslashes(json_encode(current($controles->getRawValue())['geojson'])) ?>');
 
     const routes = [
       { path: '/', name: "listing", component: templates.listing },
       { path: '/map', name: "map", component: templates.map },
+      { path: '/map/:idu', name: "map_parcelle", component: templates.map },
       { path: '/:id', name: "operateur", component: templates.operateur },
       { path: '/:id/audit', name: "audit", component: templates.audit },
       { path: '/:id/parcelle/:parcelle', name: "parcelle", component: templates.parcelle },
@@ -54,7 +55,7 @@
               controles: controles,
             }
         },
-        template: '<RouterView />',
+        template: '<RouterView :key="$route.fullPath" />',
         watch: {
           controles: {
             handler(newControles) {
@@ -160,7 +161,42 @@
         router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
       }
     };
-     templates.map.mounted = function() {
+    templates.map.data = function() {
+        const route = useRoute()
+        let parcelles = {};
+        for(let id in controles) {
+            const controle = controles[id]
+            for(let parcelleId in controle.parcelles) {
+                parcelles[parcelleId] = controle.parcelles[parcelleId]
+                parcelles[parcelleId].controle_id = id;
+            }
+        }
+        return {
+          parcelles: parcelles,
+          idu: route.params.idu
+        }
+    };
+    templates.map.methods = {
+        selectParcelle(map, layers, idu) {
+            console.log(layers)
+            for(let layerIndex in layers._layers) {
+                let layer = layers._layers[layerIndex]
+                if(layer.feature.properties.success) {
+                    layer.setStyle({color: 'green', fillColor: 'green'});
+                } else {
+                    layer.setStyle({color: 'red', fillColor: 'red'});
+                }
+                if(layer.feature.id == idu) {
+                    layer.setStyle({color: 'blue'});
+                    map.fitBounds(layer.getBounds());
+                }
+            }
+        },
+        echoFloat(val, nbDecimal = 5) {
+            return val ? Number(val).toFixed(nbDecimal) : '';
+        }
+    };
+    templates.map.mounted = function() {
         const map = new L.map('map');
         map.setView([43.8293, 7.2977], 8);
         const tileLayer = L.tileLayer('https://data.geopf.fr/wmts?'+
@@ -199,9 +235,43 @@
         gps.addTo(map);
         // Fin GPS
 
-        const parcellesLayer = L.geoJSON(array_parcelles);
+        let data = templates.map.data();
+        let parcelles = data.parcelles
+
+        let parcellesGeojson = { features: []}
+        for(let parcelleId in parcelles) {
+            let feature = JSON.parse(parcelles[parcelleId].geojson);
+            if(parcelles[parcelleId].controle.saisie) {
+                feature.properties.success = true
+            }
+            parcellesGeojson.features.push(feature)
+        }
+        console.log(parcellesGeojson);
+        const parcellesLayer = L.geoJSON(parcellesGeojson, { style: {
+            fillColor: 'red',
+            weight: 3,
+            opacity: 1,
+            color: 'red',
+            fillOpacity: 0.3
+        }, onEachFeature: function (feature, layer) {
+            layer.on({
+                click: function(e) {
+                    templates.map.methods.selectParcelle(map, parcellesLayer, feature.id)
+                    router.push({ name: 'map_parcelle', params: { idu: feature.id } })
+                }
+            });
+            if(feature.properties.success) {
+                layer.setStyle({color: 'green', fillColor: 'green'});
+            }
+        }
+        });
+
         parcellesLayer.addTo(map);
-        map.fitBounds(parcellesLayer.getBounds());
+        if(data.idu) {
+            templates.map.methods.selectParcelle(map, parcellesLayer, data.idu)
+        } else {
+            map.fitBounds(parcellesLayer.getBounds());
+        }
 
         /*let tilesUrl = []
         for(layerIndex in parcellesLayer._layers) {
