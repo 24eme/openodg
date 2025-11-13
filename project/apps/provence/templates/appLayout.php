@@ -18,7 +18,7 @@
         <?php include_stylesheets() ?>
 
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
-        <link href="/css/style_provence.css?201803141452" rel="stylesheet" type="text/css">
+        <link href="/css/style_provence.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" type="text/css" media="screen" href="/js/lib/leaflet/leaflet.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="/js/lib/leaflet/marker.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="/js/lib/leaflet-gps/dist/leaflet-gps.min.css" />

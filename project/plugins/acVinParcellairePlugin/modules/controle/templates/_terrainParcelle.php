@@ -7,7 +7,7 @@
 
 <h4 class="strong">Parcelle n° {{ parcelleCourante.parcelle_id }}</h4>
 
-<dl class="dl-horizontal">
+<dl class="dl-horizontal mb-4">
   <dt>Section / N° parcelle</dt>
   <dd>{{ parcelleCourante.section }} {{ parcelleCourante.numero_parcelle }}</dd>
   <dt>Superficie</dt>
@@ -24,6 +24,7 @@
   <dd>{{ parcelleCourante.ecart_pieds }} / {{ parcelleCourante.ecart_rang }}</dd>
 </dl>
 
+<a href="" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-road" /> Ouvrir sur le GPS</a>
 <hr />
 
 <h2>Points de contrôle</h2>
