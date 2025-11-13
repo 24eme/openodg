@@ -157,23 +157,6 @@
         }
     };
     templates.map.methods = {
-        selectParcelle(map, layers, idu) {
-            console.log(layers)
-            for(let layerIndex in layers._layers) {
-                let layer = layers._layers[layerIndex]
-                if(layer.feature.properties.success) {
-                    layer.setStyle({color: 'green', fillColor: 'green'});
-                } else {
-                    layer.setStyle({color: 'red', fillColor: 'red'});
-                }
-                if(layer.feature.id == idu) {
-                    layer.setStyle({color: 'blue'});
-                    map.fitBounds(layer.getBounds());
-                    map.setZoom(map.getZoom() - 1);
-
-                }
-            }
-        },
         downloadKml() {
           kml_content = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document>';
           kml_content += '<Style id="parcelle-style"><LineStyle><width>2</width></LineStyle><PolyStyle><color>7d0000ff</color></PolyStyle></Style>';
@@ -220,7 +203,7 @@
             'Imagery © <a href="https://www.ign.fr/">IGN</a>',
             id: 'mapbox.light'
             });
-        }
+
         tileLayer.addTo(map)
 
         // GPS
@@ -228,23 +211,12 @@
             autoCenter:true
         });//inizialize control
 
-        gps
-        .on('gps:located', function(e) {
-            // e.marker.bindPopup(e.latlng.toString()).openPopup()
-        })
-        .on('gps:disabled', function(e) {
-            e.marker.closePopup()
-        });
-
         gps.addTo(map);
-        // Fin GPS
-
 
         let parcelles = data.parcelles
 
         let parcellesGeojson = { features: []}
         for(let parcelleId in parcelles) {
-            console.log(parcelles[parcelleId].geojson);
             let feature = JSON.parse(parcelles[parcelleId].geojson);
             if(parcelles[parcelleId].controle.saisie) {
                 feature.properties.success = true
@@ -260,23 +232,24 @@
         }, onEachFeature: function (feature, layer) {
             layer.on({
                 click: function(e) {
-                    templates.map.methods.selectParcelle(map, parcellesLayer, feature.id)
                     router.push({ name: 'map_parcelle', params: { idu: feature.id } })
                 }
             });
             if(feature.properties.success) {
                 layer.setStyle({color: 'green', fillColor: 'green'});
             }
+            if(feature.id == data.idu) {
+                layer.setStyle({color: 'blue'});
+                map.fitBounds(layer.getBounds());
+                map.setZoom(map.getZoom() - 1);
+            }
         }
         });
 
         parcellesLayer.addTo(map);
-        if(data.idu) {
-            templates.map.methods.selectParcelle(map, parcellesLayer, data.idu)
-        } else {
+        if(!data.idu) {
             map.fitBounds(parcellesLayer.getBounds());
         }
-
         /*let tilesUrl = []
         for(layerIndex in parcellesLayer._layers) {
             let layer = parcellesLayer._layers[layerIndex];
