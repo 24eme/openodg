@@ -169,6 +169,8 @@
                 if(layer.feature.id == idu) {
                     layer.setStyle({color: 'blue'});
                     map.fitBounds(layer.getBounds());
+                    map.setZoom(map.getZoom() - 1);
+
                 }
             }
         },
@@ -197,26 +199,41 @@
         }
     };
     templates.map.mounted = function() {
+        let data = templates.map.data();
+        let tileLayer = null;
         const map = new L.map('map');
         map.setView([43.8293, 7.2977], 8);
-        const tileLayer = L.tileLayer('https://data.geopf.fr/wmts?'+
-        '&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM'+
-        '&LAYER={ignLayer}&STYLE={style}&FORMAT={format}'+
-        '&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
-        {
-          ignApiKey: 'pratique',
-          ignLayer: 'ORTHOIMAGERY.ORTHOPHOTOS',
-          style: 'normal',
-          format: 'image/jpeg',
-          service: 'WMTS',
-          minZoom: 8,
-          maxZoom: 19,
-          attribution: 'Map data &copy;' +
-          '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
-          '<a href="https://cadastre.data.gouv.fr/">Cadastre</a>, ' +
-          'Imagery © <a href="https://www.ign.fr/">IGN</a>',
-           id: 'mapbox.light'
-        });
+        if(!data.idu) {
+            tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            {
+            minZoom: 8,
+            maxZoom: 19,
+            attribution: 'Map data &copy;' +
+            '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
+            '<a href="https://cadastre.data.gouv.fr/">Cadastre</a>, ' +
+            'Imagery © <a href="https://www.ign.fr/">IGN</a>',
+            id: 'mapbox.light'
+            });
+        } else {
+            tileLayer = L.tileLayer('https://data.geopf.fr/wmts?'+
+            '&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM'+
+            '&LAYER={ignLayer}&STYLE={style}&FORMAT={format}'+
+            '&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
+            {
+            ignApiKey: 'pratique',
+            ignLayer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+            style: 'normal',
+            format: 'image/jpeg',
+            service: 'WMTS',
+            minZoom: 8,
+            maxZoom: 19,
+            attribution: 'Map data &copy;' +
+            '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
+            '<a href="https://cadastre.data.gouv.fr/">Cadastre</a>, ' +
+            'Imagery © <a href="https://www.ign.fr/">IGN</a>',
+            id: 'mapbox.light'
+            });
+        }
         tileLayer.addTo(map)
 
         // GPS
@@ -235,7 +252,7 @@
         gps.addTo(map);
         // Fin GPS
 
-        let data = templates.map.data();
+
         let parcelles = data.parcelles
 
         let parcellesGeojson = { features: []}
