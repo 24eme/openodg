@@ -148,9 +148,11 @@
         <?php endif; ?>
         </div>
         <script>
+        if (document.querySelector('#validation_degustation')) {
             document.querySelector('#validation_degustation').addEventListener('change', function(e) {
                 document.querySelector('#validation_date_commission').value = this.value;
             });
+        }
         </script>
     </div>
 <?php elseif($conditionnement->date_commission): ?>
