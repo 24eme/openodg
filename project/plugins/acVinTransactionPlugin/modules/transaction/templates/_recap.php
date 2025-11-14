@@ -17,7 +17,9 @@
           <?php if(!$transaction->validation_odg && $sf_user->isAdmin()): ?>
           <div class="row text-right">
             <div class="col-xs-3 col-xs-offset-9">
-              <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
+              <span>Tout dégustable : <label class="switch-xl"><input checked type="checkbox" id="btn-degustable-all" class="switch"></input>
+              <span class="slider-xl round"></span>
+          </label>
             </span>
 
             </div>
@@ -76,7 +78,10 @@
                               <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
                                 <div class="col-xs-12">
                                   <?php if ($sf_user->isAdmin() && !$transaction->validation_odg): ?>
-                                  	<?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "transaction bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                                    <label class="switch-xl">
+                                        <?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "transaction switch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id")); ?>
+                                    <span class="slider-xl round"></span>
+                                    </label>
                                   <?php else: ?>
                                       <?php echo pictoDegustable($lot); ?>
                                   <?php endif; ?>
