@@ -64,7 +64,7 @@ document.querySelectorAll(".tableParcellaire input").forEach(function (el) {
   });
 });
 
-if (document.querySelectorAll(".avaParcellAffec")) {
+if (document.querySelector(".avaParcellAffec")) {
   document.querySelectorAll(".switch-xl").forEach(function (label) {
     let inputSwitch = label.querySelector('[id^=parcellaire_parcelles_produits_]');
     if (! inputSwitch.dataset.disabled) {
