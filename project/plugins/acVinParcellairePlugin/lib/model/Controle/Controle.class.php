@@ -96,6 +96,10 @@ class Controle extends BaseControle
         return parent::save();
     }
 
+    public function getParcelles() {
+        return $this->_get('parcelles');
+    }
+
     public function getStatutComputed()
     {
         if($this->date_tournee) {
@@ -117,6 +121,21 @@ class Controle extends BaseControle
         $this->add('mouvements_statuts');
         $this->mouvements_statuts->add(null,  ['CONTROLE', $this->getDocumentDefinitionModel(), $this->getStatutComputed(), $this->identifiant] );
         print_r(['generateMouvementsStatuts', $this->mouvements_statuts]);
+    }
+
+    public function getGeoJson() {
+        return $this->getParcellaire()->getGeoJson();
+    }
+
+    private $to_dump = false;
+    public function isDump() {
+        return $this->to_dump;
+    }
+    public function getDataToDump() {
+        $this->to_dump = true;
+        $d = $this->getData();
+        $this->to_dump = false;
+        return $d;
     }
 
 }
