@@ -66,7 +66,7 @@ if(isset($coop)):
                 <h3>Dénomination <?php echo $group; ?></h3>
             </div>
             <div class="col-xs-6">
-               <p class="text-right" style="margin-top: 30px;"><a href="javascript:void(0)" id="lien-denomination-all" data-status="affecter" data-hasDgc="<?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>" data-target="#parcelles_<?php echo $group; ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
+               <p class="text-right" style="margin-top: 30px;"><a href="javascript:void(0)" id="btn-switchactive-all" data-status="affecter" onclick="triggerAffectation(this);" data-hasDgc="<?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>" data-target="#parcelles_<?php echo $group; ?>" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
            </div>
         </div>
     <?php endif; ?>
@@ -93,7 +93,7 @@ if(isset($coop)):
                         <?php echo $group;?>
                     </div>
                     <div class="col-xs-6">
-                       <p class="text-right"><a href="javascript:void(0)" id="lien-denomination-all" data-status="affecter" data-hasDgc="<?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>" data-target="#parcelles_<?php echo $group; ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
+                       <p class="text-right"><a href="javascript:void(0)" id="btn-switchactive-all" data-status="affecter" onclick="triggerAffectation(this.dataset.status);" data-hasDgc="<?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>" data-target="#parcelles_<?php echo $group; ?>" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
                    </div>
                 </div>
             </th>
@@ -338,7 +338,6 @@ if(isset($coop)):
 
             (document.querySelectorAll('.switch') || []).forEach(function (el) {
                 el.addEventListener("change", function (event) {
-                    console.log("ping");
                     const table = event.target.closest('table')
                     const ligneActive = event.target.closest('tr');
                     const state = event.target.closest('input').checked;
@@ -361,6 +360,20 @@ if(isset($coop)):
             });
         });
 
+        function triggerAffectation(origin) {
+            state = origin.dataset.status;
+            (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
+                if (state == "retirer") {
+                    changeAffectation(el.closest('tr'), false);
+                } else {
+                    if (! el.checked) {
+                        changeAffectation(el.closest('tr'), true);
+                    }
+                }
+            });
+            setTimeout(updateTotal, 500, document.querySelector(origin.dataset.target));
+            setTimeout(updateRules, 500);
+        }
     </script>
 
     <div class="row row-margin row-button mt-3"  style="display:flex; justify-content: space-evenly;">
