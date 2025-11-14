@@ -34,7 +34,7 @@
                 <h3><?php echo $commune; ?></h3>
             </div>
            <div class="col-xs-6">
-               <p class="text-right" style="margin-top: 20px;"><a id="btn-switchactive-all" href="javascript:void(0)" data-status="affecter" data-terme="ont des pieds morts ou manquants" data-target="#parcelles_<?php echo $commune; ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune ont des pieds morts ou manquants</a></p>
+               <p class="text-right" style="margin-top: 20px;"><a id="btn-switchactive-all" href="javascript:void(0)" data-status="affecter" data-terme="ont des pieds morts ou manquants" data-target="#parcelles_<?php echo $commune; ?>" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune ont des pieds morts ou manquants" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune ont des pieds morts ou manquants</a></p>
            </div>
 
 

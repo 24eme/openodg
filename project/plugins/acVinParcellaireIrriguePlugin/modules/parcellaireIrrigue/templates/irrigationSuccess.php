@@ -43,7 +43,7 @@
             <h3><?php echo $commune; ?></h3>
         </div>
         <div class="col-xs-6">
-            <p class="text-right" style="margin-top: 20px;"><a id="btn-switchactive-all" href="javascript:void(0)" data-status="affecter" data-terme="sont irriguées" data-target="#parcelles_<?php echo $commune; ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irriguées</a></p>
+            <p class="text-right" style="margin-top: 20px;"><a id="btn-switchactive-all" href="javascript:void(0)" data-status="affecter" data-terme="sont irriguées" data-target="#parcelles_<?php echo $commune; ?>" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irriguées" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irriguées</a></p>
         </div>
     </div>
     <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
