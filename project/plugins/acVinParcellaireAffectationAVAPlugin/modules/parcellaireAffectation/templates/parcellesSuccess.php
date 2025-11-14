@@ -65,10 +65,10 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
             </div>
         <?php endif; ?>
         <div class="col-xs-12">
-			<p style="margin-top: -10px; margin-bottom: 5px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#listes_cepages" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Séléctionner toutes les parcelles</a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#listes_cepages" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles</a></p>
+			<p style="margin-top: -10px; margin-bottom: 5px;"><a href="javascript:void(0)" id="btn-switchactive-all" data-status="affecter" data-target="#listes_cepages" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Séléctionner toutes les parcelles" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Déséléctionner toutes les parcelles"><span class='glyphicon glyphicon-check'></span>&nbsp;Séléctionner toutes les parcelles</a></p>
             <div id="listes_cepages" class="list-group">
                 <?php if (count($parcelles)) : ?>
-                    <table class="table table-striped">
+                    <table class="table table-striped tableParcellaire">
                         <thead>
                             <tr>
                                 <th class="col-xs-1 text-center">Affectée</th>
@@ -98,13 +98,16 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                 ?>
                                 <tr <?php echo $styleErr . $styleWar; ?> >
                                     <td class="text-center">
-                                        <?php
-                                        if (isset($form['produits'][$parcelle->getHashForKey()]['vtsgn'])) {
-                                            echo $form['produits'][$parcelle->getHashForKey()]['vtsgn']->render();
-                                        } else {
-                                            echo $form['produits'][$parcelle->getHashForKey()]['active']->render();
-                                        }
-                                        ?>
+                                        <label class="switch-xl avaParcellAffec">
+                                            <?php
+                                            if (isset($form['produits'][$parcelle->getHashForKey()]['vtsgn'])) {
+                                                echo $form['produits'][$parcelle->getHashForKey()]['vtsgn']->render();
+                                            } else {
+                                                echo $form['produits'][$parcelle->getHashForKey()]['active']->render();
+                                            }
+                                            ?>
+                                            <span class="slider-xl round"></span>
+                                        </label>
                                     </td>
 									<td><?php echo $parcelle->getAppellationLibelle((isset($form['produits'][$parcelle->getHashForKey()]['vtsgn']))); ?></td>
                                     <td><?php echo $parcelle->getCommune(); ?></td>

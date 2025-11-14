@@ -23,7 +23,7 @@ function changeButtonActiveAll(mention, span, check, btnActiveAll = false, onlyT
   btnActiveAll.innerHTML = span;
   var target = document.querySelector(btnActiveAll.dataset.target);
   if (! onlyText) {
-    target.querySelectorAll('.switch').forEach(function (el) {
+    target.querySelectorAll('.switch:not(.inputDisabled)').forEach(function (el) {
       el.checked = check;
       el.checked ? el.parentElement.parentElement.parentElement.classList.add("success") : el.parentElement.parentElement.parentElement.classList.remove("success");
     });
@@ -34,9 +34,9 @@ var btnActiveAll = document.querySelector('#btn-switchactive-all');
 if (btnActiveAll) {
   btnActiveAll.addEventListener('click', function (el) {
     if (btnActiveAll.dataset.status == 'affecter') {
-      changeButtonActiveAll('retirer', "<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune", true, btnActiveAll);
+        changeButtonActiveAll('retirer', btnActiveAll.dataset.remove, true, btnActiveAll);
     } else {
-      changeButtonActiveAll('affecter', "<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune " + btnActiveAll.dataset.terme, false, btnActiveAll);
+        changeButtonActiveAll('affecter', btnActiveAll.dataset.check, false, btnActiveAll);
     }
   });
 }
@@ -57,12 +57,23 @@ document.querySelectorAll(".tableParcellaire input").forEach(function (el) {
   el.addEventListener('change', function (e) {
     var btnActiveAll = document.querySelector('#btn-switchactive-all');
     if (document.querySelectorAll('.tableParcellaire input:checked').length == document.querySelectorAll('.tableParcellaire input').length) {
-      changeButtonActiveAll('retirer', "<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune", true, btnActiveAll, true);
+      changeButtonActiveAll('retirer', btnActiveAll.dataset.remove, true, btnActiveAll, true);
     } else {
-      changeButtonActiveAll('affecter', "<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune " + btnActiveAll.dataset.terme, false, btnActiveAll, true);
+      changeButtonActiveAll('affecter', btnActiveAll.dataset.check, false, btnActiveAll, true);
     }
   });
 });
+
+if (document.querySelectorAll(".avaParcellAffec")) {
+  document.querySelectorAll(".switch-xl").forEach(function (label) {
+    let inputSwitch = label.querySelector('[id^=parcellaire_parcelles_produits_]');
+    if (! inputSwitch.dataset.disabled) {
+      return ;
+    }
+    label.querySelector('.slider-xl').style['opacity'] = '0.5';
+    inputSwitch.classList.add('inputDisabled');
+  });
+}
 
 
 $(document).ready(function()
