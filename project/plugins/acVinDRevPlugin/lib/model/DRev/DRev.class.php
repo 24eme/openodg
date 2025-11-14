@@ -266,7 +266,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if(!$lot->hasVolumeAndHashProduit()){
                 continue;
             }
-            if ($lot->region != $region) {
+            if ($region && ($lot->region != $region)) {
                 continue;
             }
             $lots[] = $lot;
