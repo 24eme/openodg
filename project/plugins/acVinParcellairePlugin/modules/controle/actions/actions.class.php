@@ -14,7 +14,7 @@ class controleActions extends sfActions
             }
             $stats[$c->date_tournee]['nb_parcelles'] += count($c->parcelles);
             $stats[$c->date_tournee]['operateurs'][] = $c->declarant->nom;
-            $stats[$c->date_tournee]['controles'][] = $c->getData();
+            $stats[$c->date_tournee]['controles'][] = $c->getDataToDump();
         }
         return $stats;
     }

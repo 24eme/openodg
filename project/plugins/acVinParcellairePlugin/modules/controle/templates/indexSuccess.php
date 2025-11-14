@@ -15,7 +15,7 @@
         <td><?php echo $date_tournee; ?></td>
         <td><?php echo count($stat['operateurs']); ?></td>
         <td><?php echo $stat['nb_parcelles']; ?></td>
-        <td><a href="<?php echo url_for('controle_appterrain', array('date' => $date_tournee)); ?>" class="btn btn-sm btn-default">Affecter une date</a></td>
+        <td><a href="<?php echo url_for('controle_appterrain', array('date' => $date_tournee)); ?>" class="btn btn-sm btn-default">Accéder à la tournée</a></td>
     </tr>
 <?php endforeach; ?>
     </tbody>

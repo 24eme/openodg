@@ -36,10 +36,6 @@ class ControleClient extends acCouchdbClient
         if (!$date) {
             $date = date('Ymd');
         }
-        $controle = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
-        if ($controle && $controle->date == $date) {
-            return $controle;
-        }
         $controle = new Controle();
         $controle->initDoc($identifiant, $date);
         return $controle;
