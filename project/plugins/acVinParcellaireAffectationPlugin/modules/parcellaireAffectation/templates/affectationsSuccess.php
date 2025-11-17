@@ -66,7 +66,7 @@ if(isset($coop)):
                 <h3>Dénomination <?php echo $group; ?></h3>
             </div>
             <div class="col-xs-6">
-               <p class="text-right" style="margin-top: 30px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette  <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
+               <p class="text-right" style="margin-top: 30px;"><a href="javascript:void(0)" id="btn-switchactive-all" data-status="affecter" onclick="triggerAffectation(this);" data-hasDgc="<?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>" data-target="#parcelles_<?php echo $group; ?>" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
            </div>
         </div>
     <?php endif; ?>
@@ -93,8 +93,8 @@ if(isset($coop)):
                         <?php echo $group;?>
                     </div>
                     <div class="col-xs-6">
-                    <p class="text-right"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette  <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
-                    </div>
+                       <p class="text-right"><a href="javascript:void(0)" id="btn-switchactive-all" data-status="affecter" onclick="triggerAffectation(this.dataset.status);" data-hasDgc="<?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>" data-target="#parcelles_<?php echo $group; ?>" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
+                   </div>
                 </div>
             </th>
 
@@ -122,7 +122,10 @@ if(isset($coop)):
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$parcelle->getParcelleId()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$parcelle->getParcelleId()]['affectee']->renderError() ?>
                         <div class="col-xs-12">
-    		            	<?php echo $form[$parcelle->getParcelleId()]['affectee']->render(array('class' => "bsswitch test", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                            <label class="switch-xl">
+                                <?php echo $form[$parcelle->getParcelleId()]['affectee']->render(array('class' => "test switch")); ?>
+                                <span class="slider-xl round"></span>
+                            </label>
                         </div>
                     </div>
             	</td>
@@ -184,7 +187,7 @@ if(isset($coop)):
                 let checked = 0
 
                 table.querySelectorAll("tbody tr:not(.commune-total)").forEach(function (tr) {
-                    if (tr.querySelector('.bsswitch:checked')) {
+                    if (tr.querySelector('.switch:checked')) {
                         superficie += parseFloat(tr.querySelector('td:nth-child(0n+6) input').value)
                         checked ++
                     }
@@ -209,7 +212,7 @@ if(isset($coop)):
             updateRules = function () {
                 let produitArray = {};
                 document.querySelectorAll("table.tableParcellaire tbody tr:not(.commune-total)").forEach(function (tr) {
-                    if (tr.querySelector('.bsswitch:checked')) {
+                    if (tr.querySelector('.switch:checked')) {
                         if (! produitArray[tr.querySelector('td:nth-child(0n+3)').innerText]) {
                             produitArray[tr.querySelector('td:nth-child(0n+3)').innerText] = 0;
                         }
@@ -296,7 +299,6 @@ if(isset($coop)):
                 });
             };
             changeAffectation = function (ligne, state) {
-                console.log([ligne]);
                 if (! state) {
                     ligne.childNodes[15].innerText = '';
                     return ;
@@ -304,7 +306,7 @@ if(isset($coop)):
                 superficie = parseFloat(ligne.childNodes[11].childNodes[1].value);
                 if (parseFloat(ligne.childNodes[9].innerText.replace(",", ".")) < superficie) {
                     ligne.childNodes[15].innerText = 'Totale';
-                    ligne.childNodes[11].childNodes[1].value = ligne.childNodes[11].innerText.replace(",", ".");
+                    ligne.childNodes[11].childNodes[1].value = ligne.childNodes[9].innerText.replace(",", ".");
                 } else if (parseFloat(ligne.childNodes[9].innerText.replace(",", ".")) == superficie) {
                     ligne.childNodes[15].innerText = 'Totale';
                 } else {
@@ -315,16 +317,18 @@ if(isset($coop)):
             (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
                 el.addEventListener('change', function(){
                     ligneActive = this.closest('tr');
-                    ligneState = ligneActive.querySelector('input.bsswitch').checked;
+                    ligneState = ligneActive.querySelector('input.switch').checked;
                     changeAffectation(ligneActive, ligneState);
                     updateTotal(this.closest('table'));
-                    updateRules()
+                    updateRules();
                 });
             });
 
+
+
             (document.querySelectorAll('table[id^=parcelles_]') || []).forEach(function (el) {
                 el.querySelectorAll('tr[id^=tr_]').forEach(function (tr) {
-                    ligneState = tr.querySelector('input.bsswitch').checked;
+                    ligneState = tr.querySelector('input.switch').checked;
                     changeAffectation(tr, ligneState);
                 });
 
@@ -332,12 +336,15 @@ if(isset($coop)):
                 updateRules()
             });
 
-            $('.bsswitch').on('switchChange.bootstrapSwitch', function (event, state) {
-                const table = event.target.closest('table')
-                const ligneActive = event.target.closest('tr');
-                changeAffectation(ligneActive, state);
-                updateTotal(table)
-                updateRules()
+            (document.querySelectorAll('.switch') || []).forEach(function (el) {
+                el.addEventListener("change", function (event) {
+                    const table = event.target.closest('table')
+                    const ligneActive = event.target.closest('tr');
+                    const state = event.target.closest('input').checked;
+                    changeAffectation(ligneActive, state);
+                    updateTotal(table)
+                    updateRules()
+                });
             });
         });
 
@@ -353,9 +360,23 @@ if(isset($coop)):
             });
         });
 
+        function triggerAffectation(origin) {
+            state = origin.dataset.status;
+            (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
+                if (state == "retirer") {
+                    changeAffectation(el.closest('tr'), false);
+                } else {
+                    if (! el.checked) {
+                        changeAffectation(el.closest('tr'), true);
+                    }
+                }
+            });
+            setTimeout(updateTotal, 500, document.querySelector(origin.dataset.target));
+            setTimeout(updateRules, 500);
+        }
     </script>
 
-    <div class="row row-margin row-button"  style="display:flex; justify-content: space-evenly;">
+    <div class="row row-margin row-button mt-3"  style="display:flex; justify-content: space-evenly;">
         <div class="col-xs-4"><button type="submit" name="previous" value="1" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</button>
         </div>
 
