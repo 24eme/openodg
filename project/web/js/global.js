@@ -339,13 +339,13 @@
         	$('.bootstrap-switch-removeall').show();
         }
 
-        $('tr td').click(function (event) {
+        $('table:not(.tableParcellaire) tr td').click(function (event) {
             if (!$(this).hasClass('edit')) {
                 var value = $(this).parent().find('.bsswitch').is(':checked');
                 $(this).parent().find('td .bsswitch').bootstrapSwitch('state', !value, false);
             }
         });
-        $('tr').click(function (event) {
+        $('table:not(.tableParcellaire) tr').click(function (event) {
             $.trBsSwitchHighlight($(this));
         });
 

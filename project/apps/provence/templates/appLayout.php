@@ -18,15 +18,22 @@
         <?php include_stylesheets() ?>
 
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
-        <link href="/css/style_provence.css?201803141452" rel="stylesheet" type="text/css">
+        <link href="/css/style_provence.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" media="screen" href="/js/lib/leaflet/leaflet.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/js/lib/leaflet/marker.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/js/lib/leaflet-gps/dist/leaflet-gps.min.css" />
 
         <script src="/js/lib/vue/vue.global.prod.js"></script>
         <script src="/js/lib/vue/vue-router.global.prod.js"></script>
+        <script src="/js/lib/idb/build/umd.js"></script>
+        <script src="/js/lib/leaflet/leaflet.js"></script>
+        <script src="/js/lib/leaflet-gps/dist/leaflet-gps.min.js"></script>
+        <!--<script src="/js/lib/leaflet-offline/dist/bundle.js"></script>-->
     </head>
     <body role="document" style="background: none;">
 
         <div id="header">
-            <header class="container" role="banner" style="background:none;">
+            <!--<header class="container" role="banner" style="background:none;">
                 <div id="logo">
                   <a href="/" title="Plateforme des Syndicats des Vins de Provence | Retour à la page d'accueil">
                       <img src="/images/logo_provence.png?20241029" alt="Syndicats des Vins de Provence">
@@ -35,7 +42,7 @@
               <div id="titre">
                   <h1 style="color:red; text-align:center;">VUEJS APP CONTROLE TERRAIN</h1>
               </div>
-            </header>
+            </header>-->
         </div>
 
         <section id="content" class="container">
