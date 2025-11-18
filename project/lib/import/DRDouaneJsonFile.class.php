@@ -63,22 +63,24 @@ class DRDouaneJsonFile extends DouaneImportCsvFile {
                 $endCsvLine .= ';'.$this->getHabilitationStatus(HabilitationClient::ACTIVITE_PRODUCTEUR, $produit);
 
                 $correspondanceNumLigneJson = [
-                    "04" => "superficieRecolte",
-                    "04b" => "superficieRecolte",
-                    "05" => "recolteTotale",
-                    "09" => "conserveCaveParticuliereExploitant",
-                    "10" => "volEnVinification",
-                    "13" => "volMcMcrObtenu",
-                    "15" => "volVinRevendicableOuCommercialisable",
-                    "16" => "volDRAOuLiesSoutirees",
-                    "17" => "volEauEliminee",
-                    "18" => "vsi",
-                    "19" => "vci",
+                    "superficieRecolte" => ["04", "04b"],
+                    "recolteTotale" => ["05"],
+                    "conserveCaveParticuliereExploitant" => ["09"],
+                    "volEnVinification" => ["10"],
+                    "volMcMcrObtenu" => ["13"],
+                    "volMoutApteAOP" => ["15"],
+                    "volVinRevendicableOuCommercialisable" => ["15"],
+                    "volDRAOuLiesSoutirees" => ["16"],
+                    "volEauEliminee" => ["17"],
+                    "vsi" => ["18"],
+                    "vci" => ["19"],
                 ];
 
-                foreach($correspondanceNumLigneJson as $code => $jsonKey) {
+                foreach($correspondanceNumLigneJson as $jsonKey => $codes) {
                     if(isset($jsonProduit->{ $jsonKey }) && $jsonProduit->{ $jsonKey }) {
-                        $csv .= $startCsvLine.";".$code.";".DRCsvFile::getCategorieLibelle("DR", $code).";".$jsonProduit->{ $jsonKey }.";;;;;".$endCsvLine."\n";
+                        foreach ($codes as $code) {
+                            $csv .= $startCsvLine.";".$code.";".DRCsvFile::getCategorieLibelle("DR", $code).";".$jsonProduit->{ $jsonKey }.";;;;;".$endCsvLine."\n";
+                        }
                     }
                 }
 
