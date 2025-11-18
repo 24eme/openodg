@@ -82,7 +82,7 @@
     <thead>
         <tr>
             <th class="col-xs-5" style="border-top: hidden; border-left: hidden"></th>
-            <th colspan="11" class="text-center">Lignes</th>
+            <th colspan="12" class="text-center">Lignes</th>
         </tr>
     </thead>
     <thead>
