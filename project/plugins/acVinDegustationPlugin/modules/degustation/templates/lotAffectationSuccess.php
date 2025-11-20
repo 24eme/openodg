@@ -39,7 +39,10 @@
   <div class="row form-group">
       <?php echo $form['preleve']->renderLabel("Prelevé :", array('class' => "col-sm-3 control-label")); ?>
     <div class="col-xs-9" style="padding-top: 10px;">
-      <?php echo $form['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+        <label class="switch-xl">
+            <?php echo $form['preleve']->render(array('class' => "degustation", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id")); ?>
+            <span class="slider-xl round"></span>
+        </label>
     </div>
   </div>
 
@@ -48,7 +51,7 @@
     <div class="col-xs-9" style="padding:10px;">
         <?php echo $form['numero_table']->render(); ?>
         <?php echo $form['numero_table']->renderError(); ?>
-    </div> 
+    </div>
   </div>
 
   <div class="form-group row row-margin row-button">

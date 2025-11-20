@@ -260,13 +260,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $couleurs;
     }
 
+    public function getSyndicats() {
+        $syndicats = $this->declaration->getSyndicats();
+        foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
+            if(!count($this->getLotsRevendiques($region))) {
+                continue;
+            }
+            $syndicats[] = $region;
+        }
+        return array_unique($syndicats);
+    }
+
     public function getLotsRevendiques($region = null) {
         $lots = array();
         foreach ($this->getLots() as $lot) {
             if(!$lot->hasVolumeAndHashProduit()){
                 continue;
             }
-            if ($lot->region != $region) {
+            if ($region && ($lot->region != $region)) {
                 continue;
             }
             $lots[] = $lot;
@@ -942,7 +953,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             if (strpos($p->getHash(), 'genres/VDB/')) {
                 $hashMou = str_replace('genres/VDB/', 'genres/MOU/', $p->getConfig()->getHash());
-                if ($produitConfigMou = $this->getConfiguration()->get($hashMou)) {
+                if ($this->getConfiguration()->exist($hashMou) && $produitConfigMou = $this->getConfiguration()->get($hashMou)) {
+                    $this->addProduit($produitConfigMou->getHash(), $complement);
+                }
+                $hashVMQ = str_replace('genres/VDB/', 'genres/VMQ/', $p->getConfig()->getHash());
+                if ($this->getConfiguration()->exist($hashVMQ) && $produitConfigMou = $this->getConfiguration()->get($hashVMQ)) {
                     $this->addProduit($produitConfigMou->getHash(), $complement);
                 }
             }
@@ -2660,7 +2675,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $produit = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($produit_c->getConfig());
             $produit_hab = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($produit);
             $hash = $produit_hab->getHash();
-            if (!$habilitation || !$habilitation->isHabiliteFor($hash, HabilitationClient::ACTIVITE_VINIFICATEUR)) {
+            if (!$habilitation || !$habilitation->isHabiliteFor($hash, HabilitationClient::ACTIVITE_VINIFICATEUR, $this->getDate())) {
                 $nonHabilitationODG[$hash] = $produit;
             }
         }

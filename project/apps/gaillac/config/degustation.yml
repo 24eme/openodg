@@ -2,7 +2,7 @@ all:
   configuration:
     degustation:
       anonymat4labo: true
-      specificite_lot_pdf: true
+      specificite_lot_pdf: false
       always_identifiant_table: true
       is_acceptable:
         aocgaillac : true
@@ -15,4 +15,4 @@ all:
         - NONTYPICITE_CEPAGE
         - NONCONFORME_ANALYTIQUE
       has_notification: true
-      has_degustateur_par_region: true
+      has_degustateur_par_region: false
