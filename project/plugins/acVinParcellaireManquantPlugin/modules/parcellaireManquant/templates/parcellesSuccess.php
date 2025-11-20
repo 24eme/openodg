@@ -15,7 +15,7 @@
         <p style="margin:10px 0;">
             <span class="glyphicon glyphicon-info-sign"></span> Il n'est pas nécessaire d'indiquer les parcelles avec moins de <?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>% de pieds manquants.
             <a style="margin-top:-5px;" href="<?php echo url_for('parcellairemanquant_validation', $parcellaireManquant) ?>" class="btn btn-sm btn-default pull-right">
-                <span class="glyphicon glyphicon-check"></span>
+                <span class="glyphicon glyphicon-uncheck"></span>
                 Je n'ai pas de parcelle avec plus de <?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>% de pieds manquants
             </a>
         </p>
