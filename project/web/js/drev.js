@@ -542,7 +542,7 @@
     }
 
     $.btn_bsswitch = function() {
-      var switchSelector = '#btn-degustable-all';
+      var switchSelector = '#btn-degustable-all-bs';
       $(switchSelector).bootstrapSwitch();
 
       $(switchSelector).on('switchChange.bootstrapSwitch', function(event, state) {
@@ -557,6 +557,45 @@
         })
       })
     }
+
+    $.btn_switch = function() {
+      var origin = document.querySelector('#btn-degustable-all');
+      if (origin) {
+        origin.addEventListener("change", function (e) {
+          document.querySelectorAll('.switch:not(#btn-degustable-all)').forEach( function (el) {
+            el.checked = origin.checked;
+          });
+        });
+      }
+    }
+
+    $.lien_denom_switch = function() {
+      var origin = document.querySelector('#lien-denomination-all');
+      if (origin) {
+        origin.addEventListener("click", function (e) {
+          var event = new Event('change');
+          if (origin.dataset.status == "affecter") {
+            origin.innerHTML = "<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette " + origin.dataset.hasdgc;
+            origin.dataset.status = "retirer";
+            var target = document.querySelector(origin.dataset.target);
+            target.querySelectorAll('.switch').forEach(function (el) {
+              el.checked = true;
+              el.dispatchEvent(event);
+            });
+          } else {
+            origin.innerHTML = "<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette " + origin.dataset.hasdgc;
+            origin.dataset.status = "affecter";
+            var target = document.querySelector(origin.dataset.target);
+            target.querySelectorAll('.switch').forEach(function (el) {
+              el.checked = false;
+              el.dispatchEvent(event);
+            });
+          }
+        });
+      }
+    }
+
+
 
     /* =================================================================================== */
     /* FUNCTIONS CALL */
@@ -583,6 +622,8 @@
         $.initValidationDeclaration();
         $.initSocieteChoixEtablissement();
         $.btn_bsswitch();
+        $.btn_switch();
+        $.lien_denom_switch();
 
     });
 

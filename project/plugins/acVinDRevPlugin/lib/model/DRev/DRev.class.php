@@ -260,13 +260,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $couleurs;
     }
 
+    public function getSyndicats() {
+        $syndicats = $this->declaration->getSyndicats();
+        foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
+            if(!count($this->getLotsRevendiques($region))) {
+                continue;
+            }
+            $syndicats[] = $region;
+        }
+        return array_unique($syndicats);
+    }
+
     public function getLotsRevendiques($region = null) {
         $lots = array();
         foreach ($this->getLots() as $lot) {
             if(!$lot->hasVolumeAndHashProduit()){
                 continue;
             }
-            if ($lot->region != $region) {
+            if ($region && ($lot->region != $region)) {
                 continue;
             }
             $lots[] = $lot;
