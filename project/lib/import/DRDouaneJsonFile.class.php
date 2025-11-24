@@ -74,6 +74,7 @@ class DRDouaneJsonFile extends DouaneImportCsvFile {
                     "volEauEliminee" => ["17"],
                     "vsi" => ["18"],
                     "vci" => ["19"],
+                    "VCI" => ["19"],
                     "volAlcoolAjoute" => ["23"], // Code inexistant dans la DR < 2025, mais remplissable sur les DR >= 2025
                 ];
 
