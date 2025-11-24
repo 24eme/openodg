@@ -175,7 +175,7 @@ $t->comment("DRev envoi de mail de la validation");
 $drev->devalidate();
 
 $is_syndicat_devalide = true;
-foreach ($drev->declaration->getSyndicats() as $syndicat) {
+foreach ($drev->getSyndicats() as $syndicat) {
     $infos = RegionConfiguration::getInstance()->getOdgRegionInfos($syndicat);
     if($drev->isValidateOdgByRegion($syndicat)) {
         $is_syndicat_devalide = false;

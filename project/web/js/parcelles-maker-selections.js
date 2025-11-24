@@ -59,10 +59,8 @@ gps.addTo(map);
 
 function style(feature) {
     return {
-        fillColor: '#fff',
         weight: 2,
         opacity: 1,
-        color: 'red',
         fillOpacity: 0.3
     };
 }
@@ -324,6 +322,16 @@ function getParcelleLayer(id) {
   return layerFinded;
 }
 
+function colorOnValidateStatusParcelle(id, status){
+  let layer = getParcelleLayer(id);
+  if (status == true ) {
+    layer.setStyle({
+        fillColor: '#03fc1c', color: 'green'});
+  } else {
+    layer.setStyle({
+        fillColor: '#fff', color: 'red'});
+  }
+}
 
 /**
 * On select words filter, we filter map layers also.
@@ -361,6 +369,11 @@ $(window).on("load", function() {
     if($("input#hamzastyle").val()){
         filterMap();
     }
+    updateSuperficieSelectionnee();
+    document.querySelectorAll('.inputTd').forEach(function (td) {
+      var input = td.querySelector('input');
+      colorOnValidateStatusParcelle(input.dataset.parcelleid.split('-')[0], input.checked);
+    });
 });
 
 /*
@@ -393,6 +406,14 @@ $(document).ready(function(){
     }
    });
 })
+
+function updateSuperficieSelectionnee() {
+  let total = 0;
+  document.querySelectorAll("#tableParcelle input:checked").forEach( function (input) {
+    total += parseFloat(input.dataset.superficie);
+  });
+  document.querySelector('#total_surfaces_selectionnees').textContent = total.toFixed(4);
+}
 
 $(document).delegate("#tableParcelle td", "click", function checkRow (e) {
   var inputControle = $(this).parent('tr').find('td:nth-child(8) input')[0];
@@ -427,4 +448,6 @@ $(document).delegate("input[type=checkbox]", "change", function (e) {
       target.checked ? target.parentElement.parentElement.parentElement.classList.add("success") : target.parentElement.parentElement.parentElement.classList.remove("success")
     }
   });
+  colorOnValidateStatusParcelle(origin.dataset.parcelleid.split('-')[0], origin.checked);
+  updateSuperficieSelectionnee();
 })

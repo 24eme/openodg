@@ -162,7 +162,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
     public function addProduit($hash, $date = null) {
-        $hash = preg_replace("|/declaration/|", '', $hash);
+        $hash = str_replace("/declaration/", '', $hash);
         if(!$this->getConfiguration($date)->exist('/declaration/'.$hash)){
           return null;
         }
@@ -324,7 +324,8 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prodconf);
         $hash_produit = preg_replace("|/declaration/|", '', $node->getHash());
         $hash_produit = str_replace('/VDN/appellations/VDR', '/TRANQ/appellations/RTA', $hash_produit);
-        $hash_produit = str_replace(['/EFF/', '/MOU/', 'VMQ', 'VDB'], '/TRANQ/', $hash_produit);
+        $hash_produit = str_replace(['/EFF', '/MOU', '/VMQ'], '/TRANQ', $hash_produit);
+        $hash_produit = str_replace('/genres/VDB', '/genres/TRANQ', $hash_produit);
 
         if (!$this->addProduit($hash_produit, $date)) {
             return false;

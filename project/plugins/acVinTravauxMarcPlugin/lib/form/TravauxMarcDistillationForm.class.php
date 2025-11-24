@@ -8,10 +8,10 @@ class TravauxMarcDistillationForm extends acCouchdbObjectForm
         $this->setValidator('date_distillation', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => false)));
         $this->getValidator('date_distillation')->setMessage('bad_format', "Le format de la date n'est pas correct");
 
-        $this->setWidget('distillation_prestataire', new sfWidgetFormInputCheckbox(array(), array('class' => 'bsswitch', 'data-on-text' => 'Oui', 'data-off-text' => 'Non', 'data-on-color' => 'primary')));
+        $this->setWidget('distillation_prestataire', new sfWidgetFormInputCheckbox(array(), array('class' => 'switch')));
         $this->setValidator('distillation_prestataire', new sfValidatorBoolean(array('required' => false)));
 
-        $this->setWidget('alambic_connu', new sfWidgetFormInputCheckbox(array(), array('class' => 'bsswitch', 'data-on-text' => 'Oui', 'data-off-text' => 'Non', 'data-on-color' => 'primary')));
+        $this->setWidget('alambic_connu', new sfWidgetFormInputCheckbox(array(), array('class' => 'switch')));
         $this->setValidator('alambic_connu', new sfValidatorBoolean(array('required' => false)));
 
         $formAdresse = new BaseCouchdbObjectForm($this->getObject()->adresse_distillation);
