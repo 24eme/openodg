@@ -185,6 +185,10 @@ class DRevConfiguration extends DeclarationConfiguration {
         return isset($this->configuration['email_disabled']) && boolval($this->configuration['email_disabled']);
     }
 
+    public function hasEmailODGInCopyDisabled() {
+        return isset($this->configuration['email_odg_in_copy_disabled']) && boolval($this->configuration['email_odg_in_copy_disabled']);
+    }
+
     public function isModificativeEnabled() {
         return $this->isRevendicationParLots();
     }

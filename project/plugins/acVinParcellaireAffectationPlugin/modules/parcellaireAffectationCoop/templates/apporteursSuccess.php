@@ -12,9 +12,9 @@ Ceux qui ne vous ont rien apportés cette année mais qui reste adhérent doiven
 <a class="btn btn-secondary" href="<?php echo url_for("parcellaireaffectationcoop_ajout_apporteurs", $parcellaireAffectationCoop); ?>">Ajouter un apporteur</a>
 
 <form action="" method="post" class="form-horizontal">
-    <table class="table table-condensed table-striped table-bordered">
+    <table class="table table-condensed table-striped table-bordered table-apporteursCoop tableParcellaire">
         <tr>
-            <th style="width: 0;"></th>
+            <th class="text-right col-xs-2">Statut</th>
             <th class="text-right col-xs-1">Provenance</th>
             <th class="col-xs-1">CVI</th>
             <th>Nom</th>
@@ -24,13 +24,17 @@ Ceux qui ne vous ont rien apportés cette année mais qui reste adhérent doiven
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     <?php foreach ($parcellaireAffectationCoop->apporteurs as $idApporteur => $apporteur): ?>
-        <tr class="vertical-center cursor-pointer">
-            <td>
+        <tr style="cursor: pointer;" class="vertical-center cursor-pointer rows">
+            <td class="apporteurStatut" style="display: flex; justify-content: space-between;">
                 <div style="margin-bottom: 0;" class="form-group">
                     <div class="col-xs-12">
-                        <?php echo $form[$idApporteur]->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "Adhérent", 'data-off-text' => "Démissionnaire", 'data-on-color' => "success", 'data-off-color' => "danger")); ?>
+                        <label class="switch-xl">
+                            <?php echo $form[$idApporteur]->render(array('class' => "switch")); ?>
+                        <span class="slider-xl round"></span>
+                        </label>
                     </div>
                 </div>
+                <div class="texteStatut"></div>
             </td>
             <td class="text-center">
                 <?php echo $parcellaireAffectationCoop->apporteurs->get($idApporteur)->provenance; ?>

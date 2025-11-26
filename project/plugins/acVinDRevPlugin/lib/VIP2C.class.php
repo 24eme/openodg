@@ -116,9 +116,17 @@ class VIP2C
             if ($line[self::VIP2C_COLONNE_MILLESIME] != $millesime) {
                 continue;
             }
-
-            if ($line[self::VIP2C_COLONNE_CVI] !== $doc->declarant->cvi) {
-                continue;
+            $cvi = $doc->declarant->cvi;
+            if ($line[self::VIP2C_COLONNE_CVI] !== $cvi) {
+                if (strlen($line[self::VIP2C_COLONNE_CVI]) == 10) {
+                    continue;
+                }
+                if (strpos($cvi, '0') !== 0) {
+                    continue;
+                }
+                if ($line[self::VIP2C_COLONNE_CVI] !== substr($cvi, 1)) {
+                    continue;
+                }
             }
 
             $defautHash = str_replace(['genres/|','|'], ['genres/TRANQ', 'DEFAUT'], $line[self::VIP2C_COLONNE_PRODUIT]);
