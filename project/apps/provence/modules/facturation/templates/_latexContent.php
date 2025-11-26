@@ -109,23 +109,35 @@
 \begin{tabular}{|>{\raggedright}m{7.0cm}|r|r|>{\raggedleft}m{2.8cm}|}
 <?php $uniqLigne = $facture->getLignesForPdf(); ?>
   \hline
-  Désignation & Volume revendiqué (en hl) & Px unitaire (en €/hl) & Montant \rule[-7pt]{0pt}{20pt} \tabularnewline
+  Désignation & Volume revendiqué (en hl) & Px unitaire (en €/hl) & Montant (HT)\rule[-7pt]{0pt}{20pt} \tabularnewline
   \hline
-   \rule[7pt]{0pt}{11pt}Cotisation incluant les droits INAO, la cotisation O.D.G, la cotisation de défense du nom et la cotisation pour l’O.I & & & \tabularnewline
+
+<?php if ($facture->getTemplateId() > 'TEMPLATE-FACTURE-AOC-2025'): ?>
+
+    \rule[7pt]{0pt}{11pt}Cotisation incluant les droits INAO, la cotisation O.D.G, la cotisation de défense du nom et la cotisation pour l’O.I & & & \tabularnewline
 
   \small{\textit{Volume net revendiqué total}} & \small{\textbf{<?php echo number_format($uniqLigne->quantite, 2, '.', ' '); ?>}} & \small{\textbf{<?php echo number_format($uniqLigne->prix_unitaire, 2, '.', ' '); ?>}} & \small{\textbf{<?php echo number_format($uniqLigne->montant_ht, 2, '.', ' '); ?>~€}}  \tabularnewline
 
+    & & &  \tabularnewline
+    & & &  \tabularnewline
+    & & &  \tabularnewline
 
-	~&~&~& \\
-	~&~&~& \\
-	~&~&~& \\
-	~&~&~& \\
-	~&~&~& \\
-	~&~&~& \\
-	~&~&~& \\
-	~&~&~& \\
-  \hline
+    <?php else: ?>
+
+    ~ & ~ & ~ & ~ & \\
+
+<?php foreach($facture->lignes as $k => $ligne): ?>
+
+    \small{<?php echo $ligne->libelle ; ?><?php if ($ligne->montant_tva) echo " \\textit{(*)} "; ?>} & \small{\textbf{<?php echo number_format($ligne->details[0]->quantite, 2, '.', ' '); ?>}} & \small{\textbf{<?php echo number_format($ligne->details[0]->prix_unitaire, 2, '.', ' '); ?>}} & \textbf{<?php echo number_format($ligne->montant_ht, 2, '.', ' '); ?>~€} &
+
+<?php endforeach; ?>
+
+    ~ &  ~  & ~  & ~
+
+    <?php endif; ?>
+
   \end{tabular}
+  \hline
 \\\vspace{6mm}
 \begin{tabular}{>{\centering}p{11.2cm} |>{\raggedleft}p{3.4cm}|>{\raggedleft}p{2.8cm}|}
   \cline{2-3}
