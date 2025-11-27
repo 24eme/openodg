@@ -1,7 +1,6 @@
 all:
   configuration:
     degustation:
-      specificite_lot_pdf: true
       always_identifiant_table: true
       conformite:
         - CONFORME
