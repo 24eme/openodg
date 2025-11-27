@@ -118,7 +118,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
 
       	$parcelles = $this->getParcellesFromReference();
         if (!$parcelles || !count($parcelles)) {
-            throw new sfException('pas de parcelles du parcellaire');
+            return;
         }
         foreach($hashes as $h) {
             $pid = $h;
