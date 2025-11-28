@@ -67,7 +67,8 @@
 \renewcommand{\familydefault}{\sfdefault}
 \fancyhead[L]{\includegraphics[scale=0.11]{\LOGO}}
 \fancyhead[R]{ \large{\textbf{\EMETTEURLIBELLE} \\ \EMETTEURADRESSE \\
-		\EMETTEURCP \\ \EMETTEURVILLE}}
+        \EMETTEURCP ~ \EMETTEURVILLE}}
+        \\
 \fancypagestyle{nofooter}{%
 	  \fancyfoot{}%
 }
@@ -90,12 +91,13 @@
       \hspace{1.8cm}\FACTUREDECLARANTRS \\
       \vspace{2mm}
       \hspace{1.8cm}\FACTUREDECLARANTADRESSE \\
-      \vspace{2mm}
-      \hspace{1.8cm}\FACTUREDECLARANTCP~\FACTUREDECLARANTCOMMUNE \\
+      \hspace{1.8cm}\FACTUREDECLARANTCP ~ \FACTUREDECLARANTCOMMUNE \\
       \vspace{2mm}
       \hspace{1.8cm}\textbf{Compte client} : \NUMADHERENT
     \end{flushleft}
 	\end{minipage}
+
+    ~ \\
 
   \begin{center}
     \Large{\textbf{\TYPEFACTURE~N°~\NUMFACTURE}} \\
@@ -103,18 +105,19 @@
 		\large{\FACTURECOTISATIONDATE}
   \end{center}
 
+ ~ \\
 
 \begin{center}
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{|>{\raggedright}m{7.0cm}|r|r|>{\raggedleft}m{2.8cm}|}
+\begin{tabular}{|>{\raggedright}m{7.5cm}|r|r|>{\raggedleft}m{2.2cm}|}
 <?php $uniqLigne = $facture->getLignesForPdf(); ?>
   \hline
   Désignation & Volume revendiqué (en hl) & Px unitaire (en €/hl) & Montant (HT)\rule[-7pt]{0pt}{20pt} \tabularnewline
   \hline
 
-<?php if ($facture->getTemplateId() > 'TEMPLATE-FACTURE-AOC-2025'): ?>
+<?php if ($facture->getTemplateId() < 'TEMPLATE-FACTURE-AOC-2025'): ?>
 
-    \rule[7pt]{0pt}{11pt}Cotisation incluant les droits INAO, la cotisation O.D.G, la cotisation de défense du nom et la cotisation pour l’O.I & & & \tabularnewline
+    \rule[7pt]{0pt}{11pt}Cotisation incluant les droits INAO, la cotisation O.D.G, la cotisation de défense du nom et la cotisation pour l’O.I. & & & \tabularnewline
 
   \small{\textit{Volume net revendiqué total}} & \small{\textbf{<?php echo number_format($uniqLigne->quantite, 2, '.', ' '); ?>}} & \small{\textbf{<?php echo number_format($uniqLigne->prix_unitaire, 2, '.', ' '); ?>}} & \small{\textbf{<?php echo number_format($uniqLigne->montant_ht, 2, '.', ' '); ?>~€}}  \tabularnewline
 
@@ -124,22 +127,22 @@
 
     <?php else: ?>
 
-    ~ & ~ & ~ & ~ & \\
+    & & &  \tabularnewline
 
 <?php foreach($facture->lignes as $k => $ligne): ?>
 
-    \small{<?php echo $ligne->libelle ; ?><?php if ($ligne->montant_tva) echo " \\textit{(*)} "; ?>} & \small{\textbf{<?php echo number_format($ligne->details[0]->quantite, 2, '.', ' '); ?>}} & \small{\textbf{<?php echo number_format($ligne->details[0]->prix_unitaire, 2, '.', ' '); ?>}} & \textbf{<?php echo number_format($ligne->montant_ht, 2, '.', ' '); ?>~€} &
+    \small{<?php echo $ligne->libelle ; ?><?php if ($ligne->montant_tva) echo " \\textit{(*)} "; ?>} & \small{\textbf{<?php echo number_format($ligne->details[0]->quantite, 2, '.', ' '); ?>}} & \small{\textbf{<?php echo number_format($ligne->details[0]->prix_unitaire, 2, '.', ' '); ?>}} & \textbf{<?php echo number_format($ligne->montant_ht, 2, '.', ' '); ?>~€} \tabularnewline
 
 <?php endforeach; ?>
 
-    ~ &  ~  & ~  & ~
+    & & &  \tabularnewline
 
     <?php endif; ?>
 
-  \end{tabular}
   \hline
+  \end{tabular}
 \\\vspace{6mm}
-\begin{tabular}{>{\centering}p{11.2cm} |>{\raggedleft}p{3.4cm}|>{\raggedleft}p{2.8cm}|}
+\begin{tabular}{>{\centering}p{12cm} |>{\raggedleft}p{3.2cm}|>{\raggedleft}p{2.2cm}|}
   \cline{2-3}
 ~ & \textbf{TOTAL HT} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALHT~€}
 \rule[-5pt]{0pt}{18pt} \tabularnewline
@@ -153,7 +156,7 @@
 <?php if(!$facture->isAvoir()): ?>
 	\vspace{1mm}
 \begin{flushright}
-\footnotesize{\textit{(*) La TVA de 20\% est uniquement calculée sur la base HT de la cotisation destinée à l'O.I (0.22 x le volume net revendiqué total)}}
+\footnotesize{\textit{(*) La TVA de 20\% est uniquement calculée sur la base HT de la cotisation destinée à l'O.I.}}
 \end{flushright}~\\
 \normalsize{\underline{\textbf{Vous avez la possibilité de régler en une seule fois sous 30 jours où en respectant l'échéancier suivant :}}}
 \\ \\
