@@ -83,7 +83,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         $apporteursArray = array();
 
         // Depuis les liaisons
-        foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR) as $liaison) {
+        foreach($this->getEtablissementObject()->getLiaisonsOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR) as $liaison) {
             $apporteursArray[$liaison->id_etablissement] = $liaison->libelle_etablissement;
         }
 
@@ -133,7 +133,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
     public function getApporteursChanges(){
         $liaisons = array();
 
-        foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR) as $liaison) {
+        foreach($this->getEtablissementObject()->getLiaisonsOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR) as $liaison) {
             $liaisons[$liaison->id_etablissement] = true;
         }
 
