@@ -167,6 +167,11 @@ class degustationActions extends sfActions {
     public function executePreleve(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
+
+        if (count($this->degustation->lots) > 100) {
+            set_time_limit(0);
+        }
+
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         $this->differer = null;
 
