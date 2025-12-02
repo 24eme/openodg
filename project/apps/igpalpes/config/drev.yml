@@ -5,6 +5,8 @@ all:
       import_with_mentions_complementaire: true
       validation_odg: 'auto'
       etape_superficie: false
+      etapes_aoc: true
+      saisie_superficie_revendique: false
       dr_douane_required: false
       degustation: true
       specificite_lot: true
@@ -14,6 +16,5 @@ all:
       specificites:
         bio: "bio"
         HVE: "HVE"
-        primeur: "primeur"
         autre: "Autre"
         TerraVitis: "Terra Vitis"
