@@ -570,12 +570,16 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $etablissements;
     }
 
-    public function getLiaisonsOfType($type) {
+    public function getLiaisonsOfType($type, $asArray = false) {
         $liaisons = array();
         if ($this->exist('liaisons_operateurs')) {
             foreach ($this->liaisons_operateurs as $k => $o) {
                 if ($o->type_liaison == $type) {
-                    $liaisons[] = $o;
+                    if ($asArray()) {
+                        $liaisons[] = $o->getData();
+                    } else {
+                        $liaisons[] = $o;
+                    }
                 }
             }
         }
