@@ -48,13 +48,6 @@
        </div>
    </div>
 
-  <div class="form-group">
-      <label class="col-sm-2 control-label">Superficie à retirer (ha)</label>
-      <div class="col-sm-10">
-          <input type="text" class="form-control" v-model="parcelleCourante.controle.superficie_a_retirer" />
-      </div>
-  </div>
-
 </form>
 
 <hr />
