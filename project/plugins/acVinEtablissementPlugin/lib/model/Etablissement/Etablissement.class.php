@@ -575,7 +575,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         if ($this->exist('liaisons_operateurs')) {
             foreach ($this->liaisons_operateurs as $k => $o) {
                 if ($o->type_liaison == $type) {
-                    if ($asArray()) {
+                    if ($asArray) {
                         $liaisons[] = $o->getData();
                     } else {
                         $liaisons[] = $o;
