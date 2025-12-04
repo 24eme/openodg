@@ -97,7 +97,7 @@
         <td>
             N° Lot OP : <?php echo $lot->numero_logement_operateur; ?><br/>
 <?php if ($lot->adresse_logement): ?><br/>
-            Adresse du site : <?php echo $lot->adresse_logement; ?>
+            Adresse du site : <?php echo $lot->adresse_logement; ?><br/>
 <?php endif; ?>
             Produit : <?php echo showProduitCepagesLot($lot); ?><br/>
             Volume : <?php echo sprintf("%.2f", $lot->volume) ?> hl
@@ -106,7 +106,7 @@
             <td>
             N° Lot OP : <?php echo $lot2->numero_logement_operateur; ?><br/>
 <?php if ($lot2->adresse_logement): ?><br/>
-            Adresse du site : <?php echo $lot2->adresse_logement; ?>
+            Adresse du site : <?php echo $lot2->adresse_logement; ?><br/>
 <?php endif; ?>
             Produit : <?php echo showProduitCepagesLot($lot2); ?><br/>
             Volume : <?php echo sprintf("%.2f", $lot2->volume) ?> hl
