@@ -464,7 +464,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return $this->changement_volume == $this->origine_volume;
         }
 
-        return ($this->changement_volume == $this->getLotOrigine()->volume);
+        return ($this->changement_volume >= $this->getLotOrigine()->volume);
     }
 
     public function getPourcentagesCepages() {
