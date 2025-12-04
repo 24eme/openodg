@@ -2757,10 +2757,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 continue;
             }
 
+            $ret = true;
             $p = $this->get($hash)->getFirst();
-
             if ($p->exist('volume_revendique_seuil')) {
-                $ret = true;
                 continue;
             }
 
