@@ -14,7 +14,9 @@ class controleActions extends sfActions
             }
             $stats[$c->date_tournee]['nb_parcelles'] += count($c->parcelles);
             $stats[$c->date_tournee]['operateurs'][] = $c->declarant->nom;
-            $stats[$c->date_tournee]['controles'][] = $c->getDataToDump();
+            $dataToDump = $c->getDataToDump();
+            $dataToDump->liaisons_operateurs = (array) EtablissementClient::getInstance()->findByCvi($c->declarant->cvi)->getLiaisonsOfType(EtablissementFamilles::FAMILLE_COOPERATIVE, true);
+            $stats[$c->date_tournee]['controles'][] = $dataToDump;
         }
         return $stats;
     }

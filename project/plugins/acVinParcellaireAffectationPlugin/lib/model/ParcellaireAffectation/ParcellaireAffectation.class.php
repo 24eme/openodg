@@ -330,11 +330,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     public function getDestinataires() {
         $destinataires = [];
 
-        foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATIVE) as $liaison) {
+        foreach($this->getEtablissementObject()->getLiaisonsOfType(EtablissementClient::TYPE_LIAISON_COOPERATIVE) as $liaison) {
             $destinataires[$liaison->id_etablissement] = $liaison;
         }
 
-        foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR) as $liaison) {
+        foreach($this->getEtablissementObject()->getLiaisonsOfType(EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR) as $liaison) {
             $destinataires[$liaison->id_etablissement] = $liaison;
         }
 
