@@ -40,8 +40,8 @@
 \def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
 
-\def\FACTURECOTISATIONDATE{Cotisation <?php $date = new DateTime($facture->date_facturation); echo "".(intval($date->format('Y')) - 1 ); ?>}
-\def\FACTUREDATE{Date de facture : <?php echo $date->format("d/m/Y"); ?>}
+\def\FACTURECOTISATIONDATE{Cotisation <?php  echo $facture->campagne; ?>}
+\def\FACTUREDATE{Date de facture : <?php $date = new DateTime($facture->date_facturation); echo $date->format("d/m/Y"); ?>}
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
