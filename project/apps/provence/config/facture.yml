@@ -5,19 +5,19 @@ all:
       echeances:
         1ertiers:
           libelle_date: "A réception"
-          field: "date_facturation"
+          field: "date_campagne_echeance"
           date_jour_mois: ""
           libelle: '(1\up{er} tiers)'
           montant_division: 3.0
         2ndtiers:
           libelle_date: ""
-          field: "date_facturation"
+          field: "date_campagne_echeance"
           date_jour_mois: "31.03"
           libelle: '(2\up{ème} tiers)'
           montant_division: 3.0
         3emetiers:
           libelle_date: ""
-          field: "date_facturation"
+          field: "date_campagne_echeance"
           date_jour_mois: "30.06"
           libelle: '(3\up{ème} tiers)'
           montant_division: 3.0
