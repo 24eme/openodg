@@ -234,16 +234,9 @@ class ConfigurationCepage extends BaseConfigurationCepage {
     }
 
     public function getCepagesAutorises() {
-        if(!$this->hasCepagesAutorises() && $this->getCouleur()->hasCepagesAutorises()) {
+        if(!$this->hasCepagesAutorises()) {
             return $this->getCouleur()->getCepagesAutorises();
         }
-        if(!$this->hasCepagesAutorises() && $this->getAppellation()->hasCepagesAutorises()) {
-            return $this->getAppellation()->getCepagesAutorises();
-        }
-        if(!$this->hasCepagesAutorises() && $this->getCertification()->hasCepagesAutorises()) {
-            return $this->getCertification()->getCepagesAutorises();
-        }
-
         return $this->_get('cepages_autorises');
     }
 
