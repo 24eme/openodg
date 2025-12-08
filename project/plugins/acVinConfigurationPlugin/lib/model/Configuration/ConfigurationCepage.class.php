@@ -245,13 +245,16 @@ class ConfigurationCepage extends BaseConfigurationCepage {
     }
 
     public function getNoeudCepagesAutorises() {
-        if(!$this->hasCepagesAutorises() && $this->getAppellation()->hasCepagesAutorises()) {
-
-            return $this->getAppellation();
-        }
-        if(!$this->hasCepagesAutorises() && $this->getCertification()->hasCepagesAutorises()) {
-
-            return $this->getCertification();
+        if(!$this->hasCepagesAutorises()) {
+            if ($this->getLieu()->hasCepagesAutorises()) {
+                return $this->getLieu();
+            }
+            if ($this->getAppellation()->hasCepagesAutorises()) {
+                return $this->getAppellation();
+            }
+            if($this->getCertification()->hasCepagesAutorises()) {
+                return $this->getCertification();
+            }
         }
 
         return $this;
