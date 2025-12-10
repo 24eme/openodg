@@ -135,8 +135,10 @@
     updateSynthesePrelevementLots();
 
     var updateSyntheseDegustateurs = function(){
-      const college = document.querySelectorAll('input.degustation.switch:checked').length
-      document.querySelector(".collegeCounter li.active span.badge").innerHTML = college;
+      if(document.querySelector('form.degustateurs')) {
+        const college = document.querySelectorAll('input.degustation.switch:checked').length
+        document.querySelector(".collegeCounter li.active span.badge").innerHTML = college;
+      }
     }
 
     updateSyntheseDegustateurs();
