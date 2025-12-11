@@ -69,7 +69,6 @@
             <script type="text/javascript" src="<?php echo public_path("/js/drevmarc.js") . "?$gitcommit" ?>"></script>
             <script type="text/javascript" src="<?php echo public_path("/js/form.js") . "?$gitcommit" ?>"></script>
             <script type="text/javascript" src="<?php echo public_path("/js/parcellaire.js") . "?$gitcommit" ?>"></script>
-            <script type="text/javascript" src="<?php echo public_path("/js/degustation.js") . "?$gitcommit" ?>"></script>
 
             <?php include_javascripts() ?>
     </body>
