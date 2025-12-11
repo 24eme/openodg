@@ -340,10 +340,12 @@
         }
 
         $('table:not(.tableParcellaire) tr td').click(function (event) {
-            if (!$(this).hasClass('edit')) {
-                var value = $(this).parent().find('.bsswitch').is(':checked');
-                $(this).parent().find('td .bsswitch').bootstrapSwitch('state', !value, false);
-            }
+          const tr = event.target.closest('tr')
+          if (tr.classList.contains('edit') === false) {
+            const inputswitch = tr.querySelector('input.degustation.switch')
+            inputswitch.checked = ! inputswitch.checked
+            inputswitch.dispatchEvent(new Event('click'))
+          }
         });
         $('table:not(.tableParcellaire) tr').click(function (event) {
             $.trBsSwitchHighlight($(this));

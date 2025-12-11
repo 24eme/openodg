@@ -103,7 +103,7 @@
           									<?php echo $form[$name]->renderError() ?>
           									<div class="col-xs-12">
                                                 <label class="switch-xl">
-                                                    <?php echo $form[$name]->render(array('class' => "switch")); ?>
+                                                    <?php echo $form[$name]->render(array('class' => "degustation switch")); ?>
                                                     <span class="slider-xl round"></span>
                                                 </label>
           									</div>

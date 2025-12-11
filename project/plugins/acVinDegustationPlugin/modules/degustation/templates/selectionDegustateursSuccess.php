@@ -69,7 +69,7 @@
                         <?php echo $compteForm['selectionne']->renderError() ?>
                         <div class="col-xs-12">
                             <label class="switch-xl">
-                            <?php echo $compteForm['selectionne']->render(array()); ?>
+                            <?php echo $compteForm['selectionne']->render(array('class' => 'degustation switch')); ?>
                             <span class="slider-xl round"></span>
                         </label>
                         </div>
