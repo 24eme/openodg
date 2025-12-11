@@ -127,7 +127,6 @@ class Controle extends BaseControle
         }
         $this->add('mouvements_statuts');
         $this->mouvements_statuts->add(null,  ['CONTROLE', $this->getDocumentDefinitionModel(), $this->getStatutComputed(), $this->identifiant] );
-        print_r(['generateMouvementsStatuts', $this->mouvements_statuts]);
     }
 
     public function getGeoJson() {
