@@ -2,7 +2,7 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Lot') ?>
 
-<?php use_javascript('degustation.js') ?>
+<?php use_javascript('degustation.js?'.$_ENV['GIT_LAST_COMMIT']); ?>
 
 <?php include_partial('degustation/organisationTableHeader', array('degustation' => $degustation, 'numero_table' => $numero_table, 'tri' => $tri)); ?>
 

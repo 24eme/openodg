@@ -343,6 +343,9 @@
           const tr = event.target.closest('tr')
           if (tr.classList.contains('edit') === false) {
             const inputswitch = tr.querySelector('input.degustation.switch')
+
+            if (! inputswitch) return
+
             inputswitch.checked = ! inputswitch.checked
             inputswitch.dispatchEvent(new Event('click'))
           }
