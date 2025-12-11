@@ -5,24 +5,64 @@
 
 <hr />
 
-<h4 class="strong">Parcelle n° {{ parcelleCourante.parcelle_id }}</h4>
+<div class="table-responsive">
+    <table class="table table-bordered table-condensed">
+        <thead>
+            <tr class="active">
+                <th colspan="2">
+                    <h4 class="strong" style="margin: 0;">Parcelle n° {{ parcelleCourante.parcelle_id }}</h4>
+                </th>
+            </tr>
+        </thead>
 
-<dl class="dl-horizontal mb-4">
-  <dt>Section / N° parcelle</dt>
-  <dd>{{ parcelleCourante.section }} {{ parcelleCourante.numero_parcelle }}</dd>
-  <dt>Superficie</dt>
-  <dd>{{ echoFloat(parcelleCourante.superficie) }} <span class="text-muted">ha</span></dd>
-  <dt>Commune / Lieu-dit</dt>
-  <dd>{{ parcelleCourante.commune }} {{ parcelleCourante.lieu }}</dd>
-  <dt>Cépage</dt>
-  <dd>{{ parcelleCourante.cepage }}</dd>
-  <dt>Appellation</dt>
-  <dd>{{ parcelleCourante.source_produit_libelle }}</dd>
-  <dt>Année de plantation</dt>
-  <dd>{{ parcelleCourante.campagne_plantation }}</dd>
-  <dt>Écart Pieds/Rang</dt>
-  <dd>{{ parcelleCourante.ecart_pieds }} / {{ parcelleCourante.ecart_rang }}</dd>
-</dl>
+        <tbody>
+            <tr>
+                <td><strong>Section / N° parcelle</strong></td>
+                <td>{{ parcelleCourante.section }} {{ parcelleCourante.numero_parcelle }}</td>
+            </tr>
+            <tr>
+                <td><strong>Superficie</strong></td>
+                <td>{{ echoFloat(parcelleCourante.superficie) }} <span class="text-muted">ha</span></td>
+            </tr>
+            <tr>
+                <td><strong>Commune / Lieu-dit</strong></td>
+                <td>{{ parcelleCourante.commune }} {{ parcelleCourante.lieu }}</td>
+            </tr>
+            <tr>
+                <td><strong>Cépage</strong></td>
+                <td>{{ parcelleCourante.cepage }}</td>
+            </tr>
+            <tr>
+                <td><strong>Appellation</strong></td>
+                <td>{{ parcelleCourante.source_produit_libelle }}</td>
+            </tr>
+            <tr>
+                <td><strong>Année de plantation</strong></td>
+                <td>{{ parcelleCourante.campagne_plantation }}</td>
+            </tr>
+            <tr>
+                <td><strong>Écart Pieds/Rang</strong></td>
+                <td>{{ parcelleCourante.ecart_pieds }} / {{ parcelleCourante.ecart_rang }}</td>
+            </tr>
+            <tr>
+                <td><strong>Manquants</strong></td>
+                <td>{{ parcelleCourante.pourcentage }}%</td>
+            </tr>
+
+            <tr v-if="parcelleCourante.irrigation.materiel.length">
+                <td><strong>Irrigation</strong></td>
+                <td>
+                    <div><strong>Matériel :</strong> {{ parcelleCourante.irrigation.materiel }}</div>
+                    <div><strong>Ressource :</strong> {{ parcelleCourante.irrigation.ressource }}</div>
+                </td>
+            </tr>
+            <tr v-else>
+                <td><strong>Irrigation</strong></td>
+                <td class="text-muted">Pas d'irrigation</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 <a href="" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-road" /> Ouvrir sur le GPS</a>
 <hr />
@@ -47,13 +87,6 @@
            <textarea rows="4" class="form-control" placeholder="Saisir les observations terrain" v-model="parcelleCourante.controle.observations"></textarea>
        </div>
    </div>
-
-  <div class="form-group">
-      <label class="col-sm-2 control-label">Superficie à retirer (ha)</label>
-      <div class="col-sm-10">
-          <input type="text" class="form-control" v-model="parcelleCourante.controle.superficie_a_retirer" />
-      </div>
-  </div>
 
 </form>
 
