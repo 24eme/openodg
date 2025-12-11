@@ -32,11 +32,11 @@ class Controle extends BaseControle
         if($etablissement->exist('secteur')) {
             $this->document->secteur = $etablissement->secteur;
         }
-        foreach($etablissement->liaisons_operateurs as $liaison) {
-            if($liaison->type_liaison == EtablissementClient::TYPE_LIAISON_COOPERATIVE) {
-                $this->liaisons_operateurs->add($liaison->getKey(), $liaison);
-            }
-        }
+        $this->liaisons_operateurs = $this->getLiaisonsCooperative();
+    }
+
+    public function getLiaisonsCooperative() {
+        return EtablissementClient::getInstance()->findByCvi($this->declarant->cvi)->getLiaisonsOfType(EtablissementFamilles::FAMILLE_COOPERATIVE, true);
     }
 
     public function getLibelleLiaison() {
