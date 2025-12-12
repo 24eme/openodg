@@ -133,6 +133,7 @@ class Controle extends BaseControle
     public function getDataToDump() {
         $this->to_dump = true;
         $d = $this->getData();
+        $d->parcellaire_geojson = json_encode($this->getGeoJson());
         $this->to_dump = false;
         return $d;
     }
