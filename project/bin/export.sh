@@ -188,7 +188,7 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/comptes.csv.part > $EXPORTDIR/com
 rm $EXPORTDIR/comptes.csv.part
 
 php symfony compte:export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/comptes_simplifies.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/comptes.csv.part > $EXPORTDIR/comptes_simplifies.csv
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/comptes_simplifies.csv.part > $EXPORTDIR/comptes_simplifies.csv
 rm $EXPORTDIR/comptes_simplifies.csv.part
 
 php symfony export:facture $SYMFONYTASKOPTIONS >  $EXPORTDIR/factures.csv.part
