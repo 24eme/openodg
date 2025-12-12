@@ -210,7 +210,6 @@ Controle:
             operateur_observations: {}
             operateur_signature: {}
             saisie: {}
-      parcellaire_geojson: { }
       parcelles:
         type: collection
         definition:

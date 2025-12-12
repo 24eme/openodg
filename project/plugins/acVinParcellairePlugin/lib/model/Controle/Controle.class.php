@@ -92,15 +92,8 @@ class Controle extends BaseControle
     public function save()
     {
         $this->storeDeclarant();
-        $this->storeParcellaireGeoJson();
         $this->generateMouvementsStatuts();
         return parent::save();
-    }
-
-    public function storeParcellaireGeoJson()
-    {
-        $this->remove('parcellaire_geojson');
-        $this->add('parcellaire_geojson', json_encode($this->getGeoJson()));
     }
 
     public function getParcelles() {
