@@ -970,6 +970,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         foreach ($this->declaration->getProduits() as $hash => $p) {
+            if (!$p->exist('recolte')) {
+                $p->add('recolte');
+            }
             if ($p->recolte->volume_total && $p->recolte->volume_sur_place && round($p->recolte->volume_total, 4) == round($p->recolte->volume_sur_place, 4) && !in_array($p->getHash(), $bailleurs)) {
                 $p->superficie_revendique = $p->recolte->superficie_total;
             }
