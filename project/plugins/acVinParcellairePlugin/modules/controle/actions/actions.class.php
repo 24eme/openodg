@@ -55,6 +55,15 @@ class controleActions extends sfActions
         }
     }
 
+    public function executeAppOrga(sfWebRequest $request)
+    {
+        $this->date_tournee = $request->getParameter('date');
+        $this->controles = $this->getControlesPlanifies($this->date_tournee);
+        $this->json = json_encode($this->controles[$this->date_tournee]['controles'], JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+
+        $this->setLayout('appLayout');
+    }
+
     public function executeAppTerrain(sfWebRequest $request)
     {
         $this->date_tournee = $request->getParameter('date');
