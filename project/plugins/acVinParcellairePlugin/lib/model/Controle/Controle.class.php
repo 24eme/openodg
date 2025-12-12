@@ -92,8 +92,15 @@ class Controle extends BaseControle
     public function save()
     {
         $this->storeDeclarant();
+        $this->storeParcellaireGeoJson();
         $this->generateMouvementsStatuts();
         return parent::save();
+    }
+
+    public function storeParcellaireGeoJson()
+    {
+        $this->remove('parcellaire_geojson');
+        $this->add('parcellaire_geojson', json_encode($this->getGeoJson()));
     }
 
     public function getParcelles() {
@@ -120,7 +127,6 @@ class Controle extends BaseControle
         }
         $this->add('mouvements_statuts');
         $this->mouvements_statuts->add(null,  ['CONTROLE', $this->getDocumentDefinitionModel(), $this->getStatutComputed(), $this->identifiant] );
-        print_r(['generateMouvementsStatuts', $this->mouvements_statuts]);
     }
 
     public function getGeoJson() {
