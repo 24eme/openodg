@@ -1,4 +1,5 @@
 <?php use_helper("Date"); ?>
+<?php use_javascript('degustation.js?'.$_ENV['GIT_LAST_COMMIT']); ?>
 <?php $college_libelle = ""; ?>
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_DEGUSTATEURS)); ?>
@@ -69,7 +70,7 @@
                         <?php echo $compteForm['selectionne']->renderError() ?>
                         <div class="col-xs-12">
                             <label class="switch-xl">
-                            <?php echo $compteForm['selectionne']->render(array()); ?>
+                            <?php echo $compteForm['selectionne']->render(array('class' => 'degustation switch')); ?>
                             <span class="slider-xl round"></span>
                         </label>
                         </div>

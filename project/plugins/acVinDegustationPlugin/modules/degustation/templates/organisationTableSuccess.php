@@ -2,7 +2,7 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Lot') ?>
 
-<?php use_javascript('degustation.js') ?>
+<?php use_javascript('degustation.js?'.$_ENV['GIT_LAST_COMMIT']); ?>
 
 <?php include_partial('degustation/organisationTableHeader', array('degustation' => $degustation, 'numero_table' => $numero_table, 'tri' => $tri)); ?>
 
@@ -103,7 +103,7 @@
           									<?php echo $form[$name]->renderError() ?>
           									<div class="col-xs-12">
                                                 <label class="switch-xl">
-                                                    <?php echo $form[$name]->render(array('class' => "switch")); ?>
+                                                    <?php echo $form[$name]->render(array('class' => "degustation switch")); ?>
                                                     <span class="slider-xl round"></span>
                                                 </label>
           									</div>
