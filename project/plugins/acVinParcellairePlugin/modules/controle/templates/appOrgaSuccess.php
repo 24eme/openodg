@@ -70,37 +70,30 @@
             return this._div;
         };
         popup.update = function (layer) {
-          this._div.style.background = 'rgba(255,255,255,0.9)';
-          if(!layer) {
-            this._div.style.display = 'none';
-            return null
-          }
-          let props = layer.feature.properties;
-          this._div.style.display = 'block';
+            this._div.style.background = 'rgba(255,255,255,0.9)';
+            if(!layer) {
+                this._div.style.display = 'none';
+                return null
+            }
+            let props = layer.feature.properties;
+            this._div.style.display = 'block';
 
-          props.parcellaires.forEach(function(parcelle){
-              opNom = parcelle['Nom Operateur'];
-              opCvi = parcelle['CVI Operateur'];
-              opSiret = parcelle['Siret Operateur'];
-          });
-          var popupContent = '<h2 class="text-center">'+opNom+'<br /><small class="muted">CVI : '+opCvi+' Siret : '+opSiret+'</small></h2>';
-          this._div.innerHTML = popupContent;
-            };
+            props.parcellaires.forEach(function(parcelle){
+                opNom = parcelle['Nom Operateur'];
+                opCvi = parcelle['CVI Operateur'];
+                opSiret = parcelle['Siret Operateur'];
+            });
+            var popupContent = '<h2 class="text-center">'+opNom+'<br /><small class="muted">CVI : '+opCvi+' Siret : '+opSiret+'</small></h2>';
+            this._div.innerHTML = popupContent;
+        };
         popup.addTo(map);
 
         const parcelles = [];
-        let controleIndex = 0;
-        for(let controleId in controles) {
-            const controle = controles[controleId];
-            const obj = JSON.parse(controle.parcellaire_geojson);
-            for (let featureId in obj.features) {
-                const feature = obj.features[featureId];
-                feature.properties.controleIndex = controleIndex;
-                feature.properties.controleId = controle._id;
+        for (const [idControle, controle] of Object.entries(controles)) {
+            for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
+                feature.properties.controleId = idControle;
                 parcelles.push(feature);
-                console.log(feature)
             }
-            controleIndex++;
         }
 
         const parcellesLayer = L.geoJSON(parcelles, { onEachFeature: onEachFeature });
@@ -137,15 +130,29 @@
 
     /* Action Operateur */
     templates.operateur.data = function() {
-        const route = useRoute()
-        console.log(controles);
-        console.log(route.params.id);
+        const route = useRoute();
 
         return {
           controleCourant: controles[route.params.id],
-          parcelleSelected: null
+          parcellesSelectionnees: []
         }
     };
+
+    templates.operateur.watch = {
+      parcellesSelectionnees: {
+        handler(data) {
+          console.log(data);
+        },
+        deep: true
+      }
+    };
+
+    templates.operateur.methods = {
+        printVar() {
+            console.log(this.parcellesSelectionnees);
+        }
+    }
+
     templates.operateur.mounted = function() {
 
         const map = new L.map('map');
@@ -169,43 +176,30 @@
         gps.addTo(map);
 
         const parcelles = [];
-        let controleIndex = 0;
-        for(let controleId in controles) {
-            const controle = controles[controleId];
-            const obj = JSON.parse(controle.parcellaire_geojson);
-            for (let featureId in obj.features) {
-                const feature = obj.features[featureId];
-                feature.properties.controleIndex = controleIndex;
-                feature.properties.controleId = controle._id;
+        for (const [idControle, controle] of Object.entries(controles)) {
+            for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
+                feature.properties.controleId = idControle;
                 parcelles.push(feature);
-                console.log(feature)
             }
-            controleIndex++;
         }
 
         const popup = L.control({position: "bottomright"});
         popup.onAdd = function (map) {
             this._div = L.DomUtil.create('div', 'popup');
             this._div.style.display = 'none';
+            L.DomEvent.disableClickPropagation(this._div);
+            L.DomEvent.disableScrollPropagation(this._div);
             return this._div;
         };
-        popup.update = function (layer) {
-            var parcelleSelected = this.parcelleSelected
-            this._div.style.background = 'rgba(255,255,255,0.9)';
-            if(parcelleSelected) {
-                layer = parcelleSelected;
-                this._div.style.background = 'rgba(255,255,255,1)';
-                parcelleSelected.setStyle({
-                    fillOpacity: 0.8
-                });
-            }
+        popup.update = (layer) => {
+            popup._div.style.background = 'rgba(255,255,255,0.9)';
             if(!layer) {
-                this._div.style.display = 'none';
+                popup._div.style.display = 'none';
                 return null
             }
             let props = layer.feature.properties;
 
-            this._div.style.display = 'block';
+            popup._div.style.display = 'block';
             var Commune = "<th>Commune</th>";
             var Cepages = "<th>Produits<br/>et cepages</th>";
             var numParcelles = "<th>Section&nbsp;/&nbspN°</th>";
@@ -214,24 +208,16 @@
             var ecartRang = "<th>Écart Rang</th>";
             var compagnes = "<th>Année plantat°</th>";
             var btnSelection = "<th>Sélectionner</th>";
-            props.parcellaires.forEach(function(parcelle, ordre) {
+            props.parcellaires.forEach((parcelle, ordre) => {
                 var parcelleId = parcelle.IDU+'-'+String(ordre).padStart(2, '0');
-                var parcelleSelected = false;
-                //var parcelleSelected = document.querySelector('input[type="checkbox"][value="'+parcelleId+'"]').checked;
-                var isSuccess = parcelleSelected ? "success" : "";
-                Commune += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle['Commune']+'</td>';
-                numParcelles += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
-                Cepages += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'"><span class="text-muted">'+parcelle.Produit+'</span><br/>'+parcelle.Cepage+'</td>';
-                compagnes += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle.Campagne+'</td>';
-                Superficies += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle.Superficie+'</td>';
-                ecartPied += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle["Ecart pied"]+'</td>';
-                ecartRang +='<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle["Ecart rang"]+'</td>';
-                if (parcelleSelected) {
-                    btnSelection +='<td class="success" align="center"><label class="switch"><input id="input-'+ordre+'" class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" checked/><span class="slider round"></span></label></td>';
-                } else {
-                    btnSelection +='<td class="" align="center"><label class="switch"><input id="input-'+ordre+'" class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" /><span class="slider round"></span></label></td>';
-                }
-
+                Commune += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle['Commune']+'</td>';
+                numParcelles += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
+                Cepages += '<td class="colonneInput" data-id="input-'+ordre+'"><span class="text-muted">'+parcelle.Produit+'</span><br/>'+parcelle.Cepage+'</td>';
+                compagnes += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle.Campagne+'</td>';
+                Superficies += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle.Superficie+'</td>';
+                ecartPied += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle["Ecart pied"]+'</td>';
+                ecartRang +='<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle["Ecart rang"]+'</td>';
+                btnSelection +='<td align="center"><label class="switch"><input class="selectParcelle" type="checkbox" v-model="parcellesSelectionnees" value="'+parcelleId+'" @click="printVar()" /><span class="slider round"></span></label></td>';
             });
 
             var popupContent ='<button id="btn-close-info" type="button" style="position: absolute; right: 10px; top: 5px;" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button> <table class="table table-bordered table-condensed table-striped"><tbody>'+
@@ -244,7 +230,7 @@
                             '<tr>'+ecartRang+'</tr>'+
                             '<tr>'+btnSelection+'</tr>'+
                             '</tbody></table>';
-                this._div.innerHTML = popupContent;
+                popup._div.innerHTML = popupContent;
         }
         popup.addTo(map);
 
@@ -258,22 +244,22 @@
                 click: function (e) {
                     L.DomEvent.stopPropagation(e);
                     map.fitBounds(e.target.getBounds());
+                    popup.update(e.target);
                     return false;
                 },
-                mouseover: highlightFeature,
-                mouseout: resetHighlight,
             });
         }
+        map.on('click', function(e) { clearParcelleSelected(); });
 
-        function highlightFeature(e) {
-            e.target.setStyle({fillOpacity: 0.6 });
-            popup.update(e.target);
+        function clearParcelleSelected() {
+          popup.update();
         }
-
-        function resetHighlight(e) {
-            e.target.setStyle({fillOpacity: 0.3 });
-            popup.update();
-        }
+        document.addEventListener('click', function(e) {
+          const btn = e.target.closest('#btn-close-info');
+          if (!btn) return;
+          e.stopPropagation();
+          clearParcelleSelected();
+        });
 
         /*
         * Fin Map
