@@ -397,7 +397,7 @@ class DRevValidation extends DeclarationLotsValidation
         if($produit->getConfig()->rendement_vci_total !== null && round($produit->getPlafondStockVci(), 4) < $produit->vci->stock_final) {
             $point = $this->addPoint(self::TYPE_WARNING, 'vci_rendement_total', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
             $vol = $produit->vci->stock_final - round($produit->getPlafondStockVci(), 4);
-            $point->setMessage($point->getMessage() . " soit $vol hl");
+            $point->setMessage($point->getMessage() . " soit $vol hl (plafond du stock VCI : ".round($produit->getPlafondStockVci(), 4)." : ".$produit->recolte->superficie_total." * ".$produit->getConfig()->rendement_vci_total.")");
         }
         if(round($produit->getCepage()->getRendementVCIConstitue(), 2) > $produit->getConfig()->getRendementVci()) {
             $point = $this->addPoint(self::TYPE_ERROR, 'vci_rendement', $produit->getLibelleComplet() . ' (rendement VCI de ' . round($produit->getCepage()->getRendementVciConstitue(), 2) . ' hl/ha pour '. $produit->getConfig()->getRendementVci().' hl/ha autorisé)', $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
