@@ -7,6 +7,8 @@ class ControleParcelle extends BaseControleParcelle
         if ($this->getDocument()->isDump()) {
             $data->geojson = $this->getGeoJson();
             $data->kml_placemark = $this->getKMLPlacemark();
+            $data->pourcentage = $this->getInfoManquant();
+            $data->irrigation = $this->getInfoIrrigation();
         }
         return $data;
     }
@@ -42,5 +44,15 @@ class ControleParcelle extends BaseControleParcelle
         $kml .= $feat_obj->out('kml');
         $kml .= '</Placemark>';
         return $kml;
+    }
+
+    public function getInfoManquant()
+    {
+        return ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant)->getPourcentageFromIdParcelle($this->parcelle_id) : 0;
+    }
+
+    public function getInfoIrrigation()
+    {
+        return ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant)->getInfoFromIdParcelle($this->parcelle_id) : ['materiel' => '', 'ressource' => ''];
     }
 }

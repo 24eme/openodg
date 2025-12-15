@@ -1,7 +1,7 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Lot') ?>
 <?php use_javascript('hamza_style.js'); ?>
-<?php use_javascript('degustation.js'); ?>
+<?php use_javascript('degustation.js?'.$_ENV['GIT_LAST_COMMIT']); ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_TOURNEES)); ?>

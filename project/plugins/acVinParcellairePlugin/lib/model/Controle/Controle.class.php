@@ -32,11 +32,11 @@ class Controle extends BaseControle
         if($etablissement->exist('secteur')) {
             $this->document->secteur = $etablissement->secteur;
         }
-        foreach($etablissement->liaisons_operateurs as $liaison) {
-            if($liaison->type_liaison == EtablissementClient::TYPE_LIAISON_COOPERATIVE) {
-                $this->liaisons_operateurs->add($liaison->getKey(), $liaison);
-            }
-        }
+        $this->liaisons_operateurs = $this->getLiaisonsCooperative();
+    }
+
+    public function getLiaisonsCooperative() {
+        return EtablissementClient::getInstance()->findByCvi($this->declarant->cvi)->getLiaisonsOfType(EtablissementFamilles::FAMILLE_COOPERATIVE, true);
     }
 
     public function getLibelleLiaison() {
@@ -53,6 +53,16 @@ class Controle extends BaseControle
             $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant, acCouchdbClient::HYDRATE_JSON);
         }
         return $this->parcellaire;
+    }
+
+    public function getParcellaireParcelles()
+    {
+        $parcellaire = $this->getParcellaire();
+        $parcelles = [];
+        foreach ($parcellaire->getParcelles() as $key => $parcelle) {
+            $parcelles[$key] = $parcelle->getData();
+        }
+        return $parcelles;
     }
 
     public function updateParcelles(array $parcellesIds)
@@ -120,7 +130,6 @@ class Controle extends BaseControle
         }
         $this->add('mouvements_statuts');
         $this->mouvements_statuts->add(null,  ['CONTROLE', $this->getDocumentDefinitionModel(), $this->getStatutComputed(), $this->identifiant] );
-        print_r(['generateMouvementsStatuts', $this->mouvements_statuts]);
     }
 
     public function getGeoJson() {
@@ -134,6 +143,8 @@ class Controle extends BaseControle
     public function getDataToDump() {
         $this->to_dump = true;
         $d = $this->getData();
+        $d->parcellaire_geojson = $this->getGeoJson();
+        $d->parcellaire_parcelles = $this->getParcellaireParcelles();
         $this->to_dump = false;
         return $d;
     }

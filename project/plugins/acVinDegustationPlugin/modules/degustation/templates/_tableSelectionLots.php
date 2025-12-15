@@ -48,7 +48,7 @@
             <?php echo $form['lots'][$key]['preleve']->renderError() ?>
               <div class="col-xs-12">
                 <label class="switch-xl">
-                    <?php echo $form['lots'][$key]['preleve']->render(array('class' => "degustation", "data-preleve-adherent" => $lot->declarant_identifiant, "data-preleve-lot" => $lot->unique_id)); ?>
+                    <?php echo $form['lots'][$key]['preleve']->render(array('class' => "degustation switch", "data-preleve-adherent" => $lot->declarant_identifiant, "data-preleve-lot" => $lot->unique_id)); ?>
                     <span class="slider-xl round"></span>
                 </label>
               </div>

@@ -1,7 +1,7 @@
 <?php use_helper('Date'); ?>
 <?php use_helper('Float'); ?>
 <?php use_helper('Generation'); ?>
-<?php use_javascript('degustation.js') ?>
+<?php use_javascript('degustation.js?'.$_ENV['GIT_LAST_COMMIT']); ?>
 
 <ol class="breadcrumb">
     <li class="active"><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
