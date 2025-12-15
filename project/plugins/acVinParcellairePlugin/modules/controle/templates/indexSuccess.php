@@ -23,7 +23,7 @@
 
 
 
-<h2>Opérateur dont le controle doit être planifié</h2>
+<h2>Controle à organiser</h2>
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -36,7 +36,7 @@
     </tr>
     </thead>
     <tbody>
-<?php foreach ($controles[ControleClient::CONTROLE_STATUT_A_PLANIFIER] as $controle): ?>
+<?php foreach ($controles[ControleClient::CONTROLE_STATUT_A_ORGANISER] as $controle): ?>
     <tr>
         <td><?php echo $controle->declarant->nom; ?> <span class="text-muted"><?php echo $controle->identifiant; ?> - <?php echo $controle->declarant->cvi; ?></span></td>
         <td><span class="text-muted"><?php echo $controle->declarant->commune; ?> - </span> <?php echo $controle->secteur; ?></td>
@@ -49,7 +49,7 @@
 </table>
 
 
-<h2>Opérateur dont le controle est à organiser</h2>
+<h2>Opérateur dont le controle est à planifier</h2>
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -61,7 +61,7 @@
     </tr>
     </thead>
     <tbody>
-<?php foreach ($controles[ControleClient::CONTROLE_STATUT_A_ORGANISER] as $controle): ?>
+<?php foreach ($controles[ControleClient::CONTROLE_STATUT_A_PLANIFIER] as $controle): ?>
     <tr>
         <td><?php echo $controle->declarant->nom; ?> <span class="text-muted"><?php echo $controle->identifiant; ?> - <?php echo $controle->declarant->cvi; ?></span></td>
         <td><span class="text-muted"><?php echo $controle->declarant->commune; ?></span> <?php echo $controle->secteur; ?></td>
