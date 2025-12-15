@@ -55,6 +55,16 @@ class Controle extends BaseControle
         return $this->parcellaire;
     }
 
+    public function getParcellaireParcelles()
+    {
+        $parcellaire = $this->getParcellaire();
+        $parcelles = [];
+        foreach ($parcellaire->getParcelles() as $key => $parcelle) {
+            $parcelles[$key] = $parcelle->getData();
+        }
+        return $parcelles;
+    }
+
     public function updateParcelles(array $parcellesIds)
     {
         $this->remove('parcelles');
@@ -133,7 +143,8 @@ class Controle extends BaseControle
     public function getDataToDump() {
         $this->to_dump = true;
         $d = $this->getData();
-        $d->parcellaire_geojson = json_encode($this->getGeoJson());
+        $d->parcellaire_geojson = $this->getGeoJson();
+        $d->parcellaire_parcelles = $this->getParcellaireParcelles();
         $this->to_dump = false;
         return $d;
     }
