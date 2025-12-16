@@ -92,7 +92,7 @@ class controleActions extends sfActions
     public function executeSetDateTournee(sfWebRequest $request)
     {
         $this->controle = $this->getRoute()->getControle();
-        if (!$request->getParameter('date')) {
+        if (!$request->getParameter('date_tournee')) {
             return sfView::SUCCESS;
         }
         $this->controle->date_tournee = $request->getParameter('date_tournee');
