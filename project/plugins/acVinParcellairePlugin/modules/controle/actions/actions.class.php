@@ -5,16 +5,20 @@ class controleActions extends sfActions
     private function getControlesPlanifies($date = null) {
         $stats = [];
         $this->controles = ControleClient::getInstance()->findAllByStatus();
-        foreach($this->controles[ControleClient::CONTROLE_STATUT_PLANIFIE] as $c) {
+        foreach ($this->controles as $statut => $controles) {
+          $stats[$statut] = [];
+          foreach($controles as $c) {
             if ($date && $date != $c->date_tournee) {
                 continue;
             }
-            if (!isset($stats[$c->date_tournee])) {
-                $stats[$c->date_tournee] = ['nb_parcelles' => 0, 'operateurs' => [], 'controles' => [], 'geojson' => []];
+            $key = $c->date_tournee.$c->type;
+            if (!isset($stats[$key])) {
+                $stats[$statut][$key] = ['nb_parcelles' => 0, 'operateurs' => [], 'controles' => [], 'geojson' => [], 'date_tournee' => $c->date_tournee, 'type_tournee' => $c->type_tournee];
             }
-            $stats[$c->date_tournee]['nb_parcelles'] += count($c->parcelles);
-            $stats[$c->date_tournee]['operateurs'][] = $c->declarant->nom;
-            $stats[$c->date_tournee]['controles'][$c->_id] = $c->getDataToDump();
+            $stats[$statut][$key]['nb_parcelles'] += count($c->parcelles);
+            $stats[$statut][$key]['operateurs'][] = $c->declarant->nom;
+            $stats[$statut][$key]['controles'][$c->_id] = $c->getDataToDump();
+          }
         }
         return $stats;
     }
@@ -95,7 +99,8 @@ class controleActions extends sfActions
         if (!$request->getParameter('date')) {
             return sfView::SUCCESS;
         }
-        $this->controle->date_tournee = $request->getParameter('date');
+        $this->controle->date_tournee = $request->getParameter('date_tournee');
+        $this->controle->type_tournee = $request->getParameter('type_tournee');
         $this->controle->save();
         return $this->redirect('controle_index');
     }

@@ -35,6 +35,14 @@ class Controle extends BaseControle
         $this->liaisons_operateurs = $this->getLiaisonsCooperative();
     }
 
+    public function getTypeTournee() {
+        $t = $this->_get('type_tournee');
+        if (!$t) {
+            return ControleClient::CONTROLE_TYPE_SUIVI;
+        }
+        return $t;
+    }
+
     public function getLiaisonsCooperative() {
         return EtablissementClient::getInstance()->findByCvi($this->declarant->cvi)->getLiaisonsOfType(EtablissementFamilles::FAMILLE_COOPERATIVE, true);
     }
@@ -116,14 +124,13 @@ class Controle extends BaseControle
 
     public function getStatutComputed()
     {
-        if($this->date_tournee) {
+        if(count($this->parcelles)) {
             return ControleClient::CONTROLE_STATUT_PLANIFIE;
         }
-        if(count($this->parcelles)) {
-            return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
+        if($this->date_tournee) {
+            return ControleClient::CONTROLE_STATUT_A_ORGANISER;
         }
-
-        return ControleClient::CONTROLE_STATUT_A_ORGANISER;
+        return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
 
     }
 
