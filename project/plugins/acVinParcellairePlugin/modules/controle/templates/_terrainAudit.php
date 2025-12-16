@@ -43,7 +43,7 @@
   <div class="form-group">
       <label class="col-sm-2 control-label">Signature Opérateur</label>
       <div class="col-sm-5">
-          <input type="text" class="form-control input-lg" v-model="controleCourant.audit.operateur_signature" />
+          <canvas id="signature" style="width: 300px;height: 300px; border: 1px solid #cecece;"></canvas>
       </div>
   </div>
 

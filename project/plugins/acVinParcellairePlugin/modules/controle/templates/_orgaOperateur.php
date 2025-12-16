@@ -83,7 +83,5 @@
     </tbody>
 </table>
 </div>
-<!--<div class="row row-margin row-button">
-    <div class="col-xs-8"></div>
-    <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Sauvegarder</div>
-</div>-->
+
+<RouterLink class="btn btn-primary" :to="{ name: 'operateurs' }"><span class="glyphicon glyphicon-chevron-left"></span> Retour</RouterLink>
