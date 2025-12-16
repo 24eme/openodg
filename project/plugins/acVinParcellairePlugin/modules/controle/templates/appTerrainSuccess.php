@@ -1,6 +1,9 @@
 <script id="dataJson" type="application/json">
 <?php echo $sf_data->getRaw('json') ?>
 </script>
+<script id="dataConf" type="application/json">
+<?php echo $sf_data->getRaw('points_de_controle') ?>
+</script>
 <script>
     const { createWebHashHistory, createRouter, useRoute, useRouter } = VueRouter
     const { createApp } = Vue;
@@ -13,6 +16,7 @@
 
     let controles = JSON.parse(localStorage.getItem("controles")) || {}
     const server_controle = JSON.parse(document.getElementById("dataJson").textContent);
+    const points_de_controle = JSON.parse(document.getElementById("dataConf").textContent);
     let localstorage_updated = false;
     for (let i in server_controle) {
         if (controles[server_controle[i]._id]) {
@@ -102,9 +106,23 @@
     templates.parcelle.data = function() {
         const route = useRoute()
 
+        var points = [];
+        for (key in points_de_controle) {
+            points[key] = [];
+            for (item in points_de_controle[key].rtm) {
+                points[key][item] = [];
+                points[key][item].libelle = points_de_controle[key].rtm[item].libelle;
+                points[key][item].observations = '';
+                points[key][item].conformite = true;
+            }
+        }
+
+        controles[route.params.id].parcelles[route.params.parcelle].controle.points = points;
+
         return {
           controleCourant: controles[route.params.id],
-          parcelleCourante: controles[route.params.id].parcelles[route.params.parcelle]
+          parcelleCourante: controles[route.params.id].parcelles[route.params.parcelle],
+          pointsDeControle: points_de_controle
         }
     };
     templates.parcelle.methods = {
