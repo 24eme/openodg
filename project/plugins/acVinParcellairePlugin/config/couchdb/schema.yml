@@ -269,6 +269,16 @@ Controle:
                         superficie_a_retirer: {}
                         saisie: {}
                         observations: { required: false } # deprecated
+      manquements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  libelle: {}
+                  observations: {}
       mouvements_statuts:
         type: array_collection
         definition:
