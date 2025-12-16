@@ -5,6 +5,7 @@ class controleActions extends sfActions
     private function getControlesPlanifies($date = null) {
         $stats = [];
         $this->controles = ControleClient::getInstance()->findAllByStatus();
+        $global = [];
         foreach ($this->controles as $statut => $controles) {
           $stats[$statut] = [];
           foreach($controles as $c) {
@@ -12,13 +13,17 @@ class controleActions extends sfActions
                 continue;
             }
             $key = $c->date_tournee;
-            if (!isset($stats[$key])) {
+            if (!isset($stats[$statut][$key])) {
                 $stats[$statut][$key] = ['nb_parcelles' => 0, 'operateurs' => [], 'controles' => [], 'geojson' => [], 'date_tournee' => $c->date_tournee, 'type_tournee' => $c->type_tournee];
             }
             $stats[$statut][$key]['nb_parcelles'] += count($c->parcelles);
             $stats[$statut][$key]['operateurs'][] = $c->declarant->nom;
             $stats[$statut][$key]['controles'][$c->_id] = $c->getDataToDump();
+            $global[$key] = $stats[$statut][$key];
           }
+        }
+        if ($date) {
+            return $global;
         }
         return $stats;
     }
