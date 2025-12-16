@@ -164,9 +164,58 @@
         }
         return {
           controleCourant: controles[route.params.id]
+
         }
     };
     templates.audit.methods = {
+      countPointsTotal() {
+          let ret = 0;
+          for (const parcelleId in this.controleCourant.parcelles) {
+              const parcelle = this.controleCourant.parcelles[parcelleId];
+              ret += Object.entries(parcelle.controle.points).length;
+          }
+          return ret;
+      },
+      countPointsControles() {
+          let ret = 0;
+          for (const parcelleId in this.controleCourant.parcelles) {
+              const parcelle = this.controleCourant.parcelles[parcelleId];
+              for (const pointKey in parcelle.controle.points) {
+                  const point = parcelle.controle.points[pointKey];
+                  ret += 1;
+              }
+          }
+          return ret;
+      },
+      countPointsConforme() {
+          let ret = 0;
+          for (const parcelleId in this.controleCourant.parcelles) {
+              const parcelle = this.controleCourant.parcelles[parcelleId];
+              for (const pointKey in parcelle.controle.points) {
+                  const point = parcelle.controle.points[pointKey];
+                  if (point.conformite == 'C') {
+                      ret += 1;
+                  }
+              }
+          }
+          return ret;
+      },
+      // countPointsNCetRtm() {
+      //     let ret = {nombreNC:0, manquements:[]};
+      //     for (const parcelleId in this.controleCourant.parcelles) {
+      //         const parcelle = this.controleCourant.parcelles[parcelleId];
+      //         for (const pointKey in parcelle.controle.points) {
+      //             const point = parcelle.controle.points[pointKey];
+      //             if (point.conformite == 'NC') {
+      //                 ret.nombreNC += 1;
+      //             }
+      //           for (const manquementKey in point) {
+      //
+      //           }
+      //         }
+      //     }
+      //     return ret;
+      // },
       save() {
         this.controleCourant.audit.saisie = 1;
         router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
