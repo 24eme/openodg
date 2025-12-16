@@ -345,5 +345,5 @@
 
 <form action="<?php echo url_for('controle_apporga_save', ['date' => $date_tournee]) ?>" method="POST">
     <input id="form_data" type="hidden" name="data" value="" />
-    <button id="btn_save" type="submit" class="btn btn-primary">Enregistrer</button>
+    <button id="btn_save" type="submit" class="btn btn-primary hidden">Enregistrer</button>
 </form>
