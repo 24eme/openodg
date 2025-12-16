@@ -45,6 +45,7 @@
     };
     templates.operateurs.mounted = function() {
         const map = new L.map('map');
+        activeMap = map;
         map.setView([43.8293, 7.2977], 8);
         const tileLayer = L.tileLayer('https://data.geopf.fr/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM&LAYER={ignLayer}&STYLE={style}&FORMAT={format}&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
         {
@@ -127,11 +128,27 @@
 
         function highlightFeature(e) {
             e.target.setStyle({fillOpacity: 0.6 });
+            const controleId = e.target.feature.properties.controleId
+            activeMap.eachLayer(function(layer) {
+                if(!layer.feature || !layer.feature.id) {
+                    return;
+                }
+                if(layer.feature.properties.controleId == controleId) {
+                    layer.setStyle({fillOpacity: 1, opacity: 1 });
+                } else {
+                    layer.setStyle({fillOpacity: 0.3, opacity: 0.3 });
+                }
+            });
             popup.update(e.target);
         }
 
         function resetHighlight(e) {
-            e.target.setStyle({fillOpacity: 0.3 });
+            activeMap.eachLayer(function(layer) {
+                if(!layer.feature || !layer.feature.id) {
+                    return;
+                }
+                layer.setStyle({fillOpacity: 0.3, opacity: 1 });
+            });
             popup.update();
         }
     };
