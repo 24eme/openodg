@@ -142,7 +142,12 @@
         return val ? Number(val).toFixed(nbDecimal) : '';
       }
     };
-
+    templates.audit.mounted = function() {
+        let signaturePad = new SignaturePad(document.getElementById('signature'), {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            penColor: 'rgb(0, 0, 0)'
+        });
+    }
     templates.audit.data = function() {
         const route = useRoute()
         if(!controles[route.params.id].audit) {

@@ -28,6 +28,7 @@
         <script src="/js/lib/idb/build/umd.js"></script>
         <script src="/js/lib/leaflet/leaflet.js"></script>
         <script src="/js/lib/leaflet-gps/dist/leaflet-gps.min.js"></script>
+        <script src="/js/lib/signature_pad.min.js"></script>
         <!--<script src="/js/lib/leaflet-offline/dist/bundle.js"></script>-->
     </head>
     <body role="document" style="background: none;">
