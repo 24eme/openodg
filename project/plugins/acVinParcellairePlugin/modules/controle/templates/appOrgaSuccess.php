@@ -22,6 +22,7 @@
     });
 
     const controles = JSON.parse(document.getElementById("dataJson").textContent);
+    let parcellesSelectionnees = [];
     let activeMap = null;
 
     const app = createApp({
@@ -146,7 +147,7 @@
         return {
           controleCourant: controleCourant,
           parcelles: parcelles,
-          parcellesSelectionnees: [],
+          parcellesSelectionnees: parcellesSelectionnees,
           map: null,
         }
     };
@@ -217,22 +218,18 @@
           clearParcelleSelected();
         });
 
-        /*
-        * Fin Map
-        */
+        this.updateMap();
     };
 
-    templates.operateur.watch = {
-        parcellesSelectionnees: {
-        handler(parcelles) {
+    templates.operateur.methods = {
+        updateMap() {
+            const parcellesSelectionnees = this.parcellesSelectionnees;
             activeMap.eachLayer(function(layer) {
                 if(!layer.feature || !layer.feature.id) {
                     return;
                 }
                 let find = false;
-                for(parcelleId of parcelles) {
-                console.log(layer.feature.id);
-                console.log(parcelleId);
+                for(parcelleId of parcellesSelectionnees) {
                     if(parcelleId.match(layer.feature.id)) {
                         find = true;
                     }
@@ -243,9 +240,16 @@
                     layer.setStyle({fillColor: '#3388ff', color: '#3388ff'});
                 }
             });
-
         },
-        deep: true
+    };
+
+    templates.operateur.watch = {
+        parcellesSelectionnees: {
+            handler(parcelles) {
+                this.updateMap();
+                parcellesSelectionnees = this.parcellesSelectionnees
+            },
+            deep: true
         }
     };
 </script>
