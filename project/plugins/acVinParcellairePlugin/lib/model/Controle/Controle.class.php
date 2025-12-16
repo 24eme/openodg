@@ -117,7 +117,13 @@ class Controle extends BaseControle
 
     public function getStatutComputed()
     {
-        if($this->date_tournee && count($this->parcelles)) {
+        if(!$this->date_tournee) {
+            return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
+        }
+        if (count($this->manquements)) {
+            return ControleClient::CONTROLE_STATUT_EN_MANQUEMENT;
+        }
+        if (count($this->parcelles)) {
             return ControleClient::CONTROLE_STATUT_PLANIFIE;
         }
         if($this->date_tournee) {
