@@ -1,4 +1,4 @@
-<h2>Controle terrrain à venir</h2>
+<h2>Controle terrain à venir</h2>
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -16,8 +16,8 @@
         <td><?php echo $stat['type_tournee']; ?></td>
         <td><?php echo count($stat['operateurs']); ?> / <?php echo $stat['nb_parcelles']; ?></td>
         <td>
-            <a href="<?php echo url_for('controle_appterrain', array('date' => $date_tournee)); ?>" class="btn btn-sm btn-default">Accéder à la tournée</a>
-            <a href="<?php echo url_for('controle_apporga', array('date' => $date_tournee)); ?>" class="btn btn-sm btn-default">Modifier l'organisation</a>
+            <a href="<?php echo url_for('controle_appterrain', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-default">Accéder à la tournée</a>
+            <a href="<?php echo url_for('controle_apporga', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-default">Modifier l'organisation</a>
         </td>
     </tr>
 <?php endforeach; ?>
@@ -43,7 +43,7 @@
         <td><?php echo $stat['date_tournee']; ?></td>
         <td><?php echo $stat['type_tournee']; ?></td>
         <td><?php echo count($stat['operateurs']); ?> / <?php echo $stat['nb_parcelles']; ?></td>
-        <td><a href="<?php echo url_for('controle_apporga', array('date' => $date_tournee)); ?>" class="btn btn-sm btn-default">Organiser la tournée</a></td>
+        <td><a href="<?php echo url_for('controle_apporga', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-default">Organiser la tournée</a></td>
     </tr>
 <?php endforeach; ?>
     </tbody>
