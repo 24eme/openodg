@@ -74,12 +74,15 @@ class controleActions extends sfActions
         $this->setLayout('appLayout');
     }
 
-    public function executeSaveAppOrga(sfWebRequest $request) {
+    public function executeAppOrgaSave(sfWebRequest $request) {
         if (!$request->isMethod(sfWebRequest::POST)) {
             throw new sfError403Exception();
         }
-
-        print_r($request->getParameter('data'));
+        $date_tournee = $request->getParameter('date');
+        $controles = $this->getControlesPlanifies($date_tournee);
+        $data = json_decode($request->getParameter('data'));
+        print_r($data);
+        exit;
     }
 
     public function executeSetDateTournee(sfWebRequest $request)

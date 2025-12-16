@@ -315,9 +315,9 @@
                 parcellesSelectionneesControles[this.controleCourant._id] = this.parcellesSelectionnees
                 const data = {};
                 for(let id in parcellesSelectionneesControles) {
-                    data.id = [];
+                    data[id] = [];
                     for(parcelleId of parcellesSelectionneesControles[id]) {
-                        data.id.push(parcelleId);
+                        data[id].push(parcelleId);
                     }
                 }
                 document.getElementById('form_data').value = JSON.stringify(data);
