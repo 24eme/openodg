@@ -16,7 +16,7 @@
         <td><?php echo $stat['type_tournee']; ?></td>
         <td><?php echo count($stat['operateurs']); ?> / <?php echo $stat['nb_parcelles']; ?></td>
         <td>
-            <a href="<?php echo url_for('controle_appterrain', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-default">Accéder à la tournée</a>
+            <a href="<?php echo url_for('controle_appterrain', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-primary">Accéder à la tournée</a>
             <a href="<?php echo url_for('controle_apporga', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-default">Modifier l'organisation</a>
         </td>
     </tr>
@@ -43,7 +43,7 @@
         <td><?php echo $stat['date_tournee']; ?></td>
         <td><?php echo $stat['type_tournee']; ?></td>
         <td><?php echo count($stat['operateurs']); ?> / <?php echo $stat['nb_parcelles']; ?></td>
-        <td><a href="<?php echo url_for('controle_apporga', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-default">Organiser la tournée</a></td>
+        <td><a href="<?php echo url_for('controle_apporga', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-primary">Organiser la tournée</a></td>
     </tr>
 <?php endforeach; ?>
     </tbody>
@@ -67,7 +67,7 @@
         <td><?php echo $controle->declarant->nom; ?> <span class="text-muted"><?php echo $controle->identifiant; ?> - <?php echo $controle->declarant->cvi; ?></span></td>
         <td><span class="text-muted"><?php echo $controle->declarant->commune; ?></span> <?php echo $controle->secteur; ?></td>
         <td><?php echo str_replace(', ', '<br/>', $controle->getLibelleLiaison()); ?></td>
-        <td><a href="<?php echo url_for('controle_set_date_tournee', $controle); ?>" class="btn btn-sm btn-default">Planifier le controle</a></td>
+        <td><a href="<?php echo url_for('controle_set_date_tournee', $controle); ?>" class="btn btn-sm btn-primary">Planifier le controle</a></td>
     </tr>
 <?php endforeach; ?>
     </tbody>
