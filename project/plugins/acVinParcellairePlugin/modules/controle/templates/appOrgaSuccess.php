@@ -132,29 +132,25 @@
     templates.operateur.data = function() {
         const route = useRoute();
 
+        const controleCourant = controles[route.params.id];
+
+        const parcelles = [];
+        for (const [idFeature, feature] of Object.entries(controleCourant.parcellaire_geojson.features)) {
+            feature.properties.controleId = controleCourant._id;
+            for(ordre in feature.properties.parcellaires) {
+                feature.properties.parcellaires[ordre].parcelleId=feature.id+'-'+String(ordre).padStart(2, '0');
+            }
+            parcelles.push(feature);
+        }
+
         return {
-          controleCourant: controles[route.params.id],
+          controleCourant: controleCourant,
+          parcelles: parcelles,
           parcellesSelectionnees: []
         }
     };
 
-    templates.operateur.watch = {
-      parcellesSelectionnees: {
-        handler(data) {
-          console.log(data);
-        },
-        deep: true
-      }
-    };
-
-    templates.operateur.methods = {
-        printVar() {
-            console.log(this.parcellesSelectionnees);
-        }
-    }
-
     templates.operateur.mounted = function() {
-
         const map = new L.map('map');
         map.setView([43.8293, 7.2977], 8);
         const tileLayer = L.tileLayer('https://data.geopf.fr/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM&LAYER={ignLayer}&STYLE={style}&FORMAT={format}&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
@@ -175,14 +171,6 @@
         });
         gps.addTo(map);
 
-        const parcelles = [];
-        for (const [idControle, controle] of Object.entries(controles)) {
-            for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
-                feature.properties.controleId = idControle;
-                parcelles.push(feature);
-            }
-        }
-
         const popup = L.control({position: "bottomright"});
         popup.onAdd = function (map) {
             this._div = L.DomUtil.create('div', 'popup');
@@ -191,8 +179,14 @@
             L.DomEvent.disableScrollPropagation(this._div);
             return this._div;
         };
-        popup.update = (layer) => {
-            popup._div.style.background = 'rgba(255,255,255,0.9)';
+        popup.update = async (layer) => {
+            document.querySelectorAll('.bloc_parcelle').forEach(function(item) {
+                item.classList.add('hidden');
+            });
+            if(layer) {
+                document.getElementById(layer.feature.id).classList.remove('hidden');
+            }
+            /*popup._div.style.background = 'rgba(255,255,255,0.9)';
             if(!layer) {
                 popup._div.style.display = 'none';
                 return null
@@ -200,42 +194,11 @@
             let props = layer.feature.properties;
 
             popup._div.style.display = 'block';
-            var Commune = "<th>Commune</th>";
-            var Cepages = "<th>Produits<br/>et cepages</th>";
-            var numParcelles = "<th>Section&nbsp;/&nbspN°</th>";
-            var Superficies = "<th>Superficies  <span>(ha)</span></th>";
-            var ecartPied = "<th>Écart Pieds</th>";
-            var ecartRang = "<th>Écart Rang</th>";
-            var compagnes = "<th>Année plantat°</th>";
-            var btnSelection = "<th>Sélectionner</th>";
-            props.parcellaires.forEach((parcelle, ordre) => {
-                var parcelleId = parcelle.IDU+'-'+String(ordre).padStart(2, '0');
-                Commune += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle['Commune']+'</td>';
-                numParcelles += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
-                Cepages += '<td class="colonneInput" data-id="input-'+ordre+'"><span class="text-muted">'+parcelle.Produit+'</span><br/>'+parcelle.Cepage+'</td>';
-                compagnes += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle.Campagne+'</td>';
-                Superficies += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle.Superficie+'</td>';
-                ecartPied += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle["Ecart pied"]+'</td>';
-                ecartRang +='<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle["Ecart rang"]+'</td>';
-                btnSelection +='<td align="center"><label class="switch"><input class="selectParcelle" type="checkbox" v-model="parcellesSelectionnees" value="'+parcelleId+'" @click="printVar()" /><span class="slider round"></span></label></td>';
-            });
-
-            var popupContent ='<button id="btn-close-info" type="button" style="position: absolute; right: 10px; top: 5px;" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button> <table class="table table-bordered table-condensed table-striped"><tbody>'+
-                            '<tr>'+Commune+'</tr>'+
-                            '<tr>'+numParcelles+'</tr>'+
-                            '<tr>'+Cepages+'</tr>'+
-                            '<tr>'+compagnes+'</tr>'+
-                            '<tr>'+Superficies+'</tr>'+
-                            '<tr>'+ecartPied+'</tr>'+
-                            '<tr>'+ecartRang+'</tr>'+
-                            '<tr>'+btnSelection+'</tr>'+
-                            '</tbody></table>';
-                popup._div.innerHTML = popupContent;
+            popup._div.innerHTML = document.getElementById(layer.feature.id).innerHTML;*/
         }
         popup.addTo(map);
 
-
-        const parcellesLayer = L.geoJSON(parcelles, { onEachFeature: onEachFeature });
+        const parcellesLayer = L.geoJSON(this.parcelles, { onEachFeature: onEachFeature });
         parcellesLayer.addTo(map);
         map.fitBounds(parcellesLayer.getBounds());
 
