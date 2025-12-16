@@ -21,8 +21,9 @@
       routes,
     });
 
-
     const controles = JSON.parse(document.getElementById("dataJson").textContent);
+    const parcellesSelectionneesControles = [];
+    let activeMap = null;
 
     const app = createApp({
         data() {
@@ -30,7 +31,7 @@
               controles: controles,
             }
         },
-        template: '<RouterView :key="$route.fullPath" />',
+        template: '<RouterView :key="$route.fullPath" />'
     });
     app.use(router);
     app.mount('#content');
@@ -43,7 +44,6 @@
         }
     };
     templates.operateurs.mounted = function() {
-
         const map = new L.map('map');
         map.setView([43.8293, 7.2977], 8);
         const tileLayer = L.tileLayer('https://data.geopf.fr/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM&LAYER={ignLayer}&STYLE={style}&FORMAT={format}&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
@@ -99,8 +99,20 @@
         const parcellesLayer = L.geoJSON(parcelles, { onEachFeature: onEachFeature });
         parcellesLayer.addTo(map);
         map.fitBounds(parcellesLayer.getBounds());
-
         function onEachFeature(feature, layer) {
+            let find = false;
+            for(controleId in parcellesSelectionneesControles) {
+                for(parcelleId of parcellesSelectionneesControles[controleId]) {
+                    if(parcelleId.match(feature.id)) {
+                        find = true;
+                    }
+                }
+            }
+            if(find) {
+                layer.setStyle({fillColor: '#c80064', color: '#c80064'});
+            } else {
+                layer.setStyle({fillColor: '#3388ff', color: '#3388ff'});
+            }
             layer.on({
                 click: function (e) {
                     L.DomEvent.stopPropagation(e);
@@ -122,40 +134,38 @@
             e.target.setStyle({fillOpacity: 0.3 });
             popup.update();
         }
-
-        /*
-        * Fin Map
-        */
     };
 
     /* Action Operateur */
     templates.operateur.data = function() {
         const route = useRoute();
 
+        const controleCourant = controles[route.params.id];
+
+        const parcelles = [];
+        for (const [idFeature, feature] of Object.entries(controleCourant.parcellaire_geojson.features)) {
+            feature.properties.controleId = controleCourant._id;
+            for(ordre in feature.properties.parcellaires) {
+                feature.properties.parcellaires[ordre].parcelleId=feature.id+'-'+String(ordre).padStart(2, '0');
+            }
+            parcelles.push(feature);
+        }
+
+        let parcellesSelectionnees = [];
+        if(parcellesSelectionneesControles[controleCourant._id]) {
+            parcellesSelectionnees = parcellesSelectionneesControles[controleCourant._id]
+        }
+
         return {
-          controleCourant: controles[route.params.id],
-          parcellesSelectionnees: []
+          controleCourant: controleCourant,
+          parcelles: parcelles,
+          parcellesSelectionnees: parcellesSelectionnees,
         }
     };
-
-    templates.operateur.watch = {
-      parcellesSelectionnees: {
-        handler(data) {
-          console.log(data);
-        },
-        deep: true
-      }
-    };
-
-    templates.operateur.methods = {
-        printVar() {
-            console.log(this.parcellesSelectionnees);
-        }
-    }
 
     templates.operateur.mounted = function() {
-
         const map = new L.map('map');
+        activeMap = map;
         map.setView([43.8293, 7.2977], 8);
         const tileLayer = L.tileLayer('https://data.geopf.fr/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM&LAYER={ignLayer}&STYLE={style}&FORMAT={format}&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
         {
@@ -175,14 +185,6 @@
         });
         gps.addTo(map);
 
-        const parcelles = [];
-        for (const [idControle, controle] of Object.entries(controles)) {
-            for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
-                feature.properties.controleId = idControle;
-                parcelles.push(feature);
-            }
-        }
-
         const popup = L.control({position: "bottomright"});
         popup.onAdd = function (map) {
             this._div = L.DomUtil.create('div', 'popup');
@@ -191,51 +193,17 @@
             L.DomEvent.disableScrollPropagation(this._div);
             return this._div;
         };
-        popup.update = (layer) => {
-            popup._div.style.background = 'rgba(255,255,255,0.9)';
-            if(!layer) {
-                popup._div.style.display = 'none';
-                return null
-            }
-            let props = layer.feature.properties;
-
-            popup._div.style.display = 'block';
-            var Commune = "<th>Commune</th>";
-            var Cepages = "<th>Produits<br/>et cepages</th>";
-            var numParcelles = "<th>Section&nbsp;/&nbspN°</th>";
-            var Superficies = "<th>Superficies  <span>(ha)</span></th>";
-            var ecartPied = "<th>Écart Pieds</th>";
-            var ecartRang = "<th>Écart Rang</th>";
-            var compagnes = "<th>Année plantat°</th>";
-            var btnSelection = "<th>Sélectionner</th>";
-            props.parcellaires.forEach((parcelle, ordre) => {
-                var parcelleId = parcelle.IDU+'-'+String(ordre).padStart(2, '0');
-                Commune += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle['Commune']+'</td>';
-                numParcelles += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
-                Cepages += '<td class="colonneInput" data-id="input-'+ordre+'"><span class="text-muted">'+parcelle.Produit+'</span><br/>'+parcelle.Cepage+'</td>';
-                compagnes += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle.Campagne+'</td>';
-                Superficies += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle.Superficie+'</td>';
-                ecartPied += '<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle["Ecart pied"]+'</td>';
-                ecartRang +='<td class="colonneInput" data-id="input-'+ordre+'">'+parcelle["Ecart rang"]+'</td>';
-                btnSelection +='<td align="center"><label class="switch"><input class="selectParcelle" type="checkbox" v-model="parcellesSelectionnees" value="'+parcelleId+'" @click="printVar()" /><span class="slider round"></span></label></td>';
+        popup.update = async (layer) => {
+            document.querySelectorAll('.bloc_parcelle').forEach(function(item) {
+                item.classList.add('hidden');
             });
-
-            var popupContent ='<button id="btn-close-info" type="button" style="position: absolute; right: 10px; top: 5px;" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button> <table class="table table-bordered table-condensed table-striped"><tbody>'+
-                            '<tr>'+Commune+'</tr>'+
-                            '<tr>'+numParcelles+'</tr>'+
-                            '<tr>'+Cepages+'</tr>'+
-                            '<tr>'+compagnes+'</tr>'+
-                            '<tr>'+Superficies+'</tr>'+
-                            '<tr>'+ecartPied+'</tr>'+
-                            '<tr>'+ecartRang+'</tr>'+
-                            '<tr>'+btnSelection+'</tr>'+
-                            '</tbody></table>';
-                popup._div.innerHTML = popupContent;
+            if(layer) {
+                document.getElementById(layer.feature.id).classList.remove('hidden');
+            }
         }
         popup.addTo(map);
 
-
-        const parcellesLayer = L.geoJSON(parcelles, { onEachFeature: onEachFeature });
+        const parcellesLayer = L.geoJSON(this.parcelles, { onEachFeature: onEachFeature });
         parcellesLayer.addTo(map);
         map.fitBounds(parcellesLayer.getBounds());
 
@@ -261,8 +229,39 @@
           clearParcelleSelected();
         });
 
-        /*
-        * Fin Map
-        */
+        this.updateMap();
+    };
+
+    templates.operateur.methods = {
+        updateMap() {
+            const parcellesSelectionnees = this.parcellesSelectionnees;
+            activeMap.eachLayer(function(layer) {
+                if(!layer.feature || !layer.feature.id) {
+                    return;
+                }
+                let find = false;
+                for(parcelleId of parcellesSelectionnees) {
+                    if(parcelleId.match(layer.feature.id)) {
+                        find = true;
+                    }
+                }
+                if(find) {
+                    layer.setStyle({fillColor: '#c80064', color: '#c80064'});
+                } else {
+                    layer.setStyle({fillColor: '#3388ff', color: '#3388ff'});
+                }
+            });
+        },
+    };
+
+    templates.operateur.watch = {
+        parcellesSelectionnees: {
+            handler(parcelles) {
+                this.updateMap();
+                parcellesSelectionneesControles[this.controleCourant._id] = this.parcellesSelectionnees
+                console.log(parcellesSelectionneesControles)
+            },
+            deep: true
+        }
     };
 </script>
