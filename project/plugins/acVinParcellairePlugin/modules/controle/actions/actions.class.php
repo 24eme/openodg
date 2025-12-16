@@ -14,7 +14,7 @@ class controleActions extends sfActions
             }
             $stats[$c->date_tournee]['nb_parcelles'] += count($c->parcelles);
             $stats[$c->date_tournee]['operateurs'][] = $c->declarant->nom;
-            $stats[$c->date_tournee]['controles'][] = $c->getDataToDump();
+            $stats[$c->date_tournee]['controles'][$c->_id] = $c->getDataToDump();
         }
         return $stats;
     }
@@ -53,6 +53,15 @@ class controleActions extends sfActions
             $this->controle->save();
             return $this->redirect('controle_index');
         }
+    }
+
+    public function executeAppOrga(sfWebRequest $request)
+    {
+        $this->date_tournee = $request->getParameter('date');
+        $this->controles = $this->getControlesPlanifies($this->date_tournee);
+        $this->json = json_encode($this->controles[$this->date_tournee]['controles'], JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+
+        $this->setLayout('appLayout');
     }
 
     public function executeAppTerrain(sfWebRequest $request)

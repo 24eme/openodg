@@ -60,6 +60,15 @@ class Controle extends BaseControle
         return ControleConfiguration::getInstance()->getRtm();
     }
 
+    public function getParcellaireParcelles()
+    {
+        $parcellaire = $this->getParcellaire();
+        $parcelles = [];
+        foreach ($parcellaire->getParcelles() as $key => $parcelle) {
+            $parcelles[$key] = $parcelle->getData();
+        }
+        return $parcelles;
+
     public function updateParcelles(array $parcellesIds)
     {
         $this->remove('parcelles');
@@ -96,15 +105,8 @@ class Controle extends BaseControle
     public function save()
     {
         $this->storeDeclarant();
-        $this->storeParcellaireGeoJson();
         $this->generateMouvementsStatuts();
         return parent::save();
-    }
-
-    public function storeParcellaireGeoJson()
-    {
-        $this->remove('parcellaire_geojson');
-        $this->add('parcellaire_geojson', json_encode($this->getGeoJson()));
     }
 
     public function getParcelles() {
@@ -144,6 +146,8 @@ class Controle extends BaseControle
     public function getDataToDump() {
         $this->to_dump = true;
         $d = $this->getData();
+        $d->parcellaire_geojson = $this->getGeoJson();
+        $d->parcellaire_parcelles = $this->getParcellaireParcelles();
         $this->to_dump = false;
         return $d;
     }

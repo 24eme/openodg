@@ -84,45 +84,6 @@
     templates.listing.methods = {
     };
 
-    templates.listing.mounted = function() {
-        const controles = templates.listing.data().controles;
-        const map = new L.map('map');
-        map.setView([43.8293, 7.2977], 8);
-        const tileLayer = L.tileLayer('https://data.geopf.fr/wmts?'+
-            '&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM'+
-            '&LAYER={ignLayer}&STYLE={style}&FORMAT={format}'+
-            '&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
-            {
-            ignApiKey: 'pratique',
-            ignLayer: 'ORTHOIMAGERY.ORTHOPHOTOS',
-            style: 'normal',
-            format: 'image/jpeg',
-            service: 'WMTS',
-            minZoom: 8,
-            maxZoom: 19,
-            attribution: 'Map data &copy;' +
-            '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
-            '<a href="https://cadastre.data.gouv.fr/">Cadastre</a>, ' +
-            'Imagery © <a href="https://www.ign.fr/">IGN</a>',
-            id: 'mapbox.light'
-            });
-
-        tileLayer.addTo(map)
-
-        // GPS
-        const gps = new L.Control.Gps({
-            autoCenter:true
-        });//inizialize control
-
-        gps.addTo(map);
-
-        for(let controleId in controles) {
-            const controle = controles[controleId];
-            const parcellesLayer = L.geoJSON(JSON.parse(controle.parcellaire_geojson));
-            parcellesLayer.addTo(map);
-        };
-    };
-
     templates.operateur.data = function() {
         const route = useRoute()
 
