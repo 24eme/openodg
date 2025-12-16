@@ -11,7 +11,7 @@ class controleActions extends sfActions
             if ($date && $date != $c->date_tournee) {
                 continue;
             }
-            $key = $c->date_tournee.$c->type;
+            $key = $c->date_tournee;
             if (!isset($stats[$key])) {
                 $stats[$statut][$key] = ['nb_parcelles' => 0, 'operateurs' => [], 'controles' => [], 'geojson' => [], 'date_tournee' => $c->date_tournee, 'type_tournee' => $c->type_tournee];
             }
@@ -96,7 +96,7 @@ class controleActions extends sfActions
     public function executeSetDateTournee(sfWebRequest $request)
     {
         $this->controle = $this->getRoute()->getControle();
-        if (!$request->getParameter('date')) {
+        if (!$request->getParameter('date_tournee')) {
             return sfView::SUCCESS;
         }
         $this->controle->date_tournee = $request->getParameter('date_tournee');
