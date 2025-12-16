@@ -4,9 +4,12 @@
 <h2>Opérateurs à contrôler</h2>
 
 <div class="list-group mt-5">
-    <RouterLink v-for="(controle, key) in controles" :to="{ name: 'operateur', params: { id: key } }" class="list-group-item" :class="{ 'list-group-item-success': controle.audit.saisie == 1 }">
+    <RouterLink v-for="(controle, key, index) in controles" :to="{ name: 'operateur', params: { id: key } }" class="list-group-item" :class="{ 'list-group-item-success': controle.audit.saisie == 1 }">
         <div class="row">
-            <div class="col-xs-10">
+            <div class="col-xs-2 col-md-1" style="font-size: 20px;">
+                <strong>{{ (10 + index) }}:00</strong>
+            </div>
+            <div class="col-xs-8 col-md-9">
                 <h4 class="list-group-item-heading">{{ controle.declarant.nom }}  <small>{{ controle.declarant.cvi }}</small></h4>
                 <p class="list-group-item-text">{{ controle.declarant.adresse }}<br />{{ controle.declarant.code_postal }} {{ controle.declarant.commune }}</p>
                 <div class="mt-2">
