@@ -1,7 +1,7 @@
 <h3 class="mt-0"><RouterLink :to="{ name: 'operateurs' }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ controleCourant.declarant.nom }} - Séléction des parcelles</h3>
 <hr class="mt-2 mb-4" />
 <div style="position: relative;">
-    <div id="map" style="height: 800px;"></div>
+    <div id="map" style="height: 700px;"></div>
     <div v-for="parcelle in parcelles" :id="parcelle.id" class="hidden bloc_parcelle" style="position: absolute; bottom: 0; z-index: 10000; background: white; opacity: 0.9;">
         <button id="btn-close-info" type="button" style="position: absolute; right: 10px; top: 5px;" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <table class="table table-bordered table-condensed table-striped" style="margin-bottom: 0;">

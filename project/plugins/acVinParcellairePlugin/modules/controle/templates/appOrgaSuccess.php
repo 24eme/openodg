@@ -22,7 +22,7 @@
     });
 
     const controles = JSON.parse(document.getElementById("dataJson").textContent);
-    let parcellesSelectionnees = [];
+    const parcellesSelectionneesControles = [];
     let activeMap = null;
 
     const app = createApp({
@@ -44,7 +44,6 @@
         }
     };
     templates.operateurs.mounted = function() {
-
         const map = new L.map('map');
         map.setView([43.8293, 7.2977], 8);
         const tileLayer = L.tileLayer('https://data.geopf.fr/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM&LAYER={ignLayer}&STYLE={style}&FORMAT={format}&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
@@ -100,8 +99,20 @@
         const parcellesLayer = L.geoJSON(parcelles, { onEachFeature: onEachFeature });
         parcellesLayer.addTo(map);
         map.fitBounds(parcellesLayer.getBounds());
-
         function onEachFeature(feature, layer) {
+            let find = false;
+            for(controleId in parcellesSelectionneesControles) {
+                for(parcelleId of parcellesSelectionneesControles[controleId]) {
+                    if(parcelleId.match(feature.id)) {
+                        find = true;
+                    }
+                }
+            }
+            if(find) {
+                layer.setStyle({fillColor: '#c80064', color: '#c80064'});
+            } else {
+                layer.setStyle({fillColor: '#3388ff', color: '#3388ff'});
+            }
             layer.on({
                 click: function (e) {
                     L.DomEvent.stopPropagation(e);
@@ -123,10 +134,6 @@
             e.target.setStyle({fillOpacity: 0.3 });
             popup.update();
         }
-
-        /*
-        * Fin Map
-        */
     };
 
     /* Action Operateur */
@@ -144,11 +151,15 @@
             parcelles.push(feature);
         }
 
+        let parcellesSelectionnees = [];
+        if(parcellesSelectionneesControles[controleCourant._id]) {
+            parcellesSelectionnees = parcellesSelectionneesControles[controleCourant._id]
+        }
+
         return {
           controleCourant: controleCourant,
           parcelles: parcelles,
           parcellesSelectionnees: parcellesSelectionnees,
-          map: null,
         }
     };
 
@@ -247,7 +258,8 @@
         parcellesSelectionnees: {
             handler(parcelles) {
                 this.updateMap();
-                parcellesSelectionnees = this.parcellesSelectionnees
+                parcellesSelectionneesControles[this.controleCourant._id] = this.parcellesSelectionnees
+                console.log(parcellesSelectionneesControles)
             },
             deep: true
         }
