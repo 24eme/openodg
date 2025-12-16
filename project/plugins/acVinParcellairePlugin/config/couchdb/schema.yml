@@ -154,6 +154,7 @@ Controle:
       type: { }
       date: { }
       date_tournee: { }
+      type_tournee: { }
       identifiant: { }
       campagne: { }
       declarant:
