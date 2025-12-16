@@ -18,7 +18,8 @@
         </table>
     </div>
 </div>
-<h3 class="">Parcelles séléctionnées</h3>
+<h3 class="">Parcelles séléctionnées <span class="label label-primary">{{ pourcentageSelectionne() }}%</span></h3>
+
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
