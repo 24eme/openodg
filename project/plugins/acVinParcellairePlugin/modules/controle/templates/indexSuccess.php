@@ -5,7 +5,7 @@
     <tr>
         <th class="col-4">Date du controle</th>
         <th class="col-2">Type du controle</th>
-        <th class="col-2">Nb opérateurs / Nb parcelles</th>
+        <th class="col-2 text-center">Nb opérateurs / Nb parcelles</th>
         <th class="col-1"></th>
     </tr>
     </thead>
@@ -14,7 +14,7 @@
     <tr>
         <td><?php echo $stat['date_tournee']; ?></td>
         <td><?php echo $stat['type_tournee']; ?></td>
-        <td><?php echo count($stat['operateurs']); ?> / <?php echo $stat['nb_parcelles']; ?></td>
+        <td class="text-center"><?php echo count($stat['operateurs']); ?> / <?php echo $stat['nb_parcelles']; ?></td>
         <td>
             <a href="<?php echo url_for('controle_appterrain', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-primary">Accéder à la tournée</a>
             <a href="<?php echo url_for('controle_apporga', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-default">Cloturer</a>
@@ -34,7 +34,7 @@
     <tr>
         <th class="col-4">Date du controle</th>
         <th class="col-2">Type du controle</th>
-        <th class="col-2">Nb opérateurs / Nb parcelles</th>
+        <th class="col-2 text-center">Nb opérateurs / Nb parcelles</th>
         <th class="col-1"></th>
     </tr>
     </thead>
@@ -43,7 +43,7 @@
     <tr>
         <td><?php echo $stat['date_tournee']; ?></td>
         <td><?php echo $stat['type_tournee']; ?></td>
-        <td><?php echo count($stat['operateurs']); ?> / <?php echo $stat['nb_parcelles']; ?></td>
+        <td class="text-center"><?php echo count($stat['operateurs']); ?> / <?php echo $stat['nb_parcelles']; ?></td>
         <td><a href="<?php echo url_for('controle_apporga', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-primary">Organiser la tournée</a></td>
     </tr>
 <?php endforeach; ?>
