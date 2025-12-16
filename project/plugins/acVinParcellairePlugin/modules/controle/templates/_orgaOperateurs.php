@@ -1,4 +1,4 @@
-<h3 class="mt-0"><span class="glyphicon glyphicon-chevron-left"></span> Carte des opérateurs</h3>
+<h3 class="mt-0"><a href=""><span class="glyphicon glyphicon-chevron-left" onclick="document.getElementById('btn_save').click(); return false;"></span></a> Carte des opérateurs</h3>
 <hr class="mt-2 mb-4" />
 <div id="map" style="height: 70vh;"></div>
 <hr />
