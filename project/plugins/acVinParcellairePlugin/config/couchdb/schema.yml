@@ -249,10 +249,25 @@ Controle:
                           type: collection
                           definition:
                             fields:
-                              '*': {}
-                        observations: {}
+                              '*':
+                                type: collection
+                                definition:
+                                  fields:
+                                    conformite: { type: integer }
+                                    libelle: {}
+                                    manquements:
+                                      type: collection
+                                      definition:
+                                        fields:
+                                          '*':
+                                            type: collection
+                                            definition:
+                                              fields:
+                                                libelle: {}
+                                                observations: {}
                         superficie_a_retirer: {}
                         saisie: {}
+                        observations: { required: false } # deprecated
       mouvements_statuts:
         type: array_collection
         definition:

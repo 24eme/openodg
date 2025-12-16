@@ -43,6 +43,20 @@
           controles: controles
         }
     };
+    templates.operateurs.methods = {
+        nbParcellesSelectionnees(controleId) {
+            if (controleId in parcellesSelectionneesControles) {
+                return parcellesSelectionneesControles[controleId].length;
+            }
+            return 0;
+        },
+        nbParcelles(controleId) {
+            if (controleId in controles) {
+                return Object.entries(controles[controleId].parcellaire_parcelles).length;
+            }
+            return 0;
+        },
+    }
     templates.operateurs.mounted = function() {
         const map = new L.map('map');
         activeMap = map;
@@ -268,6 +282,22 @@
                     layer.setStyle({fillColor: '#3388ff', color: '#3388ff'});
                 }
             });
+        },
+        pourcentageSelectionne() {
+            const parcellesSelectionnees = this.parcellesSelectionnees;
+            const controleCourant = this.controleCourant;
+            let superficieTotale = 0;
+            let superficieSelectionnee = 0;
+            for (const [parcelleId, parcelle] of Object.entries(controleCourant.parcellaire_parcelles)) {
+                superficieTotale += parcelle.superficie;
+                if (parcellesSelectionnees.includes(parcelleId)) {
+                    superficieSelectionnee += parcelle.superficie;
+                }
+            }
+            if (superficieTotale > 0) {
+                return Math.round(superficieSelectionnee / superficieTotale * 100);
+            }
+            return 0;
         },
     };
 

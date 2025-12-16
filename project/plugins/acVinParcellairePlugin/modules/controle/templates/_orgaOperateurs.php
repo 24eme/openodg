@@ -7,11 +7,13 @@
     <thead>
         <tr>
             <th>Opérateur</th>
+            <th class="text-center" style="width: 20%;">Parcelles sélectionnées</th>
         </tr>
     </thead>
     <tbody>
         <tr v-for="controle in controles">
-            <td>{{ controle.declarant.nom }}<td>
+            <td>{{ controle.declarant.nom }}</td>
+            <td class="text-center">{{ nbParcellesSelectionnees(controle._id) }} / {{ nbParcelles(controle._id) }}</td>
         </tr>
     </tbody>
 </table>
