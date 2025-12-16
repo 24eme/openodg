@@ -63,6 +63,11 @@ class Controle extends BaseControle
         return $this->parcellaire;
     }
 
+    public function getPointsDeControle()
+    {
+        return ControleConfiguration::getInstance()->getRtm();
+    }
+
     public function getParcellaireParcelles()
     {
         $parcellaire = $this->getParcellaire();
@@ -87,10 +92,9 @@ class Controle extends BaseControle
         }
     }
 
-    public function setPointsControle($parcelle)
+    public function setPointsDeControle($parcelle)
     {
-        $conf = $this->getConfig();
-        $points = $conf->getFromConfig('points') ?? [];
+        $points = $this->getPointsDeControle();
         foreach ($points as $point) {
             $parcelle->controle->points->add($point, null);
         }

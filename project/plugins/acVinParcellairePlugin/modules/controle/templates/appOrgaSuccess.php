@@ -43,8 +43,30 @@
           controles: controles
         }
     };
+    templates.operateurs.methods = {
+        nbParcellesSelectionnees(controleId) {
+            if (controleId in parcellesSelectionneesControles) {
+                return parcellesSelectionneesControles[controleId].length;
+            }
+            return 0;
+        },
+        nbParcelles(controleId) {
+            if (controleId in controles) {
+                return Object.entries(controles[controleId].parcellaire_parcelles).length;
+            }
+            return 0;
+        },
+        getControlesSorted() {
+            const controlesSorted = [];
+            for(let controleId in parcellesSelectionneesControles) {
+                controlesSorted.push(controles[controleId])
+            }
+            return controlesSorted;
+        }
+    }
     templates.operateurs.mounted = function() {
         const map = new L.map('map');
+        activeMap = map;
         map.setView([43.8293, 7.2977], 8);
         const tileLayer = L.tileLayer('https://data.geopf.fr/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM&LAYER={ignLayer}&STYLE={style}&FORMAT={format}&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
         {
@@ -127,11 +149,27 @@
 
         function highlightFeature(e) {
             e.target.setStyle({fillOpacity: 0.6 });
+            const controleId = e.target.feature.properties.controleId
+            activeMap.eachLayer(function(layer) {
+                if(!layer.feature || !layer.feature.id) {
+                    return;
+                }
+                if(layer.feature.properties.controleId == controleId) {
+                    layer.setStyle({fillOpacity: 1, opacity: 1 });
+                } else {
+                    layer.setStyle({fillOpacity: 0.3, opacity: 0.3 });
+                }
+            });
             popup.update(e.target);
         }
 
         function resetHighlight(e) {
-            e.target.setStyle({fillOpacity: 0.3 });
+            activeMap.eachLayer(function(layer) {
+                if(!layer.feature || !layer.feature.id) {
+                    return;
+                }
+                layer.setStyle({fillOpacity: 0.3, opacity: 1 });
+            });
             popup.update();
         }
     };
@@ -252,6 +290,22 @@
                 }
             });
         },
+        pourcentageSelectionne() {
+            const parcellesSelectionnees = this.parcellesSelectionnees;
+            const controleCourant = this.controleCourant;
+            let superficieTotale = 0;
+            let superficieSelectionnee = 0;
+            for (const [parcelleId, parcelle] of Object.entries(controleCourant.parcellaire_parcelles)) {
+                superficieTotale += parcelle.superficie;
+                if (parcellesSelectionnees.includes(parcelleId)) {
+                    superficieSelectionnee += parcelle.superficie;
+                }
+            }
+            if (superficieTotale > 0) {
+                return Math.round(superficieSelectionnee / superficieTotale * 100);
+            }
+            return 0;
+        },
     };
 
     templates.operateur.watch = {
@@ -259,9 +313,21 @@
             handler(parcelles) {
                 this.updateMap();
                 parcellesSelectionneesControles[this.controleCourant._id] = this.parcellesSelectionnees
-                console.log(parcellesSelectionneesControles)
+                const data = {};
+                for(let id in parcellesSelectionneesControles) {
+                    data[id] = [];
+                    for(parcelleId of parcellesSelectionneesControles[id]) {
+                        data[id].push(parcelleId);
+                    }
+                }
+                document.getElementById('form_data').value = JSON.stringify(data);
             },
             deep: true
         }
     };
 </script>
+
+<form action="<?php echo url_for('controle_apporga_save', ['date' => $date_tournee]) ?>" method="POST">
+    <input id="form_data" type="hidden" name="data" value="" />
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+</form>
