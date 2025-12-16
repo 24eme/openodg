@@ -68,6 +68,7 @@ class Controle extends BaseControle
             $parcelles[$key] = $parcelle->getData();
         }
         return $parcelles;
+    }
 
     public function updateParcelles(array $parcellesIds)
     {
