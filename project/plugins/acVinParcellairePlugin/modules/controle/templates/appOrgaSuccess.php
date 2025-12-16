@@ -56,6 +56,13 @@
             }
             return 0;
         },
+        getControlesSorted() {
+            const controlesSorted = [];
+            for(let controleId in parcellesSelectionneesControles) {
+                controlesSorted.push(controles[controleId])
+            }
+            return controlesSorted;
+        }
     }
     templates.operateurs.mounted = function() {
         const map = new L.map('map');
