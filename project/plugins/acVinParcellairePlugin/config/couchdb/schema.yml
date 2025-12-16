@@ -266,6 +266,7 @@ Controle:
                                               fields:
                                                 libelle: {}
                                                 observations: {}
+                                                conformite: {}
                         superficie_a_retirer: {}
                         saisie: {}
                         observations: { required: false } # deprecated

@@ -29,6 +29,28 @@
     if (localstorage_updated) {
         localStorage.setItem("controles", JSON.stringify(controles));
     }
+
+    // var points = [];
+
+    // for(const controleId in controles) {
+    //     for(const parcelleId in controles[controleId].parcelles) {
+    //         if(!controles[controleId].parcelles[parcelleId].controle.points || !controles[controleId].parcelles[parcelleId].controle.points.length) {
+    //             controles[controleId].parcelles[parcelleId].controle.points = points;
+    //         }
+    //         for (key in points_de_controle) {
+    //             controles[controleId].parcelles[parcelleId].controle.points[key] = [];
+    //             controles[controleId].parcelles[parcelleId].controle.points[key].conformite = true;
+    //             controles[controleId].parcelles[parcelleId].controle.points[key].rtm = [];
+    //             for (item in points_de_controle[key].rtm) {
+    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item] = [];
+    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item].libelle = points_de_controle[key].rtm[item].libelle;
+    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item].observations = '';
+    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item].conformite = false;
+    //             }
+    //         }
+    //     }
+    // }
+
     // function parseString(dlmString){
     //     let mydlm = [];
     //     dlmString.split("|").forEach(function(str){
@@ -54,7 +76,6 @@
 
     const app = createApp({
         data() {
-        console.log(controles);
           return {
               controles: controles,
             }
@@ -105,19 +126,6 @@
 
     templates.parcelle.data = function() {
         const route = useRoute()
-
-        var points = [];
-        for (key in points_de_controle) {
-            points[key] = [];
-            for (item in points_de_controle[key].rtm) {
-                points[key][item] = [];
-                points[key][item].libelle = points_de_controle[key].rtm[item].libelle;
-                points[key][item].observations = '';
-                points[key][item].conformite = true;
-            }
-        }
-
-        controles[route.params.id].parcelles[route.params.parcelle].controle.points = points;
 
         return {
           controleCourant: controles[route.params.id],

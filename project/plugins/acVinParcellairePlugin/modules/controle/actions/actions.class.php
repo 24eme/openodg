@@ -82,7 +82,7 @@ class controleActions extends sfActions
         $this->date_tournee = $request->getParameter('date');
         $this->controles = $this->getControlesPlanifies($this->date_tournee);
         $this->json = json_encode($this->controles[$this->date_tournee]['controles'], JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
-        $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getRtm(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getPointsDeControle(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
 
         $this->setLayout('appLayout');
     }
@@ -95,6 +95,7 @@ class controleActions extends sfActions
         $data = json_decode($request->getParameter('data'));
         foreach ($data as $controleId => $parcellesIds) {
             if ($controle = ControleClient::getInstance()->find($controleId)) {
+
                 $controle->updateParcelles($parcellesIds);
                 $controle->save();
             }

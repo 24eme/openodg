@@ -29,13 +29,9 @@ class ControleConfiguration extends DeclarationConfiguration {
       return sfConfig::get('app_controle_'.$type);
     }
 
-    public function getRtm()
+    public function getPointsDeControle()
     {
         return $this->configuration['points_de_controle'];
     }
 
-    public function getRtmListePointsDeControle()
-    {
-        return array_keys($this->getRtm());
-    }
 }
