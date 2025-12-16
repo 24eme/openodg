@@ -86,7 +86,7 @@ class Controle extends BaseControle
             $parcelles = $this->getParcellaire()->getParcelles();
             foreach ($parcellesIds as $pId) {
                 if ($parcelles->exist($pId)) {
-                    $this->setPointsControle($this->parcelles->add($pId, $parcelles->get($pId)));
+                    $this->setPointsDeControle($this->parcelles->add($pId, $parcelles->get($pId)));
                 }
             }
         }
@@ -96,7 +96,7 @@ class Controle extends BaseControle
     {
         $points = $this->getPointsDeControle();
         foreach ($points as $point) {
-            $parcelle->controle->points->add($point, null);
+            //$parcelle->controle->points->add(null,$point);
         }
         return $parcelle;
     }
