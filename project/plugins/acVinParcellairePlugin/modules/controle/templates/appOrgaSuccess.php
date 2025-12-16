@@ -21,8 +21,8 @@
       routes,
     });
 
-
     const controles = JSON.parse(document.getElementById("dataJson").textContent);
+    let activeMap = null;
 
     const app = createApp({
         data() {
@@ -30,7 +30,7 @@
               controles: controles,
             }
         },
-        template: '<RouterView :key="$route.fullPath" />',
+        template: '<RouterView :key="$route.fullPath" />'
     });
     app.use(router);
     app.mount('#content');
@@ -146,12 +146,14 @@
         return {
           controleCourant: controleCourant,
           parcelles: parcelles,
-          parcellesSelectionnees: []
+          parcellesSelectionnees: [],
+          map: null,
         }
     };
 
     templates.operateur.mounted = function() {
         const map = new L.map('map');
+        activeMap = map;
         map.setView([43.8293, 7.2977], 8);
         const tileLayer = L.tileLayer('https://data.geopf.fr/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM&LAYER={ignLayer}&STYLE={style}&FORMAT={format}&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
         {
@@ -186,15 +188,6 @@
             if(layer) {
                 document.getElementById(layer.feature.id).classList.remove('hidden');
             }
-            /*popup._div.style.background = 'rgba(255,255,255,0.9)';
-            if(!layer) {
-                popup._div.style.display = 'none';
-                return null
-            }
-            let props = layer.feature.properties;
-
-            popup._div.style.display = 'block';
-            popup._div.innerHTML = document.getElementById(layer.feature.id).innerHTML;*/
         }
         popup.addTo(map);
 
@@ -227,5 +220,32 @@
         /*
         * Fin Map
         */
+    };
+
+    templates.operateur.watch = {
+        parcellesSelectionnees: {
+        handler(parcelles) {
+            activeMap.eachLayer(function(layer) {
+                if(!layer.feature || !layer.feature.id) {
+                    return;
+                }
+                let find = false;
+                for(parcelleId of parcelles) {
+                console.log(layer.feature.id);
+                console.log(parcelleId);
+                    if(parcelleId.match(layer.feature.id)) {
+                        find = true;
+                    }
+                }
+                if(find) {
+                    layer.setStyle({fillColor: '#c80064', color: '#c80064'});
+                } else {
+                    layer.setStyle({fillColor: '#3388ff', color: '#3388ff'});
+                }
+            });
+
+        },
+        deep: true
+        }
     };
 </script>
