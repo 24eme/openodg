@@ -197,3 +197,7 @@ controle_appterrain:
 controle_apporga:
   url: /controle/apporga/:date
   param: { module: controle, action: appOrga }
+
+controle_apporga_save:
+  url: /controle/apporga/:date/save
+  param: { module: controle, action: appOrgaSave }

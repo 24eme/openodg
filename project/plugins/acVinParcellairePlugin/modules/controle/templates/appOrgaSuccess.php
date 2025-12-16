@@ -276,9 +276,21 @@
             handler(parcelles) {
                 this.updateMap();
                 parcellesSelectionneesControles[this.controleCourant._id] = this.parcellesSelectionnees
-                console.log(parcellesSelectionneesControles)
+                const data = {};
+                for(let id in parcellesSelectionneesControles) {
+                    data.id = [];
+                    for(parcelleId of parcellesSelectionneesControles[id]) {
+                        data.id.push(parcelleId);
+                    }
+                }
+                document.getElementById('form_data').value = JSON.stringify(data);
             },
             deep: true
         }
     };
 </script>
+
+<form action="<?php echo url_for('controle_apporga_save', ['date' => $date_tournee]) ?>" method="POST">
+    <input id="form_data" type="hidden" name="data" value="" />
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+</form>
