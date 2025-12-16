@@ -19,7 +19,12 @@ class controleActions extends sfActions
             $stats[$statut][$key]['nb_parcelles'] += count($c->parcelles);
             $stats[$statut][$key]['operateurs'][] = $c->declarant->nom;
             $stats[$statut][$key]['controles'][$c->_id] = $c->getDataToDump();
-            $global[$key] = $stats[$statut][$key];
+            if(!isset($global[$key])) {
+                $global[$key] = ['nb_parcelles' => 0, 'operateurs' => [], 'controles' => []];
+            }
+            $global[$key]['nb_parcelles'] += $stats[$statut][$key]['nb_parcelles'];
+            $global[$key]['operateurs'] = array_merge($global[$key]['operateurs'], $stats[$statut][$key]['operateurs']);
+            $global[$key]['controles'] = array_merge($global[$key]['controles'], $stats[$statut][$key]['controles']);
           }
         }
         if ($date) {
@@ -77,7 +82,7 @@ class controleActions extends sfActions
         $this->date_tournee = $request->getParameter('date');
         $this->controles = $this->getControlesPlanifies($this->date_tournee);
         $this->json = json_encode($this->controles[$this->date_tournee]['controles'], JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
-        $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getRtm(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getPointsDeControle(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
 
         $this->setLayout('appLayout');
     }
@@ -90,6 +95,7 @@ class controleActions extends sfActions
         $data = json_decode($request->getParameter('data'));
         foreach ($data as $controleId => $parcellesIds) {
             if ($controle = ControleClient::getInstance()->find($controleId)) {
+
                 $controle->updateParcelles($parcellesIds);
                 $controle->save();
             }
@@ -109,5 +115,8 @@ class controleActions extends sfActions
         return $this->redirect('controle_index');
     }
 
-
+    public function executeVisualisation(sfWebRequest $request)
+    {
+        $this->controle = $this->getRoute()->getControle();
+    }
 }

@@ -69,25 +69,37 @@
 
 <h2>Points de contrôle</h2>
 <form class="form-horizontal">
-   <div class="form-group" v-for="(val, key) in parcelleCourante.controle.points" :key="key">
-       <label class="col-sm-2 control-label">{{ key }}</label>
-       <div class="col-sm-10">
-           <label class="radio-inline">
-             <input type="radio" value="C" v-model="parcelleCourante.controle.points[key]" /> Conforme
-           </label>
-           <label class="radio-inline">
-             <input type="radio" value="NC" v-model="parcelleCourante.controle.points[key]" /> Non Conforme
-           </label>
-       </div>
-   </div>
+    <div class="form-group" v-for="(valPoint, keyPoint) in parcelleCourante.controle.points" :key="keyPoint">
+    <h4 class="col-sm-6 control-label" style="text-align:left">
+      {{ valPoint.libelle }}
+  </h4>
 
-   <div class="form-group">
-       <label class="col-sm-2 control-label">Observations</label>
-       <div class="col-sm-10">
-           <textarea rows="4" class="form-control" placeholder="Saisir les observations terrain" v-model="parcelleCourante.controle.observations"></textarea>
-       </div>
-   </div>
+    <div class="col-sm-6">
+      <label class="radio-inline">
+        <input type="radio" :name="'controle_' + keyPoint" value="C" v-model="valPoint.conformite" />
+        Conforme
+      </label>
 
+      <label class="radio-inline">
+        <input type="radio" :name="'controle_' + keyPoint" value="NC" v-model="valPoint.conformite" />
+        Non Conforme
+      </label>
+    </div>
+
+    <div class="col-sm-12" v-show="valPoint.conformite === 'NC'">
+      <div class="" style="margin-top:10px;">
+        <div class="panel-body">
+            <div class="RTM" v-for="(infos, codeRtm) in valPoint.manquements">
+                <input :id="'checkbox_' + codeRtm" type="checkbox" v-model="infos.conformite" style="font-weight: normal;"/>
+                <label :for="'checkbox_' + codeRtm" style="margin-top: 5px;">&nbsp; {{ infos.libelle }} </label>
+                <div class="col-sm-12" style="margin-top: 5px;">
+                    <textarea rows="2" class="form-control" :name="'obs_' + codeRtm" :id="'obs_' + codeRtm" v-model="infos.observations" placeholder="Observations"></textarea>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </form>
 
 <hr />

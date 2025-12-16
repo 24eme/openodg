@@ -63,11 +63,6 @@ class Controle extends BaseControle
         return $this->parcellaire;
     }
 
-    public function getPointsDeControle()
-    {
-        return ControleConfiguration::getInstance()->getRtm();
-    }
-
     public function getParcellaireParcelles()
     {
         $parcellaire = $this->getParcellaire();
@@ -84,6 +79,18 @@ class Controle extends BaseControle
         $this->add('parcelles');
         if ($parcellesIds) {
             $parcelles = $this->getParcellaire()->getParcelles();
+            foreach ($parcellesIds as $pId) {
+                if ($parcelles->exist($pId)) {
+                    $parcelle = $this->parcelles->add($pId, $parcelles->get($pId));
+                    foreach (ControleConfiguration::getInstance()->getPointsDeControle() as $pointKey => $pointConf) {
+                        $point = $parcelle->controle->points->add($pointKey);
+                        $point->libelle = $pointConf['libelle'];
+                        foreach ($pointConf['rtm'] as $rtmKey => $rtmConf) {
+                            $point->manquements->add($rtmKey, ['libelle' => $rtmConf['libelle'], 'conformite' => false, 'observations' => null]);
+                        }
+                    }
+                }
+            }
         }
     }
 
