@@ -43,6 +43,20 @@
           controles: controles
         }
     };
+    templates.operateurs.methods = {
+        nbParcellesSelectionnees(controleId) {
+            if (controleId in parcellesSelectionneesControles) {
+                return parcellesSelectionneesControles[controleId].length;
+            }
+            return 0;
+        },
+        nbParcelles(controleId) {
+            if (controleId in controles) {
+                return Object.entries(controles[controleId].parcellaire_parcelles).length;
+            }
+            return 0;
+        },
+    }
     templates.operateurs.mounted = function() {
         const map = new L.map('map');
         activeMap = map;
