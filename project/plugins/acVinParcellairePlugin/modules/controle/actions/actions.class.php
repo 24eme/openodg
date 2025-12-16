@@ -95,7 +95,7 @@ class controleActions extends sfActions
                 $controle->save();
             }
         }
-        exit;
+        return $this->redirect('controle_index');
     }
 
     public function executeSetDateTournee(sfWebRequest $request)
