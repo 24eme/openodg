@@ -23,6 +23,15 @@
 
     const controles = JSON.parse(document.getElementById("dataJson").textContent);
     const parcellesSelectionneesControles = [];
+    for(controleId in controles) {
+        let controle = controles[controleId]
+        const parcellesIds = [];
+        for(parcelleId in controle.parcelles) {
+            parcellesIds.push(parcelleId)
+        }
+        parcellesSelectionneesControles[controle._id] = parcellesIds;
+    }
+
     let activeMap = null;
 
     const app = createApp({
@@ -59,7 +68,14 @@
         getControlesSorted() {
             const controlesSorted = [];
             for(let controleId in parcellesSelectionneesControles) {
-                controlesSorted.push(controles[controleId])
+                if(parcellesSelectionneesControles[controleId].length) {
+                    controlesSorted.push(controles[controleId])
+                }
+            }
+             for(let controleId in parcellesSelectionneesControles) {
+                if(!parcellesSelectionneesControles[controleId].length) {
+                    controlesSorted.push(controles[controleId])
+                }
             }
             return controlesSorted;
         }

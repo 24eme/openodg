@@ -84,6 +84,11 @@ class Controle extends BaseControle
         $this->add('parcelles');
         if ($parcellesIds) {
             $parcelles = $this->getParcellaire()->getParcelles();
+            foreach ($parcellesIds as $pId) {
+                if ($parcelles->exist($pId)) {
+                    $this->parcelles->add($pId, $parcelles->get($pId));
+                }
+            }
         }
     }
 

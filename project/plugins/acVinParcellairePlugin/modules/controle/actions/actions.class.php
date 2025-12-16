@@ -19,7 +19,12 @@ class controleActions extends sfActions
             $stats[$statut][$key]['nb_parcelles'] += count($c->parcelles);
             $stats[$statut][$key]['operateurs'][] = $c->declarant->nom;
             $stats[$statut][$key]['controles'][$c->_id] = $c->getDataToDump();
-            $global[$key] = $stats[$statut][$key];
+            if(!isset($global[$key])) {
+                $global[$key] = ['nb_parcelles' => 0, 'operateurs' => [], 'controles' => []];
+            }
+            $global[$key]['nb_parcelles'] += $stats[$statut][$key]['nb_parcelles'];
+            $global[$key]['operateurs'] = array_merge($global[$key]['operateurs'], $stats[$statut][$key]['operateurs']);
+            $global[$key]['controles'] = array_merge($global[$key]['controles'], $stats[$statut][$key]['controles']);
           }
         }
         if ($date) {
@@ -110,5 +115,8 @@ class controleActions extends sfActions
         return $this->redirect('controle_index');
     }
 
-
+    public function executeVisualisation(sfWebRequest $request)
+    {
+        $this->controle = $this->getRoute()->getControle();
+    }
 }

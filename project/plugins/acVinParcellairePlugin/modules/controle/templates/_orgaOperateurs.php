@@ -13,11 +13,11 @@
         </tr>
     </thead>
     <tbody>
-        <tr v-for="(controle, numero) in getControlesSorted()">
-            <td><span class="label label-primary lead" style="border-radius: 24px;">{{ numero + 1 }}</span></td>
+        <tr :class="{ 'text-muted': nbParcellesSelectionnees(controle._id) == 0 }" v-for="(controle, numero) in getControlesSorted()">
+            <td><span v-if="nbParcellesSelectionnees(controle._id) > 0" class="label label-primary lead" style="border-radius: 24px;">{{ numero + 1 }}</span></td>
             <td>{{ controle.declarant.nom }}</td>
-            <td class="text-center">{{ nbParcellesSelectionnees(controle._id) }} parcelles</td>
-            <td class="text-center"><input type="time" :value='(10 + numero) + ":00"' /></td>
+            <td class="text-center">{{ nbParcellesSelectionnees(controle._id) }} parcelle(s)</td>
+            <td class="text-center"><input v-if="nbParcellesSelectionnees(controle._id) > 0"  type="time" :value='(10 + numero) + ":00"' /></td>
         </tr>
     </tbody>
 </table>
