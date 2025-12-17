@@ -4,35 +4,34 @@
 <form class="form-horizontal">
 
    <div class="form-group">
-       <label class="col-sm-2 control-label">Tous les points controlés</label>
+       <label class="col-sm-2 control-label">Nombre de points controlés</label>
        <div class="col-sm-10">
-           <label class="radio-inline">
-             <input type="radio" value="1" v-model="controleCourant.audit.all_points_controles" /> Oui
-           </label>
-           <label class="radio-inline">
-             <input type="radio" value="0" v-model="controleCourant.audit.all_points_controles" /> Non
-           </label>
+           <p class="form-control-static">{{countPointsControles()}}/{{countPointsTotal()}}</p>
        </div>
    </div>
 
    <div class="form-group">
-       <label class="col-sm-2 control-label">Tous les points conformes</label>
+       <label class="col-sm-2 control-label">Nombre de points conformes</label>
        <div class="col-sm-10">
-           <label class="radio-inline">
-             <input type="radio" value="1" v-model="controleCourant.audit.all_points_conformes" /> Oui
-           </label>
-           <label class="radio-inline">
-             <input type="radio" value="0" v-model="controleCourant.audit.all_points_conformes" /> Non
-           </label>
+           <p class="form-control-static">{{countPointsConforme()}}/{{countPointsTotal()}}</p>
+       </div>
+   </div>
+
+
+   <div class="form-group">
+       <label class="col-sm-2 control-label">Nombre de points non conformes</label>
+       <div class="col-sm-10">
+           <p class="form-control-static"></p>
        </div>
    </div>
 
    <div class="form-group">
-       <label class="col-sm-2 control-label">Observations</label>
+       <label class="col-sm-2 control-label">Manquements constatés</label>
        <div class="col-sm-10">
-           <textarea rows="5" class="form-control" v-model="controleCourant.audit.observations"></textarea>
+           <p class="form-control-static"></p>
        </div>
    </div>
+
 
    <div class="form-group">
        <label class="col-sm-2 control-label">Observations Opérateur</label>
