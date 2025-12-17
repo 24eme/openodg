@@ -4,31 +4,18 @@
 <form class="form-horizontal">
 
    <div class="form-group">
-       <label class="col-sm-2 control-label">Nombre de points controlés</label>
-       <div class="col-sm-10">
-           <p class="form-control-static">{{countPointsControles()}}/{{countPointsTotal()}}</p>
-       </div>
-   </div>
-
-   <div class="form-group">
-       <label class="col-sm-2 control-label">Nombre de points conformes</label>
-       <div class="col-sm-10">
-           <p class="form-control-static">{{countPointsConforme()}}/{{countPointsTotal()}}</p>
-       </div>
-   </div>
-
-
-   <div class="form-group">
        <label class="col-sm-2 control-label">Nombre de points non conformes</label>
        <div class="col-sm-10">
-           <p class="form-control-static"></p>
+           <p class="form-control-static" v-if="countPointsNCetRtm().nombreNC">{{ countPointsNCetRtm().nombreNC }}</p>
+           <p class="form-control-static" v-else>Aucun</p>
        </div>
    </div>
 
    <div class="form-group">
        <label class="col-sm-2 control-label">Manquements constatés</label>
        <div class="col-sm-10">
-           <p class="form-control-static"></p>
+           <p class="form-control-static" v-if="countPointsNCetRtm().manquements.length" v-for="manquement in countPointsNCetRtm().manquements">{{ manquement }}</p>
+           <p class="form-control-static" v-else>Tous les points sont conformes</p>
        </div>
    </div>
 
