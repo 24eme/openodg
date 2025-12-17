@@ -9,6 +9,7 @@ class ControleParcelle extends BaseControleParcelle
             $data->kml_placemark = $this->getKMLPlacemark();
             $data->pourcentage = $this->getInfoManquant();
             $data->irrigation = $this->getInfoIrrigation();
+            $data->irrigation['date_irrigation'] = $this->getInfoIrrigue();
         }
         return $data;
     }
@@ -53,6 +54,11 @@ class ControleParcelle extends BaseControleParcelle
 
     public function getInfoIrrigation()
     {
-        return ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant)->getInfoFromIdParcelle($this->parcelle_id) : ['materiel' => '', 'ressource' => ''];
+        return ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant)->getInfoFromIdParcelle($this->parcelle_id) : ['materiel' => '', 'ressource' => ''];
+    }
+
+    public function getInfoIrrigue()
+    {
+        return ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant) ? date("d/m/Y", strtotime(ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant)->getDateIrrigationFromIdParcelle($this->parcelle_id))) : null;
     }
 }

@@ -60,6 +60,12 @@
                 <td><strong>Irrigation</strong></td>
                 <td class="text-muted">Pas d'irrigation</td>
             </tr>
+
+            <tr>
+                <td><strong>Date d'irrigation</strong></td>
+                <td v-if="parcelleCourante.irrigation.date_irrigation">{{ parcelleCourante.irrigation.date_irrigation }}</td>
+                <td v-else>Pas de donnée</td>
+            </tr>
         </tbody>
     </table>
 </div>

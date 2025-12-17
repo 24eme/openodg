@@ -241,5 +241,17 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
         return false;
     }
 
+    public function getInfoFromIdParcelle($idParcelle)
+    {
+        foreach ($this['declaration'] as $produit) {
+            foreach ($produit['detail'] as $parcelleId => $info) {
+                if ($parcelleId == $idParcelle) {
+                    return ['materiel' => $info->materiel, 'ressource' => $info->ressource];
+                }
+            }
+        }
+        return ['materiel' => '', 'ressource' => ''];
+    }
+
     /*** FIN PIECE DOCUMENT ***/
 }
