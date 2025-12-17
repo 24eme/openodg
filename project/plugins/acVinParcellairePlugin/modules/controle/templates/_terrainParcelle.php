@@ -84,6 +84,11 @@
         <input type="radio" :name="'controle_' + keyPoint" value="NC" v-model="valPoint.conformite" />
         Non Conforme
       </label>
+
+      <label class="radio-inline">
+        <input type="radio" :name="'controle_' + keyPoint" value="NO" v-model="valPoint.conformite" />
+        Non Observable
+      </label>
     </div>
 
     <div class="col-sm-12" v-show="valPoint.conformite === 'NC'">
