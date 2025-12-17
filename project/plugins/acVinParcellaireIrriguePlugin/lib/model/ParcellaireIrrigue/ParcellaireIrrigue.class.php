@@ -120,7 +120,7 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
 
     foreach($irrigations as $hash => $oldparcelle) {
         if($oldparcelle->isRealParcelleIdFromParcellaire()) {
-            $parcelle = $this->findParcelleByParcelleId($oldparcelle);
+            $parcelle = $this->findProduitParcelle($oldparcelle);
         } else {
             $parcelle = $this->findParcelle($oldparcelle);
         }
@@ -271,6 +271,18 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
 
     public static function isPieceEditable($admin = false) {
         return false;
+    }
+
+    public function getInfoFromIdParcelle($idParcelle)
+    {
+        foreach ($this['declaration'] as $produit) {
+            foreach ($produit['detail'] as $parcelleId => $info) {
+                if ($parcelleId == $idParcelle) {
+                    return ['materiel' => $info->materiel, 'ressource' => $info->ressource];
+                }
+            }
+        }
+        return ['materiel' => '', 'ressource' => ''];
     }
 
 }

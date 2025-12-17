@@ -9,3 +9,4 @@ all:
         - CONFORME
         - NONCONFORME_ANALYTIQUE
         - NONCONFORME_ORGANOLEPTIQUE
+      has_degustateur_par_region: true

@@ -19,7 +19,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Ecart pieds;Ecart rang;Aires;Date modification\n";
+        return "Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Ecart pieds;Ecart rang;Aires;Date modification;doc id\n";
     }
 
     public function __construct($doc, $header = true, $region = null) {
@@ -59,7 +59,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
                 $inao = ($configProduit) ? $configProduit->getCodeDouane() : null;
 
                 $libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
-                $csv .= sprintf("%s;Parcellaire;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                $csv .= sprintf("%s;Parcellaire;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                     $ligne_base,
                     DeclarationExportCsv::getProduitKeysCsv($configProduit),
                     $inao,
@@ -77,6 +77,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
                     $this->protectStr($parcelle->ecart_rang),
                     $this->protectStr(implode('|', array_keys($parcelle->getIsInAires()))),
                     $this->protectStr($this->doc->date),
+                    $this->doc->_id
                 );
             }
         }

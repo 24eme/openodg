@@ -260,13 +260,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $couleurs;
     }
 
+    public function getSyndicats() {
+        $syndicats = $this->declaration->getSyndicats();
+        foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
+            if(!count($this->getLotsRevendiques($region))) {
+                continue;
+            }
+            $syndicats[] = $region;
+        }
+        return array_unique($syndicats);
+    }
+
     public function getLotsRevendiques($region = null) {
         $lots = array();
         foreach ($this->getLots() as $lot) {
             if(!$lot->hasVolumeAndHashProduit()){
                 continue;
             }
-            if ($lot->region != $region) {
+            if ($region && ($lot->region != $region)) {
                 continue;
             }
             $lots[] = $lot;
@@ -647,7 +658,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       $this->declarant->famille = $this->getEtablissementObject()->famille;
 
       if(count($this->getProduitsWithoutLots()) > 0 && $this->isValidee()) {
-          throw new sfException('Document validé');
+          return;
+          /* throw new sfException('Document validé'); */
       }
 
       if (! $this->hasDocumentDouanier()) {
@@ -941,7 +953,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             if (strpos($p->getHash(), 'genres/VDB/')) {
                 $hashMou = str_replace('genres/VDB/', 'genres/MOU/', $p->getConfig()->getHash());
-                if ($produitConfigMou = $this->getConfiguration()->get($hashMou)) {
+                if ($this->getConfiguration()->exist($hashMou) && $produitConfigMou = $this->getConfiguration()->get($hashMou)) {
+                    $this->addProduit($produitConfigMou->getHash(), $complement);
+                }
+                $hashVMQ = str_replace('genres/VDB/', 'genres/VMQ/', $p->getConfig()->getHash());
+                if ($this->getConfiguration()->exist($hashVMQ) && $produitConfigMou = $this->getConfiguration()->get($hashVMQ)) {
                     $this->addProduit($produitConfigMou->getHash(), $complement);
                 }
             }
@@ -954,6 +970,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         foreach ($this->declaration->getProduits() as $hash => $p) {
+            if (!$p->exist('recolte')) {
+                $p->add('recolte');
+            }
             if ($p->recolte->volume_total && $p->recolte->volume_sur_place && round($p->recolte->volume_total, 4) == round($p->recolte->volume_sur_place, 4) && !in_array($p->getHash(), $bailleurs)) {
                 $p->superficie_revendique = $p->recolte->superficie_total;
             }
@@ -2656,10 +2675,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $date);
         $nonHabilitationODG = array();
         foreach($this->getProduits() as $hash_c => $produit_c) {
-            $produit = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($produit_c->getConfig());
-            $produit_hab = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($produit);
-            $hash = $produit_hab->getHash();
-            if (!$habilitation || !$habilitation->isHabiliteFor($hash, HabilitationClient::ACTIVITE_VINIFICATEUR)) {
+            $produit_config = $produit_c->getConfig();
+            $produit = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($produit_config);
+            if (!$produit) {
+                $hash = $produit_config->getHash();
+                $nonHabilitationODG[$hash] = $produit_config;
+                continue;
+            }
+            $hash = $produit->getHash();
+            if (!$habilitation || !$habilitation->isHabiliteFor($hash, HabilitationClient::ACTIVITE_VINIFICATEUR, $this->getDate())) {
                 $nonHabilitationODG[$hash] = $produit;
             }
         }
@@ -2741,10 +2765,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 continue;
             }
 
+            $ret = true;
             $p = $this->get($hash)->getFirst();
-
             if ($p->exist('volume_revendique_seuil')) {
-                $ret = true;
                 continue;
             }
 

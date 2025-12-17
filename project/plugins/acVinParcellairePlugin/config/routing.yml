@@ -150,6 +150,10 @@ parcellaire_export_geojson:
     model: Parcellaire
     type: object
 
+controle_index:
+  url: /controles
+  param: { module: controle, action: index }
+
 controle_nouveau:
   url: /controle/nouveau/:identifiant
   param: { module: controle, action: nouveau }
@@ -176,6 +180,24 @@ controle_saveinlocalstorage:
     model:    Controle
     type:     object
 
+controle_set_date_tournee:
+  url: /controle/:id/setdate
+  param: { module: controle, action: setDateTournee }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 controle_appterrain:
-  url: /controle/appterrain
+  url: /controle/appterrain/:date
   param: { module: controle, action: appTerrain }
+
+controle_apporga:
+  url: /controle/apporga/:date
+  param: { module: controle, action: appOrga }
+
+controle_apporga_save:
+  url: /controle/apporga/:date/save
+  param: { module: controle, action: appOrgaSave }

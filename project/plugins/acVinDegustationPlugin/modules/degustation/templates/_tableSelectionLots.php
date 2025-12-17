@@ -47,7 +47,10 @@
           <div style="margin-bottom: 0;" class="form-group <?php if($form['lots'][$key]['preleve']->hasError()): ?>has-error<?php endif; ?>">
             <?php echo $form['lots'][$key]['preleve']->renderError() ?>
               <div class="col-xs-12">
-                <?php echo $form['lots'][$key]['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => $lot->declarant_identifiant, "data-preleve-lot" => $lot->unique_id, 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                <label class="switch-xl">
+                    <?php echo $form['lots'][$key]['preleve']->render(array('class' => "degustation switch", "data-preleve-adherent" => $lot->declarant_identifiant, "data-preleve-lot" => $lot->unique_id)); ?>
+                    <span class="slider-xl round"></span>
+                </label>
               </div>
           </div>
         </td>
@@ -55,4 +58,3 @@
     <?php  endforeach; ?>
     </tbody>
 </table>
-

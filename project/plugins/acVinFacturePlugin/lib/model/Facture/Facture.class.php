@@ -279,13 +279,17 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         if($pvalue["date_jour_mois"]){
           $d = $this->get($dateField);
           $date_echeance = new DateTime($d);
-          $date_jour_mois = $pvalue["date_jour_mois"].".".date('Y');
+          $date_jour_mois = $pvalue["date_jour_mois"].".".$date_echeance->format('Y');
           $this->updateEcheance($pvalue["libelle"],$date_jour_mois,$montant_papillon_str);
         }
         else{
           $this->updateEcheance($pvalue["libelle"],$pvalue["libelle_date"],$montant_papillon_str);
         }
       }
+    }
+
+    public function getDateCampagneEcheance() {
+        return intval($this->campagne + 1)."-01-01";
     }
 
     public function updateEcheance($echeance_code, $date, $montant_ht) {

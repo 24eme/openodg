@@ -561,7 +561,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
     public function  getLiaisonObjectOfType($type) {
         $etablissements = array();
-        foreach ($this->getLiaisonOfType($type) as $o) {
+        foreach ($this->getLiaisonsOfType($type) as $o) {
             $e = EtablissementClient::getInstance()->find($o->id_etablissement);
             if ($e && ($e->cvi || $e->ppm)) {
                 $etablissements[] = $e;
@@ -570,12 +570,16 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $etablissements;
     }
 
-    public function  getLiaisonOfType($type) {
+    public function getLiaisonsOfType($type, $asArray = false) {
         $liaisons = array();
         if ($this->exist('liaisons_operateurs')) {
             foreach ($this->liaisons_operateurs as $k => $o) {
                 if ($o->type_liaison == $type) {
-                    $liaisons[] = $o;
+                    if ($asArray) {
+                        $liaisons[] = $o->getData();
+                    } else {
+                        $liaisons[] = $o;
+                    }
                 }
             }
         }
@@ -588,7 +592,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             return false;
         }
 
-        $cooperateurs = $this->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR);
+        $cooperateurs = $this->getLiaisonsOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR);
 
         $cooperateurs = array_map(function ($cooperateur) {
             return is_object($cooperateur) ? $cooperateur->cvi : $cooperateur['cvi'];
@@ -598,7 +602,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     }
 
     public function getLaboLibelle() {
-        $labos = $this->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_LABO);
+        $labos = $this->getLiaisonsOfType(EtablissementClient::TYPE_LIAISON_LABO);
         if (!count($labos)) {
             return null;
         }

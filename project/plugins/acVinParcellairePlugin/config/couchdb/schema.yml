@@ -153,6 +153,8 @@ Controle:
       _rev: { }
       type: { }
       date: { }
+      date_tournee: { }
+      type_tournee: { }
       identifiant: { }
       campagne: { }
       declarant:
@@ -172,6 +174,33 @@ Controle:
             telephone_mobile: { }
             fax: { }
             email: { }
+      secteur: { }
+      liaisons_operateurs:
+         type: collection
+         definition:
+           fields:
+             '*':
+               class: EtablissementLiaisonsOperateurs
+               type: collection
+               definition:
+                 fields:
+                   id_etablissement: { }
+                   libelle_etablissement: { }
+                   type_liaison: { }
+                   cvi: { }
+                   ppm: { }
+                   hash_chai: { }
+                   attributs_chai:
+                     type: collection
+                     definition:
+                       fields:
+                         '*': { }
+                   aliases:
+                     type: collection
+                     definition:
+                       fields:
+                         '*': { }
+      liaisons:
       audit:
         type: collection
         definition:
@@ -221,7 +250,42 @@ Controle:
                           type: collection
                           definition:
                             fields:
-                              '*': {}
-                        observations: {}
+                              '*':
+                                type: collection
+                                definition:
+                                  fields:
+                                    conformite: { type: integer }
+                                    libelle: {}
+                                    manquements:
+                                      type: collection
+                                      definition:
+                                        fields:
+                                          '*':
+                                            type: collection
+                                            definition:
+                                              fields:
+                                                libelle: {}
+                                                observations: {}
+                                                conformite: {}
                         superficie_a_retirer: {}
                         saisie: {}
+                        observations: { required: false } # deprecated
+      manquements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  libelle: {}
+                  observations: {}
+      mouvements_statuts:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: array_collection
+              definition:
+                fields:
+                  '*': {}

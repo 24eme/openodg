@@ -113,7 +113,11 @@ class Configuration extends BaseConfiguration {
                 }
                 $pc = $this->pc_string($libelleProduitSlugify, $libelleSlugify);
                 if($pc) {
-                    $matches[$pc] = $produit;
+                    $matches[round($pc*1000)] = $produit;
+                }
+
+                if ($verbose) {
+                    print_r(['strpos dans les deux sens', 'conf produit slug' => $libelleProduitSlugify, 'doc libelle slug' => $libelleSlugify, 'conf original' => $produit->getLibelleFormat(), 'libelle original' => $libelle_couleur, 'pc' => $pc]);
                 }
             }
             if (count($matches)) {

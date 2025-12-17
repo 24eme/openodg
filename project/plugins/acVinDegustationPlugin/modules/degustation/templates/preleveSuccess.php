@@ -1,7 +1,7 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
 <?php use_helper('Lot') ?>
-<?php use_javascript('degustation.js') ?>
+<?php use_javascript('degustation.js?'.$_ENV['GIT_LAST_COMMIT']); ?>
 <?php use_javascript('hamza_style.js'); ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, 'options' => array('route' => 'degustation_preleve', 'nom' => 'Prélevements réalisés'))); ?>
@@ -20,7 +20,7 @@
   </div>
 
   <div class="col-xs-2">
-    <button class="btn btn-block btn-default" id="btn-preleve-all">
+    <button class="btn btn-block btn-default" id="btn-preleve-all" data-status="prelever">
       <i class="glyphicon glyphicon-ok-sign"></i>
       Tout prélever
     </button>
@@ -82,7 +82,10 @@
               <div style="margin-bottom: 0;" class="<?php if($formLot->hasError()): ?>has-error<?php endif; ?>">
               	<?php echo $formLot['preleve']->renderError() ?>
                   <div class="col-xs-12">
-            	<?php echo $formLot['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                    <label class="switch-xl">
+            	        <?php echo $formLot['preleve']->render(array('class' => "degustation switch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id")); ?>
+                        <span class="slider-xl round"></span>
+                    </label>
                   </div>
               </div>
       	</td>

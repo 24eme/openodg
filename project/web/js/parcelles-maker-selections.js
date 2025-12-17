@@ -59,10 +59,8 @@ gps.addTo(map);
 
 function style(feature) {
     return {
-        fillColor: '#fff',
         weight: 2,
         opacity: 1,
-        color: 'red',
         fillOpacity: 0.3
     };
 }
@@ -236,17 +234,18 @@ info.update = function (layer) {
   props.parcellaires.forEach(function(parcelle, ordre) {
     var parcelleId = parcelle.IDU+'-'+String(ordre).padStart(2, '0');
     var parcelleSelected = document.querySelector('input[type="checkbox"][value="'+parcelleId+'"]').checked;
-      Commune += '<td>'+parcelle['Commune']+'</td>';
-      numParcelles += '<td>'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
-      Cepages += '<td><span class="text-muted">'+parcelle.Produit+'</span><br/>'+parcelle.Cepage+'</td>';
-      compagnes += '<td>'+parcelle.Campagne+'</td>';
-      Superficies += '<td>'+parcelle.Superficie+'</td>';
-      ecartPied += '<td>'+parcelle["Ecart pied"]+'</td>';
-      ecartRang +='<td>'+parcelle["Ecart rang"]+'</td>';
+    var isSuccess = parcelleSelected ? "success" : "";
+      Commune += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle['Commune']+'</td>';
+      numParcelles += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
+      Cepages += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'"><span class="text-muted">'+parcelle.Produit+'</span><br/>'+parcelle.Cepage+'</td>';
+      compagnes += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle.Campagne+'</td>';
+      Superficies += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle.Superficie+'</td>';
+      ecartPied += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle["Ecart pied"]+'</td>';
+      ecartRang +='<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle["Ecart rang"]+'</td>';
       if (parcelleSelected) {
-        btnSelection +='<td align="center"><input class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" checked /></td>';
+        btnSelection +='<td class="success" align="center"><label class="switch"><input id="input-'+ordre+'" class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" checked/><span class="slider round"></span></label></td>';
       } else {
-        btnSelection +='<td align="center"><input class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" /></td>';
+        btnSelection +='<td class="" align="center"><label class="switch"><input id="input-'+ordre+'" class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" /><span class="slider round"></span></label></td>';
       }
 
   });
@@ -276,15 +275,6 @@ document.addEventListener('click', function(e) {
   if (closeBtn) {
     e.stopPropagation();
     clearParcelleSelected();
-    return;
-  }
-  const selectBtn = e.target.closest('.selectParcelle');
-  if (selectBtn) {
-    e.stopPropagation();
-    const parcelleId = selectBtn.dataset.parcelleid;
-    const cb = document.querySelector('input[type="checkbox"][value="'+parcelleId+'"]');
-    cb.checked = !cb.checked;
-    cb.dispatchEvent(new Event('change', { bubbles: true }));
     return;
   }
 });
@@ -332,6 +322,16 @@ function getParcelleLayer(id) {
   return layerFinded;
 }
 
+function colorOnValidateStatusParcelle(id, status){
+  let layer = getParcelleLayer(id);
+  if (status == true ) {
+    layer.setStyle({
+        fillColor: '#03fc1c', color: 'green'});
+  } else {
+    layer.setStyle({
+        fillColor: '#fff', color: 'red'});
+  }
+}
 
 /**
 * On select words filter, we filter map layers also.
@@ -369,6 +369,11 @@ $(window).on("load", function() {
     if($("input#hamzastyle").val()){
         filterMap();
     }
+    updateSuperficieSelectionnee();
+    document.querySelectorAll('.inputTd').forEach(function (td) {
+      var input = td.querySelector('input');
+      colorOnValidateStatusParcelle(input.dataset.parcelleid.split('-')[0], input.checked);
+    });
 });
 
 /*
@@ -400,4 +405,49 @@ $(document).ready(function(){
         }
     }
    });
+})
+
+function updateSuperficieSelectionnee() {
+  let total = 0;
+  document.querySelectorAll("#tableParcelle input:checked").forEach( function (input) {
+    total += parseFloat(input.dataset.superficie);
+  });
+  document.querySelector('#total_surfaces_selectionnees').textContent = total.toFixed(4);
+}
+
+$(document).delegate("#tableParcelle td", "click", function checkRow (e) {
+  var inputControle = $(this).parent('tr').find('td:nth-child(8) input')[0];
+
+  inputControle.checked = !inputControle.checked;
+  inputControle.dispatchEvent(new Event('change', { bubbles : true }));
+})
+
+$(document).delegate(".colonneInput", "click", function checkCol (e) {
+  var eTargetId = $(this)[0].dataset.id;
+  var targetInput = document.getElementById(eTargetId);
+
+  targetInput.checked = !targetInput.checked;
+  targetInput.dispatchEvent(new Event('change', { bubbles : true }));
+})
+
+$(document).delegate("input[type=checkbox]", "change", function (e) {
+  var origin = $(this)[0];
+  document.querySelectorAll('[data-parcelleid="'+origin.dataset.parcelleid+'"]').forEach(function (target) {
+    target.checked = origin.checked;
+    if (target.id) { /* est ce que l'element fait partie d'une colonne a highlight ? */
+      document.querySelectorAll('[data-id='+target.id+']').forEach(function (td) {
+        if (target.checked) {
+          td.classList.add("success");
+          target.parentElement.parentElement.classList.add("success");
+        } else {
+          td.classList.remove("success");
+          target.parentElement.parentElement.classList.remove("success");
+        }
+      });
+    } else { /* ou est ce qu'il fait partie d'une ligne ? */
+      target.checked ? target.parentElement.parentElement.parentElement.classList.add("success") : target.parentElement.parentElement.parentElement.classList.remove("success")
+    }
+  });
+  colorOnValidateStatusParcelle(origin.dataset.parcelleid.split('-')[0], origin.checked);
+  updateSuperficieSelectionnee();
 })

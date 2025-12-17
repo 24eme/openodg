@@ -116,7 +116,7 @@ class EtablissementForm extends acCouchdbObjectForm
     public function doUpdateObject($values) {
     	foreach ($this as $field => $widget) {
     		if (!$widget->isHidden()) {
-    			if ($this->getObject()->exist($field) && $this->getObject()->get($field) != $values[$field]) {
+    			if ($this->getObject()->exist($field) && rtrim($this->getObject()->get($field)) != rtrim($values[$field])) {
     				$this->updatedValues[$field] = array($this->getObject()->get($field), $values[$field]);
     			}
     		}

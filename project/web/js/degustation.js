@@ -3,11 +3,42 @@
 
     $('#mailPreviewModal').modal('show');
 
-    $('#btn-preleve-all').on('click', function (event) {
-      $('.bsswitch').each(function(index, element) {
-        $(element).bootstrapSwitch('state', true)
-      })
-    })
+    var originPrelev = document.querySelector('#btn-preleve-all');
+    if (originPrelev) {
+      originPrelev.addEventListener("click", function (e) {
+        if (originPrelev.dataset.status == "prelever") {
+          originPrelev.innerHTML = '<i class="glyphicon glyphicon-remove-sign"></i> Tout retirer';
+          originPrelev.dataset.status = 'retirer';
+        } else {
+          originPrelev.innerHTML = '<i class="glyphicon glyphicon-ok-sign"></i> Tout prélever';
+          originPrelev.dataset.status = 'prelever';
+        }
+        document.querySelectorAll('.switch').forEach(function (el) {
+          el.checked = originPrelev.dataset.status === "prelever" ? false : true;
+        });
+
+        updateSynthesePrelevementLots()
+      });
+    }
+
+    var originAttabler = document.querySelector('#btn-attabler-all');
+    if (originAttabler) {
+      originAttabler.addEventListener("click", function (e) {
+        if (originAttabler.dataset.status == "attabler") {
+          originAttabler.innerHTML = '<i class="glyphicon glyphicon-remove-sign"></i> Tout enlever de la table ' + originAttabler.dataset.table;
+          originAttabler.dataset.status = 'retirer';
+        } else {
+          originAttabler.innerHTML = '<i class="glyphicon glyphicon-ok-sign"></i> Tous sur la table ' + originAttabler.dataset.table;
+          originAttabler.dataset.status = 'attabler';
+        }
+        document.querySelectorAll('.switch').forEach(function (el) {
+          el.checked = originAttabler.dataset.status === "attabler" ? false : true;
+        });
+
+        updateSyntheseTable();
+      });
+    }
+
 
     $('#popupLeurreForm').each(function(){
       $('#vin_sans_cepage').click(function(){
@@ -35,8 +66,7 @@
       }
     });
 
-    $('.degustation .bsswitch').on('switchChange.bootstrapSwitch', function (event, state) {
-      var state = $(this).bootstrapSwitch('state');
+    $('.degustation.switch').on('click', function (event) {
       var form = $(this).parents('form');
 
       if(form.hasClass('prelevements')){
@@ -53,37 +83,27 @@
       }
 
       if(form.hasClass('table')){
-        updateSyntheseTable($(this),state,hash);
+        updateSyntheseTable();
       }
 
 
     });
 
-    var updateSyntheseTable = function(elt,state,hash){
-      if($('tr[data-hash="'+hash+'"] .nblots').length){
-      var val = $('tr[data-hash="'+hash+'"] .nblots').html();
-      var regex = /[0-9]+$/g;
+    var updateSyntheseTable = function(){
+      const hashes = []
+      document.querySelectorAll('tr[data-hash]').forEach(function (el) {
+        hashes.push(el)
+      })
 
-      if(val.match(regex)){
-        var nbToAdd = -1;
-        if(state){
-          nbToAdd = 1;
-        }
-        var old = parseInt(val);
-        var diff = parseInt(nbToAdd);
-        var newVal = old+diff;
-        $('tr[data-hash="'+hash+'"] .nblots').html(""+newVal);
-
-        var valTotal = $('.nblots span[data-total="1"]').html();
-        var oldTotal = parseInt(valTotal);
-        var newTotal = oldTotal+diff;
-        $('.nblots span[data-total="1"]').html(""+newTotal);
+      for (const hash of hashes) {
+        const count = hash.querySelector('.nblots')
+        count.innerHTML = document.querySelectorAll('td[data-hash="' + hash.dataset.hash + '"] input.degustation.switch:checked').length
       }
 
-      }
+      document.querySelector('tbody#synthese tr:last-child .nblots').innerHTML = document.querySelectorAll('td[data-hash] input.degustation.switch:checked').length
     }
 
-    var updateSynthesePrelevementLots = function(object){
+    var updateSynthesePrelevementLots = function(){
       var listAdherents = {};
 
       $("[data-adherent]").each(function(){
@@ -94,8 +114,8 @@
         var nbLotsSelectionnes = 0;
         var nbAdherentsLots = 0;
 
-        $(this).find('.bsswitch').each(function () {
-           var state = $(this).bootstrapSwitch('state');
+        $(this).find('.switch-xl input[type=checkbox]').each(function (_i, el) {
+           var state = el.checked;
            if(state){
               listAdherents[$(this).attr("data-preleve-adherent")]++;
               nbLotsSelectionnes++
@@ -115,20 +135,10 @@
     updateSynthesePrelevementLots();
 
     var updateSyntheseDegustateurs = function(){
-      $('.degustation.degustateurs').each(function(){
-
-        var college = 0;
-
-        $(this).find('.bsswitch').each(function () {
-           var state = $(this).bootstrapSwitch('state');
-           if(state){
-             college++;
-           }
-
-      });
-        $(".collegeCounter li.active span.badge").html(""+college);
-
-       });
+      if(document.querySelector('form.degustateurs')) {
+        const college = document.querySelectorAll('input.degustation.switch:checked').length
+        document.querySelector(".collegeCounter li.active span.badge").innerHTML = college;
+      }
     }
 
     updateSyntheseDegustateurs();
