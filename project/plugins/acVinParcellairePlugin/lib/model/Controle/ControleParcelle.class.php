@@ -7,7 +7,7 @@ class ControleParcelle extends BaseControleParcelle
         if ($this->getDocument()->isDump()) {
             $data->geojson = $this->getGeoJson();
             $data->kml_placemark = $this->getKMLPlacemark();
-            $data->pourcentage = $this->getInfoManquant();
+            $data->pourcentageManquant = $this->getInfoManquant();
             $data->irrigation = $this->getInfoIrrigation();
             $data->irrigation['date_irrigation'] = $this->getInfoIrrigue();
         }

@@ -46,7 +46,7 @@
             </tr>
             <tr>
                 <td><strong>Manquants</strong></td>
-                <td>{{ parcelleCourante.pourcentage }}%</td>
+                <td>{{ parcelleCourante.pourcentageManquant }}%</td>
             </tr>
 
             <tr v-if="parcelleCourante.irrigation.materiel.length">

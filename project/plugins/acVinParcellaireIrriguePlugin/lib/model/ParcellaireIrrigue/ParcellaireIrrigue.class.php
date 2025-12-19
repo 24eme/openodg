@@ -275,12 +275,8 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
 
     public function getDateIrrigationFromIdParcelle($idParcelle)
     {
-        foreach ($this['declaration'] as $produit) {
-            foreach ($produit['detail'] as $parcelleId => $info) {
-                if ($parcelleId == $idParcelle) {
-                    return $info->date_irrigation;
-                }
-            }
+        if ($parcelle = $this->findParcelleByIdParcelle($idParcelle)) {
+            return $parcelle->date_irrigation;
         }
         return null;
     }
