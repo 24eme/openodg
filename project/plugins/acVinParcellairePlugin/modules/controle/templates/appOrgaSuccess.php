@@ -322,6 +322,10 @@
             }
             return 0;
         },
+        displayList(event) {
+            const list = document.querySelector('#listeParcelles');
+            list.hidden = !list.hidden;
+        }
     };
 
     templates.operateur.watch = {
