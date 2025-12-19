@@ -545,6 +545,9 @@ class DRevValidation extends DeclarationLotsValidation
             return;
         }
         foreach($this->document->getProduits() as $produit) {
+            if (!$produit->getConfig()->getRendementVsi()) {
+                continue;
+            }
             if(round($produit->getCepage()->getRendementVsi(), 2) <= $produit->getConfig()->getRendementVsi()) {
                 continue;
             }
