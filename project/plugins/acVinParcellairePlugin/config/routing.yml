@@ -190,7 +190,14 @@ controle_set_date_tournee:
   requirements:
     sf_method: [get, post]
 
-
 controle_appterrain:
   url: /controle/appterrain/:date
   param: { module: controle, action: appTerrain }
+
+controle_apporga:
+  url: /controle/apporga/:date
+  param: { module: controle, action: appOrga }
+
+controle_apporga_save:
+  url: /controle/apporga/:date/save
+  param: { module: controle, action: appOrgaSave }

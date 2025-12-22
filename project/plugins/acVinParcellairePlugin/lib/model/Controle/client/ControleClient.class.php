@@ -10,6 +10,9 @@ class ControleClient extends acCouchdbClient
     const CONTROLE_STATUT_EN_MANQUEMENT = "EN_MANQUEMENT";
     const CONTROLE_STATUT_TERMINE = "TERMINE";
 
+    const CONTROLE_TYPE_HABILITATION = "Habilitation";
+    const CONTROLE_TYPE_SUIVI = "Suivi";
+
     public static function getInstance()
     {
         return acCouchdbManager::getClient("Controle");
