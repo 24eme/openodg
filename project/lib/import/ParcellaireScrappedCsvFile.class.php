@@ -162,8 +162,7 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
             $libelle = preg_replace('/COTES? TARN/', 'COTES DU TARN', $libelle);
             $libelle = preg_replace('/rougeE/i', 'rouge', $libelle);
 
-
-            $produit = $configuration->identifyProductByLibelle($libelle);
+            $produit = $configuration->identifyProductByLibelle($libelle, $verbose);
             $nb_reconnaissance = 1;
             if (!$produit) {
                 $cepage = strtoupper($parcelle[self::CSV_FORMAT_CEPAGE - $is_old_format]);
