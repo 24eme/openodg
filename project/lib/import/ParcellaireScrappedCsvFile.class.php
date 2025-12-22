@@ -177,14 +177,21 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
                 }
                 $libelle = preg_replace('/ ?\.?(B|RS|R|N|G)$/', '', $libelle);
                 $produit = $configuration->identifyProductByLibelle($libelle);
+                if ($verbose) {
+                    print_r(['search rename', 'renamed libelle' => $libelle, 'has_produit' => ($produit)]);
+                }
                 $nb_reconnaissance++;
             }
             if (!$produit && $verbose) {
-                $produit = $configuration->identifyProductByLibelle($libelle, true);
-                print_r(['libelle' => $libelle, 'parcelle' => $parcelle, 'has produit' => ($produit)]);exit;
+                $produit = $configuration->identifyProductByLibelle($libelle);
+                if ($verbose) {
+                    print_r(['extra search', 'libelle' => $libelle, 'parcelle' => $parcelle, 'has produit' => ($produit)]);
+                }
             }
-
             $hash = ($produit) ? $produit->getHash() : null ;
+            if ($verbose) {
+                print_r(['hash_found', 'libelle' => $libelle, 'hash' => $hash, 'parcelle' => $parcelle]);
+            }
 
             $prefix = substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 5, 3);
 
