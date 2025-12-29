@@ -17,7 +17,7 @@
         <td class="text-center"><?php echo count($stat['operateurs']); ?> / <?php echo $stat['nb_parcelles']; ?></td>
         <td>
             <a href="<?php echo url_for('controle_appterrain', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-primary">Accéder à la tournée</a>
-            <a href="<?php echo url_for('controle_apporga', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-default">Cloturer</a>
+            <a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-default">Cloturer</a>
             <a href="<?php echo url_for('controle_apporga', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-secondary">Modifier l'organisation</a>
         </td>
     </tr>

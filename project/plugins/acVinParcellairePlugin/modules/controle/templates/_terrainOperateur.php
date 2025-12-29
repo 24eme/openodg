@@ -29,5 +29,10 @@
     </RouterLink>
 </div>
 
-<RouterLink class="btn btn-default" :to="{ name: 'listing' }"><span class="glyphicon glyphicon-chevron-left"></span> Retour</RouterLink>
-<button class="btn btn-default pull-right" @click="startAudit()" :disabled="nbParcellesControlees() != Object.keys(controleCourant.parcelles).length" :class="{ 'btn-primary': controleCourant.audit.saisie != 1, 'transparence-sm': nbParcellesControlees() != Object.keys(controleCourant.parcelles).length  }"><span class="glyphicon glyphicon-edit"></span> Saisir l'audit</button>
+<div class="row">
+    <RouterLink class="btn btn-default col-xs-2" :to="{ name: 'listing' }"><span class="glyphicon glyphicon-chevron-left"></span> Retour</RouterLink>
+    <span class="col-xs-3"></span>
+    <button class="btn btn-default col-xs-2" @click="transmitDataControle()">Transmettre les données</button>
+    <span class="col-xs-3"></span>
+    <button class="btn btn-default col-xs-2" @click="startAudit()" :disabled="nbParcellesControlees() != Object.keys(controleCourant.parcelles).length" :class="{ 'btn-primary': controleCourant.audit.saisie != 1, 'transparence-sm': nbParcellesControlees() != Object.keys(controleCourant.parcelles).length  }"><span class="glyphicon glyphicon-edit"></span> Saisir l'audit</button>
+</div>
