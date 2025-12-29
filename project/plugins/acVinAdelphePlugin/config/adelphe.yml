@@ -1,9 +1,16 @@
 all:
   configuration:
     adelphe:
+      #seuil doit être inférieur à 500 000 unité conditionnées soit l'équation suivante dépendant de TX BIB
+      # (avec la répartition de BIB 55% de 3l, 35% de 5l et 10% de 10l) :
+      #seuil = (500 000 x (1-TXBIB) x (0,75/100) + (500 000 x TXBIB)x 55% x (3/100)  +(500 000 x TXBIB) x 35% x (5/100) + (500 000 x TXBIB) x 10% x (10/100)
+      #qui se simplifie en 500 000 * 0.0075 + 500 000 * 0.059 * TXBIB
       fonction_calcul_seuil: "return 3750 + 18250 * %TXBIB%;"
+      #Si on ne connait pas le nombre de BIB on applique un taux forfaitaire pour les BIB
       taux_forfaitaire_bib: 0.32
-      prix_unitaire_bib: 1.1170
-      prix_unitaire_bouteille: 2.1267
+      #55% de 3l + 35% de 5l + 10 de 10l
+      prix_unitaire_bib: 1.4682
+      #75% de bouteilles normales + 25% de bouteilles allégées + 100% emballage carton
+      prix_unitaire_bouteille: 2.9067
       url_adelphe: "https://www.adelphe.fr/"
       volumes_conditionnes_csv: '/data/configuration/adelphe_volumes_conditionnes_%ANNEE%.csv'
