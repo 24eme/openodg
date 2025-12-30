@@ -11,6 +11,14 @@ class ControleConfiguration extends DeclarationConfiguration {
         return self::$_instance;
     }
 
+    public function __construct() {
+        if(!sfConfig::has('controle_configuration_controle')) {
+            throw new sfException("La configuration pour le controle n'a pas été défini pour cette application");
+        }
+
+        $this->configuration = sfConfig::get('controle_configuration_controle', array());
+    }
+
     public function getModuleName() {
 
         return 'controle';
@@ -20,4 +28,10 @@ class ControleConfiguration extends DeclarationConfiguration {
     {
       return sfConfig::get('app_controle_'.$type);
     }
+
+    public function getPointsDeControle()
+    {
+        return $this->configuration['points_de_controle'];
+    }
+
 }

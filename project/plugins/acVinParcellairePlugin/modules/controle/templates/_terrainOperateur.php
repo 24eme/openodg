@@ -8,9 +8,12 @@
 <h2>Parcelles contrôlées <span class="badge">{{ nbParcellesControlees() }} / {{ Object.keys(controleCourant.parcelles).length }}</span></h2>
 
 <div class="list-group mt-4">
-    <RouterLink v-for="(parcelle, key) in controleCourant.parcelles" :to="{ name: 'parcelle', params: { id: controleCourant._id, parcelle: key }}" class="list-group-item" :class="{ 'list-group-item-success': parcelle.controle.saisie == 1 }">
+    <RouterLink v-for="(parcelle, key, index) in controleCourant.parcelles" :to="{ name: 'parcelle', params: { id: controleCourant._id, parcelle: key }}" class="list-group-item" :class="{ 'list-group-item-success': parcelle.controle.saisie == 1 }">
         <div class="row">
-            <div class="col-xs-10">
+            <div class="col-xs-2 col-md-1" style="font-size: 20px;">
+                <strong>N° {{ index + 1 }}</strong>
+            </div>
+            <div class="col-xs-8 col-md-9">
                 <h4 class="list-group-item-heading">{{ parcelle.cepage }} <small><br />{{ parcelle.source_produit_libelle }}<br />{{ parcelle.campagne_plantation }}</small></h4>
                 <p class="list-group-item-text">{{ parcelle.commune }} {{ parcelle.lieu }}</p>
                 <div class="mt-2">
@@ -26,5 +29,10 @@
     </RouterLink>
 </div>
 
-<RouterLink class="btn btn-default" :to="{ name: 'listing' }"><span class="glyphicon glyphicon-chevron-left"></span> Retour</RouterLink>
-<button class="btn btn-default pull-right" @click="startAudit()" :disabled="nbParcellesControlees() != Object.keys(controleCourant.parcelles).length" :class="{ 'btn-primary': controleCourant.audit.saisie != 1, 'transparence-sm': nbParcellesControlees() != Object.keys(controleCourant.parcelles).length  }"><span class="glyphicon glyphicon-edit"></span> Saisir l'audit</button>
+<div class="row">
+    <RouterLink class="btn btn-default col-xs-2" :to="{ name: 'listing' }"><span class="glyphicon glyphicon-chevron-left"></span> Retour</RouterLink>
+    <span class="col-xs-3"></span>
+    <button class="btn btn-default col-xs-2" @click="transmitDataControle()">Transmettre les données</button>
+    <span class="col-xs-3"></span>
+    <button class="btn btn-default col-xs-2" @click="startAudit()" :disabled="nbParcellesControlees() != Object.keys(controleCourant.parcelles).length" :class="{ 'btn-primary': controleCourant.audit.saisie != 1, 'transparence-sm': nbParcellesControlees() != Object.keys(controleCourant.parcelles).length  }"><span class="glyphicon glyphicon-edit"></span> Saisir l'audit</button>
+</div>

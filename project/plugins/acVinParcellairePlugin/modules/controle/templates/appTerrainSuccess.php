@@ -1,6 +1,9 @@
 <script id="dataJson" type="application/json">
 <?php echo $sf_data->getRaw('json') ?>
 </script>
+<script id="dataConf" type="application/json">
+<?php echo $sf_data->getRaw('points_de_controle') ?>
+</script>
 <script>
     const { createWebHashHistory, createRouter, useRoute, useRouter } = VueRouter
     const { createApp } = Vue;
@@ -13,6 +16,7 @@
 
     let controles = JSON.parse(localStorage.getItem("controles")) || {}
     const server_controle = JSON.parse(document.getElementById("dataJson").textContent);
+    const points_de_controle = JSON.parse(document.getElementById("dataConf").textContent);
     let localstorage_updated = false;
     for (let i in server_controle) {
         if (controles[server_controle[i]._id]) {
@@ -25,6 +29,28 @@
     if (localstorage_updated) {
         localStorage.setItem("controles", JSON.stringify(controles));
     }
+
+    // var points = [];
+
+    // for(const controleId in controles) {
+    //     for(const parcelleId in controles[controleId].parcelles) {
+    //         if(!controles[controleId].parcelles[parcelleId].controle.points || !controles[controleId].parcelles[parcelleId].controle.points.length) {
+    //             controles[controleId].parcelles[parcelleId].controle.points = points;
+    //         }
+    //         for (key in points_de_controle) {
+    //             controles[controleId].parcelles[parcelleId].controle.points[key] = [];
+    //             controles[controleId].parcelles[parcelleId].controle.points[key].conformite = true;
+    //             controles[controleId].parcelles[parcelleId].controle.points[key].rtm = [];
+    //             for (item in points_de_controle[key].rtm) {
+    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item] = [];
+    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item].libelle = points_de_controle[key].rtm[item].libelle;
+    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item].observations = '';
+    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item].conformite = false;
+    //             }
+    //         }
+    //     }
+    // }
+
     // function parseString(dlmString){
     //     let mydlm = [];
     //     dlmString.split("|").forEach(function(str){
@@ -50,7 +76,6 @@
 
     const app = createApp({
         data() {
-        console.log(controles);
           return {
               controles: controles,
             }
@@ -80,45 +105,6 @@
     templates.listing.methods = {
     };
 
-    templates.listing.mounted = function() {
-        const controles = templates.listing.data().controles;
-        const map = new L.map('map');
-        map.setView([43.8293, 7.2977], 8);
-        const tileLayer = L.tileLayer('https://data.geopf.fr/wmts?'+
-            '&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM'+
-            '&LAYER={ignLayer}&STYLE={style}&FORMAT={format}'+
-            '&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
-            {
-            ignApiKey: 'pratique',
-            ignLayer: 'ORTHOIMAGERY.ORTHOPHOTOS',
-            style: 'normal',
-            format: 'image/jpeg',
-            service: 'WMTS',
-            minZoom: 8,
-            maxZoom: 19,
-            attribution: 'Map data &copy;' +
-            '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
-            '<a href="https://cadastre.data.gouv.fr/">Cadastre</a>, ' +
-            'Imagery © <a href="https://www.ign.fr/">IGN</a>',
-            id: 'mapbox.light'
-            });
-
-        tileLayer.addTo(map)
-
-        // GPS
-        const gps = new L.Control.Gps({
-            autoCenter:true
-        });//inizialize control
-
-        gps.addTo(map);
-
-        for(let controleId in controles) {
-            const controle = controles[controleId];
-            const parcellesLayer = L.geoJSON(JSON.parse(controle.parcellaire_geojson));
-            parcellesLayer.addTo(map);
-        };
-    };
-
     templates.operateur.data = function() {
         const route = useRoute()
 
@@ -135,6 +121,25 @@
       },
       echoFloat(val, nbDecimal = 5) {
         return val ? Number(val).toFixed(nbDecimal) : '';
+      },
+      transmitDataControle() {
+        fetch('/provence_dev.php/controle/transmit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              controle: this.controleCourant
+            })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Erreur HTTP ' + response.status);
+          }
+        })
+        .catch(error => {
+          console.error('Transmission error:', error);
+        });
       }
     };
 
@@ -143,7 +148,8 @@
 
         return {
           controleCourant: controles[route.params.id],
-          parcelleCourante: controles[route.params.id].parcelles[route.params.parcelle]
+          parcelleCourante: controles[route.params.id].parcelles[route.params.parcelle],
+          pointsDeControle: points_de_controle
         }
     };
     templates.parcelle.methods = {
@@ -155,7 +161,12 @@
         return val ? Number(val).toFixed(nbDecimal) : '';
       }
     };
-
+    templates.audit.mounted = function() {
+        let signaturePad = new SignaturePad(document.getElementById('signature'), {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            penColor: 'rgb(0, 0, 0)'
+        });
+    }
     templates.audit.data = function() {
         const route = useRoute()
         if(!controles[route.params.id].audit) {
@@ -172,9 +183,32 @@
         }
         return {
           controleCourant: controles[route.params.id]
+
         }
     };
     templates.audit.methods = {
+      countPointsTotal() {
+          let ret = 0;
+          for (const parcelleId in this.controleCourant.parcelles) {
+              const parcelle = this.controleCourant.parcelles[parcelleId];
+              ret += Object.entries(parcelle.controle.points).length;
+          }
+          return ret;
+      },
+      countPointsNCetRtm() {
+          let ret = {nombreNC:0, manquements:[]};
+          for (const parcelleId in this.controleCourant.parcelles) {
+              const parcelle = this.controleCourant.parcelles[parcelleId];
+              for (const pointKey in parcelle.controle.points) {
+                  const point = parcelle.controle.points[pointKey];
+                  if (point.conformite == 'NC') {
+                      ret.nombreNC += 1;
+                      ret.manquements.push(point.libelle);
+                  }
+              }
+          }
+          return ret;
+      },
       save() {
         this.controleCourant.audit.saisie = 1;
         router.push({ name: 'operateur', params: { id: this.controleCourant._id } })

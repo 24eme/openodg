@@ -35,6 +35,14 @@ class Controle extends BaseControle
         $this->liaisons_operateurs = $this->getLiaisonsCooperative();
     }
 
+    public function getTypeTournee() {
+        $t = $this->_get('type_tournee');
+        if (!$t) {
+            return ControleClient::CONTROLE_TYPE_SUIVI;
+        }
+        return $t;
+    }
+
     public function getLiaisonsCooperative() {
         return EtablissementClient::getInstance()->findByCvi($this->declarant->cvi)->getLiaisonsOfType(EtablissementFamilles::FAMILLE_COOPERATIVE, true);
     }
@@ -55,6 +63,16 @@ class Controle extends BaseControle
         return $this->parcellaire;
     }
 
+    public function getParcellaireParcelles()
+    {
+        $parcellaire = $this->getParcellaire();
+        $parcelles = [];
+        foreach ($parcellaire->getParcelles() as $key => $parcelle) {
+            $parcelles[$key] = $parcelle->getData();
+        }
+        return $parcelles;
+    }
+
     public function updateParcelles(array $parcellesIds)
     {
         $this->remove('parcelles');
@@ -63,20 +81,17 @@ class Controle extends BaseControle
             $parcelles = $this->getParcellaire()->getParcelles();
             foreach ($parcellesIds as $pId) {
                 if ($parcelles->exist($pId)) {
-                    $this->setPointsControle($this->parcelles->add($pId, $parcelles->get($pId)));
+                    $parcelle = $this->parcelles->add($pId, $parcelles->get($pId));
+                    foreach (ControleConfiguration::getInstance()->getPointsDeControle() as $pointKey => $pointConf) {
+                        $point = $parcelle->controle->points->add($pointKey);
+                        $point->libelle = $pointConf['libelle'];
+                        foreach ($pointConf['rtm'] as $rtmKey => $rtmConf) {
+                            $point->manquements->add($rtmKey, ['libelle' => $rtmConf['libelle'], 'conformite' => false, 'observations' => null]);
+                        }
+                    }
                 }
             }
         }
-    }
-
-    public function setPointsControle($parcelle)
-    {
-        $conf = $this->getConfig();
-        $points = $conf->getFromConfig('points') ?? [];
-        foreach ($points as $point) {
-            $parcelle->controle->points->add($point, null);
-        }
-        return $parcelle;
     }
 
     public function hasParcelle($parcelleId)
@@ -92,15 +107,8 @@ class Controle extends BaseControle
     public function save()
     {
         $this->storeDeclarant();
-        $this->storeParcellaireGeoJson();
         $this->generateMouvementsStatuts();
         return parent::save();
-    }
-
-    public function storeParcellaireGeoJson()
-    {
-        $this->remove('parcellaire_geojson');
-        $this->add('parcellaire_geojson', json_encode($this->getGeoJson()));
     }
 
     public function getParcelles() {
@@ -109,14 +117,19 @@ class Controle extends BaseControle
 
     public function getStatutComputed()
     {
-        if($this->date_tournee) {
-            return ControleClient::CONTROLE_STATUT_PLANIFIE;
-        }
-        if(count($this->parcelles)) {
+        if(!$this->date_tournee) {
             return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
         }
-
-        return ControleClient::CONTROLE_STATUT_A_ORGANISER;
+        if (count($this->manquements)) {
+            return ControleClient::CONTROLE_STATUT_EN_MANQUEMENT;
+        }
+        if (count($this->parcelles)) {
+            return ControleClient::CONTROLE_STATUT_PLANIFIE;
+        }
+        if($this->date_tournee) {
+            return ControleClient::CONTROLE_STATUT_A_ORGANISER;
+        }
+        return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
 
     }
 
@@ -140,6 +153,8 @@ class Controle extends BaseControle
     public function getDataToDump() {
         $this->to_dump = true;
         $d = $this->getData();
+        $d->parcellaire_geojson = $this->getGeoJson();
+        $d->parcellaire_parcelles = $this->getParcellaireParcelles();
         $this->to_dump = false;
         return $d;
     }
