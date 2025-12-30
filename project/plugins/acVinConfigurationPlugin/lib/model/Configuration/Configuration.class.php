@@ -83,6 +83,9 @@ class Configuration extends BaseConfiguration {
     }
 
     public function identifyProductByLibelle($libelle, $verbose = false) {
+        if (!$libelle) {
+            return null;
+        }
         if(array_key_exists($libelle, $this->identifyLibelleProduct)) {
             if ($verbose) {
                 print_r(['cached' => true, 'produit' => $this->identifyLibelleProduct[$libelle]->getHash(), 'libelle' => $libelle]);

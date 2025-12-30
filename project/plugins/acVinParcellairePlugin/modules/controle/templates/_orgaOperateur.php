@@ -18,9 +18,9 @@
         </table>
     </div>
 </div>
-<h3 class="">Parcelles séléctionnées <span class="label label-primary">{{ pourcentageSelectionne() }}%</span></h3>
+<h3 class="">Parcelles sélectionnées <span class="label label-primary">{{ pourcentageSelectionne() }}%</span>&nbsp;&nbsp;<small><a v-on:click="displayList">Afficher la liste des parcelles</a></small></h3>
 
-<table class="table table-bordered table-striped">
+<table id="listeParcelles" class="table table-bordered table-striped">
     <thead>
         <tr>
             <th style="width: 0;"></th>

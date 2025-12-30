@@ -121,6 +121,25 @@
       },
       echoFloat(val, nbDecimal = 5) {
         return val ? Number(val).toFixed(nbDecimal) : '';
+      },
+      transmitDataControle() {
+        fetch('/provence_dev.php/controle/transmit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              controle: this.controleCourant
+            })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Erreur HTTP ' + response.status);
+          }
+        })
+        .catch(error => {
+          console.error('Transmission error:', error);
+        });
       }
     };
 
@@ -176,46 +195,20 @@
           }
           return ret;
       },
-      countPointsControles() {
-          let ret = 0;
+      countPointsNCetRtm() {
+          let ret = {nombreNC:0, manquements:[]};
           for (const parcelleId in this.controleCourant.parcelles) {
               const parcelle = this.controleCourant.parcelles[parcelleId];
               for (const pointKey in parcelle.controle.points) {
                   const point = parcelle.controle.points[pointKey];
-                  ret += 1;
-              }
-          }
-          return ret;
-      },
-      countPointsConforme() {
-          let ret = 0;
-          for (const parcelleId in this.controleCourant.parcelles) {
-              const parcelle = this.controleCourant.parcelles[parcelleId];
-              for (const pointKey in parcelle.controle.points) {
-                  const point = parcelle.controle.points[pointKey];
-                  if (point.conformite == 'C') {
-                      ret += 1;
+                  if (point.conformite == 'NC') {
+                      ret.nombreNC += 1;
+                      ret.manquements.push(point.libelle);
                   }
               }
           }
           return ret;
       },
-      // countPointsNCetRtm() {
-      //     let ret = {nombreNC:0, manquements:[]};
-      //     for (const parcelleId in this.controleCourant.parcelles) {
-      //         const parcelle = this.controleCourant.parcelles[parcelleId];
-      //         for (const pointKey in parcelle.controle.points) {
-      //             const point = parcelle.controle.points[pointKey];
-      //             if (point.conformite == 'NC') {
-      //                 ret.nombreNC += 1;
-      //             }
-      //           for (const manquementKey in point) {
-      //
-      //           }
-      //         }
-      //     }
-      //     return ret;
-      // },
       save() {
         this.controleCourant.audit.saisie = 1;
         router.push({ name: 'operateur', params: { id: this.controleCourant._id } })

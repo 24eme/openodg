@@ -241,13 +241,10 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
         return false;
     }
 
-    public function getPourcentageFromIdParcelle($idParcelle) {
-        foreach ($this['declaration'] as $produit) {
-            foreach ($produit['detail'] as $parcelleId => $info) {
-                if ($parcelleId == $idParcelle) {
-                    return $info->pourcentage;
-                }
-            }
+    public function getPourcentageFromIdParcelle($idParcelle)
+    {
+        if ($parcelle = $this->findParcelleByIdParcelle($idParcelle)) {
+            return $parcelle->pourcentage;
         }
         return 0;
     }

@@ -46,7 +46,7 @@
             </tr>
             <tr>
                 <td><strong>Manquants</strong></td>
-                <td>{{ parcelleCourante.pourcentage }}%</td>
+                <td>{{ parcelleCourante.pourcentageManquant }}%</td>
             </tr>
 
             <tr v-if="parcelleCourante.irrigation.materiel.length">
@@ -59,6 +59,12 @@
             <tr v-else>
                 <td><strong>Irrigation</strong></td>
                 <td class="text-muted">Pas d'irrigation</td>
+            </tr>
+
+            <tr>
+                <td><strong>Date d'irrigation</strong></td>
+                <td v-if="parcelleCourante.irrigation.date_irrigation">{{ parcelleCourante.irrigation.date_irrigation }}</td>
+                <td v-else>Pas de donnée</td>
             </tr>
         </tbody>
     </table>
@@ -83,6 +89,11 @@
       <label class="radio-inline">
         <input type="radio" :name="'controle_' + keyPoint" value="NC" v-model="valPoint.conformite" />
         Non Conforme
+      </label>
+
+      <label class="radio-inline">
+        <input type="radio" :name="'controle_' + keyPoint" value="NO" v-model="valPoint.conformite" />
+        Non Observable
       </label>
     </div>
 

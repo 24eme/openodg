@@ -119,4 +119,33 @@ class controleActions extends sfActions
     {
         $this->controle = $this->getRoute()->getControle();
     }
+
+    public function executeListeOperateursTournee(sfWebRequest $request)
+    {
+        $this->controles = $this->getControlesPlanifies($request->getParameter('date'))[$request->getParameter('date')]['controles'];
+    }
+
+    public function executeListeManquementsControle(sfWebRequest $request)
+    {
+        $this->manquements = ControleClient::getInstance()->find($request->getParameter('id'))['manquements'];
+    }
+
+    public function executeTransmissionData(sfWebRequest $request)
+    {
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $raw = file_get_contents('php://input');
+            $data = json_decode($raw, true);
+            $controleBase = ControleClient::getInstance()->find($data['controle']['_id']);
+
+            foreach ($data['controle']['parcelles'] as $parcelle => $info) {
+                unset($info['geojson'], $info['kml_placemark'], $info['pourcentageManquant'], $info['irrigation']);
+                $data['controle']['parcelles'][$parcelle] = $info;
+            }
+
+            $controleBase->parcelles = $data['controle']['parcelles'];
+            $controleBase->save();
+
+            exit;
+        }
+    }
 }
