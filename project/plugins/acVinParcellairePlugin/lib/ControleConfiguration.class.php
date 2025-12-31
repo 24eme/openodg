@@ -34,4 +34,23 @@ class ControleConfiguration extends DeclarationConfiguration {
         return $this->configuration['points_de_controle'];
     }
 
+    public function getLibellePointDeControle($clePointControle)
+    {
+        return $this->configuration['points_de_controle'][$clePointControle]['libelle'];
+    }
+
+    public function getLibelleManquement($clePointControle, $codeRtm)
+    {
+        return $this->configuration['points_de_controle'][$clePointControle]['rtm'][$codeRtm]['libelle'];
+    }
+
+    public function getDelaisManquement($clePointControle, $codeRtm)
+    {
+        return $this->configuration['points_de_controle'][$clePointControle]['rtm'][$codeRtm]['Délais'];
+    }
+
+    public function getConseilManquement($clePointControle, $codeRtm)
+    {
+        return '';
+    }
 }
