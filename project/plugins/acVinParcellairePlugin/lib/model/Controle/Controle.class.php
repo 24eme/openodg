@@ -159,4 +159,24 @@ class Controle extends BaseControle
         return $d;
     }
 
+    public function updateParcellePointsControleFromJson($json)
+    {
+        $retControleByParcelle = array();
+        foreach ($json['controle']['parcelles'] as $parcelle) {
+            // Je met le noeud controle du Json puis j'unset le sous-noeud "points" car c'est la seule update a faire
+            $retControleByParcelle[$parcelle['parcelle_id']] = $parcelle['controle'];
+            unset($retControleByParcelle[$parcelle['parcelle_id']]['points']);
+            foreach ($parcelle['controle']['points'] as $nomPointDeControle => $dataPointDeControle) {
+                if ($dataPointDeControle['conformite'] == 'C') {
+                    continue;
+                }
+                $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle] = $dataPointDeControle;
+            }
+        }
+        foreach ($this->parcelles as $parcelleId => $dataParcelle) {
+            $dataParcelle->controle = $retControleByParcelle[$parcelleId];
+        }
+        $this->save();
+    }
+
 }

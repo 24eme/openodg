@@ -136,15 +136,7 @@ class controleActions extends sfActions
             $raw = file_get_contents('php://input');
             $data = json_decode($raw, true);
             $controleBase = ControleClient::getInstance()->find($data['controle']['_id']);
-
-            foreach ($data['controle']['parcelles'] as $parcelle => $info) {
-                unset($info['geojson'], $info['kml_placemark'], $info['pourcentageManquant'], $info['irrigation']);
-                $data['controle']['parcelles'][$parcelle] = $info;
-            }
-
-            $controleBase->parcelles = $data['controle']['parcelles'];
-            $controleBase->save();
-
+            $controleBase->updateParcellePointsControleFromJson($data);
             exit;
         }
     }
