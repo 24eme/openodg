@@ -75,6 +75,9 @@ abstract class DeclarationLotsValidation extends DocumentValidation
             if(count($lot->cepages)){
               $somme = 0.0;
               foreach ($lot->cepages as $cepage => $v) {
+                  if($v < 0) {
+                      continue;
+                  }
                 $somme+=$v;
               }
               if(round($somme, 2) != round($lot->volume, 2)){
