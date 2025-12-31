@@ -187,4 +187,23 @@ class Controle extends BaseControle
         $this->save();
     }
 
+    public function getListeManquements()
+    {
+        $retManquements = array();
+        foreach ($this->parcelles as $parcelleId => $parcelle) {
+            foreach ($parcelle->controle->points as $pointId => $dataPoint) {
+                $libellePointDeControle = ControleConfiguration::getInstance()->getLibellePointDeControle($pointId);
+                foreach ($dataPoint->manquements as $rtmId => $dataManquement) {
+                    $retManquements[$rtmId]['libelle_point_de_controle'] = $libellePointDeControle;
+                    if (!isset($retManquements[$rtmId]['libelle_manquement']) || !$retManquements[$rtmId]['libelle_manquement']) {
+                        $retManquements[$rtmId]['libelle_manquement'] = ControleConfiguration::getInstance()->getLibelleManquement($pointId, $rtmId);
+                    }
+                    $retManquements[$rtmId]['parcelles'][$parcelleId]['observations'] = $dataManquement->observations;
+                    $retManquements[$rtmId]['parcelles'][$parcelleId]['delais'] = ControleConfiguration::getInstance()->getDelaisManquement($pointId, $rtmId);
+                    $retManquements[$rtmId]['parcelles'][$parcelleId]['conseils'] = ControleConfiguration::getInstance()->getConseilManquement($pointId, $rtmId);
+                }
+            }
+        }
+        return $retManquements;
+    }
 }
