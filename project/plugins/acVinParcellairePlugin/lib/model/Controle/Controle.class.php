@@ -170,7 +170,15 @@ class Controle extends BaseControle
                 if ($dataPointDeControle['conformite'] == 'C') {
                     continue;
                 }
+                // Unset pour ne prendre que les manquements qui sont non conformes
                 $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle] = $dataPointDeControle;
+                unset($retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['manquements']);
+                foreach ($dataPointDeControle['manquements'] as $numRtm => $dataManquement) {
+                    if (! $dataManquement['conformite']) {
+                        continue;
+                    }
+                    $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['manquements'][$numRtm] = $dataManquement;
+                }
             }
         }
         foreach ($this->parcelles as $parcelleId => $dataParcelle) {
