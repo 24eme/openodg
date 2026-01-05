@@ -218,6 +218,7 @@ Controle:
             '*':
               type: collection
               class: ControleParcelle
+              inheritance: ParcellaireParcelle
               definition:
                 fields:
                   superficie: { type: float }
