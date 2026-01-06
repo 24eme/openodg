@@ -39,17 +39,39 @@ class ControleConfiguration extends DeclarationConfiguration {
         return $this->configuration['points_de_controle'][$clePointControle]['libelle'];
     }
 
-    public function getLibelleManquement($clePointControle, $codeRtm)
+    public function getLibellePointDeControleFromCodeRtm($codeRtm)
     {
-        return $this->configuration['points_de_controle'][$clePointControle]['rtm'][$codeRtm]['libelle'];
+        foreach ($this->configuration['points_de_controle'] as $point) {
+            foreach ($point['rtm'] as $idrtm => $manquement) {
+                if ($idrtm == $codeRtm) {
+                    return $point['libelle'];
+                }
+            }
+        }
     }
 
-    public function getDelaisManquement($clePointControle, $codeRtm)
+    public function getLibelleManquement($codeRtm)
     {
-        return $this->configuration['points_de_controle'][$clePointControle]['rtm'][$codeRtm]['Délais'];
+        foreach ($this->configuration['points_de_controle'] as $point) {
+            foreach ($point['rtm'] as $idrtm => $manquement) {
+                if ($idrtm == $codeRtm) {
+                    return $manquement['libelle'];
+                }
+            }
+        }
     }
 
-    public function getConseilManquement($clePointControle, $codeRtm)
+    public function getLibelleManquementWithPointId($codeRtm, $pointId)
+    {
+        return $this->configuration['points_de_controle'][$pointId]['rtm'][$codeRtm]['libelle'];
+    }
+
+    public function getDelaisManquement($pointId, $codeRtm)
+    {
+        return $this->configuration['points_de_controle'][$pointId]['rtm'][$codeRtm]['delais'];
+    }
+
+    public function getConseilManquement($pointId, $codeRtm)
     {
         return '';
     }
