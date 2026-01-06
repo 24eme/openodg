@@ -277,10 +277,18 @@ Controle:
           fields:
             '*':
               type: collection
+              class: ControleManquement
               definition:
                 fields:
-                  libelle: {}
+                  parcelles_id:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': {}
+                  libelle_point_de_controle: {}
+                  libelle_manquement: {}
                   observations: {}
+                  delais: {}
       mouvements_statuts:
         type: array_collection
         definition:
