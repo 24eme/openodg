@@ -30,6 +30,11 @@ class Controle extends BaseControle
         $this->storeDeclarant();
     }
 
+    public function getEtablissementObject() {
+
+        return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+    }
+
     public function storeDeclarant() {
         $this->initDocuments();
         $this->declarant_document->storeDeclarant();
