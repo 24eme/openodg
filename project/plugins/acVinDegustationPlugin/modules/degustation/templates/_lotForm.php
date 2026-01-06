@@ -73,7 +73,7 @@
             </div>
         </div>
         <div class="row">
-            <?php if(DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+            <?php if(DRevConfiguration::getInstance()->hasSpecificiteLot() && isset($form['specificite']) ): ?>
                 <div class="col-md-6">
                     <div class="form-group">
                         <?php echo $form['specificite']->renderLabel("Spécificité", array('class' => "col-sm-4 control-label")); ?>
