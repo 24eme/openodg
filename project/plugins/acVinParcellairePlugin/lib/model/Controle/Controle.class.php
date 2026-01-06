@@ -202,15 +202,21 @@ class Controle extends BaseControle
         $retManquements = array();
         foreach ($this->parcelles as $parcelleId => $parcelle) {
             foreach ($parcelle->controle->points as $pointId => $dataPoint) {
-                $libellePointDeControle = ControleConfiguration::getInstance()->getLibellePointDeControle($pointId);
                 foreach ($dataPoint->manquements as $rtmId => $dataManquement) {
-                    $retManquements[$rtmId]['libelle_point_de_controle'] = $libellePointDeControle;
-                    if (!isset($retManquements[$rtmId]['libelle_manquement']) || !$retManquements[$rtmId]['libelle_manquement']) {
-                        $retManquements[$rtmId]['libelle_manquement'] = ControleConfiguration::getInstance()->getLibelleManquement($pointId, $rtmId);
+                    if(!isset($retManquements[$rtmId]) || !$retManquements[$rtmId]) {
+                        $retManquements[$rtmId] = ControleManquement::freeInstance($this);
+                        $retManquements[$rtmId]->observations = '';
+                        $retManquements[$rtmId]->parcelles_id = [];
                     }
-                    $retManquements[$rtmId]['parcelles'][$parcelleId]['observations'] = $dataManquement->observations;
-                    $retManquements[$rtmId]['parcelles'][$parcelleId]['delais'] = ControleConfiguration::getInstance()->getDelaisManquement($pointId, $rtmId);
-                    $retManquements[$rtmId]['parcelles'][$parcelleId]['conseils'] = ControleConfiguration::getInstance()->getConseilManquement($pointId, $rtmId);
+                    if (!isset($retManquements[$rtmId]->libelle_point_de_controle) || !$retManquements[$rtmId]->libelle_point_de_controle) {
+                        $retManquements[$rtmId]->libelle_point_de_controle = ControleConfiguration::getInstance()->getLibellePointDeControle($pointId);
+                    }
+                    if (!isset($retManquements[$rtmId]->libelle_manquement) || !$retManquements[$rtmId]->libelle_manquement) {
+                        $retManquements[$rtmId]->libelle_manquement = ControleConfiguration::getInstance()->getLibelleManquementWithPointId($rtmId, $pointId);
+                    }
+                    $retManquements[$rtmId]->parcelles_id->add(null, $parcelleId);
+                    $retManquements[$rtmId]->delais = ControleConfiguration::getInstance()->getDelaisManquement($pointId, $rtmId);
+                    $retManquements[$rtmId]->observations .= $parcelleId . ' - ' . $dataManquement->observations . "\n";
                 }
             }
         }

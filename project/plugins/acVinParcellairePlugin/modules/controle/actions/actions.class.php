@@ -127,7 +127,9 @@ class controleActions extends sfActions
 
     public function executeListeManquementsControle(sfWebRequest $request)
     {
-        $this->listeManquements = ControleClient::getInstance()->find($request->getParameter('id'))->getListeManquements();
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $this->listeManquements = $this->controle->getListeManquements();
+        $this->form = new ControleManquementsForm($this->controle);
     }
 
     public function executeTransmissionData(sfWebRequest $request)
