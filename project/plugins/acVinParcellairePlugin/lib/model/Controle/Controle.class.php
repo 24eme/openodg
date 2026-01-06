@@ -206,4 +206,13 @@ class Controle extends BaseControle
         }
         return $retManquements;
     }
+
+    public function updateManquements($data)
+    {
+        foreach ($data as $rtmId => $observations) {
+            if ($rtmId == '_revision') {continue;}
+            $this->manquements->add($rtmId, $observations);
+        }
+        $this->save();
+    }
 }

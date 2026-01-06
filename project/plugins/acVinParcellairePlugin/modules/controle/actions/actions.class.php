@@ -140,4 +140,13 @@ class controleActions extends sfActions
             exit;
         }
     }
+
+    public function executeUpdateObservations(sfWebRequest $request)
+    {
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $controle = ControleClient::getInstance()->find($request->getParameter('id'));
+            $controle->updateManquements($_POST);
+            exit;
+        }
+    }
 }
