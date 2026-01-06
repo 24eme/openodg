@@ -3,6 +3,7 @@ class Controle extends BaseControle
 {
     protected $config = null;
     protected $parcellaire = null;
+    protected $declarant_document = null;
 
     public function getConfig()
     {
@@ -14,7 +15,9 @@ class Controle extends BaseControle
 
     protected function initDocuments()
     {
-        $this->declarant_document = new DeclarantDocument($this);
+        if (! isset($this->declarant_document)) {
+            $this->declarant_document = new DeclarantDocument($this);
+        }
     }
 
     public function initDoc($identifiant, $date, $type = ControleClient::TYPE_COUCHDB)
@@ -23,11 +26,13 @@ class Controle extends BaseControle
         $this->date = $date;
         $this->campagne = ConfigurationClient::getInstance()->buildCampagne($date);
         $this->set('_id', ControleClient::TYPE_COUCHDB."-".$identifiant."-".str_replace('-', '', $date));
+        $this->initDocuments();
         $this->storeDeclarant();
     }
 
     public function storeDeclarant() {
-        parent::storeDeclarant();
+        $this->initDocuments();
+        $this->declarant_document->storeDeclarant();
         $etablissement = $this->getEtablissementObject();
         if($etablissement->exist('secteur')) {
             $this->document->secteur = $etablissement->secteur;
