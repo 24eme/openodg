@@ -5,7 +5,7 @@
 </div>
 
 <div class="container">
-    <form id="formUpdateObservations" action="<?php echo url_for('controle_update_observations', array("id" => $controle->_id)) ?>" method="post">
+    <form id="formUpdateObservations" action="<?php echo url_for('controle_liste_manquements_controle', array("id" => $controle->_id)) ?>" method="post">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 
@@ -13,8 +13,8 @@
             <?php if ($rtmId == '_revision') {continue;}?>
             <div class="row col-xs-12 checkbox">
                 <h4>
-                    <input type="checkbox" id="<?php echo $rtmId; ?>">
-                    <?php echo $listeManquements[$rtmId]['libelle_manquement'] ?>
+                    <?php echo $manquement['manquementCheckbox']->render(['id' => $rtmId]);?>
+                    <label for="<?php echo $rtmId; ?>"><?php echo $listeManquements[$rtmId]['libelle_manquement'] ?></label>
                 </h4>
             </div>
             <div class="row">
@@ -33,6 +33,7 @@
             </div>
         <?php endforeach; ?>
         <div class="row col-xs-12">
+            <button class="btn btn-secondary pull-left">Ajouter un manquement</button>
             <button type="submit" class="btn btn-success pull-right">Enregistrer</button>
         </div>
     </form>

@@ -130,6 +130,17 @@ class controleActions extends sfActions
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->listeManquements = $this->controle->getListeManquements();
         $this->form = new ControleManquementsForm($this->controle);
+
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+
+            if (! $this->form->isValid()) {
+                return sfView::SUCCESS;
+            }
+
+            $this->form->save();
+            return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
+        }
     }
 
     public function executeTransmissionData(sfWebRequest $request)
@@ -139,15 +150,6 @@ class controleActions extends sfActions
             $data = json_decode($raw, true);
             $controleBase = ControleClient::getInstance()->find($data['controle']['_id']);
             $controleBase->updateParcellePointsControleFromJson($data);
-            exit;
-        }
-    }
-
-    public function executeUpdateObservations(sfWebRequest $request)
-    {
-        if ($request->isMethod(sfWebRequest::POST)) {
-            $controle = ControleClient::getInstance()->find($request->getParameter('id'));
-            $controle->updateManquements($_POST);
             exit;
         }
     }
