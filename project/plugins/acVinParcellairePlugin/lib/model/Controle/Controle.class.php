@@ -207,6 +207,7 @@ class Controle extends BaseControle
                         $retManquements[$rtmId] = $this->manquements[$rtmId];
                         continue;
                     }
+                    if ($dataPoint->conformite == null) {continue;}
                     if(!isset($retManquements[$rtmId]) || !$retManquements[$rtmId]) {
                         $retManquements[$rtmId] = ControleManquement::freeInstance($this);
                         $retManquements[$rtmId]->observations = '';
