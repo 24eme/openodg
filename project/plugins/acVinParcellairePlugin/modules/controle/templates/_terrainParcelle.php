@@ -5,56 +5,112 @@
 
 <hr />
 
-<h4 class="strong">Parcelle n° {{ parcelleCourante.parcelle_id }}</h4>
+<div class="table-responsive">
+    <table class="table table-bordered table-condensed">
+        <thead>
+            <tr class="active">
+                <th colspan="2">
+                    <h4 class="strong" style="margin: 0;">Parcelle n° {{ parcelleCourante.parcelle_id }}</h4>
+                </th>
+            </tr>
+        </thead>
 
-<dl class="dl-horizontal mb-4">
-  <dt>Section / N° parcelle</dt>
-  <dd>{{ parcelleCourante.section }} {{ parcelleCourante.numero_parcelle }}</dd>
-  <dt>Superficie</dt>
-  <dd>{{ echoFloat(parcelleCourante.superficie) }} <span class="text-muted">ha</span></dd>
-  <dt>Commune / Lieu-dit</dt>
-  <dd>{{ parcelleCourante.commune }} {{ parcelleCourante.lieu }}</dd>
-  <dt>Cépage</dt>
-  <dd>{{ parcelleCourante.cepage }}</dd>
-  <dt>Appellation</dt>
-  <dd>{{ parcelleCourante.source_produit_libelle }}</dd>
-  <dt>Année de plantation</dt>
-  <dd>{{ parcelleCourante.campagne_plantation }}</dd>
-  <dt>Écart Pieds/Rang</dt>
-  <dd>{{ parcelleCourante.ecart_pieds }} / {{ parcelleCourante.ecart_rang }}</dd>
-</dl>
+        <tbody>
+            <tr>
+                <td><strong>Section / N° parcelle</strong></td>
+                <td>{{ parcelleCourante.section }} {{ parcelleCourante.numero_parcelle }}</td>
+            </tr>
+            <tr>
+                <td><strong>Superficie</strong></td>
+                <td>{{ echoFloat(parcelleCourante.superficie) }} <span class="text-muted">ha</span></td>
+            </tr>
+            <tr>
+                <td><strong>Commune / Lieu-dit</strong></td>
+                <td>{{ parcelleCourante.commune }} {{ parcelleCourante.lieu }}</td>
+            </tr>
+            <tr>
+                <td><strong>Cépage</strong></td>
+                <td>{{ parcelleCourante.cepage }}</td>
+            </tr>
+            <tr>
+                <td><strong>Appellation</strong></td>
+                <td>{{ parcelleCourante.source_produit_libelle }}</td>
+            </tr>
+            <tr>
+                <td><strong>Année de plantation</strong></td>
+                <td>{{ parcelleCourante.campagne_plantation }}</td>
+            </tr>
+            <tr>
+                <td><strong>Écart Pieds/Rang</strong></td>
+                <td>{{ parcelleCourante.ecart_pieds }} / {{ parcelleCourante.ecart_rang }}</td>
+            </tr>
+            <tr>
+                <td><strong>Manquants</strong></td>
+                <td>{{ parcelleCourante.pourcentageManquant }}%</td>
+            </tr>
+
+            <tr v-if="parcelleCourante.irrigation.materiel.length">
+                <td><strong>Irrigation</strong></td>
+                <td>
+                    <div><strong>Matériel :</strong> {{ parcelleCourante.irrigation.materiel }}</div>
+                    <div><strong>Ressource :</strong> {{ parcelleCourante.irrigation.ressource }}</div>
+                </td>
+            </tr>
+            <tr v-else>
+                <td><strong>Irrigation</strong></td>
+                <td class="text-muted">Pas d'irrigation</td>
+            </tr>
+
+            <tr>
+                <td><strong>Date d'irrigation</strong></td>
+                <td v-if="parcelleCourante.irrigation.date_irrigation">{{ parcelleCourante.irrigation.date_irrigation }}</td>
+                <td v-else>Pas de donnée</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 <a href="" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-road" /> Ouvrir sur le GPS</a>
 <hr />
 
 <h2>Points de contrôle</h2>
 <form class="form-horizontal">
-   <div class="form-group" v-for="(val, key) in parcelleCourante.controle.points" :key="key">
-       <label class="col-sm-2 control-label">{{ key }}</label>
-       <div class="col-sm-10">
-           <label class="radio-inline">
-             <input type="radio" value="C" v-model="parcelleCourante.controle.points[key]" /> Conforme
-           </label>
-           <label class="radio-inline">
-             <input type="radio" value="NC" v-model="parcelleCourante.controle.points[key]" /> Non Conforme
-           </label>
-       </div>
-   </div>
+    <div class="form-group" v-for="(valPoint, keyPoint) in parcelleCourante.controle.points" :key="keyPoint">
+    <h4 class="col-sm-6 control-label" style="text-align:left">
+      {{ valPoint.libelle }}
+  </h4>
 
-   <div class="form-group">
-       <label class="col-sm-2 control-label">Observations</label>
-       <div class="col-sm-10">
-           <textarea rows="4" class="form-control" placeholder="Saisir les observations terrain" v-model="parcelleCourante.controle.observations"></textarea>
-       </div>
-   </div>
+    <div class="col-sm-6">
+      <label class="radio-inline">
+        <input type="radio" :name="'controle_' + keyPoint" value="C" v-model="valPoint.conformite" />
+        Conforme
+      </label>
 
-  <div class="form-group">
-      <label class="col-sm-2 control-label">Superficie à retirer (ha)</label>
-      <div class="col-sm-10">
-          <input type="text" class="form-control" v-model="parcelleCourante.controle.superficie_a_retirer" />
+      <label class="radio-inline">
+        <input type="radio" :name="'controle_' + keyPoint" value="NC" v-model="valPoint.conformite" />
+        Non Conforme
+      </label>
+
+      <label class="radio-inline">
+        <input type="radio" :name="'controle_' + keyPoint" value="NO" v-model="valPoint.conformite" />
+        Non Observable
+      </label>
+    </div>
+
+    <div class="col-sm-12" v-show="valPoint.conformite === 'NC'">
+      <div class="" style="margin-top:10px;">
+        <div class="panel-body">
+            <div class="RTM" v-for="(infos, codeRtm) in valPoint.manquements">
+                <input :id="'checkbox_' + codeRtm" type="checkbox" v-model="infos.conformite" style="font-weight: normal;"/>
+                <label :for="'checkbox_' + codeRtm" style="margin-top: 5px;">&nbsp; {{ infos.libelle }} </label>
+                <div class="col-sm-12" style="margin-top: 5px;">
+                    <textarea rows="2" class="form-control" :name="'obs_' + codeRtm" :id="'obs_' + codeRtm" v-model="infos.observations" placeholder="Observations"></textarea>
+                </div>
+            </div>
+        </div>
       </div>
+    </div>
   </div>
-
 </form>
 
 <hr />

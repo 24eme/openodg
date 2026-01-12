@@ -7,8 +7,13 @@
 <?php endif; ?>
 
 <?php include_partial('parcellaireManquant/step', array('step' => 'manquants', 'parcellaireManquant' => $parcellaireManquant)) ?>
+<?php $manquants_by_commune = $parcellaireManquant->declaration->getParcellesByCommune(); ?>
 <div>
     <h2>Pieds morts ou manquants sur votre exploitation</h2>
+    <?php if (count($manquants_by_commune ) == 0): ?>
+    <p class="py-5 alert alert-warning">Aucune parcelle du parcellaire actuellement connu est éligible aux manquants.</p>
+    <p class="pb-3"><i>Pas de parcelles éligibles</i></p>
+    <?php else: ?>
     <p class="pt-3">Merci d'indiquer la densité et le % de pied manquant</p>
     <?php if(!ParcellaireConfiguration::getInstance()->isManquantAllPourcentageAllowed()): ?>
     <div class="alert alert-info">
@@ -20,13 +25,14 @@
         </div>
     </div>
     <?php endif; ?>
+    <?php endif; ?>
 </div>
 
 <form action="<?php echo url_for("parcellairemanquant_manquants", $parcellaireManquant) ?>" method="post" class="form-inline">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
-    <?php foreach ($parcellaireManquant->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
+    <?php foreach ($manquants_by_commune as $commune => $parcelles): ?>
     <h3><?php echo $commune; ?></h3>
     <table class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
         <thead>

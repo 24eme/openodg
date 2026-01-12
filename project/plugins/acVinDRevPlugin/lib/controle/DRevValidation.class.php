@@ -390,13 +390,14 @@ class DRevValidation extends DeclarationLotsValidation
         if(!$produit->hasVci()) {
             return;
         }
-        if(round(intval($produit->vci->stock_precedent), 4) != round($produit->getTotalVciUtilise(), 4)) {
+
+        if(round(floatval($produit->vci->stock_precedent), 4) != round($produit->getTotalVciUtilise(), 4)) {
             $this->addPoint(self::TYPE_ERROR, 'vci_stock_utilise', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
         }
         if($produit->getConfig()->rendement_vci_total !== null && round($produit->getPlafondStockVci(), 4) < $produit->vci->stock_final) {
             $point = $this->addPoint(self::TYPE_WARNING, 'vci_rendement_total', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
             $vol = $produit->vci->stock_final - round($produit->getPlafondStockVci(), 4);
-            $point->setMessage($point->getMessage() . " soit $vol hl");
+            $point->setMessage($point->getMessage() . " soit $vol hl (plafond du stock VCI : ".round($produit->getPlafondStockVci(), 4)." hl : ".$produit->recolte->superficie_total." ha * ".$produit->getConfig()->rendement_vci_total." hl/ha)");
         }
         if(round($produit->getCepage()->getRendementVCIConstitue(), 2) > $produit->getConfig()->getRendementVci()) {
             $point = $this->addPoint(self::TYPE_ERROR, 'vci_rendement', $produit->getLibelleComplet() . ' (rendement VCI de ' . round($produit->getCepage()->getRendementVciConstitue(), 2) . ' hl/ha pour '. $produit->getConfig()->getRendementVci().' hl/ha autorisé)', $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
@@ -544,6 +545,9 @@ class DRevValidation extends DeclarationLotsValidation
             return;
         }
         foreach($this->document->getProduits() as $produit) {
+            if (!$produit->getConfig()->getRendementVsi()) {
+                continue;
+            }
             if(round($produit->getCepage()->getRendementVsi(), 2) <= $produit->getConfig()->getRendementVsi()) {
                 continue;
             }

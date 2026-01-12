@@ -154,6 +154,7 @@ Controle:
       type: { }
       date: { }
       date_tournee: { }
+      type_tournee: { }
       identifiant: { }
       campagne: { }
       declarant:
@@ -217,6 +218,7 @@ Controle:
             '*':
               type: collection
               class: ControleParcelle
+              inheritance: ParcellaireParcelle
               definition:
                 fields:
                   superficie: { type: float }
@@ -249,10 +251,44 @@ Controle:
                           type: collection
                           definition:
                             fields:
-                              '*': {}
-                        observations: {}
+                              '*':
+                                type: collection
+                                definition:
+                                  fields:
+                                    conformite: { type: integer }
+                                    libelle: {}
+                                    manquements:
+                                      type: collection
+                                      definition:
+                                        fields:
+                                          '*':
+                                            type: collection
+                                            definition:
+                                              fields:
+                                                libelle: {}
+                                                observations: {}
+                                                conformite: {}
                         superficie_a_retirer: {}
                         saisie: {}
+                        observations: { required: false } # deprecated
+      manquements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: ControleManquement
+              definition:
+                fields:
+                  parcelles_id:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': {}
+                  libelle_point_de_controle: {}
+                  libelle_manquement: {}
+                  observations: {}
+                  delais: {}
       mouvements_statuts:
         type: array_collection
         definition:

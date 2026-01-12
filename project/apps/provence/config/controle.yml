@@ -1,0 +1,94 @@
+all:
+  configuration:
+    controle:
+      points_de_controle:
+        aire_parcellaire_delimitee:
+          libelle: "Aire parcellaire délimitée"
+          rtm:
+            RTM019:
+              libelle: "Parcelle déclarée située en dehors de l’aire parcellaire délimité"
+              types: ["Suivi", "Habilitation"]
+              plan: true
+              mesure_traitement: "Retrait du bénéfice de l’appellation pour les parcelles concernées"
+              modalite_verif_retour_conformite: "Contrôle supplémentaire"
+              mesure_odg_ou_avpi: "AVPI"
+              delais: ""
+            RTM021:
+              libelle: "Fiche CVI non tenue à jour ou erronée"
+              types: ["Suivi", "Habilitation"]
+              plan: true
+              mesure_traitement: "Avertissement"
+              modalite_verif_retour_conformite: "Contrôle documentaire sur la base des éléments transmis par l’opérateur"
+              mesure_odg_ou_avpi: "Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange."
+              delais: "2 semaines"
+        CMMP:
+          libelle: "Charge Maximale Moyenne Parcelle (CMMP)"
+          rtm:
+            RTM046:
+              libelle: "Parcelle déclarée située en dehors de l’aire parcellaire délimité"
+              types: ["Suivi", "Habilitation"]
+              plan: true
+              mesure_traitement: "Retrait du bénéfice de l’appellation pour les parcelles concernées"
+              modalite_verif_retour_conformite: "Contrôle supplémentaire"
+              mesure_odg_ou_avpi: "AVPI"
+              delais: ""
+        CMMP_des_parcelles_irriguees:
+          libelle: "Charge Maximale Moyenne Parcelle (CMMP) des parcelles irriguées"
+          rtm:
+            RTM047:
+              libelle: "Non-respect de la CMMP/ CMMP pour parcelles irriguées"
+              types: ["Suivi", "Habilitation"]
+              plan: false
+              mesure_traitement: "Retrait du bénéfice de"
+              modalite_verif_retour_conformite: "Contrôle supplémentaire à la campagne suivante"
+              mesure_odg_ou_avpi: "AVPI"
+              delais: ""
+        Convention_tripartite_de_suivi_du_réseau_de_parcelles:
+          libelle: "Convention tripartite de suivi du réseau de parcelles - Variétés d’intérêt à fin d’adaptation"
+          rtm:
+            RTM062:
+              libelle: "Absence de signature d’une convention de suivi du réseau de parcelles « Variétés d’intérêt à fin d’adaptation »"
+              types: ["Suivi", "Habilitation"]
+              plan: false
+              mesure_traitement: "Retrait du bénéfice de l’appellation pour la production de la parcelle"
+              modalite_verif_retour_conformite: "Contrôle documentaire hors site sur la base des éléments transmis par l’opérateur"
+              mesure_odg_ou_avpi: "AVPI"
+              delais: ""
+        Densite_de_plantation:
+          libelle: "Densité de plantation"
+          rtm:
+            RTM035:
+              libelle: "Non-respect de la densité (dont écartement)"
+              types: ["Suivi", "Habilitation"]
+              plan: true
+              mesure_traitement: "Retrait du bénéfice de l’appellation pour les parcelles concernées"
+              modalite_verif_retour_conformite: "Contrôle documentaire supplémentaire  sur la base des éléments transmis par l’opérateur"
+              mesure_odg_ou_avpi: "AVPI"
+              delais: ""
+        DI:
+          libelle: "Document d'Identification (DI)"
+          rtm:
+            RTM002:
+              libelle: "Identification erronée avec incidence forte sur le respect du cahier des charges"
+              types: ["Suivi", "Habilitation"]
+              plan: true
+              mesure_traitement: "Suspension d'habilitation"
+              modalite_verif_retour_conformite: "Contrôle supplémentaire"
+              mesure_odg_ou_avpi: ""
+              delais: ""
+            RTM003:
+              libelle: "Identification erronée avec incidence faible sur le respect du cahier des charges"
+              types: ["Suivi", "Habilitation"]
+              plan: true
+              mesure_traitement: "Avertissement"
+              modalite_verif_retour_conformite: "Contrôle documentaire, ou prochain contrôle de suivi interne ou externe"
+              mesure_odg_ou_avpi: ""
+              delais: ""
+            RTM004:
+              libelle: "Absence d'information de l'opérateur à l’ODG de toute modification concernant l'opérateur et affectant son (ou ses) outil(s) de production"
+              types: ["Suivi", "Habilitation"]
+              plan: true
+              mesure_traitement: "Avertissement"
+              modalite_verif_retour_conformite: "Contrôle documentaire, ou prochain contrôle de suivi interne ou externe"
+              mesure_odg_ou_avpi: ""
+              delais: ""

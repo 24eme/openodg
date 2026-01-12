@@ -268,8 +268,8 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
           $colExtraIds .= ';'.implode('|', DouaneImportCsvFile::extractLabels($p[9]));
           $colExtraIds .= ';'.$this->getHabilitationStatus(HabilitationClient::ACTIVITE_PRODUCTEUR, $produits_obj[$k]);
 
-          $has_L6 = in_array("06", array_column($exploitant[$k], 0));
-	        foreach ($exploitant[$k] as $sk => $e) {
+            $has_L6 = isset($exploitant[$k]) && $exploitant[$k] && array_column($exploitant[$k], 0) && in_array("06", array_column($exploitant[$k], 0));
+            foreach ($exploitant[$k] as $sk => $e) {
                 $eOrigin = null;
                 if($e[0] == 4) {
                     $eOrigin = $e;

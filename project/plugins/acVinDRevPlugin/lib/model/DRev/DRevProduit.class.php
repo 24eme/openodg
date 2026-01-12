@@ -82,7 +82,7 @@ class DRevProduit extends BaseDRevProduit
 		if($this->exist('volume_revendique_issu_mutage') && $this->volume_revendique_issu_mutage) {
 			return ($this->volume_revendique_total - $this->volume_revendique_issu_mutage);
 		}
-        return intval($this->volume_revendique_total);
+        return floatval($this->volume_revendique_total);
 	}
 
 
