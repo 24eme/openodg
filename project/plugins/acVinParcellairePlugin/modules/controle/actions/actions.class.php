@@ -119,4 +119,36 @@ class controleActions extends sfActions
     {
         $this->controle = $this->getRoute()->getControle();
     }
+
+    public function executeListeOperateursTournee(sfWebRequest $request)
+    {
+        $this->controles = $this->getControlesPlanifies($request->getParameter('date'))[$request->getParameter('date')]['controles'];
+    }
+
+    public function executeListeManquementsControle(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $this->listeManquements = $this->controle->getListeManquements();
+        $this->form = new ControleManquementsForm($this->controle);
+    }
+
+    public function executeTransmissionData(sfWebRequest $request)
+    {
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $raw = file_get_contents('php://input');
+            $data = json_decode($raw, true);
+            $controleBase = ControleClient::getInstance()->find($data['controle']['_id']);
+            $controleBase->updateParcellePointsControleFromJson($data);
+            exit;
+        }
+    }
+
+    public function executeUpdateObservations(sfWebRequest $request)
+    {
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $controle = ControleClient::getInstance()->find($request->getParameter('id'));
+            $controle->updateManquements($_POST);
+            exit;
+        }
+    }
 }

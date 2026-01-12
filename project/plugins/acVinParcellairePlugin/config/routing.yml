@@ -201,3 +201,19 @@ controle_apporga:
 controle_apporga_save:
   url: /controle/apporga/:date/save
   param: { module: controle, action: appOrgaSave }
+
+controle_liste_operateur_tournee:
+  url: /controle/listeoperateur/:date
+  param: { module: controle, action: listeOperateursTournee}
+
+controle_liste_manquements_controle:
+  url: /controle/:id/manquements
+  param: { module:controle, action: listeManquementsControle}
+
+controle_transmission_data:
+  url: /controle/transmit
+  param: { module:controle, action: TransmissionData }
+
+controle_update_observations:
+  url: /controle/:id/update-observations
+  param: { module:controle, action: UpdateObservations }
