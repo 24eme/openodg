@@ -191,18 +191,18 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
     /*
     * Valeurs prédéfinies par Adelphe
     */
-    $partBouteilleNormale = 75/100;
-    $partBouteilleAllegee = 25/100;
-    $partCarton = 1/6;
-    $prixUnitaireBouteilleNormale = 0.0125;
-    $prixUnitaireBouteilleAllegee = 0.0190;
-    $prixUnitaireCarton = 0.0582;
-    $partBib3L = 55/100;
-    $partBib5L = 35/100;
-    $partBib10L = 10/100;
-    $prixUnitaireBib3L = 0.0494;
-    $prixUnitaireBib5L = 0.0645;
-    $prixUnitaireBib10L = 0.1110;
+    $partBouteilleNormale = AdelpheConfiguration::getInstance()->getPartBouteilleNormale();
+    $partBouteilleAllegee = AdelpheConfiguration::getInstance()->getPartBouteilleAllegee();
+    $partCarton = AdelpheConfiguration::getInstance()->getPartCarton();
+    $prixUnitaireBouteilleNormale = AdelpheConfiguration::getInstance()->getPrixUnitaireBouteilleNormale();
+    $prixUnitaireBouteilleAllegee = AdelpheConfiguration::getInstance()->getPrixUnitaireBouteilleAllegee();
+    $prixUnitaireCarton = AdelpheConfiguration::getInstance()->getPrixUnitaireCarton();
+    $partBib3L = AdelpheConfiguration::getInstance()->getPartBib3l();
+    $partBib5L = AdelpheConfiguration::getInstance()->getPartBib5l();
+    $partBib10L = AdelpheConfiguration::getInstance()->getPartBib10l();
+    $prixUnitaireBib3L = AdelpheConfiguration::getInstance()->getPrixUnitaireBib3l();
+    $prixUnitaireBib5L = AdelpheConfiguration::getInstance()->getPrixUnitaireBib5l();
+    $prixUnitaireBib10L = AdelpheConfiguration::getInstance()->getPrixUnitaireBib10l();
     /*
     * Calcul des unités de conditionnement
     */
