@@ -203,7 +203,7 @@ class Controle extends BaseControle
         foreach ($this->parcelles as $parcelleId => $parcelle) {
             foreach ($parcelle->controle->points as $pointId => $dataPoint) {
                 foreach ($dataPoint->manquements as $rtmId => $dataManquement) {
-                    if ($this->manquements->exist($rtmId)) {
+                    if ($this->manquements->exist($rtmId) && ($this->manquements->$rtmId->observations && $this->manquements->$rtmId->parcelles_id)) {
                         $retManquements[$rtmId] = $this->manquements[$rtmId];
                         continue;
                     }
@@ -224,6 +224,10 @@ class Controle extends BaseControle
                     $retManquements[$rtmId]->observations .= $parcelleId . ' - ' . $dataManquement->observations . "\n";
                 }
             }
+        }
+        foreach ($this->manquements as $rtmId => $manquement) {
+            if (isset($retManquements[$rtmId])) {continue;}
+            $retManquements[$rtmId] = $manquement;
         }
         return $retManquements;
     }
