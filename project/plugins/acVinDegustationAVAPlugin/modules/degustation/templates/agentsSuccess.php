@@ -24,12 +24,14 @@
             <div <?php if($exist): ?>data-state="active"<?php endif; ?> class="list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
                 <div class="col-xs-5"><?php echo Anonymization::hideIfNeeded($agent->nom_a_afficher) ?> <br /><small class="text-muted"><?php echo Anonymization::hideIfNeeded($agent->adresse) ?> <?php echo $agent->commune ?></small></div>
                 <div class="col-xs-6">
-                    <select name="agents[<?php echo $agent->_id ?>][]" <?php if(!$exist): ?>disabled="disabled"<?php endif; ?> multiple="multiple" data-placeholder="Sélectionner des dates" class="form-control select2 select2-offscreen select2autocomplete <?php if(!$exist): ?>hidden<?php endif; ?>">
+                    <div class="item-container <?php if(!$exist): ?>hidden<?php endif; ?>">
+                    <select name="agents[<?php echo $agent->_id ?>][]"  multiple="multiple" data-placeholder="Sélectionner des dates" class="form-control select2 select2-offscreen select2autocomplete">
                         <option></option>
                         <?php foreach($jours as $jour): ?>
                         <option <?php if($exist && in_array($jour, $tournee->agents->get($agent->_id)->dates->toArray(true, false)->getRawValue())): ?>selected="selected"<?php endif; ?> value="<?php echo $jour ?>"><?php echo format_date($jour, "P", "fr_FR") ?></option>
                         <?php endforeach; ?>
                     </select>
+                    </div>
                 </div>
                 <div class="col-xs-1">
                     <button class="btn btn-success btn-sm pull-right <?php if($exist): ?>hidden<?php endif; ?>" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>

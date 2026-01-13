@@ -421,6 +421,7 @@
              }*/
             ligne.addClass('list-group-item-success');
             ligne.removeClass('clickable');
+            ligne.find('.item-container').removeClass('hidden');
             ligne.find('input, select, .select label, .select').removeAttr('disabled');
             if (ligne.find('.select[data-selection-mode=auto]').length > 0) {
                 if (ligne.find('.select input[checked=checked]').length == 0) {
@@ -449,7 +450,7 @@
                 ligne.removeClass('clickable');
                 ligne.find('button.btn-success').addClass('hidden');
             }
-
+            ligne.find('.item-container').addClass('hidden');
             ligne.find('.select input').removeProp('checked');
             ligne.find('.select input').parent('label').removeClass('active');
             ligne.find('.select input').change();

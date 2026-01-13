@@ -19,5 +19,20 @@ all:
       # 75% * PRIX_BOUTEILLES_NORMALES / 0.0075 + 25% * PRIX_BOUTEILLES_ALLEGEES / 0.0075 + PRIX_CARTON / (6 * 0.0075 )
       # 0,75 × 0,0125 ÷ 0,0075 + 0,25 × 0,0109 ÷ 0,0075 + 0,0582 ÷ (6 × 0,0075)
       prix_unitaire_bouteille: 2.9067
+      #prix unitaires bruts
+      prix_unitaire_bouteille_normale: 0.0125
+      prix_unitaire_bouteille_allegee: 0.0109
+      prix_unitaire_carton: 0.0582
+      prix_unitaire_bib_3l: 0.0494
+      prix_unitaire_bib_5l: 0.0645
+      prix_unitaire_bib_10l: 0.1110
+      #Répartition
+      part_bib_3l: 0.54
+      part_bib_5l: 0.43
+      part_bib_10l: 0.03
+      part_bouteille_allegee: 0.25
+      part_bouteille_normale: 0.75
+      part_carton: 0.166666667
+      #divers
       url_adelphe: "https://www.adelphe.fr/"
       volumes_conditionnes_csv: '/data/configuration/adelphe_volumes_conditionnes_%ANNEE%.csv'
