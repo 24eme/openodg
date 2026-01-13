@@ -19,7 +19,7 @@ class ControleManquementsForm extends acCouchdbForm
 
         foreach ($values as $key => $manquementInfos) {
             if ($key == '_revision') {continue;}
-            if (! $manquementInfos['manquementCheckbox']) {continue;}
+            if (! $manquementInfos['manquement_checkbox']) {continue;}
 
             if (! $controle->manquements->exist($key)) {
                 $controle->manquements->add($key, $listeManquements[$key]);
