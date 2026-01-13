@@ -177,7 +177,7 @@ class Controle extends BaseControle
             $retControleByParcelle[$parcelle['parcelle_id']] = $parcelle['controle'];
             unset($retControleByParcelle[$parcelle['parcelle_id']]['points']);
             foreach ($parcelle['controle']['points'] as $nomPointDeControle => $dataPointDeControle) {
-                if ($dataPointDeControle['conformite'] == 'C') {
+                if ($dataPointDeControle['conformite'] != 'NC') {
                     continue;
                 }
                 // Unset pour ne prendre que les manquements qui sont non conformes
