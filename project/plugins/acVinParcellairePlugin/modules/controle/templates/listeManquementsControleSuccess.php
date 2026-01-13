@@ -33,7 +33,7 @@
             </div>
         <?php endforeach; ?>
         <div class="row col-xs-12">
-            <button class="btn btn-secondary pull-left">Ajouter un manquement</button>
+        <button class="btn btn-secondary pull-left"><a href="<?php echo url_for('controle_ajout_liste_manquements', array("id" => $controle->_id))?>">Ajouter un manquement</a></button>
             <button type="submit" class="btn btn-success pull-right">Enregistrer</button>
         </div>
     </form>

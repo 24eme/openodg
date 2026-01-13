@@ -227,4 +227,17 @@ class Controle extends BaseControle
         }
         return $retManquements;
     }
+
+    public function getInfosManquement($rtmId)
+    {
+        return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeRtm($rtmId), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleManquement($rtmId));
+    }
+
+    public function addManquement($rtmId)
+    {
+        if ($this->manquements->exist($rtmId)) {return ;}
+        $manquement = $this->getInfosManquement($rtmId);
+        $this->manquements->add($rtmId, $manquement);
+        $this->save();
+    }
 }

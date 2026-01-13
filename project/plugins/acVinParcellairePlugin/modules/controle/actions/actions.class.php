@@ -153,4 +153,14 @@ class controleActions extends sfActions
             exit;
         }
     }
+
+    public function executeListeAjoutManquementsControle(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $this->listeManquements = ControleConfiguration::getInstance()->getAllLibellesManquements();
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->controle->addManquement($_POST['manquement']);
+            return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
+        }
+    }
 }

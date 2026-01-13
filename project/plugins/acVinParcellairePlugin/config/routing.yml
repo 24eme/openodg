@@ -213,3 +213,7 @@ controle_liste_manquements_controle:
 controle_transmission_data:
   url: /controle/transmit
   param: { module:controle, action: TransmissionData }
+
+controle_ajout_liste_manquements:
+  url: /controle/:id/manquements/ajout
+  param: { module: controle, action: listeAjoutManquementsControle}
