@@ -13,7 +13,7 @@
             <?php if ($rtmId == '_revision') {continue;}?>
             <div class="row col-xs-12 checkbox">
                 <h4>
-                    <?php echo $manquement['manquementCheckbox']->render(['id' => $rtmId]);?>
+                    <?php echo $manquement['manquement_checkbox']->render(['id' => $rtmId]);?>
                     <label for="<?php echo $rtmId; ?>"><?php echo $listeManquements[$rtmId]['libelle_manquement'] ?></label>
                 </h4>
             </div>

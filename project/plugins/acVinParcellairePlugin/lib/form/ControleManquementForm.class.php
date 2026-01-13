@@ -7,7 +7,15 @@ class ControleManquementForm extends acCouchdbObjectForm
         $this->setWidget('observations', new sfWidgetFormTextarea());
         $this->validatorSchema['observations'] = new sfValidatorPass();
 
-        $this->setWidget('manquementCheckbox', new sfWidgetFormInputCheckbox());
-        $this->validatorSchema['manquementCheckbox'] = new sfValidatorBoolean();
+        $this->setWidget('manquement_checkbox', new sfWidgetFormInputCheckbox());
+        $this->validatorSchema['manquement_checkbox'] = new sfValidatorBoolean();
+    }
+
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+
+        if ($this->getObject()->getDocument()->manquements->exist($this->getObject()->getKey())) {
+            $this->setDefault('manquement_checkbox', true);
+        }
     }
 }
