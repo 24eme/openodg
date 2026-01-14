@@ -255,7 +255,7 @@ Controle:
                                 type: collection
                                 definition:
                                   fields:
-                                    conformite: { type: integer }
+                                    conformite: {}
                                     libelle: {}
                                     manquements:
                                       type: collection

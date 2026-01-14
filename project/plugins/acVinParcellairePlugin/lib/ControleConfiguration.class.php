@@ -75,4 +75,15 @@ class ControleConfiguration extends DeclarationConfiguration {
     {
         return '';
     }
+
+    public function getAllLibellesManquements()
+    {
+        $libellesManquements = array();
+        foreach ($this->configuration['points_de_controle'] as $point) {
+            foreach ($point['rtm'] as $idrtm => $manquement) {
+                $libellesManquements[$idrtm] = $manquement['libelle'];
+            }
+        }
+        return $libellesManquements;
+    }
 }

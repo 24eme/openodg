@@ -252,17 +252,14 @@
                   } else {
                       $(this).addClass('transparence-sm');
                     }
-                    if(cepage) {
+                    if(cepage && volume > 0) {
                         if(libelle) {
                             libelle = libelle + ", ";
                         }else{
                             libelle = "Mention : ";
                         }
-                        libelle = libelle + cepage;
                         var p = (total)? Math.round((volume/total) * 100) : 0;
-                        if(p) {
-                          libelle += "&nbsp;("+p+"%)";
-                        }
+                        libelle = libelle + cepage + "&nbsp;("+p+"%)";
                     }
 
                     $(this).find('input, select').each(function() {
@@ -320,9 +317,9 @@
               inputs = modal.querySelectorAll('input.input-hl')
               var nbRempli = 0;
               inputs.forEach(function (input) {
-                  if ($('#'+input.id).parents('.ligne_lot_cepage').find('select.selectCepage').val() ) {
-                      nbRempli++;
+                  if (! isNaN(parseFloat(input.value)) && $('#'+input.id).parents('.ligne_lot_cepage').find('select.selectCepage').val() ) {
                       total += parseFloat(input.value)
+                      nbRempli++;
                   }
               })
 
@@ -332,16 +329,10 @@
                 return;
               }
 
-              if(total > 0) {
-                vol_total.value = total;
-              } else {
-                vol_total.value = modal.querySelector('.input-total').value;
-              }
+              vol_total.value = total;
 
               if(parseFloat(vol_total.value) > 0){
-                if(total) {
-                  $('#'+modal.id).find('.input-total').val(total.toFixed(2));
-                }
+                $('#'+modal.id).find('.input-total').val(total.toFixed(2));
                 vol_total.readOnly = true;
 
                 var element_check = $('.bloc_condition .radio-inline input[checked="checked"]')
@@ -437,7 +428,7 @@
           });
           var i = 0;
           var sumpc = 0;
-          if (!nbligneaveccepageetpcouhl && nbligneaveccepage == 1) {
+          if (!nbligneaveccepageetpcouhl) {
             $(this).parents('.modal-dialog').find('.input-pc').each(function(){
               if (!$(this).parents('.ligne_lot_cepage').find('select.selectCepage').val()) {
                 return ;
@@ -451,11 +442,8 @@
               $(this).val((100 - sumpc).toFixed(2));
               $(this).parents('.modal_lot_cepages').find('.switch_hl_to_pc').prop("checked", true);
               $(this).parents('.modal_lot_cepages').find('.switch_hl_to_pc').trigger("change");
-            });
-          }
 
-          if(!nbligneaveccepageetpcouhl) {
-            $(this).parents('.modal_lot_cepages').find('.switch_hl_to_pc').trigger("change");
+            });
           }
 
           //si % sélectionné, on rempli les hl
