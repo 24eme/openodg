@@ -214,6 +214,6 @@ controle_transmission_data:
   url: /controle/transmit
   param: { module:controle, action: TransmissionData }
 
-controle_update_observations:
-  url: /controle/:id/update-observations
-  param: { module:controle, action: UpdateObservations }
+controle_ajout_liste_manquements:
+  url: /controle/:id/manquements/ajout
+  param: { module: controle, action: listeAjoutManquementsControle}

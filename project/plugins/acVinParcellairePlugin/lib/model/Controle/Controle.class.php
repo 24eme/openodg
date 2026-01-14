@@ -177,14 +177,14 @@ class Controle extends BaseControle
             $retControleByParcelle[$parcelle['parcelle_id']] = $parcelle['controle'];
             unset($retControleByParcelle[$parcelle['parcelle_id']]['points']);
             foreach ($parcelle['controle']['points'] as $nomPointDeControle => $dataPointDeControle) {
-                if ($dataPointDeControle['conformite'] == 'C') {
+                if ($dataPointDeControle['conformite'] != 'NC') {
                     continue;
                 }
                 // Unset pour ne prendre que les manquements qui sont non conformes
                 $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle] = $dataPointDeControle;
                 unset($retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['manquements']);
                 foreach ($dataPointDeControle['manquements'] as $numRtm => $dataManquement) {
-                    if (! $dataManquement['conformite']) {
+                    if ($dataManquement['conformite'] != 1) {
                         continue;
                     }
                     $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['manquements'][$numRtm] = $dataManquement;
@@ -203,6 +203,11 @@ class Controle extends BaseControle
         foreach ($this->parcelles as $parcelleId => $parcelle) {
             foreach ($parcelle->controle->points as $pointId => $dataPoint) {
                 foreach ($dataPoint->manquements as $rtmId => $dataManquement) {
+                    if ($this->manquements->exist($rtmId) && ($this->manquements->$rtmId->observations && $this->manquements->$rtmId->parcelles_id)) {
+                        $retManquements[$rtmId] = $this->manquements[$rtmId];
+                        continue;
+                    }
+                    if ($dataPoint->conformite == null) {continue;}
                     if(!isset($retManquements[$rtmId]) || !$retManquements[$rtmId]) {
                         $retManquements[$rtmId] = ControleManquement::freeInstance($this);
                         $retManquements[$rtmId]->observations = '';
@@ -220,15 +225,23 @@ class Controle extends BaseControle
                 }
             }
         }
+        foreach ($this->manquements as $rtmId => $manquement) {
+            if (isset($retManquements[$rtmId])) {continue;}
+            $retManquements[$rtmId] = $manquement;
+        }
         return $retManquements;
     }
 
-    public function updateManquements($data)
+    public function getInfosManquement($rtmId)
     {
-        foreach ($data as $rtmId => $observations) {
-            if ($rtmId == '_revision') {continue;}
-            $this->manquements->add($rtmId, $observations);
-        }
+        return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeRtm($rtmId), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleManquement($rtmId));
+    }
+
+    public function addManquement($rtmId)
+    {
+        if ($this->manquements->exist($rtmId)) {return ;}
+        $manquement = $this->getInfosManquement($rtmId);
+        $this->manquements->add($rtmId, $manquement);
         $this->save();
     }
 }
