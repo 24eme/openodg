@@ -257,7 +257,7 @@ Controle:
                                   fields:
                                     conformite: {}
                                     libelle: {}
-                                    manquements:
+                                    constats:
                                       type: collection
                                       definition:
                                         fields:

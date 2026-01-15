@@ -182,12 +182,12 @@ class Controle extends BaseControle
                 }
                 // Unset pour ne prendre que les manquements qui sont non conformes
                 $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle] = $dataPointDeControle;
-                unset($retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['manquements']);
+                unset($retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['constats']);
                 foreach ($dataPointDeControle['manquements'] as $numRtm => $dataManquement) {
                     if ($dataManquement['conformite'] != 1) {
                         continue;
                     }
-                    $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['manquements'][$numRtm] = $dataManquement;
+                    $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['constats'][$numRtm] = $dataManquement;
                 }
             }
         }
@@ -214,7 +214,7 @@ class Controle extends BaseControle
         $retManquements = array();
         foreach ($this->parcelles as $parcelleId => $parcelle) {
             foreach ($parcelle->controle->points as $pointId => $dataPoint) {
-                foreach ($dataPoint->manquements as $rtmId => $dataManquement) {
+                foreach ($dataPoint->constats as $rtmId => $dataManquement) {
                     if ($this->manquements->exist($rtmId) && ($this->manquements->$rtmId->observations && $this->manquements->$rtmId->parcelles_id)) {
                         $retManquements[$rtmId] = $this->manquements[$rtmId];
                         continue;
