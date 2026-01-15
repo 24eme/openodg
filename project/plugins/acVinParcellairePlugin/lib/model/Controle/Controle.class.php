@@ -197,6 +197,18 @@ class Controle extends BaseControle
         $this->save();
     }
 
+    public function hasConstatTerrain()
+    {
+        foreach ($this->parcelles as $parcelleId => $parcelle) {
+            foreach ($parcelle->controle->points as $dataPoint) {
+                if (! empty($dataPoint)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public function getListeManquements()
     {
         $retManquements = array();
@@ -236,7 +248,7 @@ class Controle extends BaseControle
 
     public function getInfosManquement($rtmId)
     {
-        return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeRtm($rtmId), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleManquement($rtmId));
+        return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeRtm($rtmId), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleManquement($rtmId), 'actif' => true, 'constat_date' => $this->date_tournee);
     }
 
     public function addManquementDocumentaire($rtmId)
@@ -244,7 +256,6 @@ class Controle extends BaseControle
         if ($this->manquements->exist($rtmId)) {return ;}
         $manquement = $this->getInfosManquement($rtmId);
         $this->manquements->add($rtmId, $manquement);
-        $this->save();
     }
 
     public function addManquementTerrain($rtmId, $dataManquement)
@@ -252,18 +263,13 @@ class Controle extends BaseControle
         if ($this->manquements->exist($rtmId)) {return ;}
         $this->manquements->add($rtmId, $dataManquement);
         $this->manquements->$rtmId->actif = true;
-        $this->save();
     }
 
     public function hasManquementTerrain()
     {
-        foreach ($this->parcelles as $parcelleId => $parcelle) {
-            foreach ($parcelle->controle->points as $pointId => $dataPoint) {
-                foreach ($dataPoint->manquements as $rtmId => $dataManquement) {
-                    if ($dataManquement->parcelles_id) {
-                        return true;
-                    }
-                }
+        foreach ($this->manquements as $rtmId => $manquement) {
+            if ($manquement->parcelles_id) {
+                return true;
             }
         }
         return false;
@@ -273,7 +279,6 @@ class Controle extends BaseControle
     {
         if ($this->manquements->exist($rtmId)) {
             $this->manquement->remove($rtmId);
-            $this->save();
         }
     }
 
