@@ -221,6 +221,8 @@ class Controle extends BaseControle
                     }
                     $retManquements[$rtmId]->parcelles_id->add(null, $parcelleId);
                     $retManquements[$rtmId]->delais = ControleConfiguration::getInstance()->getDelaisManquement($pointId, $rtmId);
+                    $retManquements[$rtmId]->constat_date = $this->date_tournee;
+                    $retManquements[$rtmId]->actif = false;
                     $retManquements[$rtmId]->observations .= $parcelleId . ' - ' . $dataManquement->observations . "\n";
                 }
             }
@@ -237,11 +239,53 @@ class Controle extends BaseControle
         return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeRtm($rtmId), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleManquement($rtmId));
     }
 
-    public function addManquement($rtmId)
+    public function addManquementDocumentaire($rtmId)
     {
         if ($this->manquements->exist($rtmId)) {return ;}
         $manquement = $this->getInfosManquement($rtmId);
         $this->manquements->add($rtmId, $manquement);
         $this->save();
+    }
+
+    public function addManquementTerrain($rtmId, $dataManquement)
+    {
+        if ($this->manquements->exist($rtmId)) {return ;}
+        $this->manquements->add($rtmId, $dataManquement);
+        $this->manquements->$rtmId->actif = true;
+        $this->save();
+    }
+
+    public function hasManquementTerrain()
+    {
+        foreach ($this->parcelles as $parcelleId => $parcelle) {
+            foreach ($parcelle->controle->points as $pointId => $dataPoint) {
+                foreach ($dataPoint->manquements as $rtmId => $dataManquement) {
+                    if ($dataManquement->parcelles_id) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public function deleteManquement($rtmId)
+    {
+        if ($this->manquements->exist($rtmId)) {
+            $this->manquement->remove($rtmId);
+            $this->save();
+        }
+    }
+
+    public function generateManquements()
+    {
+        foreach ($this->getListeManquements() as $rtmId => $dataManquement) {
+            $this->addManquementTerrain($rtmId, $dataManquement);
+        }
+    }
+
+    public function getManquementsListe()
+    {
+        return $this->manquements;
     }
 }

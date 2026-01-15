@@ -128,7 +128,7 @@ class controleActions extends sfActions
     public function executeListeManquementsControle(sfWebRequest $request)
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
-        $this->listeManquements = $this->controle->getListeManquements();
+        $this->listeManquements = $this->controle->getManquementsListe();
         $this->form = new ControleManquementsForm($this->controle);
 
         if ($request->isMethod(sfWebRequest::POST)) {
@@ -140,6 +140,15 @@ class controleActions extends sfActions
 
             $this->form->save();
             return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
+        }
+    }
+
+    public function executeUpdateManquements(sfWebRequest $request)
+    {
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $controle = ControleClient::getInstance()->find($request->getParameter('id'));
+            $controle->generateManquements();
+            return $this->redirect('controle_liste_manquements_controle', array('id' => $controle->_id));
         }
     }
 
