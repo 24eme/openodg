@@ -1,5 +1,5 @@
 <?php use_helper('Date'); ?>
-<?php use_javascript("degustation_ava.js?201504020331", "last") ?>
+<?php use_javascript("degustation_ava.js?202601141025", "last") ?>
 
 <?php include_partial('degustation/breadcrumb', array('tournee' => $tournee )); ?>
 <?php include_partial('degustation/step', array('tournee' => $tournee, 'active' => TourneeEtapes::ETAPE_AGENTS)); ?>
