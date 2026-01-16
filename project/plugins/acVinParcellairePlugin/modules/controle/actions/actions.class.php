@@ -128,7 +128,10 @@ class controleActions extends sfActions
     public function executeListeManquementsControle(sfWebRequest $request)
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
-        $this->listeManquements = $this->controle->getListeManquements();
+        $this->listeManquements = $this->controle->getManquementsListe();
+        if (! $this->controle->hasManquementTerrain() && $this->controle->hasConstatTerrain()) {
+            $this->redirect('controle_update_manquements', array('id' => $this->controle->_id));
+        }
         $this->form = new ControleManquementsForm($this->controle);
 
         if ($request->isMethod(sfWebRequest::POST)) {
@@ -141,6 +144,14 @@ class controleActions extends sfActions
             $this->form->save();
             return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
         }
+    }
+
+    public function executeUpdateManquements(sfWebRequest $request)
+    {
+        $controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $controle->generateManquements();
+        $controle->save();
+        return $this->redirect('controle_liste_manquements_controle', array('id' => $controle->_id));
     }
 
     public function executeTransmissionData(sfWebRequest $request)
@@ -159,7 +170,8 @@ class controleActions extends sfActions
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->listeManquements = ControleConfiguration::getInstance()->getAllLibellesManquements();
         if ($request->isMethod(sfWebRequest::POST)) {
-            $this->controle->addManquement($_POST['manquement']);
+            $this->controle->addManquementDocumentaire($_POST['manquement']);
+            $this->controle->save();
             return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
         }
     }

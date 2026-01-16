@@ -5,7 +5,7 @@
 </div>
 
 <div class="container">
-    <form id="formUpdateObservations" action="<?php echo url_for('controle_liste_manquements_controle', array("id" => $controle->_id)) ?>" method="post">
+    <form id="formListeManquements" action="<?php echo url_for('controle_liste_manquements_controle', array("id" => $controle->_id)) ?>" method="post">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 
@@ -32,9 +32,12 @@
                 </div>
             </div>
         <?php endforeach; ?>
-        <div class="row col-xs-12">
-        <button class="btn btn-secondary pull-left"><a href="<?php echo url_for('controle_ajout_liste_manquements', array("id" => $controle->_id))?>">Ajouter un manquement</a></button>
-            <button type="submit" class="btn btn-success pull-right">Enregistrer</button>
-        </div>
     </form>
+        <div class="" style="padding-right: 30px; align-items: center;">
+            <button class="btn btn-secondary pull-left"><a href="<?php echo url_for('controle_ajout_liste_manquements', array("id" => $controle->_id))?>">Ajouter un manquement</a></button>
+            <form id="formGenerateMouvements" action="<?php echo url_for('controle_update_manquements', array("id" => $controle->_id)) ?>" method="post">
+                <button type="submit" class="btn btn-success">Générer les manquements</button>
+            </form>
+            <button type="submit" form="formListeManquements" class="btn btn-success pull-right">Enregistrer</button>
+        </div>
 </div>
