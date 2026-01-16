@@ -196,4 +196,16 @@ class DeclarationParcellaire extends acCouchdbDocument {
         return $this->idunumbers[$idu]++;
     }
 
+    public function findParcelleByIdParcelle($idParcelle)
+    {
+        foreach ($this['declaration'] as $produit) {
+            foreach ($produit['detail'] as $parcelleId => $info) {
+                if ($parcelleId == $idParcelle) {
+                    return $info;
+                }
+            }
+        }
+        return null;
+    }
+
 }

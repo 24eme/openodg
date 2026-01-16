@@ -109,6 +109,9 @@ class DRevDeclarationCepage extends BaseDRevDeclarationCepage
     }
 
     public function getRendementVSI() {
+        if (!$this->getSommeProduits('volume_revendique_issu_vsi')) {
+            return null;
+        }
         $superficie = $this->getSommeProduits('superficie_revendique');
         if (!$superficie) {
             return null;

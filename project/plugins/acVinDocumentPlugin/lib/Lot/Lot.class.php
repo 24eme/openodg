@@ -790,9 +790,6 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function addCepage($cepage, $repartition) {
-        if(!$repartition) {
-            $repartition = -1;
-        }
         $this->cepages->add($cepage, $repartition);
     }
 
@@ -803,7 +800,7 @@ abstract class Lot extends acCouchdbDocumentTree
                 $libelle .= ", ";
             }
             $libelle .= $cepage;
-            if($repartition && $withRepartition) {
+            if($withRepartition) {
                 $libelle .= " (".number_format($repartition, 2, ',', ' ')."%)";
             }
         }
@@ -814,17 +811,11 @@ abstract class Lot extends acCouchdbDocumentTree
       $volume_total = 0;
       $cepages = array();
       foreach($this->cepages as $volume) {
-          if($volume == -1) {
-              continue;
-          }
         $volume_total += $volume;
       }
       foreach($this->cepages as $cep => $volume) {
         if (!isset($cepages[$cep])) {
             $cepages[$cep] = 0;
-        }
-        if($volume == -1) {
-            continue;
         }
         $vol = ($volume_total>0)? round(($volume/$volume_total) * 100) : 0;
         $cepages[$cep] += $vol;
