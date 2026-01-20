@@ -35,8 +35,8 @@
         </tr>
     </thead>
     <tbody>
-        <tr v-for="(parcelleId, numero) in parcellesSelectionnees">
-            <td><span class="label label-primary lead" style="border-radius: 24px;">{{ numero + 1 }}</span></td>
+        <tr :class="{ 'text-muted': !isParcelleSelectionnee(parcelleId) }" v-for="(parcelleId, numero) in getParcellesSorted()">
+            <td><span v-if="isParcelleSelectionnee(parcelleId)" class="label label-primary lead" style="border-radius: 24px;">{{ numero + 1 }}</span></td>
             <td>{{ controleCourant.parcellaire_parcelles[parcelleId].commune }}</td>
             <td>{{ controleCourant.parcellaire_parcelles[parcelleId].lieu }}</td>
             <td class="text-right">{{ controleCourant.parcellaire_parcelles[parcelleId].section }}</td>
@@ -44,7 +44,7 @@
             <td><span class="text-muted">{{ controleCourant.parcellaire_parcelles[parcelleId].source_produit_libelle }}</span> {{ controleCourant.parcellaire_parcelles[parcelleId].cepage }}</td>
             <td class="text-center">{{ controleCourant.parcellaire_parcelles[parcelleId].campagne_plantation }}</td>
             <td class="text-right">{{ controleCourant.parcellaire_parcelles[parcelleId].superficie }}</td>
-            <td><button class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button></td>
+            <td><button v-if="isParcelleSelectionnee(parcelleId)" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button></td>
         </tr>
     </tbody>
 </table>

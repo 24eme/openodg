@@ -69,12 +69,13 @@
             const controlesSorted = [];
             for(let controleId in parcellesSelectionneesControles) {
                 if(parcellesSelectionneesControles[controleId].length) {
-                    controlesSorted.push(controles[controleId])
+                    controlesSorted.push(controles[controleId]);
+                    console.log('selectionne : '+controleId);
                 }
             }
-             for(let controleId in parcellesSelectionneesControles) {
-                if(!parcellesSelectionneesControles[controleId].length) {
-                    controlesSorted.push(controles[controleId])
+            for(let controleId in controles) {
+                if(!controlesSorted.some(obj => obj._id == controleId)) {
+                    controlesSorted.push(controles[controleId]);
                 }
             }
             return controlesSorted;
