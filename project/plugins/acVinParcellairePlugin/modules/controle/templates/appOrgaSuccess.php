@@ -70,7 +70,6 @@
             for(let controleId in parcellesSelectionneesControles) {
                 if(parcellesSelectionneesControles[controleId].length) {
                     controlesSorted.push(controles[controleId]);
-                    console.log('selectionne : '+controleId);
                 }
             }
             for(let controleId in controles) {
