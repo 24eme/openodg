@@ -1,20 +1,11 @@
 <?php
 
+use_helper('Degustation');
+
 const FICHE_INDIV_AOP_MOUSSEUX = 'degustation/AOCficheIndividuelleMousseuxPdf';
 const FICHE_INDIV_AOP = 'degustation/AOCficheIndividuellePdf';
 const FICHE_INDIV_IGP = 'degustation/IGPficheIndividuellePdf';
 //const FICHE_INDIV_AOP_BASE_MOUSSEUX = 'degustation/AOCficheIndividuelleBaseMousseuxPdf';
-
-
-function send_to_partial($arr_lots, $certif)
-{
-    while (count($arr_lots[$certif]) < 4) {
-        $arr_lots[$certif][] = null;
-    }
-    echo include_partial($certif, array('lots' => $arr_lots[$certif]));
-}
-
-
 
     $arr_lots = [];
     $arr_lots[FICHE_INDIV_IGP] = [];
