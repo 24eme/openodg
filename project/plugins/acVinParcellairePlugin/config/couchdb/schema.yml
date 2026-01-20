@@ -255,9 +255,9 @@ Controle:
                                 type: collection
                                 definition:
                                   fields:
-                                    conformite: { type: integer }
+                                    conformite: {}
                                     libelle: {}
-                                    manquements:
+                                    constats:
                                       type: collection
                                       definition:
                                         fields:
@@ -280,6 +280,10 @@ Controle:
               class: ControleManquement
               definition:
                 fields:
+                  constat_date:
+                  # notification_date:
+                  # cloture_date:
+                  actif: false
                   parcelles_id:
                     type: array_collection
                     definition:
