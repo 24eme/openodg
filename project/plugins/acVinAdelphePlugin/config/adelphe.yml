@@ -2,15 +2,37 @@ all:
   configuration:
     adelphe:
       #seuil doit être inférieur à 500 000 unité conditionnées soit l'équation suivante dépendant de TX BIB
-      # (avec la répartition de BIB 55% de 3l, 35% de 5l et 10% de 10l) :
-      #seuil = (500 000 x (1-TXBIB) x (0,75/100) + (500 000 x TXBIB)x 55% x (3/100)  +(500 000 x TXBIB) x 35% x (5/100) + (500 000 x TXBIB) x 10% x (10/100)
-      #qui se simplifie en 500 000 * 0.0075 + 500 000 * 0.059 * TXBIB
-      fonction_calcul_seuil: "return 3750 + 18250 * %TXBIB%;"
+      # (avec la répartition de BIB 54% de 3L, 43% de 5L et 3% de 10L) :
+      # seuil = (500 000 x (1-TXBIB) x (0,75/100) + (500 000 x TXBIB)x 54% x (3/100)  +(500 000 x TXBIB) x 43% x (5/100) + (500 000 x TXBIB) x 3% x (10/100)
+      #     soit seuil = (500 000 x 1 x (0,75/100) - (500 000 x TXBIB x (0,75/100) + (500 000 x TXBIB)x 54% x (3/100)  +(500 000 x TXBIB) x 43% x (5/100) + (500 000 x TXBIB) x 3% x (10/100)
+      #     soit 500 000 * 0.0075 + 500 000 * (-0.75/100 + 54% * (3/100) + 43% * (5/100) + 3% * (10/100)) * TXBIB
+      # qui se simplifie en 500 000 * 0.0075 + 500 000 * 0.0332 * TXBIB
+      fonction_calcul_seuil: "return 3750 + 16600 * %TXBIB%;"
       #Si on ne connait pas le nombre de BIB on applique un taux forfaitaire pour les BIB
+      # 32% de BIB, le reste de bouteilles
       taux_forfaitaire_bib: 0.32
-      #55% de 3l + 35% de 5l + 10 de 10l
-      prix_unitaire_bib: 1.4682
+      # 54% de 3L + 43% de 5L + 3% de 10L
+      # 54% * PRIX_3L / (3/100) + 43% * PRIX_5L / (5/100)  + 3% * PRIX_10L / (10/100)
+      # 54% * 0.0494 / (3/100) + 43% * 0.0645 / (5/100) + 3% * 0.1110 / (10/100)
+      prix_unitaire_bib: 1.4772
       #75% de bouteilles normales + 25% de bouteilles allégées + 100% emballage carton
+      # 75% * PRIX_BOUTEILLES_NORMALES / 0.0075 + 25% * PRIX_BOUTEILLES_ALLEGEES / 0.0075 + PRIX_CARTON / (6 * 0.0075 )
+      # 0,75 × 0,0125 ÷ 0,0075 + 0,25 × 0,0109 ÷ 0,0075 + 0,0582 ÷ (6 × 0,0075)
       prix_unitaire_bouteille: 2.9067
+      #prix unitaires bruts
+      prix_unitaire_bouteille_normale: 0.0125
+      prix_unitaire_bouteille_allegee: 0.0109
+      prix_unitaire_carton: 0.0582
+      prix_unitaire_bib_3l: 0.0494
+      prix_unitaire_bib_5l: 0.0645
+      prix_unitaire_bib_10l: 0.1110
+      #Répartition
+      part_bib_3l: 0.54
+      part_bib_5l: 0.43
+      part_bib_10l: 0.03
+      part_bouteille_allegee: 0.25
+      part_bouteille_normale: 0.75
+      part_carton: 0.166666667
+      #divers
       url_adelphe: "https://www.adelphe.fr/"
       volumes_conditionnes_csv: '/data/configuration/adelphe_volumes_conditionnes_%ANNEE%.csv'

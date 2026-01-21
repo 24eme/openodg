@@ -218,6 +218,7 @@ Controle:
             '*':
               type: collection
               class: ControleParcelle
+              inheritance: ParcellaireParcelle
               definition:
                 fields:
                   superficie: { type: float }
@@ -254,9 +255,9 @@ Controle:
                                 type: collection
                                 definition:
                                   fields:
-                                    conformite: { type: integer }
+                                    conformite: {}
                                     libelle: {}
-                                    manquements:
+                                    constats:
                                       type: collection
                                       definition:
                                         fields:
@@ -276,10 +277,22 @@ Controle:
           fields:
             '*':
               type: collection
+              class: ControleManquement
               definition:
                 fields:
-                  libelle: {}
+                  constat_date:
+                  # notification_date:
+                  # cloture_date:
+                  actif: false
+                  parcelles_id:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': {}
+                  libelle_point_de_controle: {}
+                  libelle_manquement: {}
                   observations: {}
+                  delais: {}
       mouvements_statuts:
         type: array_collection
         definition:

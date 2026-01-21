@@ -121,6 +121,25 @@
       },
       echoFloat(val, nbDecimal = 5) {
         return val ? Number(val).toFixed(nbDecimal) : '';
+      },
+      transmitDataControle() {
+        fetch('/provence_dev.php/controle/transmit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              controle: this.controleCourant
+            })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Erreur HTTP ' + response.status);
+          }
+        })
+        .catch(error => {
+          console.error('Transmission error:', error);
+        });
       }
     };
 

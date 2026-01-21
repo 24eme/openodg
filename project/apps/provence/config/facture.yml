@@ -23,3 +23,4 @@ all:
           montant_division: 3.0
       uniq_template_prefix: "TEMPLATE-FACTURE-AOC"
       export_type: "custom"
+      exercice: "30/11"
