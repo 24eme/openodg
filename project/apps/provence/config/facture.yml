@@ -5,22 +5,22 @@ all:
       echeances:
         1ertiers:
           libelle_date: "A réception"
-          field: "date_campagne_echeance"
-          date_jour_mois: ""
+          field: "date_facturation"
           libelle: '(1\up{er} tiers)'
           montant_division: 3.0
         2ndtiers:
           libelle_date: ""
-          field: "date_campagne_echeance"
+          field: "date_recolte"
+          field_increment: 1
           date_jour_mois: "31.03"
           libelle: '(2\up{ème} tiers)'
           montant_division: 3.0
         3emetiers:
           libelle_date: ""
-          field: "date_campagne_echeance"
+          field: "date_recolte"
+          field_increment: 1
           date_jour_mois: "30.06"
           libelle: '(3\up{ème} tiers)'
           montant_division: 3.0
       uniq_template_prefix: "TEMPLATE-FACTURE-AOC"
       export_type: "custom"
-      exercice: "30/11"
