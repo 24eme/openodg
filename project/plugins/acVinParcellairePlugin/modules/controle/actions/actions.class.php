@@ -1,41 +1,24 @@
 <?php
 class controleActions extends sfActions
 {
-
-    private function getControlesPlanifies($date = null) {
-        $stats = [];
-        $this->controles = ControleClient::getInstance()->findAllByStatus();
-        $global = [];
-        foreach ($this->controles as $statut => $controles) {
-          $stats[$statut] = [];
-          foreach($controles as $c) {
-            if ($date && $date != $c->date_tournee) {
-                continue;
-            }
-            $key = $c->date_tournee;
-            if (!isset($stats[$statut][$key])) {
-                $stats[$statut][$key] = ['nb_parcelles' => 0, 'operateurs' => [], 'controles' => [], 'geojson' => [], 'date_tournee' => $c->date_tournee, 'type_tournee' => $c->type_tournee];
-            }
-            $stats[$statut][$key]['nb_parcelles'] += count($c->parcelles);
-            $stats[$statut][$key]['operateurs'][] = $c->declarant->nom;
-            $stats[$statut][$key]['controles'][$c->_id] = $c->getDataToDump();
-            if(!isset($global[$key])) {
-                $global[$key] = ['nb_parcelles' => 0, 'operateurs' => [], 'controles' => []];
-            }
-            $global[$key]['nb_parcelles'] += $stats[$statut][$key]['nb_parcelles'];
-            $global[$key]['operateurs'] = array_merge($global[$key]['operateurs'], $stats[$statut][$key]['operateurs']);
-            $global[$key]['controles'] = array_merge($global[$key]['controles'], $stats[$statut][$key]['controles']);
-          }
-        }
-        if ($date) {
-            return $global;
-        }
-        return $stats;
-    }
-
     public function executeIndex(sfWebRequest $request)
     {
-        $this->stats = $this->getControlesPlanifies();
+        $this->controles = ControleClient::getInstance()->findAllByStatus();
+        $this->stats = [];
+        foreach ($this->controles as $statut => $controles) {
+            foreach($controles as $c) {
+                if (!isset($this->stats[$statut][$c->date_tournee])) {
+                    $this->stats[$statut][$c->date_tournee] = [
+                        'parcelles' => [],
+                        'operateurs' => [],
+                        'date_tournee' => $c->date_tournee,
+                        'type_tournee' => $c->type_tournee
+                    ];
+                }
+                $this->stats[$statut][$c->date_tournee]['parcelles'] += $c->parcelles->toArray(true,false);
+                $this->stats[$statut][$c->date_tournee]['operateurs'][$c->identifiant] = $c->declarant->nom;
+            }
+        }
     }
 
     public function executeNouveau(sfWebRequest $request)
@@ -68,22 +51,27 @@ class controleActions extends sfActions
         }
     }
 
+    private function getControlesByDateTournee($dateTournee)
+    {
+        $controles = [];
+        foreach (ControleClient::getInstance()->findAll() as $controle) {
+            if ($dateTournee == $controle->date_tournee) {
+                $controles[$controle->_id] = $controle->getDataToDump();
+            }
+        }
+        return $controles;
+    }
+
     public function executeAppOrga(sfWebRequest $request)
     {
-        $this->date_tournee = $request->getParameter('date');
-        $this->controles = $this->getControlesPlanifies($this->date_tournee);
-        $this->json = json_encode($this->controles[$this->date_tournee]['controles'], JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
-
+        $this->json = json_encode($this->getControlesByDateTournee($request->getParameter('date')), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
     }
 
     public function executeAppTerrain(sfWebRequest $request)
     {
-        $this->date_tournee = $request->getParameter('date');
-        $this->controles = $this->getControlesPlanifies($this->date_tournee);
-        $this->json = json_encode($this->controles[$this->date_tournee]['controles'], JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->json = json_encode($this->getControlesByDateTournee($request->getParameter('date')), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getPointsDeControle(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
-
         $this->setLayout('appLayout');
     }
 
@@ -128,7 +116,10 @@ class controleActions extends sfActions
     public function executeListeManquementsControle(sfWebRequest $request)
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
-        $this->listeManquements = $this->controle->getListeManquements();
+        $this->listeManquements = $this->controle->getManquementsListe();
+        if (! $this->controle->hasManquementTerrain() && $this->controle->hasConstatTerrain()) {
+            $this->redirect('controle_update_manquements', array('id' => $this->controle->_id));
+        }
         $this->form = new ControleManquementsForm($this->controle);
 
         if ($request->isMethod(sfWebRequest::POST)) {
@@ -141,6 +132,14 @@ class controleActions extends sfActions
             $this->form->save();
             return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
         }
+    }
+
+    public function executeUpdateManquements(sfWebRequest $request)
+    {
+        $controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $controle->generateManquements();
+        $controle->save();
+        return $this->redirect('controle_liste_manquements_controle', array('id' => $controle->_id));
     }
 
     public function executeTransmissionData(sfWebRequest $request)
@@ -159,7 +158,8 @@ class controleActions extends sfActions
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->listeManquements = ControleConfiguration::getInstance()->getAllLibellesManquements();
         if ($request->isMethod(sfWebRequest::POST)) {
-            $this->controle->addManquement($_POST['manquement']);
+            $this->controle->addManquementDocumentaire($_POST['manquement']);
+            $this->controle->save();
             return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
         }
     }

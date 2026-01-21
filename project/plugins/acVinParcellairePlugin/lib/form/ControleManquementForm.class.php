@@ -14,8 +14,9 @@ class ControleManquementForm extends acCouchdbObjectForm
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
 
-        if ($this->getObject()->getDocument()->manquements->exist($this->getObject()->getKey())) {
-            $this->setDefault('manquement_checkbox', true);
+        $objetKey = $this->getObject()->getKey();
+        if ($this->getObject()->getDocument()->manquements->exist($objetKey)) {
+            $this->setDefault('manquement_checkbox', $this->getObject()->getDocument()->manquements->$objetKey->actif);
         }
     }
 }

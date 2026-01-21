@@ -69,12 +69,12 @@
             const controlesSorted = [];
             for(let controleId in parcellesSelectionneesControles) {
                 if(parcellesSelectionneesControles[controleId].length) {
-                    controlesSorted.push(controles[controleId])
+                    controlesSorted.push(controles[controleId]);
                 }
             }
-             for(let controleId in parcellesSelectionneesControles) {
-                if(!parcellesSelectionneesControles[controleId].length) {
-                    controlesSorted.push(controles[controleId])
+            for(let controleId in controles) {
+                if(!controlesSorted.some(obj => obj._id == controleId)) {
+                    controlesSorted.push(controles[controleId]);
                 }
             }
             return controlesSorted;
@@ -325,6 +325,21 @@
         displayList(event) {
             const list = document.querySelector('#listeParcelles');
             list.hidden = !list.hidden;
+        },
+        getParcellesSorted() {
+            const parcellesSorted = [];
+            for(const parcelleId of this.parcellesSelectionnees) {
+                parcellesSorted.push(parcelleId);
+            }
+            for (const [parcelleId, parcelle] of Object.entries(this.controleCourant.parcellaire_parcelles)) {
+                if (!parcellesSorted.includes(parcelleId)) {
+                    parcellesSorted.push(parcelleId);
+                }
+            }
+            return parcellesSorted;
+        },
+        isParcelleSelectionnee(parcelleId) {
+            return this.parcellesSelectionnees.includes(parcelleId);
         }
     };
 
