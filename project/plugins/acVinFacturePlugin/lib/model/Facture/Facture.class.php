@@ -275,12 +275,16 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
         $montant_papillon_str = sprintf("%01.02f",$montant_papillon);
         $cumul += floatval($montant_papillon_str);
-        $dateField = $pvalue["field"];
-        if($pvalue["date_jour_mois"]){
-          $d = $this->get($dateField);
-          $date_echeance = new DateTime($d);
-          $date_jour_mois = $pvalue["date_jour_mois"].".".$date_echeance->format('Y');
-          $this->updateEcheance($pvalue["libelle"],$date_jour_mois,$montant_papillon_str);
+        if(isset($pvalue["date_jour_mois"]) && $pvalue["date_jour_mois"]){
+            $dateField = $pvalue["field"];
+            $d = $this->get($dateField);
+            $date_echeance = new DateTime($d);
+            $annee = $date_echeance->format('Y');
+            if (isset($pvalue['field_increment'])) {
+                $annee = $annee + $pvalue['field_increment'];
+            }
+            $date_jour_mois = $pvalue["date_jour_mois"].".".$annee;
+            $this->updateEcheance($pvalue["libelle"],$date_jour_mois,$montant_papillon_str);
         }
         else{
           $this->updateEcheance($pvalue["libelle"],$pvalue["libelle_date"],$montant_papillon_str);
@@ -288,8 +292,24 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
       }
     }
 
-    public function getDateCampagneEcheance() {
-        return intval($this->campagne + 1)."-01-01";
+    public function getDateRecolte() {
+        return $this->getCampagneRecolte().'-08-31';
+    }
+
+    public function getDateViticole() {
+        return $this->getCampagneRecolte().'-07-31';
+    }
+
+    public function getCampagneRecolte() {
+        $dateCampagne = new DateTime($this->date_facturation);
+        $dateCampagne = $dateCampagne->modify('-9 months');
+        return $dateCampagne->format('Y');
+    }
+
+    public function getCampagneViticole() {
+        $dateCampagne = new DateTime($this->date_facturation);
+        $dateCampagne = $dateCampagne->modify('-8 months');
+        return $dateCampagne->format('Y');
     }
 
     public function updateEcheance($echeance_code, $date, $montant_ht) {
