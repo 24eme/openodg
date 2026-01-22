@@ -32,6 +32,7 @@
             <th class="col-xs-1">Année plantat°</th>
             <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small"><?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?></span></th>
             <th style="width: 0;"></th>
+            <th style="width: 0;"></th>
         </tr>
     </thead>
     <tbody>
@@ -44,6 +45,7 @@
             <td><span class="text-muted">{{ controleCourant.parcellaire_parcelles[parcelleId].source_produit_libelle }}</span> {{ controleCourant.parcellaire_parcelles[parcelleId].cepage }}</td>
             <td class="text-center">{{ controleCourant.parcellaire_parcelles[parcelleId].campagne_plantation }}</td>
             <td class="text-right">{{ controleCourant.parcellaire_parcelles[parcelleId].superficie }}</td>
+            <td><button class="btn btn-link" @click="showParcelle(controleCourant.parcellaire_parcelles[parcelleId].idu)"><i class="glyphicon glyphicon-map-marker"></i></button></td>
             <td><button v-if="isParcelleSelectionnee(parcelleId)" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button></td>
         </tr>
     </tbody>

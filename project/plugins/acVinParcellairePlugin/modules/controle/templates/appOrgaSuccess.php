@@ -264,6 +264,7 @@
         function onEachFeature(feature, layer) {
             layer.on({
                 click: function (e) {
+                    clearParcelleSelected();
                     L.DomEvent.stopPropagation(e);
                     map.fitBounds(e.target.getBounds());
                     popup.update(e.target);
@@ -274,7 +275,13 @@
         map.on('click', function(e) { clearParcelleSelected(); });
 
         function clearParcelleSelected() {
-          popup.update();
+            activeMap.eachLayer(function(layer) {
+                if(!layer.feature || !layer.feature.id) {
+                    return;
+                }
+                layer.setStyle({fillOpacity: 0.3, opacity: 1 });
+            });
+            popup.update();
         }
         document.addEventListener('click', function(e) {
           const btn = e.target.closest('#btn-close-info');
@@ -287,6 +294,18 @@
     };
 
     templates.operateur.methods = {
+        showParcelle(idu) {
+            activeMap.eachLayer(function(layer) {
+              if(layer.feature) {
+                  if(Object.keys(layer.feature.properties).includes('parcellaires')){
+                      if(layer.feature.properties.parcellaires[0].IDU == idu){
+                        layer.fireEvent('click');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }
+                  }
+              }
+            });
+        },
         updateMap() {
             const parcellesSelectionnees = this.parcellesSelectionnees;
             activeMap.eachLayer(function(layer) {
