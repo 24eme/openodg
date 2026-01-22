@@ -253,9 +253,23 @@
             });
             if(layer) {
                 document.getElementById(layer.feature.id).classList.remove('hidden');
+                layer.setStyle({fillOpacity: 1, opacity: 1 });
             }
         }
         popup.addTo(map);
+
+        const autresParcelles = [];
+        for (const [idControle, controle] of Object.entries(controles)) {
+            for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
+                if (idControle != this.controleCourant._id) {
+                    feature.properties.controleId = idControle;
+                    autresParcelles.push(feature);
+                }
+            }
+        }
+
+        L.geoJSON(autresParcelles).addTo(map);
+
 
         const parcellesLayer = L.geoJSON(this.parcelles, { onEachFeature: onEachFeature });
         parcellesLayer.addTo(map);
@@ -308,6 +322,7 @@
         },
         updateMap() {
             const parcellesSelectionnees = this.parcellesSelectionnees;
+            const controleCourant = this.controleCourant;
             activeMap.eachLayer(function(layer) {
                 if(!layer.feature || !layer.feature.id) {
                     return;
@@ -320,8 +335,10 @@
                 }
                 if(find) {
                     layer.setStyle({fillColor: '#c80064', color: '#c80064'});
-                } else {
+                } else if (layer.feature.properties.controleId == controleCourant._id) {
                     layer.setStyle({fillColor: '#3388ff', color: '#3388ff'});
+                } else {
+                    layer.setStyle({fillColor: '#000000', color: '#000000'});
                 }
             });
         },
