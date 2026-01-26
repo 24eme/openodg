@@ -358,10 +358,6 @@
             }
             return 0;
         },
-        displayList(event) {
-            const list = document.querySelector('#listeParcelles');
-            list.hidden = !list.hidden;
-        },
         getParcellesSorted() {
             const parcellesSorted = [];
             for(const parcelleId of this.parcellesSelectionnees) {
