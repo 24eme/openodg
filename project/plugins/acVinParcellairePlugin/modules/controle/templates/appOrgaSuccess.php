@@ -375,7 +375,15 @@
                         find = true;
                     }
                 }
-                if(find) {
+                let findAutre = false;
+                for(controleId in parcellesSelectionneesControles) {
+                    for(parcelleId of parcellesSelectionneesControles[controleId]) {
+                        if(parcelleId.match(layer.feature.id)) {
+                            findAutre = true;
+                        }
+                    }
+                }
+                if(find || findAutre) {
                     layer.setStyle({fillColor: '#c80064', color: '#c80064'});
                 } else if (layer.feature.properties.controleId == controleCourant._id) {
                     layer.setStyle({fillColor: '#3388ff', color: '#3388ff'});
