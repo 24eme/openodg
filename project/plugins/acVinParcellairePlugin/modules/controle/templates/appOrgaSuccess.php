@@ -323,7 +323,6 @@
                 click: function (e) {
                     clearParcelleSelected();
                     L.DomEvent.stopPropagation(e);
-                    map.fitBounds(e.target.getBounds());
                     popup.update(e.target);
                     return false;
                 },
