@@ -258,6 +258,49 @@
         }
         popup.addTo(map);
 
+        const popupAutre = L.control({position: "bottomright"});
+        popupAutre.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'popup');
+            this._div.style.display = 'none';
+            return this._div;
+        };
+        popupAutre.update = function (layer) {
+            this._div.style.background = 'rgba(255,255,255,0.9)';
+            if(!layer) {
+                this._div.style.display = 'none';
+                return null
+            }
+            let props = layer.feature.properties;
+            this._div.style.display = 'block';
+
+            props.parcellaires.forEach(function(parcelle){
+                opNom = parcelle['Nom Operateur'];
+                opCvi = parcelle['CVI Operateur'];
+                opSiret = parcelle['Siret Operateur'];
+            });
+            var popupContent = '<h2 class="text-center">'+opNom+'<br /><small class="muted">CVI : '+opCvi+' Siret : '+opSiret+'</small></h2>';
+            this._div.innerHTML = popupContent;
+        };
+        popupAutre.addTo(map);
+
+        function onEachFeatureAutre(feature, layer) {
+            layer.on({
+                mouseover: function (e) {
+                    e.target.setStyle({fillOpacity: 0.6 });
+                    popupAutre.update(e.target);
+                },
+                mouseout: function (e) {
+                    activeMap.eachLayer(function(layer) {
+                        if(!layer.feature || !layer.feature.id) {
+                            return;
+                        }
+                        layer.setStyle({fillOpacity: 0.3, opacity: 1 });
+                    });
+                    popupAutre.update();
+                },
+            });
+        }
+
         const autresParcelles = [];
         for (const [idControle, controle] of Object.entries(controles)) {
             for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
@@ -268,7 +311,7 @@
             }
         }
 
-        L.geoJSON(autresParcelles).addTo(map);
+        L.geoJSON(autresParcelles, {onEachFeature: onEachFeatureAutre}).addTo(map);
 
 
         const parcellesLayer = L.geoJSON(this.parcelles, { onEachFeature: onEachFeature });
