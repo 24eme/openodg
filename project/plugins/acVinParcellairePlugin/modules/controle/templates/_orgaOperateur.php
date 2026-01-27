@@ -18,33 +18,54 @@
         </table>
     </div>
 </div>
-<h3 class="">Parcelles sélectionnées <span class="label label-primary">{{ pourcentageSelectionne() }}%</span>&nbsp;&nbsp;<small><a v-on:click="displayList">Afficher la liste des parcelles</a></small></h3>
+<h3 class="">Parcelles sélectionnées <span class="label label-primary">{{ pourcentageSelectionne() }}%</span>&nbsp;&nbsp;<small></small></h3>
 
 <table id="listeParcelles" class="table table-bordered table-striped">
     <thead>
         <tr>
             <th style="width: 0;"></th>
-            <th class="col-xs-2">Commune</th>
-            <th class="col-xs-2">Lieu-dit</th>
-            <th class="col-xs-1" style="text-align: right;">Section</th>
-            <th class="col-xs-1">N° parcelle</th>
-            <th class="col-xs-3">Cépage</th>
+            <th class="col-xs-3">Commune / Lieu-dit</th>
+            <th class="col-xs-1">Section / N°parcelle</th>
+            <th class="col-xs-4">Cépage</th>
             <th class="col-xs-1">Année plantat°</th>
             <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small"><?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?></span></th>
+            <th class="col-xs-1">Écart Pieds/Rang</th>
+            <th style="width: 0;"></th>
             <th style="width: 0;"></th>
         </tr>
     </thead>
     <tbody>
-        <tr v-for="(parcelleId, numero) in parcellesSelectionnees">
-            <td><span class="label label-primary lead" style="border-radius: 24px;">{{ numero + 1 }}</span></td>
-            <td>{{ controleCourant.parcellaire_parcelles[parcelleId].commune }}</td>
-            <td>{{ controleCourant.parcellaire_parcelles[parcelleId].lieu }}</td>
-            <td class="text-right">{{ controleCourant.parcellaire_parcelles[parcelleId].section }}</td>
-            <td class="text-center">{{ controleCourant.parcellaire_parcelles[parcelleId].numero_parcelle }}</td>
-            <td><span class="text-muted">{{ controleCourant.parcellaire_parcelles[parcelleId].source_produit_libelle }}</span> {{ controleCourant.parcellaire_parcelles[parcelleId].cepage }}</td>
+        <tr :class="{
+            'text-muted': !isParcelleSelectionnee(parcelleId),
+            'warning': controleCourant.parcellaire_parcelles[parcelleId].hasProblemExpirationCepage,
+            'danger':  controleCourant.parcellaire_parcelles[parcelleId].hasProblemEcartPieds || controleCourant.parcellaire_parcelles[parcelleId].hasProblemCepageAutorise ,
+            'hidden produitnongere': !controleCourant.parcellaire_parcelles[parcelleId].isRealProduit
+            }"
+            v-for="(parcelleId, numero) in getParcellesSorted()">
+            <td><span v-if="isParcelleSelectionnee(parcelleId)" class="label label-primary lead" style="border-radius: 24px;">{{ numero + 1 }}</span></td>
+            <td><small class="text-muted">{{ controleCourant.parcellaire_parcelles[parcelleId].commune }}</small> {{ controleCourant.parcellaire_parcelles[parcelleId].lieu }}</td>
+            <td class="text-center">{{ controleCourant.parcellaire_parcelles[parcelleId].section }} {{ controleCourant.parcellaire_parcelles[parcelleId].numero_parcelle }}</td>
+            <td :class="{
+                'text-warning strong hasProblemExpirationCepage': controleCourant.parcellaire_parcelles[parcelleId].hasProblemExpirationCepage,
+                'text-danger strong hasProblemCepageAutorise': controleCourant.parcellaire_parcelles[parcelleId].hasProblemCepageAutorise,
+            }">
+                <span class="text-muted">{{ controleCourant.parcellaire_parcelles[parcelleId].source_produit_libelle }}</span> {{ controleCourant.parcellaire_parcelles[parcelleId].cepage }}<span v-if="controleCourant.parcellaire_parcelles[parcelleId].hasJeunesVignes"> - jeunes vignes</span><br />
+                <span v-if="controleCourant.parcellaire_parcelles[parcelleId].aires" class="text-muted">
+                    Aire(s):
+                    <span v-for="(a, nom) in controleCourant.parcellaire_parcelles[parcelleId].aires" :class="{'text-danger': a != 'OUI', 'text-muted': a == 'OUI'}">
+                        <span v-if="a == false">Hors de l'aire </span>
+                        <span v-if="a == 'PARTIEL'">Partiellement </span>
+                        <span v-if="a == 'ERREUR'">Erreur interne sur </span>
+                        {{ nom }}
+                    </span>
+                </span>
+                <span v-else class="text-danger">Aucune aire<span>
+            </td>
             <td class="text-center">{{ controleCourant.parcellaire_parcelles[parcelleId].campagne_plantation }}</td>
             <td class="text-right">{{ controleCourant.parcellaire_parcelles[parcelleId].superficie }}</td>
-            <td><button class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button></td>
+            <td class="text-right">{{ controleCourant.parcellaire_parcelles[parcelleId].ecart_pieds }} / {{ controleCourant.parcellaire_parcelles[parcelleId].ecart_rang }}</td>
+            <td><button class="btn btn-link" @click="showParcelle(controleCourant.parcellaire_parcelles[parcelleId].idu)"><i class="glyphicon glyphicon-map-marker"></i></button></td>
+            <td><button v-if="isParcelleSelectionnee(parcelleId)" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button></td>
         </tr>
     </tbody>
 </table>
