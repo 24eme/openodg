@@ -79,6 +79,12 @@ class Controle extends BaseControle
         $parcelles = [];
         foreach ($parcellaire->getParcelles() as $key => $parcelle) {
             $parcelles[$key] = $parcelle->getData();
+            $parcelles[$key]->hasProblemExpirationCepage = $parcelle->hasProblemExpirationCepage();
+            $parcelles[$key]->hasProblemEcartPieds = $parcelle->hasProblemEcartPieds();
+            $parcelles[$key]->hasProblemCepageAutorise = $parcelle->hasProblemExpirationCepage();
+            $parcelles[$key]->hasJeunesVignes = !$parcelle->hasJeunesVignes() && ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled();
+            $parcelles[$key]->isRealProduit = $parcelle->isRealProduit() && ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration();
+            $parcelles[$key]->aires = $parcelle->getIsInAires();
         }
         return $parcelles;
     }
