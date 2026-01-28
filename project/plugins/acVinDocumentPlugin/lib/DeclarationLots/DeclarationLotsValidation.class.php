@@ -46,6 +46,19 @@ abstract class DeclarationLotsValidation extends DocumentValidation
 
             $volume = sprintf("%01.02f",$lot->getVolume());
 
+            if(count($lot->cepages)){
+              $somme = 0.0;
+              foreach ($lot->cepages as $cepage => $v) {
+                  if($v < 0) {
+                      continue;
+                  }
+                $somme+=$v;
+              }
+              if(round($somme, 2) != round($lot->volume, 2)){
+                $this->addPoint(self::TYPE_FATAL, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".round($lot->volume, 2)." hl vs cépage ".round($somme, 2)." hl )", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
+              }
+            }
+
             if(!$lot->numero_logement_operateur){
               $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Numéro de logement", $this->generateUrl($routeName, array("id" => $this->document->_id)));
               continue;
@@ -70,16 +83,6 @@ abstract class DeclarationLotsValidation extends DocumentValidation
             if(!$lot->millesime){
               $this->addPoint(self::TYPE_WARNING, 'lot_a_completer', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Millésime", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               continue;
-            }
-
-            if(count($lot->cepages)){
-              $somme = 0.0;
-              foreach ($lot->cepages as $cepage => $v) {
-                $somme+=$v;
-              }
-              if(round($somme, 2) != round($lot->volume, 2)){
-                $this->addPoint(self::TYPE_FATAL, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".round($lot->volume, 2)." hl vs cépage ".round($somme, 2)." hl )", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
-              }
             }
 
             if ($lot->statut == Lot::STATUT_ELEVAGE) {

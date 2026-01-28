@@ -4,35 +4,21 @@
 <form class="form-horizontal">
 
    <div class="form-group">
-       <label class="col-sm-2 control-label">Tous les points controlés</label>
+       <label class="col-sm-2 control-label">Nombre de points non conformes</label>
        <div class="col-sm-10">
-           <label class="radio-inline">
-             <input type="radio" value="1" v-model="controleCourant.audit.all_points_controles" /> Oui
-           </label>
-           <label class="radio-inline">
-             <input type="radio" value="0" v-model="controleCourant.audit.all_points_controles" /> Non
-           </label>
+           <p class="form-control-static" v-if="countPointsNCetRtm().nombreNC">{{ countPointsNCetRtm().nombreNC }}</p>
+           <p class="form-control-static" v-else>Aucun</p>
        </div>
    </div>
 
    <div class="form-group">
-       <label class="col-sm-2 control-label">Tous les points conformes</label>
+       <label class="col-sm-2 control-label">Manquements constatés</label>
        <div class="col-sm-10">
-           <label class="radio-inline">
-             <input type="radio" value="1" v-model="controleCourant.audit.all_points_conformes" /> Oui
-           </label>
-           <label class="radio-inline">
-             <input type="radio" value="0" v-model="controleCourant.audit.all_points_conformes" /> Non
-           </label>
+           <p class="form-control-static" v-if="countPointsNCetRtm().manquements.length" v-for="manquement in countPointsNCetRtm().manquements">{{ manquement }}</p>
+           <p class="form-control-static" v-else>Tous les points sont conformes</p>
        </div>
    </div>
 
-   <div class="form-group">
-       <label class="col-sm-2 control-label">Observations</label>
-       <div class="col-sm-10">
-           <textarea rows="5" class="form-control" v-model="controleCourant.audit.observations"></textarea>
-       </div>
-   </div>
 
    <div class="form-group">
        <label class="col-sm-2 control-label">Observations Opérateur</label>
@@ -44,7 +30,7 @@
   <div class="form-group">
       <label class="col-sm-2 control-label">Signature Opérateur</label>
       <div class="col-sm-5">
-          <input type="text" class="form-control input-lg" v-model="controleCourant.audit.operateur_signature" />
+          <canvas id="signature" style="width: 300px;height: 300px; border: 1px solid #cecece;"></canvas>
       </div>
   </div>
 

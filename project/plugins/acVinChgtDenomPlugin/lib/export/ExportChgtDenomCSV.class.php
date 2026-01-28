@@ -116,7 +116,7 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
             $lotChgt->numero_archive.";".
             $lotChgt->date.";".
             ($lotChgt->date_commission ? $lotChgt->date_commission : $lotChgt->date).";".
-            $this->document->changement_numero_logement_operateur.";".
+            '"'.str_replace(';', ',', $this->document->changement_numero_logement_operateur)."\";".
             DeclarationExportCsv::getProduitKeysCsv($this->document->getConfigProduitChangement()).';'.
             $this->document->changement_produit_libelle.";".
             ( ($lotChgt) ? $lotChgt->getCepagesLibelle().";" : ';') .

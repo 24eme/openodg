@@ -1,21 +1,28 @@
-<h2>Controle terrrain à venir</h2>
+<?php use_helper("Date"); ?>
+<h2>Controle terrain à venir</h2>
 
 <table class="table table-bordered table-striped">
     <thead>
     <tr>
         <th class="col-4">Date du controle</th>
-        <th class="col-2">Nb opérateurs</th>
-        <th class="col-2">Nb parcelles</th>
+        <th class="col-2">Type du controle</th>
+        <th class="col-2 text-center">Nb opérateurs</th>
+        <th class="col-2 text-center">Nb parcelles</th>
         <th class="col-1"></th>
     </tr>
     </thead>
     <tbody>
-<?php foreach ($stats as $date_tournee => $stat): ?>
+<?php foreach ($stats[ControleClient::CONTROLE_STATUT_PLANIFIE] as $stat): ?>
     <tr>
-        <td><?php echo $date_tournee; ?></td>
-        <td><?php echo count($stat['operateurs']); ?></td>
-        <td><?php echo $stat['nb_parcelles']; ?></td>
-        <td><a href="<?php echo url_for('controle_appterrain', array('date' => $date_tournee)); ?>" class="btn btn-sm btn-default">Accéder à la tournée</a></td>
+        <td><?php echo Date::francizeDate($stat['date_tournee']); ?></td>
+        <td><?php echo $stat['type_tournee']; ?></td>
+        <td class="text-center"><?php echo count($stat['operateurs']); ?></td>
+        <td class="text-center"><?php echo count($stat['parcelles']); ?></td>
+        <td>
+            <a href="<?php echo url_for('controle_appterrain', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-primary">Accéder à la tournée</a>
+            <a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-default">Cloturer</a>
+            <a href="<?php echo url_for('controle_apporga', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-secondary">Modifier l'organisation</a>
+        </td>
     </tr>
 <?php endforeach; ?>
     </tbody>
@@ -23,33 +30,31 @@
 
 
 
-<h2>Opérateur dont le controle doit être planifié</h2>
+<h2>Controle à organiser</h2>
 
 <table class="table table-bordered table-striped">
     <thead>
     <tr>
-        <th class="col-4">Opérateur</th>
-        <th class="col-2">Commune / Secteur</th>
-        <th class="col-2">Cave coopérative</th>
-        <th class="col-1">Nombre de parcelles</th>
+        <th class="col-4">Date du controle</th>
+        <th class="col-2">Type du controle</th>
+        <th class="col-2 text-center">Nb opérateurs</th>
         <th class="col-1"></th>
     </tr>
     </thead>
     <tbody>
-<?php foreach ($controles[ControleClient::CONTROLE_STATUT_A_PLANIFIER] as $controle): ?>
+<?php foreach ($stats[ControleClient::CONTROLE_STATUT_A_ORGANISER] as $stat): ?>
     <tr>
-        <td><?php echo $controle->declarant->nom; ?> <span class="text-muted"><?php echo $controle->identifiant; ?> - <?php echo $controle->declarant->cvi; ?></span></td>
-        <td><span class="text-muted"><?php echo $controle->declarant->commune; ?> - </span> <?php echo $controle->secteur; ?></td>
-        <td><?php echo $controle->getLibelleLiaison(); ?></td>
-        <td><?php echo count($controle->parcelles); ?></td>
-        <td><a href="<?php echo url_for('controle_set_date_tournee', $controle); ?>" class="btn btn-sm btn-default">Affecter une date</a></td>
+        <td><?php echo Date::francizeDate($stat['date_tournee']); ?></td>
+        <td><?php echo $stat['type_tournee']; ?></td>
+        <td class="text-center"><?php echo count($stat['operateurs']); ?></td>
+        <td><a href="<?php echo url_for('controle_apporga', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-primary">Organiser la tournée</a></td>
     </tr>
 <?php endforeach; ?>
     </tbody>
 </table>
 
 
-<h2>Opérateur dont le controle est à organiser</h2>
+<h2>Opérateur dont le controle est à planifier</h2>
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -61,15 +66,37 @@
     </tr>
     </thead>
     <tbody>
-<?php foreach ($controles[ControleClient::CONTROLE_STATUT_A_ORGANISER] as $controle): ?>
+<?php foreach ($controles[ControleClient::CONTROLE_STATUT_A_PLANIFIER] as $controle): ?>
     <tr>
         <td><?php echo $controle->declarant->nom; ?> <span class="text-muted"><?php echo $controle->identifiant; ?> - <?php echo $controle->declarant->cvi; ?></span></td>
         <td><span class="text-muted"><?php echo $controle->declarant->commune; ?></span> <?php echo $controle->secteur; ?></td>
         <td><?php echo str_replace(', ', '<br/>', $controle->getLibelleLiaison()); ?></td>
-        <td><a href="<?php echo url_for('controle_parcelles', $controle); ?>" class="btn btn-sm btn-default">Affecter des parcelles</a></td>
+        <td><a href="<?php echo url_for('controle_set_date_tournee', $controle); ?>" class="btn btn-sm btn-primary">Planifier le controle</a></td>
     </tr>
 <?php endforeach; ?>
     </tbody>
 </table>
 
 <h2>Manquements à gérer</h2>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th class="col-4">Opérateur</th>
+        <th class="col-2">Commune / Secteur</th>
+        <th class="col-2">Cave coopérative</th>
+        <th class="col-1">Nb manquements</th>
+        <th class="col-1"></th>
+    </tr>
+    </thead>
+    <tbody>
+<?php foreach ($controles[ControleClient::CONTROLE_STATUT_EN_MANQUEMENT] as $controle): ?>
+    <tr>
+        <td><?php echo $controle->declarant->nom; ?> <span class="text-muted"><?php echo $controle->identifiant; ?> - <?php echo $controle->declarant->cvi; ?></span></td>
+        <td><span class="text-muted"><?php echo $controle->declarant->commune; ?></span> <?php echo $controle->secteur; ?></td>
+        <td><?php echo str_replace(', ', '<br/>', $controle->getLibelleLiaison()); ?></td>
+        <td><?php echo count($controle->manquements); ?></td>
+        <td><a href="<?php echo url_for('controle_set_date_tournee', $controle); ?>" class="btn btn-sm btn-primary">Gérer les manquements</a></td>
+    </tr>
+<?php endforeach; ?>
+        </tbody>
+    </table>

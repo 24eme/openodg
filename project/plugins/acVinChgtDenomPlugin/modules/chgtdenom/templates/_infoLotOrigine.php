@@ -1,7 +1,7 @@
 <?php use_helper('Lot') ?>
 
 <div class="alert col-sm-12 mb-4" role="alert" style="position: relative; background-color: #f8f8f8; border: 1px solid #e7e7e7; <?php if($opacity): ?>opacity: 0.7;<?php endif; ?>">
-<?php if ($lot->hasDocumentOrigine() && $sf_user->isAdmin()): ?>
+<?php if ($lot->hasDocumentOrigine() && $sf_user->isAdminODG()): ?>
   <span class="print-hidden"><a href="<?php  echo url_for('degustation_lot_modification', array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id));  ?>" style="position: absolute; right:6px; top: 12px;" class="btn btn-sm btn-link transparence-sm btn-modifier-lot" title="Modifier le lot">
       <span class="glyphicon glyphicon-pencil"></span>
   </a></span>

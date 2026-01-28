@@ -88,7 +88,11 @@ class HabilitationConfiguration {
       $hash = $produithab->getHash();
       $h = str_replace(['/MOU/','/EFF/', '/VDB/'], '/TRANQ/', $hash);
       if ($hash != $h) {
-          $produithab = $produithab->getDocument()->get($h);
+          try {
+              $produithab = $produithab->getDocument()->get($h);
+          }catch(Exception $e) {
+              return null;
+          }
       }
 
       if(!isset($this->configuration['produits'])){

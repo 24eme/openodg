@@ -43,6 +43,9 @@ class parcellaireActions extends sfActions {
         if(class_exists("EtablissementChoiceForm")) {
             $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
         }
+        if($this->parcellaire && count($this->parcellaire->getParcelles()) > 150) {
+            ini_set('memory_limit', '512M');
+        }
         $this->setTemplate('parcellaire');
     }
 
@@ -51,6 +54,9 @@ class parcellaireActions extends sfActions {
         $this->secureTeledeclarant();
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->etablissement = $this->getRoute()->getEtablissement();
+        if(count($this->parcellaire->getParcelles()) > 150) {
+            ini_set('memory_limit', '512M');
+        }
         $this->setTemplate('parcellaire');
     }
 
