@@ -322,6 +322,9 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $hash_produit = str_replace(['/declaration/', 'declaration/'], '', $hash_produit);
         $prodconf = $this->getConfiguration($date)->get('/declaration/'.$hash_produit);
         $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prodconf);
+        if (!$node) {
+            return false;
+        }
         $hash_produit = preg_replace("|/declaration/|", '', $node->getHash());
         $hash_produit = str_replace('/VDN/appellations/VDR', '/TRANQ/appellations/RTA', $hash_produit);
         $hash_produit = str_replace(['/EFF', '/MOU', '/VMQ'], '/TRANQ', $hash_produit);

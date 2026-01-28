@@ -1,4 +1,5 @@
 <?php use_helper('Date'); ?>
+<?php if (file_exists(AdelpheConfiguration::getInstance()->getVolumesConditionnesCsv($periode))): ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($adelphe && $adelphe->validation): ?>panel-success<?php elseif($adelphe): ?>panel-primary<?php else : ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
@@ -38,3 +39,4 @@
         <div class="panel-footer" style="padding-top: 0; padding-bottom: 0;">&nbsp;</div>
     </div>
 </div>
+<?php endif; ?>

@@ -48,7 +48,7 @@ function showOnlyCepages($lot, $maxcars = null, $tag = 'small') {
       $text .= $lot->getCepagesLibelle();
     }
     if($lot->exist("details")) {
-        $text .= $lot->details;
+        $text = trim($text) . ' ' . $lot->details;
     }
   }
   if (!$text && $tag) {

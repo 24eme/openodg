@@ -132,6 +132,15 @@ class DRevProduit extends BaseDRevProduit
         return false;
     }
 
+    public function setVolumeRevendiqueIssuRecolte($volume) {
+        $beforeVolume = $this->_get('volume_revendique_issu_recolte');
+        $ret = $this->_set('volume_revendique_issu_recolte', $volume);
+        if($beforeVolume != $volume) {
+            $this->update();
+        }
+        return $ret;
+    }
+
 	public function update($params = array()) {
 		$this->vci->stock_final = null;
 		$this->volume_revendique_issu_vci = null;

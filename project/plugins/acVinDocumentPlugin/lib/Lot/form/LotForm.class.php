@@ -25,8 +25,8 @@ class LotForm extends acCouchdbObjectForm
         $i=0;
         foreach($this->getObject()->cepages as $cepage => $repartition) {
             $this->setDefault('cepage_'.$i, $cepage);
-            $this->setDefault('repartition_hl_'.$i, ($repartition != -1) ? $repartition : null);
-            $this->setDefault('repartition_pc_'.$i, ($repartition != -1) ? $repartition : null);
+            $this->setDefault('repartition_hl_'.$i, $repartition);
+            $this->setDefault('repartition_pc_'.$i, $repartition);
             $i++;
         }
 
@@ -60,7 +60,7 @@ class LotForm extends acCouchdbObjectForm
         $this->setWidget('destination_type', new bsWidgetFormChoice(array('choices' => $this->getDestinationsType())));
         $this->setValidator('destination_type', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getDestinationsType()))));
 
-        if(count($this->specificites)) {
+        if($this->specificites && count($this->specificites)) {
           $this->setWidget('specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
           $this->setValidator('specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
         }
@@ -89,11 +89,11 @@ class LotForm extends acCouchdbObjectForm
         $this->getObject()->remove('cepages');
         $this->getObject()->add('cepages');
         for($i = 0; $i < self::NBCEPAGES; $i++) {
-            if(! isset($values['cepage_'.$i]) || !$values['cepage_'.$i]) {
+            if(! isset($values['cepage_'.$i],$values['repartition_hl_'.$i]) || !$values['cepage_'.$i] || !$values['repartition_hl_'.$i]) {
                 continue;
             }
 
-            $this->getObject()->addCepage($values['cepage_'.$i], isset($values['repartition_hl_'.$i]) ? $values['repartition_hl_'.$i] : -1);
+            $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_hl_'.$i]);
         }
         if (!empty($values['elevage'])) {
           $this->getObject()->statut = Lot::STATUT_ELEVAGE;
