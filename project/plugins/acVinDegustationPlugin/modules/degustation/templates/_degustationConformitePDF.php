@@ -56,7 +56,14 @@
       <td><?php echo $lot->numero_logement_operateur?></td>
       <td><?php echo showProduitCepagesLot($lot, false) ?></td>
       <td style="text-align:right;"><?php echo sprintf("%.2f", $lot->volume); ?></td>
-      <td><?php echo $lot->observation ?></td>
+      <td><?php
+    if ($lot->isConformeAvecDefaut()) {
+        echo $lot->conformite;
+        if ($lot->motif) {echo ' : '.$lot->motif; }
+        if ($lot->observation) {echo ' ('.$lot->observation.') '; }
+    } elseif ($lot->observation) {
+        echo $lot->observation;
+    } ?></td>
     </tr>
     <?php $totalVolume = $totalVolume + $lot->volume; ?>
     <?php endforeach; ?>
