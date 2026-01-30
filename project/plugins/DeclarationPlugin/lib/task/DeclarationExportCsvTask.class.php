@@ -36,7 +36,6 @@ EOF;
             $docid = $arguments['doc_id'];
             foreach (['DR', 'SV11', 'SV12'] as $t) {
                 $docid_new = str_replace('DOUANE-', $t.'-', $docid);
-                echo "$docid_new\n";
                 $doc = DeclarationClient::getInstance()->find($docid_new);
                 if ($doc) {
                     break;
