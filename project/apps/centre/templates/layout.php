@@ -69,6 +69,21 @@
 
             <div class="alert alert-danger notification" id="ajax_form_error_notification">Une erreur est survenue</div>
             <div class="alert alert-success notification" id="ajax_form_progress_notification">Enregistrement en cours ...</div>
+
+            <script type="text/javascript" src="<?php echo public_path("/js/lib/jquery/jquery.min.js") . "?$gitcommit" ?>"></script>
+            <script type="text/javascript" src="<?php echo public_path("/js/lib/jquery.plugins.min.js") . "?$gitcommit" ?>"></script>
+            <script type="text/javascript" src="<?php echo public_path("/js/lib/bootstrap/bootstrap.min.js") . "?$gitcommit" ?>"></script>
+            <script type="text/javascript" src="<?php echo public_path("/js/lib/bootstrap3-typeahead.min.js") . "?$gitcommit" ?>"></script>
+            <script type="text/javascript" src="<?php echo public_path("/js/lib/bootstrap-switch.min.js") . "?$gitcommit" ?>"></script>
+            <script type="text/javascript" src="<?php echo public_path("/js/lib/leaflet/leaflet.js") . "?$gitcommit" ?>"></script>
+            <script type="text/javascript" src="<?php echo public_path("/js/global.js") . "?$gitcommit" ?>"></script>
+            <script type="text/javascript" src="<?php echo public_path("/js/compte.js") . "?$gitcommit" ?>"></script>
+            <script type="text/javascript" src="<?php echo public_path("/js/drev.js") . "?$gitcommit" ?>"></script>
+            <script type="text/javascript" src="<?php echo public_path("/js/drevmarc.js") . "?$gitcommit" ?>"></script>
+            <script type="text/javascript" src="<?php echo public_path("/js/form.js") . "?$gitcommit" ?>"></script>
+            <script type="text/javascript" src="<?php echo public_path("/js/parcellaire.js") . "?$gitcommit" ?>"></script>
+            <script type="text/javascript" src="<?php echo public_path("/js/degustation.js") . "?$gitcommit" ?>"></script>
+
             <?php include_javascripts() ?>
     </body>
 </html>
