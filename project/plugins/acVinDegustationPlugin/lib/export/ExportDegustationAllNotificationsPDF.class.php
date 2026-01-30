@@ -21,7 +21,7 @@ class ExportDegustationAllNotificationsPDF extends ExportDeclarationLotsPDF {
                 $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
             }
 
-            if ($lot->conformite == Lot::CONFORMITE_CONFORME) {
+            if ($lot->isConforme()) {
                 $lots[$lot->declarant_identifiant]['conforme'][] = $lot;
             } elseif ($lot->statut == Lot::STATUT_NONCONFORME_LEVEE) {
                     $lots[$lot->declarant_identifiant]['conforme'][] = $lot;

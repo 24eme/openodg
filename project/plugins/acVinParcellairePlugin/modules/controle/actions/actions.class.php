@@ -110,7 +110,7 @@ class controleActions extends sfActions
 
     public function executeListeOperateursTournee(sfWebRequest $request)
     {
-        $this->controles = $this->getControlesPlanifies($request->getParameter('date'))[$request->getParameter('date')]['controles'];
+        $this->controles = $this->getControlesByDateTournee($request->getParameter('date'));
     }
 
     public function executeListeManquementsControle(sfWebRequest $request)
