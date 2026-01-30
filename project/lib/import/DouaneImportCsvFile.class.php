@@ -47,14 +47,11 @@ class DouaneImportCsvFile {
     }
 
     public static function getNewInstanceFromType($type, $file, $doc = null, $drev_produit_filter = null, $cvi = null)  {
+        if(preg_match('/.json$/', $file)) {
+            return new DRDouaneJsonFile($file, $doc, $drev_produit_filter, $cvi);
+        }
         switch ($type) {
             case 'DR':
-                if(preg_match('/.csv$/', $file)) {
-                    return new DRDouaneCsvFile($file, $doc, $drev_produit_filter, $cvi);
-                }
-                if(preg_match('/.json$/', $file)) {
-                    return new DRDouaneJsonFile($file, $doc, $drev_produit_filter, $cvi);
-                }
                 return new DRDouaneCsvFile($file, $doc, $drev_produit_filter, $cvi);
             case 'SV11':
                 return new SV11DouaneCsvFile($file, $doc, $drev_produit_filter, $cvi);
