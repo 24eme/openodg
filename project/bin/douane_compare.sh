@@ -1,6 +1,15 @@
 #/bin/bash
 
-source $(dirname $0)/../bin/config.inc
+if test "$CONFIG_FILE"; then
+	if test -f "$CONFIG_FILE"; then
+		source "$CONFIG_FILE";
+	else
+		echo $CONFIG_FILE not found;
+		exit 1;
+	fi
+else
+	source $(dirname $0)/../bin/config.inc
+fi
 
 campagne=$1
 
