@@ -37,7 +37,7 @@
 <table>
   <tr><td>Madame, Monsieur,</td></tr>
   <br/>
-  <tr><td>Dans le cadre du contrôle interne analytique réalisé le <?php echo format_date($lot->prelevement_datetime, "P", "fr_FR"); ?> sur les échantillons prélevés dans votre cave, nous avons relevé le manquement grave suivant :</td></tr>
+  <tr><td>Dans le cadre de la commission de dégustation du <?php echo format_date($degustation->date, "P", "fr_FR"); ?> sur les échantillons prélevés dans votre cave, nous avons relevé le manquement grave suivant :</td></tr>
   <tr><td><strong><?php echo $lot->motif ?></strong></td></tr>
   <tr><td>Pour : <strong><?php echo showProduitCepagesLot($lot, false) ?> de <?php echo $lot->volume ?> hl (<?php echo $lot->getNumeroLogementOperateur(); ?>)</strong></td></tr>
   <br/>
