@@ -47,7 +47,7 @@
                               data-html="true"
                               title="<?= $lot->getLibelle() . ' - ' . $lot->volume . "hl<br>" . $lot->getShortLibelleConformite() ?>"
                               class="label label-<?php if($lot->isManquement())  { echo 'danger'; }
-                                                    elseif ($lot->isConformeObs()) { echo 'warning'; }
+                                                    elseif ($lot->isConformeObs() || $lot->isConformeAvecDefaut()) { echo 'warning'; }
                                                     else { echo 'success'; } ?>"
                               style="<?php if($lot->hasSpecificitePassage()): ?>border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;<?php endif; ?>"
                         ><span class="glyphicon glyphicon-<?= ($lot->isManquement()) ? 'remove' : 'ok' ?>"></span></a>&nbsp;

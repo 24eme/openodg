@@ -9,7 +9,7 @@ if ! test "$CAMPAGNE"; then
     exit;
 fi
 
-curl -s http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/declaration/_view/tous?reduce=false | grep -E "(INTENTIONCREMANT|PARCELLAIRE[A-Z]*)-[0-9]+-$CAMPAGNE" | cut -d "," -f 1 | sed 's/{"id":"//' | sed 's/"//' | sort | uniq | while read id
+curl -s http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/declaration/_view/tous?reduce=false | grep -E "(INTENTIONCREMANT|PARCELLAIREAFFECTATION|PARCELLAIREAFFECTATIONCREMANT)-[0-9]+-$CAMPAGNE" | cut -d "," -f 1 | sed 's/{"id":"//' | sed 's/"//' | sort | uniq | while read id
 do
     php symfony parcellaire:send-mail-acheteurs $SYMFONYTASKOPTIONS $id --trace
 done

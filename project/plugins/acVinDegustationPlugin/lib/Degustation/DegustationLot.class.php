@@ -28,12 +28,17 @@ class DegustationLot extends BaseDegustationLot {
       return $this->exist('conformite') && ($this->conformite == Lot::CONFORMITE_CONFORME || $this->conformite == Lot::CONFORMITE_CONFORME_DEFAUT);
   }
 
+  public function isConformeAvecDefaut(){
+      return ($this->conformite == Lot::CONFORMITE_CONFORME_DEFAUT);
+  }
+
   public function isConformeObs(){
     return ($this->statut == Lot::STATUT_CONFORME) && $this->exist('observation') && $this->observation;
   }
 
   public function getShortLibelleConformite(){
     if($this->isConformeObs()){ return 'Obs.'; }
+    if($this->isConformeAvecDefaut()) { return 'Def.';}
         $libelles = Lot::$shortLibellesConformites;
         return ($this->exist('conformite') && isset($libelles[$this->conformite]))? $libelles[$this->conformite] : $this->conformite;
   }
