@@ -299,4 +299,40 @@ class Controle extends BaseControle
     {
         return $this->manquements;
     }
+
+    public function getDateFr()
+    {
+        preg_match('/([0-9]{4})([0-9]{2})([0-9]{2})/', $this->date, $matches);
+        return $matches[3].'/'.$matches[2].'/'.$matches[1];
+    }
+
+    public function getDateEn()
+    {
+        preg_match('/([0-9]{4})([0-9]{2})([0-9]{2})/', $this->date, $matches);
+        return $matches[1].'-'.$matches[2].'-'.$matches[3];
+    }
+
+    public function getActiviteClient()
+    {
+        return HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getDateEn())->getActivitesHabilites();
+    }
+
+    public function getManquementsActif()
+    {
+        $ret = array();
+        foreach ($this->getManquementsListe() as $rtmId => $manquement) {
+            if ($manquement->actif == true) {
+                $ret[$rtmId] = $manquement;
+            }
+        }
+        return $ret;
+    }
+
+    public function hasManquementsActif()
+    {
+        if ($this->exist('manquements') && count($this->getManquementsActif())) {
+            return true;
+        }
+        return false;
+    }
 }
