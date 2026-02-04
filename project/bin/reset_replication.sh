@@ -19,6 +19,14 @@ if ! test "$REPLICATIONDOC"; then
     exit;
 fi
 
+if ! test "$COUCHDISTANTPORT"; then
+    COUCHDISTANTPORT=$COUCHPORT
+fi
+
+if ! test "$COUCHDISTANTBASE"; then
+    COUCHDISTANTBASE=$COUCHBASE
+fi
+
 rev=$(curl -s http://$COUCHHOST:$COUCHPORT/_replicator/$REPLICATIONDOC | sed 's/.*rev":"//' | sed 's/".*//' )
 curl -s -X DELETE http://$COUCHHOST:$COUCHPORT/_replicator/$REPLICATIONDOC?rev=$rev  > /dev/null
-curl -s -X PUT -d '{"_id":"$REPLICATIONDOC","target":{"url":"'http://$COUCHHOST:$COUCHPORT/$COUCHBASE'"},"source":{"url":"'http://$COUCHDISTANTHOST:$COUCHPORT/$COUCHBASE'"},"continuous":true}' http://$COUCHHOST:$COUCHPORT/_replicator/$REPLICATIONDOC  > /dev/null
+curl -s -X PUT -d '{"_id":"$REPLICATIONDOC","target":{"url":"'http://$COUCHHOST:$COUCHPORT/$COUCHBASE'"},"source":{"url":"'http://$COUCHDISTANTHOST:$COUCHDISTANTPORT/$COUCHDISTANTBASE'"},"continuous":true}' http://$COUCHHOST:$COUCHPORT/_replicator/$REPLICATIONDOC  > /dev/null
