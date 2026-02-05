@@ -225,3 +225,7 @@ controle_ajout_liste_manquements:
 controle_pdf_manquements:
   url: /controle/:id/manquement/pdf
   param: { module: controle, action: manquementPdf }
+
+controle_pdf:
+  url: /controle/:id/pdf
+  param: { module: controle, action: exportPdf }
