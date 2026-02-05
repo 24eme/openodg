@@ -20,6 +20,6 @@ all:
           # email: ""
           produits:
             - "TRANQ/appellations/CDT"
-            - "TRANQ/appellations/CMT"
-            - "MOU/appellations/CMT"
+            - "TRANQ/appellations/COT"
+            - "MOU/appellations/COT"
           habilitation_produits: "/Côtes du Tarn/"

@@ -31,6 +31,14 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
             return "CsvVendanges";
         }
 
+        if(preg_match('/CODE PRODUIT/i', $csvFile->getCsv()[0][0]) &&
+           preg_match('/DENOMINATION/i', $csvFile->getCsv()[0][1]) &&
+           preg_match('/MENTION VALORISANTE/i', $csvFile->getCsv()[0][3]) &&
+           preg_match('/NUMERO CVI APPORTEUR/i', $csvFile->getCsv()[0][5])) {
+
+           throw new sfException("Erreur liée problablement erreur de famille (devrait être SV11 ?)");
+       }
+
         throw new sfException('Format non supporté : '.$this->doc.' '.implode(',', $csvFile->getCsv()[0]));
     }
 
