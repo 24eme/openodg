@@ -209,7 +209,7 @@
                         if ($a['etablissement']) {
                             $list[] = '<a href="'.url_for('dr_redirect', array('identifiant' => $a['etablissement']->identifiant, 'campagne' => $dr->campagne)).'">'.$a['etablissement']->raison_sociale.'</a>';
                         }else{
-                            $list[] = $a['raison_sociale'].' ('.$a['cvi'].')';
+                            $list[] = $a['raison_sociale'].' (cvi <a href="'.url_for("cvi_check", array('cvi' => $a['cvi'])).'">'.$a['cvi'].'</a> non connu)';
                         }
                     }
                     echo implode(', ', $list);
