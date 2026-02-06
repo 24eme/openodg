@@ -102,3 +102,7 @@ scrape_fichier:
     type:     object
   requirements:
     sf_method: [get, post]
+
+cvi_check:
+  url: /cvi/:cvi
+  param: { module: fichier, action: cvi }
