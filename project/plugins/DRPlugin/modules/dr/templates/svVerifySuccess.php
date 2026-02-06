@@ -113,7 +113,7 @@
             <?php if ($e) : $etablissement_ok++ ; ?>
             <a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => $e->identifiant));?>"><?php echo $e->raison_sociale.' - '.$cvi; ?></a>
             <?php else: ?>
-            <?php echo 'inconnu - '.$cvi; ?>
+            <?php echo 'inconnu - <a href="'.url_for('cvi_check', array('cvi' => $cvi)).'">'.$cvi.'</a>'; ?>
             <?php endif; ?>
         </td>
         <td class="<?php echo (isset($hab['habilitation_ok'])  && $hab['habilitation_ok']) ? 'bg-success': 'bg-danger'; ?>">
