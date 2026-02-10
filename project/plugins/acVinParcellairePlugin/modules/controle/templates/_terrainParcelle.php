@@ -100,7 +100,7 @@
     <div class="col-sm-12" v-show="valPoint.conformite === 'NC'">
       <div class="" style="margin-top:10px;">
         <div class="panel-body">
-            <div class="RTM" v-for="(infos, codeRtm) in valPoint.manquements">
+            <div class="RTM" v-for="(infos, codeRtm) in valPoint.constats">
                 <input :id="'checkbox_' + codeRtm" type="checkbox" v-model="infos.conformite" style="font-weight: normal;"/>
                 <label :for="'checkbox_' + codeRtm" style="margin-top: 5px;">&nbsp; {{ infos.libelle }} </label>
                 <div class="col-sm-12" style="margin-top: 5px;">
