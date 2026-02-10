@@ -111,6 +111,7 @@ class controleActions extends sfActions
     public function executeListeOperateursTournee(sfWebRequest $request)
     {
         $this->controles = $this->getControlesByDateTournee($request->getParameter('date'));
+        $this->dateTournee = $request->getParameter('date');
     }
 
     public function executeListeManquementsControle(sfWebRequest $request)
@@ -162,5 +163,34 @@ class controleActions extends sfActions
             $this->controle->save();
             return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
         }
+    }
+
+    public function executeManquementPdf(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $this->document = new ExportControleManquementPDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
+        return $this->executePdf($request);
+    }
+
+    public function executeExportPdf(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $this->document = new ExportControlePDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
+        return $this->executePdf($request);
+    }
+
+    public function executePDF(sfWebRequest $request) {
+        set_time_limit(180);
+        $this->document->setPartialFunction(array($this, 'getPartial'));
+
+        if ($request->getParameter('force')) {
+            $this->document->removeCache();
+        }
+
+        $this->document->generate();
+
+        $this->document->addHeaders($this->getResponse());
+
+        return $this->renderText($this->document->output());
     }
 }
