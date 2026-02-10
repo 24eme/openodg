@@ -59,9 +59,9 @@ table, th, td {
         </tr>
         <tr>
             <td colSpan="2"><strong>Surface totale (avec JV) :</strong></td>
-            <td colSpan="2"><strong></strong></td>
+            <td colSpan="2" style="text-align: center;"><strong><?php echo $parcellaire->getSuperficieTotale(true) ?></strong></td>
             <td colSpan="2">Surface totale en production&nbsp;:</td>
-            <td colSpan="2"></td>
+            <td colSpan="2" style="text-align: center;"><?php echo $parcellaire->getSuperficieTotale() ?></td>
         </tr>
         <tr>
             <td colSpan="2"><strong>PP de l'opérateur (ha) :</strong></td>
@@ -94,11 +94,7 @@ table, th, td {
             <td colSpan="3">&nbsp;<br/>Tous les points à contrôler ont été vus :</td>
             <td colSpan="5">&nbsp;<br/>
                 <span style="font-family: Dejavusans">
-                <?php if (! 1 == 1): ?>
-                    ☐&nbsp;OUI&nbsp;&nbsp;&nbsp;☒&nbsp;NON&nbsp;; si non préciser :
-                <?php else: ?>
-                    ☒&nbsp;OUI&nbsp;&nbsp;&nbsp;☐&nbsp;NON&nbsp;; si non préciser :
-                <?php endif;?>
+                    ☐&nbsp;OUI&nbsp;&nbsp;&nbsp;☐&nbsp;NON&nbsp;; si non préciser :
             </span>
             <br/>
             </td>

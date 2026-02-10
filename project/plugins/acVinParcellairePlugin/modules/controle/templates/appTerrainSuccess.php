@@ -123,7 +123,7 @@
         return val ? Number(val).toFixed(nbDecimal) : '';
       },
       transmitDataControle() {
-        fetch('/provence_dev.php/controle/transmit', {
+        fetch('<?php echo url_for('controle_transmission_data'); ?>', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

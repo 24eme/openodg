@@ -102,7 +102,7 @@ class Controle extends BaseControle
                         $point = $parcelle->controle->points->add($pointKey);
                         $point->libelle = $pointConf['libelle'];
                         foreach ($pointConf['rtm'] as $rtmKey => $rtmConf) {
-                            $point->manquements->add($rtmKey, ['libelle' => $rtmConf['libelle'], 'conformite' => false, 'observations' => null]);
+                            $point->constats->add($rtmKey, ['libelle' => $rtmConf['libelle'], 'conformite' => false, 'observations' => null]);
                         }
                     }
                 }
@@ -189,7 +189,7 @@ class Controle extends BaseControle
                 // Unset pour ne prendre que les manquements qui sont non conformes
                 $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle] = $dataPointDeControle;
                 unset($retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['constats']);
-                foreach ($dataPointDeControle['manquements'] as $numRtm => $dataManquement) {
+                foreach ($dataPointDeControle['constats'] as $numRtm => $dataManquement) {
                     if ($dataManquement['conformite'] != 1) {
                         continue;
                     }

@@ -65,6 +65,7 @@ class controleActions extends sfActions
     public function executeAppOrga(sfWebRequest $request)
     {
         $this->json = json_encode($this->getControlesByDateTournee($request->getParameter('date')), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+    $this->date_tournee = $request->getParameter('date');
         $this->setLayout('appLayout');
     }
 

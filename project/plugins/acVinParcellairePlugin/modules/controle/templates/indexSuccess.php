@@ -4,7 +4,7 @@
 <table class="table table-bordered table-striped">
     <thead>
     <tr>
-        <th class="col-4">Date du controle</th>
+        <th class="col-4">Date de la tournée</th>
         <th class="col-2">Type du controle</th>
         <th class="col-2 text-center">Nb opérateurs</th>
         <th class="col-2 text-center">Nb parcelles</th>
@@ -20,7 +20,7 @@
         <td class="text-center"><?php echo count($stat['parcelles']); ?></td>
         <td>
             <a href="<?php echo url_for('controle_appterrain', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-primary">Accéder à la tournée</a>
-            <a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-default">Cloturer</a>
+            <a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-default">Visualiser les manquements</a>
             <a href="<?php echo url_for('controle_apporga', array('date' => $stat['date_tournee'])); ?>" class="btn btn-sm btn-secondary">Modifier l'organisation</a>
         </td>
     </tr>
@@ -35,7 +35,7 @@
 <table class="table table-bordered table-striped">
     <thead>
     <tr>
-        <th class="col-4">Date du controle</th>
+        <th class="col-4">Date de la tournée</th>
         <th class="col-2">Type du controle</th>
         <th class="col-2 text-center">Nb opérateurs</th>
         <th class="col-1"></th>
