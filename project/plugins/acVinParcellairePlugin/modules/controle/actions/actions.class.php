@@ -71,6 +71,7 @@ class controleActions extends sfActions
 
     public function executeAppTerrain(sfWebRequest $request)
     {
+        $this->date_tournee = $request->getParameter('date');
         $this->json = json_encode($this->getControlesByDateTournee($request->getParameter('date')), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getPointsDeControle(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');

@@ -14,7 +14,8 @@
         templates["<?php echo $template ?>"] = { template: "<?php echo str_replace(['"', "\n"], ['\"', ""], get_partial('controle/terrain'.ucfirst($template))) ?>" }
     <?php endforeach; ?>
 
-    let controles = JSON.parse(localStorage.getItem("controles")) || {}
+    const date_tournee = "<?php echo $date_tournee ?>"
+    let controles = JSON.parse(localStorage.getItem("controles_" + date_tournee)) || {}
     const server_controle = JSON.parse(document.getElementById("dataJson").textContent);
     const points_de_controle = JSON.parse(document.getElementById("dataConf").textContent);
     let localstorage_updated = false;
@@ -27,7 +28,7 @@
         localstorage_updated = true;
     }
     if (localstorage_updated) {
-        localStorage.setItem("controles", JSON.stringify(controles));
+        localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
     }
 
     // var points = [];
@@ -84,9 +85,8 @@
         watch: {
           controles: {
             handler(newControles) {
-              console.log(newControles)
               if (newControles) {
-                  localStorage.setItem("controles", JSON.stringify(newControles));
+                  localStorage.setItem("controles_" + date_tournee, JSON.stringify(newControles));
               }
             },
             deep: true
