@@ -29,7 +29,7 @@
             <a class="btn btn-default" href="<?php echo url_for("controle_liste_manquements_controle", array('id' => $controle->_id)) ?>"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
         </div>
         <div class="col-sm-4 text-right">
-            <button type="submit" class="btn btn-success">Ajouter</button>
+            <button type="submit" class="btn btn-primary">Ajouter</button>
         </div>
     </div>
 </form>
