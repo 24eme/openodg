@@ -179,6 +179,7 @@ class Controle extends BaseControle
     {
         $retControleByParcelle = array();
         foreach ($json['controle']['parcelles'] as $parcelle) {
+            $this->audit = $json['controle']['audit'];
             // Je met le noeud controle du Json puis j'unset le sous-noeud "points" car c'est la seule update a faire
             $retControleByParcelle[$parcelle['parcelle_id']] = $parcelle['controle'];
             unset($retControleByParcelle[$parcelle['parcelle_id']]['points']);
@@ -334,5 +335,46 @@ class Controle extends BaseControle
             return true;
         }
         return false;
+    }
+
+    public function hasObservationOperateur()
+    {
+        if ($this->audit->exist('operateur_observation')) {
+            return true;
+        }
+        return false;
+    }
+
+    public function hasObservationAgent()
+    {
+        if ($this->audit->exist('agent_observation')) {
+            return true;
+        }
+        return false;
+    }
+
+    public function getProduitsHash()
+    {
+        $produitsHash = array();
+        foreach ($this->parcelles as $parcelle) {
+            $produitsHash[] = $parcelle->produit_hash;
+        }
+        return $produitsHash;
+    }
+
+    public function getObservationAgent()
+    {
+        if (! $this->hasObservationAgent()) {
+            return '';
+        }
+        return $this->audit->agent_observation;
+    }
+
+    public function getObservationOperateur()
+    {
+        if (! $this->hasObservationOperateur()) {
+            return '';
+        }
+        return $this->audit->operateur_observation;
     }
 }
