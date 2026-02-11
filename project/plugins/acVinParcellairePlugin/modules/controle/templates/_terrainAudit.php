@@ -14,7 +14,7 @@
    <div class="form-group">
        <label class="col-sm-3 control-label">Manquements constatés</label>
        <div class="col-sm-9">
-           <p class="form-control-static" v-if="countPointsNCetRtm().manquements.length" v-for="manquement in countPointsNCetRtm().manquements">{{ manquement }}</p>
+           <pre class="form-control-static" style="white-space: pre-wrap;" v-if="countPointsNCetRtm().manquements.length" v-for="manquement in countPointsNCetRtm().manquements">{{ manquement }}</pre>
            <p class="form-control-static" v-else>Tous les points sont conformes</p>
        </div>
    </div>

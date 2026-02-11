@@ -194,7 +194,10 @@
                   const point = parcelle.controle.points[pointKey];
                   if (point.conformite == 'NC') {
                       ret.nombreNC += 1;
-                      ret.manquements.push(point.libelle);
+                      for (const constatKey in point.constats) {
+                          const constat = point.constats[constatKey];
+                          ret.manquements.push(point.libelle + "\n" + constat.libelle + "\n" + parcelleId + ' - '+ constat.observations);
+                      }
                   }
               }
           }
