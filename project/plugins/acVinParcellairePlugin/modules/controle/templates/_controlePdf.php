@@ -70,7 +70,7 @@ table, th, td {
             <td colSpan="2"></td>
         </tr>
         <tr>
-            <td colSpan="2"><strong>PP avec prise en compte des manquants (ha)</strong><br/><br/>à convertir en (hl) pour la revendication (surface*rendement autorisé)</td>
+            <td colSpan="2"><strong>PP avec prise en compte des manquants (ha)</strong><br/><br/><small>à convertir en (hl) pour la revendication (surface*rendement autorisé)</small></td>
             <td colSpan="2"></td>
             <td colSpan="2">PP avec réfaction :</td>
             <td colSpan="2"></td>
@@ -124,7 +124,7 @@ table, th, td {
             <td colSpan="2" style="text-align: center;">&nbsp;<br/>Signature :<br/></td>
         </tr>
         <tr>
-            <td colSpan="6" style="height: 65px">Observations :</td>
+            <td colSpan="6" style="height: 70px">Observations :</td>
             <td colSpan="2">&nbsp;</td>
         </tr>
     </thead>
