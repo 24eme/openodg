@@ -293,6 +293,8 @@ Controle:
                   libelle_manquement: {}
                   observations: {}
                   delais: {}
+      observationAgent:
+      observationOperateur:
       mouvements_statuts:
         type: array_collection
         definition:
