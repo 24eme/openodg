@@ -4,10 +4,15 @@ class ExportControlePDF extends ExportPDF {
 
     protected $controle = null;
     protected $identifiant = null;
+    protected $parcellaire = null;
+    protected $potentiel = null;
 
     public function __construct($controle, $identifiant = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->controle = $controle;
         $this->identifiant = $identifiant;
+
+        $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
+        $this->potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->parcellaire);
 
         if (!$filename) {
             $filename = $this->getFileName(true);
