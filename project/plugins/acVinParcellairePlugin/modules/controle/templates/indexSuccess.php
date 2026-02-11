@@ -1,5 +1,11 @@
 <?php use_helper("Date"); ?>
-<h2>Controle terrain à venir</h2>
+
+<ol class="breadcrumb">
+  <li class="active"><a href="<?php echo url_for('accueil'); ?>">Contrôles</a></li>
+</ol>
+
+
+<h2>Contrôles terrain à venir</h2>
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -30,7 +36,7 @@
 
 
 
-<h2>Controle à organiser</h2>
+<h2>Contrôles à organiser</h2>
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -54,7 +60,7 @@
 </table>
 
 
-<h2>Opérateur dont le controle est à planifier</h2>
+<h2>Opérateur dont le contrôle est à planifier</h2>
 
 <table class="table table-bordered table-striped">
     <thead>

@@ -1,9 +1,15 @@
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('controle_index'); ?>">Contrôles</a></li>
+  <li><a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee)); ?>">Tournée du <?php echo $controle->date_tournee; ?></a></li>
+  <li><a href=""><?php echo $controle->declarant->nom ?> (<?php echo $controle->identifiant ?> - <?php echo $controle->declarant->cvi ?>)</a></li>
+  <li class="active"><a href="">Visualisation des manquements</a></li>
+</ol>
+
+<h2 class="mb-4">Visualisation des manquements</h2>
 
 <div class="well mb-5">
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $controle->getEtablissementObject()]); ?>
 </div>
-
-<h2>Visualisation des manquements</h2>
 
 <div class="container">
     <form id="formListeManquements" action="<?php echo url_for('controle_liste_manquements_controle', array("id" => $controle->_id)) ?>" method="post">
