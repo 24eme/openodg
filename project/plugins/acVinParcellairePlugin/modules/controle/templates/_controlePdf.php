@@ -2,7 +2,6 @@
 <?php use_helper('Text') ?>
 <?php use_helper('Lot') ?>
 
-
 <style>
 table, th, td {
     border: 1px solid black;
