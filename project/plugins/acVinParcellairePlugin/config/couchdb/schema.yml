@@ -208,7 +208,8 @@ Controle:
             all_points_controles: {}
             all_points_conformes: {}
             observations: {}
-            operateur_observations: {}
+            agent_observation: {}
+            operateur_observation: {}
             operateur_signature: {}
             saisie: {}
       parcelles:
@@ -293,8 +294,6 @@ Controle:
                   libelle_manquement: {}
                   observations: {}
                   delais: {}
-      observationAgent:
-      observationOperateur:
       mouvements_statuts:
         type: array_collection
         definition:

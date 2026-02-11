@@ -19,11 +19,18 @@
        </div>
    </div>
 
+   <div class="form-group">
+       <label class="col-sm-2 control-label">Observation agent.e</label>
+       <div class="col-sm-10">
+           <textarea rows="3" class="form-control" v-model="controleCourant.audit.agent_observation"></textarea>
+       </div>
+   </div>
+
 
    <div class="form-group">
-       <label class="col-sm-2 control-label">Observations Opérateur</label>
+       <label class="col-sm-2 control-label">Observation de l'opérateur.ice</label>
        <div class="col-sm-10">
-           <textarea rows="3" class="form-control" v-model="controleCourant.audit.operateur_observations"></textarea>
+           <textarea rows="3" class="form-control" v-model="controleCourant.audit.operateur_observation"></textarea>
        </div>
    </div>
 
