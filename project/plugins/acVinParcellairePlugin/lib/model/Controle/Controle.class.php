@@ -335,4 +335,45 @@ class Controle extends BaseControle
         }
         return false;
     }
+
+    public function hasObservationOperateur()
+    {
+        if ($this->exist('observationOperateur')) {
+            return true;
+        }
+        return false;
+    }
+
+    public function hasObservationAgent()
+    {
+        if ($this->exist('observationAgent')) {
+            return true;
+        }
+        return false;
+    }
+
+    public function getProduitsHash()
+    {
+        $produitsHash = array();
+        foreach ($this->parcelles as $parcelle) {
+            $produitsHash[] = $parcelle->produit_hash;
+        }
+        return $produitsHash;
+    }
+
+    public function getObservationAgent()
+    {
+        if (! $this->hasObservationAgent()) {
+            return '';
+        }
+        return $this->observationAgent;
+    }
+
+    public function getObservationOperateur()
+    {
+        if (! $this->hasObservationOperateur()) {
+            return '';
+        }
+        return $this->observationAgent;
+    }
 }

@@ -25,8 +25,18 @@ class ExportControlePDF extends ExportPDF {
         }
     }
 
-    public function create() {
-        $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle)));
+    public function create()
+    {
+        $ppproduits = array();
+        $controleHash = $this->controle->getProduitsHash();
+        foreach ($this->potentiel->getProduits() as $ppproduit) {
+            if (! in_array($ppproduit->getProduitHash(), $controleHash)) {
+                continue;
+            }
+            $ppproduits[$ppproduit->getLibelle()] = $ppproduit->getSuperficieMax();
+        }
+
+        $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle, 'parcellaire' => $this->parcellaire, 'ppproduits' => $ppproduits)));
     }
 
 
