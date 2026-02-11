@@ -172,15 +172,6 @@
         if(!controles[route.params.id].audit) {
           controles[route.params.id].audit = {}
         }
-        if (!controles[route.params.id].audit.saisie) {
-            let obs = '';
-            for (let p in controles[route.params.id].parcelles) {
-                if (controles[route.params.id].parcelles[p].controle.observations) {
-                    obs += controles[route.params.id].parcelles[p].parcelle_id+' : '+controles[route.params.id].parcelles[p].controle.observations+'\n';
-                }
-            }
-            controles[route.params.id].audit.observations = obs;
-        }
         return {
           controleCourant: controles[route.params.id]
 

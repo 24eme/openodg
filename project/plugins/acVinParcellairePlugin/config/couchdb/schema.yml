@@ -207,7 +207,6 @@ Controle:
           fields:
             all_points_controles: {}
             all_points_conformes: {}
-            observations: {}
             agent_observation: {}
             operateur_observation: {}
             operateur_signature: {}

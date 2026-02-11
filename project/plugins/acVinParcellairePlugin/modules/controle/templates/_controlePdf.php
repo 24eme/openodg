@@ -111,7 +111,7 @@ table, th, td {
             </td>
         </tr>
         <tr>
-            <td colSpan="8"><u>Observation de l'agent :</u><br/><?php echo $controle->getObservationAgent(); ?></td>
+            <td colSpan="8" style="height: 45px;"><u>Observation de l'agent :</u><br/><?php echo $controle->getObservationAgent(); ?></td>
         </tr>
         <tr>
             <td class="center-grey" colSpan="8"><strong>&nbsp;L'OPÉRATEUR OU SON REPRÉSENTANT</strong></td>
@@ -122,8 +122,8 @@ table, th, td {
             <td colSpan="2" style="text-align: center;">&nbsp;<br/>Signature :<br/></td>
         </tr>
         <tr>
-            <td colSpan="6" style="height: 45px;">Observation :</td>
-            <td colSpan="2"><?php echo $controle->getObservationOperateur(); ?></td>
+            <td colSpan="6" style="height: 45px;">Observation :<br/><?php echo $controle->getObservationOperateur(); ?></td>
+            <td colSpan="2"></td>
         </tr>
     </thead>
 </table>
