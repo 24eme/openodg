@@ -1,4 +1,10 @@
-<h2>Opérateurs controlés dans la tournée du <?php echo Date::francizeDate($dateTournee); ?> </h2>
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('controle_index'); ?>">Contrôles</a></li>
+  <li><a href="">Tournée du <?php echo Date::francizeDate($dateTournee); ?></a></li>
+  <li class="active"><a href="">Liste des opérateurs contrôlés</a></li>
+</ol>
+
+<h2>Opérateurs controlés dans la tournée du <?php echo Date::francizeDate($dateTournee); ?></h2>
 
 <table class="table table-bordered table-striped">
     <thead>

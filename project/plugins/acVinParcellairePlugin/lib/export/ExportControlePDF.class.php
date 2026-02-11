@@ -4,10 +4,15 @@ class ExportControlePDF extends ExportPDF {
 
     protected $controle = null;
     protected $identifiant = null;
+    protected $parcellaire = null;
+    protected $potentiel = null;
 
     public function __construct($controle, $identifiant = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->controle = $controle;
         $this->identifiant = $identifiant;
+
+        $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
+        $this->potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->parcellaire);
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -20,8 +25,18 @@ class ExportControlePDF extends ExportPDF {
         }
     }
 
-    public function create() {
-        $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle)));
+    public function create()
+    {
+        $ppproduits = array();
+        $controleHash = $this->controle->getProduitsHash();
+        foreach ($this->potentiel->getProduits() as $ppproduit) {
+            if (! in_array($ppproduit->getProduitHash(), $controleHash)) {
+                continue;
+            }
+            $ppproduits[$ppproduit->getLibelle()] = $ppproduit->getSuperficieMax();
+        }
+
+        $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle, 'parcellaire' => $this->parcellaire, 'ppproduits' => $ppproduits)));
     }
 
 
