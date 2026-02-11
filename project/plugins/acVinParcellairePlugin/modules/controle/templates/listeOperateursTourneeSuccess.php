@@ -27,3 +27,7 @@
     <?php endforeach; ?>
     </tbody>
 </table>
+
+<div class="row">
+    <div class="col-xs-4"><a class="btn btn-default" href="<?php echo url_for('controle_index'); ?>"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+</div>

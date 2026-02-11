@@ -1,7 +1,8 @@
 <?php use_helper("Date"); ?>
 
 <ol class="breadcrumb">
-  <li class="active"><a href="<?php echo url_for('accueil'); ?>">Contrôles</a></li>
+  <li><a href="<?php echo url_for('accueil'); ?>">Contrôles</a></li>
+  <li class="active"><a href="<?php echo url_for('accueil'); ?>">Organisation des contrôles</a></li>
 </ol>
 
 
