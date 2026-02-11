@@ -1,8 +1,9 @@
-<h2>Cloturer un contrôle</h2>
 
 <div class="well mb-5">
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $controle->getEtablissementObject()]); ?>
 </div>
+
+<h2>Visualisation des manquements</h2>
 
 <div class="container">
     <form id="formListeManquements" action="<?php echo url_for('controle_liste_manquements_controle', array("id" => $controle->_id)) ?>" method="post">
