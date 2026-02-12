@@ -18,7 +18,6 @@
         <li class="divider"></li>
         <li class="dropdown-header">Contrôle</li>
         <li><a href="<?php echo url_for('controle_nouveau', array('sf_subject' => $parcellaire->getEtablissementObject())) ?>" class="dropdown-item">Séléctionner les parcelles à contrôler</a></li>
-        <li><a href="<?php echo url_for('controle_gestion_manquements', array())?>" class="dropdown-item">Gérer les manquements</a></li>
 <?php endif; ?>
     </ul>
 </div>
