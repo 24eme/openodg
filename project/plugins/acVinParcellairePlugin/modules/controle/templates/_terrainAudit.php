@@ -34,6 +34,13 @@
        </div>
    </div>
 
+   <div class="form-group">
+       <label class="col-sm-3 control-label">Nom et prénom de l'opérateur ou du représentant</label>
+       <div class="col-sm-4">
+           <textarea rows="1" class="form-control" v-model="controleCourant.audit.nom_prenom"></textarea>
+       </div>
+   </div>
+
   <div class="form-group">
       <label class="col-sm-3 control-label">Signature Opérateur</label>
       <div class="col-sm-5">
