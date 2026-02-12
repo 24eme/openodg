@@ -34,7 +34,8 @@
     <RouterLink class="btn btn-default" :to="{ name: 'listing' }"><span class="glyphicon glyphicon-chevron-left"></span> Retour</RouterLink>
     </div>
     <div class="col-xs-4 text-center">
-    <button class="btn btn-default" @click="transmitDataControle()">Transmettre les données</button>
+        <button v-if="validationSent" class="btn btn-default btn-success" @click="transmitDataControle()"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Données transmises</button>
+        <button v-else class="btn btn-default" @click="transmitDataControle()"><span class="glyphicon glyphicon-send"></span>&nbsp;&nbsp;Transmettre les données</button>
     </div>
     <div class="col-xs-4 text-right">
     <button class="btn btn-default" @click="startAudit()" :disabled="nbParcellesControlees() != Object.keys(controleCourant.parcelles).length" :class="{ 'btn-primary': controleCourant.audit.saisie != 1, 'transparence-sm': nbParcellesControlees() != Object.keys(controleCourant.parcelles).length  }"><span class="glyphicon glyphicon-edit"></span> Saisir l'audit</button>
