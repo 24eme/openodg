@@ -46,21 +46,18 @@ rm /tmp/production.$millesime.csv
 grep ' missing' data/douane_diff/production.files
 
 cat data/douane_diff/production.files | grep -v ' missing' | while read file id ; do
-    php symfony douaneRecolte:convert2csv $SYMFONYTASKOPTIONS $file 2> /dev/null | awk -F ';' '{print $1";"$2";"$3";"$4";"$5";"$6";"$7";"$8";"$9";"$10";"$11";"$12";"$13";"$14";"$15";"$16";;;"$19";"$20";"$21";"$22";"$23";;"$25";"$26";;"$28";"$29}' | sed 's/ô/o/g' | sed 's/[éèêë]/e/g' | grep -v '^#' | grep -a ';\(AOC\|IGP\);' | sed 's/"//g' > /tmp/douane_file.$id.$$.csv
-    cat /tmp/douane_file.$id.$$.csv  | sed 's/[,\.0]//g' | sed 's/  */ /g' | sed 's/ *;/;/g' > /tmp/douane_file.clean.$id.$$.csv
-    php symfony declaration:export-csv $SYMFONYTASKOPTIONS "DOUANE-"$id"-"2025 2> /dev/null | awk -F ';' '{print $1";"$2";"$3";"$4";"$5";"$6";"$7";"$8";"$9";"$10";"$11";"$12";"$13";"$14";"$15";"$16";;;"$19";"$20";"$21";"$22";"$23";;"$25";"$26";;"$28";"$29}' | sed 's/ô/o/g' | sed 's/[éèêë]/e/g' | grep -v '^#' | grep -a ';\(AOC\|IGP\);' | sed 's/"//g' > /tmp/douane_db.$id.$$.csv
-    cat /tmp/douane_db.$id.$$.csv  | sed 's/[,\.0]//g' | sed 's/  */ /g' | sed 's/ *;/;/g' > /tmp/douane_db.clean.$id.$$.csv
+    mkdir -p "data/douane_diff/"$id
+    php symfony douaneRecolte:convert2csv $SYMFONYTASKOPTIONS $file 2> /dev/null | awk -F ';' '{print $1";"$2";"$3";"$4";"$5";"$6";"$7";"$8";"$9";"$10";"$11";"$12";"$13";"$14";"$15";"$16";;;"$19";"$20";"$21";"$22";"$23";;"$25";"$26";;"$28";"$29}' | sed 's/ô/o/g' | sed 's/[éèêë]/e/g' | grep -v '^#' | grep -a ';\(AOC\|IGP\);' | sed 's/"//g' > "data/douane_diff/"$id/douane_file_douane.csv
+    cat "data/douane_diff/"$id/douane_file_douane.csv  | sed 's/[,\.0]//g' | sed 's/  */ /g' | sed 's/ *;/;/g' > "data/douane_diff/"$id/douane_file_douane.clean.csv
+    php symfony declaration:export-csv $SYMFONYTASKOPTIONS "DOUANE-"$id"-"2025 2> /dev/null | awk -F ';' '{print $1";"$2";"$3";"$4";"$5";"$6";"$7";"$8";"$9";"$10";"$11";"$12";"$13";"$14";"$15";"$16";;;"$19";"$20";"$21";"$22";"$23";;"$25";"$26";;"$28";"$29}' | sed 's/ô/o/g' | sed 's/[éèêë]/e/g' | grep -v '^#' | grep -a ';\(AOC\|IGP\);' | sed 's/"//g' > "data/douane_diff/"$id/douane_in_db.csv
+    cat "data/douane_diff/"$id/douane_in_db.csv  | sed 's/[,\.0]//g' | sed 's/  */ /g' | sed 's/ *;/;/g' > "data/douane_diff/"$id/douane_in_db.clean.csv
 
     echo "COMPARE $file $id"
     if diff /tmp/douane_file.$id.$$.csv /tmp/douane_db.clean.$id.$$.csv | grep ';' > /dev/null ; then
-        mkdir -p "data/douane_diff/"$id
-        mv /tmp/douane_file.$id.$$.csv "data/douane_diff/"$id/douane_file_douane.csv
-        mv /tmp/douane_db.$id.$$.csv "data/douane_diff/"$id/douane_in_db.csv
-        mv /tmp/douane_file.clean.$id.$$.csv "data/douane_diff/"$id/douane_file_douane.clean.csv
-        mv /tmp/douane_db.clean.$id.$$.csv "data/douane_diff/"$id/douane_in_db.clean.csv
         echo "diff result: $file $id DIFF (versions: data/douane_diff/"$id")"
     else
         echo "diff result: $file $id OK (identical)"
-        rm /tmp/douane_file.$id.$$.csv /tmp/douane_db.$id.$$.csv /tmp/douane_file.clean.$id.$$.csv /tmp/douane_db.clean.$id.$$.csv
+        rm -rf "data/douane_diff/"$id
     fi
 done
+
