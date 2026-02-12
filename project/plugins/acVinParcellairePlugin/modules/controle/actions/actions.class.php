@@ -14,6 +14,8 @@ class controleActions extends sfActions
                     $this->tournees[$c->date_tournee] = [
                         'parcelles' => [],
                         'operateurs' => [],
+                        'secteurs' => [],
+                        'cooperatives' => [],
                         'date_tournee' => $c->date_tournee,
                         'type_tournee' => $c->type_tournee,
                         'statut' => $statut
@@ -21,6 +23,10 @@ class controleActions extends sfActions
                 }
                 $this->tournees[$c->date_tournee]['parcelles'] += $c->parcelles->toArray(true,false);
                 $this->tournees[$c->date_tournee]['operateurs'][$c->identifiant] = $c->declarant->nom;
+                $this->tournees[$c->date_tournee]['secteurs'][$c->secteur] = $c->secteur;
+                foreach($c->liaisons_operateurs as $liaison) {
+                    $this->tournees[$c->date_tournee]['cooperatives'][$liaison->id_etablissement] = "Coopérateurs pour " .$liaison->libelle_etablissement;
+                }
             }
         }
         ksort($this->tournees);
