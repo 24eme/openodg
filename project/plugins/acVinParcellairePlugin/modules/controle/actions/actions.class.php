@@ -10,7 +10,7 @@ class controleActions extends sfActions
                 continue;
             }
             foreach($controles as $c) {
-                if (!isset($this->stats[$statut][$c->date_tournee])) {
+                if (!isset($this->tournees[$c->date_tournee])) {
                     $this->tournees[$c->date_tournee] = [
                         'parcelles' => [],
                         'operateurs' => [],
