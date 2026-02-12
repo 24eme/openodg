@@ -198,6 +198,9 @@
                       ret.nombreNC += 1;
                       for (const constatKey in point.constats) {
                           const constat = point.constats[constatKey];
+                          if (! constat.conformite) {
+                              continue ;
+                          }
                           ret.manquements.push(point.libelle + "\n" + constat.libelle + "\n" + parcelleId + ' - '+ constat.observations);
                       }
                   }
