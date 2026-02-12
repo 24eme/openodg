@@ -200,7 +200,7 @@ Controle:
                      definition:
                        fields:
                          '*': { }
-      liaisons:
+      liaisons: { required: false }
       audit:
         type: collection
         definition:
