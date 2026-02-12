@@ -15,7 +15,7 @@
         <th class="col-xs-1">Type du controle</th>
         <th class="col-xs-1 text-center">Nb opérateurs</th>
         <th class="col-xs-1 text-center">Nb parcelles</th>
-        <th class="col-xs-3">Informations</th>
+        <th class="col-xs-3">Secteurs / Opérateurs</th>
         <th class="col-xs-3"></th>
     </tr>
     </thead>
