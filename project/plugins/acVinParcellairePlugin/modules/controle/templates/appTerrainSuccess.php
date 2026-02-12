@@ -109,7 +109,8 @@
         const route = useRoute()
 
         return {
-          controleCourant: controles[route.params.id]
+          controleCourant: controles[route.params.id],
+          validationSent: false
         }
     };
     templates.operateur.methods = {
@@ -136,6 +137,7 @@
           if (!response.ok) {
             throw new Error('Erreur HTTP ' + response.status);
           }
+          this.validationSent = true;
         })
         .catch(error => {
           console.error('Transmission error:', error);
@@ -194,7 +196,10 @@
                   const point = parcelle.controle.points[pointKey];
                   if (point.conformite == 'NC') {
                       ret.nombreNC += 1;
-                      ret.manquements.push(point.libelle);
+                      for (const constatKey in point.constats) {
+                          const constat = point.constats[constatKey];
+                          ret.manquements.push(point.libelle + "\n" + constat.libelle + "\n" + parcelleId + ' - '+ constat.observations);
+                      }
                   }
               }
           }

@@ -2,7 +2,6 @@
 <?php use_helper('Text') ?>
 <?php use_helper('Lot') ?>
 
-
 <style>
 table, th, td {
     border: 1px solid black;
@@ -18,7 +17,7 @@ table, th, td {
 <table>
     <thead>
         <tr>
-            <td colspan="2">#LOGO#</td>
+            <td colspan="2" align="center" style="text-align: center;" ><?php echo tdStart() ?>&nbsp;<img style="height: 46px;" src="<?php echo sfConfig::get('sf_web_dir').'/images/pdf/logo_'.strtolower(Organisme::getCurrentOrganisme()).'.jpg' ?>" /></td>
             <td colspan="6" style="text-align: center; height: 50px;">&nbsp;<br/><strong>AUDIT VIGNOBLE</strong></td>
         </tr>
         <tr>
