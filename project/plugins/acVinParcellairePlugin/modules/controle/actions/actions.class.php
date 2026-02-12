@@ -200,4 +200,9 @@ class controleActions extends sfActions
 
         return $this->renderText($this->document->output());
     }
+
+    public function executeGestionManquements(sfWebRequest $request)
+    {
+        $this->controles = ControleClient::getInstance()->findAllByStatus();
+    }
 }
