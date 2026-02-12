@@ -155,13 +155,19 @@
         }
     };
     templates.parcelle.methods = {
-      save() {
-        this.parcelleCourante.controle.saisie = 1;
-        router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
-      },
-      echoFloat(val, nbDecimal = 5) {
-        return val ? Number(val).toFixed(nbDecimal) : '';
-      }
+        allConforme() {
+            for (const pointKey in this.parcelleCourante.controle.points) {
+                const point = this.parcelleCourante.controle.points[pointKey];
+                point.conformite = 'C';
+            }
+        },
+        save() {
+            this.parcelleCourante.controle.saisie = 1;
+            router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+        },
+        echoFloat(val, nbDecimal = 5) {
+            return val ? Number(val).toFixed(nbDecimal) : '';
+        }
     };
     templates.audit.mounted = function() {
         let signaturePad = new SignaturePad(document.getElementById('signature'), {
