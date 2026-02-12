@@ -4,21 +4,26 @@ class controleActions extends sfActions
     public function executeIndex(sfWebRequest $request)
     {
         $this->controles = ControleClient::getInstance()->findAllByStatus();
-        $this->stats = [];
+        $this->tournees = [];
         foreach ($this->controles as $statut => $controles) {
+            if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_PLANIFIE, ControleClient::CONTROLE_STATUT_EN_MANQUEMENT])) {
+                continue;
+            }
             foreach($controles as $c) {
                 if (!isset($this->stats[$statut][$c->date_tournee])) {
-                    $this->stats[$statut][$c->date_tournee] = [
+                    $this->tournees[$c->date_tournee] = [
                         'parcelles' => [],
                         'operateurs' => [],
                         'date_tournee' => $c->date_tournee,
-                        'type_tournee' => $c->type_tournee
+                        'type_tournee' => $c->type_tournee,
+                        'statut' => $statut
                     ];
                 }
-                $this->stats[$statut][$c->date_tournee]['parcelles'] += $c->parcelles->toArray(true,false);
-                $this->stats[$statut][$c->date_tournee]['operateurs'][$c->identifiant] = $c->declarant->nom;
+                $this->tournees[$c->date_tournee]['parcelles'] += $c->parcelles->toArray(true,false);
+                $this->tournees[$c->date_tournee]['operateurs'][$c->identifiant] = $c->declarant->nom;
             }
         }
+        ksort($this->tournees);
     }
 
     public function executeNouveau(sfWebRequest $request)
