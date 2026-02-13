@@ -172,6 +172,8 @@ class Controle extends BaseControle
         $d->parcellaire_geojson = $this->getGeoJson();
         $d->parcellaire_parcelles = $this->getParcellaireParcelles();
         $d->validation = false;
+        $d->ppp = $this->getPotentielProductionProduits();
+        $d->surface_production = round($this->getParcellaire()->getSuperficieTotale(), 3);
         $this->to_dump = false;
         return $d;
     }
@@ -377,5 +379,15 @@ class Controle extends BaseControle
             return '';
         }
         return $this->audit->operateur_observation;
+    }
+
+    public function getPotentielProductionProduits()
+    {
+        $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->parcellaire);
+        $ppproduits = array();
+        foreach ($potentiel->getProduits() as $ppproduit) {
+            $ppproduits[$ppproduit->getLibelle()] = $ppproduit->getSuperficieMax();
+        }
+        return $ppproduits;
     }
 }
