@@ -105,7 +105,7 @@
         <div class="panel-body">
             <div class="RTM" v-for="(infos, codeRtm) in valPoint.constats">
                 <input :id="'checkbox_' + codeRtm" type="checkbox" v-model="infos.conformite" style="font-weight: normal;"/>
-                <label :for="'checkbox_' + codeRtm" style="margin-top: 5px;">&nbsp; {{ infos.libelle }} </label>
+                <label :for="'checkbox_' + codeRtm" style="margin-top: 5px;">&nbsp; {{ infos.libelle }}<span class="text-muted"> - {{ codeRtm }}</span> </label>
                 <div class="col-sm-12" style="margin-top: 5px;">
                     <textarea rows="2" class="form-control" :name="'obs_' + codeRtm" :id="'obs_' + codeRtm" v-model="infos.observations" placeholder="Observations"></textarea>
                 </div>
