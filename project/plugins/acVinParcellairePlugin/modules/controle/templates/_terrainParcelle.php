@@ -74,13 +74,16 @@
 <hr />
 
 <h2>Points de contrôle</h2>
+<div class="text-right">
+    <a style="cursor: pointer;" @click="allConforme()">Tous les points sont conformes</a>
+</div>
 <form class="form-horizontal">
     <div class="form-group" v-for="(valPoint, keyPoint) in parcelleCourante.controle.points" :key="keyPoint">
     <h4 class="col-sm-6 control-label" style="text-align:left">
       {{ valPoint.libelle }}
   </h4>
 
-    <div class="col-sm-6">
+    <div class="col-sm-6 text-right">
       <label class="radio-inline">
         <input type="radio" :name="'controle_' + keyPoint" value="C" v-model="valPoint.conformite" />
         Conforme
@@ -102,7 +105,7 @@
         <div class="panel-body">
             <div class="RTM" v-for="(infos, codeRtm) in valPoint.constats">
                 <input :id="'checkbox_' + codeRtm" type="checkbox" v-model="infos.conformite" style="font-weight: normal;"/>
-                <label :for="'checkbox_' + codeRtm" style="margin-top: 5px;">&nbsp; {{ infos.libelle }} </label>
+                <label :for="'checkbox_' + codeRtm" style="margin-top: 5px;">&nbsp; {{ infos.libelle }}<span class="text-muted"> - {{ codeRtm }}</span> </label>
                 <div class="col-sm-12" style="margin-top: 5px;">
                     <textarea rows="2" class="form-control" :name="'obs_' + codeRtm" :id="'obs_' + codeRtm" v-model="infos.observations" placeholder="Observations"></textarea>
                 </div>

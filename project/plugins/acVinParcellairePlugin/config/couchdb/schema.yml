@@ -200,17 +200,18 @@ Controle:
                      definition:
                        fields:
                          '*': { }
-      liaisons:
+      liaisons: { required: false }
       audit:
         type: collection
         definition:
           fields:
             all_points_controles: {}
             all_points_conformes: {}
-            agent_observation: {}
-            operateur_observation: {}
+            agent_observation:
+            operateur_observation:
             operateur_signature: {}
             saisie: {}
+            nom_prenom:
       parcelles:
         type: collection
         definition:

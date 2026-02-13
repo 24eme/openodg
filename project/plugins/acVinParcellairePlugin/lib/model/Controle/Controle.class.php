@@ -171,6 +171,9 @@ class Controle extends BaseControle
         $d = $this->getData();
         $d->parcellaire_geojson = $this->getGeoJson();
         $d->parcellaire_parcelles = $this->getParcellaireParcelles();
+        $d->validation = false;
+        $d->ppp = $this->getPotentielProductionProduits();
+        $d->surface_production = round($this->getParcellaire()->getSuperficieTotale(), 3);
         $this->to_dump = false;
         return $d;
     }
@@ -253,15 +256,15 @@ class Controle extends BaseControle
         return $retManquements;
     }
 
-    public function getInfosManquement($rtmId)
+    public function getInfosManquement($rtmId, $parcelleId)
     {
-        return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeRtm($rtmId), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleManquement($rtmId), 'actif' => true, 'constat_date' => $this->date_tournee);
+        return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeRtm($rtmId), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleManquement($rtmId), 'actif' => true, 'constat_date' => $this->date_tournee, 'parcelles_id' => [$parcelleId]);
     }
 
-    public function addManquementDocumentaire($rtmId)
+    public function addManquementDocumentaire($rtmId, $parcelleId)
     {
         if ($this->manquements->exist($rtmId)) {return ;}
-        $manquement = $this->getInfosManquement($rtmId);
+        $manquement = $this->getInfosManquement($rtmId, $parcelleId);
         $this->manquements->add($rtmId, $manquement);
     }
 
@@ -376,5 +379,15 @@ class Controle extends BaseControle
             return '';
         }
         return $this->audit->operateur_observation;
+    }
+
+    public function getPotentielProductionProduits()
+    {
+        $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->parcellaire);
+        $ppproduits = array();
+        foreach ($potentiel->getProduits() as $ppproduit) {
+            $ppproduits[$ppproduit->getLibelle()] = $ppproduit->getSuperficieMax();
+        }
+        return $ppproduits;
     }
 }
