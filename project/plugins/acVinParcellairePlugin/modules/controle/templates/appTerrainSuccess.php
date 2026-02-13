@@ -31,36 +31,6 @@
         localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
     }
 
-    // var points = [];
-
-    // for(const controleId in controles) {
-    //     for(const parcelleId in controles[controleId].parcelles) {
-    //         if(!controles[controleId].parcelles[parcelleId].controle.points || !controles[controleId].parcelles[parcelleId].controle.points.length) {
-    //             controles[controleId].parcelles[parcelleId].controle.points = points;
-    //         }
-    //         for (key in points_de_controle) {
-    //             controles[controleId].parcelles[parcelleId].controle.points[key] = [];
-    //             controles[controleId].parcelles[parcelleId].controle.points[key].conformite = true;
-    //             controles[controleId].parcelles[parcelleId].controle.points[key].rtm = [];
-    //             for (item in points_de_controle[key].rtm) {
-    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item] = [];
-    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item].libelle = points_de_controle[key].rtm[item].libelle;
-    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item].observations = '';
-    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item].conformite = false;
-    //             }
-    //         }
-    //     }
-    // }
-
-    // function parseString(dlmString){
-    //     let mydlm = [];
-    //     dlmString.split("|").forEach(function(str){
-    //         mydlm.push(JSON.parse(str));
-    //     });
-    //     return mydlm;
-    // }
-    // const array_parcelles = parseString('<?php //echo addslashes(json_encode(current($controles->getRawValue())['geojson'])) ?>');
-
     const routes = [
       { path: '/', name: "listing", component: templates.listing },
       { path: '/map', name: "map", component: templates.map },
@@ -110,7 +80,6 @@
 
         return {
           controleCourant: controles[route.params.id],
-          validationSent: false
         }
     };
     templates.operateur.methods = {
@@ -137,7 +106,7 @@
           if (!response.ok) {
             throw new Error('Erreur HTTP ' + response.status);
           }
-          this.validationSent = true;
+          this.controleCourant.validation = true;
         })
         .catch(error => {
           console.error('Transmission error:', error);
@@ -163,6 +132,7 @@
         },
         save() {
             this.parcelleCourante.controle.saisie = 1;
+            this.controleCourant.validation = false;
             router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
         },
         echoFloat(val, nbDecimal = 5) {
@@ -216,6 +186,7 @@
       },
       save() {
         this.controleCourant.audit.saisie = 1;
+        this.controleCourant.validation = false;
         router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
       }
     };

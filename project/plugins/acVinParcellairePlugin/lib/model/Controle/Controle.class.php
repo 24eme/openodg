@@ -171,6 +171,7 @@ class Controle extends BaseControle
         $d = $this->getData();
         $d->parcellaire_geojson = $this->getGeoJson();
         $d->parcellaire_parcelles = $this->getParcellaireParcelles();
+        $d->validation = false;
         $this->to_dump = false;
         return $d;
     }
