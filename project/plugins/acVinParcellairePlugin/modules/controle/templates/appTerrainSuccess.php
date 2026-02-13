@@ -207,7 +207,7 @@
                           if (! constat.conformite) {
                               continue ;
                           }
-                          ret.manquements.push(point.libelle + "\n" + constat.libelle + "\n" + parcelleId + ' - '+ constat.observations);
+                          ret.manquements.push(point.libelle + "\n" + constat.libelle + ' - ' + constatKey + "\n" + parcelleId + ' - '+ constat.observations);
                       }
                   }
               }
