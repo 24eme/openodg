@@ -14,11 +14,20 @@
 <form id="formAddManquement" action="<?php echo url_for('controle_ajout_liste_manquements', array("id" => $controle->_id)) ?>" method="post" class="form-horizontal">
     <div class="form-group">
         <label for="manquementSelect" class="col-sm-3 control-label">Choisir un manquement</label>
-        <div class="col-sm-7">
+        <div class="col-sm-7 mb-3">
             <select class="form-control" name="manquement" id="manquementSelect">
                 <option value=""></option>
                 <?php foreach ($listeManquements as $idRtm => $manquement): ?>
                     <option value="<?php echo $idRtm ?>"><?php echo $manquement ?></option>
+                <?php endforeach;?>
+            </select>
+        </div>
+        <label for="parcelleManquementSelect" class="col-sm-3 control-label">Pour la parcelle :</label>
+        <div class="col-sm-4">
+            <select class="form-control" name="parcelle" id="parcelleManquementSelect">
+                <option value=""></option>
+                <?php foreach ($controle->parcelles as $idu => $info): ?>
+                    <option style="text-align: right;" value="<?php echo $idu ?>"><?php echo $idu ?></option>
                 <?php endforeach;?>
             </select>
         </div>

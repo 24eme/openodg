@@ -256,15 +256,15 @@ class Controle extends BaseControle
         return $retManquements;
     }
 
-    public function getInfosManquement($rtmId)
+    public function getInfosManquement($rtmId, $parcelleId)
     {
-        return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeRtm($rtmId), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleManquement($rtmId), 'actif' => true, 'constat_date' => $this->date_tournee);
+        return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeRtm($rtmId), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleManquement($rtmId), 'actif' => true, 'constat_date' => $this->date_tournee, 'parcelles_id' => [$parcelleId]);
     }
 
-    public function addManquementDocumentaire($rtmId)
+    public function addManquementDocumentaire($rtmId, $parcelleId)
     {
         if ($this->manquements->exist($rtmId)) {return ;}
-        $manquement = $this->getInfosManquement($rtmId);
+        $manquement = $this->getInfosManquement($rtmId, $parcelleId);
         $this->manquements->add($rtmId, $manquement);
     }
 
