@@ -6,6 +6,8 @@ class ExportControlePDF extends ExportPDF {
     protected $identifiant = null;
     protected $parcellaire = null;
     protected $potentiel = null;
+    protected $etablissement = null;
+    protected $compte = null;
 
     public function __construct($controle, $identifiant = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->controle = $controle;
