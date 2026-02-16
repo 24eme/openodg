@@ -1356,4 +1356,17 @@ abstract class Lot extends acCouchdbDocumentTree
     public function isNCOI() {
         return ($this->initial_type == TourneeClient::TYPE_TOURNEE_LOT_NC_OI) || ($this->hasSpecificitePassage() && $this->getRegionOrigine() === 'OIVC');
     }
+
+    public function isOIRecours() {
+        if (($this->initial_type == TourneeClient::TYPE_TOURNEE_LOT_RECOURS) && !$this->hasSpecificitePassage()) {
+            return true;
+        }
+        foreach(LotsClient::getInstance()->getHistory($this->declarant_identifiant, $this->unique_id) as $mvt){
+            if ($mvt->value->statut == self::STATUT_RECOURS_OC) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
