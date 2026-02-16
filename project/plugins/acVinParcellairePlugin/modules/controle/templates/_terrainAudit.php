@@ -4,31 +4,45 @@
 <form class="form-horizontal">
 
    <div class="form-group">
-       <label class="col-sm-2 control-label">Nombre de points non conformes</label>
-       <div class="col-sm-10">
+       <label class="col-sm-3 control-label">Nombre de points non conformes</label>
+       <div class="col-sm-9">
            <p class="form-control-static" v-if="countPointsNCetRtm().nombreNC">{{ countPointsNCetRtm().nombreNC }}</p>
            <p class="form-control-static" v-else>Aucun</p>
        </div>
    </div>
 
    <div class="form-group">
-       <label class="col-sm-2 control-label">Manquements constatés</label>
-       <div class="col-sm-10">
-           <p class="form-control-static" v-if="countPointsNCetRtm().manquements.length" v-for="manquement in countPointsNCetRtm().manquements">{{ manquement }}</p>
+       <label class="col-sm-3 control-label">Manquements constatés</label>
+       <div class="col-sm-9">
+           <pre class="form-control-static" style="white-space: pre-wrap;" v-if="countPointsNCetRtm().manquements.length" v-for="manquement in countPointsNCetRtm().manquements">{{ manquement }}</pre>
            <p class="form-control-static" v-else>Tous les points sont conformes</p>
+       </div>
+   </div>
+
+   <div class="form-group">
+       <label class="col-sm-3 control-label">Observation agent.e</label>
+       <div class="col-sm-9">
+           <textarea rows="3" class="form-control" v-model="controleCourant.audit.agent_observation"></textarea>
        </div>
    </div>
 
 
    <div class="form-group">
-       <label class="col-sm-2 control-label">Observations Opérateur</label>
-       <div class="col-sm-10">
-           <textarea rows="3" class="form-control" v-model="controleCourant.audit.operateur_observations"></textarea>
+       <label class="col-sm-3 control-label">Observation de l'opérateur.ice</label>
+       <div class="col-sm-9">
+           <textarea rows="3" class="form-control" v-model="controleCourant.audit.operateur_observation"></textarea>
+       </div>
+   </div>
+
+   <div class="form-group">
+       <label class="col-sm-3 control-label">Nom et prénom de l'opérateur ou du représentant</label>
+       <div class="col-sm-4">
+           <textarea rows="1" class="form-control" v-model="controleCourant.audit.nom_prenom"></textarea>
        </div>
    </div>
 
   <div class="form-group">
-      <label class="col-sm-2 control-label">Signature Opérateur</label>
+      <label class="col-sm-3 control-label">Signature Opérateur</label>
       <div class="col-sm-5">
           <canvas id="signature" style="width: 300px;height: 300px; border: 1px solid #cecece;"></canvas>
       </div>

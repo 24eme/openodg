@@ -102,7 +102,7 @@ class Controle extends BaseControle
                         $point = $parcelle->controle->points->add($pointKey);
                         $point->libelle = $pointConf['libelle'];
                         foreach ($pointConf['rtm'] as $rtmKey => $rtmConf) {
-                            $point->manquements->add($rtmKey, ['libelle' => $rtmConf['libelle'], 'conformite' => false, 'observations' => null]);
+                            $point->constats->add($rtmKey, ['libelle' => $rtmConf['libelle'], 'conformite' => false, 'observations' => null]);
                         }
                     }
                 }
@@ -171,6 +171,9 @@ class Controle extends BaseControle
         $d = $this->getData();
         $d->parcellaire_geojson = $this->getGeoJson();
         $d->parcellaire_parcelles = $this->getParcellaireParcelles();
+        $d->validation = false;
+        $d->ppp = $this->getPotentielProductionProduits();
+        $d->surface_production = round($this->getParcellaire()->getSuperficieTotale(), 3);
         $this->to_dump = false;
         return $d;
     }
@@ -179,6 +182,7 @@ class Controle extends BaseControle
     {
         $retControleByParcelle = array();
         foreach ($json['controle']['parcelles'] as $parcelle) {
+            $this->audit = $json['controle']['audit'];
             // Je met le noeud controle du Json puis j'unset le sous-noeud "points" car c'est la seule update a faire
             $retControleByParcelle[$parcelle['parcelle_id']] = $parcelle['controle'];
             unset($retControleByParcelle[$parcelle['parcelle_id']]['points']);
@@ -189,7 +193,7 @@ class Controle extends BaseControle
                 // Unset pour ne prendre que les manquements qui sont non conformes
                 $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle] = $dataPointDeControle;
                 unset($retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['constats']);
-                foreach ($dataPointDeControle['manquements'] as $numRtm => $dataManquement) {
+                foreach ($dataPointDeControle['constats'] as $numRtm => $dataManquement) {
                     if ($dataManquement['conformite'] != 1) {
                         continue;
                     }
@@ -252,15 +256,15 @@ class Controle extends BaseControle
         return $retManquements;
     }
 
-    public function getInfosManquement($rtmId)
+    public function getInfosManquement($rtmId, $parcelleId)
     {
-        return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeRtm($rtmId), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleManquement($rtmId), 'actif' => true, 'constat_date' => $this->date_tournee);
+        return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeRtm($rtmId), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleManquement($rtmId), 'actif' => true, 'constat_date' => $this->date_tournee, 'parcelles_id' => [$parcelleId]);
     }
 
-    public function addManquementDocumentaire($rtmId)
+    public function addManquementDocumentaire($rtmId, $parcelleId)
     {
         if ($this->manquements->exist($rtmId)) {return ;}
-        $manquement = $this->getInfosManquement($rtmId);
+        $manquement = $this->getInfosManquement($rtmId, $parcelleId);
         $this->manquements->add($rtmId, $manquement);
     }
 
@@ -334,5 +338,56 @@ class Controle extends BaseControle
             return true;
         }
         return false;
+    }
+
+    public function hasObservationOperateur()
+    {
+        if ($this->audit->exist('operateur_observation')) {
+            return true;
+        }
+        return false;
+    }
+
+    public function hasObservationAgent()
+    {
+        if ($this->audit->exist('agent_observation')) {
+            return true;
+        }
+        return false;
+    }
+
+    public function getProduitsHash()
+    {
+        $produitsHash = array();
+        foreach ($this->parcelles as $parcelle) {
+            $produitsHash[] = $parcelle->produit_hash;
+        }
+        return $produitsHash;
+    }
+
+    public function getObservationAgent()
+    {
+        if (! $this->hasObservationAgent()) {
+            return '';
+        }
+        return $this->audit->agent_observation;
+    }
+
+    public function getObservationOperateur()
+    {
+        if (! $this->hasObservationOperateur()) {
+            return '';
+        }
+        return $this->audit->operateur_observation;
+    }
+
+    public function getPotentielProductionProduits()
+    {
+        $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->parcellaire);
+        $ppproduits = array();
+        foreach ($potentiel->getProduits() as $ppproduit) {
+            $ppproduits[$ppproduit->getLibelle()] = $ppproduit->getSuperficieMax();
+        }
+        return $ppproduits;
     }
 }

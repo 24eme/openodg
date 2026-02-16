@@ -4,21 +4,32 @@ class controleActions extends sfActions
     public function executeIndex(sfWebRequest $request)
     {
         $this->controles = ControleClient::getInstance()->findAllByStatus();
-        $this->stats = [];
+        $this->tournees = [];
         foreach ($this->controles as $statut => $controles) {
+            if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_PLANIFIE, ControleClient::CONTROLE_STATUT_EN_MANQUEMENT])) {
+                continue;
+            }
             foreach($controles as $c) {
-                if (!isset($this->stats[$statut][$c->date_tournee])) {
-                    $this->stats[$statut][$c->date_tournee] = [
+                if (!isset($this->tournees[$c->date_tournee])) {
+                    $this->tournees[$c->date_tournee] = [
                         'parcelles' => [],
                         'operateurs' => [],
+                        'secteurs' => [],
+                        'cooperatives' => [],
                         'date_tournee' => $c->date_tournee,
-                        'type_tournee' => $c->type_tournee
+                        'type_tournee' => $c->type_tournee,
+                        'statut' => $statut
                     ];
                 }
-                $this->stats[$statut][$c->date_tournee]['parcelles'] += $c->parcelles->toArray(true,false);
-                $this->stats[$statut][$c->date_tournee]['operateurs'][$c->identifiant] = $c->declarant->nom;
+                $this->tournees[$c->date_tournee]['parcelles'] += $c->parcelles->toArray(true,false);
+                $this->tournees[$c->date_tournee]['operateurs'][$c->identifiant] = $c->declarant->nom;
+                $this->tournees[$c->date_tournee]['secteurs'][$c->secteur] = $c->secteur;
+                foreach($c->liaisons_operateurs as $liaison) {
+                    $this->tournees[$c->date_tournee]['cooperatives'][$liaison->id_etablissement] = "Coopérateurs pour " .$liaison->libelle_etablissement;
+                }
             }
         }
+        ksort($this->tournees);
     }
 
     public function executeNouveau(sfWebRequest $request)
@@ -65,11 +76,13 @@ class controleActions extends sfActions
     public function executeAppOrga(sfWebRequest $request)
     {
         $this->json = json_encode($this->getControlesByDateTournee($request->getParameter('date')), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+    $this->date_tournee = $request->getParameter('date');
         $this->setLayout('appLayout');
     }
 
     public function executeAppTerrain(sfWebRequest $request)
     {
+        $this->date_tournee = $request->getParameter('date');
         $this->json = json_encode($this->getControlesByDateTournee($request->getParameter('date')), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getPointsDeControle(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
@@ -159,7 +172,7 @@ class controleActions extends sfActions
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->listeManquements = ControleConfiguration::getInstance()->getAllLibellesManquements();
         if ($request->isMethod(sfWebRequest::POST)) {
-            $this->controle->addManquementDocumentaire($_POST['manquement']);
+            $this->controle->addManquementDocumentaire($_POST['manquement'], $_POST['parcelle']);
             $this->controle->save();
             return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
         }
@@ -172,7 +185,7 @@ class controleActions extends sfActions
         return $this->executePdf($request);
     }
 
-    public function executeExportPdf(sfWebRequest $request)
+    public function executeExportControlePdf(sfWebRequest $request)
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->document = new ExportControlePDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
@@ -192,5 +205,10 @@ class controleActions extends sfActions
         $this->document->addHeaders($this->getResponse());
 
         return $this->renderText($this->document->output());
+    }
+
+    public function executeGestionManquements(sfWebRequest $request)
+    {
+        $this->controles = ControleClient::getInstance()->findAllByStatus();
     }
 }
