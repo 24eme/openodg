@@ -51,7 +51,11 @@ class ExportControlePDF extends ExportPDF {
             }
         }
 
-        $dgc = str_replace(' ', '&nbsp;', implode(', ', $this->intentionParcellaire->getDgc()));
+        if ($this->intentionParcellaire) {
+            $dgc = str_replace(' ', '&nbsp;', implode(', ', $this->intentionParcellaire->getDgc()));
+        } else {
+            $dgc = 'N';
+        }
 
         $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle, 'parcellaire' => $this->parcellaire, 'ppproduits' => $ppproduits, 'hasVIFA' => $hasVIFA, 'dgc' => $dgc)));
     }
