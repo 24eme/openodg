@@ -17,8 +17,8 @@
         <div class="col-sm-7 mb-3">
             <select class="form-control" name="manquement" id="manquementSelect">
                 <option value=""></option>
-                <?php foreach ($listeManquements as $idRtm => $manquement): ?>
-                    <option value="<?php echo $idRtm ?>"><?php echo $manquement ?></option>
+                <?php foreach ($listeManquements as $idManquement => $manquement): ?>
+                    <option value="<?php echo $idManquement ?>"><?php echo $manquement ?></option>
                 <?php endforeach;?>
             </select>
         </div>

@@ -164,7 +164,7 @@
           }
           return ret;
       },
-      countPointsNCetRtm() {
+      countPointsNCetGetLibelles() {
           let ret = {nombreNC:0, manquements:[]};
           for (const parcelleId in this.controleCourant.parcelles) {
               const parcelle = this.controleCourant.parcelles[parcelleId];

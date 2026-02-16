@@ -103,11 +103,11 @@
     <div class="col-sm-12" v-show="valPoint.conformite === 'NC'">
       <div class="" style="margin-top:10px;">
         <div class="panel-body">
-            <div class="RTM" v-for="(infos, codeRtm) in valPoint.constats">
-                <input :id="'checkbox_' + codeRtm" type="checkbox" v-model="infos.conformite" style="font-weight: normal;"/>
-                <label :for="'checkbox_' + codeRtm" style="margin-top: 5px;">&nbsp; {{ infos.libelle }}<span class="text-muted"> - {{ codeRtm }}</span> </label>
+            <div class="manquement" v-for="(infos, codeManquement) in valPoint.constats">
+                <input :id="'checkbox_' + codeManquement" type="checkbox" v-model="infos.conformite" style="font-weight: normal;"/>
+                <label :for="'checkbox_' + codeManquement" style="margin-top: 5px;">&nbsp; {{ infos.libelle }}<span class="text-muted"> - {{ codeManquement }}</span> </label>
                 <div class="col-sm-12" style="margin-top: 5px;">
-                    <textarea rows="2" class="form-control" :name="'obs_' + codeRtm" :id="'obs_' + codeRtm" v-model="infos.observations" placeholder="Observations"></textarea>
+                    <textarea rows="2" class="form-control" :name="'obs_' + codeManquement" :id="'obs_' + codeManquement" v-model="infos.observations" placeholder="Observations"></textarea>
                 </div>
             </div>
         </div>

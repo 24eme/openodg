@@ -82,10 +82,14 @@ table, th, td {
             <td colSpan="2"></td>
         </tr>
         <tr>
-            <td colSpan="2" style="height: 20px; font-size: 11px;">Maturité :</td>
+            <td colSpan="2" style="height: 20px;"><strong>Maturité :</strong></td>
             <td colSpan="3"><?php if ($controle->type_tournee == 'Habilitation') {echo 'NA';}?></td>
-            <td colSpan="1" style="height: 20px; font-size: 11px;">Conventionné VIFA&nbsp;:</td>
-            <td colSpan="2" style="text-align: center;"><?php if ($hasVIFA) {echo 'Oui';} else {echo 'Non';} ?></td>
+            <td colSpan="1" style="height: 20px;"><strong>Manquants :</strong></td>
+            <td colSpan="2" style="text-align: center;"></td>
+        </tr>
+        <tr>
+            <td colSpan="2"><strong>Convention VIFA&nbsp;(O/N) :</strong></td>
+            <td colSpan="6" style="text-align: center;"><?php echo $hasVIFA; ?></td>
         </tr>
         <tr>
             <td class="center-grey" colSpan="8"><strong>SYNTHESE TERRAIN</strong></td>

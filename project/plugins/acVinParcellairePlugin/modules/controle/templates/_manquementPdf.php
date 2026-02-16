@@ -19,7 +19,7 @@ table, th, td {
 
 
 
-<?php foreach ($manquements as $rtmId => $manquement): ?>
+<?php foreach ($manquements as $manquementId => $manquement): ?>
 <table>
     <thead>
         <tr>
@@ -51,7 +51,7 @@ table, th, td {
             <td class="center-grey" colspan="4">Identification MANQUEMENT</td>
         </tr>
         <tr>
-            <td colSpan="2"><strong>Code : </strong><?php echo $rtmId ?></td>
+            <td colSpan="2"><strong>Code : </strong><?php echo $manquementId ?></td>
             <td colSpan="2"><strong>N° du manquement : </strong></td>
         </tr>
         <tr>
