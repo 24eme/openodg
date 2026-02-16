@@ -185,7 +185,7 @@ class controleActions extends sfActions
         return $this->executePdf($request);
     }
 
-    public function executeExportPdf(sfWebRequest $request)
+    public function executeExportControlePdf(sfWebRequest $request)
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->document = new ExportControlePDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
