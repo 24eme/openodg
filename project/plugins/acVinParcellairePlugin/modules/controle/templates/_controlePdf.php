@@ -93,7 +93,7 @@ table, th, td {
             <td colSpan="3">&nbsp;Tous les points à contrôler ont été vus :</td>
             <td colSpan="5">&nbsp;
                 <span style="font-family: Dejavusans">
-                    ☐&nbsp;OUI&nbsp;&nbsp;&nbsp;☐&nbsp;NON&nbsp;; si non préciser :
+                    ☒&nbsp;OUI&nbsp;&nbsp;&nbsp;☐&nbsp;NON&nbsp;
             </span>
             </td>
         </tr>
@@ -102,9 +102,9 @@ table, th, td {
             <td colSpan="5">&nbsp;
                 <span style="font-family: Dejavusans">
                 <?php if ($controle->hasManquementsActif()): ?>
-                    ☐&nbsp;OUI&nbsp;&nbsp;&nbsp;☒&nbsp;NON&nbsp;; si non préciser :
+                    ☐&nbsp;OUI&nbsp;&nbsp;&nbsp;☒&nbsp;NON&nbsp;
                 <?php else: ?>
-                    ☒&nbsp;OUI&nbsp;&nbsp;&nbsp;☐&nbsp;NON&nbsp;; si non préciser :
+                    ☒&nbsp;OUI&nbsp;&nbsp;&nbsp;☐&nbsp;NON&nbsp;
                 <?php endif;?>
             </span>
             </td>
@@ -116,12 +116,13 @@ table, th, td {
             <td class="center-grey" colSpan="8"><strong>&nbsp;L'OPÉRATEUR OU SON REPRÉSENTANT</strong></td>
         </tr>
         <tr>
-            <td colSpan="2">&nbsp;<br/>Nom et Prénom :<br/></td>
-            <td colSpan="4">&nbsp;</td>
+            <td colSpan="3">&nbsp;<br/>Nom et Prénom :<br/></td>
+            <td colSpan="3">&nbsp;<br/><?php echo $controle->audit->nom_prenom; ?></td>
             <td colSpan="2" style="text-align: center;">&nbsp;<br/>Signature :<br/></td>
         </tr>
         <tr>
-            <td colSpan="6" style="height: 45px;">Observation :<br/><?php echo $controle->getObservationOperateur(); ?></td>
+            <td colSpan="3" style="height: 45px;"><u>Observation :</u><br/><?php echo $controle->getObservationOperateur(); ?></td>
+            <td class="center-grey" colSpan="3">La signature de la présente déclaration signifie l'acceptation des constats effectués</td>
             <td colSpan="2"></td>
         </tr>
     </thead>
