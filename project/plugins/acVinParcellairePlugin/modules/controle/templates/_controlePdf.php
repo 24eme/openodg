@@ -83,8 +83,8 @@ table, th, td {
         <tr>
             <td colSpan="2" style="height: 20px; font-size: 11px;">Maturité :</td>
             <td colSpan="3"><?php if ($controle->type_tournee == 'Habilitation') {echo 'NA';}?></td>
-            <td colSpan="1" style="height: 20px; font-size: 11px;">Convention VIFA (O/N) :</td>
-            <td colSpan="2"></td>
+            <td colSpan="1" style="height: 20px; font-size: 11px;">Conventionné VIFA&nbsp;:</td>
+            <td colSpan="2" style="text-align: center;"><?php if ($hasVIFA) {echo 'Oui';} else {echo 'Non';} ?></td>
         </tr>
         <tr>
             <td class="center-grey" colSpan="8"><strong>SYNTHESE TERRAIN</strong></td>

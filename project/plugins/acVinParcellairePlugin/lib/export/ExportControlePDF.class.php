@@ -14,6 +14,9 @@ class ExportControlePDF extends ExportPDF {
         $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
         $this->potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->parcellaire);
 
+        $this->etablissement = $this->controle->getEtablissementObject();
+        $this->compte = $this->etablissement->getMasterCompte();
+
         if (!$filename) {
             $filename = $this->getFileName(true);
         }
@@ -36,7 +39,12 @@ class ExportControlePDF extends ExportPDF {
             $ppproduits[$ppproduit->getLibelle()] = $ppproduit->getSuperficieMax();
         }
 
-        $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle, 'parcellaire' => $this->parcellaire, 'ppproduits' => $ppproduits)));
+        $hasVIFA = false;
+        if ($this->compte->tags->exist('manuel')) {
+            $hasVIFA = in_array('convention_vifa', $this->compte->tags->manuel->toArray());
+        }
+
+        $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle, 'parcellaire' => $this->parcellaire, 'ppproduits' => $ppproduits, 'hasVIFA' => $hasVIFA)));
     }
 
 
