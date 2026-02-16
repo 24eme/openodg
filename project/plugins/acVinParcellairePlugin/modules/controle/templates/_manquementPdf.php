@@ -23,7 +23,7 @@ table, th, td {
 <table>
     <thead>
         <tr>
-            <td style="text-align: center;" colspan="3" rowSpan="4"><?php echo tdStart() ?>&nbsp;<img style="height: 66px;" src="<?php echo sfConfig::get('sf_web_dir').'/images/pdf/logo_'.strtolower(Organisme::getCurrentOrganisme()).'.jpg' ?>" /></td>
+            <td style="text-align: center;" colspan="3" rowSpan="4"><?php echo tdStart() ?>&nbsp;<img style="height: 66px;" src="<?php echo sfConfig::get('sf_web_dir').'/images/pdf/logo_cotesdeprovence.jpg' ?>" /></td>
             <td class="grey" rowSpan="1">Référence:</td>
         </tr>
         <tr>
