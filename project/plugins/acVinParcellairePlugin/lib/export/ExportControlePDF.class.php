@@ -39,9 +39,11 @@ class ExportControlePDF extends ExportPDF {
             $ppproduits[$ppproduit->getLibelle()] = $ppproduit->getSuperficieMax();
         }
 
-        $hasVIFA = false;
+        $hasVIFA = 'N';
         if ($this->compte->tags->exist('manuel')) {
-            $hasVIFA = in_array('convention_vifa', $this->compte->tags->manuel->toArray());
+            if (in_array('convention_vifa', $this->compte->tags->manuel->toArray())) {
+                $hasVIFA = 'O';
+            }
         }
 
         $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle, 'parcellaire' => $this->parcellaire, 'ppproduits' => $ppproduits, 'hasVIFA' => $hasVIFA)));

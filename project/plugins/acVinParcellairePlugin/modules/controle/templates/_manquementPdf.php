@@ -11,27 +11,33 @@ table, th, td {
     text-align: center;
     background-color: #cccccc;
 }
+
+.grey {
+    background-color: #eeeeee;
+}
 </style>
+
+
 
 <?php foreach ($manquements as $rtmId => $manquement): ?>
 <table>
     <thead>
         <tr>
             <td style="text-align: center;" colspan="3" rowSpan="4"><?php echo tdStart() ?>&nbsp;<img style="height: 66px;" src="<?php echo sfConfig::get('sf_web_dir').'/images/pdf/logo_'.strtolower(Organisme::getCurrentOrganisme()).'.jpg' ?>" /></td>
-            <td rowSpan="1">Référence:</td>
+            <td class="grey" rowSpan="1">Référence:</td>
         </tr>
         <tr>
-            <td rowSpan="1"></td>
+            <td class="grey" rowSpan="1"><strong>FO-34</strong></td>
         </tr>
         <tr>
-            <td rowSpan="1">Révision et date :</td>
+            <td class="grey" rowSpan="1">Révision et date :</td>
         </tr>
         <tr>
-            <td rowSpan="1">x - xx/xx/26</td>
+            <td class="grey" rowSpan="1"><strong>0 – 02/05/22</strong></td>
         </tr>
         <tr>
             <td style="text-align: center;" rowSpan="1" colspan="3">FICHE DE NOTIFICATION MANQUEMENT OPERATEUR</td>
-            <td rowSpan="1">Page 1 sur 1</td>
+            <td rowSpan="1" class="grey"><strong>Page 1 sur 1</strong></td>
         </tr>
     </thead>
     <tbody>

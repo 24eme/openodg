@@ -18,10 +18,11 @@ table, th, td {
     <thead>
         <tr>
             <td colspan="2" align="center" style="text-align: center;" ><?php echo tdStart() ?>&nbsp;<img style="height: 46px;" src="<?php echo sfConfig::get('sf_web_dir').'/images/pdf/logo_'.strtolower(Organisme::getCurrentOrganisme()).'.jpg' ?>" /></td>
-            <td colspan="6" style="text-align: center; height: 50px;">&nbsp;<br/><strong>AUDIT VIGNOBLE</strong></td>
+            <td colspan="4" style="text-align: center; height: 50px;">&nbsp;<br/><strong>AUDIT VIGNOBLE</strong></td>
+            <td colSpan="2" class="center-grey">FO-26<br/>Version : V4<br/>Date : 25/05/24</td>
         </tr>
         <tr>
-            <td colSpan="4" style="height: 40px;"><u>Type de contrôle :</u><br/><?php echo $controle->type_tournee ?></td>
+            <td colSpan="4" style="height: 40px;"><u>Type de contrôle : </u><br/><?php echo $controle->type_tournee ?></td>
             <td colSpan="4"><u>Activités : </u><br/><?php foreach ($controle->getActiviteClient() as $activite) {echo $activite . '   ';} ?></td>
         </tr>
         <tr>
