@@ -8,6 +8,7 @@ class ExportControlePDF extends ExportPDF {
     protected $potentiel = null;
     protected $etablissement = null;
     protected $compte = null;
+    protected $intentionParcellaire = null;
 
     public function __construct($controle, $identifiant = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->controle = $controle;
@@ -18,6 +19,8 @@ class ExportControlePDF extends ExportPDF {
 
         $this->etablissement = $this->controle->getEtablissementObject();
         $this->compte = $this->etablissement->getMasterCompte();
+
+        $this->intentionParcellaire = ParcellaireIntentionClient::getInstance()->getLast($this->etablissement->identifiant);
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -48,7 +51,9 @@ class ExportControlePDF extends ExportPDF {
             }
         }
 
-        $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle, 'parcellaire' => $this->parcellaire, 'ppproduits' => $ppproduits, 'hasVIFA' => $hasVIFA)));
+        $dgc = str_replace(' ', '&nbsp;', implode(', ', $this->intentionParcellaire->getDgc()));
+
+        $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle, 'parcellaire' => $this->parcellaire, 'ppproduits' => $ppproduits, 'hasVIFA' => $hasVIFA, 'dgc' => $dgc)));
     }
 
 

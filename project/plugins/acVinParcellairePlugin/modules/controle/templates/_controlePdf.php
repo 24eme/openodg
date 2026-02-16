@@ -73,7 +73,7 @@ table, th, td {
                 ?>
             </td>
             <td colSpan="1">DGC :</td>
-            <td colSpan="2"></td>
+            <td colSpan="2"><?php echo $dgc; ?></td>
         </tr>
         <tr>
             <td colSpan="2"><strong>PP avec prise en compte des manquants (ha)</strong><small> à convertir en (hl) pour la revendication (surface*rendement autorisé)</small></td>
