@@ -17,7 +17,7 @@ table, th, td {
 <table>
     <thead>
         <tr>
-            <td colspan="2" align="center" style="text-align: center;" ><?php echo tdStart() ?>&nbsp;<img style="height: 46px;" src="<?php echo sfConfig::get('sf_web_dir').'/images/pdf/logo_'.strtolower(Organisme::getCurrentOrganisme()).'.jpg' ?>" /></td>
+            <td colspan="2" align="center" style="text-align: center;" ><?php echo tdStart() ?>&nbsp;<img style="height: 46px;" src="<?php echo sfConfig::get('sf_web_dir').'/images/pdf/logo_cotesdeprovence.jpg' ?>" /></td>
             <td colspan="4" style="text-align: center; height: 50px;">&nbsp;<br/><strong>AUDIT VIGNOBLE</strong></td>
             <td colSpan="2" class="center-grey">FO-26<br/>Version : V4<br/>Date : 25/05/24</td>
         </tr>
