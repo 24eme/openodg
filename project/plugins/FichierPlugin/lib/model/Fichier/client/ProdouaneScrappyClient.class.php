@@ -3,7 +3,7 @@ class ProdouaneScrappyClient {
 
     const SCRAPING_SUCCESS = 0;
 
-    public static function getUrl($action, $type, $millesime, $cvi, $json = false, $filename = null) {
+    public static function getUrl($action, $cvi, $type = null, $millesime = null, $json = true, $filename = null) {
         $conf = sfConfig::get('app_scrapy_api_url');
         $conf = str_replace('%app%', sfConfig::get('sf_app'), $conf);
         if (!$conf) {
@@ -17,11 +17,23 @@ class ProdouaneScrappyClient {
         if ($filename) {
             $extra .= '&filename='.$filename;
         }
-        return $conf.'?action='.$action.'&type='.$type.'&millesime='.$millesime.'&cvi='.$cvi.$extra;
+        $url = $conf;
+        $url .= '?action='.$action.'&type='.$type.'&millesime='.$millesime.'&cvi='.$cvi.$extra;
+        if ($millesime) {
+            $url .= '&millesime='.$millesime;
+        }
+        $url .= '&cvi='.$cvi.$extra;
+        return $url;
+    }
+
+    public static function checkCVI($cvi) {
+        $url = self::getUrl('verify', $cvi, 'verify', null, true);
+        $response = file_get_contents($url);
+        return json_decode($response);
     }
 
     public static function scrape($type, $millesime, $cvi, array & $retour) {
-        $url = self::getUrl('scrape', $type, $millesime, $cvi, true);
+        $url = self::getUrl('scrape', $cvi, $type, $millesime, true);
 
         $response = file_get_contents($url);
 
@@ -44,7 +56,7 @@ class ProdouaneScrappyClient {
     }
 
     public static function list($type, $millesime, $cvi, array & $retour) {
-        $url = self::getUrl('list', $type, $millesime, $cvi, true);
+        $url = self::getUrl('list', $cvi, $type, $millesime, true);
         $response = file_get_contents($url);
 
         if(!$response) {
@@ -70,7 +82,7 @@ class ProdouaneScrappyClient {
     }
 
     public static function saveFile($type, $millesime, $cvi, $filename, $dest_dir_path) {
-        $url = self::getUrl('file', $type, $millesime, $cvi, true, $filename);
+        $url = self::getUrl('file', $cvi, $type, $millesime, true, $filename);
         $response = file_get_contents($url);
         $json = json_decode(substr($response, 0, 100));
         if ($json && isset($json->error_code) && $json->error_code) {

@@ -36,11 +36,11 @@ EOF;
 
         $csvfile = $file;
         $infos = pathinfo($file);
-        $extension = (isset($infos['extension']) && $infos['extension'])? strtolower($infos['extension']): null;
-        if (strtolower($extension) == 'xls') {
+        $extension = (isset($infos['extension']) && $infos['extension'])? strtolower($infos['extension']): '';
+        if ($extension == 'xls') {
           $csvfile = Fichier::convertXlsFile($file);
-        }elseif (strtolower($extension) != 'csv') {
-          throw new sfException("extention de ".$file."non géré");
+        } elseif ( ! DouaneImportCsvFile::getTypeFromFile($file) ) {
+          throw new sfException("extention de ".$file." non géré");
         }
         if (isset($options['header']) && $options['header']) {
             echo DouaneCsvFile::CSV_ENTETES;

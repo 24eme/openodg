@@ -109,6 +109,9 @@ EOF;
                 }
 
                 try {
+                    if (strtoupper($options['scrapefiles']) == "FALSE") {
+                        $options['scrapefiles'] = false;
+                    }
                     $fichiers = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, ($options['scrapefiles']), $contextInstance);
                 } catch (Exception $e) {
                     if ($options['debug']) {

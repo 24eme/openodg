@@ -32,7 +32,18 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        $doc = DeclarationClient::getInstance()->find($arguments['doc_id']);
+        if (strpos($arguments['doc_id'], 'DOUANE') !== false) {
+            $docid = $arguments['doc_id'];
+            foreach (['DR', 'SV11', 'SV12'] as $t) {
+                $docid_new = str_replace('DOUANE-', $t.'-', $docid);
+                $doc = DeclarationClient::getInstance()->find($docid_new);
+                if ($doc) {
+                    break;
+                }
+            }
+        }else {
+            $doc = DeclarationClient::getInstance()->find($arguments['doc_id']);
+        }
 
         if(!$doc) {
             throw new sfException(sprintf("Document %s introuvable", $arguments['doc_id']));

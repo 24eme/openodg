@@ -253,9 +253,66 @@
             });
             if(layer) {
                 document.getElementById(layer.feature.id).classList.remove('hidden');
+                layer.setStyle({fillOpacity: 1, opacity: 1 });
             }
         }
         popup.addTo(map);
+
+        const popupAutre = L.control({position: "bottomright"});
+        popupAutre.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'popup');
+            this._div.style.display = 'none';
+            return this._div;
+        };
+        popupAutre.update = function (layer) {
+            this._div.style.background = 'rgba(255,255,255,0.9)';
+            if(!layer) {
+                this._div.style.display = 'none';
+                return null
+            }
+            let props = layer.feature.properties;
+            this._div.style.display = 'block';
+
+            props.parcellaires.forEach(function(parcelle){
+                opNom = parcelle['Nom Operateur'];
+                opCvi = parcelle['CVI Operateur'];
+                opSiret = parcelle['Siret Operateur'];
+            });
+            var popupContent = '<h2 class="text-center">'+opNom+'<br /><small class="muted">CVI : '+opCvi+' Siret : '+opSiret+'</small></h2>';
+            this._div.innerHTML = popupContent;
+        };
+        popupAutre.addTo(map);
+
+        function onEachFeatureAutre(feature, layer) {
+            layer.on({
+                mouseover: function (e) {
+                    e.target.setStyle({fillOpacity: 0.6 });
+                    popupAutre.update(e.target);
+                },
+                mouseout: function (e) {
+                    activeMap.eachLayer(function(layer) {
+                        if(!layer.feature || !layer.feature.id) {
+                            return;
+                        }
+                        layer.setStyle({fillOpacity: 0.3, opacity: 1 });
+                    });
+                    popupAutre.update();
+                },
+            });
+        }
+
+        const autresParcelles = [];
+        for (const [idControle, controle] of Object.entries(controles)) {
+            for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
+                if (idControle != this.controleCourant._id) {
+                    feature.properties.controleId = idControle;
+                    autresParcelles.push(feature);
+                }
+            }
+        }
+
+        L.geoJSON(autresParcelles, {onEachFeature: onEachFeatureAutre}).addTo(map);
+
 
         const parcellesLayer = L.geoJSON(this.parcelles, { onEachFeature: onEachFeature });
         parcellesLayer.addTo(map);
@@ -264,8 +321,8 @@
         function onEachFeature(feature, layer) {
             layer.on({
                 click: function (e) {
+                    clearParcelleSelected();
                     L.DomEvent.stopPropagation(e);
-                    map.fitBounds(e.target.getBounds());
                     popup.update(e.target);
                     return false;
                 },
@@ -274,7 +331,13 @@
         map.on('click', function(e) { clearParcelleSelected(); });
 
         function clearParcelleSelected() {
-          popup.update();
+            activeMap.eachLayer(function(layer) {
+                if(!layer.feature || !layer.feature.id) {
+                    return;
+                }
+                layer.setStyle({fillOpacity: 0.3, opacity: 1 });
+            });
+            popup.update();
         }
         document.addEventListener('click', function(e) {
           const btn = e.target.closest('#btn-close-info');
@@ -287,8 +350,21 @@
     };
 
     templates.operateur.methods = {
+        showParcelle(idu) {
+            activeMap.eachLayer(function(layer) {
+              if(layer.feature) {
+                  if(Object.keys(layer.feature.properties).includes('parcellaires')){
+                      if(layer.feature.properties.parcellaires[0].IDU == idu){
+                        layer.fireEvent('click');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }
+                  }
+              }
+            });
+        },
         updateMap() {
             const parcellesSelectionnees = this.parcellesSelectionnees;
+            const controleCourant = this.controleCourant;
             activeMap.eachLayer(function(layer) {
                 if(!layer.feature || !layer.feature.id) {
                     return;
@@ -299,10 +375,20 @@
                         find = true;
                     }
                 }
-                if(find) {
+                let findAutre = false;
+                for(controleId in parcellesSelectionneesControles) {
+                    for(parcelleId of parcellesSelectionneesControles[controleId]) {
+                        if(parcelleId.match(layer.feature.id)) {
+                            findAutre = true;
+                        }
+                    }
+                }
+                if(find || findAutre) {
                     layer.setStyle({fillColor: '#c80064', color: '#c80064'});
-                } else {
+                } else if (layer.feature.properties.controleId == controleCourant._id) {
                     layer.setStyle({fillColor: '#3388ff', color: '#3388ff'});
+                } else {
+                    layer.setStyle({fillColor: '#000000', color: '#000000'});
                 }
             });
         },
@@ -321,10 +407,6 @@
                 return Math.round(superficieSelectionnee / superficieTotale * 100);
             }
             return 0;
-        },
-        displayList(event) {
-            const list = document.querySelector('#listeParcelles');
-            list.hidden = !list.hidden;
         },
         getParcellesSorted() {
             const parcellesSorted = [];

@@ -39,51 +39,51 @@ class ControleConfiguration extends DeclarationConfiguration {
         return $this->configuration['points_de_controle'][$clePointControle]['libelle'];
     }
 
-    public function getLibellePointDeControleFromCodeRtm($codeRtm)
+    public function getLibellePointDeControleFromCodeConstat($codeConstat)
     {
         foreach ($this->configuration['points_de_controle'] as $point) {
-            foreach ($point['rtm'] as $idrtm => $manquement) {
-                if ($idrtm == $codeRtm) {
+            foreach ($point['constats'] as $idConstat => $manquement) {
+                if ($idConstat == $codeConstat) {
                     return $point['libelle'];
                 }
             }
         }
     }
 
-    public function getLibelleManquement($codeRtm)
+    public function getLibelleConstat($codeConstat)
     {
         foreach ($this->configuration['points_de_controle'] as $point) {
-            foreach ($point['rtm'] as $idrtm => $manquement) {
-                if ($idrtm == $codeRtm) {
+            foreach ($point['constats'] as $idConstat => $manquement) {
+                if ($idConstat == $codeConstat) {
                     return $manquement['libelle'];
                 }
             }
         }
     }
 
-    public function getLibelleManquementWithPointId($codeRtm, $pointId)
+    public function getLibelleConstatWithPointId($codeConstat, $pointId)
     {
-        return $this->configuration['points_de_controle'][$pointId]['rtm'][$codeRtm]['libelle'];
+        return $this->configuration['points_de_controle'][$pointId]['constats'][$codeConstat]['libelle'];
     }
 
-    public function getDelaisManquement($pointId, $codeRtm)
+    public function getDelaisConstat($pointId, $codeConstat)
     {
-        return $this->configuration['points_de_controle'][$pointId]['rtm'][$codeRtm]['delais'];
+        return $this->configuration['points_de_controle'][$pointId]['constats'][$codeConstat]['delais'];
     }
 
-    public function getConseilManquement($pointId, $codeRtm)
+    public function getConseilConstat($pointId, $codeConstat)
     {
         return '';
     }
 
-    public function getAllLibellesManquements()
+    public function getAllLibellesConstats()
     {
-        $libellesManquements = array();
+        $libellesConstats = array();
         foreach ($this->configuration['points_de_controle'] as $point) {
-            foreach ($point['rtm'] as $idrtm => $manquement) {
-                $libellesManquements[$idrtm] = $manquement['libelle'];
+            foreach ($point['constats'] as $idConstat => $constat) {
+                $libellesConstats[$idConstat] = $constat['libelle'];
             }
         }
-        return $libellesManquements;
+        return $libellesConstats;
     }
 }
