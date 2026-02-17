@@ -155,6 +155,7 @@ Controle:
       date: { }
       date_tournee: { }
       type_tournee: { }
+      agent_identifiant: { }
       identifiant: { }
       campagne: { }
       declarant:

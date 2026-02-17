@@ -26,6 +26,16 @@
                     </select>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label" for="agent_identifiant">Agent</label>
+                <div class="col-sm-4">
+                    <select class="form-control" name="agent_identifiant" id="agent_identifiant">
+                        <?php foreach ($agents as $agent): ?>
+                            <option value="<?php echo $agent->identifiant ?>"><?php echo $agent->getNomAAfficher() ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
             <div class="row mt-5">
                 <div class="col-xs-6 text-left">
                     <a class="btn btn-default" href="<?php echo url_for('controle_index'); ?>"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>

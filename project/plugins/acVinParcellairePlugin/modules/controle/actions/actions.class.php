@@ -112,6 +112,7 @@ class controleActions extends sfActions
         }
         $this->controle->date_tournee = $request->getParameter('date_tournee');
         $this->controle->type_tournee = $request->getParameter('type_tournee');
+        $this->controle->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->controle->save();
         return $this->redirect('controle_index');
     }
