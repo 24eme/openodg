@@ -15,7 +15,7 @@
         <form method=POST class="form-horizontal">
             <div class="form-group">
                 <label class="col-sm-4 control-label" for="date_tournee">Date de la tournée</label>
-                <div class="col-sm-4"><input class="form-control" name="date_tournee" id="date_tournee" type="date"/></div>
+                <div class="col-sm-4"><input class="form-control" name="date_tournee" id="date_tournee" type="date" required /></div>
             </div>
             <div class="form-group">
                 <label class="col-sm-4 control-label" for="type_tournee">Type de tournée</label>
