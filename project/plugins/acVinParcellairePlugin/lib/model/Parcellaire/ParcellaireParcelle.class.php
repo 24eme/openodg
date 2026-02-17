@@ -245,7 +245,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
       return (count($this->getConfig()->getCepagesAutorises())) && !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
     }
 
-    public function hasJeunesVignes() {
+    public function isJeunesVignes() {
         //Troisième ou Quatrieme feuille
         $annee = 3;
         if (ParcellaireConfiguration::getInstance()->isJeunesVignes3emeFeuille()) {
@@ -253,7 +253,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         }
         $year = ConfigurationClient::getInstance()->getCampagneParcellaire()->getCurrentAnneeRecolte() - $annee;
         $campagne_troisieme_feuille = $year.'-'.($year + 1);
-        return ($this->campagne_plantation < $campagne_troisieme_feuille);
+        return ($this->campagne_plantation > $campagne_troisieme_feuille);
     }
 
     public function getGeoJson() {

@@ -91,7 +91,7 @@ class PotentielProduction {
                 $l = preg_replace('/ +$/', '', $prod->getLibelleFormat([], "%a% %m% %l% - %co% %ce%"));
                 $libelles[$l] = $prod;
             }
-            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
+            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && $p->isJeunesVignes()) {
                 $libelles['XXXXjeunes vignes'] = null;
             }
         }
