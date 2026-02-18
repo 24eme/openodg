@@ -183,6 +183,7 @@ class Controle extends BaseControle
         $retControleByParcelle = array();
         foreach ($json['controle']['parcelles'] as $parcelle) {
             $this->audit = $json['controle']['audit'];
+            $this->maturite = $json['controle']['maturite'];
             // Je met le noeud controle du Json puis j'unset le sous-noeud "points" car c'est la seule update a faire
             $retControleByParcelle[$parcelle['parcelle_id']] = $parcelle['controle'];
             unset($retControleByParcelle[$parcelle['parcelle_id']]['points']);

@@ -295,6 +295,7 @@ Controle:
                   libelle_manquement: {}
                   observations: {}
                   delais: {}
+      maturite:
       mouvements_statuts:
         type: array_collection
         definition:
