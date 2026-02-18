@@ -71,7 +71,7 @@ table, th, td {
         </tr>
         <tr>
             <td colspan="2">Date du constat : <?php echo $manquement->constat_date; ?></td>
-            <td colSpan="2" style="height: 40px;">Visa de l'agent de l'ODG : </td>
+            <td colSpan="2" style="height: 40px;">Visa de l'agent de l'ODG :&nbsp;&nbsp;&nbsp;&nbsp;<?php echo CompteClient::getInstance()->find($controle->agent_identifiant)->getInitiales(); ?></td>
         </tr>
         <tr>
             <td class="center-grey" colspan="4">Mesure ODG</td>
