@@ -33,7 +33,7 @@ table, th, td {
             <td class="grey" rowSpan="1">Révision et date :</td>
         </tr>
         <tr>
-            <td class="grey" rowSpan="1"><strong>0 – 02/05/22</strong></td>
+            <td class="grey" rowSpan="1"><strong>1 – 13/03/24</strong></td>
         </tr>
         <tr>
             <td style="text-align: center;" rowSpan="1" colspan="3">FICHE DE NOTIFICATION MANQUEMENT OPERATEUR</td>
