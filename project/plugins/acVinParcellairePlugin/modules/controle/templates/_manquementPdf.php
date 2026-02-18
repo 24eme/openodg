@@ -71,7 +71,7 @@ table, th, td {
             <td colSpan="4"><strong>Détails du manquement constaté :</strong></td>
         </tr>
         <tr>
-            <td colspan="4" style="height: 200px;"></td>
+            <td colspan="4"><?php echo $manquement->libelle_manquement ?><br/><?php echo $controle->getObservationsFromManquement($manquementId); ?></td>
         </tr>
         <tr>
             <td colspan="2">Date du constat : <?php echo $manquement->constat_date; ?></td>

@@ -391,4 +391,9 @@ class Controle extends BaseControle
         }
         return $ppproduits;
     }
+
+    public function getObservationsFromManquement($manquementId)
+    {
+        return $this->manquements[$manquementId]->observations;
+    }
 }
