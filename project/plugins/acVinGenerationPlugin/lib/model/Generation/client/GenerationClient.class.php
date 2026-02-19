@@ -72,7 +72,7 @@ class GenerationClient extends acCouchdbClient {
                                 continue;
                             }
                             $rows[] = $r;
-                            if (count($rows) > $limit) {
+                            if (count($rows) > $limit * 100) {
                                 break;
                             }
                         }
