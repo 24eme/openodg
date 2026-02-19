@@ -396,4 +396,9 @@ class Controle extends BaseControle
     {
         return $this->manquements[$manquementId]->observations;
     }
+
+    public function getAgent()
+    {
+        return CompteClient::getInstance()->find($this->agent_identifiant);
+    }
 }
