@@ -194,10 +194,6 @@ controle_appterrain:
   url: /controle/appterrain/:date/:agent_identifiant
   param: { module: controle, action: appTerrain }
 
-controle_apporga:
-  url: /controle/apporga/:date
-  param: { module: controle, action: appOrga }
-
 controle_apporga_save:
   url: /controle/apporga/save
   param: { module: controle, action: appOrgaSave }
