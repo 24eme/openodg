@@ -6,8 +6,8 @@ class ControleManquementsForm extends acCouchdbForm
     {
         $listeManquements = $this->getDocument()->getManquements();
         if (! $listeManquements) {return;}
-        foreach ($listeManquements as $rtmId => $manquement) {
-            $this->embedForm($rtmId, new ControleManquementForm($manquement));
+        foreach ($listeManquements as $manquementId => $manquement) {
+            $this->embedForm($manquementId, new ControleManquementForm($manquement));
         }
         $this->widgetSchema->setNameFormat('controleManquements[%s]');
     }

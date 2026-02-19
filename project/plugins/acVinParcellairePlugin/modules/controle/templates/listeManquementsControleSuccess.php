@@ -19,24 +19,24 @@
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
-    <?php foreach ($form as $rtmId => $manquement): ?>
-        <?php if ($rtmId == '_revision') {continue;}?>
+    <?php foreach ($form as $manquementId => $manquement): ?>
+        <?php if ($manquementId == '_revision') {continue;}?>
         <div class="mb-4">
             <div class="checkbox">
                 <h4>
-                    <?php echo $manquement['manquement_checkbox']->render(['id' => $rtmId]);?>
-                    <label for="<?php echo $rtmId; ?>"><?php echo $listeManquements[$rtmId]['libelle_manquement'] ?></label>
+                    <?php echo $manquement['manquement_checkbox']->render(['id' => $manquementId]);?>
+                    <label for="<?php echo $manquementId; ?>"><?php echo $listeManquements[$manquementId]['libelle_manquement'] ?></label>
                 </h4>
             </div>
             <div class="pl-4">
                 <p>
                     Parcelles concernées :
-                    <?php foreach ($listeManquements[$rtmId]['parcelles_id'] as $parcelle_id):?>
+                    <?php foreach ($listeManquements[$manquementId]['parcelles_id'] as $parcelle_id):?>
                         <strong><?php echo $parcelle_id; ?> </strong>
                     <?php endforeach; ?>
                 </p>
-                <p>Délais : <?php echo $listeManquements[$rtmId]['delais']; ?></p>
-                <p>Point de controle : <?php echo $listeManquements[$rtmId]['libelle_point_de_controle']; ?></p>
+                <p>Délais : <?php echo $listeManquements[$manquementId]['delais']; ?></p>
+                <p>Point de controle : <?php echo $listeManquements[$manquementId]['libelle_point_de_controle']; ?></p>
                 <p>Observations : <?php echo $manquement['observations']->render(['class' => 'form-control']); ?></p>
             </div>
         </div>

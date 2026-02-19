@@ -3,10 +3,30 @@
 <h2>Synthèse terrain</h2>
 <form class="form-horizontal">
 
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Maturité</label>
+        <div class="col-sm-9">
+            <label class="radio-inline">
+              <input type="radio" value="C" v-model="controleCourant.maturite" />
+              Conforme
+            </label>
+
+            <label class="radio-inline">
+              <input type="radio" value="NC" v-model="controleCourant.maturite" />
+              Non Conforme
+            </label>
+
+            <label class="radio-inline">
+              <input type="radio" value="NA" v-model="controleCourant.maturite" />
+              Non Applicable
+            </label>
+        </div>
+    </div>
+
    <div class="form-group">
        <label class="col-sm-3 control-label">Nombre de points non conformes</label>
        <div class="col-sm-9">
-           <p class="form-control-static" v-if="countPointsNCetRtm().nombreNC">{{ countPointsNCetRtm().nombreNC }}</p>
+           <p class="form-control-static" v-if="countPointsNCetGetLibelles().nombreNC">{{ countPointsNCetGetLibelles().nombreNC }}</p>
            <p class="form-control-static" v-else>Aucun</p>
        </div>
    </div>
@@ -14,7 +34,7 @@
    <div class="form-group">
        <label class="col-sm-3 control-label">Manquements constatés</label>
        <div class="col-sm-9">
-           <pre class="form-control-static" style="white-space: pre-wrap;" v-if="countPointsNCetRtm().manquements.length" v-for="manquement in countPointsNCetRtm().manquements">{{ manquement }}</pre>
+           <pre class="form-control-static" style="white-space: pre-wrap;" v-if="countPointsNCetGetLibelles().manquements.length" v-for="manquement in countPointsNCetGetLibelles().manquements">{{ manquement }}</pre>
            <p class="form-control-static" v-else>Tous les points sont conformes</p>
        </div>
    </div>

@@ -107,11 +107,13 @@ class controleActions extends sfActions
     public function executeSetDateTournee(sfWebRequest $request)
     {
         $this->controle = $this->getRoute()->getControle();
+        $this->agents = ControleClient::getAllAgents();
         if (!$request->getParameter('date_tournee')) {
             return sfView::SUCCESS;
         }
         $this->controle->date_tournee = $request->getParameter('date_tournee');
         $this->controle->type_tournee = $request->getParameter('type_tournee');
+        $this->controle->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->controle->save();
         return $this->redirect('controle_index');
     }
@@ -170,9 +172,9 @@ class controleActions extends sfActions
     public function executeListeAjoutManquementsControle(sfWebRequest $request)
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
-        $this->listeManquements = ControleConfiguration::getInstance()->getAllLibellesManquements();
+        $this->listeManquements = ControleConfiguration::getInstance()->getAllLibellesConstats();
         if ($request->isMethod(sfWebRequest::POST)) {
-            $this->controle->addManquementDocumentaire($_POST['manquement']);
+            $this->controle->addManquementDocumentaire($_POST['manquement'], $_POST['parcelle']);
             $this->controle->save();
             return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
         }
@@ -185,7 +187,7 @@ class controleActions extends sfActions
         return $this->executePdf($request);
     }
 
-    public function executeExportPdf(sfWebRequest $request)
+    public function executeExportControlePdf(sfWebRequest $request)
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->document = new ExportControlePDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);

@@ -155,6 +155,7 @@ Controle:
       date: { }
       date_tournee: { }
       type_tournee: { }
+      agent_identifiant: { }
       identifiant: { }
       campagne: { }
       declarant:
@@ -294,6 +295,7 @@ Controle:
                   libelle_manquement: {}
                   observations: {}
                   delais: {}
+      maturite:
       mouvements_statuts:
         type: array_collection
         definition:
