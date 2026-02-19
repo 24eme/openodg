@@ -96,11 +96,9 @@ class controleActions extends sfActions
         if (!$request->isMethod(sfWebRequest::POST)) {
             throw new sfError403Exception();
         }
-        $date_tournee = $request->getParameter('date');
         $data = json_decode($request->getParameter('data'));
         foreach ($data as $controleId => $parcellesIds) {
             if ($controle = ControleClient::getInstance()->find($controleId)) {
-
                 $controle->updateParcelles($parcellesIds);
                 $controle->save();
             }

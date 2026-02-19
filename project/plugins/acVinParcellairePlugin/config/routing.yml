@@ -199,7 +199,7 @@ controle_apporga:
   param: { module: controle, action: appOrga }
 
 controle_apporga_save:
-  url: /controle/apporga/:date/save
+  url: /controle/apporga/save
   param: { module: controle, action: appOrgaSave }
 
 controle_apporga:
