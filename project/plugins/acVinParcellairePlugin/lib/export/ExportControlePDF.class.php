@@ -9,6 +9,7 @@ class ExportControlePDF extends ExportPDF {
     protected $etablissement = null;
     protected $compte = null;
     protected $intentionParcellaire = null;
+    protected $parcellaireManquant = null;
 
     public function __construct($controle, $identifiant = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->controle = $controle;
@@ -21,6 +22,8 @@ class ExportControlePDF extends ExportPDF {
         $this->compte = $this->etablissement->getMasterCompte();
 
         $this->intentionParcellaire = ParcellaireIntentionClient::getInstance()->getLast($this->etablissement->identifiant);
+
+        $this->parcellaireManquant = ParcellaireManquantClient::getInstance()->getLast($this->identifiant);
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -57,7 +60,12 @@ class ExportControlePDF extends ExportPDF {
             $dgc = 'N';
         }
 
-        $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle, 'parcellaire' => $this->parcellaire, 'ppproduits' => $ppproduits, 'hasVIFA' => $hasVIFA, 'dgc' => $dgc)));
+        $manquant = 'N';
+        if ($this->parcellaireManquant) {
+            $manquant = $this->getManquants() == 0 ? 'N' : 'O';
+        }
+
+        $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle, 'parcellaire' => $this->parcellaire, 'ppproduits' => $ppproduits, 'hasVIFA' => $hasVIFA, 'dgc' => $dgc, 'manquant' => $manquant)));
     }
 
 
@@ -112,6 +120,15 @@ class ExportControlePDF extends ExportPDF {
 
 
         return $filename . '.pdf';
+    }
+
+    public function getManquants()
+    {
+        $ret = 0;
+        foreach ($this->controle->parcelles as $id_parcelle => $info_parcelle) {
+            $ret += $this->parcellaireManquant->getPourcentageFromIdParcelle($id_parcelle);
+        }
+        return $ret;
     }
 
 }

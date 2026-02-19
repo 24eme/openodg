@@ -70,4 +70,13 @@ class ControleClient extends acCouchdbClient
         return $controles;
     }
 
+    public static function getAllAgents()
+    {
+        $result = [];
+        foreach (CompteTagsView::getInstance()->listByTags('manuel', 'agent_controle') as $k => $v) {
+          $result[] = CompteClient::getInstance()->find($v->id);
+        }
+        return $result;
+    }
+
 }

@@ -107,11 +107,13 @@ class controleActions extends sfActions
     public function executeSetDateTournee(sfWebRequest $request)
     {
         $this->controle = $this->getRoute()->getControle();
+        $this->agents = ControleClient::getAllAgents();
         if (!$request->getParameter('date_tournee')) {
             return sfView::SUCCESS;
         }
         $this->controle->date_tournee = $request->getParameter('date_tournee');
         $this->controle->type_tournee = $request->getParameter('type_tournee');
+        $this->controle->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->controle->save();
         return $this->redirect('controle_index');
     }
