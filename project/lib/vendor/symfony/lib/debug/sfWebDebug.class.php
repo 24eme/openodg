@@ -77,7 +77,6 @@ class sfWebDebug
     if (sfConfig::get('sf_debug'))
     {
       $this->setPanel('time', new sfWebDebugPanelTimer($this));
-      $this->setPanel('couchdb', new sfWebDebugPanelCouchdb($this));
     }
 
     $this->setPanel('mailer', new sfWebDebugPanelMailer($this));
