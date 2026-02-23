@@ -73,7 +73,7 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acVinCourrierPlugin');
     }
 
-    public function loadMultiDatabases($databaseManager = null) {
+    public function loadMultiDatabases($event = null, $databaseManager = null) {
         if(is_null($databaseManager)) {
             $databaseManager = sfContext::getInstance()->getDatabaseManager();
         }

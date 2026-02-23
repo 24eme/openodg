@@ -74,7 +74,7 @@ EOF;
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases($databaseManager);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $this->file_path = $arguments['file_path'];
         $this->negoce_file_path = $arguments['negoce_file_path'];

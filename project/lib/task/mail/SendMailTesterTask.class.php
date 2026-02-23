@@ -24,7 +24,7 @@ EOF;
     public function execute($arguments = [], $options = [])
     {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases($databaseManager);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         sfContext::createInstance($this->configuration);

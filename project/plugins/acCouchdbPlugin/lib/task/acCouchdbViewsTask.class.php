@@ -25,7 +25,7 @@ EOF;
     }
 
     protected function execute($arguments = array(), $options = array()) {
-    	$databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases($databaseManager);
+    	$databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
     	$file_regexp = "/([a-zA-Z0-9\-\_]+)\.([a-zA-Z0-9\-\_]+)\.(map|reduce)\.view\.js$/";
