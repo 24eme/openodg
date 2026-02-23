@@ -34,7 +34,7 @@ EOF;
     {
         $contextInstance = sfContext::createInstance($this->configuration);
 
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases();
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $context = sfContext::createInstance($this->configuration);
 

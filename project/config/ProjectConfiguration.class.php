@@ -12,6 +12,8 @@ class ProjectConfiguration extends sfProjectConfiguration
 
     public function setup()
     {
+        $this->dispatcher->connect('context.load_factories', array($this, 'loadMultiDatabases'));
+
         $this->enablePlugins('acCouchdbPlugin');
         $this->enablePlugins('acVinLibPlugin');
         $this->enablePlugins('acTCPDFPlugin');
@@ -69,6 +71,17 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acVinPMCPlugin');
         $this->enablePlugins('acVinAdelphePlugin');
         $this->enablePlugins('acVinCourrierPlugin');
+    }
+
+    public function loadMultiDatabases() {
+        if ($this instanceof sfApplicationConfiguration && count($this->getConfigPaths('config/databases.'.$this->getApplication().'.yml')))
+        {
+            $databases = include($this->getConfigCache()->checkConfig('config/databases.'.$this->getApplication().'.yml'));
+            foreach ($databases as $name => $database)
+            {
+              sfContext::getInstance()->getDatabaseManager()->setDatabase($name, $database);
+            }
+        }
     }
 
     public function setRootDir($rootDir)

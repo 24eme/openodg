@@ -39,7 +39,7 @@ class updateTagsFromHabilitationsTask extends sfBaseTask {
     }
 
     protected function execute($arguments = array(), $options = array()) {
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases();
         $context = sfContext::createInstance($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 

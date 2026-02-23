@@ -21,7 +21,7 @@ EOF;
 
     protected function execute($arguments = array(), $options = array())
     {
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases();
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         
         $docs = acCouchdbManager::getClient()->getAllDocs();

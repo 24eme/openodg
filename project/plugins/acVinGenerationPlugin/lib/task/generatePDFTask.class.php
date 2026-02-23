@@ -33,7 +33,7 @@ EOF;
   {
     sfContext::createInstance($this->configuration);
     // initialize the database connection
-    $databaseManager = new sfDatabaseManager($this->configuration);
+    $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases();
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
     $generationids = array();

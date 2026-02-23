@@ -73,7 +73,7 @@ EOF;
             $_ENV['DRY_RUN'] = true;
         }
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases();
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         $csvfile = fopen($arguments['csv'], 'r');

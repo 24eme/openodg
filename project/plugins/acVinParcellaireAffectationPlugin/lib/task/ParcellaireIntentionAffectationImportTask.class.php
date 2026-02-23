@@ -24,7 +24,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
 
     protected function execute($arguments = array(), $options = array())
     {
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases();
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         if(!file_exists($arguments['csv'])) {
             echo sprintf("ERROR;Le fichier CSV n'existe pas;%s\n", $arguments['csv']);
