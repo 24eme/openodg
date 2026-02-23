@@ -28,7 +28,7 @@ EOF;
     }
 
     protected function execute($arguments = array(), $options = array()) {
-        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases();
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases($databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         $configuration = ConfigurationClient::getInstance()->find($arguments['configuration_id']);

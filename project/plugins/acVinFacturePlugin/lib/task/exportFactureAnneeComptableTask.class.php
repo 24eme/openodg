@@ -28,7 +28,7 @@ EOF;
 
     protected function execute($arguments = array(), $options = array()) {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases();
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases($databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $annee_mois_debut = $arguments['annee_mois_debut'];
         $annee_mois_fin = $arguments['annee_mois_fin'];

@@ -37,7 +37,7 @@ EOF;
     protected function execute($arguments = array(), $options = array()) {
         // initialize the database connection
 
-        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases();
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases($databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         if ($options['compteid']) {
           $c = CompteClient::getInstance()->find($options['compteid']);

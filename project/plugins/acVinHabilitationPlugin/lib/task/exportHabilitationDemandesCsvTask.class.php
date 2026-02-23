@@ -21,7 +21,7 @@ EOF;
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases();
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases($databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         echo "Date;Statut;Identifiant;Description;Commentaire;Auteur;Id Demande;Type;Date habilitation;Hash Produit;Libelle Produit;Activite\n";

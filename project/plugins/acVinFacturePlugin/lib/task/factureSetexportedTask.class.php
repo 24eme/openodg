@@ -31,7 +31,7 @@ EOF;
 
   protected function execute($arguments = array(), $options = array())
   {
-    $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases();
+    $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases($databaseManager);
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
     $paiement = false;
     if(preg_match('/PAIEMENT-/', $arguments['factureid'])) {

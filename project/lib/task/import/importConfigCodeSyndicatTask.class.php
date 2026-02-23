@@ -30,7 +30,7 @@ EOF;
         ini_set('memory_limit', '512M');
         set_time_limit('3600');
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases();
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases($databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         $lines = file($arguments['file']);

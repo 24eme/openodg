@@ -56,7 +56,7 @@ EOF;
 
   protected function execute($arguments = array(), $options = array())
   {
-    $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases();
+    $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases($databaseManager);
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
     if (acCouchdbManager::getClient()->retrieveDocumentById('COMPTE-'.$arguments['login'])) {
