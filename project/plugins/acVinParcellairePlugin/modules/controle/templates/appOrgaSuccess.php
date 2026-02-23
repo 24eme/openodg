@@ -444,7 +444,7 @@
     };
 </script>
 
-<form action="<?php echo url_for('controle_apporga_save', ['date' => $date_tournee]) ?>" method="POST">
+<form action="<?php echo url_for('controle_apporga_save') ?>" method="POST">
     <input id="form_data" type="hidden" name="data" value="" />
     <button id="btn_save" type="submit" class="btn btn-primary hidden">Enregistrer</button>
 </form>

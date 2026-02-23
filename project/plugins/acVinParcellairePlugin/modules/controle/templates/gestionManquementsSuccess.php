@@ -18,7 +18,7 @@
         <td><span class="text-muted"><?php echo $controle->declarant->commune; ?></span> <?php echo $controle->secteur; ?></td>
         <td><?php echo str_replace(', ', '<br/>', $controle->getLibelleLiaison()); ?></td>
         <td><?php echo count($controle->manquements); ?></td>
-        <td><a href="<?php echo url_for('controle_set_date_tournee', $controle); ?>" class="btn btn-sm btn-primary">Gérer les manquements</a></td>
+        <td><a href="<?php echo url_for('controle_liste_manquements_controle', ['id' => $controle->_id]); ?>" class="btn btn-sm btn-primary">Gérer les manquements</a></td>
     </tr>
 <?php endforeach; ?>
         </tbody>

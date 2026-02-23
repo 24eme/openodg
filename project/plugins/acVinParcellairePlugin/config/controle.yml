@@ -1,3 +1,4 @@
 all:
   configuration:
-    rtm:
+    controle:
+      points_de_controle:

@@ -290,7 +290,7 @@ class PotentielProductionProduit {
                 continue;
             }
             $cepage = $p->getCepage();
-            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
+            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && $p->isJeunesVignes()) {
                 $cepage .= ' - XXXXjeunes vignes';
             }
 

@@ -82,7 +82,7 @@ class Controle extends BaseControle
             $parcelles[$key]->hasProblemExpirationCepage = $parcelle->hasProblemExpirationCepage();
             $parcelles[$key]->hasProblemEcartPieds = $parcelle->hasProblemEcartPieds();
             $parcelles[$key]->hasProblemCepageAutorise = $parcelle->hasProblemExpirationCepage();
-            $parcelles[$key]->hasJeunesVignes = !$parcelle->hasJeunesVignes() && ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled();
+            $parcelles[$key]->hasJeunesVignes = $parcelle->isJeunesVignes() && ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled();
             $parcelles[$key]->isRealProduit = $parcelle->isRealProduit() && ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration();
             $parcelles[$key]->aires = $parcelle->getIsInAires();
         }
@@ -101,8 +101,8 @@ class Controle extends BaseControle
                     foreach (ControleConfiguration::getInstance()->getPointsDeControle() as $pointKey => $pointConf) {
                         $point = $parcelle->controle->points->add($pointKey);
                         $point->libelle = $pointConf['libelle'];
-                        foreach ($pointConf['rtm'] as $rtmKey => $rtmConf) {
-                            $point->constats->add($rtmKey, ['libelle' => $rtmConf['libelle'], 'conformite' => false, 'observations' => null]);
+                        foreach ($pointConf['constats'] as $constatKey => $constatConf) {
+                            $point->constats->add($constatKey, ['libelle' => $constatConf['libelle'], 'conformite' => false, 'observations' => null]);
                         }
                     }
                 }
@@ -171,6 +171,9 @@ class Controle extends BaseControle
         $d = $this->getData();
         $d->parcellaire_geojson = $this->getGeoJson();
         $d->parcellaire_parcelles = $this->getParcellaireParcelles();
+        $d->validation = false;
+        $d->ppp = $this->getPotentielProductionProduits();
+        $d->surface_production = round($this->getParcellaire()->getSuperficieTotale(), 3);
         $this->to_dump = false;
         return $d;
     }
@@ -180,6 +183,7 @@ class Controle extends BaseControle
         $retControleByParcelle = array();
         foreach ($json['controle']['parcelles'] as $parcelle) {
             $this->audit = $json['controle']['audit'];
+            $this->maturite = $json['controle']['maturite'];
             // Je met le noeud controle du Json puis j'unset le sous-noeud "points" car c'est la seule update a faire
             $retControleByParcelle[$parcelle['parcelle_id']] = $parcelle['controle'];
             unset($retControleByParcelle[$parcelle['parcelle_id']]['points']);
@@ -190,11 +194,11 @@ class Controle extends BaseControle
                 // Unset pour ne prendre que les manquements qui sont non conformes
                 $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle] = $dataPointDeControle;
                 unset($retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['constats']);
-                foreach ($dataPointDeControle['constats'] as $numRtm => $dataManquement) {
-                    if ($dataManquement['conformite'] != 1) {
+                foreach ($dataPointDeControle['constats'] as $idConstat => $dataConstat) {
+                    if ($dataConstat['conformite'] != 1) {
                         continue;
                     }
-                    $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['constats'][$numRtm] = $dataManquement;
+                    $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['constats'][$idConstat] = $dataConstat;
                 }
             }
         }
@@ -221,60 +225,60 @@ class Controle extends BaseControle
         $retManquements = array();
         foreach ($this->parcelles as $parcelleId => $parcelle) {
             foreach ($parcelle->controle->points as $pointId => $dataPoint) {
-                foreach ($dataPoint->constats as $rtmId => $dataManquement) {
-                    if ($this->manquements->exist($rtmId) && ($this->manquements->$rtmId->observations && $this->manquements->$rtmId->parcelles_id)) {
-                        $retManquements[$rtmId] = $this->manquements[$rtmId];
+                foreach ($dataPoint->constats as $constatId => $dataManquement) {
+                    if ($this->manquements->exist($constatId) && ($this->manquements->$constatId->observations && $this->manquements->$constatId->parcelles_id)) {
+                        $retManquements[$constatId] = $this->manquements[$constatId];
                         continue;
                     }
                     if ($dataPoint->conformite == null) {continue;}
-                    if(!isset($retManquements[$rtmId]) || !$retManquements[$rtmId]) {
-                        $retManquements[$rtmId] = ControleManquement::freeInstance($this);
-                        $retManquements[$rtmId]->observations = '';
-                        $retManquements[$rtmId]->parcelles_id = [];
+                    if(!isset($retManquements[$constatId]) || !$retManquements[$constatId]) {
+                        $retManquements[$constatId] = ControleManquement::freeInstance($this);
+                        $retManquements[$constatId]->observations = '';
+                        $retManquements[$constatId]->parcelles_id = [];
                     }
-                    if (!isset($retManquements[$rtmId]->libelle_point_de_controle) || !$retManquements[$rtmId]->libelle_point_de_controle) {
-                        $retManquements[$rtmId]->libelle_point_de_controle = ControleConfiguration::getInstance()->getLibellePointDeControle($pointId);
+                    if (!isset($retManquements[$constatId]->libelle_point_de_controle) || !$retManquements[$constatId]->libelle_point_de_controle) {
+                        $retManquements[$constatId]->libelle_point_de_controle = ControleConfiguration::getInstance()->getLibellePointDeControle($pointId);
                     }
-                    if (!isset($retManquements[$rtmId]->libelle_manquement) || !$retManquements[$rtmId]->libelle_manquement) {
-                        $retManquements[$rtmId]->libelle_manquement = ControleConfiguration::getInstance()->getLibelleManquementWithPointId($rtmId, $pointId);
+                    if (!isset($retManquements[$constatId]->libelle_manquement) || !$retManquements[$constatId]->libelle_manquement) {
+                        $retManquements[$constatId]->libelle_manquement = ControleConfiguration::getInstance()->getLibelleConstatWithPointId($constatId, $pointId);
                     }
-                    $retManquements[$rtmId]->parcelles_id->add(null, $parcelleId);
-                    $retManquements[$rtmId]->delais = ControleConfiguration::getInstance()->getDelaisManquement($pointId, $rtmId);
-                    $retManquements[$rtmId]->constat_date = $this->date_tournee;
-                    $retManquements[$rtmId]->actif = false;
-                    $retManquements[$rtmId]->observations .= $parcelleId . ' - ' . $dataManquement->observations . "\n";
+                    $retManquements[$constatId]->parcelles_id->add(null, $parcelleId);
+                    $retManquements[$constatId]->delais = ControleConfiguration::getInstance()->getDelaisConstat($pointId, $constatId);
+                    $retManquements[$constatId]->constat_date = $this->date_tournee;
+                    $retManquements[$constatId]->actif = false;
+                    $retManquements[$constatId]->observations .= $parcelleId . ' - ' . $dataManquement->observations . "\n";
                 }
             }
         }
-        foreach ($this->manquements as $rtmId => $manquement) {
-            if (isset($retManquements[$rtmId])) {continue;}
-            $retManquements[$rtmId] = $manquement;
+        foreach ($this->manquements as $constatId => $manquement) {
+            if (isset($retManquements[$constatId])) {continue;}
+            $retManquements[$constatId] = $manquement;
         }
         return $retManquements;
     }
 
-    public function getInfosManquement($rtmId)
+    public function getInfosManquement($codeConstat, $parcelleId)
     {
-        return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeRtm($rtmId), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleManquement($rtmId), 'actif' => true, 'constat_date' => $this->date_tournee);
+        return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeConstat($codeConstat), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleConstat($codeConstat), 'actif' => true, 'constat_date' => $this->date_tournee, 'parcelles_id' => [$parcelleId]);
     }
 
-    public function addManquementDocumentaire($rtmId)
+    public function addManquementDocumentaire($manquementId, $parcelleId)
     {
-        if ($this->manquements->exist($rtmId)) {return ;}
-        $manquement = $this->getInfosManquement($rtmId);
-        $this->manquements->add($rtmId, $manquement);
+        if ($this->manquements->exist($manquementId)) {return ;}
+        $manquement = $this->getInfosManquement($manquementId, $parcelleId);
+        $this->manquements->add($manquementId, $manquement);
     }
 
-    public function addManquementTerrain($rtmId, $dataManquement)
+    public function addManquementTerrain($manquementId, $dataManquement)
     {
-        if ($this->manquements->exist($rtmId)) {return ;}
-        $this->manquements->add($rtmId, $dataManquement);
-        $this->manquements->$rtmId->actif = true;
+        if ($this->manquements->exist($manquementId)) {return ;}
+        $this->manquements->add($manquementId, $dataManquement);
+        $this->manquements->$manquementId->actif = true;
     }
 
     public function hasManquementTerrain()
     {
-        foreach ($this->manquements as $rtmId => $manquement) {
+        foreach ($this->manquements as $manquementId => $manquement) {
             if ($manquement->parcelles_id) {
                 return true;
             }
@@ -282,17 +286,17 @@ class Controle extends BaseControle
         return false;
     }
 
-    public function deleteManquement($rtmId)
+    public function deleteManquement($manquementId)
     {
-        if ($this->manquements->exist($rtmId)) {
-            $this->manquement->remove($rtmId);
+        if ($this->manquements->exist($manquementId)) {
+            $this->manquement->remove($manquementId);
         }
     }
 
     public function generateManquements()
     {
-        foreach ($this->getListeManquements() as $rtmId => $dataManquement) {
-            $this->addManquementTerrain($rtmId, $dataManquement);
+        foreach ($this->getListeManquements() as $manquementId => $dataManquement) {
+            $this->addManquementTerrain($manquementId, $dataManquement);
         }
     }
 
@@ -321,9 +325,9 @@ class Controle extends BaseControle
     public function getManquementsActif()
     {
         $ret = array();
-        foreach ($this->getManquementsListe() as $rtmId => $manquement) {
+        foreach ($this->getManquementsListe() as $manquementId => $manquement) {
             if ($manquement->actif == true) {
-                $ret[$rtmId] = $manquement;
+                $ret[$manquementId] = $manquement;
             }
         }
         return $ret;
@@ -376,5 +380,25 @@ class Controle extends BaseControle
             return '';
         }
         return $this->audit->operateur_observation;
+    }
+
+    public function getPotentielProductionProduits()
+    {
+        $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->parcellaire);
+        $ppproduits = array();
+        foreach ($potentiel->getProduits() as $ppproduit) {
+            $ppproduits[$ppproduit->getLibelle()] = $ppproduit->getSuperficieMax();
+        }
+        return $ppproduits;
+    }
+
+    public function getObservationsFromManquement($manquementId)
+    {
+        return $this->manquements[$manquementId]->observations;
+    }
+
+    public function getAgent()
+    {
+        return CompteClient::getInstance()->find($this->agent_identifiant);
     }
 }

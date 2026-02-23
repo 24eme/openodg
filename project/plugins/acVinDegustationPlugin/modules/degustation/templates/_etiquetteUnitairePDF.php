@@ -11,7 +11,7 @@
       <tr>
           <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28px; line-height: 14px; overflow: hidden;" >
               <?php if (($i % 3) != 2 || !$anonymat4labo): ?>
-                  <strong><?php echo ($lotInfo->lot->declarant_nom)? truncate_text(html_entity_decode($lotInfo->lot->declarant_nom, ENT_QUOTES | ENT_SUBSTITUTE), 47, '… ', 'middle') : "Leurre";  ?></strong>
+                  <strong><?php echo ($lotInfo->lot->declarant_nom)? truncate_text_mode(html_entity_decode($lotInfo->lot->declarant_nom, ENT_QUOTES | ENT_SUBSTITUTE), 47, '… ', 'middle') : "Leurre";  ?></strong>
                   <?php if($lotInfo->etablissement->cvi):echo ($lotInfo->etablissement->cvi); elseif ($lotInfo->etablissement->siret):echo substr($lotInfo->etablissement->siret,0,9)." "; endif; ?>
                   <?php if($lotInfo->etablissement->num_interne): ?>&nbsp;/&nbsp;<?php echo substr($lotInfo->etablissement->num_interne,0,6) ?><?php endif; ?>
         <?php else: ?><br /><i>Destiné au laboratoire</i><?php endif; ?></td>
@@ -24,7 +24,7 @@
             KeyInflector::unaccent(($lotInfo->lot->getConfig() ? null : $lotInfo->lot->details)." ".$lotInfo->lot->produit_libelle)
         ), 50, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
           <?php if (! DegustationConfiguration::getInstance()->hasTypiciteCepage()): ?>
-            <br /><?php echo truncate_text($lotInfo->lot->specificite, 50, '…', 'middle') ?>
+            <br /><?php echo truncate_text_mode($lotInfo->lot->specificite, 50, '…', 'middle') ?>
           <?php endif; ?>
         </td>
       </tr>

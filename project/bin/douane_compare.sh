@@ -53,11 +53,10 @@ cat data/douane_diff/production.files | grep -v ' missing' | while read file id 
     cat "data/douane_diff/"$id/douane_in_db.csv  | sed 's/[,\.0]//g' | sed 's/  */ /g' | sed 's/ *;/;/g' > "data/douane_diff/"$id/douane_in_db.clean.csv
 
     echo "COMPARE $file $id"
-    if diff /tmp/douane_file.$id.$$.csv /tmp/douane_db.clean.$id.$$.csv | grep ';' > /dev/null ; then
+    if diff "data/douane_diff/"$id/douane_file_douane.clean.csv "data/douane_diff/"$id/douane_in_db.clean.csv | grep ';' > /dev/null ; then
         echo "diff result: $file $id DIFF (versions: data/douane_diff/"$id")"
     else
         echo "diff result: $file $id OK (identical)"
         rm -rf "data/douane_diff/"$id
     fi
 done
-

@@ -4,7 +4,7 @@ all:
       points_de_controle:
         aire_parcellaire_delimitee:
           libelle: "Aire parcellaire délimitée"
-          rtm:
+          constats:
             RTM019:
               libelle: "Parcelle déclarée située en dehors de l’aire parcellaire délimité"
               types: ["Suivi", "Habilitation"]

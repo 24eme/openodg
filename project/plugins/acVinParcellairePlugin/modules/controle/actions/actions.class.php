@@ -10,17 +10,25 @@ class controleActions extends sfActions
                 continue;
             }
             foreach($controles as $c) {
-                if (!isset($this->tournees[$c->date_tournee])) {
-                    $this->tournees[$c->date_tournee] = [
+                $index = $c->date_tournee.'-'.$c->agent_identifiant;
+                if (!isset($this->tournees[$index])) {
+                    $this->tournees[$index] = [
                         'parcelles' => [],
                         'operateurs' => [],
+                        'secteurs' => [],
+                        'cooperatives' => [],
                         'date_tournee' => $c->date_tournee,
+                        'agent' => $c->getAgent(),
                         'type_tournee' => $c->type_tournee,
                         'statut' => $statut
                     ];
                 }
-                $this->tournees[$c->date_tournee]['parcelles'] += $c->parcelles->toArray(true,false);
-                $this->tournees[$c->date_tournee]['operateurs'][$c->identifiant] = $c->declarant->nom;
+                $this->tournees[$index]['parcelles'] += $c->parcelles->toArray(true,false);
+                $this->tournees[$index]['operateurs'][$c->identifiant] = $c->declarant->nom;
+                $this->tournees[$index]['secteurs'][$c->secteur] = $c->secteur;
+                foreach($c->liaisons_operateurs as $liaison) {
+                    $this->tournees[$index]['cooperatives'][$liaison->id_etablissement] = "Coopérateurs pour " .$liaison->libelle_etablissement;
+                }
             }
         }
         ksort($this->tournees);
@@ -56,11 +64,11 @@ class controleActions extends sfActions
         }
     }
 
-    private function getControlesByDateTournee($dateTournee)
+    private function getControlesByDateTourneeAndAgent($dateTournee, $agentIdentifiant)
     {
         $controles = [];
         foreach (ControleClient::getInstance()->findAll() as $controle) {
-            if ($dateTournee == $controle->date_tournee) {
+            if ($dateTournee == $controle->date_tournee && $agentIdentifiant == $controle->agent_identifiant) {
                 $controles[$controle->_id] = $controle->getDataToDump();
             }
         }
@@ -69,15 +77,17 @@ class controleActions extends sfActions
 
     public function executeAppOrga(sfWebRequest $request)
     {
-        $this->json = json_encode($this->getControlesByDateTournee($request->getParameter('date')), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
-    $this->date_tournee = $request->getParameter('date');
+        $this->date_tournee = $request->getParameter('date');
+        $this->agent_identifiant = $request->getParameter('agent_identifiant');
+        $this->json = json_encode($this->getControlesByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
     }
 
     public function executeAppTerrain(sfWebRequest $request)
     {
         $this->date_tournee = $request->getParameter('date');
-        $this->json = json_encode($this->getControlesByDateTournee($request->getParameter('date')), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->agent_identifiant = $request->getParameter('agent_identifiant');
+        $this->json = json_encode($this->getControlesByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getPointsDeControle(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
     }
@@ -86,11 +96,9 @@ class controleActions extends sfActions
         if (!$request->isMethod(sfWebRequest::POST)) {
             throw new sfError403Exception();
         }
-        $date_tournee = $request->getParameter('date');
         $data = json_decode($request->getParameter('data'));
         foreach ($data as $controleId => $parcellesIds) {
             if ($controle = ControleClient::getInstance()->find($controleId)) {
-
                 $controle->updateParcelles($parcellesIds);
                 $controle->save();
             }
@@ -101,11 +109,13 @@ class controleActions extends sfActions
     public function executeSetDateTournee(sfWebRequest $request)
     {
         $this->controle = $this->getRoute()->getControle();
+        $this->agents = ControleClient::getAllAgents();
         if (!$request->getParameter('date_tournee')) {
             return sfView::SUCCESS;
         }
         $this->controle->date_tournee = $request->getParameter('date_tournee');
         $this->controle->type_tournee = $request->getParameter('type_tournee');
+        $this->controle->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->controle->save();
         return $this->redirect('controle_index');
     }
@@ -117,8 +127,9 @@ class controleActions extends sfActions
 
     public function executeListeOperateursTournee(sfWebRequest $request)
     {
-        $this->controles = $this->getControlesByDateTournee($request->getParameter('date'));
-        $this->dateTournee = $request->getParameter('date');
+        $this->date_tournee = $request->getParameter('date');
+        $this->agent_identifiant = $request->getParameter('agent_identifiant');
+        $this->controles = $this->getControlesByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant);
     }
 
     public function executeListeManquementsControle(sfWebRequest $request)
@@ -164,9 +175,9 @@ class controleActions extends sfActions
     public function executeListeAjoutManquementsControle(sfWebRequest $request)
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
-        $this->listeManquements = ControleConfiguration::getInstance()->getAllLibellesManquements();
+        $this->listeManquements = ControleConfiguration::getInstance()->getAllLibellesConstats();
         if ($request->isMethod(sfWebRequest::POST)) {
-            $this->controle->addManquementDocumentaire($_POST['manquement']);
+            $this->controle->addManquementDocumentaire($_POST['manquement'], $_POST['parcelle']);
             $this->controle->save();
             return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
         }
@@ -179,7 +190,7 @@ class controleActions extends sfActions
         return $this->executePdf($request);
     }
 
-    public function executeExportPdf(sfWebRequest $request)
+    public function executeExportControlePdf(sfWebRequest $request)
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->document = new ExportControlePDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
