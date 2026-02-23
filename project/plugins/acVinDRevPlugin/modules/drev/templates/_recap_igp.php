@@ -79,15 +79,14 @@
           <h3 id="table_igp_title">Déclaration des lots IGP</h3>
           <div class="row">
               <div class="<?php if(!$drev->validation_odg && $sf_user->isAdmin()): ?>col-xs-9<?php else: ?>col-xs-12<?php endif; ?>">
-              <input type="hidden" data-placeholder="Filtrer le tableau sur un produit, un millésime ou un numéro de dossier" data-hamzastyle-container=".table_igp" class="hamzastyle mb-2" style="width: 100%; border-radius: 0;">
-                </div>
-                <?php if(!$drev->validation_odg && $sf_user->isAdmin()): ?>
+                  <input type="hidden" data-placeholder="Filtrer le tableau sur un produit, un millésime ou un numéro de dossier" data-hamzastyle-container=".table_igp" class="hamzastyle mb-2" style="width: 100%; border-radius: 0;">
+              </div>
+              <?php if(!$drev->validation_odg && $sf_user->isAdmin()): ?>
                   <div class="col-xs-3 text-right pr-5">
-                    <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
-                  </span>
-
+                      <span>Tout dégustable : <label class="switch-xl"><input checked type="checkbox" id="btn-degustable-all" class="switch"></input><span class="slider-xl round"></span></label>
+                    </span>
                   </div>
-                <?php endif; ?>
+              <?php endif; ?>
           </div>
           <table class="table table-bordered table-striped table_igp">
             <thead>
@@ -140,16 +139,16 @@
                         <td class="text-center">
                         <?php if($sf_user->isAdmin() && !$drev->validation_odg && ($lot->id_document == $drev->_id) && isset($form['lots']) && isset($form['lots'][$lot->getKey()])): ?>
                             <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
-                              <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
+                                <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
                                 <div class="col-xs-12">
-                                  <?php echo $form['lots'][$lot->getKey()]['affectable']->render(array(
-                                                'class' => "drev bsswitch",
-                                                "data-preleve-adherent" => "$lot->declarant_identifiant",
-                                                "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small',
-                                                'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>",
-                                                'data-off-text' => "<span class='glyphicon'></span>",
-                                                'data-on-color' => "success")
-                                            ); ?>
+                                    <label class="switch-xl">
+                                        <?php echo $form['lots'][$lot->getKey()]['affectable']->render(array(
+                                            'class' => "drev switch",
+                                            "data-preleve-adherent" => "$lot->declarant_identifiant",
+                                            "data-preleve-lot" => "$lot->unique_id")
+                                        ); ?>
+                                        <span class="slider-xl round"></span>
+                                    </label>
                                 </div>
                             </div>
                           <?php else: ?>
@@ -299,9 +298,11 @@
                 <?php endif; ?>
                 </div>
                 <script>
+                if (document.querySelector('#validation_degustation')) {
                     document.querySelector('#validation_degustation').addEventListener('change', function(e) {
                         document.querySelector('#validation_date_commission').value = this.value;
                     });
+                }
                 </script>
             </div>
         <?php elseif($drev->date_commission): ?>

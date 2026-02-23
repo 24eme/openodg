@@ -39,7 +39,7 @@ EOF;
     protected function execute($arguments = array(), $options = array()) {
         sfContext::createInstance($this->configuration);
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         foreach(file($arguments['csv']) as $line) {

@@ -178,9 +178,9 @@ foreach($vitis as $viti) {
 }
 
 $coop = EtablissementClient::getInstance()->find($coop->_id);
-$t->is(count($coop->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR)), count($vitis) - 4, "La coopérative a toujours ".(count($vitis) - 4)." coopérateurs");
+$t->is(count($coop->getLiaisonsOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR)), count($vitis) - 4, "La coopérative a toujours ".(count($vitis) - 4)." coopérateurs");
 
-$liaisons = $coop->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR);
+$liaisons = $coop->getLiaisonsOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR);
 
 $t->comment("Mise à jour des infos provenant des affectations parcellaires");
 

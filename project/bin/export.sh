@@ -187,6 +187,12 @@ php symfony compte:export-all-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/comptes.csv.
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/comptes.csv.part > $EXPORTDIR/comptes.csv
 rm $EXPORTDIR/comptes.csv.part
 
+php symfony compte:export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/comptes_simplifies.csv.part
+cat $EXPORTDIR/comptes_simplifies.csv.part | head -n 1 > $EXPORTDIR/comptes_simplifies.csv.sorted.part
+cat $EXPORTDIR/comptes_simplifies.csv.part | tail -n +2 | sort -t ";" -rk 1,2 >> $EXPORTDIR/comptes_simplifies.csv.sorted.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/comptes_simplifies.csv.sorted.part > $EXPORTDIR/comptes_simplifies.csv
+rm $EXPORTDIR/comptes_simplifies.csv.part
+rm $EXPORTDIR/comptes_simplifies.csv.sorted.part
 
 php symfony export:facture $SYMFONYTASKOPTIONS >  $EXPORTDIR/factures.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/factures.csv.part > $EXPORTDIR/factures.csv

@@ -66,7 +66,7 @@
         <?php $ligne++; ?>
     <?php endforeach; ?>
     <tr>
-        <td class="td footer-height" colspan="2"><small><b>Signatures des dégustateurs</small><br>=></b></td>
+        <td class="td footer-height" colspan="2"><small><b>Signatures des dégustateurs</b></small><br>=></td>
         <?php for($y=0;$y<7;$y++): ?>
             <td class="td footer-height"></td>
         <?php endfor; ?>

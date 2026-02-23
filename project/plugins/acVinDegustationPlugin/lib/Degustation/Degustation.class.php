@@ -1240,7 +1240,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $degustateurs = [];
 
             $regions = array_unique(array_merge([$this->region], $this->getRegionsFromProduits()));
-            if (DegustationConfiguration::getInstance()->hasDegustateurParRegion()) {
+            if (!DegustationConfiguration::getInstance()->hasDegustateurParRegion()) {
                 $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college);
             } else {
                 foreach($regions as $region) {

@@ -1,55 +1,52 @@
-<h2>Controle terrrain à venir</h2>
+<?php use_helper("Date"); ?>
+
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('accueil'); ?>">Contrôles</a></li>
+  <li class="active"><a href="<?php echo url_for('accueil'); ?>">Organisation des contrôles</a></li>
+</ol>
+
+
+<h2>Contrôles terrain à gérer</h2>
 
 <table class="table table-bordered table-striped">
     <thead>
     <tr>
-        <th class="col-4">Date du controle</th>
-        <th class="col-2">Nb opérateurs</th>
-        <th class="col-2">Nb parcelles</th>
-        <th class="col-1"></th>
+        <th class="col-xs-1">Date de la tournée</th>
+        <th class="col-xs-1">Agent</th>
+        <th class="col-xs-1">Type du controle</th>
+        <th class="col-xs-1 text-center">Nb opérateurs</th>
+        <th class="col-xs-1 text-center">Nb parcelles</th>
+        <th class="col-xs-3">Secteurs / Opérateurs</th>
+        <th class="col-xs-3"></th>
     </tr>
     </thead>
     <tbody>
-<?php foreach ($stats as $date_tournee => $stat): ?>
+<?php foreach ($tournees as $tournee): ?>
     <tr>
-        <td><?php echo $date_tournee; ?></td>
-        <td><?php echo count($stat['operateurs']); ?></td>
-        <td><?php echo $stat['nb_parcelles']; ?></td>
-        <td><a href="<?php echo url_for('controle_appterrain', array('date' => $date_tournee)); ?>" class="btn btn-sm btn-default">Affecter une date</a></td>
+        <td><?php echo Date::francizeDate($tournee['date_tournee']); ?></td>
+        <td><?php echo ($tournee['agent'])? $tournee['agent']->getNomAAfficher() : '' ?></td>
+        <td><?php echo $tournee['type_tournee']; ?></td>
+        <td class="text-center" data-toggle="tooltip" title="<?php echo implode("\n", $tournee['operateurs']->getRawValue()) ?>"><?php echo count($tournee['operateurs']); ?></td>
+        <td class="text-center"><?php echo count($tournee['parcelles']); ?></td>
+        <td class="col-xs-3">
+            <p class="mb-0" title="<?php echo implode("\n", $tournee['secteurs']->getRawValue()); ?>" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden; width: 300px;"><?php echo implode(", ", $tournee['secteurs']->getRawValue()); ?></p>
+            <?php if(count($tournee['cooperatives'])): ?>
+            <p class="mb-0 text-muted" title="<?php echo implode("\n", $tournee['cooperatives']->getRawValue()); ?>" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden; width: 300px;"><?php echo implode(", ", $tournee['cooperatives']->getRawValue()); ?></p>
+            <?php else: ?>
+            <p class="mb-0 text-muted" title="<?php echo implode("\n", $tournee['operateurs']->getRawValue()); ?>" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden; width: 300px;"><?php echo implode(", ", $tournee['operateurs']->getRawValue()); ?></p>
+            <?php endif; ?>
+        </td>
+        <td class="text-right">
+            <a href="<?php echo url_for('controle_apporga', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_A_ORGANISER): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-th-list"></span> Préparer    </a>
+            <a href="<?php echo url_for('controle_appterrain', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_PLANIFIE): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-road"></span> Tournée</a>
+            <a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_EN_MANQUEMENT): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-cog"></span> Manquements</a>
+        </td>
     </tr>
 <?php endforeach; ?>
     </tbody>
 </table>
 
-
-
-<h2>Opérateur dont le controle doit être planifié</h2>
-
-<table class="table table-bordered table-striped">
-    <thead>
-    <tr>
-        <th class="col-4">Opérateur</th>
-        <th class="col-2">Commune / Secteur</th>
-        <th class="col-2">Cave coopérative</th>
-        <th class="col-1">Nombre de parcelles</th>
-        <th class="col-1"></th>
-    </tr>
-    </thead>
-    <tbody>
-<?php foreach ($controles[ControleClient::CONTROLE_STATUT_A_PLANIFIER] as $controle): ?>
-    <tr>
-        <td><?php echo $controle->declarant->nom; ?> <span class="text-muted"><?php echo $controle->identifiant; ?> - <?php echo $controle->declarant->cvi; ?></span></td>
-        <td><span class="text-muted"><?php echo $controle->declarant->commune; ?> - </span> <?php echo $controle->secteur; ?></td>
-        <td><?php echo $controle->getLibelleLiaison(); ?></td>
-        <td><?php echo count($controle->parcelles); ?></td>
-        <td><a href="<?php echo url_for('controle_set_date_tournee', $controle); ?>" class="btn btn-sm btn-default">Affecter une date</a></td>
-    </tr>
-<?php endforeach; ?>
-    </tbody>
-</table>
-
-
-<h2>Opérateur dont le controle est à organiser</h2>
+<h2>Opérateur dont le contrôle est à planifier</h2>
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -61,15 +58,13 @@
     </tr>
     </thead>
     <tbody>
-<?php foreach ($controles[ControleClient::CONTROLE_STATUT_A_ORGANISER] as $controle): ?>
+<?php foreach ($controles[ControleClient::CONTROLE_STATUT_A_PLANIFIER] as $controle): ?>
     <tr>
         <td><?php echo $controle->declarant->nom; ?> <span class="text-muted"><?php echo $controle->identifiant; ?> - <?php echo $controle->declarant->cvi; ?></span></td>
         <td><span class="text-muted"><?php echo $controle->declarant->commune; ?></span> <?php echo $controle->secteur; ?></td>
         <td><?php echo str_replace(', ', '<br/>', $controle->getLibelleLiaison()); ?></td>
-        <td><a href="<?php echo url_for('controle_parcelles', $controle); ?>" class="btn btn-sm btn-default">Affecter des parcelles</a></td>
+        <td class="text-right"><a href="<?php echo url_for("controle_liste_manquements_controle", array('id' => $controle->_id)) ?>" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-cog"></span> Gérer les manquements</a> <a href="<?php echo url_for('controle_set_date_tournee', $controle); ?>" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-time"></span> Planifier le controle</a></td>
     </tr>
 <?php endforeach; ?>
     </tbody>
 </table>
-
-<h2>Manquements à gérer</h2>

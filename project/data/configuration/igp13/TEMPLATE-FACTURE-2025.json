@@ -56,7 +56,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeVininifieFromDocumentDouanier",
+          "callback": "getVolumeLotsFacturables",
           "callback_parameters": {
             "appellations": "NOT certifications/VSIG/"
           }

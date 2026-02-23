@@ -190,7 +190,46 @@ controle_set_date_tournee:
   requirements:
     sf_method: [get, post]
 
-
 controle_appterrain:
-  url: /controle/appterrain/:date
+  url: /controle/appterrain/:date/:agent_identifiant
   param: { module: controle, action: appTerrain }
+
+controle_apporga_save:
+  url: /controle/apporga/save
+  param: { module: controle, action: appOrgaSave }
+
+controle_apporga:
+  url: /controle/apporga/:date/:agent_identifiant
+  param: { module: controle, action: appOrga }
+
+controle_liste_operateur_tournee:
+  url: /controle/listeoperateur/:date/:agent_identifiant
+  param: { module: controle, action: listeOperateursTournee}
+
+controle_liste_manquements_controle:
+  url: /controle/:id/manquements
+  param: { module:controle, action: listeManquementsControle}
+
+controle_transmission_data:
+  url: /controle/transmit
+  param: { module:controle, action: TransmissionData }
+
+controle_update_manquements:
+  url: /controle/:id/manquements/update
+  param: { module: controle, action: updateManquements }
+
+controle_ajout_liste_manquements:
+  url: /controle/:id/manquements/ajout
+  param: { module: controle, action: listeAjoutManquementsControle}
+
+controle_pdf_manquements:
+  url: /controle/:id/manquement/pdf
+  param: { module: controle, action: manquementPdf }
+
+controle_pdf:
+  url: /controle/:id/pdf
+  param: { module: controle, action: exportControlePdf }
+
+controle_gestion_manquements:
+  url: /controle/gestion_manquements
+  param: { module: controle, action: gestionManquements }

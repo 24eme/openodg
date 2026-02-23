@@ -31,8 +31,6 @@
  * @version     $Revision$
  * @link        www.doctrine-project.org
  * @since       1.0
- * @method mixed findBy*(mixed $value) magic finders; @see __call()
- * @method mixed findOneBy*(mixed $value) magic finders; @see __call()
  */
 class Doctrine_Table extends Doctrine_Configurable implements Countable, Serializable
 {
@@ -356,7 +354,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable, Seriali
             }
             $ref = new ReflectionClass($parent);
 
-            if ($ref->isAbstract() || ! $class->isSubClassOf($parent)) {
+            if ($ref->isAbstract() || ! $class->isSubclassOf($parent)) {
                 continue;
             }
             $parentTable = $this->_conn->getTable($parent);
@@ -561,7 +559,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable, Seriali
     /**
      * Checks whether a column is inherited from a component further up in the hierarchy.
      *
-     * @param $columnName  The column name
+     * @param string $columnName The column name
      * @return boolean     TRUE if column is inherited, FALSE otherwise.
      */
     public function isInheritedColumn($columnName)
@@ -1132,6 +1130,11 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable, Seriali
            $alias = $this->getComponentName();
         }
 
+        // Php8.1 require a string
+        if (null === $orderBy) {
+            $orderBy = '';
+        }
+
         if ( ! is_array($orderBy)) {
             $e1 = explode(',', $orderBy);
         } else {
@@ -1495,8 +1498,9 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable, Seriali
      * This method assign the connection which this table will use
      * to create queries.
      *
-     * @param Doctrine_Connection      a connection object
-     * @return Doctrine_Table           this object; fluent interface
+     * @param Doctrine_Connection $conn a connection object
+     *
+     * @return Doctrine_Table this object; fluent interface
      */
     public function setConnection(Doctrine_Connection $conn)
     {
@@ -1525,11 +1529,12 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable, Seriali
      * this component. The record is not created in the database until you
      * call Doctrine_Record::save().
      *
-     * @param $array             an array where keys are field names and
-     *                           values representing field values. Can contain
-     *                           also related components;
-     *                           @see Doctrine_Record::fromArray()
-     * @return Doctrine_Record   the created record object
+     * @param array $array an array where keys are field names and
+     *                     values representing field values. Can contain
+     *                     also related components;
+     *                     @see Doctrine_Record::fromArray()
+     *
+     * @return Doctrine_Record the created record object
      */
     public function create(array $array = array())
     {
@@ -1543,9 +1548,12 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable, Seriali
      * Adds a named query in the query registry.
      *
      * This methods register a query object with a name to use in the future.
+     *
      * @see createNamedQuery()
-     * @param $queryKey                       query key name to use for storage
+     *
+     * @param string                $queryKey query key name to use for storage
      * @param string|Doctrine_Query $query    DQL string or object
+     *
      * @return void
      */
     public function addNamedQuery($queryKey, $query)
@@ -1591,7 +1599,8 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable, Seriali
      *                            Otherwise this argument expect an array of query params.
      * @param int $hydrationMode  Optional Doctrine_Core::HYDRATE_ARRAY or Doctrine_Core::HYDRATE_RECORD if
      *                            first argument is a NamedQuery
-     * @return mixed              Doctrine_Collection, array, Doctrine_Record or false if no result
+     *
+     * @return Doctrine_Collection|array|Doctrine_Record|false Doctrine_Collection, array, Doctrine_Record or false if no result
      */
     public function find()
     {
@@ -1971,6 +1980,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable, Seriali
      *
      * @return integer number of records in the table
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->createQuery()->count();
@@ -2649,6 +2659,8 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable, Seriali
                     || $name == 'fixed'
                     || $name == 'comment'
                     || $name == 'alias'
+                    || $name == 'charset'
+                    || $name == 'collation'
                     || $name == 'extra') {
                 continue;
             }
@@ -2966,12 +2978,44 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable, Seriali
         throw new Doctrine_Table_Exception(sprintf('Unknown method %s::%s', get_class($this), $method));
     }
 
+    /**
+     * serialize
+     * this method is automatically called when an instance of Doctrine_Record is serialized
+     *
+     * @return string
+     */
     public function serialize()
     {
+        $data = $this->__serialize();
+
+        return serialize($data);
+    }
+
+    /**
+     * this method is automatically called everytime an instance is unserialized
+     *
+     * @param string $serialized                Doctrine_Record as serialized string
+     * @return void
+     */
+    public function unserialize($serialized)
+    {
+        $data = unserialize($serialized);
+
+        $this->__unserialize($data);
+    }
+
+
+    /**
+     * Serializes the current instance for php 7.4+
+     *
+     * @return array
+     */
+    public function __serialize() {
+
         $options = $this->_options;
         unset($options['declaringClass']);
 
-        return serialize(array(
+        return array(
             $this->_identifier,
             $this->_identifierType,
             $this->_columns,
@@ -2983,26 +3027,33 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable, Seriali
             $options,
             $this->_invokedMethods,
             $this->_useIdentityMap,
-        ));
+        );
     }
 
-    public function unserialize($data)
-    {
-        $all = unserialize($data);
+    /**
+     * Unserializes a Doctrine_Record instance for php 7.4+
+     *
+     * @param array $data
+     */
+    public function __unserialize($data) {
 
-        $this->_identifier = $all[0];
-        $this->_identifierType = $all[1];
-        $this->_columns = $all[2];
-        $this->_uniques = $all[3];
-        $this->_fieldNames = $all[4];
-        $this->_columnNames = $all[5];
-        $this->columnCount = $all[6];
-        $this->hasDefaultValues = $all[7];
-        $this->_options = $all[8];
-        $this->_invokedMethods = $all[9];
-        $this->_useIdentityMap = $all[10];
+        $this->_identifier = $data[0];
+        $this->_identifierType = $data[1];
+        $this->_columns = $data[2];
+        $this->_uniques = $data[3];
+        $this->_fieldNames = $data[4];
+        $this->_columnNames = $data[5];
+        $this->columnCount = $data[6];
+        $this->hasDefaultValues = $data[7];
+        $this->_options = $data[8];
+        $this->_invokedMethods = $data[9];
+        $this->_useIdentityMap = $data[10];
     }
 
+    /**
+     * Creates new instance and initialize it from cache.
+     *
+     */
     public function initializeFromCache(Doctrine_Connection $conn)
     {
         $this->_conn = $conn;

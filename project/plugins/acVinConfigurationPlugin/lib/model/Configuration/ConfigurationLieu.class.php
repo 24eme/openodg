@@ -92,7 +92,26 @@ class ConfigurationLieu extends BaseConfigurationLieu {
 		return $this->_get('couleurs');
 	}
 
+    public function getCepagesAutorises() {
+        if(!$this->hasCepagesAutorises()) {
+            if ($this->getAppellation()->hasCepagesAutorises()) {
+                return $this->getAppellation()->getCepagesAutorises();
+            }
+            if($this->getCertification()->hasCepagesAutorises()) {
+                return $this->getCertification()->getCepagesAutorises();
+            }
+        }
+        return $this->_get('cepages_autorises');
+    }
+
+    public function hasCepagesAutorises(){
+        return $this->exist('cepages_autorises') && count($this->_get('cepages_autorises')->toArray(true, false));
+    }
+
     public function isCepageAutorise($cepage) {
+        if ($this->hasCepagesAutorises()) {
+            return true;
+        }
         foreach($this->getCouleurs() as $c) {
             if ($c->isCepageAutorise($cepage)) {
                 return true;

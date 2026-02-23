@@ -11,7 +11,7 @@ class ExportDRevPDF extends ExportPDF {
         $this->drev = $drev;
         $this->region = $region;
         if(! $this->region && RegionConfiguration::getInstance()->hasOdgProduits() && ! DrevConfiguration::getInstance()->hasPDFUniqueRegion()) {
-            $this->regions_multi_pdf = $this->drev->declaration->getSyndicats();
+            $this->regions_multi_pdf = $this->drev->getSyndicats();
         } elseif($this->region) {
             $this->infos = RegionConfiguration::getInstance()->getOdgRegionInfos($this->region);
 

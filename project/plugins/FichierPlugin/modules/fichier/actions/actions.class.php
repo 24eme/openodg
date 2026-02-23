@@ -299,6 +299,12 @@ class fichierActions extends sfActions
 
 	}
 
+    public function executeCvi(sfWebRequest $request) {
+        $this->cvi = $request->getParameter('cvi');
+        $this->cvi_details = ProdouaneScrappyClient::checkCVI($this->cvi);
+        return sfView::SUCCESS;
+    }
+
 	protected function secureEtablissement($etablissement) {
         if (class_exists("AppUser") && !$this->getUser()->hasHabilitation() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_STALKER) && !EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
 

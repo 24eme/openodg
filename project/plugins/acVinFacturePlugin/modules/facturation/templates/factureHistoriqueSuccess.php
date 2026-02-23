@@ -1,7 +1,7 @@
 <?php use_helper('Date'); ?>
 <?php use_helper('Float'); ?>
 <?php use_helper('Generation'); ?>
-<?php use_javascript('degustation.js') ?>
+<?php use_javascript('degustation.js?'.$_ENV['GIT_LAST_COMMIT']); ?>
 
 <ol class="breadcrumb">
     <li class="active"><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
@@ -41,6 +41,7 @@
             <th class="<?php if ($hasPaiements):?>col-xs-2<?php else: ?>col-xs-5<?php endif;?> text-right">Montant TTC Facture</th>
             <?php if($hasPaiements):?>
             <th class="col-xs-2 text-right">Montant payé</th>
+            <th class="width: 0;"><span title="Téléchargé par l'opérateur" class="glyphicon glyphicon-eye-open"></span></th>
             <th class="col-xs-1 text-center"><a href='"' onclick="document.getElementById('table_filtre').value = 'non payée';document.getElementById('table_filtre').dispatchEvent(new Event('keyup'));return false;"><small>Voir que les impayées</small></a></th>
             <?php endif;?>
         </tr>
@@ -61,6 +62,7 @@
                 <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->doc->total_ttc)); ?>&nbsp;€<span hidden><?php echo Anonymization::hideIfNeeded($facture->doc->total_ttc); ?></span></td>
                 <?php if($hasPaiements):?>
                 <td class="text-right"><?php (!isset($facture->doc->montant_paiement) || $facture->doc->montant_paiement == 0) ? $amount = "" : $amount = echoFloat((float)$facture->doc->montant_paiement) . "€"; ?>&nbsp;<?php echo $amount ?><span hidden><?php echo $facture->doc->montant_paiement ?></span></td>
+                <td><?php if(isset($facture->doc->date_telechargement) && $facture->doc->date_telechargement): ?><span style="opacity: 0.8;" data-toggle="tooltip" title="La facture a été téléchargée par l'opérateur" class="glyphicon glyphicon-eye-open text-primary"></span><?php else: ?><span style="opacity: 0.2;" data-toggle="tooltip" title="La facture n'a pas encore été téléchargée par l'opérateur" class="glyphicon glyphicon-eye-close text-primary"></span><?php endif; ?></td>
                 <td class="text-center"><?php if ($facture->doc->montant_paiement < $facture->doc->total_ttc) : ?><span class="label label-danger">Non payée</span><?php else: ?> <span class="label label-success">Soldée</span><?php endif; ?></td>
                 <?php endif;?>
             </tr>

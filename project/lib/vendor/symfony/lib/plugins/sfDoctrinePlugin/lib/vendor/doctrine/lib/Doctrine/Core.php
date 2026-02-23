@@ -815,7 +815,7 @@ class Doctrine_Core
             // Skip the following classes
             // - abstract classes
             // - not a subclass of Doctrine_Record
-            if ( ! $class->isAbstract() && $class->isSubClassOf('Doctrine_Record')) {
+            if ( ! $class->isAbstract() && $class->isSubclassOf('Doctrine_Record')) {
 
                 return true;
             }

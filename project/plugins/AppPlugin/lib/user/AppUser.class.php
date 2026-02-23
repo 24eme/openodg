@@ -226,7 +226,7 @@ class AppUser extends sfBasicSecurityUser {
 
 
     public function getRegion() {
-      if(RegionConfiguration::getInstance()->getOdgRegions() && $this->hasDrevAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion())){
+      if(RegionConfiguration::getInstance()->getOdgRegions() && ($this->hasDrevAdmin() || $this->isStalker()) && $this->getCompte() && ($region = $this->getCompte()->getRegion())){
         if(in_array($region, RegionConfiguration::getInstance()->getOdgRegions())){
                     return $region;
         }

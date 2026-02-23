@@ -328,8 +328,8 @@ class Doctrine_Event
      * getInvoker
      * returns the handler that invoked this event
      *
-     * @return Doctrine_Connection|Doctrine_Connection_Statement|
-     *         Doctrine_Connection_UnitOfWork|Doctrine_Transaction   the handler that invoked this event
+     * @return Doctrine_Record|Doctrine_Connection|Doctrine_Connection_Statement|
+     *                       Doctrine_Connection_UnitOfWork|Doctrine_Transaction   the handler that invoked this event
      */
     public function getInvoker()
     {

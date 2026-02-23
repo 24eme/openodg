@@ -233,7 +233,7 @@ class Doctrine_Connection_Statement implements Doctrine_Adapter_Statement_Interf
      *                                  bound parameters in the SQL statement being executed.
      * @return boolean                  Returns TRUE on success or FALSE on failure.
      */
-    public function execute($params = null)
+    public function execute($params = array())
     {
         try {
             $event = new Doctrine_Event($this, Doctrine_Event::STMT_EXECUTE, $this->getQuery(), $params);
@@ -271,9 +271,11 @@ class Doctrine_Connection_Statement implements Doctrine_Adapter_Statement_Interf
             $this->_conn->getListener()->postStmtExecute($event);
 
             //fix a possible "ORA-01000: maximum open cursors exceeded" when many non-SELECTs are executed and the profiling is enabled
-            $queryBeginningSubstring = strtoupper(substr(ltrim($this->_stmt->queryString), 0, 6));
-            if ($queryBeginningSubstring != 'SELECT' && substr($queryBeginningSubstring, 0, 4) != 'WITH' ){
-                $this->closeCursor();
+            if ('Oracle' == $this->getConnection()->getDriverName()) {
+                $queryBeginningSubstring = strtoupper(substr(ltrim($this->_stmt->queryString), 0, 6));
+                if ($queryBeginningSubstring != 'SELECT' && substr($queryBeginningSubstring, 0, 4) != 'WITH' ){
+                    $this->closeCursor();
+                }
             }
 
             return $result;
@@ -318,6 +320,11 @@ class Doctrine_Connection_Statement implements Doctrine_Adapter_Statement_Interf
                           $cursorOffset = null)
     {
         $event = new Doctrine_Event($this, Doctrine_Event::STMT_FETCH, $this->getQuery());
+
+        // null value is not an integer
+        if(null === $cursorOffset) {
+            $cursorOffset = 0;
+        }
 
         $event->fetchMode = $fetchMode;
         $event->cursorOrientation = $cursorOrientation;

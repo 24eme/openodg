@@ -359,7 +359,7 @@ class Doctrine_Cli
     protected function classIsTask($className)
     {
         $reflectionClass = new ReflectionClass($className);
-        return (bool) $reflectionClass->isSubClassOf(self::TASK_BASE_CLASS);
+        return (bool) $reflectionClass->isSubclassOf(self::TASK_BASE_CLASS);
     }
 
     /**

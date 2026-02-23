@@ -61,7 +61,7 @@ abstract class Doctrine_Record_Abstract extends Doctrine_Access
     /**
      * addListener
      *
-     * @param Doctrine_EventListener_Interface|Doctrine_Overloadable $listener
+     * @param Doctrine_EventListener_Interface|Doctrine_Overloadable|Doctrine_Record_Listener_Interface $listener
      * @return Doctrine_Record
      */
     public function addListener($listener, $name = null)
@@ -74,7 +74,7 @@ abstract class Doctrine_Record_Abstract extends Doctrine_Access
     /**
      * getListener
      *
-     * @return Doctrine_EventListener_Interface|Doctrine_Overloadable
+     * @return Doctrine_EventListener_Interface|Doctrine_Overloadable|Doctrine_Record_Listener_Interface
      */
     public function getListener()
     {
@@ -84,7 +84,7 @@ abstract class Doctrine_Record_Abstract extends Doctrine_Access
     /**
      * setListener
      *
-     * @param Doctrine_EventListener_Interface|Doctrine_Overloadable $listener
+     * @param Doctrine_EventListener_Interface|Doctrine_Overloadable|Doctrine_Record_Listener_Interface $listener
      * @return Doctrine_Record
      */
     public function setListener($listener)

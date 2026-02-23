@@ -100,13 +100,9 @@ class ConfigurationCouleur extends BaseConfigurationCouleur {
     }
 
     public function getCepagesAutorises() {
-        if(!$this->hasCepagesAutorises() && $this->getAppellation()->hasCepagesAutorises()) {
-            return $this->getAppellation()->getCepagesAutorises();
+        if(!$this->hasCepagesAutorises()) {
+            return $this->getLieu()->getCepagesAutorises();
         }
-        if(!$this->hasCepagesAutorises() && $this->getCertification()->hasCepagesAutorises()) {
-            return $this->getCertification()->getCepagesAutorises();
-        }
-
         return $this->_get('cepages_autorises');
     }
 

@@ -674,6 +674,11 @@ Configuration:
                                                                           definition:
                                                                             fields:
                                                                              '*': { }
+                                                                        cepages_autorises:
+                                                                          type: array_collection
+                                                                          definition:
+                                                                            fields:
+                                                                              '*': {  }
                                                                         interpro:
                                                                           type: collection
                                                                           definition:

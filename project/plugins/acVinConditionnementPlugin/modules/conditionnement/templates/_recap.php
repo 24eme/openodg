@@ -8,7 +8,7 @@
         <?php if($conditionnement->exist('lots')): ?>
             <?php if(!$conditionnement->validation_odg && $sf_user->isAdmin()): ?>
               <div class="pull-right">
-                <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
+                <span>Tout dégustable : <label class="switch-xl"><input checked type="checkbox" id="btn-degustable-all" class="switch"></input><span class="slider-xl round"></span></label>
               </span>
               </div>
             <?php endif; ?>
@@ -69,7 +69,10 @@
                               <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
                                 <div class="col-xs-12">
                                   <?php if ($sf_user->isAdmin() && !$conditionnement->validation_odg): ?>
-                                  	<?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "conditionnement bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                                    <label class="switch-xl">
+                                  	<?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "conditionnement switch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id")); ?>
+                                    <span class="slider-xl round"></span>
+                                    </label>
                                   <?php else: ?>
                                       <?php echo pictoDegustable($lot); ?>
                                   <?php endif; ?>
@@ -145,9 +148,11 @@
         <?php endif; ?>
         </div>
         <script>
+        if (document.querySelector('#validation_degustation')) {
             document.querySelector('#validation_degustation').addEventListener('change', function(e) {
                 document.querySelector('#validation_date_commission').value = this.value;
             });
+        }
         </script>
     </div>
 <?php elseif($conditionnement->date_commission): ?>

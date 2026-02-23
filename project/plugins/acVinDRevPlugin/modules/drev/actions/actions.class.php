@@ -460,9 +460,6 @@ class drevActions extends sfActions {
     public function executeRevendication(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        if($this->drev->isModificative() && !$this->getUser()->hasDrevAdmin()){
-            throw new sfException("Il est impossible d'acceder à une Drev modificatrice pour les volumes revendiquées si vous n'êtes pas administrateur.");
-        }
 
         if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION, $this->drev)) {
             if ($request->getParameter('prec')) {

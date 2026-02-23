@@ -110,6 +110,9 @@ class DRevDeclaration extends BaseDRevDeclaration
 
         $produits = array();
         foreach($this as $items) {
+            if ($items->getConfig()->getRendement() <= 0) {
+                continue;
+            }
             if ($with_details) {
 			    foreach($items as $item) {
 	                $produits[$item->getHash()] = $item;

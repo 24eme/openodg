@@ -93,7 +93,7 @@ class Doctrine_Query_Tokenizer
                 break;
 
                 case 'by':
-                    continue 2;
+                    break;
 
                 default:
                     if ( ! isset($p)) {

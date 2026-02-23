@@ -30,4 +30,4 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test_functionnal') a
     }
 }
 
-$b = new sfTestFunctional(new sfBrowser());
+$b = new sfTestFunctional(new Browser());

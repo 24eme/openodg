@@ -118,7 +118,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
 
       	$parcelles = $this->getParcellesFromReference();
         if (!$parcelles || !count($parcelles)) {
-            throw new sfException('pas de parcelles du parcellaire');
+            return;
         }
         foreach($hashes as $h) {
             $pid = $h;
@@ -194,6 +194,18 @@ class DeclarationParcellaire extends acCouchdbDocument {
             $this->idunumbers[$idu] = 0;
         }
         return $this->idunumbers[$idu]++;
+    }
+
+    public function findParcelleByIdParcelle($idParcelle)
+    {
+        foreach ($this['declaration'] as $produit) {
+            foreach ($produit['detail'] as $parcelleId => $info) {
+                if ($parcelleId == $idParcelle) {
+                    return $info;
+                }
+            }
+        }
+        return null;
     }
 
 }

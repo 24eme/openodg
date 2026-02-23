@@ -15,7 +15,7 @@
         <p style="margin:10px 0;">
             <span class="glyphicon glyphicon-info-sign"></span> Il n'est pas nécessaire d'indiquer les parcelles avec moins de <?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>% de pieds manquants.
             <a style="margin-top:-5px;" href="<?php echo url_for('parcellairemanquant_validation', $parcellaireManquant) ?>" class="btn btn-sm btn-default pull-right">
-                <span class="glyphicon glyphicon-check"></span>
+                <span class="glyphicon glyphicon-unchecked"></span>
                 Je n'ai pas de parcelle avec plus de <?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>% de pieds manquants
             </a>
         </p>
@@ -33,9 +33,11 @@
             <div class="col-xs-6">
                 <h3><?php echo $commune; ?></h3>
             </div>
-            <div class="col-xs-6">
-               <p class="text-right" style="margin-top: 20px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune ont des pieds morts ou manquants</a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune</a></p>
+           <div class="col-xs-6">
+               <p class="text-right" style="margin-top: 20px;"><a id="btn-switchactive-all" href="javascript:void(0)" data-status="affecter" data-terme="ont des pieds morts ou manquants" data-target="#parcelles_<?php echo $commune; ?>" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune ont des pieds morts ou manquants" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune ont des pieds morts ou manquants</a></p>
            </div>
+
+
         </div>
         <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped tableParcellaire">
     		<thead>
@@ -59,7 +61,12 @@
                     <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
                     <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
                     <td class="text-right"><?php echoFloatFr($parcelle->superficie, 4); ?></td>
-    				<td class="text-center"><input <?php if (array_key_exists($parcelle->getParcelleId(), $previousParcelles)): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getParcelleId() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
+    				<td class="text-center">
+                        <label class="switch-xl">
+                            <input <?php if (array_key_exists($parcelle->getParcelleId(), $previousParcelles)): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getParcelleId() ?>" class="switch"/>
+                            <span class="slider-xl round"></span>
+                        </label>
+                    </td>
                 </tr>
             <?php  endforeach; ?>
             </tbody>

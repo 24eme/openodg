@@ -8,6 +8,8 @@ fi
 
 bash bin/export.sh
 
+sed -i 's/ 20[23][0-9] / /' $EXPORTDIR/factures.csv
+
 cd bin/notebook/ ;
 if test -d pyenv ; then
     source pyenv/bin/activate

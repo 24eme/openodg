@@ -210,6 +210,9 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
     }
 
     public function generateDonnees() {
+        if (!$this->exist('_attachments') || !count($this->_attachments))  {
+            return false;
+        }
         if (!$this->exist('donnees') || count($this->donnees) < 1) {
             $this->add('donnees');
             $generate = false;
@@ -232,7 +235,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
     }
 
     public function getEnhancedDonnees($drev_produit_filter = null) {
-        if (isset($this->enhanced_donnees)) {
+        if (isset($this->enhanced_donnees) && count($this->enhanced_donnees)) {
             return $this->enhanced_donnees;
         }
 
@@ -632,7 +635,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
 
         // Produits :
-        $donnees['lignes'] = ['04', '04b', '05', '06', '07', '08', '09', '15', '16', '18', '19'];
+        $donnees['lignes'] = ['04', '04b', '05', '06', '07', '08', '09', '15', '16', '18', '19', '23'];
         $donnees['produits'] = [];
         foreach ($this->getEnhancedDonnees() as $entry) {
             if($entry->bailleur_ppm && !$this->isBailleur()) {

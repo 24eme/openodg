@@ -30,6 +30,7 @@ class TirageLotsCollectionForm extends acCouchdbObjectForm implements FormBindab
 			}
 			$this->embedForm($key, new TirageLotForm($this->getObject()->add()));
 		}
+        parent::bind($taintedValues, $taintedFiles);
 	}
 
 	public function unEmbedForm($key)

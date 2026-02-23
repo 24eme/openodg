@@ -142,7 +142,7 @@ $list_idu = [];
                                 $ecart_pieds = ($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds'):'&nbsp;';
                                 $ecart_rang = ($detail->exist('ecart_rang')) ? $detail->get('ecart_rang'):'&nbsp;';
                                 $cepage = $detail->cepage;
-                                if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$detail->hasJeunesVignes()) {
+                                if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && $detail->isJeunesVignes()) {
                                     $cepage .= ' - jeunes vignes';
                                 }
                             ?>
