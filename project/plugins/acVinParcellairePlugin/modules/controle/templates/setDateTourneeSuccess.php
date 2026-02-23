@@ -15,7 +15,7 @@
         <form method=POST class="form-horizontal">
             <div class="form-group">
                 <label class="col-sm-4 control-label" for="date_tournee">Date de la tournée</label>
-                <div class="col-sm-4"><input class="form-control" name="date_tournee" id="date_tournee" type="date"/></div>
+                <div class="col-sm-4"><input class="form-control" name="date_tournee" id="date_tournee" type="date" required /></div>
             </div>
             <div class="form-group">
                 <label class="col-sm-4 control-label" for="type_tournee">Type de tournée</label>
@@ -23,6 +23,16 @@
                     <select class="form-control" name="type_tournee" id="type_tournee">
                     <option><?php echo ControleClient::CONTROLE_TYPE_SUIVI; ?></option>
                     <option><?php echo ControleClient::CONTROLE_TYPE_HABILITATION; ?></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label" for="agent_identifiant">Agent</label>
+                <div class="col-sm-4">
+                    <select class="form-control" name="agent_identifiant" id="agent_identifiant">
+                        <?php foreach ($agents as $agent): ?>
+                            <option value="<?php echo $agent->identifiant ?>"><?php echo $agent->getNomAAfficher() ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>

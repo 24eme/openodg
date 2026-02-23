@@ -12,6 +12,7 @@
     <thead>
     <tr>
         <th class="col-xs-1">Date de la tournée</th>
+        <th class="col-xs-1">Agent</th>
         <th class="col-xs-1">Type du controle</th>
         <th class="col-xs-1 text-center">Nb opérateurs</th>
         <th class="col-xs-1 text-center">Nb parcelles</th>
@@ -23,6 +24,7 @@
 <?php foreach ($tournees as $tournee): ?>
     <tr>
         <td><?php echo Date::francizeDate($tournee['date_tournee']); ?></td>
+        <td><?php echo ($tournee['agent'])? $tournee['agent']->getNomAAfficher() : '' ?></td>
         <td><?php echo $tournee['type_tournee']; ?></td>
         <td class="text-center" data-toggle="tooltip" title="<?php echo implode("\n", $tournee['operateurs']->getRawValue()) ?>"><?php echo count($tournee['operateurs']); ?></td>
         <td class="text-center"><?php echo count($tournee['parcelles']); ?></td>
@@ -35,9 +37,9 @@
             <?php endif; ?>
         </td>
         <td class="text-right">
-            <a href="<?php echo url_for('controle_apporga', array('date' => $tournee['date_tournee'])); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_A_ORGANISER): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-th-list"></span> Préparer    </a>
-            <a href="<?php echo url_for('controle_appterrain', array('date' => $tournee['date_tournee'])); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_PLANIFIE): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-road"></span> Tournée</a>
-            <a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $tournee['date_tournee'])); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_EN_MANQUEMENT): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-cog"></span> Manquements</a>
+            <a href="<?php echo url_for('controle_apporga', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_A_ORGANISER): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-th-list"></span> Préparer    </a>
+            <a href="<?php echo url_for('controle_appterrain', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_PLANIFIE): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-road"></span> Tournée</a>
+            <a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_EN_MANQUEMENT): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-cog"></span> Manquements</a>
         </td>
     </tr>
 <?php endforeach; ?>

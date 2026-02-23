@@ -19,15 +19,15 @@ table, th, td {
         <tr>
             <td colspan="2" align="center" style="text-align: center;" ><?php echo tdStart() ?>&nbsp;<img style="height: 46px;" src="<?php echo sfConfig::get('sf_web_dir').'/images/pdf/logo_cotesdeprovence.jpg' ?>" /></td>
             <td colspan="4" style="text-align: center; height: 50px;">&nbsp;<br/><strong>AUDIT VIGNOBLE</strong></td>
-            <td colSpan="2" class="center-grey">FO-26<br/>Version : V4<br/>Date : 25/05/24</td>
+            <td colSpan="2" class="center-grey">FO-26<br/>Version : V7<br/>Date : 14/04/25</td>
         </tr>
         <tr>
             <td colSpan="4" style="height: 40px;"><u>Type de contrôle : </u><br/><?php echo $controle->type_tournee ?></td>
             <td colSpan="4"><u>Activités : </u><br/><?php foreach ($controle->getActiviteClient() as $activite) {echo $activite . '   ';} ?></td>
         </tr>
         <tr>
-            <td colSpan="5" style="height: 30px;">&nbsp;<br/><strong>DATE : </strong><?php echo $controle->getDateFr(); ?><br/></td>
-            <td colSpan="3">&nbsp;<br/><strong>AGENT : </strong></td>
+            <td colSpan="5" style="height: 30px;">&nbsp;<br/><strong>DATE :&nbsp;</strong><?php echo $controle->getDateFr(); ?><br/></td>
+            <td colSpan="3">&nbsp;<br/><strong>AGENT :</strong>&nbsp;&nbsp;<?php echo CompteClient::getInstance()->find($controle->agent_identifiant)->getInitiales(); ?></td>
         </tr>
         <tr>
             <td colSpan="8" style="text-align: center; height:40px;">&nbsp;<br/><strong><?php echo $controle->declarant->raison_sociale ?></strong><br/>N° SIRET : <?php echo $controle->declarant->siret ?>&nbsp;&nbsp;&nbsp;N° CVI : <?php echo $controle->declarant->cvi ?><br/></td>
@@ -83,9 +83,9 @@ table, th, td {
         </tr>
         <tr>
             <td colSpan="2" style="height: 20px;"><strong>Maturité :</strong></td>
-            <td colSpan="3"><?php if ($controle->type_tournee == 'Habilitation') {echo 'NA';}?></td>
+            <td colSpan="3" style="text-align: center;"><?php echo $controle->maturite; ?></td>
             <td colSpan="1" style="height: 20px;"><strong>Manquants :</strong></td>
-            <td colSpan="2" style="text-align: center;"></td>
+            <td colSpan="2" style="text-align: center;"><?php echo $manquant ?></td>
         </tr>
         <tr>
             <td colSpan="2"><strong>Convention VIFA&nbsp;(O/N) :</strong></td>

@@ -191,19 +191,19 @@ controle_set_date_tournee:
     sf_method: [get, post]
 
 controle_appterrain:
-  url: /controle/appterrain/:date
+  url: /controle/appterrain/:date/:agent_identifiant
   param: { module: controle, action: appTerrain }
 
-controle_apporga:
-  url: /controle/apporga/:date
-  param: { module: controle, action: appOrga }
-
 controle_apporga_save:
-  url: /controle/apporga/:date/save
+  url: /controle/apporga/save
   param: { module: controle, action: appOrgaSave }
 
+controle_apporga:
+  url: /controle/apporga/:date/:agent_identifiant
+  param: { module: controle, action: appOrga }
+
 controle_liste_operateur_tournee:
-  url: /controle/listeoperateur/:date
+  url: /controle/listeoperateur/:date/:agent_identifiant
   param: { module: controle, action: listeOperateursTournee}
 
 controle_liste_manquements_controle:

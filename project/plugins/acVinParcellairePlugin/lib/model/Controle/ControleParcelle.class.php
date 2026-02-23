@@ -61,4 +61,9 @@ class ControleParcelle extends BaseControleParcelle
     {
         return ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant) ? date("d/m/Y", strtotime(ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant)->getDateIrrigationFromIdParcelle($this->parcelle_id))) : null;
     }
+
+    public function getInfoPdf()
+    {
+        return 'Parcelle ' . $this->commune . ' - ' . $this->section . $this->numero_parcelle . ' - ' . $this->cepage . ' - ' . $this->campagne_plantation . ' - ' . $this->superficie . ' ha';
+    }
 }
