@@ -53,7 +53,7 @@ EOF;
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         $csvfile = fopen($arguments['csv'], 'r');

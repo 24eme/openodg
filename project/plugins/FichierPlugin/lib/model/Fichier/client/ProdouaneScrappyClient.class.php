@@ -35,6 +35,7 @@ class ProdouaneScrappyClient {
     public static function scrape($type, $millesime, $cvi, array & $retour) {
         $url = self::getUrl('scrape', $cvi, $type, $millesime, true);
 
+        ini_set('default_socket_timeout', 180);
         $response = file_get_contents($url);
 
         if(!$response) {
