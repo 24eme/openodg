@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('controle_index'); ?>">Contrôles</a></li>
-  <li><a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee)); ?>">Tournée du <?php echo Date::francizeDate($controle->date_tournee); ?></a></li>
+  <li><a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>">Tournée du <?php echo Date::francizeDate($controle->date_tournee); ?></a></li>
   <li><a href=""><?php echo $controle->declarant->nom ?> (<?php echo $controle->identifiant ?> - <?php echo $controle->declarant->cvi ?>)</a></li>
   <li class="active"><a href="">Visualisation des manquements</a></li>
 </ol>
@@ -25,7 +25,7 @@
             <div class="checkbox">
                 <h4>
                     <?php echo $manquement['manquement_checkbox']->render(['id' => $manquementId]);?>
-                    <label for="<?php echo $manquementId; ?>"><?php echo $listeManquements[$manquementId]['libelle_manquement'] ?></label>
+                    <label for="<?php echo $manquementId; ?>"><?php echo $listeManquements[$manquementId]['libelle_manquement'] ?><small><span class="text-muted"> - <?php echo $manquementId; ?></span></small></label>
                 </h4>
             </div>
             <div class="pl-4">
@@ -43,7 +43,7 @@
     <?php endforeach; ?>
 </form>
 <div class="row">
-    <div class="col-xs-4"><a class="btn btn-default" href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee)); ?>"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+    <div class="col-xs-4"><a class="btn btn-default" href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
     <div class="col-xs-4 text-center">
     <a class="btn btn-default" href="<?php echo url_for('controle_ajout_liste_manquements', array("id" => $controle->_id))?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un manquement</a>
     </div>
