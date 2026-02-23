@@ -100,6 +100,7 @@ class Controle extends BaseControle
                     $parcelle = $this->parcelles->add($pId, $parcelles->get($pId));
                     foreach (ControleConfiguration::getInstance()->getPointsDeControle() as $pointKey => $pointConf) {
                         $point = $parcelle->controle->points->add($pointKey);
+                        $point->libelle = $pointConf['libelle'];
                         $hasConstat = false;
                         foreach ($pointConf['constats'] as $constatKey => $constatConf) {
                             if ($constatConf['terrain'] && in_array($this->type_tournee, $constatConf['types'])) {
