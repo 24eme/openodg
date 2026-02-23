@@ -169,6 +169,7 @@ DRev:
                 fields:
                   statut: { }
                   libelle: { }
+                  origine: { }
       documents_rappel: { required: false }
       documents_rappels:
         required: false
