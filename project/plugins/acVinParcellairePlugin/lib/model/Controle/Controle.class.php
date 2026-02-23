@@ -102,7 +102,7 @@ class Controle extends BaseControle
                         $point = $parcelle->controle->points->add($pointKey);
                         $point->libelle = $pointConf['libelle'];
                         foreach ($pointConf['constats'] as $constatKey => $constatConf) {
-                            $point->constats->add($constatKey, ['libelle' => $constatConf['libelle'], 'conformite' => false, 'observations' => null]);
+                            $point->constats->add($constatKey, ['libelle' => $constatConf['libelle'], 'conformite' => false, 'observations' => null, 'types' => $constatConf['types'], 'terrain' => $constatConf['terrain'], 'documentaire' => $constatConf['documentaire']]);
                         }
                     }
                 }
