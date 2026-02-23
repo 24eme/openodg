@@ -1,6 +1,5 @@
 <?php use_helper('TemplatingPDF'); ?>
 <?php use_helper('Lot') ?>
-<?php use_helper('Text') ?>
 <style>
   .font-1-3em{
     /*font-size: 1.3em;*/

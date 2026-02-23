@@ -2,6 +2,8 @@
 
 class Browser extends sfBrowser
 {
+    $additionnalsConfig = array();
+
     public function getContext($forceReload = false)
     {
         parent::getContext($forceReload);
@@ -12,5 +14,18 @@ class Browser extends sfBrowser
         }
 
         return $this->context;
+    }
+
+    public function setAdditionnalsConfig($additionnalsConfig) {
+        $this->additionnalsConfig = $additionnalsConfig;
+    }
+
+    protected function doCall()
+    {
+        foreach($this->additionnalsConfig as $keyConfig => $valueConfig) {
+            sfConfig::set($keyConfig, $valueConfig);
+        }
+
+        parent::doCall();
     }
 }

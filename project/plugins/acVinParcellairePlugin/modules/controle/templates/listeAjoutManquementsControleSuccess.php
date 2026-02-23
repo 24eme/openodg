@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('controle_index'); ?>">Contrôles</a></li>
-  <li><a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee)); ?>">Tournée du <?php echo $controle->date_tournee; ?></a></li>
+  <li><a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>">Tournée du <?php echo $controle->date_tournee; ?></a></li>
   <li><a href="<?php echo url_for("controle_liste_manquements_controle", array('id' => $controle->_id)) ?>"><?php echo $controle->declarant->nom ?> (<?php echo $controle->identifiant ?> - <?php echo $controle->declarant->cvi ?>)</a></li>
   <li class="active"><a href="">Ajouter un manquement</a></li>
 </ol>

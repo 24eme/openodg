@@ -21,7 +21,7 @@
             KeyInflector::unaccent(($lotInfo->lot->getConfig() ? null : $lotInfo->lot->details)." ".$lotInfo->lot->produit_libelle)
         ), 50, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
           <?php if (! DegustationConfiguration::getInstance()->hasTypiciteCepage()): ?>
-            <br /><?php echo truncate_text($lotInfo->lot->specificite, 50, '…', 'middle') ?>
+            <br /><?php echo truncate_text_mode($lotInfo->lot->specificite, 50, '…', 'middle') ?>
           <?php endif; ?>
         </td>
       </tr>

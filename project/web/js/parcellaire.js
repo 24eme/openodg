@@ -41,6 +41,12 @@ if (btnActiveAll) {
   });
 }
 
+document.querySelectorAll(".tableParcellaire input.affecte_superficie").forEach(function(input) {
+  input.addEventListener('click', function(e) {
+    e.stopPropagation();
+  });
+});
+
 document.querySelectorAll(".tableParcellaire tr td").forEach(function (td) {
   if (td.parentElement.querySelector('.switch')) {
     td.addEventListener('click', function (e) {
@@ -56,10 +62,12 @@ document.querySelectorAll(".tableParcellaire tr td").forEach(function (td) {
 document.querySelectorAll(".tableParcellaire input").forEach(function (el) {
   el.addEventListener('change', function (e) {
     var btnActiveAll = document.querySelector('#btn-switchactive-all');
-    if (document.querySelectorAll('.tableParcellaire input:checked').length == document.querySelectorAll('.tableParcellaire input').length) {
-      changeButtonActiveAll('retirer', btnActiveAll.dataset.remove, true, btnActiveAll, true);
-    } else {
-      changeButtonActiveAll('affecter', btnActiveAll.dataset.check, false, btnActiveAll, true);
+    if (btnActiveAll) {
+      if (document.querySelectorAll('.tableParcellaire input:checked').length == document.querySelectorAll('.tableParcellaire input').length) {
+        changeButtonActiveAll('retirer', btnActiveAll.dataset.remove, true, btnActiveAll, true);
+      } else {
+        changeButtonActiveAll('affecter', btnActiveAll.dataset.check, false, btnActiveAll, true);
+      }
     }
   });
 });
@@ -138,8 +146,11 @@ $(document).ready(function()
               $(this).parents('table').find('.total_affecte').eq(0).html(somme_superficie.toFixed(4));
           });
         }
-        $('input.affecte_superficie').change(function () { console.log('affecte_superficie changing'); compute_superficies_input()});
+        $('input.affecte_superficie').change(function () {
+        compute_superficies_input()
+        });
         compute_superficies_input();
+
     }
 
     if ($('.superficie2compute').length) {
