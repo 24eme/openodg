@@ -167,6 +167,11 @@ class degustationActions extends sfActions {
     public function executePreleve(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
+
+        if (count($this->degustation->lots) > 100) {
+            set_time_limit(0);
+        }
+
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         $this->differer = null;
 
@@ -334,6 +339,11 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->active = DegustationEtapes::ETAPE_PRELEVEMENTS;
         $this->redirectIfIsAnonymized();
+
+        if (count($this->degustation->lots) > 100) {
+            set_time_limit(0);
+        }
+
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, $this->active))) {
             $this->degustation->save(false);
@@ -619,6 +629,10 @@ class degustationActions extends sfActions {
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1));
         }
 
+        if (count($this->degustation->lots) > 100) {
+            set_time_limit(0);
+        }
+
         $this->numero_table = $request->getParameter('numero_table');
 
         $this->tri = $this->degustation->tri;
@@ -760,6 +774,11 @@ class degustationActions extends sfActions {
       public function executeResultats(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsNotAnonymized();
+
+        if (count($this->degustation->lots) > 100) {
+            set_time_limit(0);
+        }
+
         $this->numero_table = $request->getParameter('numero_table',0);
         $this->popup_validation = $request->getParameter('popup',0);
 
@@ -831,6 +850,10 @@ class degustationActions extends sfActions {
 
     public function executeVisualisation(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+
+        if (count($this->degustation->lots) > 100) {
+            set_time_limit(0);
+        }
 
         $this->lots = $this->degustation->getLotsPreleves();
         uasort($this->lots, function ($a, $b) { return $a->declarant_nom > $b->declarant_nom; });

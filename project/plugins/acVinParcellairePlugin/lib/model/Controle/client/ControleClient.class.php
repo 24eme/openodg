@@ -10,6 +10,9 @@ class ControleClient extends acCouchdbClient
     const CONTROLE_STATUT_EN_MANQUEMENT = "EN_MANQUEMENT";
     const CONTROLE_STATUT_TERMINE = "TERMINE";
 
+    const CONTROLE_TYPE_HABILITATION = "Habilitation";
+    const CONTROLE_TYPE_SUIVI = "Suivi";
+
     public static function getInstance()
     {
         return acCouchdbManager::getClient("Controle");
@@ -35,10 +38,6 @@ class ControleClient extends acCouchdbClient
     {
         if (!$date) {
             $date = date('Ymd');
-        }
-        $controle = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
-        if ($controle && $controle->date == $date) {
-            return $controle;
         }
         $controle = new Controle();
         $controle->initDoc($identifiant, $date);
@@ -69,6 +68,15 @@ class ControleClient extends acCouchdbClient
             $controles[$c->mouvements_statuts[0][2]][] = $c;
         }
         return $controles;
+    }
+
+    public static function getAllAgents()
+    {
+        $result = [];
+        foreach (CompteTagsView::getInstance()->listByTags('manuel', 'agent_controle') as $k => $v) {
+          $result[] = CompteClient::getInstance()->find($v->id);
+        }
+        return $result;
     }
 
 }

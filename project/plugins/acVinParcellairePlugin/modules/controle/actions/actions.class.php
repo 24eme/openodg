@@ -1,27 +1,37 @@
 <?php
 class controleActions extends sfActions
 {
-
-    private function getControlesPlanifies($date = null) {
-        $stats = [];
-        $this->controles = ControleClient::getInstance()->findAllByStatus();
-        foreach($this->controles[ControleClient::CONTROLE_STATUT_PLANIFIE] as $c) {
-            if ($date && $date != $c->date_tournee) {
-                continue;
-            }
-            if (!isset($stats[$c->date_tournee])) {
-                $stats[$c->date_tournee] = ['nb_parcelles' => 0, 'operateurs' => [], 'controles' => []];
-            }
-            $stats[$c->date_tournee]['nb_parcelles'] += count($c->parcelles);
-            $stats[$c->date_tournee]['operateurs'][] = $c->declarant->nom;
-            $stats[$c->date_tournee]['controles'][] = $c->getData();
-        }
-        return $stats;
-    }
-
     public function executeIndex(sfWebRequest $request)
     {
-        $this->stats = $this->getControlesPlanifies();
+        $this->controles = ControleClient::getInstance()->findAllByStatus();
+        $this->tournees = [];
+        foreach ($this->controles as $statut => $controles) {
+            if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_PLANIFIE, ControleClient::CONTROLE_STATUT_EN_MANQUEMENT])) {
+                continue;
+            }
+            foreach($controles as $c) {
+                $index = $c->date_tournee.'-'.$c->agent_identifiant;
+                if (!isset($this->tournees[$index])) {
+                    $this->tournees[$index] = [
+                        'parcelles' => [],
+                        'operateurs' => [],
+                        'secteurs' => [],
+                        'cooperatives' => [],
+                        'date_tournee' => $c->date_tournee,
+                        'agent' => $c->getAgent(),
+                        'type_tournee' => $c->type_tournee,
+                        'statut' => $statut
+                    ];
+                }
+                $this->tournees[$index]['parcelles'] += $c->parcelles->toArray(true,false);
+                $this->tournees[$index]['operateurs'][$c->identifiant] = $c->declarant->nom;
+                $this->tournees[$index]['secteurs'][$c->secteur] = $c->secteur;
+                foreach($c->liaisons_operateurs as $liaison) {
+                    $this->tournees[$index]['cooperatives'][$liaison->id_etablissement] = "Coopérateurs pour " .$liaison->libelle_etablissement;
+                }
+            }
+        }
+        ksort($this->tournees);
     }
 
     public function executeNouveau(sfWebRequest $request)
@@ -31,11 +41,10 @@ class controleActions extends sfActions
         if(!$this->getUser()->isAdmin()) {
             throw new sfError403Exception("Accès admin uniquement");
         }
-		$this->periode = $request->getParameter('periode');
         $this->controle = ControleClient::getInstance()->findOrCreate($this->etablissement->identifiant);
         $this->controle->save();
 
-        return $this->redirect('controle_parcelles', array('id' => $this->controle->_id));
+        return $this->redirect('controle_index');
     }
 
     public function executeParcelles(sfWebRequest $request)
@@ -55,25 +64,156 @@ class controleActions extends sfActions
         }
     }
 
+    private function getControlesByDateTourneeAndAgent($dateTournee, $agentIdentifiant)
+    {
+        $controles = [];
+        foreach (ControleClient::getInstance()->findAll() as $controle) {
+            if ($dateTournee == $controle->date_tournee && $agentIdentifiant == $controle->agent_identifiant) {
+                $controles[$controle->_id] = $controle->getDataToDump();
+            }
+        }
+        return $controles;
+    }
+
+    public function executeAppOrga(sfWebRequest $request)
+    {
+        $this->date_tournee = $request->getParameter('date');
+        $this->agent_identifiant = $request->getParameter('agent_identifiant');
+        $this->json = json_encode($this->getControlesByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->setLayout('appLayout');
+    }
+
     public function executeAppTerrain(sfWebRequest $request)
     {
         $this->date_tournee = $request->getParameter('date');
-        $this->controles = $this->getControlesPlanifies($this->date_tournee);
-        $this->json = json_encode($this->controles[$this->date_tournee]['controles'], JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
-
+        $this->agent_identifiant = $request->getParameter('agent_identifiant');
+        $this->json = json_encode($this->getControlesByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getPointsDeControle(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
+    }
+
+    public function executeAppOrgaSave(sfWebRequest $request) {
+        if (!$request->isMethod(sfWebRequest::POST)) {
+            throw new sfError403Exception();
+        }
+        $data = json_decode($request->getParameter('data'));
+        foreach ($data as $controleId => $parcellesIds) {
+            if ($controle = ControleClient::getInstance()->find($controleId)) {
+                $controle->updateParcelles($parcellesIds);
+                $controle->save();
+            }
+        }
+        return $this->redirect('controle_index');
     }
 
     public function executeSetDateTournee(sfWebRequest $request)
     {
         $this->controle = $this->getRoute()->getControle();
-        if (!$request->getParameter('date')) {
+        $this->agents = ControleClient::getAllAgents();
+        if (!$request->getParameter('date_tournee')) {
             return sfView::SUCCESS;
         }
-        $this->controle->date_tournee = $request->getParameter('date');
+        $this->controle->date_tournee = $request->getParameter('date_tournee');
+        $this->controle->type_tournee = $request->getParameter('type_tournee');
+        $this->controle->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->controle->save();
         return $this->redirect('controle_index');
     }
 
+    public function executeVisualisation(sfWebRequest $request)
+    {
+        $this->controle = $this->getRoute()->getControle();
+    }
 
+    public function executeListeOperateursTournee(sfWebRequest $request)
+    {
+        $this->date_tournee = $request->getParameter('date');
+        $this->agent_identifiant = $request->getParameter('agent_identifiant');
+        $this->controles = $this->getControlesByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant);
+    }
+
+    public function executeListeManquementsControle(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $this->listeManquements = $this->controle->getManquementsListe();
+        if (! $this->controle->hasManquementTerrain() && $this->controle->hasConstatTerrain()) {
+            $this->redirect('controle_update_manquements', array('id' => $this->controle->_id));
+        }
+        $this->form = new ControleManquementsForm($this->controle);
+
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+
+            if (! $this->form->isValid()) {
+                return sfView::SUCCESS;
+            }
+
+            $this->form->save();
+            return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
+        }
+    }
+
+    public function executeUpdateManquements(sfWebRequest $request)
+    {
+        $controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $controle->generateManquements();
+        $controle->save();
+        return $this->redirect('controle_liste_manquements_controle', array('id' => $controle->_id));
+    }
+
+    public function executeTransmissionData(sfWebRequest $request)
+    {
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $raw = file_get_contents('php://input');
+            $data = json_decode($raw, true);
+            $controleBase = ControleClient::getInstance()->find($data['controle']['_id']);
+            $controleBase->updateParcellePointsControleFromJson($data);
+            exit;
+        }
+    }
+
+    public function executeListeAjoutManquementsControle(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $this->listeManquements = ControleConfiguration::getInstance()->getAllLibellesConstats();
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->controle->addManquementDocumentaire($_POST['manquement'], $_POST['parcelle']);
+            $this->controle->save();
+            return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
+        }
+    }
+
+    public function executeManquementPdf(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $this->document = new ExportControleManquementPDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
+        return $this->executePdf($request);
+    }
+
+    public function executeExportControlePdf(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $this->document = new ExportControlePDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
+        return $this->executePdf($request);
+    }
+
+    public function executePDF(sfWebRequest $request) {
+        set_time_limit(180);
+        $this->document->setPartialFunction(array($this, 'getPartial'));
+
+        if ($request->getParameter('force')) {
+            $this->document->removeCache();
+        }
+
+        $this->document->generate();
+
+        $this->document->addHeaders($this->getResponse());
+
+        return $this->renderText($this->document->output());
+    }
+
+    public function executeGestionManquements(sfWebRequest $request)
+    {
+        $this->controles = ControleClient::getInstance()->findAllByStatus();
+    }
 }

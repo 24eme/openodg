@@ -25,6 +25,6 @@ echo $$ > $LOCK_FILE
 
 cd $WORKINGDIR
 
-php symfony generation:generate $SYMFONYTASKOPTIONS
+php symfony generation:generate $SYMFONYTASKOPTIONS 2>&1 | grep -v 'GEOSGeometry'
 
 rm $LOCK_FILE

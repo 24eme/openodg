@@ -25,3 +25,4 @@ all:
       PYRENEES-ATLANTIQUE: "PYRENEES-ATLANTIQUE"
       TARN-ET-GARONNE: "TARN-ET-GARONNE"
   etiquettes: "70x36" #Impression en taille rélle
+  email_plugin_all_copy: true

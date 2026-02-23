@@ -22,8 +22,14 @@ function(doc) {
          return;
      }
 
-     if (doc.type == "Degustation" && (doc.etape != "VISUALISATION" || !doc.region) ) {
+     if (doc.type == "Degustation") {
+       if (doc.etape != "VISUALISATION" || !doc.region) {
          return;
+       }
+
+       if (!doc.validation_oi) {
+         return;
+       }
      }
 
      if(!doc.campagne) {

@@ -16,7 +16,7 @@ th {
         $etablissement = $etablissements[$key_etablissement];
         foreach ($lotsDossier as $numDossier => $lots) :
             foreach ($lots as $num => $lot_indiv) {
-                $display[$lot_indiv->adresse_logement][] = $lot_indiv;
+                $display[$lot_indiv->declarant_identifiant.'/'.$lot_indiv->adresse_logement][] = $lot_indiv;
             }
         endforeach;
     endforeach;

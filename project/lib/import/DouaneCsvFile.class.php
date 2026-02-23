@@ -73,6 +73,7 @@ class DouaneCsvFile
           '18' => "18. Volume Substituable Individuel (VSI)",
           '19' => "19. Volume complémentaire individuel (VCI)",
           '22' => "22. Motif de non récolte",
+          '23' => "23. Volume d’alcool ajouté", // Code P2 de la DR >= 2025
       );
   }
 

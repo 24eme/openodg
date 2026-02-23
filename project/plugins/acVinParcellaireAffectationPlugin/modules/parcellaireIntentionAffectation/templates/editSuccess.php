@@ -23,7 +23,7 @@
             <h3>Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?></h3>
         </div>
     </div>
-    <table id="parcelles_<?php echo $dgc; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
+    <table id="parcelles_<?php echo $dgc; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire tableIntentionAffectation">
 		<thead>
         	<tr>
                 <th class="col-xs-2">Commune</th>
@@ -57,15 +57,19 @@
                 	<div style="margin-bottom: 0;" id = "affectation" class="form-group <?php if($form[$formkey]['affectation']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$formkey]['affectation']->renderError() ?>
                         <div class="col-xs-12">
-			            	<?php echo $form[$formkey]['affectation']->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                            <label class="switch-xl">
+                                <?php echo $form[$formkey]['affectation']->render(array('class' => "switch")); ?>
+                                <span class="slider-xl round"></span>
+                            </label>
                         </div>
                     </div>
             	</td>
+
             	<td class="text-center"><?php echo ($parcelle->exist('date_affectation')) ? $parcelle->getDateAffectationFr() : '' ?></td>
                 <td class="text-center <?php if($form[$formkey]['superficie']->renderError()): ?>has-error<?php endif; ?>">
                     <div style="margin-bottom: 0;" id = "surface" class="form-group">
                         <div class="col-xs-12<?php if ($parcelle->superficie_parcellaire != $parcelle->superficie) { echo " has-warning"; } ?>">
-                            <?php echo $form[$formkey]['superficie']->render(array('class' => 'form-control text-right bsswitch-input affecte_superficie' , 'placeholder' => $parcelle->superficie, 'value' => $parcelle->superficie)); ?>
+                            <?php echo $form[$formkey]['superficie']->render(array('class' => 'form-control text-right switch-input affecte_superficie' , 'placeholder' => $parcelle->superficie, 'value' => $parcelle->superficie)); ?>
                         </div>
                     </div>
                 </td>

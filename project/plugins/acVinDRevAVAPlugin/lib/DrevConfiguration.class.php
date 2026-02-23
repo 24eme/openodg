@@ -47,4 +47,8 @@ class DRevConfiguration/*** AVA ***/ extends DeclarationConfiguration {
 
         return 'drev';
     }
+
+    public function hasEmailODGInCopyDisabled() {
+        return isset($this->configuration['email_odg_in_copy_disabled']) && boolval($this->configuration['email_odg_in_copy_disabled']);
+    }
 }

@@ -82,7 +82,7 @@ class DRevProduit extends BaseDRevProduit
 		if($this->exist('volume_revendique_issu_mutage') && $this->volume_revendique_issu_mutage) {
 			return ($this->volume_revendique_total - $this->volume_revendique_issu_mutage);
 		}
-        return intval($this->volume_revendique_total);
+        return floatval($this->volume_revendique_total);
 	}
 
 
@@ -130,6 +130,15 @@ class DRevProduit extends BaseDRevProduit
 		}
 
         return false;
+    }
+
+    public function setVolumeRevendiqueIssuRecolte($volume) {
+        $beforeVolume = $this->_get('volume_revendique_issu_recolte');
+        $ret = $this->_set('volume_revendique_issu_recolte', $volume);
+        if($beforeVolume != $volume) {
+            $this->update();
+        }
+        return $ret;
     }
 
 	public function update($params = array()) {

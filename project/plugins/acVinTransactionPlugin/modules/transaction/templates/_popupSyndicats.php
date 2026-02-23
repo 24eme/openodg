@@ -1,4 +1,4 @@
-<?php $syndicats = $drev->declaration->getSyndicats(); ?>
+<?php $syndicats = $drev->getSyndicats(); ?>
 <?php if(count($syndicats)): ?>
 <?php $pos = 20 + 20 * ($sf_user->isUsurpationCompte() || $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)); ?>
 <a class="btn btn-default btn-xs" tabindex="-1" style="position: absolute; right:<?php echo $pos ?>px; cursor:pointer;"  data-toggle="modal" data-target="#modalSyndicats" title="contacts de vos syndicats">
