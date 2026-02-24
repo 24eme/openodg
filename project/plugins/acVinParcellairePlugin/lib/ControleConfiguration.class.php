@@ -76,14 +76,63 @@ class ControleConfiguration extends DeclarationConfiguration {
         return '';
     }
 
-    public function getAllLibellesConstats()
+    public function getAllLibellesConstats($type_de_controle = false, $type_tournee)
     {
-        $libellesConstats = array();
+        $type_de_controle = $type_de_controle ? strtolower($type_de_controle) : false;
+        $base = [
+            'Documentaire' => [
+                'Suivi' => [],
+                'Habilitation' => []
+            ],
+            'Terrain' => [
+                'Suivi' => [],
+                'Habilitation' => []
+            ]
+        ];
+
+        if ($type_de_controle === 'terrain') {
+            $libellesConstats = ['Terrain' => $base['Terrain']];
+        } elseif ($type_de_controle === 'documentaire') {
+            $libellesConstats = ['Documentaire' => $base['Documentaire']];
+        } else {
+            $libellesConstats = $base;
+        }
+
         foreach ($this->configuration['points_de_controle'] as $point) {
+            if (empty($point['constats'])) continue;
+
             foreach ($point['constats'] as $idConstat => $constat) {
-                $libellesConstats[$idConstat] = $constat['libelle'];
+
+                $libelle = $constat['libelle'];
+                $types = array_flip($constat['types']);
+
+                $domaines = [
+                    'Terrain' => !empty($constat['terrain']),
+                    'Documentaire' => !empty($constat['documentaire'])
+                ];
+
+                foreach ($domaines as $domaine => $actif) {
+                    if (! $actif) continue;
+                    if (! isset($libellesConstats[$domaine])) continue;
+                    if (!isset($types[$type_tournee])) {
+                        continue;
+                    }
+                    $libellesConstats[$domaine][$type_tournee][$idConstat] = $libelle;
+                }
             }
         }
+
+        foreach ($libellesConstats as $domaine => $types) {
+            foreach ($types as $type => $vals) {
+                if (empty($vals)) {
+                    unset($libellesConstats[$domaine][$type]);
+                }
+            }
+            if (empty($libellesConstats[$domaine])) {
+                unset($libellesConstats[$domaine]);
+            }
+        }
+
         return $libellesConstats;
     }
 }
