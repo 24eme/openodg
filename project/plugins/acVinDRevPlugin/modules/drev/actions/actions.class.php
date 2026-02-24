@@ -675,7 +675,6 @@ class drevActions extends sfActions {
         $this->form->save();
 
         if (count($this->validation->getEngagements())) {
-            $this->drev->remove('documents');
             $documents = $this->drev->getOrAdd('documents');
 
             foreach ($this->validation->getEngagements() as $engagement) {
@@ -692,6 +691,7 @@ class drevActions extends sfActions {
                     $document->libelle .= " : ".$engagement->getInfo();
                 }
                 $document->statut = DRevDocuments::getStatutInital($engagement->getCode());
+                $document->origine = $this->drev->_id;
             }
         }
 
