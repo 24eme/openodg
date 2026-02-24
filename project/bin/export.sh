@@ -323,6 +323,10 @@ echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '[A-Z]' | while read subhab; 
     fi
 done
 
+if test "$EXPORT_EXTRA_SHELL_SCRIPT"; then
+    bash "$EXPORT_EXTRA_SHELL_SCRIPT";
+fi
+
 mkdir -p $EXPORTDIR/stats
 
 cd bin/notebook/
