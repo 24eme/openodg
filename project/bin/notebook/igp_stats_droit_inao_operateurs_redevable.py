@@ -67,7 +67,8 @@ if(datelast.month <= 3):
     date_for_filename = str(datelast.year - 1)+'-12-31'
 
 if datefrom:
-    date_for_filename += "_depuis_" + datefrom.year + "-" + datefrom.month + "-" + datefrom.day
+    datefrom = "%04d-%02d-%02d" % (datefrom.year, datefrom.month, datefrom.day)
+    date_for_filename += "_depuis_" + datefrom
 
 drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime': 'str'}, low_memory=False)
 drev_lots = drev_lots[drev_lots["Date de commission"] < datelimite]
