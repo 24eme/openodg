@@ -1,6 +1,11 @@
 all:
   configuration:
     degustation:
+      colleges:
+        degustateur_technicien: "Techniciens"
+        degustateur_porteur_de_memoire: "Porteurs de mémoire"
+        degustateur_usager_du_produit: "Usagers du produit"
+        degustateur_stagiaire: "Stagiaires"
       anonymat4labo: true
       always_identifiant_table: true
       is_acceptable:
