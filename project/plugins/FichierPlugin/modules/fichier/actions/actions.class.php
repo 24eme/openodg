@@ -291,6 +291,9 @@ class fichierActions extends sfActions
                 	$drev->save();
 				}
 			}catch(sfException $e ) {
+                if(sfConfig::get('sf_web_debug')) {
+                    throw $e;
+                }
 				$this->getUser()->setFlash('error', $e->getMessage());
 				return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant, "campagne" => sprintf('%d-%d', $this->periode, ($this->periode + 1)) ));
 			}
@@ -298,6 +301,12 @@ class fichierActions extends sfActions
 		}
 
 	}
+
+    public function executeCvi(sfWebRequest $request) {
+        $this->cvi = $request->getParameter('cvi');
+        $this->cvi_details = ProdouaneScrappyClient::checkCVI($this->cvi);
+        return sfView::SUCCESS;
+    }
 
 	protected function secureEtablissement($etablissement) {
         if (class_exists("AppUser") && !$this->getUser()->hasHabilitation() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_STALKER) && !EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {

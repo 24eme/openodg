@@ -390,7 +390,7 @@ class ParcellaireClient extends acCouchdbClient {
                 continue;
             }
             $cepage = $p->getCepage();
-            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
+            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && $p->isJeunesVignes()) {
                 $cepage .= ' - jeunes vignes';
             }
             if (!isset($synthese[$cepage])) {
