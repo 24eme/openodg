@@ -210,14 +210,15 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
     }
 
     public function generateDonnees() {
-        if (!$this->exist('donnees') || count($this->donnees) < 1) {
-            $this->add('donnees');
-            $generate = false;
-            foreach ($this->getCsv() as $datas) {
-                $this->addDonnee($datas);
-            }
+        if ($this->exist('donnees') && count($this->donnees) > 0) {
+            return;
         }
-        return false;
+
+        $this->add('donnees');
+
+        foreach ($this->getCsv() as $datas) {
+            $this->addDonnee($datas);
+        }
     }
 
     private $bailleuretablissements = null;
@@ -239,10 +240,6 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         $donneesExist = $this->exist('donnees');
 
         $this->generateDonnees();
-
-        if(!$this->exist('donnees')) {
-            return [];
-        }
 
         foreach (ChgtDenomClient::getInstance()->getChgtDenomProduction($this->identifiant, $this->campagne) as $chgt) {
             $chgt->addDonneesForProduction($this);
