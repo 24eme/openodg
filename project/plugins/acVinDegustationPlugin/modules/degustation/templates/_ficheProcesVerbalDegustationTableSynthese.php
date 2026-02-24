@@ -1,9 +1,9 @@
 <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
   <thead>
     <tr>
-      <th rowspan="2" style="width:35%"></th>
-      <th rowspan="2" style="width:15%"><small>Synthèse</small></th>
-      <th colspan="<?php echo count($synthese); ?>" style="width:20%"><small>Résultat</small></th>
+      <th rowspan="2" style="width:28%"></th>
+      <th rowspan="2" style="width:<?php echo 72 / (count($synthese) + 1); ?>%"><small>Synthèse</small></th>
+      <th colspan="<?php echo count($synthese); ?>" style="width:<?php echo count($synthese) * (72 / (count($synthese) + 1)); ?>%"><small>Résultat</small></th>
     </tr>
     <tr>
       <th><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A' : 'C';?></small></th>
