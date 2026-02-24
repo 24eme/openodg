@@ -15,11 +15,12 @@ th {
   <p>TABLEAU DE SYNTHÈSE GLOBAL DES LOTS DE VIN PRÉSENTÉS À LA COMMISSION :</p>
   <table>
     <tr>
-      <td style="width:2%"></td>
-      <td style="width:60%">
+      <td style="width:5%"></td>
+      <td style="width:35%">
           <?php include_component('degustation', 'ficheProcesVerbalDegustationTableSynthese', array('lotsDegustes' => $lotsDegustes)); ?>
       </td>
-      <td style="width:35%">
+      <td style="width:30%">&nbsp;</td>
+      <td style="width:30%">
         <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
           <tr style="width:12%">
             <th ><small>Nombre de tables</small></th>
