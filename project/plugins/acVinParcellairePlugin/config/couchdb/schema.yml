@@ -155,6 +155,7 @@ Controle:
       date: { }
       date_tournee: { }
       type_tournee: { }
+      agent_identifiant: { }
       identifiant: { }
       campagne: { }
       declarant:
@@ -200,17 +201,18 @@ Controle:
                      definition:
                        fields:
                          '*': { }
-      liaisons:
+      liaisons: { required: false }
       audit:
         type: collection
         definition:
           fields:
             all_points_controles: {}
             all_points_conformes: {}
-            observations: {}
-            operateur_observations: {}
+            agent_observation:
+            operateur_observation:
             operateur_signature: {}
             saisie: {}
+            nom_prenom:
       parcelles:
         type: collection
         definition:
@@ -293,6 +295,7 @@ Controle:
                   libelle_manquement: {}
                   observations: {}
                   delais: {}
+      maturite:
       mouvements_statuts:
         type: array_collection
         definition:

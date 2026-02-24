@@ -2,7 +2,6 @@
 <?php use_helper('Text') ?>
 <?php use_helper('Lot') ?>
 
-
 <style>
 table, th, td {
     border: 1px solid black;
@@ -18,22 +17,23 @@ table, th, td {
 <table>
     <thead>
         <tr>
-            <td colspan="2">#LOGO#</td>
-            <td colspan="6" style="text-align: center; height: 50px;">&nbsp;<br/><strong>AUDIT VIGNOBLE</strong></td>
+            <td colspan="2" align="center" style="text-align: center;" ><?php echo tdStart() ?>&nbsp;<img style="height: 46px;" src="<?php echo sfConfig::get('sf_web_dir').'/images/pdf/logo_cotesdeprovence.jpg' ?>" /></td>
+            <td colspan="4" style="text-align: center; height: 50px;">&nbsp;<br/><strong>AUDIT VIGNOBLE</strong></td>
+            <td colSpan="2" class="center-grey">FO-26<br/>Version : V7<br/>Date : 14/04/25</td>
         </tr>
         <tr>
-            <td colSpan="4" style="height: 40px;"><u>Type de contrôle :</u><br/><?php echo $controle->type_tournee ?></td>
+            <td colSpan="4" style="height: 40px;"><u>Type de contrôle : </u><br/><?php echo $controle->type_tournee ?></td>
             <td colSpan="4"><u>Activités : </u><br/><?php foreach ($controle->getActiviteClient() as $activite) {echo $activite . '   ';} ?></td>
         </tr>
         <tr>
-            <td colSpan="5" style="height: 30px;">&nbsp;<br/><strong>DATE : </strong><?php echo $controle->getDateFr(); ?><br/></td>
-            <td colSpan="3">&nbsp;<br/><strong>AGENT : </strong></td>
+            <td colSpan="5" style="height: 30px;">&nbsp;<br/><strong>DATE :&nbsp;</strong><?php echo $controle->getDateFr(); ?><br/></td>
+            <td colSpan="3">&nbsp;<br/><strong>AGENT :</strong>&nbsp;&nbsp;<?php echo CompteClient::getInstance()->find($controle->agent_identifiant)->getInitiales(); ?></td>
         </tr>
         <tr>
             <td colSpan="8" style="text-align: center; height:40px;">&nbsp;<br/><strong><?php echo $controle->declarant->raison_sociale ?></strong><br/>N° SIRET : <?php echo $controle->declarant->siret ?>&nbsp;&nbsp;&nbsp;N° CVI : <?php echo $controle->declarant->cvi ?><br/></td>
         </tr>
         <tr>
-            <td colspan="8" style="text-align: center;">&nbsp;<br/><strong><?php echo $controle->identifiant; ?></strong><br/></td>
+            <td colspan="8" style="text-align: center;"><strong><?php echo $controle->identifiant; ?></strong></td>
         </tr>
         <tr>
             <td class="center-grey" colSpan="8"><strong>FICHE CONTACT</strong></td>
@@ -44,14 +44,14 @@ table, th, td {
         </tr>
         <tr>
             <td colSpan="2"><strong>Tel.</strong></td>
-            <td colSpan="2"><?php echo $controle->declarant->telephone_bureau ?></td>
-            <td colSpan="2"><strong>Mobile</strong></td>
+            <td colSpan="3"><?php echo $controle->declarant->telephone_bureau ?></td>
+            <td colSpan="1"><strong>Mobile</strong></td>
             <td colSpan="2"><?php echo $controle->declarant->telephone_mobile ?></td>
         </tr>
         <tr>
             <td colSpan="2"><strong>Mail</strong></td>
-            <td colSpan="2"><?php echo $controle->declarant->email ?></td>
-            <td colSpan="2"><strong>Fax</strong></td>
+            <td colSpan="3"><?php echo $controle->declarant->email ?></td>
+            <td colSpan="1"><strong>Fax</strong></td>
             <td colSpan="2"><?php echo $controle->declarant->fax ?></td>
         </tr>
         <tr>
@@ -59,77 +59,76 @@ table, th, td {
         </tr>
         <tr>
             <td colSpan="2"><strong>Surface totale (avec JV) :</strong></td>
-            <td colSpan="2"><strong></strong></td>
-            <td colSpan="2">Surface totale en production&nbsp;:</td>
-            <td colSpan="2"></td>
+            <td colSpan="3" style="text-align: center;"><strong><?php echo $parcellaire->getSuperficieTotale(true) ?></strong></td>
+            <td colSpan="1">Surf.&nbsp;totale en production :</td>
+            <td colSpan="2" style="text-align: center;"><?php echo $parcellaire->getSuperficieTotale() ?></td>
         </tr>
         <tr>
             <td colSpan="2"><strong>PP de l'opérateur (ha) :</strong></td>
-            <td colSpan="2"></td>
-            <td colSpan="2">DGC :</td>
+            <td colSpan="3">
+                <?php
+                    foreach ($ppproduits as $libelle => $pp) {
+                        echo $libelle . '&nbsp;:&nbsp;' . $pp . '<br/>';
+                    }
+                ?>
+            </td>
+            <td colSpan="1">DGC :</td>
+            <td colSpan="2"><?php echo $dgc; ?></td>
+        </tr>
+        <tr>
+            <td colSpan="2"><strong>PP avec prise en compte des manquants (ha)</strong><small> à convertir en (hl) pour la revendication (surface*rendement autorisé)</small></td>
+            <td colSpan="3"></td>
+            <td colSpan="1">PP avec réfaction :</td>
             <td colSpan="2"></td>
         </tr>
         <tr>
-            <td colSpan="2"><strong>PP avec prise en compte des manquants (ha)</strong><br/><br/>à convertir en (hl) pour la revendication (surface*rendement autorisé)</td>
-            <td colSpan="2"></td>
-            <td colSpan="2">PP avec réfaction :</td>
-            <td colSpan="2"></td>
+            <td colSpan="2" style="height: 20px;"><strong>Maturité :</strong></td>
+            <td colSpan="3" style="text-align: center;"><?php echo $controle->maturite; ?></td>
+            <td colSpan="1" style="height: 20px;"><strong>Manquants :</strong></td>
+            <td colSpan="2" style="text-align: center;"><?php echo $manquant ?></td>
         </tr>
         <tr>
-            <td colSpan="2">Maturité :</td>
-            <td colSpan="2"></td>
-            <td colSpan="2"></td>
-            <td colSpan="2"></td>
-        </tr>
-        <tr>
-            <td colSpan="2">Convention VIFA : O/N :</td>
-            <td colSpan="2"></td>
-            <td colSpan="2"></td>
-            <td colSpan="2"></td>
+            <td colSpan="2"><strong>Convention VIFA&nbsp;(O/N) :</strong></td>
+            <td colSpan="6" style="text-align: center;"><?php echo $hasVIFA; ?></td>
         </tr>
         <tr>
             <td class="center-grey" colSpan="8"><strong>SYNTHESE TERRAIN</strong></td>
         </tr>
         <tr>
-            <td colSpan="3">&nbsp;<br/>Tous les points à contrôler ont été vus :</td>
-            <td colSpan="5">&nbsp;<br/>
+            <td colSpan="3">&nbsp;Tous les points à contrôler ont été vus :</td>
+            <td colSpan="5">&nbsp;
                 <span style="font-family: Dejavusans">
-                <?php if (! 1 == 1): ?>
-                    ☐&nbsp;OUI&nbsp;&nbsp;&nbsp;☒&nbsp;NON&nbsp;; si non préciser :
-                <?php else: ?>
-                    ☒&nbsp;OUI&nbsp;&nbsp;&nbsp;☐&nbsp;NON&nbsp;; si non préciser :
-                <?php endif;?>
+                    ☒&nbsp;OUI&nbsp;&nbsp;&nbsp;☐&nbsp;NON&nbsp;
             </span>
-            <br/>
             </td>
         </tr>
         <tr>
-            <td colSpan="3">&nbsp;<br/>Tous les points sont conformes :</td>
-            <td colSpan="5">&nbsp;<br/>
+            <td colSpan="3">&nbsp;Tous les points sont conformes :</td>
+            <td colSpan="5">&nbsp;
                 <span style="font-family: Dejavusans">
                 <?php if ($controle->hasManquementsActif()): ?>
-                    ☐&nbsp;OUI&nbsp;&nbsp;&nbsp;☒&nbsp;NON&nbsp;; si non préciser :
+                    ☐&nbsp;OUI&nbsp;&nbsp;&nbsp;☒&nbsp;NON&nbsp;
                 <?php else: ?>
-                    ☒&nbsp;OUI&nbsp;&nbsp;&nbsp;☐&nbsp;NON&nbsp;; si non préciser :
+                    ☒&nbsp;OUI&nbsp;&nbsp;&nbsp;☐&nbsp;NON&nbsp;
                 <?php endif;?>
             </span>
-            <br/>
             </td>
         </tr>
         <tr>
-            <td colSpan="8" style="height: 120px;"><u>Observations de l'agent :</u></td>
+            <td colSpan="8" style="height: 45px;"><u>Observation de l'agent :</u><br/><?php echo $controle->getObservationAgent(); ?></td>
         </tr>
         <tr>
-            <td colSpan="8"><strong>&nbsp;<br/>L'opérateur ou son représentant :</strong><br/></td>
+            <td class="center-grey" colSpan="8"><strong>&nbsp;L'OPÉRATEUR OU SON REPRÉSENTANT</strong></td>
         </tr>
         <tr>
-            <td colSpan="2">&nbsp;<br/>Nom et Prénom :<br/></td>
-            <td colSpan="4">&nbsp;</td>
+            <td colSpan="3">&nbsp;<br/>Nom et Prénom :<br/></td>
+            <td colSpan="3">&nbsp;<br/><?php echo $controle->audit->nom_prenom; ?></td>
             <td colSpan="2" style="text-align: center;">&nbsp;<br/>Signature :<br/></td>
         </tr>
         <tr>
-            <td colSpan="6" style="height: 65px">Observations :</td>
-            <td colSpan="2">&nbsp;</td>
+            <td colSpan="3" style="height: 45px;"><u>Observation :</u><br/><?php echo $controle->getObservationOperateur(); ?></td>
+            <td class="center-grey" colSpan="3">La signature de la présente déclaration signifie l'acceptation des constats effectués</td>
+            <td colSpan="2"></td>
         </tr>
     </thead>
 </table>

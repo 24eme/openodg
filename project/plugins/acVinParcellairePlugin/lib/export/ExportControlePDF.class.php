@@ -4,10 +4,26 @@ class ExportControlePDF extends ExportPDF {
 
     protected $controle = null;
     protected $identifiant = null;
+    protected $parcellaire = null;
+    protected $potentiel = null;
+    protected $etablissement = null;
+    protected $compte = null;
+    protected $intentionParcellaire = null;
+    protected $parcellaireManquant = null;
 
     public function __construct($controle, $identifiant = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->controle = $controle;
         $this->identifiant = $identifiant;
+
+        $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
+        $this->potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->parcellaire);
+
+        $this->etablissement = $this->controle->getEtablissementObject();
+        $this->compte = $this->etablissement->getMasterCompte();
+
+        $this->intentionParcellaire = ParcellaireIntentionClient::getInstance()->getLast($this->etablissement->identifiant);
+
+        $this->parcellaireManquant = ParcellaireManquantClient::getInstance()->getLast($this->identifiant);
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -20,8 +36,36 @@ class ExportControlePDF extends ExportPDF {
         }
     }
 
-    public function create() {
-        $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle)));
+    public function create()
+    {
+        $ppproduits = array();
+        $controleHash = $this->controle->getProduitsHash();
+        foreach ($this->potentiel->getProduits() as $ppproduit) {
+            if (! in_array($ppproduit->getProduitHash(), $controleHash)) {
+                continue;
+            }
+            $ppproduits[$ppproduit->getLibelle()] = $ppproduit->getSuperficieMax();
+        }
+
+        $hasVIFA = 'N';
+        if ($this->compte->tags->exist('manuel')) {
+            if (in_array('convention_vifa', $this->compte->tags->manuel->toArray())) {
+                $hasVIFA = 'O';
+            }
+        }
+
+        if ($this->intentionParcellaire) {
+            $dgc = str_replace(' ', '&nbsp;', implode(', ', $this->intentionParcellaire->getDgc()));
+        } else {
+            $dgc = 'N';
+        }
+
+        $manquant = 'N';
+        if ($this->parcellaireManquant) {
+            $manquant = $this->getManquants() == 0 ? 'N' : 'O';
+        }
+
+        $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle, 'parcellaire' => $this->parcellaire, 'ppproduits' => $ppproduits, 'hasVIFA' => $hasVIFA, 'dgc' => $dgc, 'manquant' => $manquant)));
     }
 
 
@@ -76,6 +120,15 @@ class ExportControlePDF extends ExportPDF {
 
 
         return $filename . '.pdf';
+    }
+
+    public function getManquants()
+    {
+        $ret = 0;
+        foreach ($this->controle->parcelles as $id_parcelle => $info_parcelle) {
+            $ret += $this->parcellaireManquant->getPourcentageFromIdParcelle($id_parcelle);
+        }
+        return $ret;
     }
 
 }

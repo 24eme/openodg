@@ -14,7 +14,8 @@
         templates["<?php echo $template ?>"] = { template: "<?php echo str_replace(['"', "\n"], ['\"', ""], get_partial('controle/terrain'.ucfirst($template))) ?>" }
     <?php endforeach; ?>
 
-    let controles = JSON.parse(localStorage.getItem("controles")) || {}
+    const date_tournee = "<?php echo $date_tournee ?>"
+    let controles = JSON.parse(localStorage.getItem("controles_" + date_tournee)) || {}
     const server_controle = JSON.parse(document.getElementById("dataJson").textContent);
     const points_de_controle = JSON.parse(document.getElementById("dataConf").textContent);
     let localstorage_updated = false;
@@ -27,38 +28,8 @@
         localstorage_updated = true;
     }
     if (localstorage_updated) {
-        localStorage.setItem("controles", JSON.stringify(controles));
+        localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
     }
-
-    // var points = [];
-
-    // for(const controleId in controles) {
-    //     for(const parcelleId in controles[controleId].parcelles) {
-    //         if(!controles[controleId].parcelles[parcelleId].controle.points || !controles[controleId].parcelles[parcelleId].controle.points.length) {
-    //             controles[controleId].parcelles[parcelleId].controle.points = points;
-    //         }
-    //         for (key in points_de_controle) {
-    //             controles[controleId].parcelles[parcelleId].controle.points[key] = [];
-    //             controles[controleId].parcelles[parcelleId].controle.points[key].conformite = true;
-    //             controles[controleId].parcelles[parcelleId].controle.points[key].rtm = [];
-    //             for (item in points_de_controle[key].rtm) {
-    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item] = [];
-    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item].libelle = points_de_controle[key].rtm[item].libelle;
-    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item].observations = '';
-    //                 controles[controleId].parcelles[parcelleId].controle.points[key].rtm[item].conformite = false;
-    //             }
-    //         }
-    //     }
-    // }
-
-    // function parseString(dlmString){
-    //     let mydlm = [];
-    //     dlmString.split("|").forEach(function(str){
-    //         mydlm.push(JSON.parse(str));
-    //     });
-    //     return mydlm;
-    // }
-    // const array_parcelles = parseString('<?php //echo addslashes(json_encode(current($controles->getRawValue())['geojson'])) ?>');
 
     const routes = [
       { path: '/', name: "listing", component: templates.listing },
@@ -84,9 +55,8 @@
         watch: {
           controles: {
             handler(newControles) {
-              console.log(newControles)
               if (newControles) {
-                  localStorage.setItem("controles", JSON.stringify(newControles));
+                  localStorage.setItem("controles_" + date_tournee, JSON.stringify(newControles));
               }
             },
             deep: true
@@ -109,7 +79,7 @@
         const route = useRoute()
 
         return {
-          controleCourant: controles[route.params.id]
+          controleCourant: controles[route.params.id],
         }
     };
     templates.operateur.methods = {
@@ -123,7 +93,7 @@
         return val ? Number(val).toFixed(nbDecimal) : '';
       },
       transmitDataControle() {
-        fetch('/provence_dev.php/controle/transmit', {
+        fetch('<?php echo url_for('controle_transmission_data'); ?>', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -136,6 +106,7 @@
           if (!response.ok) {
             throw new Error('Erreur HTTP ' + response.status);
           }
+          this.controleCourant.validation = true;
         })
         .catch(error => {
           console.error('Transmission error:', error);
@@ -153,13 +124,20 @@
         }
     };
     templates.parcelle.methods = {
-      save() {
-        this.parcelleCourante.controle.saisie = 1;
-        router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
-      },
-      echoFloat(val, nbDecimal = 5) {
-        return val ? Number(val).toFixed(nbDecimal) : '';
-      }
+        allConforme() {
+            for (const pointKey in this.parcelleCourante.controle.points) {
+                const point = this.parcelleCourante.controle.points[pointKey];
+                point.conformite = 'C';
+            }
+        },
+        save() {
+            this.parcelleCourante.controle.saisie = 1;
+            this.controleCourant.validation = false;
+            router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+        },
+        echoFloat(val, nbDecimal = 5) {
+            return val ? Number(val).toFixed(nbDecimal) : '';
+        }
     };
     templates.audit.mounted = function() {
         let signaturePad = new SignaturePad(document.getElementById('signature'), {
@@ -171,15 +149,6 @@
         const route = useRoute()
         if(!controles[route.params.id].audit) {
           controles[route.params.id].audit = {}
-        }
-        if (!controles[route.params.id].audit.saisie) {
-            let obs = '';
-            for (let p in controles[route.params.id].parcelles) {
-                if (controles[route.params.id].parcelles[p].controle.observations) {
-                    obs += controles[route.params.id].parcelles[p].parcelle_id+' : '+controles[route.params.id].parcelles[p].controle.observations+'\n';
-                }
-            }
-            controles[route.params.id].audit.observations = obs;
         }
         return {
           controleCourant: controles[route.params.id]
@@ -195,7 +164,7 @@
           }
           return ret;
       },
-      countPointsNCetRtm() {
+      countPointsNCetGetLibelles() {
           let ret = {nombreNC:0, manquements:[]};
           for (const parcelleId in this.controleCourant.parcelles) {
               const parcelle = this.controleCourant.parcelles[parcelleId];
@@ -203,7 +172,13 @@
                   const point = parcelle.controle.points[pointKey];
                   if (point.conformite == 'NC') {
                       ret.nombreNC += 1;
-                      ret.manquements.push(point.libelle);
+                      for (const constatKey in point.constats) {
+                          const constat = point.constats[constatKey];
+                          if (! constat.conformite) {
+                              continue ;
+                          }
+                          ret.manquements.push(point.libelle + "\n" + constat.libelle + ' - ' + constatKey + "\n" + parcelleId + ' - '+ constat.observations);
+                      }
                   }
               }
           }
@@ -211,6 +186,7 @@
       },
       save() {
         this.controleCourant.audit.saisie = 1;
+        this.controleCourant.validation = false;
         router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
       }
     };

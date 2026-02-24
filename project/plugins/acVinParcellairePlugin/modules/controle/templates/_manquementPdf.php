@@ -11,27 +11,33 @@ table, th, td {
     text-align: center;
     background-color: #cccccc;
 }
+
+.grey {
+    background-color: #eeeeee;
+}
 </style>
 
-<?php foreach ($manquements as $rtmId => $manquement): ?>
+
+
+<?php foreach ($manquements as $manquementId => $manquement): ?>
 <table>
     <thead>
         <tr>
-            <td style="text-align: center;" colspan="3" rowSpan="4">#LOGO#</td>
-            <td rowSpan="1">Référence:</td>
+            <td style="text-align: center;" colspan="3" rowSpan="4"><?php echo tdStart() ?>&nbsp;<img style="height: 66px;" src="<?php echo sfConfig::get('sf_web_dir').'/images/pdf/logo_cotesdeprovence.jpg' ?>" /></td>
+            <td class="grey" rowSpan="1">Référence:</td>
         </tr>
         <tr>
-            <td rowSpan="1"></td>
+            <td class="grey" rowSpan="1"><strong>FO-34</strong></td>
         </tr>
         <tr>
-            <td rowSpan="1">Révision et date :</td>
+            <td class="grey" rowSpan="1">Révision et date :</td>
         </tr>
         <tr>
-            <td rowSpan="1">x - xx/xx/26</td>
+            <td class="grey" rowSpan="1"><strong>1 – 13/03/24</strong></td>
         </tr>
         <tr>
             <td style="text-align: center;" rowSpan="1" colspan="3">FICHE DE NOTIFICATION MANQUEMENT OPERATEUR</td>
-            <td rowSpan="1">Page 1 sur 1</td>
+            <td rowSpan="1" class="grey"><strong>Page 1 sur 1</strong></td>
         </tr>
     </thead>
     <tbody>
@@ -45,7 +51,7 @@ table, th, td {
             <td class="center-grey" colspan="4">Identification MANQUEMENT</td>
         </tr>
         <tr>
-            <td colSpan="2"><strong>Code : </strong><?php echo $rtmId ?></td>
+            <td colSpan="2"><strong>Code : </strong><?php echo $manquementId ?></td>
             <td colSpan="2"><strong>N° du manquement : </strong></td>
         </tr>
         <tr>
@@ -55,17 +61,21 @@ table, th, td {
             <td colSpan="4"><strong>Portée du manquement (parcelles, cépages...) :</strong></td>
         </tr>
         <tr>
-            <td colspan="4" style="height: 230px;"></td>
+            <td colspan="4"><?php foreach($manquement->parcelles_id as $parcelle_id):
+                echo $controle->parcelles[$parcelle_id]->getInfoPdf(); ?>
+                <br/>
+                <?php endforeach; ?>
+            </td>
         </tr>
         <tr>
             <td colSpan="4"><strong>Détails du manquement constaté :</strong></td>
         </tr>
         <tr>
-            <td colspan="4" style="height: 200px;"></td>
+            <td colspan="4"><?php echo $manquement->libelle_manquement ?><br/><?php echo $controle->getObservationsFromManquement($manquementId); ?></td>
         </tr>
         <tr>
             <td colspan="2">Date du constat : <?php echo $manquement->constat_date; ?></td>
-            <td colSpan="2" style="height: 40px;">Visa de l'agent de l'ODG : </td>
+            <td colSpan="2" style="height: 40px;">Visa de l'agent de l'ODG :&nbsp;&nbsp;&nbsp;&nbsp;<?php echo CompteClient::getInstance()->find($controle->agent_identifiant)->getInitiales(); ?></td>
         </tr>
         <tr>
             <td class="center-grey" colspan="4">Mesure ODG</td>
