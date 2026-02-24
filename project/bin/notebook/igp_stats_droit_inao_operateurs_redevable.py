@@ -12,8 +12,8 @@ import dateutil.relativedelta
 
 pd.set_option('display.max_columns', None)
 millesime = None
+datelast = None
 datefrom = None
-
 # In[42]:
 
 
@@ -24,14 +24,18 @@ if sys.argv[0].find('launcher') == -1 :
 
     igp = sys.argv[1].replace('igp',"").replace('/GLOBAL',"")
 
-    if(len(sys.argv)>2):
-        millesime = sys.argv[2]
+    if len(sys.argv)>2:
+        datelast = datetime.fromisoformat(sys.argv[2])
 
     if len(sys.argv)>3:
         datefrom = datetime.fromisoformat(sys.argv[3])
+
+    if(len(sys.argv)>4):
+        millesime = sys.argv[4]
+
 else:
     igp = 'gascogne'
-    campagne ="2021-2022"
+    millesime ="2021"
     date = '2022-08-01'
 
 
@@ -39,11 +43,11 @@ else:
 
 
 dossier_igp = "exports_igp"+igp
-if not datefrom:
-    datefrom = datetime.now()
+if not datelast:
+    datelast = datetime.now()
 
 if not millesime:
-    millesime = str((datefrom - dateutil.relativedelta.relativedelta(months=10)).year)
+    millesime = str((datelast - dateutil.relativedelta.relativedelta(months=10)).year)
 
 exportdir = '../../web/'+dossier_igp
 outputdir = exportdir.replace('/GLOBAL', '')+'/stats/'+millesime
@@ -51,19 +55,25 @@ outputdir = exportdir.replace('/GLOBAL', '')+'/stats/'+millesime
 if(not os.path.isdir(outputdir)):
     os.mkdir(outputdir)
 
-datelimite = str(datefrom.year)+'-08-01'
-datelimite_exact = str(datefrom.year)+'-07-31'
+datelimite = str(datelast.year)+'-08-01'
+date_for_filename = str(datelast.year)+'-07-31'
 
-if(datefrom.month >= 10):
-    datelimite = str(datefrom.year + 1)+'-01-01'
-    datelimite_exact = str(datefrom.year)+'-12-31'
+if(datelast.month >= 10):
+    datelimite = str(datelast.year + 1)+'-01-01'
+    date_for_filename = str(datelast.year)+'-12-31'
 
-if(datefrom.month <= 3):
-    datelimite = str(datefrom.year )+'-01-01'
-    datelimite_exact = str(datefrom.year - 1)+'-12-31'
+if(datelast.month <= 3):
+    datelimite = str(datelast.year )+'-01-01'
+    date_for_filename = str(datelast.year - 1)+'-12-31'
+
+if datefrom:
+    datefrom = "%04d-%02d-%02d" % (datefrom.year, datefrom.month, datefrom.day)
+    date_for_filename += "_depuis_" + datefrom
 
 drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime': 'str'}, low_memory=False)
 drev_lots = drev_lots[drev_lots["Date de commission"] < datelimite]
+if datefrom:
+    drev_lots = drev_lots[drev_lots["Date de commission"] >= datefrom]
 drev_lots = drev_lots[drev_lots["Millésime"] == millesime]
 drev_lots['Volume'] = drev_lots['Volume'].fillna(0)
 drev_lots = drev_lots.fillna("")
@@ -77,6 +87,9 @@ societe = pd.read_csv(exportdir+"/societe.csv", encoding="iso8859_15", delimiter
 lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime': 'str'}, low_memory=False)
 lots = lots.rename(columns = {'Id Opérateur':'Identifiant'})
 lots = lots[lots["Date commission"] < datelimite]
+if datefrom:
+    lots = lots[lots["Date commission"] >= datefrom]
+
 lots = lots[lots["Millésime"] == millesime]
 lots = lots[(lots['Origine'] == "DRev") | (lots['Origine'] == "DRev:Changé") ]
 
@@ -106,6 +119,8 @@ final = lignes_volume_revendique
 
 lots = lots.query("Millésime == @millesime");
 lots = lots[lots["Date commission"] < datelimite]
+if datefrom:
+    lots = lots[lots["Date commission"] >= datefrom]
 lots = lots[lots["Volume"] > 0]
 lots["Volume"] = lots["Volume"].fillna(0)
 lots = lots.fillna("")
@@ -130,6 +145,8 @@ final = final.append(lignes_volume_instance_controle,sort= True)
 #DECLASSEMENT
 lignes_declassement = changement_denomination[changement_denomination['Type de changement'] == "DECLASSEMENT"]
 lignes_declassement = lignes_declassement[lignes_declassement["Origine Date de commission"] < datelimite]
+if datefrom:
+    lignes_declassement = lignes_declassement[lignes_declassement["Origine Date de commission"] >= datefrom]
 lignes_declassement = lignes_declassement.fillna("")
 lignes_declassement = lignes_declassement.groupby(['Identifiant','Origine Appellation','Origine Couleur','Origine Produit','Origine Lieu','Origin Lot unique Id'])[["Volume changé"]].sum()
 lignes_declassement = lignes_declassement.reset_index()
@@ -144,6 +161,8 @@ final = final.append(lignes_declassement,sort= True)
 
 changement_deno = changement_denomination[changement_denomination['Type de changement'] == "CHANGEMENT"]
 changement_deno = changement_deno[changement_deno["Date de commission"] < datelimite]
+if datefrom:
+    changement_deno = changement_deno[changement_deno["Date de commission"] >= datefrom]
 
 changement_deno = changement_deno.fillna("")
 
@@ -169,6 +188,8 @@ final = final.append(changement_deno,sort= True)
 
 changement_deno_dest = changement_denomination[changement_denomination['Type de changement'] == "CHANGEMENT"]
 changement_deno_dest = changement_deno_dest[changement_deno_dest["Date de commission"] < datelimite]
+if datefrom:
+    changement_deno_dest = changement_deno_dest[changement_deno_dest["Date de commission"] >= datefrom]
 changement_deno_dest = changement_deno_dest.fillna("")
 changement_deno_dest = changement_deno_dest.groupby(['Identifiant','Origine Appellation','Origine Couleur','Origine Produit','Origine Lieu','Lot unique Id','Appellation','Couleur','Lieu','Produit'])[["Volume changé"]].sum()
 changement_deno_dest = changement_deno_dest.reset_index()
@@ -199,7 +220,7 @@ final = final.reset_index()
 final = final.sort_values(by=['Identifiant','Appellation','Couleur'])
 
 
-final.reset_index(drop=True).to_csv(outputdir+'/'+datelimite_exact+'_'+millesime+'_igp_stats_droit_inao_operateurs_redevable.csv', encoding="iso8859_15", sep=";",index=False, decimal=",")
+final.reset_index(drop=True).to_csv(outputdir+'/'+date_for_filename+'_'+millesime+'_igp_stats_droit_inao_operateurs_redevable.csv', encoding="iso8859_15", sep=";",index=False, decimal=",")
 
 
 #tableau récapitulatif
@@ -255,7 +276,7 @@ tab_cal = pd.merge(tab_cal,etablissements,how='left',left_on=['Identifiant'],rig
 tab_cal = tab_cal[['Identifiant','Titre societe','Raison sociale societe','Titre', 'Raison sociale','CVI','SIRET','Famille',"Adresse societe","Adresse 2 societe",'Adresse 3 societe','Code postal societe','Commune societe', 'Pays', 'Code comptable societe','Téléphone',"Téléphone portable",'Fax societe','Email societe','Appellation','Couleur','Produit','Volume','Lieu','type_vol_revendique','type_instance_controle','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B','Somme Volume lots.csv']]
 tab_cal = tab_cal.rename(columns = {'Raison sociale': 'Nom etablissement','Raison sociale societe':'Nom societe','Adresse societe':'Adresse','Adresse 2 societe':'Adresse 2','Adresse 3 societe':'Adresse 3','Code postal societe':'Code postal','Email Operateur':'Email','Fax societe':'Fax'})
 
-tab_cal.reset_index(drop=True).to_csv(outputdir+'/'+datelimite_exact+'_'+millesime+'_igp_stats_droit_inao_operateurs_redevable_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+tab_cal.reset_index(drop=True).to_csv(outputdir+'/'+date_for_filename+'_'+millesime+'_igp_stats_droit_inao_operateurs_redevable_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
 
 
 needincoherence = (len(lots) == len(lots_ini))
@@ -282,4 +303,3 @@ if (needincoherence):
     incoherent['url lot'] = "https://"+igp+".igp.vins.24eme.fr/historique/"+incoherent['Identifiant']+'/'+incoherent['Origin Lot unique Id']
 
     incoherent.reset_index(drop=True).to_csv(outputdir+'/incoherent.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
-
