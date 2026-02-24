@@ -291,6 +291,9 @@ class fichierActions extends sfActions
                 	$drev->save();
 				}
 			}catch(sfException $e ) {
+                if(sfConfig::get('sf_web_debug')) {
+                    throw $e;
+                }
 				$this->getUser()->setFlash('error', $e->getMessage());
 				return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant, "campagne" => sprintf('%d-%d', $this->periode, ($this->periode + 1)) ));
 			}
