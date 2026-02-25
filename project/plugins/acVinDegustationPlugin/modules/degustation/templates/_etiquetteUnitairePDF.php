@@ -20,7 +20,7 @@
             <td style="overflow-wrap:break-word;text-align: left; height: 4px; line-height: 1px; overflow: hidden;" colspan="2">&nbsp;</td>
       </tr>
       <tr>
-        <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28.5px; line-height: 14px; overflow: hidden; vertical-align: middle;"><strong>&nbsp;&nbsp;<?php echo truncate_text(strtoupper(
+        <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28.5px; line-height: 14px; overflow: hidden; vertical-align: middle;"><strong>&nbsp;&nbsp;<?php echo truncate_text_mode(strtoupper(
             KeyInflector::unaccent(($lotInfo->lot->getConfig() ? null : $lotInfo->lot->details)." ".$lotInfo->lot->produit_libelle)
         ), 50, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
           <?php if (! DegustationConfiguration::getInstance()->hasTypiciteCepage()): ?>
@@ -34,7 +34,7 @@
       </tr>
       <?php endif; ?>
       <tr>
-        <td style="overflow-wrap:break-word;text-align: left; height: 15px; line-height: 15px; overflow: hidden; width: 65%;">&nbsp;&nbsp;<?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>Lot <strong><?php echo truncate_text($lotInfo->lot->numero_logement_operateur.$centilisation, 15, '…');  ?></strong>
+        <td style="overflow-wrap:break-word;text-align: left; height: 15px; line-height: 15px; overflow: hidden; width: 65%;">&nbsp;&nbsp;<?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>Lot <strong><?php echo truncate_text_mode($lotInfo->lot->numero_logement_operateur.$centilisation, 15, '…');  ?></strong>
         </td>
         <td style="overflow-wrap:break-word;text-align: right; height: 15px; line-height: 15px; overflow: hidden; width: 35%;"><?php if(!is_null($lotInfo->lot->volume)): ?><strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?></strong><?php endif; ?> HL<?php if(is_null($lotInfo->lot->volume)): ?>/COLS<?php endif; ?></td>
       </tr>
