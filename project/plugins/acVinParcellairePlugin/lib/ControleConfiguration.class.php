@@ -39,51 +39,100 @@ class ControleConfiguration extends DeclarationConfiguration {
         return $this->configuration['points_de_controle'][$clePointControle]['libelle'];
     }
 
-    public function getLibellePointDeControleFromCodeRtm($codeRtm)
+    public function getLibellePointDeControleFromCodeConstat($codeConstat)
     {
         foreach ($this->configuration['points_de_controle'] as $point) {
-            foreach ($point['rtm'] as $idrtm => $manquement) {
-                if ($idrtm == $codeRtm) {
+            foreach ($point['constats'] as $idConstat => $manquement) {
+                if ($idConstat == $codeConstat) {
                     return $point['libelle'];
                 }
             }
         }
     }
 
-    public function getLibelleManquement($codeRtm)
+    public function getLibelleConstat($codeConstat)
     {
         foreach ($this->configuration['points_de_controle'] as $point) {
-            foreach ($point['rtm'] as $idrtm => $manquement) {
-                if ($idrtm == $codeRtm) {
+            foreach ($point['constats'] as $idConstat => $manquement) {
+                if ($idConstat == $codeConstat) {
                     return $manquement['libelle'];
                 }
             }
         }
     }
 
-    public function getLibelleManquementWithPointId($codeRtm, $pointId)
+    public function getLibelleConstatWithPointId($codeConstat, $pointId)
     {
-        return $this->configuration['points_de_controle'][$pointId]['rtm'][$codeRtm]['libelle'];
+        return $this->configuration['points_de_controle'][$pointId]['constats'][$codeConstat]['libelle'];
     }
 
-    public function getDelaisManquement($pointId, $codeRtm)
+    public function getDelaisConstat($pointId, $codeConstat)
     {
-        return $this->configuration['points_de_controle'][$pointId]['rtm'][$codeRtm]['delais'];
+        return $this->configuration['points_de_controle'][$pointId]['constats'][$codeConstat]['delais'];
     }
 
-    public function getConseilManquement($pointId, $codeRtm)
+    public function getConseilConstat($pointId, $codeConstat)
     {
         return '';
     }
 
-    public function getAllLibellesManquements()
+    public function getAllLibellesConstats($type_de_controle = false, $type_tournee)
     {
-        $libellesManquements = array();
+        $type_de_controle = $type_de_controle ? strtolower($type_de_controle) : false;
+        $base = [
+            'Documentaire' => [
+                'Suivi' => [],
+                'Habilitation' => []
+            ],
+            'Terrain' => [
+                'Suivi' => [],
+                'Habilitation' => []
+            ]
+        ];
+
+        if ($type_de_controle === 'terrain') {
+            $libellesConstats = ['Terrain' => $base['Terrain']];
+        } elseif ($type_de_controle === 'documentaire') {
+            $libellesConstats = ['Documentaire' => $base['Documentaire']];
+        } else {
+            $libellesConstats = $base;
+        }
+
         foreach ($this->configuration['points_de_controle'] as $point) {
-            foreach ($point['rtm'] as $idrtm => $manquement) {
-                $libellesManquements[$idrtm] = $manquement['libelle'];
+            if (empty($point['constats'])) continue;
+
+            foreach ($point['constats'] as $idConstat => $constat) {
+
+                $libelle = $constat['libelle'];
+                $types = array_flip($constat['types']);
+
+                $domaines = [
+                    'Terrain' => !empty($constat['terrain']),
+                    'Documentaire' => !empty($constat['documentaire'])
+                ];
+
+                foreach ($domaines as $domaine => $actif) {
+                    if (! $actif) continue;
+                    if (! isset($libellesConstats[$domaine])) continue;
+                    if (!isset($types[$type_tournee])) {
+                        continue;
+                    }
+                    $libellesConstats[$domaine][$type_tournee][$idConstat] = $libelle;
+                }
             }
         }
-        return $libellesManquements;
+
+        foreach ($libellesConstats as $domaine => $types) {
+            foreach ($types as $type => $vals) {
+                if (empty($vals)) {
+                    unset($libellesConstats[$domaine][$type]);
+                }
+            }
+            if (empty($libellesConstats[$domaine])) {
+                unset($libellesConstats[$domaine]);
+            }
+        }
+
+        return $libellesConstats;
     }
 }

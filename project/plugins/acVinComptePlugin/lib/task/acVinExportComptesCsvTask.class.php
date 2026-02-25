@@ -52,7 +52,7 @@ EOF;
     protected function execute($arguments = array(), $options = array()) 
     {
         ini_set('memory_limit', '512M');
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         $tiers = array();

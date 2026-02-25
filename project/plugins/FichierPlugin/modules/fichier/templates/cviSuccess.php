@@ -7,7 +7,13 @@
 <?php foreach($cvi_details[0]->getRawValue() as $parentid => $values):
     if (!is_object($values)) { $values = ['' => $values]; }
     foreach($values as $id => $value): if ($value) ?>
-    <tr><th><?php echo $parentid ?></th><td><?php echo $id; ?></td><td><pre><?php print_r($value); ?></pre></td></tr>
+    <tr><th><?php echo $parentid ?></th>
+        <td><?php echo $id; ?></td>
+        <td>
+            <pre style="display: inline;"><?php print_r($value); ?></pre>
+            <?php if ($parentid == "libelle"): ?><a href="<?php echo url_for('compte_search'); ?>?contacts_all=1&q=<?php echo urlencode($value); ?>">(rechercher)</a><?php endif; ?>
+        </td>
+    </tr>
 <?php endforeach; ?>
 <?php endforeach; ?>
 <?php endif; ?>

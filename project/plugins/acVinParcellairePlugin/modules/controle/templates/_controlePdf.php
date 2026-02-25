@@ -17,16 +17,17 @@ table, th, td {
 <table>
     <thead>
         <tr>
-            <td colspan="2" align="center" style="text-align: center;" ><?php echo tdStart() ?>&nbsp;<img style="height: 46px;" src="<?php echo sfConfig::get('sf_web_dir').'/images/pdf/logo_'.strtolower(Organisme::getCurrentOrganisme()).'.jpg' ?>" /></td>
-            <td colspan="6" style="text-align: center; height: 50px;">&nbsp;<br/><strong>AUDIT VIGNOBLE</strong></td>
+            <td colspan="2" align="center" style="text-align: center;" ><?php echo tdStart() ?>&nbsp;<img style="height: 46px;" src="<?php echo sfConfig::get('sf_web_dir').'/images/pdf/logo_cotesdeprovence.jpg' ?>" /></td>
+            <td colspan="4" style="text-align: center; height: 50px;">&nbsp;<br/><strong>AUDIT VIGNOBLE</strong></td>
+            <td colSpan="2" class="center-grey">FO-26<br/>Version : V7<br/>Date : 14/04/25</td>
         </tr>
         <tr>
-            <td colSpan="4" style="height: 40px;"><u>Type de contrôle :</u><br/><?php echo $controle->type_tournee ?></td>
+            <td colSpan="4" style="height: 40px;"><u>Type de contrôle : </u><br/><?php echo $controle->type_tournee ?></td>
             <td colSpan="4"><u>Activités : </u><br/><?php foreach ($controle->getActiviteClient() as $activite) {echo $activite . '   ';} ?></td>
         </tr>
         <tr>
-            <td colSpan="5" style="height: 30px;">&nbsp;<br/><strong>DATE : </strong><?php echo $controle->getDateFr(); ?><br/></td>
-            <td colSpan="3">&nbsp;<br/><strong>AGENT : </strong></td>
+            <td colSpan="5" style="height: 30px;">&nbsp;<br/><strong>DATE :&nbsp;</strong><?php echo $controle->getDateFr(); ?><br/></td>
+            <td colSpan="3">&nbsp;<br/><strong>AGENT :</strong>&nbsp;&nbsp;<?php echo CompteClient::getInstance()->find($controle->agent_identifiant)->getInitiales(); ?></td>
         </tr>
         <tr>
             <td colSpan="8" style="text-align: center; height:40px;">&nbsp;<br/><strong><?php echo $controle->declarant->raison_sociale ?></strong><br/>N° SIRET : <?php echo $controle->declarant->siret ?>&nbsp;&nbsp;&nbsp;N° CVI : <?php echo $controle->declarant->cvi ?><br/></td>
@@ -72,7 +73,7 @@ table, th, td {
                 ?>
             </td>
             <td colSpan="1">DGC :</td>
-            <td colSpan="2"></td>
+            <td colSpan="2"><?php echo $dgc; ?></td>
         </tr>
         <tr>
             <td colSpan="2"><strong>PP avec prise en compte des manquants (ha)</strong><small> à convertir en (hl) pour la revendication (surface*rendement autorisé)</small></td>
@@ -81,10 +82,14 @@ table, th, td {
             <td colSpan="2"></td>
         </tr>
         <tr>
-            <td colSpan="2" style="height: 20px; font-size: 11px;">Maturité :</td>
-            <td colSpan="3"><?php if ($controle->type_tournee == 'Habilitation') {echo 'NA';}?></td>
-            <td colSpan="1" style="height: 20px; font-size: 11px;">Convention VIFA (O/N) :</td>
-            <td colSpan="2"></td>
+            <td colSpan="2" style="height: 20px;"><strong>Maturité :</strong></td>
+            <td colSpan="3" style="text-align: center;"><?php echo $controle->maturite; ?></td>
+            <td colSpan="1" style="height: 20px;"><strong>Manquants :</strong></td>
+            <td colSpan="2" style="text-align: center;"><?php echo $manquant ?></td>
+        </tr>
+        <tr>
+            <td colSpan="2"><strong>Convention VIFA&nbsp;(O/N) :</strong></td>
+            <td colSpan="6" style="text-align: center;"><?php echo $hasVIFA; ?></td>
         </tr>
         <tr>
             <td class="center-grey" colSpan="8"><strong>SYNTHESE TERRAIN</strong></td>
