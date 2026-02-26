@@ -11,35 +11,40 @@
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $controle->getEtablissementObject()]); ?>
 </div>
 
-<form id="formAddManquement" action="<?php echo url_for('controle_ajout_liste_manquements', array("id" => $controle->_id)) ?>" method="post" class="form-horizontal">
+<?php if (!empty($errors)): ?>
+    <div class="alert alert-danger">
+        <?php foreach ($errors as $error):
+            echo $error;
+        endforeach; ?>
+    </div>
+<?php endif;?>
+
+<form id="formAddManquement" action="<?php echo url_for('controle_ajout_liste_manquements', array("id" => $controle->_id)) ?>" method="post" >
+    <div class="form-horizontal">
     <div class="form-group">
         <label for="manquementSelect" class="col-sm-3 control-label">
             Choisir un manquement :
         </label>
         <div class="col-sm-7 mb-3">
-            <select class="form-control select2 toDuplicate" name="manquement" id="manquementSelect" data-new="ajouter" data-groups='<?php echo json_encode($libellesConstats->getRawValue(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);?>'>
+            <select class="form-control select2 toDuplicate" name="manquement" id="manquementSelect" data-new="ajouter" data-groups='<?php echo json_encode($libellesConstats->getRawValue(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);?>' required>
                 <option value=""></option>
             </select>
+        </div>
     </div>
-    <label for="parcelleManquementSelect" class="col-sm-3 control-label">Pour la parcelle :</label>
-    <div class="col-sm-4">
-        <select class="form-control" name="parcelle" id="parcelleManquementSelect">
-            <option value=""></option>
-            <?php foreach ($controle->parcelles as $idu => $info): ?>
-                <option style="text-align: right;" value="<?php echo $idu ?>"><?php echo $idu ?></option>
-            <?php endforeach;?>
-        </select>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-xs-offset-1 col-sm-5 text-left">
-        <a class="btn btn-default" href="<?php echo url_for("controle_liste_manquements_controle", array('id' => $controle->_id)) ?>"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+    <?php $parcellesByCommune = $controle->getParcellaire()->getParcellesByCommune(false);
+    $import = $controle->getParcellaire()->getGeoJson(); ?>
+    <?php include_partial('parcellaire/tableauCommune', array('parcellesByCommune' => $parcellesByCommune, 'import' => $import, 'addCheckbox' => true)); ?>
+
+    <div class="row">
+        <div class="col-sm-6 text-left">
+            <a class="btn btn-default" href="<?php echo url_for("controle_liste_manquements_controle", array('id' => $controle->_id)) ?>"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+        </div>
+        <div class="col-sm-6 text-right">
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+        </div>
     </div>
-    <div class="col-sm-4 text-right">
-        <button type="submit" class="btn btn-primary">Ajouter</button>
-    </div>
-</div>
 </form>
 
 
