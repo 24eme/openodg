@@ -11,7 +11,7 @@
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $controle->getEtablissementObject()]); ?>
 </div>
 
-<?php if (!empty($errors)): ?>
+<?php if (isset($errors[0])): ?>
     <div class="alert alert-danger">
         <?php foreach ($errors as $error):
             echo $error;
