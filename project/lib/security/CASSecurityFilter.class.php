@@ -30,14 +30,22 @@ class CASSecurityFilter extends sfBasicSecurityFilter
           if (!$this->context->getUser()->isAuthenticated() && ($this->request->getParameter('ticket') || isset($_SESSION["phpCAS"]["user"]))) {
            acCas::processAuth();
            if (isset($_SESSION['app_cas_origin']) && strpos($_SESSION['app_cas_origin'],'viticonnect') !== false) {
-               foreach(array('cvi', 'accises', 'siret') as $type ) {
-                   foreach (explode('|', acCas::getAttribute('viticonnect_entities_all_'.$type)) as $id) {
-                       $e = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSirenOrTVA($id);
-                       if ($e) {
-                           break 2;
-                       }
+               foreach (explode('|', acCas::getAttribute('viticonnect_entities_all_cvi')) as $cvi) {
+                   if(acCas::getUser() == $cvi) {
+                       $e = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSirenOrTVA($cvi);
+                       break;
                    }
                }
+               if(!isset($e)) {
+                    foreach(array('cvi', 'accises', 'siret') as $type ) {
+                       foreach (explode('|', acCas::getAttribute('viticonnect_entities_all_'.$type)) as $id) {
+                           $e = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSirenOrTVA($id);
+                           if ($e) {
+                               break 2;
+                           }
+                       }
+                    }
+                }
                if (class_exists("Societe") && $e && $e->getSociete() && $e->getSociete()->getMasterCompte()) {
                    $this->getContext()->getUser()->signInOrigin($e->getSociete()->getMasterCompte()->identifiant);
                } elseif (!class_exists("Societe") &&  $e) {
