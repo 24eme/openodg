@@ -47,6 +47,9 @@ dossier_igp = "exports_igp"+igp
 debutcampagne = fromday - dateutil.relativedelta.relativedelta(months=10)
 millesime = str(debutcampagne.year)
 
+if len(sys.argv) > 4:
+    millesime = sys.argv[4]
+
 if (fromday.month > 7):
     datemax = str(int(millesime) + 1)+'-08-01'
     datemax_exact =  str(int(millesime) + 1)+'-07-31'
@@ -225,7 +228,3 @@ else :
 
 
 # In[ ]:
-
-
-
-

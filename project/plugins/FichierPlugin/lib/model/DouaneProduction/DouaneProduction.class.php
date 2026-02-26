@@ -210,17 +210,15 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
     }
 
     public function generateDonnees() {
-        if (!$this->exist('_attachments') || !count($this->_attachments))  {
-            return false;
+        if ($this->exist('donnees') && count($this->donnees) > 0) {
+            return;
         }
-        if (!$this->exist('donnees') || count($this->donnees) < 1) {
-            $this->add('donnees');
-            $generate = false;
-            foreach ($this->getCsv() as $datas) {
-                $this->addDonnee($datas);
-            }
+
+        $this->add('donnees');
+
+        foreach ($this->getCsv() as $datas) {
+            $this->addDonnee($datas);
         }
-        return false;
     }
 
     private $bailleuretablissements = null;
@@ -235,7 +233,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
     }
 
     public function getEnhancedDonnees($drev_produit_filter = null) {
-        if (isset($this->enhanced_donnees) && count($this->enhanced_donnees)) {
+        if (isset($this->enhanced_donnees)) {
             return $this->enhanced_donnees;
         }
 

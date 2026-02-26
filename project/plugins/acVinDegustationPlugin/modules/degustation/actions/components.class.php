@@ -49,4 +49,35 @@ class degustationComponents extends sfComponents {
             }
         }
     }
+
+    public function executeFicheProcesVerbalDegustationTableSynthese(sfWebRequest $request) {
+        $this->synthese = array(
+            Lot::CONFORMITE_CONFORME => array('declarants' => [], 'volume' => 0),
+            Lot::CONFORMITE_CONFORME_DEFAUT => array('declarants' => [], 'volume' => 0),
+            Lot::CONFORMITE_NONCONFORME => array('declarants' => [], 'volume' => 0),
+        );
+        $this->synthese_somme = array (
+            'declarants' => array(),
+            'volume' => 0
+        );
+        foreach($this->lotsDegustes as $l) {
+            if ($l->isConforme()) {
+                if ($l->isConformeAvecDefaut()) {
+                    $this->synthese[Lot::CONFORMITE_CONFORME_DEFAUT]["declarants"][$l->declarant_identifiant]++;
+                    $this->synthese[Lot::CONFORMITE_CONFORME_DEFAUT]["volume"] += $l->volume;
+                } else {
+                    $this->synthese[Lot::CONFORMITE_CONFORME]["declarants"][$l->declarant_identifiant]++;
+                    $this->synthese[Lot::CONFORMITE_CONFORME]["volume"] += $l->volume;
+                }
+            } else {
+                $this->synthese[Lot::CONFORMITE_NONCONFORME]["declarants"][$l->declarant_identifiant]++;
+                $this->synthese[Lot::CONFORMITE_NONCONFORME]["volume"] += $l->volume;
+            }
+            $this->synthese_somme["declarants"][$l->declarant_identifiant]++;
+            $this->synthese_somme["volume"] += $l->volume;
+        }
+        if (!count($this->synthese[Lot::CONFORMITE_CONFORME_DEFAUT]["declarants"])) {
+            unset($this->synthese[Lot::CONFORMITE_CONFORME_DEFAUT]);
+        }
+    }
 }
