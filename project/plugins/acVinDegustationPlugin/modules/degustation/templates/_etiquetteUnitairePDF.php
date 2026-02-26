@@ -1,3 +1,5 @@
+<?php use_helper('TextExtra'); ?>
+
 <td cellspacing="0" cellpadding="0" style="margin: 0; padding: 0;">
     <table class="table-etiquette" cellspacing="0" cellpadding="0" style="font-size:8px;overflow: hidden;white-space: nowrap; top: 0; left: 0; padding: 0; margin: 0; width: 220px">
       <tr>
