@@ -219,8 +219,15 @@ class controleActions extends sfActions
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->libellesConstats = ControleConfiguration::getInstance()->getAllLibellesConstats(false, $this->controle->type_tournee);
+        $this->errors = [];
         if ($request->isMethod(sfWebRequest::POST)) {
-            $this->controle->addManquementManuel($_POST['manquement'], $_POST['parcelle']);
+            if (!isset($_POST['parcelles_id'])) {
+                $this->errors[] = "Veuillez sélectionner au moins une parcelle.";
+                return ;
+            }
+            foreach ($_POST['parcelles_id'] as $parcelle_id) {
+                $this->controle->addManquementManuel($_POST['manquement'], $parcelle_id);
+            }
             $this->controle->save();
             return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
         }
