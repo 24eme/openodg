@@ -32,7 +32,7 @@ class CASSecurityFilter extends sfBasicSecurityFilter
            if (isset($_SESSION['app_cas_origin']) && strpos($_SESSION['app_cas_origin'],'viticonnect') !== false) {
                foreach (explode('|', acCas::getAttribute('viticonnect_entities_all_cvi')) as $cvi) {
                    if(acCas::getUser() == $cvi) {
-                       $e = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSirenOrTVA($id);
+                       $e = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSirenOrTVA($cvi);
                        break;
                    }
                }
