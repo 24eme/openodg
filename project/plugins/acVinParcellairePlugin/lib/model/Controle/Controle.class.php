@@ -264,16 +264,29 @@ class Controle extends BaseControle
         return $retManquements;
     }
 
-    public function getInfosManquement($codeConstat, $parcelleId)
+    public function getInfosManquement($codeConstat)
     {
-        return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeConstat($codeConstat), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleConstat($codeConstat), 'actif' => true, 'constat_date' => $this->date_tournee, 'parcelles_id' => [$parcelleId]);
+        return array('libelle_point_de_controle' => ControleConfiguration::getInstance()->getLibellePointDeControleFromCodeConstat($codeConstat), 'libelle_manquement' => ControleConfiguration::getInstance()->getLibelleConstat($codeConstat), 'actif' => true, 'constat_date' => $this->date_tournee);
     }
 
-    public function addManquementDocumentaire($manquementId, $parcelleId)
+    public function getManquementParcellesIdListe($manquementId)
     {
-        if ($this->manquements->exist($manquementId)) {return ;}
-        $manquement = $this->getInfosManquement($manquementId, $parcelleId);
-        $this->manquements->add($manquementId, $manquement);
+        $parcelles_id_list = array();
+        foreach ($this->manquements[$manquementId]->parcelles_id as $id) {
+            $parcelles_id_list[] = $id;
+        }
+        return $parcelles_id_list;
+    }
+
+    public function addManquementManuel($manquementId, $parcelleId)
+    {
+        if ($this->manquements->exist($manquementId) && in_array($parcelleId, $this->getManquementParcellesIdListe($manquementId))) {return ;}
+        $manquement = $this->getInfosManquement($manquementId);
+        if (! $this->manquements->exist($manquementId)) {
+            $this->manquements->add($manquementId, $manquement);
+        }
+        $this->manquements->get($manquementId)->parcelles_id->add(null, $parcelleId);
+        $this->save();
     }
 
     public function addManquementTerrain($manquementId, $dataManquement)
