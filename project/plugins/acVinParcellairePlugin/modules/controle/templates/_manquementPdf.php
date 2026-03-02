@@ -62,7 +62,7 @@ table, th, td {
         </tr>
         <tr>
             <td colspan="4"><?php foreach($manquement->parcelles_id as $parcelle_id):
-                echo $controle->parcelles[$parcelle_id]->getInfoPdf(); ?>
+                echo $controle->getInfoPdf($controle->identifiant, $parcelle_id); ?>
                 <br/>
                 <?php endforeach; ?>
             </td>

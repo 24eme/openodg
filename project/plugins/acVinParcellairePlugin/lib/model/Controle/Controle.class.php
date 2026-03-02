@@ -421,4 +421,10 @@ class Controle extends BaseControle
     {
         return CompteClient::getInstance()->find($this->agent_identifiant);
     }
+
+    public function getInfoPdf($controleIdentifiant, $parcelleId)
+    {
+        $parcellaireParcelles = ParcellaireClient::getInstance()->getLast($controleIdentifiant)->getParcelles();
+        return 'Parcelle ' . $parcellaireParcelles[$parcelleId]->commune . ' - ' . $parcellaireParcelles[$parcelleId]->section . $parcellaireParcelles[$parcelleId]->numero_parcelle . ' - ' . $parcellaireParcelles[$parcelleId]->cepage . ' - ' . $parcellaireParcelles[$parcelleId]->campagne_plantation . ' - ' . $parcellaireParcelles[$parcelleId]->superficie . ' ha';
+    }
 }

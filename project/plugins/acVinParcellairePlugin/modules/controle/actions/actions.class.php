@@ -64,12 +64,16 @@ class controleActions extends sfActions
         }
     }
 
-    private function getControlesByDateTourneeAndAgent($dateTournee, $agentIdentifiant)
+    private function getControlesByDateTourneeAndAgent($dateTournee, $agentIdentifiant, $asObjects = false)
     {
         $controles = [];
         foreach (ControleClient::getInstance()->findAll() as $controle) {
             if ($dateTournee == $controle->date_tournee && $agentIdentifiant == $controle->agent_identifiant) {
-                $controles[$controle->_id] = $controle->getDataToDump();
+                if ($asObjects) {
+                    $controles[$controle->_id] = $controle;
+                } else {
+                    $controles[$controle->_id] = $controle->getDataToDump();
+                }
             }
         }
         return $controles;
