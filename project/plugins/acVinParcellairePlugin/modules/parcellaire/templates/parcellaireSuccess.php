@@ -100,7 +100,7 @@ $list_idu = [];
   <thead>
     <tr>
         <th class="col-xs-3">Produit</th>
-        <th class="col-xs-8">Cépages autorisés <small class="text-muted">(hors jeunes vignes)</small></th>
+        <th class="col-xs-8">Cépages autorisés <small class="text-muted">(hors <abbr title="de la campagne <?php echo ParcellaireConfiguration::getInstance()->getCampagneJeunesVignes(); ?> à <?php echo ConfigurationClient::getInstance()->getCampagneParcellaire()->getCurrent(); ?>">jeunes vignes</abbr>)</small></th>
         <th class="col-xs-1 text-center">Superficie Pot. max. <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
         <th class="col-xs-1 text-center">Encépa- gement <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
     </tr>
