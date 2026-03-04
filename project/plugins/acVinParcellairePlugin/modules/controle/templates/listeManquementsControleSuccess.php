@@ -35,7 +35,7 @@
                         <strong><?php echo $parcelle_id; ?> </strong>
                     <?php endforeach; ?>
                 </p>
-                <p>Délais : <?php echo $listeManquements[$manquementId]['delais']; ?></p>
+                <p>Délais : <?php if ($listeManquements[$manquementId]['delais']) { echo $listeManquements[$manquementId]['delais']; } else { echo 'NA'; } ?></p>
                 <p>Point de controle : <?php echo $listeManquements[$manquementId]['libelle_point_de_controle']; ?></p>
                 <p>Observations : <?php echo $manquement['observations']->render(['class' => 'form-control']); ?></p>
             </div>

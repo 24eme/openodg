@@ -175,7 +175,7 @@ class controleActions extends sfActions
     public function executeListeAjoutManquementsControle(sfWebRequest $request)
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
-        $this->listeManquements = ControleConfiguration::getInstance()->getAllLibellesConstats();
+        $this->libellesConstats = ControleConfiguration::getInstance()->getAllLibellesConstats(false, $this->controle->type_tournee);
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->controle->addManquementDocumentaire($_POST['manquement'], $_POST['parcelle']);
             $this->controle->save();
