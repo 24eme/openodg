@@ -48,8 +48,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const select = document.getElementById('manquementSelect');
     const groups = JSON.parse(select.dataset.groups || '{}');
 
-    console.log('GROUPS:', groups);
-
     select.querySelectorAll('optgroup').forEach(el => el.remove());
 
     Object.entries(groups).forEach(([domaine, types]) => {
