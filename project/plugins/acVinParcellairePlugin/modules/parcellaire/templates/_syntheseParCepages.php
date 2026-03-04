@@ -10,7 +10,7 @@
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
     <tr>
-        <th class="col-xs-4">Cépage <small class="text-muted">(<abbr title="à partir de la campagne <?php echo ParcellaireConfiguration::getInstance()->getCampagneJeunesVignes(); ?>">jeunes vignes</abbr> séparées)</small></th>
+        <th class="col-xs-4">Cépage <small class="text-muted">(<abbr title="de la campagne <?php echo ParcellaireConfiguration::getInstance()->getCampagneJeunesVignes(); ?> à <?php echo ConfigurationClient::getInstance()->getCampagneParcellaire()->getCurrent(); ?>">jeunes vignes</abbr> séparées)</small></th>
         <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
     </tr>
   </thead>
