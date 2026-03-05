@@ -553,7 +553,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     public function getMontantPaiement() {
         $this->updateMontantPaiement();
 
-        return Anonymization::hideIfNeeded($this->_get('montant_paiement'));
+        return Anonymization::needToHide() ? 999.99 : $this->_get('montant_paiement');
     }
 
     public function hasNonPaiement() {
@@ -710,13 +710,13 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     /**** FIN DES PIECES ****/
 
     public function getTotalHt() {
-        return Anonymization::hideIfNeeded($this->_get('total_ht'));
+        return Anonymization::needToHide() ? 999.99 : $this->_get('total_ht');
     }
     public function getTotalTtc() {
-        return Anonymization::hideIfNeeded($this->_get('total_ttc'));
+        return Anonymization::needToHide() ? 999.99 : $this->_get('total_ttc');
     }
     public function getTotalTaxe() {
-        return Anonymization::hideIfNeeded($this->_get('total_taxe'));
+        return Anonymization::needToHide() ? 999.99 : $this->_get('total_taxe');
     }
 
     public function isTelechargee() {
