@@ -273,4 +273,5 @@ all:
         alsace_cremant: 2
       irrigable:
         engagements: true
+        nePasIrriguer: true
         hasIrrigableMaterielRessource: false

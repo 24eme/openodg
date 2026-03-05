@@ -52,6 +52,13 @@ class ParcellaireIrrigableValidation extends DocumentValidation {
         					'');
         }
 
-        $this->addPoint(self::TYPE_ENGAGEMENT, ParcellaireIrrigableDocuments::ENGAGEMENT_A_NE_PAS_IRRIGUER, null);
+        if (ParcellaireConfiguration::getInstance()->hasEngagementANePasIrriguer()) {
+            $this->addPoint(self::TYPE_ENGAGEMENT, ParcellaireIrrigableDocuments::ENGAGEMENT_A_NE_PAS_IRRIGUER, null);
+        }
+
+        if (ParcellaireConfiguration::getInstance()->hasEngagementVciIrrigation()) {
+            $this->addPoint(self::TYPE_ENGAGEMENT, 'parcellaireirrigable_si_irrigue_pas_de_vci',
+            '<input type="checkbox" class=alert-link>Toute parcelle irriguée ne pourra pas produire de VCI pour la campagne en cours.</input>');
+        }
     }
 }
