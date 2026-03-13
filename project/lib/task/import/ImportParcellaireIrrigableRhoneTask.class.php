@@ -80,7 +80,9 @@ EOF;
                 }
             }
             if (!$parcellaire) {
-                $parcellaire = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
+                if (! $parcellaire = ParcellaireClient::getInstance()->getLastByCampagne($etablissement->identifiant, (self::CSV_CAMPAGNE - 1).'-'.self::CSV_CAMPAGNE)) {
+                    $parcellaire = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
+                }
                 if (!$parcellaire) {
                     echo "Error: pas de parcellaire pour ".$data[self::CSV_CVI]."/".$etablissement->_id."\n";
                     continue;
@@ -88,7 +90,7 @@ EOF;
             }
 
             $p = new stdClass();
-            $p->campagne_plantation = $data[self::CSV_ANNEE_DE_PLANTATION].'-'.($data[self::CSV_ANNEE_DE_PLANTATION] + 1);
+            $p->campagne_plantation = ($data[self::CSV_ANNEE_DE_PLANTATION] - 1).'-'.$data[self::CSV_ANNEE_DE_PLANTATION];
             $p->section = trim(strtoupper($data[self::CSV_SECTION]));
             $p->numero_parcelle = intval($data[self::CSV_NO_PARCELLE]);
             $p->prefix = null;
@@ -153,7 +155,6 @@ EOF;
                 $pt->numero_parcelle = $p->numero_parcelle;
                 $pt->prefix = $p->prefix;
                 $pt->superficie = $p->superficie;
-                $pt->superficie_cadastrale = $p->superficie_cadastrale;
                 $pt->cepage = $p->cepage;
                 $pt->commune = $p->commune;
                 $pt->lieu = $p->lieu;
@@ -162,6 +163,7 @@ EOF;
 
             $item = $this->irrigue->declaration->add($produit_hash);
             $pi = $item->detail->add($pkey);
+            $pi->superficie_parcellaire = null;
             ParcellaireClient::CopyParcelle($pi, $pt);
             $pi->materiel = $data[self::CSV_MECANISMES_DIRRIGATION];
             $pi->superficie = $p->superficie;
