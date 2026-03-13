@@ -46,8 +46,8 @@ class ImportParcellaireIrrigueTask extends sfBaseTask
         ));
 
         $this->namespace = 'import';
-        $this->name = 'parcellaire-irrigue-rhone';
-        $this->briefDescription = 'Import des parcellaire irrigués';
+        $this->name = 'parcellaire-irrigable-rhone';
+        $this->briefDescription = 'Import des parcellaire irrigable rhone';
         $this->detailedDescription = <<<EOF
 EOF;
     }
