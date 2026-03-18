@@ -8,6 +8,7 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
   protected $declarant_document = null;
   protected $piece_document = null;
   protected $parcelles_idu = null;
+  protected $previous_document = null;
 
   public function __construct() {
       parent::__construct();
@@ -247,6 +248,34 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
             return ['materiel' => $parcelle->materiel, 'ressource' => $parcelle->ressource];
         }
         return ['materiel' => '', 'ressource' => ''];
+    }
+
+    public function getPreviousDocument() {
+        if($this->previous_document) {
+           return $this->previous_document;
+        }
+
+        $this->previous_document = ParcellaireIrrigableClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
+
+        return $this->previous_document;
+    }
+
+    public function isAllPreviousParcellesExists() {
+        if(!$this->getPreviousDocument()) {
+
+            return true;
+        }
+        $parcellaire2reference = $this->getParcellaire2Reference();
+        foreach($this->getPreviousDocument()->getParcelles() as $previousParcelle) {
+            if(!$previousParcelle->active) {
+                continue;
+            }
+            if(!$parcellaire2reference->findParcelle($previousParcelle)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /*** FIN PIECE DOCUMENT ***/
