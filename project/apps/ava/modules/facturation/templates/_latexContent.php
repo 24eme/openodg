@@ -145,14 +145,14 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 }
 \end{center}
     \vspace{5mm}
+    <?php if(!$facture->isAvoir()): ?>
     \begin{minipage}{0.5\textwidth}
         \begin{center}
-            \textsc{Crédit Agricole Colmar Entreprises} \\
+            \textsc{Crédit Agricole Haut-Rhin Entreprises} \\
             IBAN : FR76 1720 6007 7049 1243 9001 072 \\
             BIC : AGRIFRPP872
         \end{center}
     \end{minipage}
-    <?php if(!$facture->isAvoir()): ?>
 	\begin{minipage}{0.5\textwidth}
 		\begin{beamerframetotal}
 		    \vspace{1mm}
