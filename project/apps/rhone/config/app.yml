@@ -7,8 +7,8 @@ all:
     nom: "Syndicat Général des Vignerons Réunis des Côtes du Rhône"
   elasticversion: '2.4.6'
   parcellaire_irrigable:
-    ressources: ["Forage", "Etang", "Retenue collinaire","Réseau urbain"]
-    materiels: ["Goutte à goutte", "Canon", "Système enterré"]
+    ressources: ["Indéfini"]
+    materiels: ["Goutte à goutte", "Surface (raie, planche...)", "Aspersion", "Enterré"]
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4

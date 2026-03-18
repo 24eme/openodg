@@ -297,3 +297,6 @@ all:
               category: "cepages_principaux"
               sens: ">="
               limit: 0.8
+      irrigable:
+        engagements: true
+        vciIrrigation: true

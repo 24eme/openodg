@@ -1133,7 +1133,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function validate($date = null) {
         if(is_null($date)) {
-            $date = date('c');
+            if ($this->exist('date_depot') && $this->date_depot) {
+                $date = $this->date_depot;
+            } else {
+                $date = date('c');
+            }
         }
 
         $this->cleanDoc();

@@ -28,6 +28,7 @@ class ParcellaireIrrigableValidation extends DocumentValidation {
          * Engagements
          */
          $this->addControle(self::TYPE_ENGAGEMENT, ParcellaireIrrigableDocuments::ENGAGEMENT_A_NE_PAS_IRRIGUER, "Je m'engage à ne pas irriguer les parcelles ayant fait l'objet d'une déclaration préalable d’affectation parcellaire en vue de la revendication potentielle d'AOC Alsace Communale, AOC Alsace Lieu-dit, AOC Alsace Grand Cru et mentions VT/SGN.");
+         $this->addControle(self::TYPE_ENGAGEMENT, 'parcellaireirrigable_si_irrigue_pas_de_vci', "Toute parcelle irriguée ne pourra pas produire de VCI pour la campagne en cours.");
     }
 
     public function controle() {
@@ -52,6 +53,13 @@ class ParcellaireIrrigableValidation extends DocumentValidation {
         					'');
         }
 
-        $this->addPoint(self::TYPE_ENGAGEMENT, ParcellaireIrrigableDocuments::ENGAGEMENT_A_NE_PAS_IRRIGUER, null);
+        if (ParcellaireConfiguration::getInstance()->hasEngagementANePasIrriguer()) {
+            $this->addPoint(self::TYPE_ENGAGEMENT, ParcellaireIrrigableDocuments::ENGAGEMENT_A_NE_PAS_IRRIGUER, null);
+        }
+
+        if (ParcellaireConfiguration::getInstance()->hasEngagementVciIrrigation()) {
+            $this->addPoint(self::TYPE_ENGAGEMENT, 'parcellaireirrigable_si_irrigue_pas_de_vci',
+            '<input type="checkbox" class=alert-link>Toute parcelle irriguée ne pourra pas produire de VCI pour la campagne en cours.</input>');
+        }
     }
 }

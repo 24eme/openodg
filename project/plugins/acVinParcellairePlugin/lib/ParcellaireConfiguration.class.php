@@ -56,6 +56,10 @@ class ParcellaireConfiguration {
         return $this->configuration['aires'];
     }
 
+    public function hasCheckAires() {
+        return $this->configuration['aires'] && count($this->configuration['aires']);
+    }
+
     public function getAireInfoFromDenominationId($id) {
         foreach($this->getAiresInfos() as $k => $aire) {
             if ($aire['denomination_id'] == $id) {
@@ -222,11 +226,28 @@ class ParcellaireConfiguration {
         return $this->configuration['jeunesVignes']['vtsgn'];
     }
 
+    public function getCampagneJeunesVignes() {
+        $annee = 3;
+        if (ParcellaireConfiguration::getInstance()->isJeunesVignes3emeFeuille()) {
+            $annee = 2;
+        }
+        $year = ConfigurationClient::getInstance()->getCampagneParcellaire()->getCurrentAnneeRecolte() - $annee;
+        return $year.'-'.($year + 1);
+    }
+
     public function getAnneeJeunesVignesGrdCruCommunalLieuDit() {
         return $this->configuration['jeunesVignes']['grdcru_communale_lieudit'];
     }
 
     public function getAnneeJeunesVignesCremant() {
         return $this->configuration['jeunesVignes']['alsace_cremant'];
+    }
+
+    public function hasEngagementANePasIrriguer() {
+        return $this->configuration['irrigable']['nePasIrriguer'];
+    }
+
+    public function hasEngagementVciIrrigation() {
+        return $this->configuration['irrigable']['vciIrrigation'];
     }
 }
