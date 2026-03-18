@@ -42,7 +42,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
     public function getParcellaire() {
         if (!$this->parcellaire) {
             $cm = new CampagneManager('08-01');
-            $date = ($this->periode + 1).'-07-31';
+            $date = $this->periode.'-07-31';
             if ($this->exist('date')) {
                 $date = $this->date;
             }
@@ -54,7 +54,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
     }
 
     public function getParcellaireAffectation() {
-        return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, ($this->periode + 1).'-07-31');
+        return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode.'-07-31');
     }
 
     protected $parcelles_idu = null;
