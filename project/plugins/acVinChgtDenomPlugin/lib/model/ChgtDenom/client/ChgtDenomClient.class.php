@@ -6,6 +6,7 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
     const TYPE_COUCHDB = "CHGTDENOM";
     const CHANGEMENT_TYPE_CHANGEMENT = "CHANGEMENT";
     const CHANGEMENT_TYPE_DECLASSEMENT = "DECLASSEMENT";
+    const CHANGEMENT_TYPE_PRISEDEMOUSSE = "PRISEDEMOUSSE";
 
     public static function getInstance() {
         return acCouchdbManager::getClient("ChgtDenom");
