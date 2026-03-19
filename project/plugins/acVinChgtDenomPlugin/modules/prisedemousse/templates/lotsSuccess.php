@@ -2,25 +2,14 @@
 <?php use_helper('Date') ?>
 <?php use_helper('Lot') ?>
 
-<?php include_partial('chgtdenom/breadcrumb', array('chgtDenom' => $etablissement )); ?>
+<?php include_partial('prisedemousse/breadcrumb', array('prisedemousse' => $etablissement )); ?>
 
 <div class="page-header">
-  <div class="pull-right">
-      <form method="GET" class="form-inline" action="">
-          Campagne :
-          <select class="select2SubmitOnChange form-control" name="campagne_switch">
-              <?php for($i=ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() * 1; $i > ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() - 5; $i--): ?>
-                  <option <?php if($periode == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i.'-'.($i + 1) ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
-              <?php endfor; ?>
-          </select>
-          <button type="submit" class="btn btn-default">Changer</button>
-      </form>
-  </div>
-    <h2>Changement de dénomination / Déclassement <?php echo $campagne; ?></h2>
-    <p class="text-muted">Sélectionnez ci-dessous le lot que vous souhaitez changer</p>
+    <h2>Prise de mousse</h2>
     <?php if(!count($lots)): ?>
-    <p>Aucun lot pour la campagne <?php echo isset($chgtDenom) ? $chgtDenom->campagne : $campagne ?></p>
+    <p>Aucun lot disponible pour la prise de mousse</p>
     <?php else: ?>
+      <p class="text-muted">Sélectionnez ci-dessous le lot dont vous souhaitez déclarer une prise de mousse</p>
       <table class="table table-condensed table-striped">
         <thead>
             <th class="col-sm-1">Date</th>
@@ -44,7 +33,7 @@
             <td><?php echo showProduitCepagesLot($lot->getRawValue()) ?></td>
             <td class="text-right"><?php echo echoFloat($lot->volume); ?>&nbsp;<small class="text-muted">hl</small></td>
             <td class="text-muted text-center"><?php echo Lot::getLibelleStatut($lot->statut) ?></td>
-            <td><a href="<?php echo url_for("chgtdenom_create_from_lot", array("sf_subject" => $etablissement, 'campagne' => $campagne, 'lot' => $lot->id_document.":".$lot->unique_id)) ?>" class="btn btn-sm btn-default">Modifier</a></td>
+            <td><a href="<?php echo url_for("prisedemousse_create_from_lot", array("sf_subject" => $etablissement, 'campagne' => $campagne, 'lot' => $lot->id_document.":".$lot->unique_id)) ?>" class="btn btn-sm btn-default">Déclarer</a></td>
         </tr>
         <?php endforeach; ?>
         </tbody>
@@ -54,9 +43,9 @@
         <div class="col-xs-5">
             <a tabindex="-1" href="<?php echo url_for('declaration_etablissement', $etablissement) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-remove"></span> Annuler</a>
         </div>
-        <?php if ($etablissement->isNegociant() || ($etablissement->isNegociantVinificateur() && $sf_user->isAdmin())): ?>
+        <?php if ($etablissement->isNegociantVinificateur() && $sf_user->isAdmin()): ?>
         <div class="col-xs-5">
-            <a tabindex="-1" href="<?php echo url_for('chgtdenom_ajout_lot',array('identifiant' => $etablissement->identifiant,'campagne' => $campagne)) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-plus"></span> Ajouter un lot</a>
+            <a tabindex="-1" href="<?php echo url_for('prisedemousse_ajout_lot',array('identifiant' => $etablissement->identifiant,'campagne' => $campagne)) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-plus"></span> Ajouter un lot</a>
         </div>
         <?php endif; ?>
     </div>

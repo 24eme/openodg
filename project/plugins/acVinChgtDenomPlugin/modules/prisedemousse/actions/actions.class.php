@@ -19,23 +19,12 @@ class prisedemousseActions extends sfActions
 
         $chgtDenom->save();
 
-        return $this->redirect('chgtdenom_edition', array('id' => $chgtDenom->_id));
+        return $this->redirect('prisedemousse_edition', array('id' => $chgtDenom->_id));
     }
 
     public function executeLots(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
-
-        if($request->getParameter('campagne_switch') !== null){
-            $this->campagne = $request->getParameter('campagne_switch');
-        }else{
-            $this->campagne = $request->getParameter('campagne');
-        }
-
-        $this->periode = ChgtDenomClient::getInstance()->getPeriodeFromCampagne($this->campagne);
-        $this->lots = ChgtDenomClient::getInstance()->getLotsChangeable($this->etablissement->identifiant, $this->campagne);
-
-        if($request->getParameter('campagne_switch') !== null)
-            return $this->redirect('chgtdenom_lots', array('sf_subject' => $this->etablissement, 'campagne' => $this->campagne));
+        $this->lots = PriseDeMousseClient::getInstance()->getLotsAvailable($this->etablissement->identifiant);
 
     }
 
