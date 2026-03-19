@@ -130,7 +130,7 @@ chgtdenom_devalidation:
 
 prisedemousse_create_from_lot:
   url: /prisedemousse/:identifiant/creation-lot/:lot
-  param: { module: chgtdenom, action: createFromLot }
+  param: { module: prisedemousse, action: createFromLot }
   class: EtablissementRoute
   options:
     model:    Etablissement
@@ -140,7 +140,7 @@ prisedemousse_create_from_lot:
 
 prisedemousse_create:
   url: /prisedemousse/creation/:identifiant/:campagne
-  param: { module: chgtdenom, action: create }
+  param: { module: prisedemousse, action: create }
   class: EtablissementRoute
   options:
     model:    Etablissement
@@ -150,7 +150,7 @@ prisedemousse_create:
 
 prisedemousse_create_papier:
   url: /prisedemousse/creation-papier/:identifiant/:campagne
-  param: { module: chgtdenom, action: createPapier }
+  param: { module: prisedemousse, action: createPapier }
   class: EtablissementRoute
   options:
     model:    Etablissement
@@ -160,7 +160,7 @@ prisedemousse_create_papier:
 
 prisedemousse_lots:
   url: /prisedemousse/lots/:identifiant/:campagne
-  param: { module: chgtdenom, action: lots }
+  param: { module: prisedemousse, action: lots }
   class: EtablissementRoute
   options:
     model:    Etablissement
@@ -170,7 +170,7 @@ prisedemousse_lots:
 
 prisedemousse_ajout_lot:
   url: /prisedemousse/lots/:identifiant/:campagne/ajout
-  param: { module: chgtdenom, action: ajoutLot }
+  param: { module: prisedemousse, action: ajoutLot }
   class: EtablissementRoute
   options:
     model:    Etablissement
@@ -180,7 +180,7 @@ prisedemousse_ajout_lot:
 
 prisedemousse_edition:
   url: /prisedemousse/edition/:id
-  param: { module: chgtdenom, action: edition }
+  param: { module: prisedemousse, action: edition }
   class: ChgtDenomRoute
   options:
     model:    ChgtDenom
@@ -190,7 +190,7 @@ prisedemousse_edition:
 
 prisedemousse_validation:
   url: /prisedemousse/validation/:id
-  param: { module: chgtdenom, action: validation }
+  param: { module: prisedemousse, action: validation }
   class: ChgtDenomRoute
   options:
     model:    ChgtDenom
@@ -200,7 +200,7 @@ prisedemousse_validation:
 
 prisedemousse_logement:
   url: /prisedemousse/logement/:id
-  param: { module: chgtdenom, action: logement }
+  param: { module: prisedemousse, action: logement }
   class: ChgtDenomRoute
   options:
     model:    ChgtDenom
@@ -210,7 +210,7 @@ prisedemousse_logement:
 
 prisedemousse_visualisation:
   url: /prisedemousse/visualisation/:id
-  param: { module: chgtdenom, action: visualisation }
+  param: { module: prisedemousse, action: visualisation }
   class: ChgtDenomRoute
   options:
     model:    ChgtDenom
@@ -220,7 +220,7 @@ prisedemousse_visualisation:
 
 prisedemousse_delete:
   url: /prisedemousse/suppression/:id
-  param: { module: chgtdenom, action: suppression }
+  param: { module: prisedemousse, action: suppression }
   class: ChgtDenomRoute
   options:
     model:    ChgtDenom
@@ -230,7 +230,7 @@ prisedemousse_delete:
 
 prisedemousse_pdf:
   url: /prisedemousse/:id/pdf
-  param: { module: chgtdenom, action: chgtDenomPDF }
+  param: { module: prisedemousse, action: chgtDenomPDF }
   class: ChgtDenomRoute
   options:
     model: ChgtDenom
@@ -240,7 +240,7 @@ prisedemousse_pdf:
 
 prisedemousse_devalidation:
   url: /prisedemousse/devalidation/:id
-  param: { module: chgtdenom, action: devalidation }
+  param: { module: prisedemousse, action: devalidation }
   class: ChgtDenomRoute
   options:
     model:    ChgtDenom
