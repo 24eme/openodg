@@ -34,7 +34,7 @@ class prisedemousseActions extends sfActions
         $this->periode = ChgtDenomClient::getInstance()->getPeriodeFromCampagne($this->chgtDenom->campagne);
 
         if($this->chgtDenom->getLotOrigine() === null) {
-            return $this->redirect('chgtdenom_lots', array('sf_subject' => $this->chgtDenom->getEtablissementObject(), 'campagne' => $this->chgtDenom->campagne));
+            return $this->redirect('prisedemousse_lots', array('sf_subject' => $this->chgtDenom->getEtablissementObject(), 'campagne' => $this->chgtDenom->campagne));
         }
 
         $this->form = new ChgtDenomForm($this->chgtDenom);
@@ -53,7 +53,7 @@ class prisedemousseActions extends sfActions
 
         $this->form->save();
 
-        return $this->redirect('chgtdenom_validation', $this->chgtDenom);
+        return $this->redirect('prisedemousse_validation', $this->chgtDenom);
     }
 
     public function executeLogement(sfWebRequest $request) {
@@ -62,7 +62,7 @@ class prisedemousseActions extends sfActions
 
         if ($chgtDenom->isValide()) {
             $this->getUser()->setFlash("error", 'Le changement est validé');
-            return $this->redirect('chgtdenom_validation', $chgtDenom);
+            return $this->redirect('prisedemousse_validation', $chgtDenom);
         }
         $form = new ChgtDenomLogementForm($chgtDenom);
 
@@ -70,19 +70,19 @@ class prisedemousseActions extends sfActions
 
         if (!$form->isValid()) {
             $this->getUser()->setFlash("error", 'Une erreur est survenue : '.strip_tags($form->renderGlobalErrors()));
-            return $this->redirect('chgtdenom_validation', $chgtDenom);
+            return $this->redirect('prisedemousse_validation', $chgtDenom);
         }
 
         $form->save();
         $this->getUser()->setFlash("notice", 'Le logement a été modifié avec succès.');
-        return $this->redirect('chgtdenom_validation', $chgtDenom);
+        return $this->redirect('prisedemousse_validation', $chgtDenom);
     }
 
     public function executeValidation(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
 
         if ($this->chgtDenom->isValide()) {
-            return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
+            return $this->redirect('prisedemousse_visualisation', $this->chgtDenom);
         }
 
         $this->chgtDenom->generateLots();
@@ -116,10 +116,10 @@ class prisedemousseActions extends sfActions
             $this->chgtDenom->save();
             $this->getUser()->setFlash("notice", "Le changement dénomination a été validé et approuvé");
 
-            return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
+            return $this->redirect('prisedemousse_visualisation', $this->chgtDenom);
         }
 
-        return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
+        return $this->redirect('prisedemousse_visualisation', $this->chgtDenom);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
@@ -127,7 +127,7 @@ class prisedemousseActions extends sfActions
         $this->isAdmin = $this->getUser()->isAdmin();
 
         if (!$this->chgtDenom->isValide()) {
-            return $this->redirect('chgtdenom_validation', $this->chgtDenom);
+            return $this->redirect('prisedemousse_validation', $this->chgtDenom);
         }
 
         $this->form = null;
@@ -158,7 +158,7 @@ class prisedemousseActions extends sfActions
             $this->getUser()->setFlash("notice", "Le changement dénomination a été approuvé");
         }
 
-        return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
+        return $this->redirect('prisedemousse_visualisation', $this->chgtDenom);
     }
 
     public function executeDevalidation(sfWebRequest $request) {
@@ -174,13 +174,13 @@ class prisedemousseActions extends sfActions
             $chgtDenom->devalidate();
         }catch(sfException $e) {
             $this->getUser()->setFlash("error", $e->getMessage());
-            return $this->redirect($this->generateUrl('chgtdenom_visualisation', $chgtDenom));
+            return $this->redirect($this->generateUrl('prisedemousse_visualisation', $chgtDenom));
         }
         $chgtDenom->save();
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
 
-        return $this->redirect($this->generateUrl('chgtdenom_edition', $chgtDenom));
+        return $this->redirect($this->generateUrl('prisedemousse_edition', $chgtDenom));
     }
 
     public function executeSuppression(sfWebRequest $request) {
@@ -220,7 +220,7 @@ class prisedemousseActions extends sfActions
 
     protected function secureIsValide($chgtDenom) {
       if ($chgtDenom->isValide()) {
-        return $this->redirect('chgtdenom_visualisation', $chgtDenom);
+        return $this->redirect('prisedemousse_visualisation', $chgtDenom);
       }
     }
 
