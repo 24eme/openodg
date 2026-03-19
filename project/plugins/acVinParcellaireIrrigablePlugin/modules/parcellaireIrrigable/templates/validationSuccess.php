@@ -40,7 +40,7 @@
 
     <?php if (ParcellaireConfiguration::getInstance()->hasEngagements() && count($validation->getEngagements()) > 0) : ?>
     <br/>
-        <h3> Engagement à ne pas irriguer</h3>
+        <h3>Engagements</h3>
         <div class="alert" role="alert" id="engagements"  style="padding-top:0;">
             <div class="form-group">
                 <?php foreach ($validation->getEngagements() as $engagement): ?>

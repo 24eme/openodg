@@ -242,4 +242,12 @@ class ParcellaireConfiguration {
     public function getAnneeJeunesVignesCremant() {
         return $this->configuration['jeunesVignes']['alsace_cremant'];
     }
+
+    public function hasEngagementANePasIrriguer() {
+        return $this->configuration['irrigable']['nePasIrriguer'];
+    }
+
+    public function hasEngagementVciIrrigation() {
+        return $this->configuration['irrigable']['vciIrrigation'];
+    }
 }
