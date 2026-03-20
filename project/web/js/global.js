@@ -407,7 +407,15 @@
                             fieldsToDuplicate[$(this).data("duplicate")] = $(this).select2('data');
                         }
                     });
-                    confirmtxt = confirmtxt.replace('MATERIEL','"'+fieldsToDuplicate.materiel.id+'"').replace('RESSOURCE','"'+fieldsToDuplicate.ressources.id+'"');
+                    confirmtxt = confirmtxt
+                      .replace(
+                        'MATERIEL',
+                        fieldsToDuplicate?.materiel?.id ? `"${fieldsToDuplicate.materiel.id}"` : ''
+                      )
+                      .replace(
+                        'RESSOURCE',
+                        fieldsToDuplicate?.ressources?.id ? `"${fieldsToDuplicate.ressources.id}"` : ''
+                      );
                     if (confirm(confirmtxt)) {
 
                         for (var f in fieldsToDuplicate) {
