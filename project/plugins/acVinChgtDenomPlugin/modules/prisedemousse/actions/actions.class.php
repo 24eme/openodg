@@ -29,15 +29,14 @@ class prisedemousseActions extends sfActions
     }
 
     public function executeEdition(sfWebRequest $request) {
-        $this->chgtDenom = $this->getRoute()->getChgtDenom();
-        $this->secureIsValide($this->chgtDenom);
-        $this->periode = ChgtDenomClient::getInstance()->getPeriodeFromCampagne($this->chgtDenom->campagne);
+        $this->prisedemousse = $this->getRoute()->getChgtDenom();
+        $this->secureIsValide($this->prisedemousse);
 
-        if($this->chgtDenom->getLotOrigine() === null) {
-            return $this->redirect('prisedemousse_lots', array('sf_subject' => $this->chgtDenom->getEtablissementObject(), 'campagne' => $this->chgtDenom->campagne));
+        if($this->prisedemousse->getLotOrigine() === null) {
+            return $this->redirect('prisedemousse_lots', array('sf_subject' => $this->chgtDenom->getEtablissementObject()));
         }
 
-        $this->form = new ChgtDenomForm($this->chgtDenom);
+        $this->form = new PriseDeMousseForm($this->prisedemousse);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

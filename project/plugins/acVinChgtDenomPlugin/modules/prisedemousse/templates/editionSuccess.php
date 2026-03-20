@@ -1,8 +1,8 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Date') ?>
 
-<?php include_partial('chgtdenom/breadcrumb', array('chgtDenom' => $chgtDenom )); ?>
-<?php include_partial('chgtdenom/step', array('step' => 'edition', 'chgtDenom' => $chgtDenom)) ?>
+<?php include_partial('prisedemousse/breadcrumb', array('prisedemousse' => $prisedemousse )); ?>
+<?php include_partial('prisedemousse/step', array('step' => 'edition', 'prisedemousse' => $prisedemousse)) ?>
 
 
     <div class="page-header no-border">
@@ -10,15 +10,20 @@
       <h3><small></small></h3>
     </div>
 
-    <?php if ($lotOrigine = $chgtDenom->getLotOrigine()) : ?>
-        <?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getLotOrigine(), 'opacity' => false)); ?>
+    <?php if ($lotOrigine = $prisedemousse
+        ->getLotOrigine()) : ?>
+        <?php include_partial('infoLotOrigine', array('lot' => $prisedemousse
+            ->getLotOrigine(), 'opacity' => false)); ?>
     <?php else : ?>
         <div class="well">
-            Déclare posséder un lot de <strong><?php echo $chgtDenom->getOrigineProduitLibelleAndCepages() ?></strong> de <strong><?php echoFloat($chgtDenom->getOrigineVolume()) ?></strong> <span class="text-muted">hl</span>
+            Déclare posséder un lot de <strong><?php echo $prisedemousse
+            ->getOrigineProduitLibelleAndCepages() ?></strong> de <strong><?php echoFloat($prisedemousse
+                ->getOrigineVolume()) ?></strong> <span class="text-muted">hl</span>
         </div>
     <?php endif; ?>
 
-    <form role="form" action="<?php echo url_for("chgtdenom_edition", array("sf_subject" => $chgtDenom)) ?>" method="post" class="form-horizontal" id="form_drev_lots">
+    <form role="form" action="<?php echo url_for("chgtdenom_edition", array("sf_subject" => $prisedemousse
+    )) ?>" method="post" class="form-horizontal" id="form_drev_lots">
 
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
@@ -26,10 +31,10 @@
         <div class="row">
               <div class="col-md-8">
                   <div class="form-group">
-                      <?php echo $form['changement_type']->renderLabel("Type de modification", array('class' => "col-sm-4 control-label")); ?>
+                      <?php echo $form['prisedemousse_type']->renderLabel("Type de modification", array('class' => "col-sm-4 control-label")); ?>
                       <div class="col-sm-8 bloc_condition" data-condition-cible="#bloc_changement_produit_hash">
-                            <span class="error text-danger"><?php echo $form['changement_type']->renderError() ?></span>
-                            <?php echo $form['changement_type']->render(); ?>
+                            <span class="error text-danger"><?php echo $form['prisedemousse_type']->renderError() ?></span>
+                            <?php echo $form['prisedemousse_type']->render(); ?>
                       </div>
                   </div>
               </div>
@@ -38,10 +43,10 @@
         <div class="row" id="bloc_changement_produit_hash" data-condition-value="<?php echo ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT; ?>">
           <div class="col-md-8">
               <div class="form-group">
-                  <?php echo $form['changement_produit_hash']->renderLabel("Nouveau produit", array('class' => "col-sm-4 control-label")); ?>
+                  <?php echo $form['prisedemousse_produit_hash']->renderLabel("Nouveau produit", array('class' => "col-sm-4 control-label")); ?>
                   <div class="col-sm-8">
-                      <span class="error text-danger"><?php echo $form['changement_produit_hash']->renderError() ?></span>
-                      <?php echo $form['changement_produit_hash']->render(array("data-placeholder" => "Sélectionnez un nouveau produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                      <span class="error text-danger"><?php echo $form['prisedemousse_produit_hash']->renderError() ?></span>
+                      <?php echo $form['prisedemousse_produit_hash']->render(array("data-placeholder" => "Sélectionnez un nouveau produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
                   </div>
               </div>
           </div>
@@ -50,10 +55,12 @@
                 <div class="col-sm-12">
                   <div class="checkbox checkboxlots">
                     <label>
-                      <input type="checkbox" <?php echo (count($chgtDenom->changement_cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
-                             id="lien_chgt_denom_changement_cepages" data-toggle="modal"
-                             data-target="#chgt_denom_changement_cepages" />
-                      <span class="checkboxtext_chgt_denom_changement_cepages"><?php echo (count($chgtDenom->changement_cepages->toArray(true, false))) ? "Mention : " :  "Sans mention de cépage <a>(Changer)</a>" ?></span></label>
+                      <input type="checkbox" <?php echo (count($prisedemousse
+                          ->changement_cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
+                             id="lien_prisedemousse_changement_cepages" data-toggle="modal"
+                             data-target="#prisedemousse_changement_cepages" />
+                      <span class="checkboxtext_prisedemousse_changement_cepages"><?php echo (count($prisedemousse
+                          ->changement_cepages->toArray(true, false))) ? "Mention : " :  "Sans mention de cépage <a>(Changer)</a>" ?></span></label>
                     </div>
                   </div>
               </div>
@@ -63,11 +70,11 @@
         <div class="row">
               <div class="col-md-8">
                   <div class="form-group">
-                      <?php echo $form['changement_volume']->renderLabel("Volume concerné par cette modification", array('class' => "col-sm-4 control-label")); ?>
+                      <?php echo $form['prisedemousse_volume']->renderLabel("Volume concerné par cette modification", array('class' => "col-sm-4 control-label")); ?>
                       <div class="col-sm-5">
-                          <span class="error text-danger"><?php echo $form['changement_volume']->renderError() ?></span>
+                          <span class="error text-danger"><?php echo $form['prisedemousse_volume']->renderError() ?></span>
                           <div class="input-group">
-                              <?php echo $form['changement_volume']->render(array("placeholder" => "Précisez un volume")); ?>
+                              <?php echo $form['prisedemousse_volume']->render(array("placeholder" => "Précisez un volume")); ?>
                               <div class="input-group-addon">hl</div>
                           </div>
                       </div>
@@ -78,11 +85,11 @@
         <div class="row">
               <div class="col-md-8">
                   <div class="form-group">
-                      <?php echo $form['changement_specificite']->renderLabel("Spécificité", array('class' => "col-sm-4 control-label")); ?>
+                      <?php echo $form['prisedemousse_specificite']->renderLabel("Spécificité", array('class' => "col-sm-4 control-label")); ?>
                       <div class="col-sm-5">
-                          <span class="error text-danger"><?php echo $form['changement_specificite']->renderError() ?></span>
+                          <span class="error text-danger"><?php echo $form['prisedemousse_specificite']->renderError() ?></span>
                           <div class="input-group">
-                              <?php echo $form['changement_specificite']->render(array("placeholder" => "Précisez une spécificité")); ?>
+                              <?php echo $form['prisedemousse_specificite']->render(array("placeholder" => "Précisez une spécificité")); ?>
                           </div>
                       </div>
                   </div>
@@ -92,7 +99,8 @@
 
         <div style="margin-top: 20px;" class="row row-margin row-button">
             <div class="col-xs-4">
-                <a tabindex="-1" href="<?php echo url_for('chgtdenom_delete', $chgtDenom) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-remove"></span> Annuler</a>
+                <a tabindex="-1" href="<?php echo url_for('chgtdenom_delete', $prisedemousse
+                ) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-remove"></span> Annuler</a>
             </div>
             <div class="col-xs-4 col-xs-offset-4 text-right">
                 <button type="submit" class="btn btn-primary btn-upper">Suivant <span class="glyphicon glyphicon-chevron-right"></span></button>
@@ -100,7 +108,7 @@
         </div>
 
 
-        <div class="modal fade modal_lot_cepages" id="chgt_denom_changement_cepages" data-inputvolumeid="<?php echo $form['changement_volume']->renderId() ?>" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
+        <div class="modal fade modal_lot_cepages" id="prisedemousse_changement_cepages" data-inputvolumeid="<?php echo $form['prisedemousse_volume']->renderId() ?>" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
