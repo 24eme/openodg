@@ -115,6 +115,38 @@ class VersionDocument
             $this->mother = $this->document->findDocumentByVersion($this->document->getPreviousVersion());
         }
 
+        $versionsMouvements = [];
+        $versionArray = [];
+        $loopNumber = 0;
+        $previousVersion = $this->mother;
+
+        do {
+
+            $versionArray[] = $previousVersion->_id;
+            $previousVersion = $previousVersion->findDocumentByVersion($previousVersion->getPreviousVersion());
+        }
+        while (! in_array($previousVersion->_id, $versionArray));
+
+        $this->mother = $this->document->findDocumentByVersion($this->document->getPreviousVersion());
+
+        do {
+            $loopNumber++;
+            $mouvementsFactures = $this->mother->getMouvementsFactures();
+
+            $cotisationtype = [];
+            foreach($mouvementsFactures as $mouvementsFacture) {
+                foreach($mouvementsFacture as $mouvement) {
+                    $cotisationHash = "cotisations" . "/". $mouvement->categorie . "/" . $mouvement->type_hash;
+                    $cotisationtype[$cotisationHash] = $mouvement->quantite;
+                }
+            }
+
+            $versionsMouvements[$this->mother->_id] = $cotisationtype;
+
+            $this->mother = $this->mother->findDocumentByVersion($this->mother->getPreviousVersion());
+
+            $previousVersion = $this->mother->hasVersion();
+        } while ($loopNumber <= count($versionArray) );
         return $this->mother;
     }
 
