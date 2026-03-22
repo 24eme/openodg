@@ -25,8 +25,14 @@
                 <th class="col-xs-2">Cépage</th>
                 <th class="col-xs-1 text-center">Année plantat°</th>
                 <th class="col-xs-1 text-right">Surf. <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
+            <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() && ParcellaireConfiguration::getInstance()->hasIrrigableRessource()): ?>
                 <th class="col-xs-2 text-center">Type de matériel</th>
                 <th class="col-xs-2 text-center">Type de ressource</th>
+            <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == true && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == false): ?>
+                <th class="col-xs-2 text-center">Type de matériel</th>
+            <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == false && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == true): ?>
+                <th class="col-xs-2 text-center">Type de ressource</th>
+            <?php endif;?>
                 <th class="col-xs-1 text-center">Dupliquer les types</th>
 
             </tr>
@@ -46,6 +52,7 @@
                 <?php else: ?>
                     <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie()); ?></td>
                 <?php endif ?>
+                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel()): ?>
                 <td>
                     <div style="margin-bottom: 0;" class="form-group <?php if($form[$parcelle->getParcelleId()]['materiel']->hasError()): ?>has-error<?php endif; ?>">
                         <?php echo $form[$parcelle->getParcelleId()]['materiel']->renderError() ?>
@@ -54,6 +61,8 @@
                         </div>
                     </div>
                 </td>
+                <?php endif; ?>
+                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableRessource()): ?>
                 <td>
                     <div style="margin-bottom: 0;" class="form-group <?php if($form[$parcelle->getParcelleId()]['ressource']->hasError()): ?>has-error<?php endif; ?>">
                         <?php echo $form[$parcelle->getParcelleId()]['ressource']->renderError() ?>
@@ -62,6 +71,7 @@
                         </div>
                     </div>
                 </td>
+                <?php endif;?>
                 <td class="text-center">
                     <div style="margin-bottom: 0;" class="form-group">
                         <div class="col-xs-12">

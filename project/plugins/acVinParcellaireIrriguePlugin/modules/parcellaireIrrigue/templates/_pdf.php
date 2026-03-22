@@ -52,7 +52,7 @@
 
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource() === false): ?>
+        <?php if ((ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() === false) && (ParcellaireConfiguration::getInstance()->hasIrrigableRessource() === false)): ?>
             <th class="th" style="text-align: center; width: 230px;">Lieu-dit</th>
             <th class="th" style="text-align: center; width: 90px;">Section</th>
             <th class="th" style="text-align: center; width: 90px;">N° p<sup>lle</sup></th>
@@ -82,7 +82,7 @@
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->cepage; ?>&nbsp;</td>
             <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->campagne_plantation; ?>&nbsp;</td>
             <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.4f", $parcelle->superficie); ?>&nbsp;<small>ha</small>&nbsp;</td>
-            <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource()): ?>
+            <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() || ParcellaireConfiguration::getInstance()->hasIrrigableRessource()): ?>
                 <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->materiel; ?>&nbsp;/&nbsp;<?php echo $parcelle->ressource; ?>&nbsp;</td>
             <?php endif; ?>
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $date_irrigation->format('d/m/Y'); ?>&nbsp;</td>

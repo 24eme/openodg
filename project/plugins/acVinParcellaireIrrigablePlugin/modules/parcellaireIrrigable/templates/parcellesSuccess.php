@@ -11,6 +11,12 @@
     <h2>Parcelles irrigables sur votre exploitation <br/><small>Merci d'indiquer vos parcelles irrigables en cliquant sur la ligne de la parcelle concernée.</small></h2>
 </div>
 
+<?php if(!$parcellaireIrrigable->isAllPreviousParcellesExists()): ?>
+    <div class="alert alert-warning">
+        Toutes les parcelles affectées issues de <a href="<?php echo url_for('parcellaireirrigable_visualisation', $parcellaireIrrigable->getPreviousDocument()) ?>">la déclaration de la précédente campagne</a> n'ont pas pu être reprises, il est conseillé de vérifier l'ensemble des parcelles affectées.
+    </div>
+<?php endif; ?>
+
 <form action="<?php echo url_for("parcellaireirrigable_parcelles", $parcellaireIrrigable) ?>" method="post" class="form-horizontal">
 
     <?php $parcellaire = $parcellaireIrrigable->getParcellaire2Reference(); ?>

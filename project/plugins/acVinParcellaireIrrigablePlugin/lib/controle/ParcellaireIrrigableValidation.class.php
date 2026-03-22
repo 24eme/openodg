@@ -19,10 +19,13 @@ class ParcellaireIrrigableValidation extends DocumentValidation {
         /*
          * Error
          */
-         if(ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource()){
-             $this->addControle(self::TYPE_ERROR, 'parcellaireirrigable_materiel_ressource_required', "Vous devez renseigner le matériel et la ressource de toutes vos parcelles");
+         if(ParcellaireConfiguration::getInstance()->hasIrrigableMateriel()){
+             $this->addControle(self::TYPE_ERROR, 'parcellaireirrigable_materiel_required', "Vous devez renseigner le matériel de toutes vos parcelles");
          }
 
+         if(ParcellaireConfiguration::getInstance()->hasIrrigableRessource()){
+             $this->addControle(self::TYPE_ERROR, 'parcellaireirrigable_ressource_required', "Vous devez renseigner la ressource de toutes vos parcelles");
+         }
 
         /*
          * Engagements
@@ -33,24 +36,34 @@ class ParcellaireIrrigableValidation extends DocumentValidation {
 
     public function controle() {
         if (count($this->document->declaration) < 1) {
-        	$this->addPoint(self::TYPE_WARNING, 
-        					'parcellaireirrigable_no_parcelles', 
-        					'<a href="' . $this->generateUrl('parcellaireirrigable_parcelles', array('id' => $this->document->_id)) . "\" class='alert-link' >Séléctionner vos parcelles irrigables.</a>", 
+        	$this->addPoint(self::TYPE_WARNING,
+        					'parcellaireirrigable_no_parcelles',
+        					'<a href="' . $this->generateUrl('parcellaireirrigable_parcelles', array('id' => $this->document->_id)) . "\" class='alert-link' >Séléctionner vos parcelles irrigables.</a>",
         					'');
         }
         $missed = false;
         foreach ($this->document->declaration->getParcellesByCommune() as $commune => $parcelles) {
         	foreach ($parcelles as $parcelle) {
-        		if (!$parcelle->materiel || !$parcelle->ressource) {
-        			$missed = true;
+        		if (!$parcelle->materiel) {
+        			$missedMateriel = true;
         		}
+                if (!$parcelle->ressource) {
+                    $missedRessource = true;
+                }
         	}
         }
-        if ($missed && ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource()) {
-        	$this->addPoint(self::TYPE_ERROR, 
-        					'parcellaireirrigable_materiel_ressource_required', 
-        					'<a href="' . $this->generateUrl('parcellaireirrigable_irrigations', array('id' => $this->document->_id)) . "\" class='alert-link' >Cliquer ici pour modifier la déclaration.</a>", 
+        if ($missedMateriel && ParcellaireConfiguration::getInstance()->hasIrrigableMateriel()) {
+        	$this->addPoint(self::TYPE_ERROR,
+        					'parcellaireirrigable_materiel_required',
+        					'<a href="' . $this->generateUrl('parcellaireirrigable_irrigations', array('id' => $this->document->_id)) . "\" class='alert-link' >Cliquer ici pour modifier la déclaration.</a>",
         					'');
+        }
+
+        if ($missedRessource && ParcellaireConfiguration::getInstance()->hasIrrigableRessource()) {
+            $this->addPoint(self::TYPE_ERROR,
+                            'parcellaireirrigable_ressource_required',
+                            '<a href="' . $this->generateUrl('parcellaireirrigable_irrigations', array('id' => $this->document->_id)) . "\" class='alert-link' >Cliquer ici pour modifier la déclaration.</a>",
+                            '');
         }
 
         if (ParcellaireConfiguration::getInstance()->hasEngagementANePasIrriguer()) {
