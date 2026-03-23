@@ -1083,3 +1083,37 @@ if (togglePassword1 || togglePassword2) {
     togglePasswordVisibility(togglePassword2, passwordField2);
   });
 }
+
+function exportTableToCsv(tableId, filename) {
+  const table = document.getElementById(tableId);
+  const csvData = [];
+
+  for (const row of table.rows) {
+    const rowValues = [];
+    for (const cell of row.cells) {
+      let text = cell.innerText.trim();
+      if(!text && cell.querySelector(":not(span[title=''])")) {
+      text = cell.querySelector(":not(span[title=''])").title;
+      }
+      if(!text && cell.querySelector(":not(span[data-original-title=''])")) {
+      text = cell.querySelector(":not(span[data-original-title=''])").dataset.originalTitle;
+      }
+      if(text && text.includes(';')) {
+        text = '"' + text + '"'
+      }
+      rowValues.push(text);
+    }
+    csvData.push(rowValues.join(';'));
+  }
+
+  const csvContent = csvData.join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+
+  URL.revokeObjectURL(url);
+}
