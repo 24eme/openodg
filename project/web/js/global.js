@@ -1089,21 +1089,23 @@ function exportTableToCsv(tableId, filename) {
   const csvData = [];
 
   for (const row of table.rows) {
-    const rowValues = [];
-    for (const cell of row.cells) {
-      let text = cell.innerText.trim();
-      if(!text && cell.querySelector(":not(span[title=''])")) {
-      text = cell.querySelector(":not(span[title=''])").title;
+    if(!row.classList.contains("hidden")) {
+      const rowValues = [];
+      for (const cell of row.cells) {
+        let text = cell.innerText.trim();
+        if(!text && cell.querySelector(":not(span[title=''])")) {
+        text = cell.querySelector(":not(span[title=''])").title;
+        }
+        if(!text && cell.querySelector(":not(span[data-original-title=''])")) {
+        text = cell.querySelector(":not(span[data-original-title=''])").dataset.originalTitle;
+        }
+        if(text && text.includes(';')) {
+          text = '"' + text + '"'
+        }
+        rowValues.push(text);
       }
-      if(!text && cell.querySelector(":not(span[data-original-title=''])")) {
-      text = cell.querySelector(":not(span[data-original-title=''])").dataset.originalTitle;
-      }
-      if(text && text.includes(';')) {
-        text = '"' + text + '"'
-      }
-      rowValues.push(text);
+      csvData.push(rowValues.join(';'));
     }
-    csvData.push(rowValues.join(';'));
   }
 
   const csvContent = csvData.join('\n');
