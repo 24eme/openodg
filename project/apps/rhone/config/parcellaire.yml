@@ -300,3 +300,5 @@ all:
       irrigable:
         engagements: true
         vciIrrigation: true
+        hasIrrigableMateriel: true
+        hasIrrigableRessource: false

@@ -54,8 +54,12 @@
                 <th class="col-xs-2">Cépage</th>
                 <th class="col-xs-1">Année plantat°</th>
                 <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
-                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource()): ?>
+                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() && ParcellaireConfiguration::getInstance()->hasIrrigableRessource()): ?>
                     <th class="col-xs-1">Type de matériel</th>
+                    <th class="col-xs-1">Type de ressource</th>
+                <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == true && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == false): ?>
+                    <th class="col-xs-1">Type de matériel</th>
+                <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == false && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == true): ?>
                     <th class="col-xs-1">Type de ressource</th>
                 <?php endif; ?>
                 <th class="col-xs-1">Irrigation?</th>
@@ -79,8 +83,12 @@
                 <?php else: ?>
                     <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie()); ?></td>
                 <?php endif ?>
-                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource() ): ?>
+                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() && ParcellaireConfiguration::getInstance()->hasIrrigableRessource()): ?>
                     <td><?php echo $parcelle->materiel; ?></td>
+                    <td><?php echo $parcelle->ressource; ?></td>
+                <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == true && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == false): ?>
+                    <td><?php echo $parcelle->materiel; ?></td>
+                <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == false && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == true): ?>
                     <td><?php echo $parcelle->ressource; ?></td>
                 <?php endif; ?>
             	<?php if($parcelle->irrigation && (!$parcellaireIrrigue->exist('papier') || !$parcellaireIrrigue->papier)): ?>

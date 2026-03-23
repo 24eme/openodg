@@ -213,10 +213,13 @@ class ParcellaireConfiguration {
         return isset($this->configuration['irrigable']['engagements']) && boolval($this->configuration['irrigable']['engagements']);
     }
 
-    public function hasIrrigableMaterielRessource() {
-        return isset($this->configuration['irrigable']['hasIrrigableMaterielRessource']) && boolval($this->configuration['irrigable']['hasIrrigableMaterielRessource']);
+    public function hasIrrigableMateriel() {
+        return isset($this->configuration['irrigable']['hasIrrigableMateriel']) && boolval($this->configuration['irrigable']['hasIrrigableMateriel']);
     }
 
+    public function hasIrrigableRessource() {
+        return isset($this->configuration['irrigable']['hasIrrigableRessource']) && boolval($this->configuration['irrigable']['hasIrrigableRessource']);
+    }
 
     public function hasJeunesVignes() {
         return isset($this->configuration['jeunesVignes']);
