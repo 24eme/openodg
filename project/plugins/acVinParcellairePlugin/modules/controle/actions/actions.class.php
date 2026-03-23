@@ -129,7 +129,7 @@ class controleActions extends sfActions
     {
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
-        $this->controles = $this->getControlesByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant);
+        $this->controles = ControleClient::getInstance()->findAllByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant);
     }
 
     public function executeListeManquementsControle(sfWebRequest $request)
