@@ -218,4 +218,18 @@ class controleActions extends sfActions
         $this->sorted_controles = $this->controles[ControleClient::CONTROLE_STATUT_EN_MANQUEMENT];
         usort($this->sorted_controles, "ControleClient::sortControlesByDateNotification");
     }
+
+    public function executeListingManquementsOperateur(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $this->sorted_manquements = $this->controle->getSortedManquementsActif();
+    }
+
+    public function executeLeverManquement(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $this->controle->manquements[$request->getParameter('id_manquement')]->cloture_date = date('Y-m-d');
+        $this->controle->save();
+        return $this->redirect('controle_liste_manquements_operateur', array('id_controle' => $this->controle->_id));
+    }
 }

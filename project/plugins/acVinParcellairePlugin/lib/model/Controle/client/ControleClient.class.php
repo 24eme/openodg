@@ -79,8 +79,8 @@ class ControleClient extends acCouchdbClient
         return $result;
     }
 
-    public static function sortControlesByDateNotification($controle_a, $controle_b) {
-
+    public static function sortControlesByDateNotification($controle_a, $controle_b)
+    {
         return strtotime($controle_a->notification_date) > strtotime($controle_b->notification_date);
     }
 
