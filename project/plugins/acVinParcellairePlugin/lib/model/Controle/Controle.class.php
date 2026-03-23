@@ -421,4 +421,11 @@ class Controle extends BaseControle
     {
         return CompteClient::getInstance()->find($this->agent_identifiant);
     }
+
+    public function getSortedManquementsActif()
+    {
+        $sorted_manquements = $this->getManquementsActif();
+        ksort($sorted_manquements);
+        return $sorted_manquements;
+    }
 }
