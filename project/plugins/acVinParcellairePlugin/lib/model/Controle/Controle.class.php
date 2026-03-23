@@ -28,6 +28,8 @@ class Controle extends BaseControle
         $this->set('_id', ControleClient::TYPE_COUCHDB."-".$identifiant."-".str_replace('-', '', $date));
         $this->initDocuments();
         $this->storeDeclarant();
+        $this->getPotentielProductionProduits();
+        $this->superficie_totale = $this->getSuperficieTotale();
     }
 
     public function getEtablissementObject() {
@@ -179,8 +181,6 @@ class Controle extends BaseControle
         $d->parcellaire_geojson = $this->getGeoJson();
         $d->parcellaire_parcelles = $this->getParcellaireParcelles();
         $d->validation = false;
-        $d->ppp = $this->getPotentielProductionProduits();
-        $d->surface_production = round($this->getParcellaire()->getSuperficieTotale(), 3);
         $this->to_dump = false;
         return $d;
     }
@@ -404,12 +404,15 @@ class Controle extends BaseControle
 
     public function getPotentielProductionProduits()
     {
-        $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->parcellaire);
-        $ppproduits = array();
+        $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->getParcellaire());
         foreach ($potentiel->getProduits() as $ppproduit) {
-            $ppproduits[$ppproduit->getLibelle()] = $ppproduit->getSuperficieMax();
+            $this->surface_de_production->add($ppproduit->getLibelle(), $ppproduit->getSuperficieMax());
         }
-        return $ppproduits;
+    }
+
+    public function getSuperficieTotale()
+    {
+        return round($this->getParcellaire()->getSuperficieTotale(), 3);
     }
 
     public function getObservationsFromManquement($manquementId)

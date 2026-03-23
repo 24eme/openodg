@@ -296,6 +296,12 @@ Controle:
                   libelle_manquement: {}
                   observations: {}
                   delais: {}
+      superficie_totale:
+      surface_de_production:
+        type: collection
+        definition:
+          fields:
+            '*': {}
       maturite:
       mouvements_statuts:
         type: array_collection
