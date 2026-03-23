@@ -299,7 +299,7 @@ class Controle extends BaseControle
     public function hasManquementTerrain()
     {
         foreach ($this->manquements as $manquementId => $manquement) {
-            if ($manquement->parcelles_id) {
+            if (ControleConfiguration::getInstance()->isTerrain($manquementId)) {
                 return true;
             }
         }
