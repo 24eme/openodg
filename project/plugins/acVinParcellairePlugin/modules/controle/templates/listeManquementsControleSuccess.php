@@ -45,7 +45,7 @@
 <div class="row">
     <div class="col-xs-4"><a class="btn btn-default" href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
     <div class="col-xs-4 text-center">
-    <a class="btn btn-default" href="<?php echo url_for('controle_ajout_liste_manquements', array("id" => $controle->_id))?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un manquement</a>
+        <button type="submit" form="formListeManquements" class="btn btn-success">Valider les manquements</button>
     </div>
-    <div class="col-xs-4"><button type="submit" form="formListeManquements" class="btn btn-primary pull-right">Enregistrer</button></div>
+    <div class="col-xs-4"><a class="btn btn-default pull-right" href="<?php echo url_for('controle_ajout_liste_manquements', array("id" => $controle->_id))?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un manquement</a></div>
 </div>

@@ -303,6 +303,7 @@ Controle:
           fields:
             '*': {}
       maturite:
+      manquements_valides:
       mouvements_statuts:
         type: array_collection
         definition:

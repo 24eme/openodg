@@ -147,9 +147,9 @@ class controleActions extends sfActions
             if (! $this->form->isValid()) {
                 return sfView::SUCCESS;
             }
-
+            $this->controle->manquements_valides = true;
             $this->form->save();
-            return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
+            return $this->redirect('controle_liste_operateur_tournee', array('date' => $this->controle->date_tournee, 'agent_identifiant' => $this->controle->agent_identifiant));
         }
     }
 
