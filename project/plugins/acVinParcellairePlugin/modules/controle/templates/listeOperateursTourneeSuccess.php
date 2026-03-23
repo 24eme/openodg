@@ -24,7 +24,7 @@
             <td><?php echo $data->type_tournee; ?></td>
             <td><a href="<?php echo url_for('controle_pdf', array('id' => $data->_id)); ?>">PDF du contrôle</a></td>
             <td><a href="<?php echo url_for('controle_pdf_manquements', array('id' => $data->_id)); ?>">PDF des manquements</a></td>
-            <td class="text-right"><a class="btn btn-xs btn-default" href="<?php echo url_for('controle_liste_manquements_controle', array('id' => $data->_id)); ?>">Gérer les manquements</a></td>
+            <td class="text-right"><a class="btn btn-xs btn-default" href="<?php echo url_for('controle_liste_manquements_controle', array('id' => $data->_id)); ?>">Générer les manquements</a></td>
             <td class="text-right">
                 <div class="btn-group">
                   <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
