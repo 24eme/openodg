@@ -8,7 +8,7 @@ class ExportControleManquementPDF extends ExportPDF {
     public function __construct($controle, $identifiant = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->controle = $controle;
         $this->identifiant = $identifiant;
-        $this->manquements = $this->controle->getManquementsListe();
+        $this->manquements = $this->controle->getManquementsActif();
 
         if (!$filename) {
             $filename = $this->getFileName(true);
