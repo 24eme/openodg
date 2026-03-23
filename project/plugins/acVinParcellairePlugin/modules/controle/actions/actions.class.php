@@ -215,5 +215,7 @@ class controleActions extends sfActions
     public function executeGestionManquements(sfWebRequest $request)
     {
         $this->controles = ControleClient::getInstance()->findAllByStatus();
+        $this->sorted_controles = $this->controles[ControleClient::CONTROLE_STATUT_EN_MANQUEMENT];
+        usort($this->sorted_controles, "ControleClient::sortControlesByDateNotification");
     }
 }
