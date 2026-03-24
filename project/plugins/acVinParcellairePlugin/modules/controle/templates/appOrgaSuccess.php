@@ -115,13 +115,7 @@
             }
             let props = layer.feature.properties;
             this._div.style.display = 'block';
-
-            props.parcellaires.forEach(function(parcelle){
-                opNom = parcelle['Nom Operateur'];
-                opCvi = parcelle['CVI Operateur'];
-                opSiret = parcelle['Siret Operateur'];
-            });
-            var popupContent = '<h2 class="text-center">'+opNom+'<br /><small class="muted">CVI : '+opCvi+' Siret : '+opSiret+'</small></h2>';
+            var popupContent = '<h2 class="text-center">'+props.declarant.nom+'<br /><small class="muted">CVI : '+props.declarant.cvi+' Siret : '+props.declarant.siret+'</small></h2>';
             this._div.innerHTML = popupContent;
         };
         popup.addTo(map);
@@ -130,6 +124,7 @@
         for (const [idControle, controle] of Object.entries(controles)) {
             for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
                 feature.properties.controleId = idControle;
+                feature.properties.declarant = controle.declarant;
                 parcelles.push(feature);
             }
         }
@@ -269,13 +264,7 @@
             }
             let props = layer.feature.properties;
             this._div.style.display = 'block';
-
-            props.parcellaires.forEach(function(parcelle){
-                opNom = parcelle['Nom Operateur'];
-                opCvi = parcelle['CVI Operateur'];
-                opSiret = parcelle['Siret Operateur'];
-            });
-            var popupContent = '<h2 class="text-center">'+opNom+'<br /><small class="muted">CVI : '+opCvi+' Siret : '+opSiret+'</small></h2>';
+            var popupContent = '<h2 class="text-center">'+props.declarant.nom+'<br /><small class="muted">CVI : '+props.declarant.cvi+' Siret : '+props.declarant.siret+'</small></h2>';
             this._div.innerHTML = popupContent;
         };
         popupAutre.addTo(map);
