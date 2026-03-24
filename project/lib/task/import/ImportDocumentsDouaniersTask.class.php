@@ -56,7 +56,8 @@ EOF;
 		    $nb = count($items);
         foreach ($items as $item) {
 
-            if ($options['limitidentifiant'] && strpos($item->id, $options['limitidentifiant']) === false) {
+            if ($options['limitidentifiant'] && ( strpos($item->id, $options['limitidentifiant']) === false && $item->key[7] != $options['limitidentifiant'] ) )
+            {
                 continue;
             }
 
@@ -112,7 +113,7 @@ EOF;
                     if (strtoupper($options['scrapefiles']) == "FALSE") {
                         $options['scrapefiles'] = false;
                     }
-                    $fichiers = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, ($options['scrapefiles']), $contextInstance);
+                    $fichiers = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, ($options['scrapefiles']), $contextInstance, false);
                 } catch (Exception $e) {
                     if ($options['debug']) {
                         throw $e;
