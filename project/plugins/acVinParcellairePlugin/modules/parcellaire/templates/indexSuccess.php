@@ -9,6 +9,6 @@
     <a href="<?php echo url_for('controle_index') ?>" class="btn btn-primary">Accéder au contrôle terrain</a>
 </div>
 <div class="col-xs-2">
-    <a href="<?php echo url_for('controle_gestion_manquements', array())?>" class="btn btn-primary">Gérer les manquements</a>
+    <a href="<?php echo url_for('controle_gestion_manquements', array())?>" class="btn btn-primary">Liste des manquements</a>
 </div>
 <?php endif; ?>

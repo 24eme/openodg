@@ -129,7 +129,7 @@ class controleActions extends sfActions
     {
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
-        $this->controles = $this->getControlesByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant);
+        $this->controles = ControleClient::getInstance()->findAllByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant);
     }
 
     public function executeListeManquementsControle(sfWebRequest $request)
@@ -147,9 +147,9 @@ class controleActions extends sfActions
             if (! $this->form->isValid()) {
                 return sfView::SUCCESS;
             }
-
+            $this->controle->manquements_valides = true;
             $this->form->save();
-            return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
+            return $this->redirect('controle_liste_operateur_tournee', array('date' => $this->controle->date_tournee, 'agent_identifiant' => $this->controle->agent_identifiant));
         }
     }
 
@@ -215,5 +215,21 @@ class controleActions extends sfActions
     public function executeGestionManquements(sfWebRequest $request)
     {
         $this->controles = ControleClient::getInstance()->findAllByStatus();
+        $this->sorted_controles = $this->controles[ControleClient::CONTROLE_STATUT_EN_MANQUEMENT];
+        usort($this->sorted_controles, "ControleClient::sortControlesByDateNotification");
+    }
+
+    public function executeListingManquementsOperateur(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $this->sorted_manquements = $this->controle->getSortedManquementsActif();
+    }
+
+    public function executeLeverManquement(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $this->controle->manquements[$request->getParameter('id_manquement')]->cloture_date = date('Y-m-d');
+        $this->controle->save();
+        return $this->redirect('controle_liste_manquements_operateur', array('id_controle' => $this->controle->_id));
     }
 }

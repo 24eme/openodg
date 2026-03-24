@@ -9,22 +9,28 @@
 <table class="table table-bordered table-striped">
     <thead>
     <tr>
-        <th class="col-xs-6">Opérateurs</th>
+        <th class="col-xs-4">Opérateurs</th>
         <th class="col-xs-2">Type de tournée</th>
-        <th class="col-xs-4" colspan="2">PDF</th>
+        <th class="col-xs-2"></th>
+        <th class="col-xs-2"></th>
         <th style="width: 0;"></th>
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($controles as $id => $data): ?>
+    <?php foreach ($controles as $controle): ?>
         <tr>
             <td>
-                <a href="<?php echo url_for("controle_liste_manquements_controle", array('id' => $data->_id)) ?>"><?php echo $data->declarant->raison_sociale ?></a>
+                <a href="<?php echo url_for("controle_liste_manquements_controle", array('id' => $controle->_id)) ?>"><?php echo $controle->declarant->raison_sociale ?></a>
             </td>
-            <td><?php echo $data->type_tournee; ?></td>
-            <td><a href="<?php echo url_for('controle_pdf', array('id' => $data->_id)); ?>">PDF du contrôle</a></td>
-            <td><a href="<?php echo url_for('controle_pdf_manquements', array('id' => $data->_id)); ?>">PDF des manquements</a></td>
-            <td class="text-right"><a class="btn btn-xs btn-default" href="<?php echo url_for('controle_liste_manquements_controle', array('id' => $data->_id)); ?>">Gérer les manquements</a></td>
+            <td><?php echo $controle->type_tournee; ?></td>
+            <td><a href="<?php echo url_for('controle_pdf', array('id' => $controle->_id)); ?>">PDF du contrôle</a></td>
+            <td>
+                <?php if ($controle->manquements_valides): ?>
+                    <a href="<?php echo url_for('controle_pdf_manquements', array('id' => $controle->_id)); ?>">PDF des manquements</a>
+                <?php else: ?>
+                    <a class="btn btn-xs btn-default" href="<?php echo url_for('controle_liste_manquements_controle', array('id' => $controle->_id)); ?>">Générer les manquements</a>
+                <?php endif;?>
+            </td>
             <td class="text-right">
                 <div class="btn-group">
                   <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
