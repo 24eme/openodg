@@ -52,7 +52,7 @@ class prisedemousseActions extends sfActions
 
         $this->form->save();
 
-        return $this->redirect('prisedemousse_validation', $this->chgtDenom);
+        return $this->redirect('prisedemousse_validation', $this->prisedemousse);
     }
 
     public function executeLogement(sfWebRequest $request) {

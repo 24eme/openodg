@@ -22,31 +22,19 @@
         </div>
     <?php endif; ?>
 
-    <form role="form" action="<?php echo url_for("chgtdenom_edition", array("sf_subject" => $prisedemousse
+    <form role="form" action="<?php echo url_for("prisedemousse_edition", array("sf_subject" => $prisedemousse
     )) ?>" method="post" class="form-horizontal" id="form_drev_lots">
 
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 
-        <div class="row">
-              <div class="col-md-8">
-                  <div class="form-group">
-                      <?php echo $form['prisedemousse_type']->renderLabel("Type de modification", array('class' => "col-sm-4 control-label")); ?>
-                      <div class="col-sm-8 bloc_condition" data-condition-cible="#bloc_changement_produit_hash">
-                            <span class="error text-danger"><?php echo $form['prisedemousse_type']->renderError() ?></span>
-                            <?php echo $form['prisedemousse_type']->render(); ?>
-                      </div>
-                  </div>
-              </div>
-        </div>
-
         <div class="row" id="bloc_changement_produit_hash" data-condition-value="<?php echo ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT; ?>">
           <div class="col-md-8">
               <div class="form-group">
-                  <?php echo $form['prisedemousse_produit_hash']->renderLabel("Nouveau produit", array('class' => "col-sm-4 control-label")); ?>
+                  <?php echo $form['changement_produit_hash']->renderLabel("Nouveau produit", array('class' => "col-sm-4 control-label")); ?>
                   <div class="col-sm-8">
-                      <span class="error text-danger"><?php echo $form['prisedemousse_produit_hash']->renderError() ?></span>
-                      <?php echo $form['prisedemousse_produit_hash']->render(array("data-placeholder" => "Sélectionnez un nouveau produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                      <span class="error text-danger"><?php echo $form['changement_produit_hash']->renderError() ?></span>
+                      <?php echo $form['changement_produit_hash']->render(array("data-placeholder" => "Sélectionnez un nouveau produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
                   </div>
               </div>
           </div>
@@ -70,11 +58,11 @@
         <div class="row">
               <div class="col-md-8">
                   <div class="form-group">
-                      <?php echo $form['prisedemousse_volume']->renderLabel("Volume concerné par cette modification", array('class' => "col-sm-4 control-label")); ?>
+                      <?php echo $form['changement_volume']->renderLabel("Volume final après prise de mousse", array('class' => "col-sm-4 control-label")); ?>
                       <div class="col-sm-5">
-                          <span class="error text-danger"><?php echo $form['prisedemousse_volume']->renderError() ?></span>
+                          <span class="error text-danger"><?php echo $form['changement_volume']->renderError() ?></span>
                           <div class="input-group">
-                              <?php echo $form['prisedemousse_volume']->render(array("placeholder" => "Précisez un volume")); ?>
+                              <?php echo $form['changement_volume']->render(array("placeholder" => "Précisez un volume")); ?>
                               <div class="input-group-addon">hl</div>
                           </div>
                       </div>
@@ -85,11 +73,11 @@
         <div class="row">
               <div class="col-md-8">
                   <div class="form-group">
-                      <?php echo $form['prisedemousse_specificite']->renderLabel("Spécificité", array('class' => "col-sm-4 control-label")); ?>
+                      <?php echo $form['changement_specificite']->renderLabel("Spécificité", array('class' => "col-sm-4 control-label")); ?>
                       <div class="col-sm-5">
                           <span class="error text-danger"><?php echo $form['prisedemousse_specificite']->renderError() ?></span>
                           <div class="input-group">
-                              <?php echo $form['prisedemousse_specificite']->render(array("placeholder" => "Précisez une spécificité")); ?>
+                              <?php echo $form['changement_specificite']->render(array("placeholder" => "Précisez une spécificité")); ?>
                           </div>
                       </div>
                   </div>
@@ -108,7 +96,7 @@
         </div>
 
 
-        <div class="modal fade modal_lot_cepages" id="prisedemousse_changement_cepages" data-inputvolumeid="<?php echo $form['prisedemousse_volume']->renderId() ?>" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
+        <div class="modal fade modal_lot_cepages" id="changement_changement_cepages" data-inputvolumeid="<?php echo $form['changement_volume']->renderId() ?>" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
