@@ -28,7 +28,7 @@
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 
-        <div class="row" id="bloc_changement_produit_hash" data-condition-value="<?php echo ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT; ?>">
+        <div class="row" id="bloc_changement_produit_hash">
           <div class="col-md-8">
               <div class="form-group">
                   <?php echo $form['changement_produit_hash']->renderLabel("Nouveau produit", array('class' => "col-sm-4 control-label")); ?>
@@ -87,7 +87,7 @@
 
         <div style="margin-top: 20px;" class="row row-margin row-button">
             <div class="col-xs-4">
-                <a tabindex="-1" href="<?php echo url_for('chgtdenom_delete', $prisedemousse
+                <a tabindex="-1" href="<?php echo url_for('prisedemousse_delete', $prisedemousse
                 ) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-remove"></span> Annuler</a>
             </div>
             <div class="col-xs-4 col-xs-offset-4 text-right">
