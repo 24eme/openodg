@@ -199,9 +199,6 @@
         const parcelles = [];
         for (const [idFeature, feature] of Object.entries(controleCourant.parcellaire_geojson.features)) {
             feature.properties.controleId = controleCourant._id;
-            for(ordre in feature.properties.parcellaires) {
-                feature.properties.parcellaires[ordre].parcelleId=feature.id+'-'+String(ordre).padStart(2, '0');
-            }
             parcelles.push(feature);
         }
 
