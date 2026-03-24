@@ -63,14 +63,27 @@ EOF;
 
         	$i++;
 
-        	if ($etablissement = EtablissementClient::getInstance()->find($item->id)) {
+            $etablissement = EtablissementClient::getInstance()->find($item->id);
+            if (!$etablissement) {
+                echo sprintf("ERROR;Etablissement non trouvé %s\n", $item->id);
+                continue;
+            }
+
+            if ($options['debug'] && $options['limitidentifiant']) {
+                    echo "WARNING: etablissement trouvé pour ".$options["limitidentifiant"]." ".$etablissement->_id."\n";
+            }
+
                 $ddType = DouaneCsvFile::getDocumentDouanierType($etablissement);
 
         		if ($type && $ddType != $type) {
+
         			continue;
         		}
 
                 if ($etablissement->statut != CompteClient::STATUT_ACTIF) {
+                    if ($options['limitidentifiant']) {
+                        echo sprintf("WARNING;etablissement %s %s non actif\n", $etablissement->cvi, $etablissement->_id);
+                    }
                     continue;
                 }
 
@@ -124,23 +137,19 @@ EOF;
 
         		if (!$fichiers) {
         			echo sprintf("WARNING;Aucun document douanier pour %s (%s)\n", $etablissement->_id, $etablissement->cvi);
-        		} else {
-                    foreach($fichiers as $fichier) {
-                        if(isset($options['dateimport']) && $options['dateimport']) {
-                            $fichier->date_import = $options['dateimport'];
-                            $fichier->date_depot = $options['dateimport'];
-                            if (DRConfiguration::getInstance()->hasValidationDR()) {
-                                $fichier->add('validation_odg', $options['dateimport']);
-                            }
-                            $fichier->save();
+                    continue;
+                }
+                foreach($fichiers as $fichier) {
+                    if(isset($options['dateimport']) && $options['dateimport']) {
+                        $fichier->date_import = $options['dateimport'];
+                        $fichier->date_depot = $options['dateimport'];
+                        if (DRConfiguration::getInstance()->hasValidationDR()) {
+                            $fichier->add('validation_odg', $options['dateimport']);
                         }
-			            echo sprintf("SUCCESS;Document douanier importé;%s %s (%s)\n", $fichier->type, $etablissement->_id, $etablissement->cvi);
+                        $fichier->save();
                     }
-        		}
-
-        	} else {
-        		echo sprintf("ERROR;Etablissement non trouvé %s\n", $item->id);
-        	}
+                    echo sprintf("SUCCESS;Document douanier importé;%s %s (%s)\n", $fichier->type, $fichier->_id, $etablissement->cvi);
+                }
         }
     }
 
