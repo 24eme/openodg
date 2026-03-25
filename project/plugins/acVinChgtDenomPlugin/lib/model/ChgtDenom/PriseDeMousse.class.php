@@ -57,4 +57,9 @@ class PriseDeMousse extends ChgtDenom  {
         return $lots_res;
     }
 
+    public function getAllPieces() {
+        //TODO
+        return array();
+    }
+
 }
