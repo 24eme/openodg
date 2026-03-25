@@ -6,14 +6,14 @@
         <button id="btn-close-info" type="button" style="position: absolute; right: 10px; top: 5px;" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <table class="table table-bordered table-condensed table-striped" style="margin-bottom: 0;">
         <tbody>
-            <tr><th>Commune</th><td v-for="p in parcelle.properties.parcellaires">{{ p["Commune"] }}</td></tr>
-            <tr><th>Section&nbsp;/&nbspN°</th><td v-for="p in parcelle.properties.parcellaires">{{ p["Section"] }} {{ p["Numero parcelle"] }}</td></tr>
-            <tr><th>Produits<br/>et cepages</th><td v-for="p in parcelle.properties.parcellaires"><span class="text-muted"> {{ p["Produit"] }}</span><br/>{{ p["Cepage"] }}</td></tr>
-            <tr><th>Année plantat°</th><td v-for="p in parcelle.properties.parcellaires">{{ p["Campagne"] }}</td></tr>
-            <tr><th>Superficies <span>(ha)</span></th><td v-for="p in parcelle.properties.parcellaires">{{ p["Superficie"] }}</td></tr>
-            <tr><th>Écart Pieds</th><td v-for="p in parcelle.properties.parcellaires">{{ p["Ecart pied"] }}</td></tr>
-            <tr><th>Écart Rang</th><td v-for="p in parcelle.properties.parcellaires">{{ p["Ecart rang"] }}</td></tr>
-            <tr><th>Sélectionner</th><td v-for="p in parcelle.properties.parcellaires" class="text-center"><label class="switch"><input class="selectParcelle" type="checkbox" v-model="parcellesSelectionnees" :value="p.parcelleId" /><span class="slider round"></span></label></td></tr>
+            <tr><th>Commune</th><td v-for="p in parcelle.properties.parcellaires">{{ p.commune }}</td></tr>
+            <tr><th>Section&nbsp;/&nbspN°</th><td v-for="p in parcelle.properties.parcellaires">{{ p.section }} {{ p.numero_parcelle }}</td></tr>
+            <tr><th>Produits<br/>et cepages</th><td v-for="p in parcelle.properties.parcellaires"><span class="text-muted"> {{ p.source_produit_libelle }}</span><br/>{{ p.cepage }}</td></tr>
+            <tr><th>Année plantat°</th><td v-for="p in parcelle.properties.parcellaires">{{ p.campagne }}</td></tr>
+            <tr><th>Superficies <span>(ha)</span></th><td v-for="p in parcelle.properties.parcellaires">{{ p.superficie }}</td></tr>
+            <tr><th>Écart Pieds</th><td v-for="p in parcelle.properties.parcellaires">{{ p.ecart_pieds }}</td></tr>
+            <tr><th>Écart Rang</th><td v-for="p in parcelle.properties.parcellaires">{{ p.ecart_rang }}</td></tr>
+            <tr><th>Sélectionner</th><td v-for="p in parcelle.properties.parcellaires" class="text-center"><label class="switch"><input class="selectParcelle" type="checkbox" v-model="parcellesSelectionnees" :value="p.parcelle_id" /><span class="slider round"></span></label></td></tr>
         </tbody>
         </table>
     </div>

@@ -27,6 +27,7 @@
                 </div>
             </div>
             <div class="form-group">
+                <a title='Les agents sont des contacts configurés avec le tag "agent_controle".' data-placement="bottom" data-toggle="tooltip" class="btn-tooltip btn btn-md" style=""><span class="glyphicon glyphicon-question-sign"></span></a>
                 <label class="col-sm-4 control-label" for="agent_identifiant">Agent</label>
                 <div class="col-sm-4">
                     <select class="form-control" name="agent_identifiant" id="agent_identifiant">
