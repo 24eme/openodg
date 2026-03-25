@@ -109,7 +109,6 @@
           if (!response.ok) {
             throw new Error('Erreur HTTP ' + response.status);
           }
-          this.controleCourant.validation = true;
         })
         .catch(error => {
           console.error('Transmission error:', error);
@@ -135,7 +134,7 @@
         },
         save() {
             this.parcelleCourante.controle.saisie = 1;
-            this.controleCourant.validation = false;
+            this.parcelleCourante.needs_to_be_saved = true;
             router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
         },
         echoFloat(val, nbDecimal = 5) {
@@ -189,7 +188,7 @@
       },
       save() {
         this.controleCourant.audit.saisie = 1;
-        this.controleCourant.validation = false;
+        this.controleCourant.audit.needs_to_be_saved = true;
         router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
       }
     };
