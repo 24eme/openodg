@@ -73,6 +73,9 @@
     };
 
     templates.listing.methods = {
+        nbParcellesControlees(controleCible) {
+          return (Object.keys(controleCible.parcelles || {}).filter(k => controleCible.parcelles[k].controle.saisie == 1)).length;
+        }
     };
 
     templates.operateur.data = function() {

@@ -9,7 +9,7 @@
             <div class="col-xs-2 col-md-1" style="font-size: 20px;">
                 <strong>{{ (10 + index) }}:00</strong>
             </div>
-            <div class="col-xs-8 col-md-9">
+            <div class="col-xs-7 col-md-8">
                 <h4 class="list-group-item-heading">{{ controle.declarant.nom }}  <small>{{ controle.declarant.cvi }}</small></h4>
                 <p class="list-group-item-text">{{ controle.declarant.adresse }}<br />{{ controle.declarant.code_postal }} {{ controle.declarant.commune }}</p>
                 <div class="mt-2">
@@ -17,6 +17,9 @@
                     {{ Object.keys(controle.parcelles).length }} parcelles
                     </label>
                 </div>
+            </div>
+            <div class="col-xs-1 col-md-1 text-right">
+                <span class="badge">{{ nbParcellesControlees(controle) }} / {{ Object.keys(controle.parcelles).length }}</span>
             </div>
             <div class="col-xs-2 text-right" :class="{ 'text-primary': controle.audit.saisie != 1 }">
                 <span class="glyphicon glyphicon-chevron-right h1"></span>
