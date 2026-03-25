@@ -229,13 +229,13 @@ info.update = function (layer) {
   var ecartRang = "<th>Écart Rang</th>";
   var compagnes = "<th>Année plantat°</th>";
   props.parcellaires.forEach(function(parcelle){
-      Commune += '<td>'+parcelle['Commune']+'</td>';
-      numParcelles += '<td>'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
-      Cepages += '<td><span class="text-muted">'+parcelle.Produit+'</span><br/>'+parcelle.Cepage+'</td>';
-      compagnes += '<td>'+parcelle.Campagne+'</td>';
-      Superficies += '<td>'+parcelle.Superficie+'</td>';
-      ecartPied += '<td>'+parcelle["Ecart pied"]+'</td>';
-      ecartRang +='<td>'+parcelle["Ecart rang"]+'</td>';
+      Commune += '<td>'+parcelle.commune+'</td>';
+      numParcelles += '<td>'+parcelle.section+" "+parcelle.numero_parcelle+'</td>';
+      Cepages += '<td><span class="text-muted">'+parcelle.source_produit_libelle+'</span><br/>'+parcelle.cepage+'</td>';
+      compagnes += '<td>'+parcelle.campagne_plantation+'</td>';
+      Superficies += '<td>'+parcelle.superficie+'</td>';
+      ecartPied += '<td>'+parcelle.ecart_pieds+'</td>';
+      ecartRang +='<td>'+parcelle.ecart_rang+'</td>';
   });
 
   var popupContent ='<button id="btn-close-info" type="button" style="position: absolute; right: 10px; top: 5px;" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button> <table class="table table-bordered table-condensed table-striped"><tbody>'+
