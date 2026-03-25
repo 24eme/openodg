@@ -17,7 +17,7 @@
       <div class="modal-footer">
           <div class="row">
               <div class="col-md-4 text-left">
-                  <a class="btn btn-default" href="<?php echo url_for('controle_liste_operateur_tournee',array('date' => $controle->_id, 'agent_identifiant' => $controle->agent_identifiant)) ; ?>">Annuler</a>
+                  <a class="btn btn-default" href="<?php echo url_for('controle_liste_operateur_tournee',array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)) ; ?>">Annuler</a>
               </div>
               <div class="col-md-4 text-center">
                   <div class="btn-group">
