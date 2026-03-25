@@ -10,7 +10,7 @@ table, th, td {
 
 .center-grey {
     text-align: center;
-    background-color: #cccccc;
+    background-color: #dddddd;
 }
 </style>
 
@@ -30,13 +30,13 @@ table, th, td {
             <td colSpan="3">&nbsp;<br/><strong>AGENT :</strong>&nbsp;&nbsp;<?php echo CompteClient::getInstance()->find($controle->agent_identifiant)->getInitiales(); ?></td>
         </tr>
         <tr>
-            <td colSpan="8" style="text-align: center; height:40px;">&nbsp;<br/><strong><?php echo $controle->declarant->raison_sociale ?></strong><br/>N° SIRET : <?php echo $controle->declarant->siret ?>&nbsp;&nbsp;&nbsp;N° CVI : <?php echo $controle->declarant->cvi ?><br/></td>
+            <td colSpan="8" style="text-align: center; height:80px;">&nbsp;<br/><strong><?php echo $controle->declarant->raison_sociale ?></strong><br/>N° SIRET : <?php echo $controle->declarant->siret ?>&nbsp;&nbsp;&nbsp;N° CVI : <?php echo $controle->declarant->cvi ?><br/></td>
         </tr>
         <tr>
-            <td colspan="8" style="text-align: center;"><strong><?php echo $controle->identifiant; ?></strong></td>
+            <td colspan="8" style="text-align: center; height: 60px;">&nbsp;<br/><strong><?php echo $controle->identifiant; ?></strong></td>
         </tr>
         <tr>
-            <td class="center-grey" colSpan="8"><strong>FICHE CONTACT</strong></td>
+            <td class="center-grey" colSpan="8" style="height: 60px;">&nbsp;<br/><strong>FICHE CONTACT</strong></td>
         </tr>
         <tr>
             <td colSpan="2"><strong>Adresse</strong></td>
@@ -55,7 +55,7 @@ table, th, td {
             <td colSpan="2"><?php echo $controle->declarant->fax ?></td>
         </tr>
         <tr>
-            <td class="center-grey" colSpan="8"><strong>CONTRÔLE DOCUMENTAIRE</strong></td>
+            <td class="center-grey" colSpan="8" style="height: 60px;">&nbsp;<br/><strong>CONTRÔLE DOCUMENTAIRE</strong></td>
         </tr>
         <tr>
             <td colSpan="2"><strong>Surface totale (avec JV) :</strong></td>
@@ -92,7 +92,7 @@ table, th, td {
             <td colSpan="6" style="text-align: center;"><?php echo $hasVIFA; ?></td>
         </tr>
         <tr>
-            <td class="center-grey" colSpan="8"><strong>SYNTHESE TERRAIN</strong></td>
+            <td class="center-grey" colSpan="8" style="height: 60px;">&nbsp;<br/><strong>SYNTHESE TERRAIN</strong></td>
         </tr>
         <tr>
             <td colSpan="3">&nbsp;Tous les points à contrôler ont été vus :</td>
@@ -118,7 +118,7 @@ table, th, td {
             <td colSpan="8" style="height: 45px;"><u>Observation de l'agent :</u><br/><?php echo $controle->getObservationAgent(); ?></td>
         </tr>
         <tr>
-            <td class="center-grey" colSpan="8"><strong>&nbsp;L'OPÉRATEUR OU SON REPRÉSENTANT</strong></td>
+            <td class="center-grey" colSpan="8" style="height: 60px;">&nbsp;<br/><strong>&nbsp;L'OPÉRATEUR OU SON REPRÉSENTANT</strong></td>
         </tr>
         <tr>
             <td colSpan="3">&nbsp;<br/>Nom et Prénom :<br/></td>
@@ -126,7 +126,7 @@ table, th, td {
             <td colSpan="2" style="text-align: center;">&nbsp;<br/>Signature :<br/></td>
         </tr>
         <tr>
-            <td colSpan="3" style="height: 45px;"><u>Observation :</u><br/><?php echo $controle->getObservationOperateur(); ?></td>
+            <td colSpan="3" style="height: 30px;"><u>Observation :</u><br/><?php echo $controle->getObservationOperateur(); ?></td>
             <td class="center-grey" colSpan="3">La signature de la présente déclaration signifie l'acceptation des constats effectués</td>
             <td colSpan="2"></td>
         </tr>

@@ -231,5 +231,25 @@ controle_pdf:
   param: { module: controle, action: exportControlePdf }
 
 controle_gestion_manquements:
-  url: /controle/gestion_manquements
+  url: /controle/gestionmanquements
   param: { module: controle, action: gestionManquements }
+
+controle_liste_manquements_operateur:
+  url: /controle/:id_controle/manquements/liste
+  param: { module: controle, action: listingManquementsOperateur }
+
+controle_lever_manquement:
+  url: /controle/:id_controle/manquement/:id_manquement/lever
+  param: { module: controle, action: leverManquement }
+
+controle_mail_resultats_previsualisation:
+  url: /controle/:id_controle/mail-previsualisation
+  param: { module: controle, action: mailPrevisualisation }
+
+controle_envoi_mail_resultats:
+  url: /controle/:id_controle/:identifiant/envoi-mail
+  param: { module: controle, action: setEnvoiMail }
+
+controle_mail_to_resultats:
+  url: /controle/:id_controle/:identifiant/mail_to_resultat
+  param: { module: controle, action: mailToNotification }
