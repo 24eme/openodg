@@ -22,6 +22,9 @@ class PriseDeMousse extends ChgtDenom  {
         }
 
         $lotOrig = $this->generateLotOrigine($lot);
+        if ($lotOrig->volume < $lot->volume * 0.2) {
+            $lotOrig->volume = 0;
+        }
         $lots[] = $lotOrig;
 
         $lot->produit_libelle = $this->changement_produit_libelle;
