@@ -2011,11 +2011,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           return array();
       }
 
-      $cotisations = $templateFacture->generateCotisations($this);
 
-      if($this->hasVersion()) {
-          $cotisationsPrec = $templateFacture->generateCotisations($this->getMother());
-      }
+      $cotisations = $templateFacture->generateCotisations($this);
+      $cotisationsPrec = $this->mouvement_document->getMothersCotisations();
 
       $identifiantCompte = $this->getIdentifiant();
 
@@ -2038,7 +2036,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
           $cle = str_replace(['%detail_identifiant%', '%millesime%'], [$mouvement->detail_identifiant, $this->getPeriode()], $cotisation->getHash());
           if(isset($cotisationsPrec[$cle]) && $cotisation->getConfigCallback() != 'getVolumeRevendiqueNumeroDossier') {
-              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cle]->getQuantite();
+              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cle];
           }
 
           if($this->hasVersion() && !$mouvement->quantite) {
