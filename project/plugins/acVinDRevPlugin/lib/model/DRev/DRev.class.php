@@ -2204,6 +2204,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $degustations = array();
         $is_controle = true;
         foreach ($this->lots as $lot) {
+            if($lot->hasBeenEdited()) {
+                continue;
+            }
             if ($lot->id_document_affectation && strpos($lot->id_document_affectation, 'DEGUSTATION') !== false) {
                 $degustations[$lot->id_document_affectation] = $lot->id_document_affectation;
             }else{
