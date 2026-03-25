@@ -431,4 +431,19 @@ class Controle extends BaseControle
         ksort($sorted_manquements);
         return $sorted_manquements;
     }
+
+    public function setNotificationDateControleEtManquements($date)
+    {
+        $this->notification_date = $date;
+        foreach ($this->manquements as $manquement) {
+            $manquement->notification_date = $date;
+        }
+    }
+
+    public function getDateFormat($format = 'Y-m-d') {
+        if (!$this->date) {
+            return date($format);
+        }
+        return date($format, strtotime($this->date));
+    }
 }
