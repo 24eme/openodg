@@ -70,6 +70,17 @@ class ControleClient extends acCouchdbClient
         return $controles;
     }
 
+    public function findAllByDateTourneeAndAgent($date_tournee, $agent_identifiant)
+    {
+        $ret = array();
+        foreach ($this->findAll() as $c) {
+            if ($c->date_tournee === $date_tournee && $c->agent_identifiant === $agent_identifiant) {
+                $ret[] = $c;
+            }
+        }
+        return $ret;
+    }
+
     public static function getAllAgents()
     {
         $result = [];

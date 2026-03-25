@@ -135,4 +135,25 @@ class ControleConfiguration extends DeclarationConfiguration {
 
         return $libellesConstats;
     }
+
+    public function getConstat($codeConstat)
+    {
+        foreach ($this->configuration['points_de_controle'] as $point) {
+            foreach ($point['constats'] as $idConstat => $manquement) {
+                if ($idConstat == $codeConstat) {
+                    return $manquement;
+                }
+            }
+        }
+    }
+
+    public function isTerrain($numRtm)
+    {
+        return $this->getConstat($numRtm)['terrain'];
+    }
+
+    public function isDocumentaire($numRtm)
+    {
+        return $this->getConstat($numRtm)['documentaire'];
+    }
 }

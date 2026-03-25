@@ -296,7 +296,14 @@ Controle:
                   libelle_manquement: {}
                   observations: {}
                   delais: {}
+      superficie_totale:
+      surface_de_production:
+        type: collection
+        definition:
+          fields:
+            '*': {}
       maturite:
+      manquements_valides:
       mouvements_statuts:
         type: array_collection
         definition:
