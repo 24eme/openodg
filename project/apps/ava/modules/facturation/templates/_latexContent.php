@@ -144,45 +144,16 @@ N° adhérent : \textbf{\NUMADHERENT}
 SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 }
 \end{center}
-	\vspace{1mm}
-    <?php if(($facture->hasArgument('carte_membre') && $facture->getArgument('carte_membre')) ||  (!$facture->hasArgument('carte_membre') && in_array(DRevClient::TYPE_COUCHDB, $facture->getOrigineTypes()->getRawValue()))): ?>
-    \begin{imgminipage}{0.5\textwidth}
-    \begin{beamerframe}
-		\begin{center}
-			\vspace{3mm}
-			\textbf{\underline{\large{\textsc{association des viticulteurs d'alsace}}}} \\
-			Maison des Vins d'Alsace - Colmar \\
-			\vspace{7mm}
-			\textbf{\large{CARTE DE MEMBRE}} \\
-			\vspace{1mm}
-			\textbf{\large{Année \CAMPAGNE}} \\
-		\end{center}
-		\vspace{5.9mm}
-		\begin{center}
-			\FACTUREMEMBRERS \\
-			\FACTUREMEMBREADRESSE \\
-			\FACTUREMEMBRECOMMUNE \\
-			N° adhérent : \NUMADHERENT \\
-		\end{center}
-		\vspace{1.6mm}
-    \end{beamerframe}
-    \end{imgminipage}
-    <?php else: ?>
+    \vspace{5mm}
+    <?php if(!$facture->isAvoir()): ?>
     \begin{minipage}{0.5\textwidth}
         \begin{center}
-        \vspace{3mm}
+            \textsc{Crédit Agricole Haut-Rhin Entreprises} \\
+            IBAN : FR76 1720 6007 7049 1243 9001 072 \\
+            BIC : AGRIFRPP872
         \end{center}
     \end{minipage}
-    <?php endif; ?>
-    <?php if(!$facture->isAvoir()): ?>
 	\begin{minipage}{0.5\textwidth}
-		\vspace{1.2cm}
-		\begin{center}
-			\textsc{Crédit Agricole Colmar Entreprises} \\
-			IBAN : FR76 1720 6007 7049 1243 9001 072 \\
-			BIC : AGRIFRPP872
-		\end{center}
-		\vspace{1cm}
 		\begin{beamerframetotal}
 		    \vspace{1mm}
 			\begin{tabularx}{\linewidth}{X c c}

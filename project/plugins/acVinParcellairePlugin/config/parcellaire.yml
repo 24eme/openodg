@@ -10,4 +10,7 @@ all:
         pc_min: 20
       irrigable:
         engagements: false
-        hasIrrigableMaterielRessource: true
+        nePasIrriguer: false
+        vciIrrigation: false
+        hasIrrigableMateriel: true
+        hasIrrigableRessource: true

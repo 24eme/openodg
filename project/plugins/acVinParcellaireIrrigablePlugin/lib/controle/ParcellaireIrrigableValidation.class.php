@@ -19,39 +19,60 @@ class ParcellaireIrrigableValidation extends DocumentValidation {
         /*
          * Error
          */
-         if(ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource()){
-             $this->addControle(self::TYPE_ERROR, 'parcellaireirrigable_materiel_ressource_required', "Vous devez renseigner le matériel et la ressource de toutes vos parcelles");
+         if(ParcellaireConfiguration::getInstance()->hasIrrigableMateriel()){
+             $this->addControle(self::TYPE_ERROR, 'parcellaireirrigable_materiel_required', "Vous devez renseigner le matériel de toutes vos parcelles");
          }
 
+         if(ParcellaireConfiguration::getInstance()->hasIrrigableRessource()){
+             $this->addControle(self::TYPE_ERROR, 'parcellaireirrigable_ressource_required', "Vous devez renseigner la ressource de toutes vos parcelles");
+         }
 
         /*
          * Engagements
          */
          $this->addControle(self::TYPE_ENGAGEMENT, ParcellaireIrrigableDocuments::ENGAGEMENT_A_NE_PAS_IRRIGUER, "Je m'engage à ne pas irriguer les parcelles ayant fait l'objet d'une déclaration préalable d’affectation parcellaire en vue de la revendication potentielle d'AOC Alsace Communale, AOC Alsace Lieu-dit, AOC Alsace Grand Cru et mentions VT/SGN.");
+         $this->addControle(self::TYPE_ENGAGEMENT, 'parcellaireirrigable_si_irrigue_pas_de_vci', "Toute parcelle irriguée ne pourra pas produire de VCI pour la campagne en cours.");
     }
 
     public function controle() {
         if (count($this->document->declaration) < 1) {
-        	$this->addPoint(self::TYPE_WARNING, 
-        					'parcellaireirrigable_no_parcelles', 
-        					'<a href="' . $this->generateUrl('parcellaireirrigable_parcelles', array('id' => $this->document->_id)) . "\" class='alert-link' >Séléctionner vos parcelles irrigables.</a>", 
+        	$this->addPoint(self::TYPE_WARNING,
+        					'parcellaireirrigable_no_parcelles',
+        					'<a href="' . $this->generateUrl('parcellaireirrigable_parcelles', array('id' => $this->document->_id)) . "\" class='alert-link' >Séléctionner vos parcelles irrigables.</a>",
         					'');
         }
         $missed = false;
         foreach ($this->document->declaration->getParcellesByCommune() as $commune => $parcelles) {
         	foreach ($parcelles as $parcelle) {
-        		if (!$parcelle->materiel || !$parcelle->ressource) {
-        			$missed = true;
+        		if (!$parcelle->materiel) {
+        			$missedMateriel = true;
         		}
+                if (!$parcelle->ressource) {
+                    $missedRessource = true;
+                }
         	}
         }
-        if ($missed && ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource()) {
-        	$this->addPoint(self::TYPE_ERROR, 
-        					'parcellaireirrigable_materiel_ressource_required', 
-        					'<a href="' . $this->generateUrl('parcellaireirrigable_irrigations', array('id' => $this->document->_id)) . "\" class='alert-link' >Cliquer ici pour modifier la déclaration.</a>", 
+        if ($missedMateriel && ParcellaireConfiguration::getInstance()->hasIrrigableMateriel()) {
+        	$this->addPoint(self::TYPE_ERROR,
+        					'parcellaireirrigable_materiel_required',
+        					'<a href="' . $this->generateUrl('parcellaireirrigable_irrigations', array('id' => $this->document->_id)) . "\" class='alert-link' >Cliquer ici pour modifier la déclaration.</a>",
         					'');
         }
 
-        $this->addPoint(self::TYPE_ENGAGEMENT, ParcellaireIrrigableDocuments::ENGAGEMENT_A_NE_PAS_IRRIGUER, null);
+        if ($missedRessource && ParcellaireConfiguration::getInstance()->hasIrrigableRessource()) {
+            $this->addPoint(self::TYPE_ERROR,
+                            'parcellaireirrigable_ressource_required',
+                            '<a href="' . $this->generateUrl('parcellaireirrigable_irrigations', array('id' => $this->document->_id)) . "\" class='alert-link' >Cliquer ici pour modifier la déclaration.</a>",
+                            '');
+        }
+
+        if (ParcellaireConfiguration::getInstance()->hasEngagementANePasIrriguer()) {
+            $this->addPoint(self::TYPE_ENGAGEMENT, ParcellaireIrrigableDocuments::ENGAGEMENT_A_NE_PAS_IRRIGUER, null);
+        }
+
+        if (ParcellaireConfiguration::getInstance()->hasEngagementVciIrrigation()) {
+            $this->addPoint(self::TYPE_ENGAGEMENT, 'parcellaireirrigable_si_irrigue_pas_de_vci',
+            '<input type="checkbox" class=alert-link>Toute parcelle irriguée ne pourra pas produire de VCI pour la campagne en cours.</input>');
+        }
     }
 }

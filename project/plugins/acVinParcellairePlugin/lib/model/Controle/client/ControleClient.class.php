@@ -70,6 +70,17 @@ class ControleClient extends acCouchdbClient
         return $controles;
     }
 
+    public function findAllByDateTourneeAndAgent($date_tournee, $agent_identifiant)
+    {
+        $ret = array();
+        foreach ($this->findAll() as $c) {
+            if ($c->date_tournee === $date_tournee && $c->agent_identifiant === $agent_identifiant) {
+                $ret[] = $c;
+            }
+        }
+        return $ret;
+    }
+
     public static function getAllAgents()
     {
         $result = [];
@@ -77,6 +88,11 @@ class ControleClient extends acCouchdbClient
           $result[] = CompteClient::getInstance()->find($v->id);
         }
         return $result;
+    }
+
+    public static function sortControlesByDateNotification($controle_a, $controle_b)
+    {
+        return strtotime($controle_a->notification_date) > strtotime($controle_b->notification_date);
     }
 
 }
