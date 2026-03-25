@@ -35,10 +35,9 @@
                 <?php endif;?>
             </td>
             <td>
-              <a class="pull-right" title="Ouvrir le mail" style="color: white;" href="<?php echo url_for('controle_mail_to_resultats', array('id_controle' => $controle->_id, 'identifiant' => $controle->identifiant)); ?>"><span class="glyphicon glyphicon-envelope"></span></a>
             <?php if ($controle->notification_date === null): ?>
-                <div class="btn-group">
-                  <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div class="btn-group pull-right">
+                  <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"<?php if (!$controle->manquements_valides):?> title="Les manquements doivent être générés afin de pouvoir notifier l'opérateur" disabled<?php endif;?>>
                     Notifier <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu text-left">
@@ -55,10 +54,12 @@
                   </ul>
                 </div>
             <?php else: ?>
-                <a href="<?php echo url_for('controle_mail_resultats_previsualisation',array('id_controle' => $controle->_id)); ?>" class="btn btn-default btn-sm disabled">
-                    <i class="glyphicon glyphicon-send"></i>&nbsp;&nbsp;<?php echo format_date($controle->notification_date, "dd/MM/yyyy")." à ".format_date($controle->notification_date, "H")."h".format_date($controle->notification_date, "mm"); ?>
-                </a>
-              <br/><a href="<?php echo url_for('controle_envoi_mail_resultats',array('id_controle' => $controle->_id, 'identifiant' => $controle->identifiant,'envoye' => 0)); ?>" ><small>Remettre en non envoyé</small></a>
+                <div class="text-center">
+                    <a href="<?php echo url_for('controle_mail_resultats_previsualisation',array('id_controle' => $controle->_id)); ?>" class="btn btn-default btn-sm disabled">
+                        <i class="glyphicon glyphicon-send"></i>&nbsp;&nbsp;<?php echo format_date($controle->notification_date, "dd/MM/yyyy")." à ".format_date($controle->notification_date, "H")."h".format_date($controle->notification_date, "mm"); ?>
+                    </a>
+                    <br/><a href="<?php echo url_for('controle_envoi_mail_resultats',array('id_controle' => $controle->_id, 'identifiant' => $controle->identifiant,'envoye' => 0)); ?>" ><small>Remettre en non envoyé</small></a>
+                </div>
             <?php endif ?>
           </td>
         </tr>
