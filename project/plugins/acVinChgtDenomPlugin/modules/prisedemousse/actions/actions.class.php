@@ -29,7 +29,7 @@ class prisedemousseActions extends sfActions
     }
 
     public function executeEdition(sfWebRequest $request) {
-        $this->prisedemousse = $this->getRoute()->getChgtDenom();
+        $this->prisedemousse = $this->getRoute()->getPriseDeMousse();
         $this->secureIsValide($this->prisedemousse);
 
         if($this->prisedemousse->getLotOrigine() === null) {
@@ -52,11 +52,11 @@ class prisedemousseActions extends sfActions
 
         $this->form->save();
 
-        return $this->redirect('prisedemousse_validation', $this->chgtDenom);
+        return $this->redirect('prisedemousse_validation', $this->prisedemousse);
     }
 
     public function executeLogement(sfWebRequest $request) {
-        $chgtDenom = $this->getRoute()->getChgtDenom();
+        $chgtDenom = $this->getRoute()->getPriseDeMousse();
         $this->secureIsValide($chgtDenom);
 
         if ($chgtDenom->isValide()) {
@@ -78,23 +78,22 @@ class prisedemousseActions extends sfActions
     }
 
     public function executeValidation(sfWebRequest $request) {
-        $this->chgtDenom = $this->getRoute()->getChgtDenom();
+        $this->prisedemousse = $this->getRoute()->getPriseDeMousse();
 
-        if ($this->chgtDenom->isValide()) {
-            return $this->redirect('prisedemousse_visualisation', $this->chgtDenom);
+        if ($this->prisedemousse->isValide()) {
+            return $this->redirect('prisedemousse_visualisation', $this->prisedemousse);
         }
-
-        $this->chgtDenom->generateLots();
-        $this->secureIsValide($this->chgtDenom);
+        $this->prisedemousse->generateLots();
+        $this->secureIsValide($this->prisedemousse);
         $this->isAdmin = $this->getUser()->isAdmin();
 
-        if (! $this->chgtDenom->isValide()) {
-            $this->formLogement = new ChgtDenomLogementForm($this->chgtDenom);
+        if (! $this->prisedemousse->isValide()) {
+            $this->formLogement = new ChgtDenomLogementForm($this->prisedemousse);
         }
 
-        $this->validation = new ChgtDenomValidation($this->chgtDenom);
+        $this->validation = new PriseDeMousseValidation($this->prisedemousse);
 
-        $this->form = new ChgtDenomValidationForm($this->chgtDenom, array(), array('isAdmin' => $this->isAdmin, 'withDate' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
+        $this->form = new ChgtDenomValidationForm($this->prisedemousse, array(), array('isAdmin' => $this->isAdmin, 'withDate' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -111,18 +110,18 @@ class prisedemousseActions extends sfActions
         $this->form->save();
 
         if($this->isAdmin) {
-            $this->chgtDenom->validateOdg(null, $request->getParameter('region', $this->getUser()->getRegion()));
-            $this->chgtDenom->save();
+            $this->prisedemousse->validateOdg(null, $request->getParameter('region', $this->getUser()->getRegion()));
+            $this->prisedemousse->save();
             $this->getUser()->setFlash("notice", "Le changement dénomination a été validé et approuvé");
 
-            return $this->redirect('prisedemousse_visualisation', $this->chgtDenom);
+            return $this->redirect('prisedemousse_visualisation', $this->prisedemousse);
         }
 
         return $this->redirect('prisedemousse_visualisation', $this->chgtDenom);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        $this->chgtDenom = $this->getRoute()->getChgtDenom();
+        $this->chgtDenom = $this->getRoute()->getPriseDeMousse();
         $this->isAdmin = $this->getUser()->isAdmin();
 
         if (!$this->chgtDenom->isValide()) {
@@ -161,7 +160,7 @@ class prisedemousseActions extends sfActions
     }
 
     public function executeDevalidation(sfWebRequest $request) {
-        $chgtDenom = $this->getRoute()->getChgtDenom();
+        $chgtDenom = $this->getRoute()->getPriseDeMousse();
         if (!$this->getUser()->isAdmin()) {
           $this->secure(ChgtDenomSecurity::DEVALIDATION , $chgtDenom);
         }
@@ -183,7 +182,7 @@ class prisedemousseActions extends sfActions
     }
 
     public function executeSuppression(sfWebRequest $request) {
-        $this->chgtDenom = $this->getRoute()->getChgtDenom();
+        $this->chgtDenom = $this->getRoute()->getPriseDeMousse();
         $this->secureIsValide($this->chgtDenom);
         $identifiant = $this->chgtDenom->identifiant;
         $this->chgtDenom->delete();
@@ -199,7 +198,7 @@ class prisedemousseActions extends sfActions
 
     public function executeChgtDenomPDF(sfWebRequest $request)
     {
-        $chgtDenom = $this->getRoute()->getChgtDenom(['allow_habilitation' => true, 'allow_stalker' => true]);
+        $chgtDenom = $this->getRoute()->getPriseDeMousse(['allow_habilitation' => true, 'allow_stalker' => true]);
         if (!$chgtDenom->isApprouve()) {
             $chgtDenom->generateLots();
         }

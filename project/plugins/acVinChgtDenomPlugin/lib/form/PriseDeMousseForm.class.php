@@ -2,8 +2,6 @@
 
 class PriseDeMousseForm extends acCouchdbObjectForm
 {
-    public static $types = array(PriseDeMousseClient::CHANGEMENT_TYPE_PRISEDEMOUSSE => "Prise de Mousse");
-
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
     }
@@ -12,14 +10,11 @@ class PriseDeMousseForm extends acCouchdbObjectForm
         $produits = $this->getProduits();
         $cepages = $this->getCepages();
 
-        $this->setWidget('prisedemousse_type', new bsWidgetFormChoice(array('choices' => $this->getTypes(), 'expanded' => true)));
-        $this->setValidator('prisedemousse_type', new sfValidatorChoice(array('choices' => array_keys($this->getTypes()), 'required' => true)));
+        $this->setWidget('changement_volume', new bsWidgetFormInputFloat());
+        $this->setValidator('changement_volume', new sfValidatorNumber(array('required' => false)));
 
-        $this->setWidget('prisedemousse_volume', new bsWidgetFormInputFloat());
-        $this->setValidator('prisedemousse_volume', new sfValidatorNumber(array('required' => false)));
-
-        $this->setWidget('prisedemousse_produit_hash', new bsWidgetFormChoice(array('choices' => $produits)));
-        $this->setValidator('prisedemousse_produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
+        $this->setWidget('changement_produit_hash', new bsWidgetFormChoice(array('choices' => $produits)));
+        $this->setValidator('changement_produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
 
         for($i = 0; $i < DRevLotForm::NBCEPAGES; $i++) {
             $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
@@ -29,8 +24,8 @@ class PriseDeMousseForm extends acCouchdbObjectForm
         }
 
         if(ChgtDenomConfiguration::getInstance()->hasSpecificiteLot()){
-          $this->setWidget('prisedemousse_specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
-          $this->setValidator('prisedemousse_specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
+          $this->setWidget('changement_specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
+          $this->setValidator('changement_specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
         }
 
         $this->validatorSchema->setPostValidator(new ChgtDenomValidator($this->getObject()));
@@ -39,36 +34,28 @@ class PriseDeMousseForm extends acCouchdbObjectForm
 
     protected function doUpdateObject($values) {
         parent::doUpdateObject($values);
-        $this->getObject()->changement_type = $values['prisedemousse_type'];
-        $this->getObject()->changement_produit_hash = null;
+        $this->getObject()->changement_type = PriseDeMousseClient::CHANGEMENT_TYPE_PRISEDEMOUSSE;
+        $this->getObject()->changement_produit_hash = $values['changement_produit_hash'];
 
-        if ($values['prisedemousse_produit_hash'] && !$this->getObject()->isDeclassement()) {
-            $this->getObject()->changement_produit_hash = $values['prisedemousse_produit_hash'];
-        }
-        $this->getObject()->remove('prisedemousse_cepages');
-        $this->getObject()->add('prisedemousse_cepages');
+        $this->getObject()->remove('changement_cepages');
+        $this->getObject()->add('changement_cepages');
 
-        if($values['prisedemousse_type'] !== PriseDeMousseClient::CHANGEMENT_TYPE_DECLASSEMENT){
-          for($i = 0; $i < DRevLotForm::NBCEPAGES; $i++) {
-              if(!$values['cepage_'.$i] || !$values['repartition_'.$i]) {
-                  continue;
-              }
-              $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
-          }
+        for($i = 0; $i < DRevLotForm::NBCEPAGES; $i++) {
+            if(!$values['cepage_'.$i] || !$values['repartition_'.$i]) {
+                continue;
+            }
+            $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
         }
 
-        if ($this->getObject()->isFromProduction()) {
-            $this->getObject()->origine_volume = $this->getObject()->changement_volume;
-        }
     }
 
     protected function updateDefaultsFromObject() {
       parent::updateDefaultsFromObject();
       $defaults = $this->getDefaults();
-      $defaults['prisedemousse_type'] = $this->getObject()->changement_type;
-      $defaults['prisedemousse_volume'] = ($this->getObject()->exist('prisedemousse_volume'))? $this->getObject()->changement_volume : $this->getObject()->getLotOrigine()->volume;
+      $defaults['changement_type'] = PriseDeMousseClient::CHANGEMENT_TYPE_PRISEDEMOUSSE;
+      $defaults['changement_volume'] = ($this->getObject()->exist('prisedemousse_volume'))? $this->getObject()->changement_volume : $this->getObject()->getLotOrigine()->volume;
       if (ChgtDenomConfiguration::getInstance()->hasSpecificiteLot()) {
-        $defaults['prisedemousse_specificite'] = $this->getObject()->changement_specificite;
+        $defaults['changement_specificite'] = $this->getObject()->changement_specificite;
       }
       $i=0;
       foreach($this->getObject()->changement_cepages as $cepage => $repartition) {
@@ -83,10 +70,10 @@ class PriseDeMousseForm extends acCouchdbObjectForm
     {
         $produits = array();
         foreach ($this->getObject()->getDocument()->getConfigProduits() as $produit) {
-            if (!$produit->isActif()) {
-                continue;
+            $hash = $produit->getHash();
+            if (strpos($hash, '/VMQ/') !== false || strpos($hash, '/MOU/') !== false || strpos($hash, '/EFF/') !== false) {
+                $produits[$hash] = $produit->getLibelleComplet();
             }
-            $produits[$produit->getHash()] = $produit->getLibelleComplet();
         }
         return array_merge(array('' => ''), $produits);
     }
@@ -101,8 +88,4 @@ class PriseDeMousseForm extends acCouchdbObjectForm
         return array_merge(array(Lot::SPECIFICITE_UNDEFINED => "", "" => "Aucune"),  ChgtDenomConfiguration::getInstance()->getSpecificites());
     }
 
-    public function getTypes()
-    {
-        return $this->getObject()->isFromProduction() ? [PriseDeMousseClient::CHANGEMENT_TYPE_DECLASSEMENT  => "Déclassement"] : self::$types;
-    }
 }
