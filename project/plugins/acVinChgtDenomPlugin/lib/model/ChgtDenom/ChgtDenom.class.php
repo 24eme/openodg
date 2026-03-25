@@ -37,6 +37,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->archivage_document = new ArchivageDocument($this);
     }
 
+    public function getDocumentType() {
+        return ChgtDenomClient::TYPE_MODEL;
+    }
+
         public function getDateFormat($format = 'Y-m-d') {
             if ($this->validation) {
                 return explode('T', $this->validation)[0];
@@ -530,6 +534,20 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $lot;
     }
 
+    protected function generateLotOrigine($lot) {
+        $lotOrig = clone $lot;
+        $lotOrig->initial_type = null;
+        $lotOrig->volume = $this->origine_volume - $this->changement_volume;
+        if (!$lotOrig->volume) {
+            $lotOrig->affectable = false;
+        }
+        if ($this->origine_numero_logement_operateur !== $this->getLotOrigine()->numero_logement_operateur) {
+            $lotOrig->numero_logement_operateur = $this->origine_numero_logement_operateur;
+        }
+        $this->updateCepageCoherencyWithVolume($lotOrig);
+        return $lotOrig;
+    }
+
     public function generateLots() {
         $this->prepareGenerateLots();
 
@@ -540,16 +558,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         if ($this->isChgtDenomination()) {
-            $lotOrig = clone $lot;
-            $lotOrig->initial_type = null;
-            $lotOrig->volume = $this->origine_volume - $this->changement_volume;
-            if (!$lotOrig->volume) {
-                $lotOrig->affectable = false;
-            }
-            if ($this->origine_numero_logement_operateur !== $this->getLotOrigine()->numero_logement_operateur) {
-                $lotOrig->numero_logement_operateur = $this->origine_numero_logement_operateur;
-            }
-            $this->updateCepageCoherencyWithVolume($lotOrig);
+            $lotOrig = $this->generateLotOrigine($lot);
             $lots[] = $lotOrig;
             $lot->initial_type = null;
             $lot->campagne = $this->campagne;

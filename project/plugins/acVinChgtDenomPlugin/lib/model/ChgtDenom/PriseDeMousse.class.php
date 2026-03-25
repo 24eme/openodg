@@ -7,6 +7,10 @@ class PriseDeMousse extends ChgtDenom  {
         $this->type = PriseDeMousseClient::TYPE_MODEL;
     }
 
+    public function getDocumentType() {
+        return PriseDeMousseClient::TYPE_MODEL;
+    }
+
     public function generateLots() {
 
         $this->prepareGenerateLots();
@@ -16,6 +20,9 @@ class PriseDeMousse extends ChgtDenom  {
         if (!$lot) {
             return ;
         }
+
+        $lotOrig = $this->generateLotOrigine($lot);
+        $lots[] = $lotOrig;
 
         $lot->produit_libelle = $this->changement_produit_libelle;
         $lot->produit_hash = $this->changement_produit_hash;
