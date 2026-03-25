@@ -158,7 +158,7 @@ Controle:
       agent_identifiant: { }
       identifiant: { }
       campagne: { }
-      notification_date: { }
+      notification_date:
       declarant:
         type: collection
         class: ControleDeclarant
