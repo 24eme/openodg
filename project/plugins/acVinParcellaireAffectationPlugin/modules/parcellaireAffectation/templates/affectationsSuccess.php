@@ -11,7 +11,7 @@ if(isset($coop)):
     <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
 <?php endif; ?>
 
-<?php include_partial('parcellaireAffectation/step', array('step' => 'affectations', 'parcellaireAffectation' => $parcellaireAffectation)) ?>
+<?php include_partial('parcellaireAffectation/step', array('step' => $etape, 'parcellaireAffectation' => $parcellaireAffectation)) ?>
 
 <h2>Affectation de vos parcelles</h2>
 
@@ -31,26 +31,7 @@ if(isset($coop)):
     </div>
 <?php endif; ?>
 
-<ul class="nav nav-tabs mt-4">
-<?php foreach($destinataires as $id => $d):
-    if (count($produits) > 1):
-        foreach ($produits as $hash => $produit):
-    ?>
-    <li role="presentation" class="<?php if($id.$hash == $destinataire.$hashproduit): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>">
-        <a class="onglet-presentation" data-form="validation-form" data-href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]) ?>" href='#'>
-            <?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php
-            echo ($d['libelle_etablissement'] != 'Cave particulière') ? $d['libelle_etablissement'].' - ' : '';
-            echo $produit; ?>
-        </a>
-    </li>
-    <?php
-        endforeach;
-    else:
-    ?>
-    <li role="presentation" class="<?php if($id == $destinataire): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>"><a class="onglet-presentation" data-form="validation-form" data-href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id]) ?>" href="#"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'] ?></a></li>
-    <?php endif; ?>
-<?php endforeach; ?>
-</ul>
+<?php include_partial('parcellaireAffectation/destinataires', ['destinataires' => $destinataires, 'produits' => $produits, 'parcellaireAffectation' => $parcellaireAffectation, 'destinataire' => $destinataire, 'etape' => $etape]); ?>
 
 <form id="validation-form" action="" method="post" class="form-horizontal">
     <?php if (!$parcellaireAffectation->hasDgc() && $hashproduit): ?>
@@ -348,18 +329,6 @@ if(isset($coop)):
             });
         });
 
-        document.querySelectorAll("a[class^=onglet-presentation]").forEach(function (el) {
-            el.addEventListener("click", () => {
-                let form = document.querySelector("#" + el.dataset.form);
-                let input = document.createElement("input");
-                input.setAttribute("type", "hidden");
-                input.setAttribute("name", "service");
-                input.setAttribute("value", el.dataset.href.substring(el.dataset.href.indexOf("destinataire")));
-                form.append(input);
-                form.submit();
-            });
-        });
-
         function triggerAffectation(origin) {
             state = origin.dataset.status;
             (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
@@ -376,16 +345,7 @@ if(isset($coop)):
         }
     </script>
 
-    <div class="row row-margin row-button mt-3"  style="display:flex; justify-content: space-evenly;">
-        <div class="col-xs-4"><button type="submit" name="previous" value="1" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</button>
-        </div>
-
-        <div class="col-xs-4" style="display:flex; justify-content:center;"> <button type="submit" name="saveandquit" value="1" class="btn btn-default">Enregistrer en brouillon</button>
-        </div>
-
-        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
-        </div>
-    </div>
+    <?php include_partial('parcellaireAffectation/buttons'); ?>
 </form>
 
 <?php if(isset($coop)): ?>

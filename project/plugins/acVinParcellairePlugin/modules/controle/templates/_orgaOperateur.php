@@ -38,8 +38,7 @@
         <tr :class="{
             'text-muted': !isParcelleSelectionnee(parcelleId),
             'warning': controleCourant.parcellaire_parcelles[parcelleId].hasProblemExpirationCepage,
-            'danger':  controleCourant.parcellaire_parcelles[parcelleId].hasProblemEcartPieds || controleCourant.parcellaire_parcelles[parcelleId].hasProblemCepageAutorise ,
-            'hidden produitnongere': !controleCourant.parcellaire_parcelles[parcelleId].isRealProduit
+            'danger':  controleCourant.parcellaire_parcelles[parcelleId].hasProblemEcartPieds || controleCourant.parcellaire_parcelles[parcelleId].hasProblemCepageAutorise
             }"
             v-for="(parcelleId, numero) in getParcellesSorted()">
             <td><span v-if="isParcelleSelectionnee(parcelleId)" class="label label-primary lead" style="border-radius: 24px;">{{ numero + 1 }}</span></td>

@@ -207,6 +207,7 @@ Controle:
         type: collection
         definition:
           fields:
+            maturite:
             all_points_controles: {}
             all_points_conformes: {}
             agent_observation:
@@ -302,7 +303,6 @@ Controle:
         definition:
           fields:
             '*': {}
-      maturite:
       manquements_valides:
       mouvements_statuts:
         type: array_collection

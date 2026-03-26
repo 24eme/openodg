@@ -83,7 +83,7 @@ table, th, td {
         </tr>
         <tr>
             <td colSpan="2" style="height: 20px;"><strong>Maturité :</strong></td>
-            <td colSpan="3" style="text-align: center;"><?php echo $controle->maturite; ?></td>
+            <td colSpan="3" style="text-align: center;"><?php echo $controle->audit->maturite; ?></td>
             <td colSpan="1" style="height: 20px;"><strong>Manquants :</strong></td>
             <td colSpan="2" style="text-align: center;"><?php echo $manquant ?></td>
         </tr>
