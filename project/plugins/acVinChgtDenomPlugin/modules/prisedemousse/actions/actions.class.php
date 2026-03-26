@@ -15,11 +15,10 @@ class prisedemousseActions extends sfActions
         $lot = $doc->getLot($unique_id);
         $this->forward404Unless($lot);
 
-        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $lot, null, $papier);
+        $prisedemousse = PriseDeMousseClient::getInstance()->createDoc($etablissement->identifiant, $lot, null, $papier);
+        $prisedemousse->save();
 
-        $chgtDenom->save();
-
-        return $this->redirect('prisedemousse_edition', array('id' => $chgtDenom->_id));
+        return $this->redirect('prisedemousse_edition', array('id' => $prisedemousse->_id));
     }
 
     public function executeLots(sfWebRequest $request) {

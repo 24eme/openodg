@@ -81,6 +81,11 @@ class PriseDeMousseClient extends ChgtDenomClient {
         $pdm->storeDeclarant();
         $pdm->setLotOrigine($lot);
         $pdm->constructId();
+        try {
+            $pdm->changement_produit_hash = str_replace('/VDB/', '/VMQ/', $lot->produit_hash);
+        }catch(sfException $e){
+            //Pas de VMQ
+        }
 
         return $pdm;
     }
