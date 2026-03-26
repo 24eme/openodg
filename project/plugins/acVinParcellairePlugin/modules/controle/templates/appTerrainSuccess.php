@@ -190,6 +190,10 @@
         this.controleCourant.audit.saisie = 1;
         this.controleCourant.audit.needs_to_be_saved = true;
         router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+    },
+      devalider() {
+          this.controleCourant.audit.saisie = 0;
+          this.controleCourant.audit.needs_to_be_saved = true;
       }
     };
     templates.map.data = function() {

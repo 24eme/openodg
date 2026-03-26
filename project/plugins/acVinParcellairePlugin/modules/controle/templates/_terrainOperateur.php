@@ -30,14 +30,11 @@
 </div>
 
 <div class="row">
-    <div class="col-xs-4">
+    <div class="col-xs-6">
     <RouterLink class="btn btn-default" :to="{ name: 'listing' }"><span class="glyphicon glyphicon-chevron-left"></span> Retour</RouterLink>
     </div>
-    <div class="col-xs-4 text-center">
-        <button v-if="controleCourant.validation" class="btn btn-default btn-success" @click="transmitDataControle()"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Données transmises</button>
-        <button v-else class="btn btn-default" @click="transmitDataControle()" :class="{ 'btn-success' : controleCourant.validation == false && controleCourant.audit.saisie == 1}"><span class="glyphicon glyphicon-send"></span>&nbsp;&nbsp;Transmettre les données</button>
-    </div>
-    <div class="col-xs-4 text-right">
-    <button class="btn btn-primary" @click="startAudit()"><span class="glyphicon glyphicon-edit"></span> Saisir l'audit</button>
+    <div class="col-xs-6 text-right">
+        <button v-if="controleCourant.audit.saisie != 1" class="btn btn-primary" @click="startAudit()"><span class="glyphicon glyphicon-edit"></span> Saisir l'audit</button>
+        <button v-else class="btn btn-success" @click="startAudit()"><span class="glyphicon glyphicon-edit"></span> Modifier l'audit</button>
     </div>
 </div>
