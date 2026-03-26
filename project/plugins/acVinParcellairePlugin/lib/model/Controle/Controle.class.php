@@ -82,12 +82,12 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $parcellaire = $this->getParcellaire();
         $parcelles = [];
         foreach ($parcellaire->getParcelles() as $key => $parcelle) {
+            if (!($parcelle->isRealProduit() && ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration())) continue;
             $parcelles[$key] = $parcelle->getData();
             $parcelles[$key]->hasProblemExpirationCepage = $parcelle->hasProblemExpirationCepage();
             $parcelles[$key]->hasProblemEcartPieds = $parcelle->hasProblemEcartPieds();
             $parcelles[$key]->hasProblemCepageAutorise = $parcelle->hasProblemExpirationCepage();
             $parcelles[$key]->hasJeunesVignes = $parcelle->isJeunesVignes() && ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled();
-            $parcelles[$key]->isRealProduit = $parcelle->isRealProduit() && ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration();
             $parcelles[$key]->aires = $parcelle->getIsInAires();
         }
         return $parcelles;
@@ -169,7 +169,22 @@ class Controle extends BaseControle implements InterfacePieceDocument
     }
 
     public function getGeoJson() {
-        return $this->getParcellaire()->getGeoJson();
+        $geojson = $this->getParcellaire()->getGeoJson();
+        $features = [];
+        $parcelles = array_keys($this->getParcellaireParcelles());
+        foreach ($geojson->features as $feature) {
+            $tmp = $feature;
+            foreach ($feature->properties->parcellaires as $i => $parcelle) {
+                if (!in_array($parcelle->parcelle_id, $parcelles)) {
+                    unset($tmp->properties->parcellaires[$i]);
+                }
+            }
+            if (count($tmp->properties->parcellaires)) {
+                $features[] = $tmp;
+            }
+        }
+        $geojson->features = $features;
+        return $geojson;
     }
 
     private $to_dump = false;
