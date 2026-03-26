@@ -15,4 +15,16 @@ class ParcellaireManquantParcelleInfoForm extends acCouchdbObjectForm {
     	));
         $this->widgetSchema->setNameFormat('parcellaire_manquant[%s]');
     }
+
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        $parcelle = $this->getObject();
+        if(!$this->getObject() instanceof ParcellaireAffectationProduitDetail) {
+            $parcelle = $this->getObject()->getParent();
+        }
+        $parcelleParcellaire = $parcelle->getParcelleParcellaire();
+        if($parcelleParcellaire) {
+            $this->setDefault('densite', $parcelleParcellaire->getDensite());
+        }
+    }
 }
