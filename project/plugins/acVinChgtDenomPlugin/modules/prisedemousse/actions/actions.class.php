@@ -111,7 +111,7 @@ class prisedemousseActions extends sfActions
         if($this->isAdmin) {
             $this->prisedemousse->validateOdg(null, $request->getParameter('region', $this->getUser()->getRegion()));
             $this->prisedemousse->save();
-            $this->getUser()->setFlash("notice", "Le changement dénomination a été validé et approuvé");
+            $this->getUser()->setFlash("notice", "La prise de mousse a été validée et approuvée");
 
             return $this->redirect('prisedemousse_visualisation', $this->prisedemousse);
         }
@@ -120,22 +120,22 @@ class prisedemousseActions extends sfActions
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        $this->chgtDenom = $this->getRoute()->getPriseDeMousse();
+        $this->prisedemousse = $this->getRoute()->getPriseDeMousse();
         $this->isAdmin = $this->getUser()->isAdmin();
 
-        if (!$this->chgtDenom->isValide()) {
-            return $this->redirect('prisedemousse_validation', $this->chgtDenom);
+        if (!$this->prisedemousse->isValide()) {
+            return $this->redirect('prisedemousse_validation', $this->prisedemousse);
         }
 
         $this->form = null;
-        if ($this->isAdmin && !$this->chgtDenom->isApprouve()) {
-          $this->validation = new ChgtDenomValidation($this->chgtDenom);
-          $this->form = new ChgtDenomValidationForm($this->chgtDenom, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
+        if ($this->isAdmin && !$this->prisedemousse->isApprouve()) {
+          $this->validation = new PriseDeMousseValidation($this->prisedemousse);
+          $this->form = new ChgtDenomValidationForm($this->prisedemousse, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-            if (!$this->chgtDenom->isApprouve()) {
-                $this->chgtDenom->generateLots();
+            if (!$this->prisedemousse->isApprouve()) {
+                $this->prisedemousse->generateLots();
             }
             return sfView::SUCCESS;
         }
@@ -150,9 +150,9 @@ class prisedemousseActions extends sfActions
         $this->form->save();
 
         if($this->isAdmin) {
-            $this->chgtDenom->validateOdg();
-            $this->chgtDenom->save();
-            $this->getUser()->setFlash("notice", "Le changement dénomination a été approuvé");
+            $this->prisedemousse->validateOdg();
+            $this->prisedemousse->save();
+            $this->getUser()->setFlash("notice", "La prise de mousse a été approuvée");
         }
 
         return $this->redirect('prisedemousse_visualisation', $this->chgtDenom);
