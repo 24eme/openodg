@@ -232,4 +232,72 @@ class controleActions extends sfActions
         $this->controle->save();
         return $this->redirect('controle_liste_manquements_operateur', array('id_controle' => $this->controle->_id));
     }
+
+    public function executeMailPrevisualisation(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+
+        $this->date_tournee = $this->controle->date_tournee;
+        $this->agent_identifiant = $this->controle->agent_identifiant;
+        $this->controles = ControleClient::getInstance()->findAllByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant);
+
+        $this->popup = true;
+
+        $this->setTemplate('listeOperateursTournee');
+    }
+
+    public function executeSetEnvoiMail(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $identifiant = $request->getParameter('identifiant');
+        $mailto = $identifiant;
+        $date = $request->getParameter('envoye', date('Y-m-d H:i:s'));
+
+        if(!boolval($date)) {
+            $date = null;
+            $mailto = null;
+        }
+
+        $this->controle->setNotificationDateControleEtManquements($date);
+        $this->controle->save();
+
+        if ($mailto) {
+            return $this->redirect('controle_liste_operateur_tournee', array('date' => $this->controle->date_tournee, 'agent_identifiant' => $this->controle->agent_identifiant, 'mail_to_identifiant' => $identifiant));
+        } else {
+            return $this->redirect('controle_liste_operateur_tournee', array('date' => $this->controle->date_tournee, 'agent_identifiant' => $this->controle->agent_identifiant));
+        }
+    }
+
+    public function executeMailToNotification(sfWebRequest $request)
+    {
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $identifiant = $request->getParameter('identifiant');
+
+        sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date', 'Partial'));
+
+
+        $email = EtablissementClient::getInstance()->find($identifiant)->getEmail();
+        $email = trim($email);
+
+        $cc = Organisme::getInstance(null, 'degustation')->getEmail();
+        if ($cc) {
+            $cc = "cc=".$cc."&";
+        }
+        $subject = sprintf("Résultat du contrôle du %s", $this->controle->getDateFormat('d/m/Y'));
+        $body = html_entity_decode(str_replace("\n", "%0A", strip_tags(get_partial('controle/notificationEmail', [
+            'controle' => $this->controle,
+            'identifiant' => $identifiant,
+        ]))), ENT_QUOTES | ENT_XML1, 'UTF-8');
+
+        $mailto = "mailto:$email?".$cc."subject=$subject&body=$body";
+        $mailto = mb_strcut($mailto, 0, 1559); // Chrome limite les mailto à un certain nombre de caractères 1600 semblent être le max
+
+        $this->getResponse()->clearHttpHeaders();
+        $this->getResponse()->setStatusCode(302);
+        $this->getResponse()->setHttpHeader('Location', $mailto);
+        $this->getResponse()->setContent(sprintf('<html><head><meta http-equiv="refresh" content="%d;url=%s"/></head></html>', 0, $mailto));
+        $this->getResponse()->send();
+
+        throw new sfStopException();
+    }
 }

@@ -126,7 +126,7 @@ table, th, td {
             <td colSpan="2" style="text-align: center;">&nbsp;<br/>Signature :<br/></td>
         </tr>
         <tr>
-            <td colSpan="3" style="height: 60px;"><u>Observation :</u><br/><?php echo $controle->getObservationOperateur(); ?></td>
+            <td colSpan="3" style="height: 30px;"><u>Observation :</u><br/><?php echo $controle->getObservationOperateur(); ?></td>
             <td class="center-grey" colSpan="3">La signature de la présente déclaration signifie l'acceptation des constats effectués</td>
             <td colSpan="2"></td>
         </tr>

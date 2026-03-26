@@ -81,4 +81,29 @@ class MouvementFacturesDocument
         }
         throw new sfException(sprintf('The mouvement %s/%s of the document %s does not exist', $part_idetablissement, $cle_mouvement, $this->document->get('_id')));
     }
+
+    public function getMothersCotisations() {
+        $motherDocument = $this->document->getMother();
+        $cotisationsArray = [];
+
+        while($motherDocument) {
+            $mouvementsFactures = $motherDocument->getMouvementsFactures();
+
+            foreach($mouvementsFactures as $mouvementsFacture) {
+                foreach($mouvementsFacture as $mouvement) {
+                    $cotisationHash = "/" . "cotisations" . "/". $mouvement->categorie . "/" . "details" . "/" . $mouvement->type_hash;
+
+                    if (array_key_exists($cotisationHash, $cotisationsArray)) {
+                        $cotisationsArray[$cotisationHash] += $mouvement->quantite;
+                    } else {
+                        $cotisationsArray[$cotisationHash] = $mouvement->quantite;
+                    }
+                }
+            }
+
+            $motherDocument = $motherDocument->getMother();
+        }
+
+        return $cotisationsArray;
+    }
 }

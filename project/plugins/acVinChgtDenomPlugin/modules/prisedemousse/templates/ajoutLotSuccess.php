@@ -16,7 +16,7 @@
 
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php echo url_for('chgtdenom_lots', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Annuler</a>
+            <a href="<?php echo url_for('prisedemousse_lots', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Annuler</a>
         </div>
         <div class="col-xs-6 text-right">
             <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok

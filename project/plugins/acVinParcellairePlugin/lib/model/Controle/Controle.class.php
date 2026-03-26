@@ -1,9 +1,10 @@
 <?php
-class Controle extends BaseControle
+class Controle extends BaseControle implements InterfacePieceDocument
 {
     protected $config = null;
     protected $parcellaire = null;
     protected $declarant_document = null;
+    protected $piece_document = null;
 
     public function getConfig()
     {
@@ -18,6 +19,7 @@ class Controle extends BaseControle
         if (! isset($this->declarant_document)) {
             $this->declarant_document = new DeclarantDocument($this);
         }
+        $this->piece_document = new PieceDocument($this);
     }
 
     public function initDoc($identifiant, $date, $type = ControleClient::TYPE_COUCHDB)
@@ -124,10 +126,9 @@ class Controle extends BaseControle
         return $this->parcelles->exist($parcelleId);
     }
 
-    protected function doSave()
-    {
-        return;
-    }
+    protected function doSave() {
+		$this->piece_document->generatePieces();
+	}
 
     public function save()
     {
@@ -431,4 +432,72 @@ class Controle extends BaseControle
         ksort($sorted_manquements);
         return $sorted_manquements;
     }
+
+    public function hasNotificationDate()
+    {
+        return $this->exist('notification_date') && $this->notification_date;
+    }
+
+    public function setNotificationDateControleEtManquements($date)
+    {
+        $this->notification_date = $date;
+        foreach ($this->manquements as $manquement) {
+            $manquement->notification_date = $date;
+        }
+    }
+
+    public function getDateFormat($format = 'Y-m-d') {
+        if (!$this->date) {
+            return date($format);
+        }
+        return date($format, strtotime($this->date));
+    }
+
+    public function isPapier() {
+
+        return $this->exist('papier') && $this->get('papier');
+    }
+
+    /**** PIECES ****/
+
+    public function getAllPieces() {
+        $pieces = array();
+
+        if ($this->hasNotificationDate()) {
+            $pieces[] = ['identifiant' => $this->identifiant, 'date_depot' => date('Y-m-d',  strtotime($this->notification_date)), 'libelle' => 'Contrôle du '.date('d/m/Y',  strtotime($this->date_tournee)), 'mime' => Piece::MIME_PDF, 'visibilite' => 1,'source' => $this->_id];
+        }
+
+        return $pieces;
+    }
+
+    public function generatePieces() {
+    	return $this->piece_document->generatePieces();
+    }
+
+    public function generateUrlPiece($source = null) {
+    	return sfContext::getInstance()->getRouting()->generate('controle_pdf', array('id' => $this->_id));
+    }
+
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+    	return sfContext::getInstance()->getRouting()->generate('controle_liste_manquements_operateur', array('id_controle' => $id));
+    }
+
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+    	return null;
+    }
+
+    public static function isVisualisationMasterUrl($admin = false) {
+    	return true;
+    }
+
+    public static function isPieceEditable($admin = false) {
+    	return false;
+    }
+
+    public function getCategorie(){
+      return strtolower($this->type);
+    }
+
+    /**** FIN DES PIECES ****/
+
 }
