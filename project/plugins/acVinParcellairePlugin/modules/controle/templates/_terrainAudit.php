@@ -10,17 +10,17 @@
         <label class="col-sm-3 control-label">Maturité</label>
         <div class="col-sm-9">
             <label class="radio-inline">
-              <input type="radio" value="C" v-model="controleCourant.maturite" :disabled="controleCourant.audit.saisie == 1"/>
+              <input type="radio" value="C" v-model="controleCourant.audit.maturite" :disabled="controleCourant.audit.saisie == 1"/>
               Conforme
             </label>
 
             <label class="radio-inline">
-              <input type="radio" value="NC" v-model="controleCourant.maturite" :disabled="controleCourant.audit.saisie == 1"/>
+              <input type="radio" value="NC" v-model="controleCourant.audit.maturite" :disabled="controleCourant.audit.saisie == 1"/>
               Non Conforme
             </label>
 
             <label class="radio-inline">
-              <input type="radio" value="NA" v-model="controleCourant.maturite" :disabled="controleCourant.audit.saisie == 1"/>
+              <input type="radio" value="NA" v-model="controleCourant.audit.maturite" :disabled="controleCourant.audit.saisie == 1"/>
               Non Applicable
             </label>
         </div>
