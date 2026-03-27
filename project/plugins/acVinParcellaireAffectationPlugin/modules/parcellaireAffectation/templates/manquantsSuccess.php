@@ -25,7 +25,7 @@
     <?php endif; ?>
 </div>
 
-<?php include_partial('parcellaireAffectation/destinataires', ['destinataires' => $destinataires, 'produits' => $produits, 'parcellaireAffectation' => $parcellaireAffectation, 'destinataire' => $destinataire, 'etape' => $etape]); ?>
+<?php include_partial('parcellaireAffectation/destinataires', ['destinataires' => $destinataires, 'produits' => $produits, 'parcellaireAffectation' => $parcellaireAffectation, 'destinataire' => $destinataire, 'etape' => $etape, 'coop' => $coop]); ?>
 
 <form id="validation-form" action="" method="post" class="form-inline">
     <?php include_partial('parcellaireManquant/formManquants', ['form' => $form, 'manquants_by_commune' => $manquants_by_commune]); ?>

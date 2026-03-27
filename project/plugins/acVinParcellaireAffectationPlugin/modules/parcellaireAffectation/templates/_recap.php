@@ -19,7 +19,9 @@
 <table id="parcelles_<?php echo $dgc; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
     <thead>
         <tr>
+            <?php if(!$parcellaireAffectation->isDeclarationLiee()): ?>
         	<th class="col-xs-2">Commune</th>
+            <?php endif; ?>
             <th class="col-xs-2">Lieu-dit</th>
             <th class="col-xs-1">Section /<br />N° parcelle</th>
             <th class="col-xs-2">Cépage</th>
@@ -27,6 +29,10 @@
             <th class="col-xs-1" style="text-align: right;">Superficie affectée&nbsp;<span class="text-muted small">(ha)</span></th>
             <th class="col-xs-1">Affectation</th>
             <th class="col-xs-2">Destination</th>
+            <?php if($parcellaireAffectation->isDeclarationLiee()): ?>
+            <th class="col-xs-1">% de pieds manquants</th>
+            <th class="col-xs-1">Irrigable</th>
+            <?php endif; ?>
         </tr>
     </thead>
     <tbody>
@@ -58,7 +64,9 @@
             <?php $parcellesCommune = 0; $nomCommune = $parcelle->commune; $superficieCommune = 0 ?>
         <?php endif ?>
         <tr class="vertical-center<?php if ($parcelle->hasProblemProduitCVI()) echo ' warning' ?>">
+            <?php if(!$parcellaireAffectation->isDeclarationLiee()): ?>
             <td><?php echo $parcelle->commune; ?></td>
+            <?php endif; ?>
             <td><?php echo $parcelle->lieu; ?></td>
             <td class="text-center<?php if ($parcelle->hasProblemParcellaire()) echo ' warning text-danger'; ?>">
                 <?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?>
@@ -74,6 +82,10 @@
                 <?php if ($parcelle->isPartielle()): ?>Partielle<?php else: ?>Totale<?php endif; ?>
             </td>
             <td><?php echo implode(", ", $parcelle->getDestinatairesNom()) ?></td>
+            <?php if($parcellaireAffectation->isDeclarationLiee()): ?>
+            <td class="text-right"><?php if($parcelle->exist('manquant')): ?><?php echoFloatFr($parcelle->manquant->pourcentage); ?>&nbsp;%<?php endif; ?></td>
+            <td class="text-center text-success"><?php if($parcelle->exist('irrigation')): ?><span title="<?php echo $parcelle->irrigation->materiel."\n".$parcelle->irrigation->ressource; ?>" style="cursor: help;" class="glyphicon glyphicon-ok-sign"></span><?php endif; ?></td>
+            <?php endif; ?>
         </tr>
 
         <?php $parcellesCommune++; $nomCommune = $parcelle->commune; $superficieCommune += $parcelle->superficie  ?>

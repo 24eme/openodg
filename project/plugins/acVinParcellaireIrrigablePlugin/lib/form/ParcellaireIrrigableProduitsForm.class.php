@@ -26,9 +26,16 @@ class ParcellaireIrrigableProduitsForm extends acCouchdbObjectForm {
                 continue;
             }
             $node = $parcelles[$pid];
+
+            if($node->getDefinition()->exist('irrigation') && !$value['materiel'] && !$value['ressource']) {
+                $node->remove('irrigation');
+                continue;
+            }
+
             if($node->getDefinition()->exist('irrigation')) {
                 $node = $node->add('irrigation');
             }
+
             foreach ($value as $k => $v) {
                 $node->add($k, $v);
             }
