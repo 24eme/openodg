@@ -377,7 +377,6 @@
     async function submitNeedsToBeSaved(controles) {
       for (const controle of Object.values(controles)) {
           let reloadStatus = false;
-          let echecTransmission = false;
 
         if (controle.audit.needs_to_be_saved === true) {
 
@@ -388,10 +387,8 @@
             controle._rev = response.revision;
             reloadStatus = response.reloadStatus;
             localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
-            echecTransmission = false;
           } else {
               console.log(response);
-              echecTransmission = true;
           }
         }
 
@@ -406,15 +403,14 @@
               controle._rev = response.revision;
               reloadStatus = response.reloadStatus;
               localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
-              echecTransmission = false;
             } else {
                 console.log(response);
-                echecTransmission = true;
             }
           }
         }
-        if (reloadStatus && !echecTransmission) {
+        if (reloadStatus) {
             alert("Rev app < Rev couchdb - Rechargez l'app");
+            controle._rev = "00-Needs Update";
         }
       }
     }
