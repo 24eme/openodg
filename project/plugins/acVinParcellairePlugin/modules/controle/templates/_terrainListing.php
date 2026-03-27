@@ -1,4 +1,4 @@
-<h3 class="mt-0"><a href="<?php echo url_for("controle_index") ?>"><span class="glyphicon glyphicon-chevron-left"></span></a> <span class="glyphicon glyphicon-th-list"></span> Tournée du 12/11/2025 <RouterLink :to="{ name: 'map' }" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink></h3>
+<h3 class="mt-0"><span class="glyphicon glyphicon-th-list"></span> Tournée du {{ date_tournee }} <RouterLink :to="{ name: 'map' }" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink></h3>
 <hr class="mt-2" />
 
 <h2>Opérateurs à contrôler</h2>
@@ -26,4 +26,9 @@
             </div>
         </div>
     </RouterLink>
+    <div class="row">
+        <div class="text-center mt-5">
+            <a class="btn btn-primary" href="<?php echo url_for("controle_index") ?>">Quitter l'app Terrain</a>
+        </div>
+    </div>
 </div>

@@ -68,7 +68,8 @@
 
     templates.listing.data = function() {
         return {
-          controles: controles
+          controles: controles,
+          date_tournee: date_tournee
         }
     };
 
@@ -122,7 +123,8 @@
         return {
           controleCourant: controles[route.params.id],
           parcelleCourante: controles[route.params.id].parcelles[route.params.parcelle],
-          pointsDeControle: points_de_controle
+          pointsDeControle: points_de_controle,
+          date_tournee: date_tournee
         }
     };
     templates.parcelle.methods = {
