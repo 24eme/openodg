@@ -76,6 +76,20 @@ ParcellaireAffectation:
                               produit_hash: { }
                               source_produit_libelle: { }
                               parcelle_id: { }
+                              manquant:
+                                type: collection
+                                required: false
+                                definition:
+                                  fields:
+                                    densite: { }
+                                    pourcentage: { }
+                              irrigation:
+                                type: collection
+                                required: false
+                                definition:
+                                  fields:
+                                    materiel: {  }
+                                    ressource: {  }
                               destinations:
                                 type: collection
                                 required: false
