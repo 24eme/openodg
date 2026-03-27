@@ -230,9 +230,8 @@ class Controle extends BaseControle implements InterfacePieceDocument
                 return;
             }
             $this->parcelles->add($idParcelle, $parcelleData);
-        } else {
-            print_r($this->parcelles);exit;
         }
+
         $this->parcelles[$idParcelle]['controle'] = $element;
     }
 
