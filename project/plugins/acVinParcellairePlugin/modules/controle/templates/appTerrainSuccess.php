@@ -51,17 +51,38 @@
               controles: controles,
             }
         },
-        template: '<RouterView :key="$route.fullPath" />',
-        watch: {
-          controles: {
-            handler(newControles) {
-              if (newControles) {
-                  localStorage.setItem("controles_" + date_tournee, JSON.stringify(newControles));
-              }
-            },
-            deep: true
+        computed: {
+          isSynchro() {
+            return this.checkNeedsToBeSaved(this.controles);
           }
         },
+
+        methods: {
+            checkNeedsToBeSaved(controles) {
+              Object.values(controles).forEach(controle => {
+                if (controle.audit.needs_to_be_saved == true) {
+                    return false;
+                }
+                Object.values(controle.parcelles).forEach(parcelle => {
+                    if (parcelle.needs_to_be_saved == true) {
+                        return false;
+                    }
+                });
+              });
+              return true;
+            }
+        },
+        template: '<RouterView :key="$route.fullPath" />',
+        // watch: {
+        //   controles: {
+        //     handler(newControles) {
+        //       if (newControles) {
+        //           localStorage.setItem("controles_" + date_tournee, JSON.stringify(newControles));
+        //       }
+        //     },
+        //     deep: true
+        //   }
+        // },
       });
     app.use(router)
     app.mount('#content')
