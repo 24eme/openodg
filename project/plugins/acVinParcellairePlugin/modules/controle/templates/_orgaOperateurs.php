@@ -19,7 +19,7 @@
             <td><RouterLink :to="{ name: 'operateur', params: { id: controle._id } }">{{ controle.declarant.nom }}</RouterLink></td>
             <td class="text-center">{{ nbParcellesSelectionnees(controle._id) }} / {{ nbParcelles(controle._id) }} <small>parcelle(s)</small></td>
             <td class="text-center">{{ pourcentageSelectionne(controle._id) }}%</td>
-            <td class="text-center"><input v-if="nbParcellesSelectionnees(controle._id) > 0" v-model="controle.heure_tournee" type="time" @input="forceRerender()" /></td>
+            <td class="text-center"><input v-if="nbParcellesSelectionnees(controle._id) > 0" v-model="controles[controle._id].heure_tournee" type="time" @input="forceRerender()" /></td>
         </tr>
     </tbody>
 </table>

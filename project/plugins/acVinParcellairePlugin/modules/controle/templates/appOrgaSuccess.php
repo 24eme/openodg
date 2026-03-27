@@ -458,9 +458,12 @@
                 parcellesSelectionneesControles[this.controleCourant._id] = this.parcellesSelectionnees
                 const data = {};
                 for(let id in parcellesSelectionneesControles) {
-                    data[id] = [];
+                    data[id] = {};
+                    console.log(controles[this.controleCourant._id].heure_tournee);
+                    data[id]['heure_tournee'] = controles[this.controleCourant._id].heure_tournee;
+                    data[id]['parcelles'] = [];
                     for(parcelleId of parcellesSelectionneesControles[id]) {
-                        data[id].push(parcelleId);
+                        data[id]['parcelles'].push(parcelleId);
                     }
                 }
                 document.getElementById('form_data').value = JSON.stringify(data);
