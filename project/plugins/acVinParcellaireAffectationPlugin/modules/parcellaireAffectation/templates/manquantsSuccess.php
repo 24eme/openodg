@@ -22,6 +22,7 @@
         <div style="display: inline-block; vertical-align: middle">
             Il n'est pas nécessaire d'indiquer les parcelles avec moins de <?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>% de pieds manquants.
         </div>
+    </div>
     <?php endif; ?>
 </div>
 
