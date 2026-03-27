@@ -340,7 +340,7 @@
             activeMap.eachLayer(function(layer) {
               if(layer.feature) {
                   if(Object.keys(layer.feature.properties).includes('parcellaires')){
-                      if(layer.feature.properties.parcellaires[0].IDU == idu){
+                      if(layer.feature.properties.parcellaires[0].idu == idu){
                         layer.fireEvent('click');
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }
