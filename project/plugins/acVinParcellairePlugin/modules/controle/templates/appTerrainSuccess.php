@@ -410,6 +410,7 @@
         }
         if (reloadStatus) {
             alert("Rev app < Rev couchdb - Rechargez l'app");
+            controle._rev = "00-Needs Update";
         }
       }
     }
