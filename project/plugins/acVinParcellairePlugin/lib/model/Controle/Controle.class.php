@@ -196,6 +196,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $d = $this->getData();
         $d->parcellaire_geojson = $this->getGeoJson();
         $d->parcellaire_parcelles = $this->getParcellaireParcelles();
+        $d->agent_libelle = $this->getAgent()->getNomAAfficher();
         $d->validation = false;
         $this->to_dump = false;
         return $d;

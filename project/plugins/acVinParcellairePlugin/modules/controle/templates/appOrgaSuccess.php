@@ -78,7 +78,14 @@
                 }
             }
             return controlesSorted;
-        }
+        },
+        libelleTournee() {
+            const items = Object.values(controles);
+            if (!items.length) return '';
+            const [y, m, d] = items[0].date_tournee.split('-');
+            const agent = items[0].agent_libelle;
+            return `Tournée du ${d}/${m}/${y} par ${agent}`;
+         }
     }
     templates.operateurs.mounted = function() {
         const map = new L.map('map');
@@ -399,6 +406,9 @@
                 return Math.round(superficieSelectionnee / superficieTotale * 100);
             }
             return 0;
+        },
+        nbParcellesSelectionnees() {
+            return this.parcellesSelectionnees.length;
         },
         getParcellesSorted() {
             const parcellesSorted = [];
