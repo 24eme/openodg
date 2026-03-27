@@ -65,6 +65,22 @@
             }
             return 0;
         },
+        pourcentageSelectionne(controleId) {
+            const parcellesSelectionnees = parcellesSelectionneesControles[controleId];
+            const controleCourant = controles[controleId];
+            let superficieTotale = 0;
+            let superficieSelectionnee = 0;
+            for (const [parcelleId, parcelle] of Object.entries(controleCourant.parcellaire_parcelles)) {
+                superficieTotale += parcelle.superficie;
+                if (parcellesSelectionnees.includes(parcelleId)) {
+                    superficieSelectionnee += parcelle.superficie;
+                }
+            }
+            if (superficieTotale > 0) {
+                return Math.round(superficieSelectionnee / superficieTotale * 100);
+            }
+            return 0;
+        },
         getControlesSorted() {
             const controlesSorted = [];
             for(let controleId in parcellesSelectionneesControles) {
