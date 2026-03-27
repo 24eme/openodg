@@ -71,6 +71,7 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executeExploitation(sfWebRequest $request) {
     	$this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        ParcellaireAffectationEtapes::getInstance()->setDeclaration($this->parcellaireAffectation);
         $this->coop = $request->getParameter('coop');
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
     	if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_EXPLOITATION))) {
@@ -126,6 +127,7 @@ class parcellaireAffectationActions extends sfActions {
     protected function executeEtape(sfWebRequest $request, $etape, $formClass) {
         $this->etape = $etape;
         $this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        ParcellaireAffectationEtapes::getInstance()->setDeclaration($this->parcellaireAffectation);
         $this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
         $this->coop = $request->getParameter('coop');
@@ -224,6 +226,7 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
     	$this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        ParcellaireAffectationEtapes::getInstance()->setDeclaration($this->parcellaireAffectation);
         $this->coop = $request->getParameter('coop');
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
 

@@ -12,6 +12,7 @@ ParcellaireAffectation:
       validation: { }
       validation_odg: { }
       lecture_seule: {}
+      declaration_liee: { required: false }
       signataire: { required: false }
       papier: { required: false }
       declarant:

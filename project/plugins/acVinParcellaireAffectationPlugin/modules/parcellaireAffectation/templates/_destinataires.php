@@ -1,3 +1,4 @@
+<?php $coop_id = (isset($coop)) ? explode('-', $coop)[1] : null; ?>
 <ul class="nav nav-tabs mt-4">
 <?php foreach($destinataires as $id => $d):
     if (count($produits) > 1):
