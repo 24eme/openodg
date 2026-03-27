@@ -49,7 +49,8 @@
 
     templates.operateurs.data = function() {
         return {
-          controles: controles
+          controles: controles,
+          refreshList: 0
         }
     };
     templates.operateurs.methods = {
@@ -81,18 +82,22 @@
             }
             return 0;
         },
-        getControlesSorted() {
-            const controlesSorted = [];
-            for(let controleId in parcellesSelectionneesControles) {
-                if(parcellesSelectionneesControles[controleId].length) {
-                    controlesSorted.push(controles[controleId]);
-                }
-            }
+        controlesSorted() {
+            let heure = '09:00';
             for(let controleId in controles) {
-                if(!controlesSorted.some(obj => obj._id == controleId)) {
-                    controlesSorted.push(controles[controleId]);
+                if(parcellesSelectionneesControles.hasOwnProperty(controleId) && parcellesSelectionneesControles[controleId].length) {
+                    if (!controles[controleId].heure_tournee) {
+                        controles[controleId].heure_tournee = heure;
+                    }
+                    let [h,m] = heure.split(':');
+                    heure = `${String((+h+1)%24).padStart(2,'0')}:${m}`;
+                } else {
+                    controles[controleId].heure_tournee = '';
                 }
             }
+            let controlesSorted = Object.fromEntries(
+                Object.entries(controles).sort(([, a], [, b]) => (a.heure_tournee || '99:99').localeCompare(b.heure_tournee || '99:99'))
+            );
             return controlesSorted;
         },
         libelleTournee() {
@@ -101,7 +106,10 @@
             const [y, m, d] = items[0].date_tournee.split('-');
             const agent = items[0].agent_libelle;
             return `Tournée du ${d}/${m}/${y} par ${agent}`;
-         }
+        },
+        forceRerender() {
+          this.refreshList += 1;
+        }
     }
     templates.operateurs.mounted = function() {
         const map = new L.map('map');
