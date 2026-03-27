@@ -112,4 +112,7 @@
 </table>
 </div>
 
-<RouterLink class="btn btn-primary" :to="{ name: 'operateurs' }"><span class="glyphicon glyphicon-chevron-left"></span> Retour</RouterLink>
+<div class="row">
+    <div class="col-xs-6"><RouterLink class="btn btn-default" :to="{ name: 'operateurs' }"><span class="glyphicon glyphicon-chevron-left"></span> Retour</RouterLink></div>
+    <div class="col-xs-6"><RouterLink class="btn btn-success pull-right" :to="{ name: 'operateurs' }">Valider</RouterLink></div>
+</div>

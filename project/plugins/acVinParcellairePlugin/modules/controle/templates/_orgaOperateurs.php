@@ -23,3 +23,8 @@
         </tr>
     </tbody>
 </table>
+
+<div class="row">
+    <div class="col-xs-6"><a class="btn btn-default" href="<?php echo url_for("controle_index") ?>"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+    <div class="col-xs-6"><a class="btn btn-success pull-right" href="#" onclick="return document.getElementById('btn_save').click();"><span class="glyphicon glyphicon-check"></span> Valider l'organisation</a></div>
+</div>
