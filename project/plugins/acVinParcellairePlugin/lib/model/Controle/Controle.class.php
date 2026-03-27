@@ -198,6 +198,8 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $d->parcellaire_parcelles = $this->getParcellaireParcelles();
         $d->agent_libelle = $this->getAgent()->getNomAAfficher();
         $d->validation = false;
+        $d->revision = $this->_rev;
+        $d->audit->needs_to_be_saved = false;
         $this->to_dump = false;
         return $d;
     }
