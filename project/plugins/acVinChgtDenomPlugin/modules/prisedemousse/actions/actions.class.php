@@ -197,15 +197,15 @@ class prisedemousseActions extends sfActions
 
     public function executeChgtDenomPDF(sfWebRequest $request)
     {
-        $chgtDenom = $this->getRoute()->getPriseDeMousse(['allow_habilitation' => true, 'allow_stalker' => true]);
-        if (!$chgtDenom->isApprouve()) {
-            $chgtDenom->generateLots();
+        $prisedemousse = $this->getRoute()->getPriseDeMousse(['allow_habilitation' => true, 'allow_stalker' => true]);
+        if (!$prisedemousse->isApprouve()) {
+            $prisedemousse->generateLots();
         }
         if (!$this->getUser()->isStalker()) {
-            $this->secureEtablissement('habilitation', $chgtDenom->getEtablissementObject());
+            $this->secureEtablissement('habilitation', $prisedemousse->getEtablissementObject());
         }
 
-        $this->document = new ExportChgtDenomPDF($chgtDenom, $request->getParameter('output', 'pdf'), false);
+        $this->document = new ExportPriseDeMoussePDF($prisedemousse, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
         if ($request->getParameter('force')) {
             $this->document->removeCache();
