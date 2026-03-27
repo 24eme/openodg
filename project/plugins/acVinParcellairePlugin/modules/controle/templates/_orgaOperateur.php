@@ -63,8 +63,13 @@
             <td class="text-center">{{ controleCourant.parcellaire_parcelles[parcelleId].campagne_plantation }}</td>
             <td class="text-right">{{ controleCourant.parcellaire_parcelles[parcelleId].superficie }}</td>
             <td class="text-right">{{ controleCourant.parcellaire_parcelles[parcelleId].ecart_pieds }} / {{ controleCourant.parcellaire_parcelles[parcelleId].ecart_rang }}</td>
-            <td><button class="btn btn-link" @click="showParcelle(controleCourant.parcellaire_parcelles[parcelleId].idu)"><i class="glyphicon glyphicon-map-marker"></i></button></td>
-            <td><button v-if="isParcelleSelectionnee(parcelleId)" class="btn btn-link"><span class="glyphicon glyphicon-trash"></span></button></td>
+            <td>
+                <label class="switch-xl">
+                    <input type="checkbox" name="parcelles[]" :value="parcelleId" v-model="parcellesSelectionnees" />
+                    <span class="slider-xl round"></span>
+                </label>
+            </td>
+            <td><button v-if="isParcelleSelectionnee(parcelleId)" class="btn btn-link" @click="removeParcelle(parcelleId)"><span class="glyphicon glyphicon-trash"></span></button></td>
         </tr>
     </tbody>
 </table>

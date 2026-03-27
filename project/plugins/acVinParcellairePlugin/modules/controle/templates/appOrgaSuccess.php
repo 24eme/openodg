@@ -348,6 +348,12 @@
               }
             });
         },
+        removeParcelle(id) {
+            const index = this.parcellesSelectionnees.indexOf(id);
+            if (index !== -1) {
+                this.parcellesSelectionnees.splice(index, 1);
+            }
+        },
         updateMap() {
             const parcellesSelectionnees = this.parcellesSelectionnees;
             const controleCourant = this.controleCourant;
