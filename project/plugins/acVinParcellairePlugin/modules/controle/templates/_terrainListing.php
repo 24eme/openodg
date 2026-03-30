@@ -1,4 +1,4 @@
-<h3 class="mt-0"><span class="glyphicon glyphicon-th-list"></span> Tournée du {{ date_tournee }} <RouterLink :to="{ name: 'map' }" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink><span class="pull-right mr-5" :class="$root.isSynchro ? 'glyphicon glyphicon-floppy-saved' : 'glyphicon glyphicon-floppy-remove'" :style="$root.isSynchro ? 'color: #8da42a' : 'color: #aaaaaa'"></span></h3>
+<h3 class="mt-0"><span class="glyphicon glyphicon-th-list"></span> {{ libelleTournee() }} <RouterLink :to="{ name: 'map' }" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink><span class="pull-right mr-3" :class="$root.isSynchro ? 'glyphicon glyphicon-floppy-saved' : 'glyphicon glyphicon-floppy-remove'" :style="$root.isSynchro ? 'color: #8da42a' : 'color: #aaaaaa'"></span></h3>
 <hr class="mt-2" />
 
 <h2>Opérateurs à contrôler</h2>

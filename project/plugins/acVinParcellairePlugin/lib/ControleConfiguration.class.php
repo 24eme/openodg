@@ -156,4 +156,13 @@ class ControleConfiguration extends DeclarationConfiguration {
     {
         return $this->getConstat($numRtm)['documentaire'];
     }
+
+    public function hasProduitFilter() {
+        return isset($this->configuration['produit_filter']) && ($this->configuration['produit_filter']);
+    }
+
+    public function getProduitFilter() {
+        return $this->configuration['produit_filter'];
+    }
+
 }

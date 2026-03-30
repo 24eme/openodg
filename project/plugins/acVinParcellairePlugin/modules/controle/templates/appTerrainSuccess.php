@@ -97,8 +97,12 @@
 
     templates.listing.data = function() {
         return {
+<<<<<<< HEAD
+          controles: controles
+=======
             controles: controles,
             date_tournee: date_tournee
+>>>>>>> d71f2475bd9203a95bb0ede9fbf6925f6b6bfd91
         }
     };
 
@@ -119,7 +123,14 @@
     templates.listing.methods = {
         nbParcellesControlees(controleCible) {
           return (Object.keys(controleCible.parcelles || {}).filter(k => controleCible.parcelles[k].controle.saisie == 1)).length;
-        }
+      },
+      libelleTournee() {
+          const items = Object.values(controles);
+          if (!items.length) return '';
+          const [y, m, d] = items[0].date_tournee.split('-');
+          const agent = items[0].agent_libelle;
+          return `Tournée du ${d}/${m}/${y} par ${agent}`;
+      }
     };
 
     templates.operateur.mounted = function() {
@@ -141,7 +152,14 @@
       },
       echoFloat(val, nbDecimal = 5) {
         return val ? Number(val).toFixed(nbDecimal) : '';
-      }
+        },
+        libelleTournee() {
+            const [y, m, d] = this.controleCourant.date_tournee.split('-');
+            const heure = this.controleCourant.heure_tournee;
+            const agent = this.controleCourant.agent_libelle;
+            return `Tournée du ${d}/${m}/${y} à ${heure} par ${agent}`;
+        }
+
     };
 
     templates.parcelle.mounted = function() {
@@ -172,6 +190,13 @@
         },
         echoFloat(val, nbDecimal = 5) {
             return val ? Number(val).toFixed(nbDecimal) : '';
+        },
+        libelleTournee() {
+            const [y, m, d] = this.controleCourant.date_tournee.split('-');
+            const heure = this.controleCourant.heure_tournee;
+            const agent = this.controleCourant.agent_libelle;
+            const parcelle = this.parcelleCourante.parcelle_id;
+            return `Tournée du ${d}/${m}/${y} à ${heure} par ${agent} parcelle ${parcelle} `;
         }
     };
     templates.audit.mounted = function() {
