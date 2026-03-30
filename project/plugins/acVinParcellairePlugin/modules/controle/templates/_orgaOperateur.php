@@ -9,7 +9,7 @@
             <tr><th>Commune</th><td v-for="p in parcelle.properties.parcellaires">{{ p.commune }}</td></tr>
             <tr><th>Section&nbsp;/&nbspN°</th><td v-for="p in parcelle.properties.parcellaires">{{ p.section }} {{ p.numero_parcelle }}</td></tr>
             <tr><th>Produits<br/>et cepages</th><td v-for="p in parcelle.properties.parcellaires"><span class="text-muted"> {{ p.source_produit_libelle }}</span><br/>{{ p.cepage }}</td></tr>
-            <tr><th>Année plantat°</th><td v-for="p in parcelle.properties.parcellaires">{{ p.campagne }}</td></tr>
+            <tr><th>Année plantat°</th><td v-for="p in parcelle.properties.parcellaires">{{ p.campagne_plantation }}</td></tr>
             <tr><th>Superficies <span>(ha)</span></th><td v-for="p in parcelle.properties.parcellaires">{{ p.superficie }}</td></tr>
             <tr><th>Écart Pieds</th><td v-for="p in parcelle.properties.parcellaires">{{ p.ecart_pieds }}</td></tr>
             <tr><th>Écart Rang</th><td v-for="p in parcelle.properties.parcellaires">{{ p.ecart_rang }}</td></tr>
