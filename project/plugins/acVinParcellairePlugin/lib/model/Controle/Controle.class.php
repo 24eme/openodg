@@ -144,20 +144,43 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getStatutComputed()
     {
-        if(!$this->date_tournee) {
+        if(!$this->isPlanifie()) {
             return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
         }
-        if (count($this->manquements)) {
+        if ($this->isControle()) {
             return ControleClient::CONTROLE_STATUT_EN_MANQUEMENT;
         }
-        if (count($this->parcelles)) {
-            return ControleClient::CONTROLE_STATUT_PLANIFIE;
+        if ($this->isOrganise()) {
+            return ControleClient::CONTROLE_STATUT_ORGANISE;
         }
-        if($this->date_tournee) {
+        if ($this->isPlanifie()) {
             return ControleClient::CONTROLE_STATUT_A_ORGANISER;
+        }
+        if ($this->isTermine()) {
+            return ControleClient::CONTROLE_STATUT_TERMINE;
         }
         return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
 
+    }
+
+    public function isPlanifie()
+    {
+        return ($this->date_tournee);
+    }
+
+    public function isOrganise()
+    {
+        return $this->isPlanifie() && (count($this->parcelles));
+    }
+
+    public function isControle()
+    {
+        return $this->isOrganise() && count($this->manquements);
+    }
+
+    public function isTermine()
+    {
+        return $this->manquements_valides;
     }
 
     public function generateMouvementsStatuts()

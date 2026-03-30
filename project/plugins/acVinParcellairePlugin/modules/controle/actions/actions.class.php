@@ -6,7 +6,7 @@ class controleActions extends sfActions
         $this->controles = ControleClient::getInstance()->findAllByStatus();
         $this->tournees = [];
         foreach ($this->controles as $statut => $controles) {
-            if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_PLANIFIE, ControleClient::CONTROLE_STATUT_EN_MANQUEMENT])) {
+            if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_ORGANISE, ControleClient::CONTROLE_STATUT_EN_MANQUEMENT])) {
                 continue;
             }
             foreach($controles as $c) {
