@@ -143,6 +143,12 @@
       },
       echoFloat(val, nbDecimal = 5) {
         return val ? Number(val).toFixed(nbDecimal) : '';
+      },
+      printableSiret() {
+          return this.controleCourant.declarant.siret.substring(0,3)+" "+
+                 this.controleCourant.declarant.siret.substring(3,6) +" "+
+                 this.controleCourant.declarant.siret.substring(6,9) +" "+
+                 this.controleCourant.declarant.siret.substring(9);
       }
     };
 
@@ -189,6 +195,12 @@
         },
         echoFloat(val, nbDecimal = 5) {
             return val ? Number(val).toFixed(nbDecimal) : '';
+        },
+        printableSiret() {
+            return this.controleCourant.declarant.siret.substring(0,3)+" "+
+                   this.controleCourant.declarant.siret.substring(3,6) +" "+
+                   this.controleCourant.declarant.siret.substring(6,9) +" "+
+                   this.controleCourant.declarant.siret.substring(9);
         }
     };
     templates.audit.mounted = function() {
@@ -245,7 +257,14 @@
       devalider() {
           this.controleCourant.audit.saisie = 0;
           this.controleCourant.audit.needs_to_be_saved = true;
+      },
+      printableSiret() {
+          return this.controleCourant.declarant.siret.substring(0,3)+" "+
+                 this.controleCourant.declarant.siret.substring(3,6) +" "+
+                 this.controleCourant.declarant.siret.substring(6,9) +" "+
+                 this.controleCourant.declarant.siret.substring(9);
       }
+
     };
     templates.map.data = function() {
         const route = useRoute()
