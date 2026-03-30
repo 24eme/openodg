@@ -83,6 +83,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $parcelles = [];
         foreach ($parcellaire->getParcelles() as $key => $parcelle) {
             if (!($parcelle->isRealProduit() && ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration())) continue;
+            if (ControleConfiguration::getInstance()->hasProduitFilter() && strpos($parcelle->produit_hash, ControleConfiguration::getInstance()->getProduitFilter()) === false) continue;
             $parcelles[$key] = $parcelle->getData();
             $parcelles[$key]->hasProblemExpirationCepage = $parcelle->hasProblemExpirationCepage();
             $parcelles[$key]->hasProblemEcartPieds = $parcelle->hasProblemEcartPieds();

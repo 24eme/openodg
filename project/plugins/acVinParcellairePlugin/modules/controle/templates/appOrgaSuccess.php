@@ -32,6 +32,32 @@
         parcellesSelectionneesControles[controle._id] = parcellesIds;
     }
 
+    var aires = [];
+<?php
+    $communes = [];
+    foreach ($controles as $controle) {
+        $p = $controle->getParcellaire();
+        echo "//".$p->_id."\n";
+        foreach ($p->getCommunes() as $com) {
+            $communes[$com] = $com;
+        }
+    }
+    foreach(array_keys($communes) as $commune):
+    $aires =  AireClient::getInstance()->getMergedAiresForInseeCommunes(array($commune));
+    foreach($aires as $aire): ?>
+    aires.push({'color': '<?php echo $aire->getColor(); ?>', 'name': '<?php echo $aire->getName() ?> commune <?php echo $commune; ?>', 'geojson': '<?php echo addslashes($aire->geojson); ?>'});
+<?php endforeach; endforeach; ?>
+
+    function addDelimitation(map) {
+        layers = [];
+        for(i in aires) {
+            name = '<span style="background-color: '+aires[i]['color']+'; width: 25px; display:inline-block;"> &nbsp; </span> ' + aires[i]['name'];
+            console.log(['load', aires[i]['name']]);
+            layers[name] = L.geoJSON(JSON.parse(aires[i]['geojson']), { style: {  fillColor: aires[i]['color'],  weight: 0,  opacity: 0.5,  dashArray: '5',  color: 'black',  fillOpacity: 0.4 } });
+            layers[name].addTo(map);
+        };
+    }
+
     let activeMap = null;
 
     const app = createApp({
@@ -160,8 +186,11 @@
             }
         }
 
+        addDelimitation(map)
+
         const parcellesLayer = L.geoJSON(parcelles, { onEachFeature: onEachFeature });
         parcellesLayer.addTo(map);
+
         map.fitBounds(parcellesLayer.getBounds());
         function onEachFeature(feature, layer) {
             let find = false;
@@ -339,6 +368,7 @@
 
         L.geoJSON(autresParcelles, {onEachFeature: onEachFeatureAutre}).addTo(map);
 
+        addDelimitation(map)
 
         const parcellesLayer = L.geoJSON(this.parcelles, { onEachFeature: onEachFeature });
         parcellesLayer.addTo(map);

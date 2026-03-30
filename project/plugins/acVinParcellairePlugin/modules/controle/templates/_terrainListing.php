@@ -4,7 +4,7 @@
 <h2>Opérateurs à contrôler</h2>
 
 <div class="list-group mt-5">
-    <RouterLink v-for="(controle, key, index) in controles" :to="{ name: 'operateur', params: { id: key } }" class="list-group-item" :class="{ 'list-group-item-success': controle.audit.saisie == 1 && controle.validation == true }">
+    <RouterLink v-for="(controle, index) in filteredControles" :key="controle._id" :to="{ name: 'operateur', params: { id: controle._id } }" class="list-group-item" :class="{ 'list-group-item-success': controle.audit.saisie == 1 && controle.validation == true }">
         <div class="row">
             <div class="col-xs-2 col-md-1" style="font-size: 20px;">
                 <strong>{{ (10 + index) }}:00</strong>
