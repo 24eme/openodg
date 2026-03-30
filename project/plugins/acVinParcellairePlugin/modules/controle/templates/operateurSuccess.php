@@ -54,4 +54,7 @@
     </tr>
 <?php endforeach; ?>
 </table>
+<div class="row text-center">
+    <p><a class="btn btn-primary" href="<?php echo url_for('controle_nouveau', $etablissement); ?>">Enregistrer un nouveau controle</a></p>
+</div>
 </div>

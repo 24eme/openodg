@@ -92,3 +92,12 @@
 <?php endforeach; ?>
     </tbody>
 </table>
+
+<?php if(class_exists("ControleConfiguration") && ControleConfiguration::getInstance()->isModuleEnabled()): ?>
+<div class="row col-xs-10">
+    <a href="<?php echo url_for('controle_index') ?>" class="btn btn-primary">Accéder au contrôle terrain</a>
+</div>
+<div class="col-xs-2">
+    <a href="<?php echo url_for('controle_gestion_manquements', array())?>" class="btn btn-primary">Liste des manquements</a>
+</div>
+<?php endif; ?>
