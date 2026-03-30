@@ -64,11 +64,13 @@ class controleActions extends sfActions
         }
     }
 
-    private function getControlesByDateTourneeAndAgent($dateTournee, $agentIdentifiant)
+    private function getControlesByDateTourneeAndAgentAndSetControle($dateTournee, $agentIdentifiant)
     {
+        $this->controles = [];
         $controles = [];
         foreach (ControleClient::getInstance()->findAll() as $controle) {
             if ($dateTournee == $controle->date_tournee && $agentIdentifiant == $controle->agent_identifiant) {
+                $this->controles[] = $controle;
                 $controles[$controle->_id] = $controle->getDataToDump();
             }
         }
@@ -79,7 +81,7 @@ class controleActions extends sfActions
     {
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
-        $this->json = json_encode($this->getControlesByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->json = json_encode($this->getControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
     }
 
@@ -87,7 +89,7 @@ class controleActions extends sfActions
     {
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
-        $this->json = json_encode($this->getControlesByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->json = json_encode($this->getControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getPointsDeControle(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
     }
@@ -99,6 +101,7 @@ class controleActions extends sfActions
         $data = json_decode($request->getParameter('data'));
         foreach ($data as $controleId => $items) {
             if ($controle = ControleClient::getInstance()->find($controleId)) {
+                $controle->heure_tournee = $items->heure_tournee;
                 $controle->updateParcelles($items->parcelles);
                 $controle->save();
             }

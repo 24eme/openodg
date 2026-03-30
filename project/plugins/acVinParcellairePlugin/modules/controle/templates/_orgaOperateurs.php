@@ -14,12 +14,12 @@
         </tr>
     </thead>
     <tbody>
-        <tr :class="{ 'text-muted': nbParcellesSelectionnees(controle._id) == 0 }" v-for="(controle, numero, index) in controlesSorted()" :key="refreshList">
+        <tr :class="{ 'text-muted': nbParcellesSelectionnees(controle._id) == 0 }" v-for="(controle, numero, index) in controlesSorted" :key="controle._id">
             <td><span v-if="nbParcellesSelectionnees(controle._id) > 0" class="label label-primary lead" style="border-radius: 24px;cursor:pointer;" :title="controle._id" @click="navigator.clipboard.writeText(controle._id)">{{ index + 1 }}</span></td>
             <td><RouterLink :to="{ name: 'operateur', params: { id: controle._id } }">{{ controle.declarant.nom }}</RouterLink></td>
             <td class="text-center">{{ nbParcellesSelectionnees(controle._id) }} / {{ nbParcelles(controle._id) }} <small>parcelle(s)</small></td>
             <td class="text-center">{{ pourcentageSelectionne(controle._id) }}%</td>
-            <td class="text-center"><input v-if="nbParcellesSelectionnees(controle._id) > 0" v-model="controles[controle._id].heure_tournee" type="time" @input="forceRerender()" /></td>
+            <td class="text-center">{{ controles[controle._id].heure_tournee }}</td>
         </tr>
     </tbody>
 </table>
