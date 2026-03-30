@@ -523,4 +523,34 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     /**** FIN DES PIECES ****/
 
+    public function getResizeSignature($newWidth = 80)
+    {
+        $base64 = $this->audit->operateur_signature;
+        if (strpos($base64, ',') !== false) {
+            $base64 = explode(',', $base64)[1];
+        }
+        $imageData = base64_decode($base64);
+        $src = imagecreatefromstring($imageData);
+        $width  = imagesx($src);
+        $height = imagesy($src);
+        $newHeight = intval(($height / $width) * $newWidth);
+        $dst = imagecreatetruecolor($newWidth, $newHeight);
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
+        $transparent = imagecolorallocatealpha($dst, 255, 255, 255, 127);
+        imagefilledrectangle($dst, 0, 0, $newWidth, $newHeight, $transparent);
+        imagecopyresampled(
+            $dst, $src,
+            0, 0, 0, 0,
+            $newWidth, $newHeight,
+            $width, $height
+        );
+        ob_start();
+        imagepng($dst);
+        $resized = ob_get_clean();
+        imagedestroy($src);
+        imagedestroy($dst);
+        return 'data:image/png;base64,' . base64_encode($resized);
+    }
+
 }
