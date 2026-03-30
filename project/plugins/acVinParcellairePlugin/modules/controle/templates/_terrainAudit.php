@@ -67,7 +67,8 @@
   <div class="form-group">
       <label class="col-sm-3 control-label">Signature Opérateur</label>
       <div class="col-sm-5">
-          <canvas id="signature" style="width: 300px;height: 300px; border: 1px solid #cecece;"></canvas>
+          <canvas id="signature" width="300" height="300" style="border: 1px solid #cecece;"></canvas>
+          <p id="signature-pad-reset" class="text-muted" style="padding-left: 240px; cursor: pointer;" title="Effacer la signature"><span class="glyphicon glyphicon-trash">Effacer</span></p>
       </div>
   </div>
 
