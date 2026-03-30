@@ -308,10 +308,11 @@ class controleActions extends sfActions
         if ($cc) {
             $cc = "cc=".$cc."&";
         }
-        $subject = sprintf("Résultat du contrôle du %s", $this->controle->getDateFormat('d/m/Y'));
+        $subject = sprintf("Suite contrôle interne ODG %s", $this->controle->getDateFormat('Y'));
         $body = html_entity_decode(str_replace("\n", "%0A", strip_tags(get_partial('controle/notificationEmail', [
             'controle' => $this->controle,
             'identifiant' => $identifiant,
+            'agent' => CompteClient::getInstance()->find($controle->agent_identifiant),
         ]))), ENT_QUOTES | ENT_XML1, 'UTF-8');
 
         $mailto = "mailto:$email?".$cc."subject=$subject&body=$body";

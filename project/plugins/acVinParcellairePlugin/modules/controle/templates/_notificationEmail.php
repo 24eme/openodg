@@ -2,11 +2,14 @@
 <?php use_helper('Date') ?>
 Bonjour,
 
-Suite au contrôle terrain, veuillez trouver les documents suivants :
+Suite au contrôle de votre exploitation, veuillez en trouver ci-joint le compte rendu.
 
-- https://lien_vers_le_pdf_de_controle
-- https://lien_vers_le_pdf_des_manquements
+Le potentiel de production devra être respecté pour la prochaine récolte.
 
 Bien cordialement,
-
-Le syndicat
+<br/>
+<?php echo $agent->prenom .'&nbsp;'. $agent->nom ."\n"?>
+<i><?php echo $agent->fonction; ?></i>
+Mob. : <?php echo $agent->getTelephoneMobile() ."\n"; ?>
+Tel. : <?php echo $agent->getTelephoneBureau() ."\n"; ?>
+<a href="<?php echo $agent->getSiteInternet(); ?>">syndicat-cotesdeprovence.com</a>
