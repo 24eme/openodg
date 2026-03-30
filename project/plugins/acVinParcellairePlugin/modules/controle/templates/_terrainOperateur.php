@@ -14,7 +14,7 @@
                 <strong>N° {{ index + 1 }}</strong>
             </div>
             <div class="col-xs-8 col-md-9">
-                <h4 class="list-group-item-heading">{{ parcelle.cepage }} <small><br />{{ parcelle.source_produit_libelle }}<br />{{ parcelle.campagne_plantation }}</small></h4>
+                <h4 class="list-group-item-heading">{{ parcelle.cepage }} <small> {{ parcelle.parcelle_id }} <br />{{ parcelle.source_produit_libelle }}<br />{{ parcelle.campagne_plantation }}</small></h4>
                 <p class="list-group-item-text">{{ parcelle.commune }} {{ parcelle.lieu }}</p>
                 <div class="mt-2">
                     <label class="label label-primary" :class="{ 'label-success': parcelle.controle.saisie == 1 }">

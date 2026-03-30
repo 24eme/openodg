@@ -3,10 +3,11 @@ class controleActions extends sfActions
 {
     public function executeIndex(sfWebRequest $request)
     {
+        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
         $this->controles = ControleClient::getInstance()->findAllByStatus();
         $this->tournees = [];
         foreach ($this->controles as $statut => $controles) {
-            if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_PLANIFIE, ControleClient::CONTROLE_STATUT_EN_MANQUEMENT])) {
+            if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_ORGANISE, ControleClient::CONTROLE_STATUT_EN_MANQUEMENT])) {
                 continue;
             }
             foreach($controles as $c) {
@@ -33,6 +34,18 @@ class controleActions extends sfActions
         }
         ksort($this->tournees);
     }
+
+    public function executeEtablissementSelection(sfWebRequest $request) {
+        $form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        $form->bind($request->getParameter($form->getName()));
+        if (!$form->isValid()) {
+
+            return $this->redirect('controle_index');
+        }
+
+        return $this->redirect('controle_operateur', $form->getEtablissement());
+    }
+
 
     public function executeNouveau(sfWebRequest $request)
     {
@@ -325,5 +338,12 @@ class controleActions extends sfActions
         $this->getResponse()->send();
 
         throw new sfStopException();
+    }
+
+    public function executeOperateur(sfWebRequest $request)
+    {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
+        $this->controles = ControleClient::getInstance()->findAllByIdentifiant($this->etablissement->identifiant);
     }
 }

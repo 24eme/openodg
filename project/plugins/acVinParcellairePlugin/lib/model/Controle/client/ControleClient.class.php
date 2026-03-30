@@ -4,9 +4,9 @@ class ControleClient extends acCouchdbClient
     const TYPE_MODEL = "Controle";
     const TYPE_COUCHDB = "CONTROLE";
 
-    const CONTROLE_STATUT_A_ORGANISER = "A_ORGANISER";
     const CONTROLE_STATUT_A_PLANIFIER = "A_PLANIFIER";
-    const CONTROLE_STATUT_PLANIFIE = "PLANIFIE";
+    const CONTROLE_STATUT_A_ORGANISER = "A_ORGANISER";
+    const CONTROLE_STATUT_ORGANISE = "ORGANISE";
     const CONTROLE_STATUT_EN_MANQUEMENT = "EN_MANQUEMENT";
     const CONTROLE_STATUT_TERMINE = "TERMINE";
 
@@ -44,15 +44,25 @@ class ControleClient extends acCouchdbClient
         return $controle;
     }
 
-    public function findAll($limit = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
+    public function findAllByIdentifiant($identifiant, $limit = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
     {
-    	$view = $this
-            ->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", "AAA0000000", "00000000"))
-    	    ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", "ZZZ9999999", "99999999"));
+        $view = $this
+            ->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, "00000000"))
+            ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, "99999999"));
     	if ($limit) {
     		$view->limit($limit);
     	}
     	return $view->execute($hydrate)->getDatas();
+    }
+
+    public function findAll($limit = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $view = $this
+            ->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", "AAA0000000", "00000000"))
+            ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", "ZZZ9999999", "99999999"));
+        if ($limit) {
+            $view->limit($limit);
+        }
+        return $view->execute($hydrate)->getDatas();
     }
 
     public function findAllByStatus($limit = null , $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
@@ -60,7 +70,7 @@ class ControleClient extends acCouchdbClient
         $controles = [
             self::CONTROLE_STATUT_A_ORGANISER => [],
             self::CONTROLE_STATUT_A_PLANIFIER => [],
-            self::CONTROLE_STATUT_PLANIFIE => [],
+            self::CONTROLE_STATUT_ORGANISE => [],
             self::CONTROLE_STATUT_EN_MANQUEMENT => [],
             self::CONTROLE_STATUT_TERMINE => [],
         ];

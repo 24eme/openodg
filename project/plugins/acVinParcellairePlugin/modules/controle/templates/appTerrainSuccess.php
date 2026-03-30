@@ -16,6 +16,8 @@
 
     const date_tournee = "<?php echo $date_tournee ?>"
     let controles = JSON.parse(localStorage.getItem("controles_" + date_tournee)) || {}
+    let no_by_default = {}
+
     const server_controle = JSON.parse(document.getElementById("dataJson").textContent);
     const points_de_controle = JSON.parse(document.getElementById("dataConf").textContent);
     let localstorage_updated = false;
@@ -97,7 +99,8 @@
 
     templates.listing.data = function() {
         return {
-          controles: controles
+            controles: controles,
+            date_tournee: date_tournee
         }
     };
 
@@ -147,14 +150,19 @@
       },
       echoFloat(val, nbDecimal = 5) {
         return val ? Number(val).toFixed(nbDecimal) : '';
-        },
-        libelleTournee() {
+      },
+      printableSiret() {
+          return this.controleCourant.declarant.siret.substring(0,3)+" "+
+                 this.controleCourant.declarant.siret.substring(3,6) +" "+
+                 this.controleCourant.declarant.siret.substring(6,9) +" "+
+                 this.controleCourant.declarant.siret.substring(9);
+      },
+      libelleTournee() {
             const [y, m, d] = this.controleCourant.date_tournee.split('-');
             const heure = this.controleCourant.heure_tournee;
             const agent = this.controleCourant.agent_libelle;
             return `Tournée du ${d}/${m}/${y} à ${heure} par ${agent}`;
-        }
-
+      }
     };
 
     templates.parcelle.mounted = function() {
@@ -163,7 +171,12 @@
 
     templates.parcelle.data = function() {
         const route = useRoute()
-
+        for (const pointKey in controles[route.params.id].parcelles[route.params.parcelle].controle.points) {
+            const point = controles[route.params.id].parcelles[route.params.parcelle].controle.points[pointKey];
+            if (no_by_default[pointKey]) {
+                point.conformite = 'NO';
+            }
+        }
         return {
           controleCourant: controles[route.params.id],
           parcelleCourante: controles[route.params.id].parcelles[route.params.parcelle],
@@ -172,19 +185,35 @@
         }
     };
     templates.parcelle.methods = {
-        allConforme() {
+        allOtherConforme() {
             for (const pointKey in this.parcelleCourante.controle.points) {
                 const point = this.parcelleCourante.controle.points[pointKey];
+                if (point.conformite) {
+                    continue;
+                }
                 point.conformite = 'C';
             }
         },
         save() {
             this.parcelleCourante.controle.saisie = 1;
             this.parcelleCourante.needs_to_be_saved = true;
+            for (const pointKey in this.parcelleCourante.controle.points) {
+                if (this.parcelleCourante.controle.points[pointKey].conformite == 'NO') {
+                    no_by_default[pointKey] = 1;
+                } else {
+                    no_by_default[pointKey] = 0;
+                }
+            }
             router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
         },
         echoFloat(val, nbDecimal = 5) {
             return val ? Number(val).toFixed(nbDecimal) : '';
+        },
+        printableSiret() {
+            return this.controleCourant.declarant.siret.substring(0,3)+" "+
+                   this.controleCourant.declarant.siret.substring(3,6) +" "+
+                   this.controleCourant.declarant.siret.substring(6,9) +" "+
+                   this.controleCourant.declarant.siret.substring(9);
         },
         libelleTournee() {
             const [y, m, d] = this.controleCourant.date_tournee.split('-');
@@ -263,7 +292,14 @@
       devalider() {
           this.controleCourant.audit.saisie = 0;
           this.controleCourant.audit.needs_to_be_saved = true;
+      },
+      printableSiret() {
+          return this.controleCourant.declarant.siret.substring(0,3)+" "+
+                 this.controleCourant.declarant.siret.substring(3,6) +" "+
+                 this.controleCourant.declarant.siret.substring(6,9) +" "+
+                 this.controleCourant.declarant.siret.substring(9);
       }
+
     };
     templates.map.data = function() {
         const route = useRoute()

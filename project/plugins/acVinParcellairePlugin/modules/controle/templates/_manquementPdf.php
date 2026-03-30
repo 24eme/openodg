@@ -89,7 +89,12 @@ table, th, td {
         </tr>
         <tr>
             <td colSpan="2" style="height: 45px">Date</td>
-            <td colSpan="2" rowSpan="2" style="height: 45px">Signature</td>
+            <td colSpan="2" rowSpan="2" style="height: 90px">
+                Signature
+                <?php if($controle->audit->operateur_signature): ?>
+                <img src="<?php echo $controle->getResizeSignature(80); ?>" alt="" />
+                <?php endif; ?>
+            </td>
         </tr>
         <tr>
             <td colSpan="2" style="height: 45px">Nom, Prénom :&nbsp;&nbsp;<?php echo $audit->nom_prenom; ?></td>
