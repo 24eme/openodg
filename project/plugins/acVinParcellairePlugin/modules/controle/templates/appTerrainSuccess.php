@@ -94,12 +94,27 @@
     templates.listing.mounted = function() {
         submitNeedsToBeSaved(controles);
     }
+
     templates.listing.data = function() {
         return {
-          controles: controles,
-          date_tournee: date_tournee
+            controles: controles,
+            date_tournee: date_tournee
         }
     };
+
+    templates.listing.computed = {
+        agentIdentifiant() {
+            const path = window.location.pathname
+            const parts = path.split('/').filter(Boolean)
+            return parts[parts.length - 1]
+        },
+
+        filteredControles() {
+            return Object.values(this.controles).filter(c =>
+                c.agent_identifiant === this.agentIdentifiant
+            )
+        }
+    }
 
     templates.listing.methods = {
         nbParcellesControlees(controleCible) {
