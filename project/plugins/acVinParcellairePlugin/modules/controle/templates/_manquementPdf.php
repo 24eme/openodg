@@ -43,7 +43,7 @@ table, th, td {
             <td class="center-grey" colspan="4"><strong>Identification de l'opérateur</strong></td>
         </tr>
         <tr>
-            <td colspan="4"><?php echo $controle->identifiant .' '.$controle->declarant->raison_sociale?></td>
+            <td colspan="4"><?php echo $controle->identifiant .' '.$controle->declarant->raison_sociale ?></td>
         </tr>
         <tr>
             <td class="center-grey" colspan="4"><strong>Identification MANQUEMENT</strong></td>
@@ -79,7 +79,7 @@ table, th, td {
             <td colSpan="4" style="height: 134px;"><?php echo ControleConfiguration::getInstance()->getMesureOdgFromConstatId($manquementId); ?></td>
         </tr>
         <tr>
-            <td colSpan="4">Date limite de mise en œuvre des actions correctrices :</td>
+            <td colSpan="4">Date limite de mise en œuvre des actions correctrices : <?php echo ControleConfiguration::getInstance()->getDelaisConstat($manquementId); ?></td>
         </tr>
         <tr>
             <td class="center-grey" colspan="4">Observations de l'opérateur</td>
@@ -89,7 +89,12 @@ table, th, td {
         </tr>
         <tr>
             <td colSpan="2" style="height: 45px">Date</td>
-            <td colSpan="2" rowSpan="2" style="height: 45px">Signature</td>
+            <td colSpan="2" rowSpan="2" style="height: 90px">
+                Signature
+                <?php if($controle->audit->operateur_signature): ?>
+                <img src="<?php echo $controle->getResizeSignature(80); ?>" alt="" />
+                <?php endif; ?>
+            </td>
         </tr>
         <tr>
             <td colSpan="2" style="height: 45px">Nom, Prénom :&nbsp;&nbsp;<?php echo $audit->nom_prenom; ?></td>
