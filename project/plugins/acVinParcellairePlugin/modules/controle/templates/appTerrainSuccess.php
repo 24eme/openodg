@@ -21,8 +21,12 @@
     let localstorage_updated = false;
     for (let i in server_controle) {
         if (controles[server_controle[i]._id]) {
-            console.log(['ignore controle exists', controles[server_controle[i]._id]]);
-            continue;
+            server_rev = server_controle[i]._rev.split('-')[0];
+            local_rev = (controles[server_controle[i]._id]._rev) ? controles[server_controle[i]._id]._rev.split('-')[0] : 0;
+            if (local_rev >= server_rev) {
+                console.log(['ignore controle loading : exists and local storage rev is older', 'controle id', server_controle[i]._id, 'local_rev', local_rev, 'server_rev', server_rev, controles[server_controle[i]._id]]);
+                continue;
+            }
         }
         controles[server_controle[i]._id] = server_controle[i];
         localstorage_updated = true;
@@ -92,7 +96,8 @@
     }
     templates.listing.data = function() {
         return {
-          controles: controles
+          controles: controles,
+          date_tournee: date_tournee
         }
     };
 
@@ -134,7 +139,8 @@
         return {
           controleCourant: controles[route.params.id],
           parcelleCourante: controles[route.params.id].parcelles[route.params.parcelle],
-          pointsDeControle: points_de_controle
+          pointsDeControle: points_de_controle,
+          date_tournee: date_tournee
         }
     };
     templates.parcelle.methods = {
