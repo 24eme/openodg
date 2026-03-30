@@ -1,6 +1,7 @@
 all:
   configuration:
     controle:
+      produit_filter: "/CDP/"
       points_de_controle:
         CMMP:
           libelle: CMMP
