@@ -101,6 +101,7 @@ class controleActions extends sfActions
         $data = json_decode($request->getParameter('data'));
         foreach ($data as $controleId => $items) {
             if ($controle = ControleClient::getInstance()->find($controleId)) {
+                $controle->heure_tournee = $items->heure_tournee;
                 $controle->updateParcelles($items->parcelles);
                 $controle->save();
             }

@@ -6,9 +6,9 @@
 </ol>
 
 
-<h2>Contrôles terrain à gérer</h2>
+<h2 class="hidden-xs">Contrôles terrain à gérer</h2>
 
-<table class="table table-bordered table-striped">
+<table class="table table-bordered table-striped hidden-xs">
     <thead>
     <tr>
         <th class="col-xs-1">Date de la tournée</th>
@@ -46,9 +46,21 @@
     </tbody>
 </table>
 
-<h2>Opérateurs dont le contrôle est à planifier</h2>
+<h2 class="visible-xs">Tournées à réaliser</h2>
+<ul class="list-group visible-xs">
+    <?php foreach ($tournees as $tournee): ?>
+        <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_PLANIFIE): ?>
+        <a href="<?php echo url_for('controle_appterrain', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="list-group-item" style="margin-bottom:1rem;">
+            <strong><?php echo Date::francizeDate($tournee['date_tournee']); ?></strong><span class="pull-right"><?php echo ($tournee['agent'])? $tournee['agent']->getNomAAfficher() : '' ?></span><br /><br />
+            <?php echo $tournee['type_tournee']; ?><span class="pull-right"><?php echo count($tournee['operateurs']); ?> opérateur(s) - <?php echo count($tournee['parcelles']); ?> parcelle(s)</span>
+        </a>
+    <?php endif; ?>
+    <?php endforeach; ?>
+</ul>
 
-<table class="table table-bordered table-striped">
+<h2 class="hidden-xs">Opérateurs dont le contrôle est à planifier</h2>
+
+<table class="table table-bordered table-striped hidden-xs">
     <thead>
     <tr>
         <th class="col-4">Opérateur</th>
