@@ -3,6 +3,8 @@
   <li><a href="<?php echo url_for('controle_operateur', $etablissement); ?>"><?php echo $etablissement->raison_sociale; ?> (<?php echo $etablissement->identifiant ?> - <?php echo $controle->declarant->cvi ?>)</a></li>
 </ol>
 
+<?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('controle_etablissement_selection'), 'noautofocus' => true)); ?>
+
 <h2 class="mb-4">Les contrôles de <?php echo $etablissement->raison_sociale; ?></h2>
 
 <div class="well mb-5">

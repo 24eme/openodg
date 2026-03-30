@@ -162,6 +162,12 @@ controle_operateur:
     model:    Etablissement
     type:     object
 
+controle_etablissement_selection:
+  url: /controles-etablissement-selection
+  param: { module: controle, action: etablissementSelection }
+
+
+
 controle_nouveau:
   url: /controle/nouveau/:identifiant
   param: { module: controle, action: nouveau }

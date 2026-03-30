@@ -5,6 +5,7 @@
   <li class="active"><a href="<?php echo url_for('accueil'); ?>">Organisation des contrôles</a></li>
 </ol>
 
+<?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('controle_etablissement_selection'))); ?>
 
 <h2 class="hidden-xs">Contrôles terrain à gérer</h2>
 
