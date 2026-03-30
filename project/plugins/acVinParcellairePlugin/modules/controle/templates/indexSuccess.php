@@ -51,8 +51,19 @@
     <?php foreach ($tournees as $tournee): ?>
         <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_PLANIFIE): ?>
         <a href="<?php echo url_for('controle_appterrain', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="list-group-item" style="margin-bottom:1rem;">
-            <strong><?php echo Date::francizeDate($tournee['date_tournee']); ?></strong><span class="pull-right"><?php echo ($tournee['agent'])? $tournee['agent']->getNomAAfficher() : '' ?></span><br /><br />
-            <?php echo $tournee['type_tournee']; ?><span class="pull-right"><?php echo count($tournee['operateurs']); ?> opérateur(s) - <?php echo count($tournee['parcelles']); ?> parcelle(s)</span>
+            <div class="row">
+                <div class="col-xs-4 text-center">
+                    <strong><?php echo Date::francizeDate($tournee['date_tournee']); ?></strong><br />
+                    <?php echo $tournee['type_tournee']; ?>
+                </div>
+                <div class="col-xs-6">
+                    <?php echo ($tournee['agent'])? $tournee['agent']->getNomAAfficher() : '' ?><br />
+                    <?php echo count($tournee['operateurs']); ?> op. - <?php echo count($tournee['parcelles']); ?> parcelles
+                </div>
+                <div class="col-xs-2 text-right text-primary">
+                    <span class="glyphicon glyphicon-chevron-right h1"></span>
+                </div>
+            </div>
         </a>
     <?php endif; ?>
     <?php endforeach; ?>
