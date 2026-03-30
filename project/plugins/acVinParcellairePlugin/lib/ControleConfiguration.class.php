@@ -165,4 +165,9 @@ class ControleConfiguration extends DeclarationConfiguration {
         return $this->configuration['produit_filter'];
     }
 
+    public function getMesureOdgFromConstatId($numRtm)
+    {
+        return $this->getConstat($numRtm)['mesure_odg'];
+    }
+
 }
