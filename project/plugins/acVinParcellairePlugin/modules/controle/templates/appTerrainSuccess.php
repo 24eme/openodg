@@ -159,9 +159,12 @@
         }
     };
     templates.parcelle.methods = {
-        allConforme() {
+        allOtherConforme() {
             for (const pointKey in this.parcelleCourante.controle.points) {
                 const point = this.parcelleCourante.controle.points[pointKey];
+                if (point.conformite) {
+                    continue;
+                }
                 point.conformite = 'C';
             }
         },
