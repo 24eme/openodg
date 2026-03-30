@@ -97,9 +97,9 @@ class controleActions extends sfActions
             throw new sfError403Exception();
         }
         $data = json_decode($request->getParameter('data'));
-        foreach ($data as $controleId => $parcellesIds) {
+        foreach ($data as $controleId => $items) {
             if ($controle = ControleClient::getInstance()->find($controleId)) {
-                $controle->updateParcelles($parcellesIds);
+                $controle->updateParcelles($items['parcelles']);
                 $controle->save();
             }
         }
