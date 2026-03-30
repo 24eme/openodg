@@ -16,6 +16,8 @@
 
     const date_tournee = "<?php echo $date_tournee ?>"
     let controles = JSON.parse(localStorage.getItem("controles_" + date_tournee)) || {}
+    let no_by_default = {}
+
     const server_controle = JSON.parse(document.getElementById("dataJson").textContent);
     const points_de_controle = JSON.parse(document.getElementById("dataConf").textContent);
     let localstorage_updated = false;
@@ -150,7 +152,12 @@
 
     templates.parcelle.data = function() {
         const route = useRoute()
-
+        for (const pointKey in controles[route.params.id].parcelles[route.params.parcelle].controle.points) {
+            const point = controles[route.params.id].parcelles[route.params.parcelle].controle.points[pointKey];
+            if (no_by_default[pointKey]) {
+                point.conformite = 'NO';
+            }
+        }
         return {
           controleCourant: controles[route.params.id],
           parcelleCourante: controles[route.params.id].parcelles[route.params.parcelle],
@@ -171,6 +178,13 @@
         save() {
             this.parcelleCourante.controle.saisie = 1;
             this.parcelleCourante.needs_to_be_saved = true;
+            for (const pointKey in this.parcelleCourante.controle.points) {
+                if (this.parcelleCourante.controle.points[pointKey].conformite == 'NO') {
+                    no_by_default[pointKey] = 1;
+                } else {
+                    no_by_default[pointKey] = 0;
+                }
+            }
             router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
         },
         echoFloat(val, nbDecimal = 5) {
