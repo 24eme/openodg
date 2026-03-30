@@ -247,7 +247,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return false;
     }
 
-    public function getListeManquements()
+    public function getListeManquements($fromConstatsActif = false)
     {
         $retManquements = array();
         foreach ($this->parcelles as $parcelleId => $parcelle) {
@@ -258,6 +258,9 @@ class Controle extends BaseControle implements InterfacePieceDocument
                         continue;
                     }
                     if ($dataPoint->conformite == null) {continue;}
+                    if ($fromConstatsActif == true) {
+                        if ($dataManquement->conformite == false) {continue;}
+                    }
                     if(!isset($retManquements[$constatId]) || !$retManquements[$constatId]) {
                         $retManquements[$constatId] = ControleManquement::freeInstance($this);
                         $retManquements[$constatId]->observations = '';
@@ -335,7 +338,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function generateManquements()
     {
-        foreach ($this->getListeManquements() as $manquementId => $dataManquement) {
+        foreach ($this->getListeManquements(true) as $manquementId => $dataManquement) {
             $this->addManquementTerrain($manquementId, $dataManquement);
         }
     }
