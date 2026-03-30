@@ -1,7 +1,7 @@
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('controle_index'); ?>">Contrôles</a></li>
   <li><a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>">Tournée du <?php echo Date::francizeDate($controle->date_tournee); ?></a></li>
-  <li><a href=""><?php echo $controle->declarant->nom ?> (<?php echo $controle->identifiant ?> - <?php echo $controle->declarant->cvi ?>)</a></li>
+  <li><a href="<?php echo url_for('controle_operateur', $controle->getEtablissementObject()); ?>"><?php echo $controle->declarant->nom ?> (<?php echo $controle->identifiant ?> - <?php echo $controle->declarant->cvi ?>)</a></li>
   <li class="active"><a href="">Visualisation des manquements</a></li>
 </ol>
 

@@ -325,4 +325,10 @@ class controleActions extends sfActions
 
         throw new sfStopException();
     }
+
+    public function executeOperateur(sfWebRequest $request)
+    {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->controles = ControleClient::getInstance()->findAllByIdentifiant($this->etablissement->identifiant);
+    }
 }
