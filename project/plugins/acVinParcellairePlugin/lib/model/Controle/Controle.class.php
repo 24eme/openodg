@@ -274,7 +274,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
                         $retManquements[$constatId]->libelle_manquement = ControleConfiguration::getInstance()->getLibelleConstatWithPointId($constatId, $pointId);
                     }
                     $retManquements[$constatId]->parcelles_id->add(null, $parcelleId);
-                    $retManquements[$constatId]->delais = ControleConfiguration::getInstance()->getDelaisConstat($pointId, $constatId);
+                    $retManquements[$constatId]->delais = ControleConfiguration::getInstance()->getDelaisConstat($constatId);
                     $retManquements[$constatId]->constat_date = $this->date_tournee;
                     $retManquements[$constatId]->actif = false;
                     $retManquements[$constatId]->observations .= $parcelleId . ' - ' . $dataManquement->observations . "\n";
