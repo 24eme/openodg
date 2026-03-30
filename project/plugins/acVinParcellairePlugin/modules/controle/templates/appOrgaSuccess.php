@@ -49,7 +49,8 @@
 
     templates.operateurs.data = function() {
         return {
-          controles: controles
+          controles: controles,
+          refreshList: 0
         }
     };
     templates.operateurs.methods = {
@@ -65,19 +66,49 @@
             }
             return 0;
         },
-        getControlesSorted() {
-            const controlesSorted = [];
-            for(let controleId in parcellesSelectionneesControles) {
-                if(parcellesSelectionneesControles[controleId].length) {
-                    controlesSorted.push(controles[controleId]);
+        pourcentageSelectionne(controleId) {
+            const parcellesSelectionnees = parcellesSelectionneesControles[controleId];
+            const controleCourant = controles[controleId];
+            let superficieTotale = 0;
+            let superficieSelectionnee = 0;
+            for (const [parcelleId, parcelle] of Object.entries(controleCourant.parcellaire_parcelles)) {
+                superficieTotale += parcelle.superficie;
+                if (parcellesSelectionnees.includes(parcelleId)) {
+                    superficieSelectionnee += parcelle.superficie;
                 }
             }
+            if (superficieTotale > 0) {
+                return Math.round(superficieSelectionnee / superficieTotale * 100);
+            }
+            return 0;
+        },
+        controlesSorted() {
+            let heure = '09:00';
             for(let controleId in controles) {
-                if(!controlesSorted.some(obj => obj._id == controleId)) {
-                    controlesSorted.push(controles[controleId]);
+                if(parcellesSelectionneesControles.hasOwnProperty(controleId) && parcellesSelectionneesControles[controleId].length) {
+                    if (!controles[controleId].heure_tournee) {
+                        controles[controleId].heure_tournee = heure;
+                    }
+                    let [h,m] = heure.split(':');
+                    heure = `${String((+h+1)%24).padStart(2,'0')}:${m}`;
+                } else {
+                    controles[controleId].heure_tournee = '';
                 }
             }
+            let controlesSorted = Object.fromEntries(
+                Object.entries(controles).sort(([, a], [, b]) => (a.heure_tournee || '99:99').localeCompare(b.heure_tournee || '99:99'))
+            );
             return controlesSorted;
+        },
+        libelleTournee() {
+            const items = Object.values(controles);
+            if (!items.length) return '';
+            const [y, m, d] = items[0].date_tournee.split('-');
+            const agent = items[0].agent_libelle;
+            return `Tournée du ${d}/${m}/${y} par ${agent}`;
+        },
+        forceRerender() {
+          this.refreshList += 1;
         }
     }
     templates.operateurs.mounted = function() {
@@ -340,13 +371,19 @@
             activeMap.eachLayer(function(layer) {
               if(layer.feature) {
                   if(Object.keys(layer.feature.properties).includes('parcellaires')){
-                      if(layer.feature.properties.parcellaires[0].IDU == idu){
+                      if(layer.feature.properties.parcellaires[0].idu == idu){
                         layer.fireEvent('click');
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }
                   }
               }
             });
+        },
+        removeParcelle(id) {
+            const index = this.parcellesSelectionnees.indexOf(id);
+            if (index !== -1) {
+                this.parcellesSelectionnees.splice(index, 1);
+            }
         },
         updateMap() {
             const parcellesSelectionnees = this.parcellesSelectionnees;
@@ -394,6 +431,9 @@
             }
             return 0;
         },
+        nbParcellesSelectionnees() {
+            return this.parcellesSelectionnees.length;
+        },
         getParcellesSorted() {
             const parcellesSorted = [];
             for(const parcelleId of this.parcellesSelectionnees) {
@@ -418,9 +458,12 @@
                 parcellesSelectionneesControles[this.controleCourant._id] = this.parcellesSelectionnees
                 const data = {};
                 for(let id in parcellesSelectionneesControles) {
-                    data[id] = [];
+                    data[id] = {};
+                    console.log(controles[this.controleCourant._id].heure_tournee);
+                    data[id]['heure_tournee'] = controles[this.controleCourant._id].heure_tournee;
+                    data[id]['parcelles'] = [];
                     for(parcelleId of parcellesSelectionneesControles[id]) {
-                        data[id].push(parcelleId);
+                        data[id]['parcelles'].push(parcelleId);
                     }
                 }
                 document.getElementById('form_data').value = JSON.stringify(data);

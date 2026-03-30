@@ -9,6 +9,7 @@ class ParcellaireAffectationEtapes extends Etapes {
     const ETAPE_VALIDATION = 'validation';
 
     private static $_instance = null;
+    protected $declaration = null;
 
     public static $etapes = array(
         self::ETAPE_EXPLOITATION => 1,
@@ -39,8 +40,12 @@ class ParcellaireAffectationEtapes extends Etapes {
         return self::$_instance;
     }
 
+    public function setDeclaration($declaration) {
+        $this->declaration = $declaration;
+    }
+
     public function getEtapesHash() {
-        if(ParcellaireConfiguration::getInstance()->hasDeclarationsLiees()) {
+        if($this->declaration && $this->declaration->isDeclarationLiee()) {
             return array(
                 self::ETAPE_EXPLOITATION => 1,
                 self::ETAPE_AFFECTATIONS => 2,
