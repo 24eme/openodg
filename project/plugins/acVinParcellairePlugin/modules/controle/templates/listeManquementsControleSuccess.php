@@ -9,7 +9,7 @@
     <button type="submit" class="btn btn-default mt-3"><span class="glyphicon glyphicon-repeat"></span> Regénérer les manquements</button>
 </form>
 
-<h2 class="mb-4">Manquement du contrôle du <?php echo Date::francizeDate($controle->date_tournee); ?></h2>
+<h2 class="mb-4">Manquements du contrôle du <?php echo Date::francizeDate($controle->date_tournee); ?></h2>
 
 <div class="well mb-5">
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $controle->getEtablissementObject()]); ?>
