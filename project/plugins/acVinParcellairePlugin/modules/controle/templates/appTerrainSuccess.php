@@ -97,12 +97,7 @@
 
     templates.listing.data = function() {
         return {
-<<<<<<< HEAD
           controles: controles
-=======
-            controles: controles,
-            date_tournee: date_tournee
->>>>>>> d71f2475bd9203a95bb0ede9fbf6925f6b6bfd91
         }
     };
 
@@ -201,10 +196,25 @@
     };
     templates.audit.mounted = function() {
         submitNeedsToBeSaved(controles);
-        let signaturePad = new SignaturePad(document.getElementById('signature'), {
-            backgroundColor: 'rgba(255, 255, 255, 0)',
-            penColor: 'rgb(0, 0, 0)'
+        let signatureBase64 = null;
+        const controleCourant = this.controleCourant;
+        const signaturePad = new SignaturePad(document.getElementById('signature'), {
+            penColor: 'rgb(0, 0, 0)',
+            minWidth: 1,
+            maxWidth: 2,
+            onEnd: function () {
+                if (!signaturePad.isEmpty()) {
+                    controleCourant.audit.operateur_signature = signaturePad.toDataURL();
+                }
+            }
         });
+        document.getElementById('signature-pad-reset').addEventListener('click', function () {
+            signaturePad.clear();
+            controleCourant.audit.operateur_signature = null;
+        });
+        if (controleCourant.audit.operateur_signature) {
+            signaturePad.fromDataURL(controleCourant.audit.operateur_signature);
+        }
     }
     templates.audit.data = function() {
         const route = useRoute()
