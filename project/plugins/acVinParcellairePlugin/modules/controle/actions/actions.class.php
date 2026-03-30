@@ -165,9 +165,31 @@ class controleActions extends sfActions
     {
         if ($request->isMethod(sfWebRequest::POST)) {
             $raw = file_get_contents('php://input');
-            $data = json_decode($raw, true);
-            $controleBase = ControleClient::getInstance()->find($data['controle']['_id']);
-            $controleBase->updateParcellePointsControleFromJson($data);
+            $datas = json_decode($raw, true);
+
+            $revApp = $datas['revision'];
+            $controle = ControleClient::getInstance()->find($datas['idControle']);
+            $idParcelle = $datas['idParcelle'] ?? null;
+            $element = $datas['element'];
+            $reloadStatus = $datas['reloadStatus'];
+
+            if ($revApp != $controle->_rev) {
+                $controle->logDifferenceRevision($revApp, $idParcelle, $raw);
+                $reloadStatus = true;
+            }
+            $controle->updateControle($idParcelle, $element);
+            $controle->save();
+
+            $newRev = $controle->_rev;
+
+            $response = [
+                'success' => true,
+                'message' => 'OK',
+                'revision' => $newRev,
+                'reloadStatus' => $reloadStatus
+            ];
+            header('Content-Type: application/json');
+            echo json_encode($response);
             exit;
         }
     }

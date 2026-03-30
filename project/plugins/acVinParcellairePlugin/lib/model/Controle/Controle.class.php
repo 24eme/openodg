@@ -198,38 +198,41 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $d->parcellaire_parcelles = $this->getParcellaireParcelles();
         $d->agent_libelle = $this->getAgent()->getNomAAfficher();
         $d->validation = false;
+        $d->revision = $this->_rev;
+        $d->audit->needs_to_be_saved = false;
         $this->to_dump = false;
         return $d;
     }
 
-    public function updateParcellePointsControleFromJson($json)
+    public function logDifferenceRevision($revApp, $idParcelle, $element)
     {
-        $retControleByParcelle = array();
-        foreach ($json['controle']['parcelles'] as $parcelle) {
-            $this->audit = $json['controle']['audit'];
-            $this->maturite = $json['controle']['maturite'];
-            // Je met le noeud controle du Json puis j'unset le sous-noeud "points" car c'est la seule update a faire
-            $retControleByParcelle[$parcelle['parcelle_id']] = $parcelle['controle'];
-            unset($retControleByParcelle[$parcelle['parcelle_id']]['points']);
-            foreach ($parcelle['controle']['points'] as $nomPointDeControle => $dataPointDeControle) {
-                if ($dataPointDeControle['conformite'] != 'NC') {
-                    continue;
-                }
-                // Unset pour ne prendre que les manquements qui sont non conformes
-                $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle] = $dataPointDeControle;
-                unset($retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['constats']);
-                foreach ($dataPointDeControle['constats'] as $idConstat => $dataConstat) {
-                    if ($dataConstat['conformite'] != 1) {
-                        continue;
-                    }
-                    $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['constats'][$idConstat] = $dataConstat;
-                }
+        $message = date("Y-m-d H:i:s")." : Document ". $this->_id ." - revisionApp : [".$revApp."] - revisionDocument : [".$this->_rev."] ";
+        if ($idParcelle) {
+            $message .= "pour parcelle [".$idParcelle."] = ";
+        } else {
+            $message .= "pour audit = ";
+        }
+        $message .= $element;
+        error_log($message . "\n");
+    }
+
+    public function updateControle($idParcelle, $element)
+    {
+        unset($element['needs_to_be_saved']);
+        if (!$idParcelle) {
+            $this->audit = $element;
+            return;
+        }
+
+        if (!$this->hasParcelle($idParcelle)) {
+            $parcelleData = $this->getParcellaire()->getParcelleFromParcellaireId($idParcelle);
+            if (!$parcelleData) {
+                return;
             }
+            $this->parcelles->add($idParcelle, $parcelleData);
         }
-        foreach ($this->parcelles as $parcelleId => $dataParcelle) {
-            $dataParcelle->controle = $retControleByParcelle[$parcelleId];
-        }
-        $this->save();
+
+        $this->parcelles[$idParcelle]['controle'] = $element;
     }
 
     public function hasConstatTerrain()

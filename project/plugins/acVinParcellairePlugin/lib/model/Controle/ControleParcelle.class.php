@@ -10,6 +10,7 @@ class ControleParcelle extends BaseControleParcelle
             $data->pourcentageManquant = $this->getInfoManquant();
             $data->irrigation = $this->getInfoIrrigation();
             $data->irrigation['date_irrigation'] = $this->getInfoIrrigue();
+            $data->needs_to_be_saved = false;
         }
         return $data;
     }

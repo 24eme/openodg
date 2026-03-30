@@ -55,21 +55,45 @@
               controles: controles,
             }
         },
-        template: '<RouterView :key="$route.fullPath" />',
-        watch: {
-          controles: {
-            handler(newControles) {
-              if (newControles) {
-                  localStorage.setItem("controles_" + date_tournee, JSON.stringify(newControles));
-              }
-            },
-            deep: true
+        computed: {
+          isSynchro() {
+            return this.checkNeedsToBeSaved(this.controles);
           }
         },
+
+        methods: {
+            checkNeedsToBeSaved(controles) {
+              Object.values(controles).forEach(controle => {
+                if (controle.audit.needs_to_be_saved == true) {
+                    return false;
+                }
+                Object.values(controle.parcelles).forEach(parcelle => {
+                    if (parcelle.needs_to_be_saved == true) {
+                        return false;
+                    }
+                });
+              });
+              return true;
+            }
+        },
+        template: '<RouterView :key="$route.fullPath" />',
+        // watch: {
+        //   controles: {
+        //     handler(newControles) {
+        //       if (newControles) {
+        //           localStorage.setItem("controles_" + date_tournee, JSON.stringify(newControles));
+        //       }
+        //     },
+        //     deep: true
+        //   }
+        // },
       });
     app.use(router)
     app.mount('#content')
 
+    templates.listing.mounted = function() {
+        submitNeedsToBeSaved(controles);
+    }
     templates.listing.data = function() {
         return {
           controles: controles,
@@ -83,6 +107,9 @@
         }
     };
 
+    templates.operateur.mounted = function() {
+        submitNeedsToBeSaved(controles);
+    }
     templates.operateur.data = function() {
         const route = useRoute()
 
@@ -99,27 +126,12 @@
       },
       echoFloat(val, nbDecimal = 5) {
         return val ? Number(val).toFixed(nbDecimal) : '';
-      },
-      transmitDataControle() {
-        fetch('<?php echo url_for('controle_transmission_data'); ?>', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              controle: this.controleCourant
-            })
-        })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Erreur HTTP ' + response.status);
-          }
-        })
-        .catch(error => {
-          console.error('Transmission error:', error);
-        });
       }
     };
+
+    templates.parcelle.mounted = function() {
+        submitNeedsToBeSaved(controles);
+    }
 
     templates.parcelle.data = function() {
         const route = useRoute()
@@ -148,6 +160,7 @@
         }
     };
     templates.audit.mounted = function() {
+        submitNeedsToBeSaved(controles);
         let signaturePad = new SignaturePad(document.getElementById('signature'), {
             backgroundColor: 'rgba(255, 255, 255, 0)',
             penColor: 'rgb(0, 0, 0)'
@@ -366,4 +379,66 @@
     function getTileUrl(urlTemplate, data) {
         return L.Util.template(urlTemplate, Object.assign(Object.assign({}, data), { r: L.Browser.retina ? '@2x' : '' }));
     }
+
+    async function submitNeedsToBeSaved(controles) {
+      for (const controle of Object.values(controles)) {
+          let reloadStatus = false;
+
+        if (controle.audit.needs_to_be_saved === true) {
+
+          const response = await submitElement(controle._rev, controle._id, null, controle.audit, reloadStatus);
+
+          if (response.success === true) {
+            controle.audit.needs_to_be_saved = false;
+            controle._rev = response.revision;
+            reloadStatus = response.reloadStatus;
+            localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
+          } else {
+              console.log(response);
+          }
+        }
+
+        for (const parcelle of Object.values(controle.parcelles)) {
+
+          if (parcelle.needs_to_be_saved === true) {
+
+            const response = await submitElement(controle._rev, controle._id, parcelle.parcelle_id, parcelle.controle, reloadStatus);
+
+            if (response.success === true) {
+              parcelle.needs_to_be_saved = false;
+              controle._rev = response.revision;
+              reloadStatus = response.reloadStatus;
+              localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
+            } else {
+                console.log(response);
+            }
+          }
+        }
+        if (reloadStatus) {
+            alert("Rev app < Rev couchdb - Rechargez l'app");
+            controle._rev = "00-Needs Update";
+        }
+      }
+    }
+
+    async function submitElement(revision, idControle, idParcelle, element, reloadStatus)
+    {
+        const response = await fetch('<?php echo url_for('controle_transmission_data'); ?>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                revision,
+                idControle,
+                idParcelle,
+                element,
+                reloadStatus
+            })
+        });
+
+        const data = await response.json();
+        return data;
+    }
+
 </script>
