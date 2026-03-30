@@ -97,12 +97,7 @@
 
     templates.listing.data = function() {
         return {
-<<<<<<< HEAD
           controles: controles
-=======
-            controles: controles,
-            date_tournee: date_tournee
->>>>>>> d71f2475bd9203a95bb0ede9fbf6925f6b6bfd91
         }
     };
 
