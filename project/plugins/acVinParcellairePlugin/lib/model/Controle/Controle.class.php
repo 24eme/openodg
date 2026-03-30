@@ -271,7 +271,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return false;
     }
 
-    public function getListeManquements()
+    public function getListeManquements($fromConstatsActif = false)
     {
         $retManquements = array();
         foreach ($this->parcelles as $parcelleId => $parcelle) {
@@ -282,6 +282,9 @@ class Controle extends BaseControle implements InterfacePieceDocument
                         continue;
                     }
                     if ($dataPoint->conformite == null) {continue;}
+                    if ($fromConstatsActif == true) {
+                        if ($dataManquement->conformite == false) {continue;}
+                    }
                     if(!isset($retManquements[$constatId]) || !$retManquements[$constatId]) {
                         $retManquements[$constatId] = ControleManquement::freeInstance($this);
                         $retManquements[$constatId]->observations = '';
@@ -359,7 +362,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function generateManquements()
     {
-        foreach ($this->getListeManquements() as $manquementId => $dataManquement) {
+        foreach ($this->getListeManquements(true) as $manquementId => $dataManquement) {
             $this->addManquementTerrain($manquementId, $dataManquement);
         }
     }
@@ -542,5 +545,35 @@ class Controle extends BaseControle implements InterfacePieceDocument
     }
 
     /**** FIN DES PIECES ****/
+
+    public function getResizeSignature($newWidth = 80)
+    {
+        $base64 = $this->audit->operateur_signature;
+        if (strpos($base64, ',') !== false) {
+            $base64 = explode(',', $base64)[1];
+        }
+        $imageData = base64_decode($base64);
+        $src = imagecreatefromstring($imageData);
+        $width  = imagesx($src);
+        $height = imagesy($src);
+        $newHeight = intval(($height / $width) * $newWidth);
+        $dst = imagecreatetruecolor($newWidth, $newHeight);
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
+        $transparent = imagecolorallocatealpha($dst, 255, 255, 255, 127);
+        imagefilledrectangle($dst, 0, 0, $newWidth, $newHeight, $transparent);
+        imagecopyresampled(
+            $dst, $src,
+            0, 0, 0, 0,
+            $newWidth, $newHeight,
+            $width, $height
+        );
+        ob_start();
+        imagepng($dst);
+        $resized = ob_get_clean();
+        imagedestroy($src);
+        imagedestroy($dst);
+        return 'data:image/png;base64,' . base64_encode($resized);
+    }
 
 }
