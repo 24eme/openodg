@@ -49,8 +49,14 @@
 
     templates.operateurs.data = function() {
         return {
-          controles: controles,
-          refreshList: 0
+            controles: controles,
+        }
+    };
+    templates.operateurs.computed = {
+        controlesSorted() {
+            return Object.fromEntries(
+                Object.entries(this.controles).sort(([, a], [, b]) => (a.heure_tournee || '99:99').localeCompare(b.heure_tournee || '99:99'))
+            );
         }
     };
     templates.operateurs.methods = {
@@ -82,23 +88,19 @@
             }
             return 0;
         },
-        controlesSorted() {
+        setHeures() {
             let heure = '09:00';
-            for(let controleId in controles) {
-                if(parcellesSelectionneesControles.hasOwnProperty(controleId) && parcellesSelectionneesControles[controleId].length) {
-                    if (!controles[controleId].heure_tournee) {
-                        controles[controleId].heure_tournee = heure;
+            for (let controleId in controles) {
+                if (parcellesSelectionneesControles.hasOwnProperty(controleId) && parcellesSelectionneesControles[controleId].length) {
+                    if (!this.controles[controleId].heure_tournee) {
+                        this.controles[controleId].heure_tournee = heure;
                     }
-                    let [h,m] = heure.split(':');
-                    heure = `${String((+h+1)%24).padStart(2,'0')}:${m}`;
+                    let [h, m] = heure.split(':');
+                    heure = `${String((+h + 1) % 24).padStart(2,'0')}:${m}`;
                 } else {
-                    controles[controleId].heure_tournee = '';
+                    this.controles[controleId].heure_tournee = '';
                 }
             }
-            let controlesSorted = Object.fromEntries(
-                Object.entries(controles).sort(([, a], [, b]) => (a.heure_tournee || '99:99').localeCompare(b.heure_tournee || '99:99'))
-            );
-            return controlesSorted;
         },
         libelleTournee() {
             const items = Object.values(controles);
@@ -106,12 +108,10 @@
             const [y, m, d] = items[0].date_tournee.split('-');
             const agent = items[0].agent_libelle;
             return `Tournée du ${d}/${m}/${y} par ${agent}`;
-        },
-        forceRerender() {
-          this.refreshList += 1;
         }
     }
     templates.operateurs.mounted = function() {
+        this.setHeures();
         const map = new L.map('map');
         activeMap = map;
         map.setView([43.8293, 7.2977], 8);
@@ -237,6 +237,15 @@
           controleCourant: controleCourant,
           parcelles: parcelles,
           parcellesSelectionnees: parcellesSelectionnees,
+        }
+    };
+
+    templates.operateur.computed = {
+        watchTrigger() {
+            return {
+                parcelles: this.parcellesSelectionnees,
+                controle: this.controleCourant
+            };
         }
     };
 
@@ -452,15 +461,14 @@
     };
 
     templates.operateur.watch = {
-        parcellesSelectionnees: {
-            handler(parcelles) {
+        watchTrigger: {
+            handler() {
                 this.updateMap();
                 parcellesSelectionneesControles[this.controleCourant._id] = this.parcellesSelectionnees
                 const data = {};
                 for(let id in parcellesSelectionneesControles) {
                     data[id] = {};
-                    console.log(controles[this.controleCourant._id].heure_tournee);
-                    data[id]['heure_tournee'] = controles[this.controleCourant._id].heure_tournee;
+                    data[id]['heure_tournee'] = controles[id].heure_tournee;
                     data[id]['parcelles'] = [];
                     for(parcelleId of parcellesSelectionneesControles[id]) {
                         data[id]['parcelles'].push(parcelleId);

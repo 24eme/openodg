@@ -19,7 +19,7 @@
     </div>
 </div>
 <h3 class="">{{ nbParcellesSelectionnees() }} Parcelle(s) sélectionnée(s) - surface controlée <span class="label label-primary">{{ pourcentageSelectionne() }}%</span>&nbsp;&nbsp;<small></small></h3>
-
+<p>Heure de passage <input v-model="controleCourant.heure_tournee" type="time" /></p>
 <table id="listeParcelles" class="table table-bordered table-striped">
     <thead>
         <tr>
