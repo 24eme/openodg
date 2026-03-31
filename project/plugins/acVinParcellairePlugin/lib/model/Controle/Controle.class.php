@@ -271,6 +271,20 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return false;
     }
 
+    public function hasConstatTerrainActif()
+    {
+        foreach ($this->parcelles as $parcelleId => $parcelle) {
+            foreach ($parcelle->controle->points as $pointId => $point) {
+                foreach($point->constats as $constat) {
+                    if ($constat->conformite == true) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public function getListeManquements($fromConstatsActif = false)
     {
         $retManquements = array();

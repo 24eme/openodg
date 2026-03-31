@@ -106,7 +106,7 @@ table, th, td {
             <td colSpan="3">&nbsp;Tous les points sont conformes :</td>
             <td colSpan="5">&nbsp;
                 <span style="font-family: Dejavusans">
-                <?php if ($controle->hasManquementsActif()): ?>
+                <?php if ($controle->hasConstatTerrainActif()): ?>
                     ☐&nbsp;OUI&nbsp;&nbsp;&nbsp;☒&nbsp;NON&nbsp;
                 <?php else: ?>
                     ☒&nbsp;OUI&nbsp;&nbsp;&nbsp;☐&nbsp;NON&nbsp;
