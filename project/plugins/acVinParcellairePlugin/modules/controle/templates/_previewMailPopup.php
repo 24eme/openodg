@@ -10,7 +10,7 @@
       <div class="modal-body">
         <div class="row">
           <div class="col-xs-12">
-            <pre style="white-space: pre-wrap;"><?= include_partial('controle/notificationEmail', array('controle' => $controle));?></pre>
+            <pre style="white-space: pre-wrap;"><?= include_partial('controle/notificationEmail', array('controle' => $controle, 'agent' => CompteClient::getInstance()->find($controle->agent_identifiant)));?></pre>
           </div>
         </div>
       </div>
