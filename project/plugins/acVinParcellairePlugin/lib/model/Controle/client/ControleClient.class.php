@@ -11,7 +11,9 @@ class ControleClient extends acCouchdbClient
     const CONTROLE_STATUT_TERMINE = "TERMINE";
 
     const CONTROLE_TYPE_HABILITATION = "Habilitation";
-    const CONTROLE_TYPE_SUIVI = "Suivi";
+    const CONTROLE_TYPE_SUIVI = "Suivi de manquements";
+    const CONTROLE_TYPE_DOCUMENTAIRE = "Documentaire";
+    const CONTROLE_TYPE_CONDITION = "Condition de production";
 
     public static function getInstance()
     {

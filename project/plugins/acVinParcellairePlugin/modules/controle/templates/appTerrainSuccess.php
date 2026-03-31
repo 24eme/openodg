@@ -485,21 +485,18 @@
         return L.Util.template(urlTemplate, Object.assign(Object.assign({}, data), { r: L.Browser.retina ? '@2x' : '' }));
     }
 
-    async function submitNeedsToBeSaved(controles) {
+    function submitNeedsToBeSaved(controles) {
       for (const controle of Object.values(controles)) {
-          let reloadStatus = false;
+        let reloadStatus = false;
 
         if (controle.audit.needs_to_be_saved === true) {
 
-          const response = await submitElement(controle._rev, controle._id, null, controle.audit, reloadStatus);
-
-          if (response.success === true) {
-            controle.audit.needs_to_be_saved = false;
-            controle._rev = response.revision;
-            reloadStatus = response.reloadStatus;
+          const response = submitElement(controle, null, controle.audit);
+          if (response && response.success === true) {
+            if (response.reloadStatus) {
+                  reloadStatus = true;
+            }
             localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
-          } else {
-              console.log(response);
           }
         }
 
@@ -509,26 +506,28 @@
 
             localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
 
-            const response = await submitElement(controle._rev, controle._id, parcelle.parcelle_id, parcelle.controle, reloadStatus);
+            const response = submitElement(controle, parcelle.parcelle_id, parcelle.controle);
             if (response && response.success === true) {
-              parcelle.needs_to_be_saved = false;
-              controle._rev = response.revision;
-              reloadStatus = response.reloadStatus;
+              if (response.reloadStatus) {
+                  reloadStatus = true;
+              }
               localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
             }
           }
         }
         if (reloadStatus) {
-            alert("Rev app < Rev couchdb - Rechargez l'app");
             controle._rev = "00-Needs Update";
+            alert("Rev app < Rev couchdb - Rechargez l'app");
         }
       }
     }
 
-    async function submitElement(revision, idControle, idParcelle, element, reloadStatus)
+    function submitElement(controle, idParcelle, element)
     {
       try {
-        const response = await fetch('<?php echo url_for('controle_transmission_data'); ?>', {
+        const revision = controle._rev;
+        const idControle = controle._id;
+        const response = fetch('<?php echo url_for('controle_transmission_data'); ?>', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -537,12 +536,13 @@
                 revision,
                 idControle,
                 idParcelle,
-                element,
-                reloadStatus
+                element
             })
         });
 
-        const data = await response.json();
+        const data = response.json();
+        controle._rev = data.revision;
+        element.needs_to_be_saved = false;
         return data;
       } catch(exception) {
         console.log(['submitElement exception', exception]);

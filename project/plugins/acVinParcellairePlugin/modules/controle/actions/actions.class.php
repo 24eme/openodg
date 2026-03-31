@@ -187,7 +187,6 @@ class controleActions extends sfActions
             $controle = ControleClient::getInstance()->find($datas['idControle']);
             $idParcelle = $datas['idParcelle'] ?? null;
             $element = $datas['element'];
-            $reloadStatus = $datas['reloadStatus'];
 
             if ($revApp != $controle->_rev) {
                 $controle->logDifferenceRevision($revApp, $idParcelle, $raw);
