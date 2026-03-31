@@ -549,31 +549,66 @@ class Controle extends BaseControle implements InterfacePieceDocument
     public function getResizeSignature($newWidth = 80)
     {
         $base64 = $this->audit->operateur_signature;
+        if (!$base64) {
+            return null;
+        }
         if (strpos($base64, ',') !== false) {
             $base64 = explode(',', $base64)[1];
         }
+        $tmpFile = $this->getTmpSignatureFile();
+        if (file_exists($tmpFile)) {
+            return $tmpFile;
+        }
         $imageData = base64_decode($base64);
         $src = imagecreatefromstring($imageData);
+        if (!$src) {
+            return null;
+        }
         $width  = imagesx($src);
         $height = imagesy($src);
         $newHeight = intval(($height / $width) * $newWidth);
         $dst = imagecreatetruecolor($newWidth, $newHeight);
-        imagealphablending($dst, false);
-        imagesavealpha($dst, true);
-        $transparent = imagecolorallocatealpha($dst, 255, 255, 255, 127);
-        imagefilledrectangle($dst, 0, 0, $newWidth, $newHeight, $transparent);
+        $white = imagecolorallocate($dst, 255, 255, 255);
+        imagefill($dst, 0, 0, $white);
         imagecopyresampled(
             $dst, $src,
             0, 0, 0, 0,
             $newWidth, $newHeight,
             $width, $height
         );
-        ob_start();
-        imagepng($dst);
-        $resized = ob_get_clean();
-        imagedestroy($src);
-        imagedestroy($dst);
-        return 'data:image/png;base64,' . base64_encode($resized);
+        if (imagejpeg($dst, $tmpFile, 85)) {
+            imagedestroy($src);
+            imagedestroy($dst);
+            return $tmpFile;
+        } else {
+            return null;
+        }
+    }
+
+    public function getSignatureFilename()
+    {
+        $base64 = $this->audit->operateur_signature;
+        if (!$base64) {
+            return null;
+        }
+        return 'signature_' . md5($base64) . '.jpg';
+    }
+
+    public function getTmpSignatureFile()
+    {
+        $tmpDir = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmpsignatures' . DIRECTORY_SEPARATOR;
+        if (!is_dir($tmpDir)) {
+            mkdir($tmpDir, 0777, true);
+        }
+        return ($filename = $this->getSignatureFilename())? $tmpDir . $this->getSignatureFilename() : null;
+    }
+
+    public function cleanTmpSignatureFile()
+    {
+        $tmpFile = $this->getTmpSignatureFile();
+        if (file_exists($tmpFile)) {
+            unlink($tmpFile);
+        }
     }
 
 }

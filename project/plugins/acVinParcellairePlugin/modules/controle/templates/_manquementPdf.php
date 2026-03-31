@@ -91,9 +91,6 @@ table, th, td {
             <td colSpan="2" style="height: 45px">Date&nbsp;:&nbsp;<?php echo format_date($manquement->constat_date, "dd/MM/yyyy", "fr_FR"); ?></td>
             <td colSpan="2" rowSpan="2" style="height: 90px">
                 Signature
-                <?php if($controle->audit->operateur_signature): ?>
-                <img src="<?php echo $controle->getResizeSignature(80); ?>" alt="" />
-                <?php endif; ?>
             </td>
         </tr>
         <tr>
