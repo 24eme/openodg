@@ -407,7 +407,7 @@
             weight: 3,
             opacity: 1,
             color: 'red',
-            fillOpacity: 0.3
+            fillOpacity: 0.15
         }, onEachFeature: function (feature, layer) {
             layer.on({
                 click: function(e) {
