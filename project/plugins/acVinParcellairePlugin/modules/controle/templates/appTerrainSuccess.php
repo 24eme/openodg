@@ -146,6 +146,21 @@
         }
     };
     templates.operateur.methods = {
+      countConstatForThisParcelle(parcelleCouranteId) {
+          let ret = 0;
+          const parcelleCourante = this.controleCourant.parcelles[parcelleCouranteId];
+          for (const pointKey in parcelleCourante.controle.points) {
+              const point = parcelleCourante.controle.points[pointKey];
+              if (point.conformite != 'NC') {continue;}
+              for (const constatKey in point.constats) {
+                  const constat = point.constats[constatKey];
+                  if (constat.conformite == true) {
+                      ret += 1;
+                  }
+              }
+          }
+          return ret;
+      },
       nbParcellesControlees() {
         return (Object.keys(this.controleCourant.parcelles || {}).filter(k => this.controleCourant.parcelles[k].controle.saisie == 1)).length;
       },

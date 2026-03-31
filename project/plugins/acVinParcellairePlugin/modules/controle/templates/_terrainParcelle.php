@@ -43,7 +43,7 @@
             </tr>
             <tr>
                 <td><strong>Écart Pieds/Rang</strong></td>
-                <td>{{ parcelleCourante.ecart_pieds }} / {{ parcelleCourante.ecart_rang }}</td>
+                <td :class="{'danger': parcelleCourante.has_probleme_ecart_pieds }">{{ parcelleCourante.ecart_pieds }} / {{ parcelleCourante.ecart_rang }}</td>
             </tr>
             <tr>
                 <td><strong>Manquants</strong></td>
