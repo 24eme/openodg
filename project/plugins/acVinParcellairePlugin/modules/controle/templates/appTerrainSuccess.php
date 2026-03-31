@@ -67,16 +67,18 @@
 
         methods: {
             checkNeedsToBeSaved(controles) {
-              Object.values(controles).forEach(controle => {
-                if (controle.audit.needs_to_be_saved == true) {
-                    return false;
+              for (const controle of Object.values(controles)) {
+                if (controle.audit.needs_to_be_saved === true) {
+                  return false;
                 }
-                Object.values(controle.parcelles).forEach(parcelle => {
-                    if (parcelle.needs_to_be_saved == true) {
-                        return false;
-                    }
-                });
-              });
+
+                for (const parcelle of Object.values(controle.parcelles)) {
+                  if (parcelle.needs_to_be_saved === true) {
+                    return false;
+                  }
+                }
+              }
+
               return true;
             }
         },
