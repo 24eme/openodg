@@ -129,9 +129,6 @@ table, th, td {
             <td colSpan="3"><u>Observation :</u><br/><?php echo $controle->getObservationOperateur(); ?></td>
             <td class="center-grey" colSpan="3">La signature de la présente déclaration signifie l'acceptation des constats effectués</td>
             <td colSpan="2">
-                <?php if($controle->getResizeSignature(80)): ?>
-                <img src="/tmpsignatures/<?php echo $controle->getSignatureFilename(); ?>" alt="" />
-                <?php endif; ?>
             </td>
         </tr>
     </thead>
