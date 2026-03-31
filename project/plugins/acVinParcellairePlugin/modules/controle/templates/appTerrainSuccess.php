@@ -492,15 +492,14 @@
 
           if (parcelle.needs_to_be_saved === true) {
 
-            const response = await submitElement(controle._rev, controle._id, parcelle.parcelle_id, parcelle.controle, reloadStatus);
+            localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
 
-            if (response.success === true) {
+            const response = await submitElement(controle._rev, controle._id, parcelle.parcelle_id, parcelle.controle, reloadStatus);
+            if (response && response.success === true) {
               parcelle.needs_to_be_saved = false;
               controle._rev = response.revision;
               reloadStatus = response.reloadStatus;
               localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
-            } else {
-                console.log(response);
             }
           }
         }
@@ -513,6 +512,7 @@
 
     async function submitElement(revision, idControle, idParcelle, element, reloadStatus)
     {
+      try {
         const response = await fetch('<?php echo url_for('controle_transmission_data'); ?>', {
             method: 'POST',
             headers: {
@@ -529,6 +529,10 @@
 
         const data = await response.json();
         return data;
+      } catch(exception) {
+        console.log(['submitElement exception', exception]);
+        return { success: false };
+      }
     }
 
 </script>
