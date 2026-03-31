@@ -18,6 +18,8 @@
     let controles = JSON.parse(localStorage.getItem("controles_" + date_tournee)) || {}
     let no_by_default = {}
 
+    submitNeedsToBeSaved(controles);
+
     const server_controle = JSON.parse(document.getElementById("dataJson").textContent);
     const points_de_controle = JSON.parse(document.getElementById("dataConf").textContent);
     let localstorage_updated = false;
