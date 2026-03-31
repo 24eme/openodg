@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('controle_index'); ?>">Contrôles</a></li>
-  <li><a href=""><?php echo $controle->declarant->nom ?> (<?php echo $controle->identifiant ?> - <?php echo $controle->declarant->cvi ?>)</a></li>
+  <li><a href="<?php echo url_for('controle_operateur', $controle->getEtablissementObject()); ?>"><?php echo $controle->declarant->nom ?> (<?php echo $controle->identifiant ?> - <?php echo $controle->declarant->cvi ?>)</a></li>
   <li class="active"><a href="">Affecter une date de tournée</a></li>
 </ol>
 
