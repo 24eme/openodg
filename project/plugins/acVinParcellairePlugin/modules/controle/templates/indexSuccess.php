@@ -5,6 +5,7 @@
   <li class="active"><a href="<?php echo url_for('accueil'); ?>">Organisation des contrôles</a></li>
 </ol>
 
+<?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('controle_etablissement_selection'))); ?>
 
 <h2 class="hidden-xs">Contrôles terrain à gérer</h2>
 
@@ -38,7 +39,7 @@
         </td>
         <td class="text-right">
             <a href="<?php echo url_for('controle_apporga', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_A_ORGANISER): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-th-list"></span> Préparer    </a>
-            <a href="<?php echo url_for('controle_appterrain', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_PLANIFIE): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-road"></span> Tournée</a>
+            <a href="<?php echo url_for('controle_appterrain', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_ORGANISE): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-road"></span> Tournée</a>
             <a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_EN_MANQUEMENT): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-cog"></span> Manquements</a>
         </td>
     </tr>
@@ -49,7 +50,7 @@
 <h2 class="visible-xs">Tournées à réaliser</h2>
 <ul class="list-group visible-xs">
     <?php foreach ($tournees as $tournee): ?>
-        <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_PLANIFIE): ?>
+        <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_ORGANISE): ?>
         <a href="<?php echo url_for('controle_appterrain', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="list-group-item" style="margin-bottom:1rem;">
             <div class="row">
                 <div class="col-xs-4 text-center">
@@ -91,3 +92,12 @@
 <?php endforeach; ?>
     </tbody>
 </table>
+
+<?php if(class_exists("ControleConfiguration") && ControleConfiguration::getInstance()->isModuleEnabled()): ?>
+<div class="row col-xs-10">
+    <a href="<?php echo url_for('controle_index') ?>" class="btn btn-primary">Accéder au contrôle terrain</a>
+</div>
+<div class="col-xs-2">
+    <a href="<?php echo url_for('controle_gestion_manquements', array())?>" class="btn btn-primary">Liste des manquements</a>
+</div>
+<?php endif; ?>

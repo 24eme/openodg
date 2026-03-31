@@ -75,7 +75,7 @@
 <hr />
 <h2>Points de contrôle</h2>
 <div class="text-right mb-4">
-    <a style="cursor: pointer;" @click="allConforme()">Tous les points sont conformes</a>
+    <a style="cursor: pointer;" @click="allOtherConforme()">Tous les non saisis sont conformes</a>
 </div>
 <form class="form-horizontal" id="controlesList">
     <div class="form-group" v-for="(valPoint, keyPoint) in parcelleCourante.controle.points" :key="keyPoint">

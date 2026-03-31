@@ -7,7 +7,7 @@ class controleComponents extends sfComponents {
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
 
-        $this->subject = sprintf("%s - Résultat du contrôle du %s",Organisme::getInstance(null, 'controle')->getNom(), ucfirst(format_date($this->controle->getDateFormat(), "P", "fr_FR")));
+        $this->subject = sprintf("%s - Suite contrôle interne ODG %s",Organisme::getInstance(null, 'controle')->getNom(), $this->controle->getDateFormat('Y'));
         $this->email = EtablissementClient::getInstance()->find($this->controle->identifiant)->getEmail();
         $this->cc = Organisme::getInstance(null, 'controle')->getEmail();
     }
