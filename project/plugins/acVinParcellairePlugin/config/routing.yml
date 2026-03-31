@@ -223,10 +223,6 @@ controle_liste_operateur_tournee:
 controle_liste_manquements_controle:
   url: /controle/:id/manquements
   param: { module:controle, action: listeManquementsControle}
-  class: ControleRoute
-  options:
-    model:    Etablissement
-    type:     object
 
 controle_transmission_data:
   url: /controle/transmit
