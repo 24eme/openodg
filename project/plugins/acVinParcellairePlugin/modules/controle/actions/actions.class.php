@@ -252,9 +252,7 @@ class controleActions extends sfActions
 
     public function executeGestionManquements(sfWebRequest $request)
     {
-        $this->controles = ControleClient::getInstance()->findAllByStatus();
-        $this->sorted_controles = $this->controles[ControleClient::CONTROLE_STATUT_EN_MANQUEMENT];
-        usort($this->sorted_controles, "ControleClient::sortControlesByDateNotification");
+        $this->sorted_controles = ControleClient::getInstance()->findByManquements();
     }
 
     public function executeListingManquementsOperateur(sfWebRequest $request)
@@ -344,5 +342,6 @@ class controleActions extends sfActions
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
         $this->controles = ControleClient::getInstance()->findAllByIdentifiant($this->etablissement->identifiant);
+        $this->manquements = ControleClient::getInstance()->findByManquements($this->etablissement->identifiant);
     }
 }
