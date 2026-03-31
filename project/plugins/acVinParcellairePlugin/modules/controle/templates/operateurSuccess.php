@@ -5,12 +5,12 @@
 
 <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('controle_etablissement_selection'), 'noautofocus' => true)); ?>
 
-<h2 class="mb-4">Les contrôles de <?php echo $etablissement->raison_sociale; ?></h2>
 
 <div class="well mb-5">
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $etablissement]); ?>
 </div>
 
+<h2 class="mb-4">Historique de ses contrôles</h2>
 <div>
 <table class="table">
     <tr>
@@ -54,6 +54,29 @@
     </tr>
 <?php endforeach; ?>
 </table>
+
+<h2 class="mb-4">Les manquements en cours</h2>
+<div>
+<table class="table">
+    <tr>
+        <th>Date de controle</th>
+        <th>Date de notification</th>
+        <th>Manquement</th>
+        <th class="text-center">Délais</th>
+        <th></th>
+    </tr>
+<?php foreach($manquements as $controle_manquements): foreach($controle_manquements->manquements as $manquement): if ($manquement->actif): ?>
+    <tr>
+        <td><?php echo Date::francizeDate($controle_manquements->date_tournee); ?></td>
+        <td><?php echo Date::francizeDate($manquement->notification_date); ?></td>
+        <td><?php echo $manquement->libelle_manquement; ?></td>
+        <td class="text-center"><?php echo $manquement->delais; ?></td>
+        <td><a class="btn" href="<?php echo url_for('controle_liste_manquements_controle', $controle_manquements); ?>">traiter</a></td>
+    </tr>
+<?php endif; endforeach; endforeach; ?>
+</table>
+</div>
+<hr/>
 <div class="row text-center">
     <p><a class="btn btn-primary" href="<?php echo url_for('controle_nouveau', $etablissement); ?>">Enregistrer un nouveau controle</a></p>
 </div>

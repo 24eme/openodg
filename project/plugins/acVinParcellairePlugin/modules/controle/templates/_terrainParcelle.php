@@ -73,29 +73,28 @@
 
 <a href="" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-road" /> Ouvrir sur le GPS</a>
 <hr />
-
 <h2>Points de contrôle</h2>
-<div class="text-right">
-    <a style="cursor: pointer;" @click="allOtherConforme()">Tous les non saisis sont conformes</a>
+<div class="text-right mb-4">
+    <a style="cursor: pointer;" @click="allOtherConforme()">Tous les points non saisis sont conformes</a>
 </div>
-<form class="form-horizontal">
+<form class="form-horizontal" id="controlesList">
     <div class="form-group" v-for="(valPoint, keyPoint) in parcelleCourante.controle.points" :key="keyPoint">
     <h4 class="col-sm-6 control-label" style="text-align:left">
       {{ valPoint.libelle }}
   </h4>
 
     <div class="col-sm-6 text-right">
-      <label class="radio-inline">
+      <label class="radio-inline" style="padding-top: 0px;">
         <input type="radio" :name="'controle_' + keyPoint" value="C" v-model="valPoint.conformite" />
         Conforme
       </label>
 
-      <label class="radio-inline">
+      <label class="radio-inline" style="padding-top: 0px;">
         <input type="radio" :name="'controle_' + keyPoint" value="NC" v-model="valPoint.conformite" />
         Non Conforme
       </label>
 
-      <label class="radio-inline">
+      <label class="radio-inline" style="padding-top: 0px;">
         <input type="radio" :name="'controle_' + keyPoint" value="NO" v-model="valPoint.conformite" />
         Non Observable
       </label>
