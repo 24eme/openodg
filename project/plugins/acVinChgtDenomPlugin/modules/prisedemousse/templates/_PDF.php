@@ -102,7 +102,7 @@
 <table style="padding:10px 0;">
     <tr>
         <?php if ($lotPDMReputeConforme): ?>
-            <td style="text-align:center">Vin dégusté le <?php echo $lotVMQ->getDateCommissionFormat() ?> et réputé conforme le <?php echo $prisedemousse->getValidationOdg() ?>  </td>
+            <td style="text-align:center">Vin dégusté le <?php echo $lotVMQ->getDateCommissionFormat(); ?> et réputé conforme le <?php echo $prisedemousse->getDateValidationOdgFormat(); ?></td>
         <?php endif;?>
     </tr>
 </table>
