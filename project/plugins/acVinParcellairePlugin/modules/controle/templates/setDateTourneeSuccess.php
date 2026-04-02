@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('controle_index'); ?>">Contrôles</a></li>
-  <li><a href=""><?php echo $controle->declarant->nom ?> (<?php echo $controle->identifiant ?> - <?php echo $controle->declarant->cvi ?>)</a></li>
+  <li><a href="<?php echo url_for('controle_operateur', $controle->getEtablissementObject()); ?>"><?php echo $controle->declarant->nom ?> (<?php echo $controle->identifiant ?> - <?php echo $controle->declarant->cvi ?>)</a></li>
   <li class="active"><a href="">Affecter une date de tournée</a></li>
 </ol>
 
@@ -21,7 +21,7 @@
                 <label class="col-sm-4 control-label" for="type_tournee">Type de tournée</label>
                 <div class="col-sm-4">
                     <select class="form-control" name="type_tournee" id="type_tournee">
-                    <?php foreach([ControleClient::CONTROLE_TYPE_CONDITION, ControleClient::CONTROLE_TYPE_SUIVI, ControleClient::CONTROLE_TYPE_DOCUMENTAIRE, ControleClient::CONTROLE_TYPE_HABILITATION] as $type): ?>
+                    <?php foreach([ControleClient::CONTROLE_TYPE_CONDITIONS, ControleClient::CONTROLE_TYPE_SUIVI, ControleClient::CONTROLE_TYPE_DOCUMENTAIRE, ControleClient::CONTROLE_TYPE_HABILITATION] as $type): ?>
                         <option<?php if ($type == $controle->type_tournee): ?> SELECTED <?php endif; ?>><?php echo $type; ?></option>
                     <?php endforeach; ?>
                     </select>

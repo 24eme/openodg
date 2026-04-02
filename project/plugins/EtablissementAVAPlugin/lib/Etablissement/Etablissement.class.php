@@ -54,7 +54,7 @@ class Etablissement/*** AVA ***/ extends BaseEtablissement {
     }
 
     public function getSociete() {
-        return null;
+        return $this->getCompte();
     }
 
     public function synchroFromCompte($compte) {

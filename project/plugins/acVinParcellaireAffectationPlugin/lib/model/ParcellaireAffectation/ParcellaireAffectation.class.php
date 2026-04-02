@@ -288,7 +288,50 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             }
         }
 
+        if($this->getValidationOdg() && $this->isDeclarationLiee()) {
+            $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($this->identifiant, $this->periode);
+            if($manquant->isNew()) {
+                $this->copyToDeclarationLiee($manquant);
+                $manquant->validate();
+                $manquant->save();
+            }
+            $irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($this->identifiant, $this->periode);
+            if($irrigable->isNew()) {
+                $this->copyToDeclarationLiee($irrigable);
+                $irrigable->validate();
+                $irrigable->save();
+            }
+            if(!$manquant->isNew() && !$irrigable->isNew()) {
+                $this->remove('declaration_liee');
+            }
+        }
+
         parent::save();
+    }
+
+    public function copyToDeclarationLiee($declaration) {
+        if($declaration instanceof ParcellaireManquant) {
+            $noeud = 'manquant';
+        } elseif($declaration instanceof ParcellaireIrrigable) {
+            $noeud = 'irrigation';
+        } else {
+            throw new Exception("Déclaration non géré");
+        }
+
+        foreach($this->declaration as $produit) {
+            $declarationProduit = $declaration->declaration->add(str_replace('/declaration/', '', $produit->getHash()));
+            $declarationProduit->libelle = $produit->libelle;
+            foreach($produit->detail as $parcelle) {
+                if(!$parcelle->exist($noeud)) {
+                    continue;
+                }
+                $declarationParcelle = $declarationProduit->detail->add($parcelle->getKey());
+                ParcellaireClient::CopyParcelle($declarationParcelle, $parcelle, true);
+                foreach($parcelle->get($noeud) as $key => $value) {
+                    $declarationParcelle->set($key, $value);
+                }
+            }
+        }
     }
 
     public function cleanNonAffectee() {
