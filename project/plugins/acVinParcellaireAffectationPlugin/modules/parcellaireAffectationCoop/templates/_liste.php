@@ -59,7 +59,7 @@
                     <?php endif; ?>
                     </a>
                 <?php elseif(ParcellaireConfiguration::getInstance()->hasDeclarationsLiees()): ?>
-                        <small style="opacity: 0.5; font-style: italic;">Saisie directement dans l'affectation</small>
+                        <small style="opacity: 0.5; font-style: italic;">Généré automatiquement à la validation l'affectation</small>
                 <?php endif; ?>
             </td>
             <?php endforeach; ?>
