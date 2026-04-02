@@ -460,9 +460,6 @@ class drevActions extends sfActions {
     public function executeRevendication(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        if($this->drev->isModificative() && !$this->getUser()->hasDrevAdmin()){
-            throw new sfException("Il est impossible d'acceder à une Drev modificatrice pour les volumes revendiquées si vous n'êtes pas administrateur.");
-        }
 
         if(DrevEtapes::getInstance()->isEtapeDisabled(DrevEtapes::ETAPE_REVENDICATION, $this->drev)) {
             if ($request->getParameter('prec')) {
@@ -678,7 +675,6 @@ class drevActions extends sfActions {
         $this->form->save();
 
         if (count($this->validation->getEngagements())) {
-            $this->drev->remove('documents');
             $documents = $this->drev->getOrAdd('documents');
 
             foreach ($this->validation->getEngagements() as $engagement) {
@@ -695,6 +691,7 @@ class drevActions extends sfActions {
                     $document->libelle .= " : ".$engagement->getInfo();
                 }
                 $document->statut = DRevDocuments::getStatutInital($engagement->getCode());
+                $document->origine = $this->drev->_id;
             }
         }
 
@@ -702,7 +699,7 @@ class drevActions extends sfActions {
             $this->drev->setDateDegustationSouhaitee($this->form->getValue('date_degustation_voulue'));
         }
 
-        $this->drev->validate(date('c'));
+        $this->drev->validate();
         $this->drev->cleanLots();
         $this->drev->save();
         if(!$this->getUser()->hasDrevAdmin()){

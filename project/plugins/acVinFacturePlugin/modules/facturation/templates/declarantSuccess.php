@@ -69,7 +69,9 @@
                 <?php if ($hasPaiements):?>
                 <td class="text-right">
                     <?php if($facture->getMontantPaiement() != 0 || (!$facture->isAvoir() && !$facture->isRedressee())): ?>
-                        <a class="<?php if(!$facture->getMontantPaiement()): ?>transparence-xs<?php endif ?>" title="<?php if(!$facture->getMontantPaiement()): ?>Saisir un paiement<?php else: ?>Voir ou modifier le(s) paiements<?php endif ?>" href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>"><?php echo echoFloat($facture->getMontantPaiement()*1); ?>&nbsp;€</a>
+                        <a class="<?php if(!$facture->getMontantPaiement()): ?>transparence-xs<?php endif ?>" title="<?php if(!$facture->getMontantPaiement()): ?>Saisir un paiement<?php else: ?>Voir ou modifier le(s) paiements<?php endif ?>" href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>">
+                            <?php echo echoFloat($facture->getMontantPaiement()*1); ?>&nbsp;€
+                        </a>
                     <?php endif; ?>
                 </td>
                 <?php endif;?>

@@ -12,22 +12,23 @@
     <?php if($conditionnement->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($conditionnement->validation && $conditionnement->validation !== true): ?> reçue le <?php echo format_date($conditionnement->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
     <?php elseif($conditionnement->validation): ?>
-    <small class="pull-right" style="font-size:50%">Télédéclaration<?php if($conditionnement->validation && $conditionnement->validation !== true): ?> signée le <?php echo format_date($conditionnement->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($conditionnement->validation_odg): ?> et approuvée le <?php echo format_date($conditionnement->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?>
+    <small class="pull-right" style="font-size:50%">Télédéclaration<?php if($conditionnement->validation && $conditionnement->validation !== true): ?> signée le <?php echo format_date($conditionnement->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($conditionnement->validation_odg): ?> et approuvée le <?php echo format_date($conditionnement->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?></small>
+      <?php endif; ?>
+      </h2>
+    </div>
+    <?php include_partial('global/flash'); ?>
+
+    <?php if($conditionnement->validation): ?>
+    <div class="well mb-5">
+        <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $conditionnement->getEtablissementObject())); ?>
+    </div>
+    <?php else: ?>
+    <div class="alert alert-warning">
+         La saisie de cette déclaration n'est pas terminée elle est en cours d'édition
+    </div>
     <?php endif; ?>
-  </small>
-    </h2>
-    <h4 class="mt-5 mb-0"><?php echo $conditionnement->declarant->nom; ?><span class="text-muted"> (<?php echo $conditionnement->declarant->famille; ?>)</span></h4>
-</div>
 
-<?php include_partial('global/flash'); ?>
-
-<?php if(!$conditionnement->validation): ?>
-<div class="alert alert-warning">
-    La saisie de cette déclaration n'est pas terminée elle est en cours d'édition
-</div>
-<?php endif; ?>
-
-<?php if(!$conditionnement->isMaster()): ?>
+    <?php if(!$conditionnement->isMaster()): ?>
     <div class="alert alert-info">
       Ce n'est pas la <a class="" href="<?php echo ($conditionnement->getMaster()->isValidee())? url_for('conditionnement_visualisation', $conditionnement->getMaster()) :  url_for('conditionnement_edit', $conditionnement->getMaster()) ?>"><strong>dernière version</strong></a> de la déclaration, le tableau récapitulatif n'est donc pas à jour.
 

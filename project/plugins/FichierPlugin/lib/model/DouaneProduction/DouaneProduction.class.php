@@ -210,14 +210,15 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
     }
 
     public function generateDonnees() {
-        if (!$this->exist('donnees') || count($this->donnees) < 1) {
-            $this->add('donnees');
-            $generate = false;
-            foreach ($this->getCsv() as $datas) {
-                $this->addDonnee($datas);
-            }
+        if ($this->exist('donnees') && count($this->donnees) > 0) {
+            return;
         }
-        return false;
+
+        $this->add('donnees');
+
+        foreach ($this->getCsv() as $datas) {
+            $this->addDonnee($datas);
+        }
     }
 
     private $bailleuretablissements = null;

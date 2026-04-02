@@ -154,6 +154,20 @@ controle_index:
   url: /controles
   param: { module: controle, action: index }
 
+controle_operateur:
+  url: /controles/:identifiant
+  param: { module: controle, action: operateur }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+
+controle_etablissement_selection:
+  url: /controles-etablissement-selection
+  param: { module: controle, action: etablissementSelection }
+
+
+
 controle_nouveau:
   url: /controle/nouveau/:identifiant
   param: { module: controle, action: nouveau }
@@ -191,13 +205,65 @@ controle_set_date_tournee:
     sf_method: [get, post]
 
 controle_appterrain:
-  url: /controle/appterrain/:date
+  url: /controle/appterrain/:date/:agent_identifiant
   param: { module: controle, action: appTerrain }
 
+controle_apporga_save:
+  url: /controle/apporga/save
+  param: { module: controle, action: appOrgaSave }
+
 controle_apporga:
-  url: /controle/apporga/:date
+  url: /controle/apporga/:date/:agent_identifiant
   param: { module: controle, action: appOrga }
 
-controle_apporga_save:
-  url: /controle/apporga/:date/save
-  param: { module: controle, action: appOrgaSave }
+controle_liste_operateur_tournee:
+  url: /controle/listeoperateur/:date/:agent_identifiant
+  param: { module: controle, action: listeOperateursTournee}
+
+controle_liste_manquements_controle:
+  url: /controle/:id/manquements
+  param: { module:controle, action: listeManquementsControle}
+
+controle_transmission_data:
+  url: /controle/transmit
+  param: { module:controle, action: TransmissionData }
+
+controle_update_manquements:
+  url: /controle/:id/manquements/update
+  param: { module: controle, action: updateManquements }
+
+controle_ajout_liste_manquements:
+  url: /controle/:id/manquements/ajout
+  param: { module: controle, action: listeAjoutManquementsControle}
+
+controle_pdf_manquements:
+  url: /controle/:id/manquement/pdf
+  param: { module: controle, action: manquementPdf }
+
+controle_pdf:
+  url: /controle/:id/pdf
+  param: { module: controle, action: exportControlePdf }
+
+controle_gestion_manquements:
+  url: /controle/gestionmanquements
+  param: { module: controle, action: gestionManquements }
+
+controle_liste_manquements_operateur:
+  url: /controle/:id_controle/manquements/liste
+  param: { module: controle, action: listingManquementsOperateur }
+
+controle_lever_manquement:
+  url: /controle/:id_controle/manquement/:id_manquement/lever
+  param: { module: controle, action: leverManquement }
+
+controle_mail_resultats_previsualisation:
+  url: /controle/:id_controle/mail-previsualisation
+  param: { module: controle, action: mailPrevisualisation }
+
+controle_envoi_mail_resultats:
+  url: /controle/:id_controle/:identifiant/envoi-mail
+  param: { module: controle, action: setEnvoiMail }
+
+controle_mail_to_resultats:
+  url: /controle/:id_controle/:identifiant/mail_to_resultat
+  param: { module: controle, action: mailToNotification }

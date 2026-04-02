@@ -7,8 +7,11 @@ class ControleParcelle extends BaseControleParcelle
         if ($this->getDocument()->isDump()) {
             $data->geojson = $this->getGeoJson();
             $data->kml_placemark = $this->getKMLPlacemark();
-            $data->pourcentage = $this->getInfoManquant();
+            $data->pourcentageManquant = $this->getInfoManquant();
             $data->irrigation = $this->getInfoIrrigation();
+            $data->irrigation['date_irrigation'] = $this->getInfoIrrigue();
+            $data->needs_to_be_saved = false;
+            $data->has_probleme_ecart_pieds = $this->getParcellaire()->parcelles[$this->parcelle_id]->hasProblemEcartPieds();
         }
         return $data;
     }
@@ -53,6 +56,21 @@ class ControleParcelle extends BaseControleParcelle
 
     public function getInfoIrrigation()
     {
-        return ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant)->getInfoFromIdParcelle($this->parcelle_id) : ['materiel' => '', 'ressource' => ''];
+        return ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant)->getInfoFromIdParcelle($this->parcelle_id) : ['materiel' => '', 'ressource' => ''];
+    }
+
+    public function getInfoIrrigue()
+    {
+        return ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant) ? date("d/m/Y", strtotime(ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant)->getDateIrrigationFromIdParcelle($this->parcelle_id))) : null;
+    }
+
+    public function getInfoPdf()
+    {
+        return 'Parcelle ' . $this->commune . ' - ' . $this->section . $this->numero_parcelle . ' - ' . $this->cepage . ' - ' . $this->campagne_plantation . ' - ' . $this->superficie . ' ha';
+    }
+
+    public function getParcellaire()
+    {
+        return ParcellaireClient::getInstance()->getLast($this->getDocument()->identifiant);
     }
 }

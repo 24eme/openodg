@@ -59,7 +59,7 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td><?php echoCheck('Recours', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_RECOURS && !$lot->hasSpecificitePassage()) ?></td>
+                    <td><?php echoCheck('Recours', $lot->isOIRecours()) ?></td>
                     <td><?php echoCheck('Sous traitance', false) ?></td>
                     <td></td>
                 </tr>

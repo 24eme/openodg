@@ -280,6 +280,9 @@ class PotentielProductionProduit {
             if ($filter_produit_hash === true && !$p->produit_hash) {
                 continue;
             }
+            if (ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration() && !$p->produit_hash) {
+                continue;
+            }
             if ($filter_produit_hash && is_string($filter_produit_hash) && strpos($p->produit_hash, $filter_produit_hash) === false) {
                 continue;
             }
@@ -290,7 +293,7 @@ class PotentielProductionProduit {
                 continue;
             }
             $cepage = $p->getCepage();
-            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
+            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && $p->isJeunesVignes()) {
                 $cepage .= ' - XXXXjeunes vignes';
             }
 

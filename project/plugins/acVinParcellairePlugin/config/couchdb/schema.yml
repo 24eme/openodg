@@ -154,9 +154,12 @@ Controle:
       type: { }
       date: { }
       date_tournee: { }
+      heure_tournee: { }
       type_tournee: { }
+      agent_identifiant: { }
       identifiant: { }
       campagne: { }
+      notification_date:
       declarant:
         type: collection
         class: ControleDeclarant
@@ -200,17 +203,19 @@ Controle:
                      definition:
                        fields:
                          '*': { }
-      liaisons:
+      liaisons: { required: false }
       audit:
         type: collection
         definition:
           fields:
+            maturite:
             all_points_controles: {}
             all_points_conformes: {}
-            observations: {}
-            operateur_observations: {}
+            agent_observation:
+            operateur_observation:
             operateur_signature: {}
             saisie: {}
+            nom_prenom:
       parcelles:
         type: collection
         definition:
@@ -218,6 +223,7 @@ Controle:
             '*':
               type: collection
               class: ControleParcelle
+              inheritance: ParcellaireParcelle
               definition:
                 fields:
                   superficie: { type: float }
@@ -254,9 +260,9 @@ Controle:
                                 type: collection
                                 definition:
                                   fields:
-                                    conformite: { type: integer }
+                                    conformite: {}
                                     libelle: {}
-                                    manquements:
+                                    constats:
                                       type: collection
                                       definition:
                                         fields:
@@ -276,10 +282,29 @@ Controle:
           fields:
             '*':
               type: collection
+              class: ControleManquement
               definition:
                 fields:
-                  libelle: {}
+                  constat_date:
+                  notification_date:
+                  cloture_date:
+                  actif: false
+                  parcelles_id:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': {}
+                  libelle_point_de_controle: {}
+                  libelle_manquement: {}
                   observations: {}
+                  delais: {}
+      superficie_totale:
+      surface_de_production:
+        type: collection
+        definition:
+          fields:
+            '*': {}
+      manquements_valides:
       mouvements_statuts:
         type: array_collection
         definition:
@@ -289,3 +314,24 @@ Controle:
               definition:
                 fields:
                   '*': {}
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: ControlePiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

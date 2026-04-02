@@ -8,7 +8,5 @@ all:
       etape_superficie: false
       dr_douane_required: false
       degustation: true
-      specificite_lot: true
+      specificite_lot: false
       engagement_pdf: true
-      specificites:
-        primeur: "primeur"

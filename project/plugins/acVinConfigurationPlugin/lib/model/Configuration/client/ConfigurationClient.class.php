@@ -92,7 +92,13 @@ class ConfigurationClient extends acCouchdbClient {
 	}
 
     public function getCampagneParcellaire($format = CampagneManager::FORMAT_COMPLET) {
-        return new CampagneManager('03-01', $format);
+        if(class_exists('ParcellaireAffectationConfiguration') && ParcellaireAffectationConfiguration::getInstance()->isModuleEnabled()) {
+            return new CampagneManager('03-01', $format);
+        }
+        if(class_exists('ParcellaireIrrigableConfiguration') && ParcellaireIrrigableConfiguration::getInstance()->isModuleEnabled()) {
+            return new CampagneManager('03-01', $format);
+        }
+        return $this->getCampagneVinicole($format);
     }
 
     public function getCampagneVinicole($format = CampagneManager::FORMAT_COMPLET) {

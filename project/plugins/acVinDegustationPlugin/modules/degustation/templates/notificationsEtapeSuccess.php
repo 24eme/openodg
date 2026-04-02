@@ -1,6 +1,7 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
 <?php use_helper('Lot') ?>
+<?php use_javascript('degustation.js?'.$_ENV['GIT_LAST_COMMIT']); ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 
@@ -46,13 +47,12 @@
                               data-html="true"
                               title="<?= $lot->getLibelle() . ' - ' . $lot->volume . "hl<br>" . $lot->getShortLibelleConformite() ?>"
                               class="label label-<?php if($lot->isManquement())  { echo 'danger'; }
-                                                    elseif ($lot->isConformeObs()) { echo 'warning'; }
+                                                    elseif ($lot->isConformeObs() || $lot->isConformeAvecDefaut()) { echo 'warning'; }
                                                     else { echo 'success'; } ?>"
                               style="<?php if($lot->hasSpecificitePassage()): ?>border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;<?php endif; ?>"
                         ><span class="glyphicon glyphicon-<?= ($lot->isManquement()) ? 'remove' : 'ok' ?>"></span></a>&nbsp;
                         <?php endforeach; ?>
                       </td>
-                        <?php ?>
                         <td>
                           <a class="pull-right" title="Ouvrir le mail" style="color: white;" href="<?php echo url_for('degustation_mail_to_resultats', array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>"><span class="glyphicon glyphicon-envelope"></span></a>
                         <?php if ($lot->email_envoye === null): ?>

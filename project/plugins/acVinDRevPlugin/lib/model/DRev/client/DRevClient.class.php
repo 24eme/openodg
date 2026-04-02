@@ -27,6 +27,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const LOT_DESTINATION_VRAC_FRANCE_ET_VRAC_EXPORT = "VRAC_FRANCE_VRAC_EXPORT";
     const LOT_DESTINATION_VRAC_EXPORT_ET_CONDITIONNEMENT = "VRAC_EXPORT_CONDITIONNEMENT";
     const LOT_DESTINATION_VRAC_FRANCE_VRAC_EXPORT_CONDITIONNEMENT = "VRAC_FRANCE_VRAC_EXPORT_CONDITIONNEMENT";
+    const LOT_DESTINATION_EMBOUTEILLE = 'EMBOUTEILLE';
 
     const STATUT_EN_ATTENTE = "En attente";
     const STATUT_SIGNE = "À approuver";
@@ -54,7 +55,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT => "Vrac France et Conditionnement",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_VRAC_EXPORT => "Vrac France et Vrac Export",
         DRevClient::LOT_DESTINATION_VRAC_EXPORT_ET_CONDITIONNEMENT => "Vrac Export et Conditionnement",
-        DRevClient::LOT_DESTINATION_VRAC_FRANCE_VRAC_EXPORT_CONDITIONNEMENT => "Vrac Export, Vrac France et Conditionnement"
+        DRevClient::LOT_DESTINATION_VRAC_FRANCE_VRAC_EXPORT_CONDITIONNEMENT => "Vrac Export, Vrac France et Conditionnement",
+        DRevClient::LOT_DESTINATION_EMBOUTEILLE => "Embouteillé",
     );
 
     public static function getLotDestinationsTypes() {

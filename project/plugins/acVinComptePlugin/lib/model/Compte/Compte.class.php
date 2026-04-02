@@ -809,6 +809,14 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
       return $this->getIdentifiant();
     }
 
+    public function getInitiales()
+    {
+        $str = trim($this->prenom . ' ' . $this->nom);
+        $str = preg_replace('/[-\'_]+/u', ' ', $str);
+        preg_match_all('/\b\p{L}/u', $str, $matches);
+        return strtoupper(implode('', $matches[0]));
+    }
+
     public function getRegion() {
         if (!$this->exist('region')) {
             return null;

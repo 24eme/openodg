@@ -49,9 +49,6 @@ class DouaneImportCsvFile {
     public static function getNewInstanceFromType($type, $file, $doc = null, $drev_produit_filter = null, $cvi = null)  {
         switch ($type) {
             case 'DR':
-                if(preg_match('/.csv$/', $file)) {
-                    return new DRDouaneCsvFile($file, $doc, $drev_produit_filter, $cvi);
-                }
                 if(preg_match('/.json$/', $file)) {
                     return new DRDouaneJsonFile($file, $doc, $drev_produit_filter, $cvi);
                 }
@@ -217,7 +214,7 @@ class DouaneImportCsvFile {
 
         if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(conversion|conv|convertion|cab|reconversion|c3|ciii)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_CONVERSION_BIO] = DRevClient::DENOMINATION_CONVERSION_BIO;
-        } elseif(DRevConfiguration::getInstance()->hasDenominationBiodynamie() && $mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(biodinami|biodynami|demeter|bio-dynami)\w*'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+        } elseif(DRevConfiguration::getInstance()->hasDenominationBiodynamie() && $mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(biodinami|biodynami|biody|demeter|bio-dynami)\w*'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIODYNAMIE] = DRevClient::DENOMINATION_BIODYNAMIE;
         } elseif($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(ab|bio|biologique|BIOLOGIQUE|FR-BIO-[0-9]+)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIO] = DRevClient::DENOMINATION_BIO;

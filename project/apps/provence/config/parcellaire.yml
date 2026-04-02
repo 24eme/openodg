@@ -28,14 +28,14 @@ all:
         #   name: "AOC CdP Notre-Dame des Anges"
         #   color: "#52e536"
         #   denomination_id: "02858"
-        # communes-cap:
-        #   name: "AOC Coteaux d'Aix en provence"
-        #   color: "#fcd9c7"
-        #   denomination_id: "01380"
-        # communes-cvp:
-        #   name: "AOC Coteaux Varois en provence"
-        #   color: "#efc868"
-        #   denomination_id: "01707"
+        communes-cap:
+          name: "AOC Coteaux d'Aix en provence"
+          color: "#fcd9c7"
+          denomination_id: "01380"
+        communes-cvp:
+          name: "AOC Coteaux Varois en provence"
+          color: "#efc868"
+          denomination_id: "01707"
       manquant:
         all_pourcentage_allowed: true
       potentiel_de_production:

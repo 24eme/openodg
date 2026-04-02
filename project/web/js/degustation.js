@@ -1,10 +1,13 @@
 
   $(document).ready(function(){
 
-    $('#mailPreviewModal').modal('show');
-
     var originPrelev = document.querySelector('#btn-preleve-all');
     if (originPrelev) {
+      if (document.querySelectorAll('.switch').length === document.querySelectorAll('.switch:checked').length) {
+          originPrelev.innerHTML = '<i class="glyphicon glyphicon-remove-sign"></i> Tout retirer';
+          originPrelev.dataset.status = 'retirer';
+      }
+
       originPrelev.addEventListener("click", function (e) {
         if (originPrelev.dataset.status == "prelever") {
           originPrelev.innerHTML = '<i class="glyphicon glyphicon-remove-sign"></i> Tout retirer';
@@ -23,6 +26,11 @@
 
     var originAttabler = document.querySelector('#btn-attabler-all');
     if (originAttabler) {
+      if (document.querySelectorAll('.switch').length === document.querySelectorAll('.switch:checked').length) {
+          originAttabler.innerHTML = '<i class="glyphicon glyphicon-remove-sign"></i> Tout enlever de la table ' + originAttabler.dataset.table;
+          originAttabler.dataset.status = 'retirer';
+      }
+
       originAttabler.addEventListener("click", function (e) {
         if (originAttabler.dataset.status == "attabler") {
           originAttabler.innerHTML = '<i class="glyphicon glyphicon-remove-sign"></i> Tout enlever de la table ' + originAttabler.dataset.table;

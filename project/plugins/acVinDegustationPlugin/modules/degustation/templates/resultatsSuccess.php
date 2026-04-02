@@ -1,6 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
-<?php use_helper('Lot') ?>
+<?php use_helper('Lot'); ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 
@@ -48,8 +48,8 @@
                   foreach ($form->getTableLots() as $lot):
                     $name = $form->getWidgetNameFromLot($lot);
                     if (isset($form["conformite_".$name])): ?>
-                      <tr class="vertical-center <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>">
-                        <td class="text-right"><?php echo $lot->getNumeroAnonymat() ?></td>
+                      <tr class="vertical-center <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs() || $lot->isConformeAvecDefaut()): ?>list-group-item-warning<?php  endif; ?>">
+                        <td class="text-right"><?php echo $lot->getNumeroAnonymat(); ?></td>
                         <td class="text-left"><?php echo $lot->declarant_nom ?></td>
                         <td><?= $lot->getTypeProvenance() ?></td>
                         <td class="text-left">
@@ -63,13 +63,13 @@
                           <div style="margin-bottom: 0;">
                             <div class="col-xs-12">
                               <a
-                                class="label <?php if($lot->isNonConforme()): ?>label-danger<?php elseif($lot->isConformeObs()): ?>label-warning<?php else: ?>label-success<?php endif; ?>">
+                                class="label <?php if($lot->isNonConforme()): ?>label-danger<?php elseif($lot->isConformeObs() || $lot->isConformeAvecDefaut()): ?>label-warning<?php else: ?>label-success<?php endif; ?>">
                                   <span class="glyphicon <?php if($lot->isNonConforme()): ?>glyphicon-remove<?php else: ?>glyphicon-ok<?php endif ?>"></span></a>
                             </div>
                           </div>
                         </td>
                         <td class="text-center cursor-pointer" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
-                          <?php if(!$lot->isNonConforme() && !$lot->isConformeObs()): ?>
+                          <?php if(!$lot->isNonConforme() && !($lot->isConformeObs() || $lot->isConformeAvecDefaut())): ?>
                             <span class="text-muted glyphicon glyphicon-pencil"></span>
                           <?php else: ?>
                             <?php echo $lot->getShortLibelleConformite(); ?>

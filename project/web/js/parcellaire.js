@@ -17,7 +17,7 @@ document.querySelectorAll(".tableIntentionAffectation tr").forEach(function (tr)
 
 function changeButtonActiveAll(mention, span, check, btnActiveAll = false, onlyText = false) {
   if (!btnActiveAll) {
-    var btnActiveAll = document.querySelector('#btn-switchactive-all');
+    var btnActiveAll = document.querySelector('[id^=btn-switchactive-all]');
   }
   btnActiveAll.dataset.status = mention;
   btnActiveAll.innerHTML = span;
@@ -30,16 +30,25 @@ function changeButtonActiveAll(mention, span, check, btnActiveAll = false, onlyT
   }
 }
 
-var btnActiveAll = document.querySelector('#btn-switchactive-all');
-if (btnActiveAll) {
-  btnActiveAll.addEventListener('click', function (el) {
-    if (btnActiveAll.dataset.status == 'affecter') {
-        changeButtonActiveAll('retirer', btnActiveAll.dataset.remove, true, btnActiveAll);
-    } else {
-        changeButtonActiveAll('affecter', btnActiveAll.dataset.check, false, btnActiveAll);
-    }
+var btnActiveAll = document.querySelectorAll('[id^=btn-switchactive-all]');
+btnActiveAll.forEach((item) => {
+  if (item) {
+    item.addEventListener('click', function (el) {
+      if (item.dataset.status == 'affecter') {
+        changeButtonActiveAll('retirer', item.dataset.remove, true, item);
+      } else {
+        changeButtonActiveAll('affecter', item.dataset.check, false, item);
+      }
+    });
+  }
+});
+
+
+document.querySelectorAll(".tableParcellaire input.affecte_superficie").forEach(function(input) {
+  input.addEventListener('click', function(e) {
+    e.stopPropagation();
   });
-}
+});
 
 document.querySelectorAll(".tableParcellaire tr td").forEach(function (td) {
   if (td.parentElement.querySelector('.switch')) {
@@ -56,10 +65,12 @@ document.querySelectorAll(".tableParcellaire tr td").forEach(function (td) {
 document.querySelectorAll(".tableParcellaire input").forEach(function (el) {
   el.addEventListener('change', function (e) {
     var btnActiveAll = document.querySelector('#btn-switchactive-all');
-    if (document.querySelectorAll('.tableParcellaire input:checked').length == document.querySelectorAll('.tableParcellaire input').length) {
-      changeButtonActiveAll('retirer', btnActiveAll.dataset.remove, true, btnActiveAll, true);
-    } else {
-      changeButtonActiveAll('affecter', btnActiveAll.dataset.check, false, btnActiveAll, true);
+    if (btnActiveAll) {
+      if (document.querySelectorAll('.tableParcellaire input:checked').length == document.querySelectorAll('.tableParcellaire input').length) {
+        changeButtonActiveAll('retirer', btnActiveAll.dataset.remove, true, btnActiveAll, true);
+      } else {
+        changeButtonActiveAll('affecter', btnActiveAll.dataset.check, false, btnActiveAll, true);
+      }
     }
   });
 });
@@ -138,8 +149,11 @@ $(document).ready(function()
               $(this).parents('table').find('.total_affecte').eq(0).html(somme_superficie.toFixed(4));
           });
         }
-        $('input.affecte_superficie').change(function () { console.log('affecte_superficie changing'); compute_superficies_input()});
+        $('input.affecte_superficie').change(function () {
+        compute_superficies_input()
+        });
         compute_superficies_input();
+
     }
 
     if ($('.superficie2compute').length) {
