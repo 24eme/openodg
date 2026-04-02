@@ -594,6 +594,7 @@
         if($('.modal').find('.has-error').length !== 0) {
         	$('.modal').modal('show');
         }
+        $('.modal.modal-auto-open').modal();
     }
 
     $.initCheckboxBtnGroup = function() {

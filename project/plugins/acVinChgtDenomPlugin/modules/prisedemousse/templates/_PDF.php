@@ -25,20 +25,19 @@
 <br/>
 <table><tr><td style="width: 324px;"><?php echo 'Le ' . format_date(date('Y-m-d'), "P", "fr_FR"); ?></td></tr></table>
 <br/><br/>
-<?php if ($changement === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT): ?>
-    <table><tr><td><strong>Objet :</strong> Déclassement d'un lot</td></tr></table>
-<?php elseif ($chgtdenom->isRepli()):?>
-    <table><tr><td><strong>Objet :</strong> Repli d'un lot</td></tr></table>
-<?php else : ?>
-    <table><tr><td><strong>Objet :</strong> Changement de dénomination d'un lot</td></tr></table>
-<?php endif ?>
+    <table><tr><td><strong>Objet :</strong> Prise de mousse d'un lot</td></tr></table>
 <br/><br/>
 
 <table><tr><td>Madame, Monsieur,</td></tr></table>
 
-<table><tr><td>Nous vous prions de bien vouloir trouver ci-dessous la confirmation du <?php if ($changement === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT): ?>déclassement<?php elseif ($chgtdenom->isRepli()): ?>repli<?php else: ?>changement de dénomination<?php endif ?> de votre lot :</td></tr></table>
+<?php $lotOrigine = $prisedemousse->getLotOrigine(); ?>
+<?php $isLotVMQ = str_contains($prisedemousse->lots[1]->produit_hash, '/VMQ/'); ?>
+<?php $lotPDMReputeConforme = $isLotVMQ && !$prisedemousse->lots[1]->isAffecte() && !$prisedemousse->lots[1]->isAffectable() && $prisedemousse->getLotOrigine()->isConforme(); ?>
+
+<table><tr><td>Nous vous prions de bien vouloir trouver ci-dessous la <?php if ($lotPDMReputeConforme): ?> confirmation <?php else: ?> demande <?php endif ?> de prise de mousse de votre lot :</td></tr></table>
 
 <br/><br/>
+
 
 <table border="1" cellspacing=0 cellpadding=0 style="width:100%;text-align:center;">
   <tr>
@@ -48,7 +47,7 @@
     <th style="width: 10%">Volume<br/>(hl)</th>
     <th style="width: 20%">Observation</th>
   </tr>
-    <?php if($lotOrigine = $chgtdenom->getLotOrigine()): ?>
+    <?php if($lotOrigine): ?>
     <tr>
       <td><?php echo $lotOrigine->numero_dossier ?> / <?php echo $lotOrigine->numero_archive ?></td>
       <td><?php echo $lotOrigine->numero_logement_operateur?></td>
@@ -61,11 +60,11 @@
           <td></td>
           <td></td>
           <td>
-            <?php echo $chgtdenom->getOrigineProduitLibelleAndCepages() ?>
-            <small><?php echo $chgtdenom->getOrigineMillesime() ?></small>
-            <small><?php echo $chgtdenom->getOrigineSpecificite() ?></small>
+            <?php echo $prisedemousse->getOrigineProduitLibelleAndCepages() ?>
+            <small><?php echo $prisedemousse->getOrigineMillesime() ?></small>
+            <small><?php echo $prisedemousse->getOrigineSpecificite() ?></small>
           </td>
-          <td style="text-align:right;"><?php echo sprintf("%.2f", $chgtdenom->getOrigineVolume()); ?></td>
+          <td style="text-align:right;"><?php echo sprintf("%.2f", $prisedemousse->getOrigineVolume()); ?></td>
           <td></td>
         </tr>
     <?php endif ?>
@@ -73,45 +72,38 @@
 
 <br/>
 
-<?php if ($chgtdenom->isDeclassement()): ?>
-        <p style="text-align:center">qui devient</p>
-<?php elseif (!$chgtdenom->lots[1]->isAffecte() && !$chgtdenom->lots[1]->isAffectable() && $chgtdenom->isApprouve()): ?>
-        <p style="text-align:center">qui devient</p>
-<?php else: ?>
-        <p style="text-align:left">en attente de contrôle organoleptique conformément au cahier des charges et au plan de contrôle</p>
-<?php endif;?>
-
+<table style="padding:20px auto;font-weight:bold;">
+    <tr>
+        <?php if ($lotPDMReputeConforme): ?>
+            <td style="text-align:center">qui devient le lot commercialisable suivant :  </td>
+        <?php elseif (! $lotPDMReputeConforme): ?>
+            <td style="text-align:left">qui après le contrôle organoleptique (en attente) et conformément au cahier des charges/plan de contrôle deviendra le lot ci-dessous : </td>
+        <?php endif;?>
+    </tr>
+</table>
 <br/>
 
-<?php $lots = $chgtdenom->getLotsWithPseudoDeclassement(); ?>
-<?php $lot = $lots[0]; ?>
+<?php $lotVMQ = $prisedemousse->lots[1]; ?>
 <table border="1">
     <tr>
-        <th style="font-size: 14px">Lot n°: <?php echo $lot->numero_dossier.' / '.$lot->numero_archive ?></th>
-        <?php if ($total == false): ?>
-          <?php $lot2 = $lots[1]; ?>
-          <th style="font-size: 14px">Lot n°: <?php echo $lot2->numero_dossier.' / '.$lot2->numero_archive ?></th>
-        <?php endif ?>
+        <th style="font-size: 14px">Lot n°: <?php echo $lotVMQ->numero_dossier.' / '.$lotVMQ->numero_archive ?></th>
     </tr>
     <tr>
-        <td>
-            N° Lot OP : <?php echo $lot->numero_logement_operateur; ?><br/>
-<?php if ($lot->adresse_logement): ?><br/>
-            Adresse du site : <?php echo $lot->adresse_logement; ?><br/>
+        <td>N° Lot OP : <?php echo $lotVMQ->numero_logement_operateur; ?><br/>
+<?php if ($lotVMQ->adresse_logement): ?><br/>
+            Adresse du site : <?php echo $lotVMQ->adresse_logement; ?><br/>
 <?php endif; ?>
-            Produit : <?php echo showProduitCepagesLot($lot); ?><br/>
-            Volume : <?php echo sprintf("%.2f", $lot->volume) ?> hl
+            Produit : <?php echo showProduitCepagesLot($lotVMQ); ?><br/>
+            Volume : <?php echo sprintf("%.2f", $lotVMQ->volume) ?> hl
         </td>
-        <?php if ($total == false): ?>
-            <td>
-            N° Lot OP : <?php echo $lot2->numero_logement_operateur; ?><br/>
-<?php if ($lot2->adresse_logement): ?><br/>
-            Adresse du site : <?php echo $lot2->adresse_logement; ?><br/>
-<?php endif; ?>
-            Produit : <?php echo showProduitCepagesLot($lot2); ?><br/>
-            Volume : <?php echo sprintf("%.2f", $lot2->volume) ?> hl
-            </td>
-        <?php endif; ?>
+    </tr>
+</table>
+
+<table style="padding:10px 0;">
+    <tr>
+        <?php if ($lotPDMReputeConforme): ?>
+            <td style="text-align:center">Vin dégusté le <?php echo $lotVMQ->getDateCommissionFormat() ?> et réputé conforme le <?php echo $prisedemousse->getValidationOdg() ?>  </td>
+        <?php endif;?>
     </tr>
 </table>
 

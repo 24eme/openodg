@@ -1,5 +1,6 @@
 <?php use_helper('TemplatingPDF'); ?>
 <?php use_helper('Text') ?>
+<?php use_helper('Date'); ?>
 
 <style>
 table, th, td {
@@ -42,7 +43,7 @@ table, th, td {
             <td class="center-grey" colspan="4"><strong>Identification de l'opérateur</strong></td>
         </tr>
         <tr>
-            <td colspan="4"><?php echo $controle->identifiant .' '.$controle->declarant->raison_sociale?></td>
+            <td colspan="4"><?php echo $controle->identifiant .' '.$controle->declarant->raison_sociale ?></td>
         </tr>
         <tr>
             <td class="center-grey" colspan="4"><strong>Identification MANQUEMENT</strong></td>
@@ -68,17 +69,17 @@ table, th, td {
             <?php echo $manquement->libelle_manquement ?><br/><?php echo $controle->getObservationsFromManquement($manquementId); ?></td>
         </tr>
         <tr>
-            <td colspan="2">Date du constat :<br/><?php echo $manquement->constat_date; ?></td>
+            <td colspan="2">Date du constat :<br/><?php echo format_date($manquement->constat_date, "dd/MM/yyyy", "fr_FR"); ?></td>
             <td colSpan="2" style="height: 40px;">Visa de l'agent de l'ODG :&nbsp;&nbsp;&nbsp;&nbsp;<?php echo CompteClient::getInstance()->find($controle->agent_identifiant)->getInitiales(); ?></td>
         </tr>
         <tr>
             <td class="center-grey" colspan="4">Mesure ODG</td>
         </tr>
         <tr>
-            <td colSpan="4" style="height: 134px;"></td>
+            <td colSpan="4" style="height: 134px;"><?php echo ControleConfiguration::getInstance()->getMesureOdgFromConstatId($manquementId); ?></td>
         </tr>
         <tr>
-            <td colSpan="4">Date limite de mise en œuvre des actions correctrices :</td>
+            <td colSpan="4">Date limite de mise en œuvre des actions correctrices : <?php echo ControleConfiguration::getInstance()->getDelaisConstat($manquementId); ?></td>
         </tr>
         <tr>
             <td class="center-grey" colspan="4">Observations de l'opérateur</td>
@@ -87,11 +88,13 @@ table, th, td {
             <td colSpan="4" style="height: 100px;"></td>
         </tr>
         <tr>
-            <td colSpan="2" style="height: 45px">Date</td>
-            <td colSpan="2" rowSpan="2" style="height: 45px">Signature</td>
+            <td colSpan="2" style="height: 45px">Date&nbsp;:&nbsp;<?php echo format_date($manquement->constat_date, "dd/MM/yyyy", "fr_FR"); ?></td>
+            <td colSpan="2" rowSpan="2" style="height: 90px">
+                Signature
+            </td>
         </tr>
         <tr>
-            <td colSpan="2" style="height: 45px">Nom, Prénom :</td>
+            <td colSpan="2" style="height: 45px">Nom,&nbsp;Prénom&nbsp;:&nbsp;&nbsp;<?php echo $controle->audit->nom_prenom; ?></td>
         </tr>
     </tbody>
 </table>

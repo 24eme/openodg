@@ -30,6 +30,23 @@
         <script src="/js/lib/leaflet-gps/dist/leaflet-gps.min.js"></script>
         <script src="/js/lib/signature_pad.min.js"></script>
         <!--<script src="/js/lib/leaflet-offline/dist/bundle.js"></script>-->
+        <style>
+            #controlesList div.form-group h4,
+            #controleList div.form-group label.radio-inline {
+                padding-top: 0px !important;
+            }
+            #controlesList div.form-group {
+                margin-bottom: 0px !important;
+                padding-top: 15px !important;
+                padding-bottom: 15px !important;
+            }
+            #controlesList div.form-group:nth-of-type(odd) {
+                background: #f2f2f2;
+            }
+            #controlesList div.form-group:nth-of-type(even) {
+                background: #fff;
+            }
+        </style>
     </head>
     <body role="document" style="background: none;">
 

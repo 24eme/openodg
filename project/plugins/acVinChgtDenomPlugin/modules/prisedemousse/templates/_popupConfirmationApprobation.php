@@ -1,4 +1,4 @@
-<div class="modal fade" id="chgtDenom-confirmation-approbation" role="dialog" aria-labelledby="Confirmation de validation" aria-hidden="true">
+<div class="modal fade" id="prisedemousse-confirmation-approbation" role="dialog" aria-labelledby="Confirmation de validation" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 				<div class="modal-header">
@@ -6,7 +6,7 @@
 				<h4 class="modal-title" id="myModalLabel">Approbation de la modification du logement</h4>
 			</div>
 			<div class="modal-body">
-				<p>Approuvez-vous la Déclaration de Changement de dénomination / Déclassement ?</p>
+				<p>Approuvez-vous la Déclaration de Prise de mousse ?</p>
 			</div>
 				<div class="modal-footer">
 					<a class="btn btn-default btn pull-left" data-dismiss="modal">Annuler</a>

@@ -154,6 +154,20 @@ controle_index:
   url: /controles
   param: { module: controle, action: index }
 
+controle_operateur:
+  url: /controles/:identifiant
+  param: { module: controle, action: operateur }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+
+controle_etablissement_selection:
+  url: /controles-etablissement-selection
+  param: { module: controle, action: etablissementSelection }
+
+
+
 controle_nouveau:
   url: /controle/nouveau/:identifiant
   param: { module: controle, action: nouveau }
@@ -241,3 +255,15 @@ controle_liste_manquements_operateur:
 controle_lever_manquement:
   url: /controle/:id_controle/manquement/:id_manquement/lever
   param: { module: controle, action: leverManquement }
+
+controle_mail_resultats_previsualisation:
+  url: /controle/:id_controle/mail-previsualisation
+  param: { module: controle, action: mailPrevisualisation }
+
+controle_envoi_mail_resultats:
+  url: /controle/:id_controle/:identifiant/envoi-mail
+  param: { module: controle, action: setEnvoiMail }
+
+controle_mail_to_resultats:
+  url: /controle/:id_controle/:identifiant/mail_to_resultat
+  param: { module: controle, action: mailToNotification }
