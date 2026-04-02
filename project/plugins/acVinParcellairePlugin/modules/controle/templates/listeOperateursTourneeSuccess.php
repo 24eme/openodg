@@ -28,7 +28,7 @@
             <td><?php echo $controle->type_tournee; ?></td>
             <td><a href="<?php echo url_for('controle_pdf', array('id' => $controle->_id)); ?>">PDF du contrôle</a></td>
             <td>
-                <?php if ($controle->manquements_valides): ?>
+                <?php if ($controle->isTermine()): ?>
                     <a href="<?php echo url_for('controle_pdf_manquements', array('id' => $controle->_id)); ?>">PDF des manquements</a>
                 <?php else: ?>
                     <a class="btn btn-xs btn-default" href="<?php echo url_for('controle_liste_manquements_controle', array('id' => $controle->_id)); ?>">Générer les manquements</a>

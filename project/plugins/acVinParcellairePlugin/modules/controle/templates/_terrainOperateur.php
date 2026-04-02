@@ -1,4 +1,4 @@
-<h3 class="mt-0"><RouterLink :to="{ name: 'listing' }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ controleCourant.declarant.nom }} <RouterLink :to="{ name: 'map' }" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink></h3>
+<h3 class="mt-0"><RouterLink :to="{ name: 'listing' }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ libelleTournee() }} <RouterLink :to="{ name: 'map' }" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink><span class="pull-right mr-3" :class="$root.isSynchro ? 'glyphicon glyphicon-floppy-saved' : 'glyphicon glyphicon-floppy-remove'" :style="$root.isSynchro ? 'color: #8da42a' : 'color: #aaaaaa'"></span></h3>
 <hr class="mt-2" />
 
 <?php include_partial('controle/terrainBlocDeclarant'); ?>
@@ -14,12 +14,10 @@
                 <strong>N° {{ index + 1 }}</strong>
             </div>
             <div class="col-xs-8 col-md-9">
-                <h4 class="list-group-item-heading">{{ parcelle.cepage }} <small><br />{{ parcelle.source_produit_libelle }}<br />{{ parcelle.campagne_plantation }}</small></h4>
+                <h4 class="list-group-item-heading">{{ parcelle.cepage }} <small> {{ parcelle.parcelle_id }} <br />{{ parcelle.source_produit_libelle }} - {{ echoFloat(parcelle.superficie, 2) }} ha<br />{{ parcelle.campagne_plantation }}</small></h4>
                 <p class="list-group-item-text">{{ parcelle.commune }} {{ parcelle.lieu }}</p>
                 <div class="mt-2">
-                    <label class="label label-primary" :class="{ 'label-success': parcelle.controle.saisie == 1 }">
-                    {{ echoFloat(parcelle.superficie, 2) }} ha
-                    </label>
+                    <label class="label label-success" title="Nombre de constat" :class="{ 'label-warning': countConstatForThisParcelle(key) > 0 }">{{ countConstatForThisParcelle(key) }}<label>
                 </div>
             </div>
             <div class="col-xs-2 text-right" :class="{ 'text-primary': parcelle.controle.saisie != 1 }">
