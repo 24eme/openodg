@@ -58,6 +58,8 @@
                         Ré-Activer
                     <?php endif; ?>
                     </a>
+                <?php elseif(ParcellaireConfiguration::getInstance()->hasDeclarationsLiees()): ?>
+                        <small style="opacity: 0.5; font-style: italic;">Saisie directement dans l'affectation</small>
                 <?php endif; ?>
             </td>
             <?php endforeach; ?>
