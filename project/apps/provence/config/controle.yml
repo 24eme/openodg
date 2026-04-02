@@ -1,6 +1,7 @@
 all:
   configuration:
     controle:
+      produit_filter: "/CDP/"
       points_de_controle:
         CMMP:
           libelle: CMMP
@@ -11,7 +12,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
               modalite_verif_retour_conformite: Contrôle supplémentaire à la campagne suivante
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -25,7 +26,7 @@ all:
               types:
                 - habilitation
               plan: true
-              mesure_traitement: Refus temporaire d’habilitation
+              mesure_odg: Refus temporaire d’habilitation
               modalite_verif_retour_conformite: Contrôle documentaire
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -37,7 +38,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Suspension d'habilitation
+              mesure_odg: Suspension d'habilitation
               modalite_verif_retour_conformite: Contrôle supplémentaire
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -49,7 +50,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Avertissement
+              mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle documentaire, ou prochain contrôle de suivi interne ou externe
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -61,7 +62,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Avertissement
+              mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle documentaire, ou prochain contrôle de suivi interne ou externe
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -75,7 +76,7 @@ all:
               types:
                 - habilitation
               plan: true
-              mesure_traitement: Refus temporaire d’habilitation
+              mesure_odg: Refus temporaire d’habilitation
               modalite_verif_retour_conformite: Contrôle documentaire
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -89,7 +90,7 @@ all:
               types:
                 - Habilitation
               plan: false
-              mesure_traitement: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
+              mesure_odg: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
               modalite_verif_retour_conformite: NA
               mesure_odg_ou_avpi: Les parcelles concernées ne doivent pas faire l'objet d'une revendication. Une vérification des déclaration de Revendications sera réalisée par l'ODG pour les vendanges de l'année concernée
               delais: /
@@ -100,7 +101,7 @@ all:
               types:
                 - Habilitation
               plan: true
-              mesure_traitement: Refus d’habilitation temporaire
+              mesure_odg: Refus d’habilitation temporaire
               modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur préalable à l’octroi de l’habilitation
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -112,7 +113,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Avertissement
+              mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur
               mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange.
               delais: 2 semaines
@@ -124,7 +125,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
               modalite_verif_retour_conformite: Contrôle supplémentaire
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -135,7 +136,7 @@ all:
               types:
                 - Habilitation
               plan: false
-              mesure_traitement: Refus d’habilitation
+              mesure_odg: Refus d’habilitation
               modalite_verif_retour_conformite: Totalité des parcelles hors de l’aire parcellaire délimitée
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -150,7 +151,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
               modalite_verif_retour_conformite: Contrôle supplémentaire à la campagne suivante
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -164,7 +165,7 @@ all:
               types:
                 - Habilitation
               plan: true
-              mesure_traitement: Refus  d’habilitation
+              mesure_odg: Refus  d’habilitation
               modalite_verif_retour_conformite: NA
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -175,7 +176,7 @@ all:
               types:
                 - Habilitation
               plan: false
-              mesure_traitement: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
+              mesure_odg: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
               modalite_verif_retour_conformite: NA
               mesure_odg_ou_avpi: Les parcelles concernées ne doivent pas faire l'objet d'une revendication. Une vérification des déclaration de Revendications sera réalisée par l'ODG pour les vendanges de l'année 2024
               delais: Vérification de la revendication 2025
@@ -187,7 +188,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
               modalite_verif_retour_conformite: Contrôle documentaire supplémentaire  sur la base des éléments transmis par l’opérateur
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -202,7 +203,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Avertissement et contrôle supplémentaire
+              mesure_odg: Avertissement et contrôle supplémentaire
               modalite_verif_retour_conformite: Lors du contrôle supplémentaire sur site avant la fin du cycle de production
               mesure_odg_ou_avpi: L'ebourgeonnage doit être effectué obligatoirement
               delais: 45884
@@ -216,7 +217,7 @@ all:
               types:
                 - Habilitation
               plan: true
-              mesure_traitement: Refus d’habilitation
+              mesure_odg: Refus d’habilitation
               modalite_verif_retour_conformite: NA
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -227,7 +228,7 @@ all:
               types:
                 - Habilitation
               plan: false
-              mesure_traitement: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
+              mesure_odg: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
               modalite_verif_retour_conformite: NA
               mesure_odg_ou_avpi: Les parcelles concernées ne doivent pas faire l'objet d'une revendication. Une vérification des déclaration de Revendications sera réalisée par l'ODG pour les vendanges de l'année 2024
               delais: Vérification de la revendication 2025
@@ -239,7 +240,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Retrait du bénéfice de l’appellation pour les parcelles concernées ou pour la part de production concernée
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées ou pour la part de production concernée
               modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -251,7 +252,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Retrait du bénéfice de l’appellation pour la production de la parcelle
+              mesure_odg: Retrait du bénéfice de l’appellation pour la production de la parcelle
               modalite_verif_retour_conformite: Sans objet
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -262,7 +263,7 @@ all:
               types:
                 - Habilitation
               plan: false
-              mesure_traitement: Rappel à l'opérateur qu'il ne pourra pas revendiquer sur les parcelles concernées
+              mesure_odg: Rappel à l'opérateur qu'il ne pourra pas revendiquer sur les parcelles concernées
               modalite_verif_retour_conformite: NA
               mesure_odg_ou_avpi: Les parcelles concernées ne doivent pas faire l'objet d'une revendication. Une vérification des déclaration de Revendications sera réalisée par l'ODG pour les vendanges de l'année 2023
               delais: Vérification de la revendication 2025
@@ -277,7 +278,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Retrait du bénéfice de l’appellation pour la part de la production concernée + Avertissement
+              mesure_odg: Retrait du bénéfice de l’appellation pour la part de la production concernée + Avertissement
               modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur  preuve de livraison des volumes en vue de leur destruction par envoi aux usages industriels
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -292,7 +293,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Retrait du bénéfice de l’appellation pour la part de la production concernée
+              mesure_odg: Retrait du bénéfice de l’appellation pour la part de la production concernée
               modalite_verif_retour_conformite: Contrôle supplémentaire à la campagne suivante
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -304,7 +305,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
               modalite_verif_retour_conformite: Contrôle supplémentaire à échéance du plan d’action
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -316,7 +317,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Avertissement
+              mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle supplémentaire à la campagne suivante
               mesure_odg_ou_avpi: Le rang et l'inter rang doivent être maintenus propres (désherbés, labourés, enherbement naturel maitrisé ou couvert végétal controlé, absence d'adventices concurrentiels)
               delais: Au cours de l'année 2026
@@ -330,7 +331,7 @@ all:
               types:
                 - Habilitation
               plan: true
-              mesure_traitement: /
+              mesure_odg: /
               modalite_verif_retour_conformite: Contrôle documentaire hors site sur la base des éléments transmis par l’opérateur
               mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange.
               delais: 1 mois
@@ -342,7 +343,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: /
+              mesure_odg: /
               modalite_verif_retour_conformite: Contrôle documentaire hors site sur la base des éléments transmis par l’opérateur
               mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange.
               delais: 1 mois
@@ -353,7 +354,7 @@ all:
               types:
                 - Habilitation
               plan: true
-              mesure_traitement: Refus d’habilitation temporaire
+              mesure_odg: Refus d’habilitation temporaire
               modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur préalable à l’octroi de l’habilitation
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -365,7 +366,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Avertissement
+              mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur
               mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange.
               delais: 1 mois
@@ -379,7 +380,7 @@ all:
               types:
                 - Habilitation
               plan: false
-              mesure_traitement: Refus d’habilitation
+              mesure_odg: Refus d’habilitation
               modalite_verif_retour_conformite: Totalité des parcelles hors de l’aire parcellaire délimitée
               mesure_odg_ou_avpi: AVPI
               delais: ""
@@ -390,7 +391,7 @@ all:
               types:
                 - Habilitation
               plan: false
-              mesure_traitement: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
+              mesure_odg: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
               modalite_verif_retour_conformite: NA
               mesure_odg_ou_avpi: Les parcelles concernées ne doivent pas faire l'objet d'une revendication. Une vérification des déclaration de Revendications sera réalisée par l'ODG pour les vendanges de l'année concernée
               delais: Vérification de la revendication 2025
@@ -401,7 +402,7 @@ all:
               types:
                 - Habilitation
               plan: true
-              mesure_traitement: Refus d’habilitation temporaire
+              mesure_odg: Refus d’habilitation temporaire
               modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur préalable à l’octroi de l’habilitation
               mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange.
               delais: 2 semaines
@@ -415,7 +416,7 @@ all:
               types:
                 - Habilitation
               plan: true
-              mesure_traitement: Refus  d’habilitation
+              mesure_odg: Refus  d’habilitation
               modalite_verif_retour_conformite: NA
               mesure_odg_ou_avpi: AVPI
               delais: ""
@@ -426,7 +427,7 @@ all:
               types:
                 - Habilitation
               plan: false
-              mesure_traitement: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
+              mesure_odg: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
               modalite_verif_retour_conformite: NA
               mesure_odg_ou_avpi: Les parcelles concernées ne doivent pas faire l'objet d'une revendication. Une vérification des déclaration de Revendications sera réalisée par l'ODG pour les vendanges de l'année 2024
               delais: Vérification de la revendication 2025
@@ -440,7 +441,7 @@ all:
               types:
                 - Habilitation
               plan: true
-              mesure_traitement: Refus d’habilitation
+              mesure_odg: Refus d’habilitation
               modalite_verif_retour_conformite: NA
               mesure_odg_ou_avpi: AVPI
               delais: ""
@@ -451,7 +452,7 @@ all:
               types:
                 - Habilitation
               plan: false
-              mesure_traitement: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
+              mesure_odg: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
               modalite_verif_retour_conformite: NA
               mesure_odg_ou_avpi: Les parcelles concernées ne doivent pas faire l'objet d'une revendication. Une vérification des déclaration de Revendications sera réalisée par l'ODG pour les vendanges de l'année 2024
               delais: Vérification de la revendication 2025
@@ -465,7 +466,7 @@ all:
               types:
                 - Habilitation
               plan: true
-              mesure_traitement: /
+              mesure_odg: /
               modalite_verif_retour_conformite: Contrôle documentaire hors site sur la base des éléments transmis par l’opérateur
               mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange.
               delais: 1 mois
@@ -476,7 +477,7 @@ all:
               types:
                 - Habilitation
               plan: true
-              mesure_traitement: Refus d’habilitation temporaire
+              mesure_odg: Refus d’habilitation temporaire
               modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur préalable à l’octroi de l’habilitation
               mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange.
               delais: 1 mois
@@ -490,7 +491,7 @@ all:
               types:
                 - Habilitation
               plan: true
-              mesure_traitement: Refus temporaire d'habilitation
+              mesure_odg: Refus temporaire d'habilitation
               modalite_verif_retour_conformite: Contrôle documentaire supplémentaire préalable à l'octroi de l'habilitation
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -504,7 +505,7 @@ all:
               types:
                 - Habilitation
               plan: true
-              mesure_traitement: Refus temporaire d’habilitation
+              mesure_odg: Refus temporaire d’habilitation
               modalite_verif_retour_conformite: Contrôle supplémentaire
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -518,7 +519,7 @@ all:
               types:
                 - Habilitation
               plan: false
-              mesure_traitement: Refus d’habilitation
+              mesure_odg: Refus d’habilitation
               modalite_verif_retour_conformite: NA
               mesure_odg_ou_avpi: AVPI
               delais: ""
@@ -533,7 +534,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Contrôle supplémentaire
+              mesure_odg: Contrôle supplémentaire
               modalite_verif_retour_conformite: Lors du contrôle supplémentaire au plus tard au cours de la campagne suivante
               mesure_odg_ou_avpi: Respect de la hauteur du feuillage en année 2025
               delais: ""
@@ -548,7 +549,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
               modalite_verif_retour_conformite: Contrôle supplémentaire à la campagne suivante
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -563,7 +564,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
               modalite_verif_retour_conformite: Contrôle supplémentaire
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -578,7 +579,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Avertissement
+              mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur
               mesure_odg_ou_avpi: Envoi du registre de contrôle de maturité à l'ODG
               delais: Campagne à venir
@@ -590,7 +591,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Retrait du bénéfice de l'appellation pour le lot ou produit concerné + contrôle supplémentaire
+              mesure_odg: Retrait du bénéfice de l'appellation pour le lot ou produit concerné + contrôle supplémentaire
               modalite_verif_retour_conformite: A l’occasion du contrôle supplémentaire
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -604,7 +605,7 @@ all:
               types:
                 - Habilitation
               plan: true
-              mesure_traitement: Refus temporaire d'habilitation
+              mesure_odg: Refus temporaire d'habilitation
               modalite_verif_retour_conformite: Contrôle documentaire supplémentaire préalable à l'octroi de l'habilitation
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -616,7 +617,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: /
+              mesure_odg: /
               modalite_verif_retour_conformite: Contrôle documentaire, ou prochain contrôle de suivi interne ou externe
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -628,7 +629,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Retrait du bénéfice du signe ou contrôle supplémentaire
+              mesure_odg: Retrait du bénéfice du signe ou contrôle supplémentaire
               modalite_verif_retour_conformite: Contrôle supplémentaire ou prochain contrôle de suivi externe
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -643,7 +644,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
               modalite_verif_retour_conformite: Contrôle supplémentaire
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -657,7 +658,7 @@ all:
               types:
                 - Habilitation
               plan: true
-              mesure_traitement: Refus temporaire d’habilitation
+              mesure_odg: Refus temporaire d’habilitation
               modalite_verif_retour_conformite: Contrôle supplémentaire
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -669,7 +670,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Suspension d'habilitation
+              mesure_odg: Suspension d'habilitation
               modalite_verif_retour_conformite: Contrôle supplémentaire
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -681,7 +682,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Avertissement
+              mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle supplémentaire
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -693,7 +694,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Suspension d’habilitation
+              mesure_odg: Suspension d’habilitation
               modalite_verif_retour_conformite: Contrôle supplémentaire
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -708,7 +709,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Avertissement et retrait du bénéfice de l’appellation pour la part de production représentant un surplus
+              mesure_odg: Avertissement et retrait du bénéfice de l’appellation pour la part de production représentant un surplus
               modalite_verif_retour_conformite: "Contrôle documentaire sur la base des éléments transmis par l’opérateur : attestation de livraison des volumes en vue de leur destruction par envoi aux usages industriels"
               mesure_odg_ou_avpi: ""
               delais: ""
@@ -723,7 +724,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Avertissement
+              mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle supplémentaire
               mesure_odg_ou_avpi: Le désherbage chimique total de la parcelle ne doit pas être réalisé et le cahier de culture doit être à jour.
               delais: ""
@@ -738,7 +739,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Avertissement
+              mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur
               mesure_odg_ou_avpi: Déclaration d'irrigabilité à effectuer sur l'espace personnel du Syndicat
               delais: 15 jours
@@ -750,7 +751,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
               modalite_verif_retour_conformite: Contrôle supplémentaire des parcelles susceptibles d’être irriguées au cours de la campagne suivante
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -762,7 +763,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Retrait du bénéfice de l’appellation pour les parcelles concernées + contrôle supplémentaire
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées + contrôle supplémentaire
               modalite_verif_retour_conformite: Contrôle supplémentaire
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -777,7 +778,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Retrait du bénéfice de l’appellation pour les parcelles concernées ou retrait d’habilitation, et information des services de l’INAO et de l’ODG
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées ou retrait d’habilitation, et information des services de l’INAO et de l’ODG
               modalite_verif_retour_conformite: Sans objet
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -789,7 +790,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Retrait du bénéfice de l’appellation pour les parcelles concernées ou retrait d’habilitation, et information des services de l’INAO et de l’ODG
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées ou retrait d’habilitation, et information des services de l’INAO et de l’ODG
               modalite_verif_retour_conformite: Sans objet
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -803,7 +804,7 @@ all:
               types:
                 - Habilitation
               plan: false
-              mesure_traitement: Refus d’habilitation
+              mesure_odg: Refus d’habilitation
               modalite_verif_retour_conformite: NA
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -815,7 +816,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Avertissement
+              mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur
               mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit à jour avant la vendange.
               delais: 1 mois
@@ -830,7 +831,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Avertissement
+              mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle sur site lors du prochain contrôle de suivi
               mesure_odg_ou_avpi: Respect du nombre d'yeux par courson, le nombre total d'yeux devra être inférieur ou égal à 12 lors du prochain contrôle
               delais: ""
@@ -842,7 +843,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Contrôle supplémentaire sur la charge lors de la campagne en cours pour la parcelle concernée et contrôlé supplémentaire la campagne suivante
+              mesure_odg: Contrôle supplémentaire sur la charge lors de la campagne en cours pour la parcelle concernée et contrôlé supplémentaire la campagne suivante
               modalite_verif_retour_conformite: Lors du contrôle supplémentaire lors de la campagne suivante
               mesure_odg_ou_avpi: Respect de la charge à la parcelle pour 2025 (un contrôle sera effectué avant vendange) et respect du nombre d'yeux par souche lors du prochain contrôle
               delais: ""
@@ -854,7 +855,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Avertissement
+              mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle sur site lors du prochain contrôle de suivi
               mesure_odg_ou_avpi: Taille à réaliser avant le stade phénologique E (trois feuilles étalées)
               delais: ""
@@ -866,7 +867,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Contrôle supplémentaire sur la charge lors de la campagne en cours pour la parcelle concernée
+              mesure_odg: Contrôle supplémentaire sur la charge lors de la campagne en cours pour la parcelle concernée
               modalite_verif_retour_conformite: Contrôle supplémentaire lors de la campagne suivante
               mesure_odg_ou_avpi: Respect de la charge à la parcelle pour 2024 (un contrôle sera effectué avant vendange). Le mode de taille indiqué dans le cahier des charges doit être respecté pour la campagne suivante.
               delais: ""
@@ -881,7 +882,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Avertissement
+              mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur Vérification supplémentaire de la déclaration de récolte et réfaction de rendement
               mesure_odg_ou_avpi: Envoi à l'ODG de la liste des manquants de l'exploitation.
               delais: 1 mois
@@ -893,7 +894,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: true
-              mesure_traitement: Retrait du bénéfice de l’appellation pour la part de la production concernée
+              mesure_odg: Retrait du bénéfice de l’appellation pour la part de la production concernée
               modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -908,7 +909,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Avertissement
+              mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle supplémentaire
               mesure_odg_ou_avpi: Le désherbage chimique total de la parcelle ne doit pas être réalisé et le cahier de culture doit être à jour.
               delais: ""
@@ -923,7 +924,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Retrait du bénéfice de l’appellation pour la parcelle concernée
+              mesure_odg: Retrait du bénéfice de l’appellation pour la parcelle concernée
               modalite_verif_retour_conformite: Contrôle sur site lors du prochain contrôle de suivi
               mesure_odg_ou_avpi: AVPI
               delais: NA
@@ -935,7 +936,7 @@ all:
                 - Habilitation
                 - Suivi
               plan: false
-              mesure_traitement: Retrait du bénéfice de l’appellation pour les parcelles concernées ou retrait d’habilitation après information des services de l’INAO et de l’ODG pour déclenchement d’une commission professionnelle selon les conclusions
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées ou retrait d’habilitation après information des services de l’INAO et de l’ODG pour déclenchement d’une commission professionnelle selon les conclusions
               modalite_verif_retour_conformite: Sans objet
               mesure_odg_ou_avpi: AVPI
               delais: NA

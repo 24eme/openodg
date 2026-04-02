@@ -37,7 +37,7 @@ class CASSecurityFilter extends sfBasicSecurityFilter
                    }
                }
                if(!isset($e)) {
-                    foreach(array('cvi', 'accises', 'siret') as $type ) {
+                    foreach(array('cvi', 'accises', 'siret', 'siren') as $type ) {
                        foreach (explode('|', acCas::getAttribute('viticonnect_entities_all_'.$type)) as $id) {
                            $e = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSirenOrTVA($id);
                            if ($e) {

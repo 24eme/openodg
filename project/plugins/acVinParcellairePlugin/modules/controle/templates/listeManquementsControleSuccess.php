@@ -1,7 +1,7 @@
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('controle_index'); ?>">Contrôles</a></li>
   <li><a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>">Tournée du <?php echo Date::francizeDate($controle->date_tournee); ?></a></li>
-  <li><a href=""><?php echo $controle->declarant->nom ?> (<?php echo $controle->identifiant ?> - <?php echo $controle->declarant->cvi ?>)</a></li>
+  <li><a href="<?php echo url_for('controle_operateur', $controle->getEtablissementObject()); ?>"><?php echo $controle->declarant->nom ?> (<?php echo $controle->identifiant ?> - <?php echo $controle->declarant->cvi ?>)</a></li>
   <li class="active"><a href="">Visualisation des manquements</a></li>
 </ol>
 
@@ -9,7 +9,7 @@
     <button type="submit" class="btn btn-default mt-3"><span class="glyphicon glyphicon-repeat"></span> Regénérer les manquements</button>
 </form>
 
-<h2 class="mb-4">Manquement du contrôle du <?php echo Date::francizeDate($controle->date_tournee); ?></h2>
+<h2 class="mb-4">Manquements du contrôle du <?php echo Date::francizeDate($controle->date_tournee); ?></h2>
 
 <div class="well mb-5">
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $controle->getEtablissementObject()]); ?>

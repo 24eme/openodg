@@ -178,6 +178,36 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
     }
 
+    public function isDeclarationLiee() {
+
+        return $this->exist('declaration_liee') && $this->declaration_liee;
+    }
+    public function recoverDeclarationsLiees() {
+        $this->add('declaration_liee', true);
+        $previous_document = ParcellaireManquantClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
+        foreach($previous_document->declaration as $produit) {
+          foreach($produit->detail as $previousParcelle) {
+            $pMatch = $this->findProduitParcelle($previousParcelle);
+            if(!$pMatch) {
+                continue;
+            }
+            $pMatch->add('manquant')->pourcentage = $previousParcelle->pourcentage;
+          }
+        }
+
+        $previous_document = ParcellaireIrrigableClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
+        foreach($previous_document->declaration as $produit) {
+          foreach($produit->detail as $previousParcelle) {
+            $pMatch = $this->findProduitParcelle($previousParcelle);
+            if(!$pMatch) {
+                continue;
+            }
+            $pMatch->add('irrigation')->materiel = $previousParcelle->materiel;
+            $pMatch->add('irrigation')->ressource = $previousParcelle->ressource;
+          }
+        }
+    }
+
     public function getParcellesMultiProduits() {
         $parcelles = [];
         foreach($this->declaration as $produit) {

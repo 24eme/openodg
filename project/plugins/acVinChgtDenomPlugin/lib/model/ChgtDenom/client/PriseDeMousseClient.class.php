@@ -10,8 +10,8 @@ class PriseDeMousseClient extends ChgtDenomClient {
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
         $doc = parent::find($id, $hydrate, $force_return_ls);
-        if($this->document->changement_type != ChgtDenomClient::CHANGEMENT_TYPE_PRISEDEMOUSSE) {
-            throw new sfException("N'est pas un doc prise de mousse");
+        if(!$doc || $doc->changement_type != ChgtDenomClient::CHANGEMENT_TYPE_PRISEDEMOUSSE) {
+            throw new sfException($doc->_id." n'est pas un doc prise de mousse (".$doc->changement_type.")");
         }
         return $doc;
     }
@@ -81,6 +81,11 @@ class PriseDeMousseClient extends ChgtDenomClient {
         $pdm->storeDeclarant();
         $pdm->setLotOrigine($lot);
         $pdm->constructId();
+        try {
+            $pdm->changement_produit_hash = str_replace('/VDB/', '/VMQ/', $lot->produit_hash);
+        }catch(sfException $e){
+            //Pas de VMQ
+        }
 
         return $pdm;
     }

@@ -154,11 +154,12 @@ Controle:
       type: { }
       date: { }
       date_tournee: { }
+      heure_tournee: { }
       type_tournee: { }
       agent_identifiant: { }
       identifiant: { }
       campagne: { }
-      notification_date: { }
+      notification_date:
       declarant:
         type: collection
         class: ControleDeclarant
@@ -207,6 +208,7 @@ Controle:
         type: collection
         definition:
           fields:
+            maturite:
             all_points_controles: {}
             all_points_conformes: {}
             agent_observation:
@@ -302,7 +304,6 @@ Controle:
         definition:
           fields:
             '*': {}
-      maturite:
       manquements_valides:
       mouvements_statuts:
         type: array_collection
@@ -313,3 +314,24 @@ Controle:
               definition:
                 fields:
                   '*': {}
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: ControlePiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

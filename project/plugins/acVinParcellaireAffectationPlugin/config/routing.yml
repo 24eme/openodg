@@ -78,6 +78,26 @@ parcellaireaffectation_affectations:
   requirements:
     sf_method: [get, post]
 
+parcellaireaffectation_manquants:
+  url: /parcellaire-affectation/affectations/manquants/:id
+  param: { module: parcellaireAffectation, action: manquants }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    ParcellaireAffectation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaireaffectation_irrigation:
+  url: /parcellaire-affectation/affectations/irrigation/:id
+  param: { module: parcellaireAffectation, action: irrigation }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    ParcellaireAffectation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 parcellaireaffectation_validation:
   url: /parcellaire-affectation/validation/:id
   param: { module: parcellaireAffectation, action: validation }
