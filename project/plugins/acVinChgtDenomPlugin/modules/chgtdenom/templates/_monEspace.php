@@ -7,7 +7,7 @@
             <h3 class="panel-title">Chgt.&nbsp;de&nbsp;dénom.&nbsp;ou&nbsp;déclass.&nbsp;de&nbsp;lots&nbsp;contrôlés</h3>
         </div>
         <div class="panel-body">
-            <?php if ($enCours): ?>
+            <?php if ($enCours && ! ChgtDenomConfiguration::getInstance()->isPriseDeMousseEnabled()): ?>
             <p class="explications">Votre déclaration de changement de dénomination / déclassement a été débutée sans avoir été validée.</p>
             <div class="actions">
                 <a class="btn btn-block btn-primary" href="<?php echo url_for('chgtdenom_edition', $enCours) ?>"><span class="glyphicon glyphicon-pencil"></span> Reprendre la saisie</a>
