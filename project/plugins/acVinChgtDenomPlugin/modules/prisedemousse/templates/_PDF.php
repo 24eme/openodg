@@ -88,7 +88,7 @@
     <tr>
         <td>N° Lot OP : <?php echo $prisedemousse->lots[1]->numero_logement_operateur; ?><br/>
 <?php if ($prisedemousse->lots[1]->adresse_logement): ?><br/>
-Adresse du site : <?php echo $prisedemousse->lots[1]->adresse_logement; ?><br/>
+Adresse du site : <div style="width:5px;"><?php echo $prisedemousse->lots[1]->adresse_logement; ?></div><br/>
 <?php endif; ?>
             Produit : <?php echo showProduitCepagesLot($prisedemousse->lots[1]); ?><br/>
             Volume : <?php echo sprintf("%.2f", $prisedemousse->lots[1]->volume) ?> hl
