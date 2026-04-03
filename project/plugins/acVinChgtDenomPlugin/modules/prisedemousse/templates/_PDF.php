@@ -31,10 +31,8 @@
 <table><tr><td>Madame, Monsieur,</td></tr></table>
 
 <?php $lotOrigine = $prisedemousse->getLotOrigine(); ?>
-<?php $isLotVMQ = str_contains($prisedemousse->lots[1]->produit_hash, '/VMQ/'); ?>
-<?php $lotPDMReputeConforme = $isLotVMQ && !$prisedemousse->lots[1]->isAffecte() && !$prisedemousse->lots[1]->isAffectable() && $prisedemousse->getLotOrigine()->isConforme(); ?>
 
-<table><tr><td>Nous vous prions de bien vouloir trouver ci-dessous la <?php if ($lotPDMReputeConforme): ?> confirmation <?php else: ?> demande <?php endif ?> de prise de mousse de votre lot :</td></tr></table>
+<table><tr><td>Nous vous prions de bien vouloir trouver ci-dessous la <?php if (!$prisedemousse->getDegustationVMQ()->isAffecte() && !$prisedemousse->getDegustationVMQ()->isAffectable() && $prisedemousse->getDegustationVMQ()->isConforme()): ?> confirmation <?php else: ?> demande <?php endif ?> de prise de mousse de votre lot :</td></tr></table>
 
 <br/><br/>
 
@@ -74,9 +72,9 @@
 
 <table style="padding:20px auto;font-weight:bold;">
     <tr>
-        <?php if ($lotPDMReputeConforme): ?>
+        <?php if (!$prisedemousse->getDegustationVMQ()->isAffecte() && !$prisedemousse->getDegustationVMQ()->isAffectable() && $prisedemousse->getDegustationVMQ()->isConforme()): ?>
             <td style="text-align:center">qui devient le lot commercialisable suivant :  </td>
-        <?php elseif (! $lotPDMReputeConforme): ?>
+        <?php else: ?>
             <td style="text-align:left">qui après le contrôle organoleptique (en attente) et conformément au cahier des charges/plan de contrôle deviendra le lot ci-dessous : </td>
         <?php endif;?>
     </tr>
