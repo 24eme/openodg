@@ -58,10 +58,8 @@
                         Ré-Activer
                     <?php endif; ?>
                     </a>
-                <?php elseif(ParcellaireConfiguration::getInstance()->hasDeclarationsLiees() && $type == "ParcellaireManquant" && $apporteur->getDeclarationStatut("ParcellaireAffectation") == ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT): ?>
-                    <a class="text-success" href="<?php echo url_for('parcellaireaffectation_manquants', array('id' => $apporteur->getDeclaration("ParcellaireAffectation")->_id, 'coop' => $parcellaireAffectationCoop->_id)) ?>">Modifier la déclaration</a><br/><span class="glyphicon glyphicon-ok-sign"></span> <small>Partiellement validé</small>
-                <?php elseif(ParcellaireConfiguration::getInstance()->hasDeclarationsLiees() && $type == "ParcellaireIrrigable" && $apporteur->getDeclarationStatut("ParcellaireAffectation") == ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT): ?>
-                    <a class="text-success" href="<?php echo url_for('parcellaireaffectation_irrigation', array('id' => $apporteur->getDeclaration("ParcellaireAffectation")->_id, 'coop' => $parcellaireAffectationCoop->_id)) ?>">Modifier la déclaration</a><br/><span class="glyphicon glyphicon-ok-sign"></span> <small>Partiellement validé</small>
+                <?php elseif(ParcellaireConfiguration::getInstance()->hasDeclarationsLiees() && $type != "ParcellaireAffectation" && $apporteur->getDeclarationStatut("ParcellaireAffectation") == ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT): ?>
+                    <a class="text-success" href="<?php echo url_for('parcellaireaffectation_edit', array('id' => $apporteur->getDeclaration("ParcellaireAffectation")->_id, 'coop' => $parcellaireAffectationCoop->_id, 'etape' => $type)) ?>">Modifier la déclaration</a><br/><span class="glyphicon glyphicon-ok-sign"></span> <small>Partiellement validé</small>
                 <?php endif; ?>
             </td>
             <?php endforeach; ?>

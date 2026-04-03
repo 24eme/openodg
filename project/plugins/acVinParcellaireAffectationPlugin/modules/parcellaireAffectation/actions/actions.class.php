@@ -33,6 +33,14 @@ class parcellaireAffectationActions extends sfActions {
 
     	$this->secure(ParcellaireSecurity::EDITION, $parcellaireAffectation);
 
+        if($request->getParameter('coop') && $request->getParameter('etape') == ParcellaireIrrigableClient::TYPE_MODEL) {
+            return $this->redirect('parcellaireaffectation_irrigation', $parcellaireAffectation);
+        }
+
+        if($request->getParameter('coop') && $request->getParameter('etape') == ParcellaireManquantClient::TYPE_MODEL) {
+            return $this->redirect('parcellaireaffectation_manquants', $parcellaireAffectation);
+        }
+
         if($request->getParameter('coop')) {
 
             return $this->redirect('parcellaireaffectation_affectations', $parcellaireAffectation);
