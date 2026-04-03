@@ -81,26 +81,25 @@
 </table>
 <br/>
 
-<?php $lotVMQ = $prisedemousse->lots[1]; ?>
 <table border="1">
     <tr>
-        <th style="font-size: 14px">Lot n°: <?php echo $lotVMQ->numero_dossier.' / '.$lotVMQ->numero_archive ?></th>
+        <th style="font-size: 14px">Lot n°: <?php echo $prisedemousse->lots[1]->numero_dossier.' / '.$prisedemousse->lots[1]->numero_archive ?></th>
     </tr>
     <tr>
-        <td>N° Lot OP : <?php echo $lotVMQ->numero_logement_operateur; ?><br/>
-<?php if ($lotVMQ->adresse_logement): ?><br/>
-            Adresse du site : <?php echo $lotVMQ->adresse_logement; ?><br/>
+        <td>N° Lot OP : <?php echo $prisedemousse->lots[1]->numero_logement_operateur; ?><br/>
+<?php if ($prisedemousse->lots[1]->adresse_logement): ?><br/>
+Adresse du site : <?php echo $prisedemousse->lots[1]->adresse_logement; ?><br/>
 <?php endif; ?>
-            Produit : <?php echo showProduitCepagesLot($lotVMQ); ?><br/>
-            Volume : <?php echo sprintf("%.2f", $lotVMQ->volume) ?> hl
+            Produit : <?php echo showProduitCepagesLot($prisedemousse->lots[1]); ?><br/>
+            Volume : <?php echo sprintf("%.2f", $prisedemousse->lots[1]->volume) ?> hl
         </td>
     </tr>
 </table>
 
 <table style="padding:10px 0;">
     <tr>
-        <?php if ($lotPDMReputeConforme): ?>
-            <td style="text-align:center">Vin dégusté le <?php echo $lotVMQ->getDateCommissionFormat(); ?> et réputé conforme le <?php echo $prisedemousse->getDateValidationOdgFormat(); ?></td>
+        <?php if (!$prisedemousse->lots[1]->isAffecte() && !$prisedemousse->lots[1]->isAffectable() && $prisedemousse->getDegustationVMQ()->isConforme()): ?>
+            <td style="text-align:center">Vin dégusté et contrôlé conforme le <?php echo $prisedemousse->lots[1]->getDateCommissionFormat(); ?></td>
         <?php endif;?>
     </tr>
 </table>
