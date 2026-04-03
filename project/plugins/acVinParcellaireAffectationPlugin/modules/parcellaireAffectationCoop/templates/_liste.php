@@ -30,7 +30,7 @@
             <td><?php echo $apporteur->cvi; ?></td>
             <td><span class="text-primary"><?php echo $apporteur->nom; ?></span> <span class="text-muted"><?php echo $apporteur_id; ?></span></td>
             <?php foreach(["ParcellaireAffectation" => "parcellaireaffectation", "ParcellaireManquant" => "parcellairemanquant", "ParcellaireIrrigable" => "parcellaireirrigable"] as $type => $baseurl): ?>
-            <td class="text-center <?php if(in_array($apporteur->getDeclarationStatut($type), [ParcellaireAffectationCoopApporteur::STATUT_VALIDE, ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT])): ?>success text-success<?php endif; ?>">
+            <td class="text-center <?php if(in_array($apporteur->getDeclarationStatut($type), [ParcellaireAffectationCoopApporteur::STATUT_VALIDE, ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT]) || (ParcellaireConfiguration::getInstance()->hasDeclarationsLiees() && $apporteur->getDeclarationStatut("ParcellaireAffectation") == ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT)): ?>success text-success<?php endif; ?>">
                 <?php if($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>
                     <a class="text-success" href="<?php echo url_for($baseurl.'_visualisation', array('id' => $apporteur->getDeclaration($type)->_id, 'coop' => $parcellaireAffectationCoop->_id)) ?>">Voir la déclaration</a><br/><span class="glyphicon glyphicon-ok-sign"></span>
                 <?php elseif($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT): ?>
@@ -58,8 +58,8 @@
                         Ré-Activer
                     <?php endif; ?>
                     </a>
-                <?php elseif(ParcellaireConfiguration::getInstance()->hasDeclarationsLiees()): ?>
-                        <small style="opacity: 0.5; font-style: italic;">Généré automatiquement à la validation l'affectation</small>
+                <?php elseif(ParcellaireConfiguration::getInstance()->hasDeclarationsLiees() && $type != "ParcellaireAffectation" && $apporteur->getDeclarationStatut("ParcellaireAffectation") == ParcellaireAffectationCoopApporteur::STATUT_VALIDE_PARTIELLEMENT): ?>
+                    <a class="text-success" href="<?php echo url_for('parcellaireaffectation_edit', array('id' => $apporteur->getDeclaration("ParcellaireAffectation")->_id, 'coop' => $parcellaireAffectationCoop->_id, 'etape' => $type)) ?>">Modifier la déclaration</a><br/><span class="glyphicon glyphicon-ok-sign"></span> <small>Partiellement validé</small>
                 <?php endif; ?>
             </td>
             <?php endforeach; ?>
