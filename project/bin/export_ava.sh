@@ -12,7 +12,7 @@ split_export_by_annee () {
         FILEANNEE=$EXPORTDIR/$annee/"$annee"_$EXPORTTYPE.csv
         mkdir $EXPORTDIR/$annee 2> /dev/null;
         head -n 1 $FILEPART > $FILEPARTANNEE
-        cat $FILEPART | grep -E "^$annee;" >> $FILEPARTANNEE
+        cat $FILEPART | grep -E "^$annee(;|-)" >> $FILEPARTANNEE
         iconv -f UTF8 -t ISO88591//TRANSLIT $FILEPARTANNEE > $FILEANNEE
         rm $FILEPARTANNEE
     done;
