@@ -1,4 +1,4 @@
-<h3 class="mt-0"><RouterLink :to="{ name: 'operateur', params: { id: controleCourant._id } }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ controleCourant.declarant.nom }} <span :class="$root.isSynchro ? 'glyphicon glyphicon-floppy-saved' : 'glyphicon glyphicon-floppy-remove'"></span> <RouterLink :to="{ name: 'map' }" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink></h3>
+<h3 class="mt-0"><RouterLink :to="{ name: 'operateur', params: { id: controleCourant._id } }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ controleCourant.declarant.nom }} <RouterLink :to="{ name: 'map' }" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink><span class="pull-right mr-3" :class="$root.isSynchro ? 'glyphicon glyphicon-floppy-saved' : 'glyphicon glyphicon-floppy-remove'" :style="$root.isSynchro ? 'color: #8da42a' : 'color: #aaaaaa'"></span></h3>
 <hr class="mt-2" />
 
 <?php include_partial('controle/terrainBlocDeclarant'); ?>
@@ -67,7 +67,8 @@
   <div class="form-group">
       <label class="col-sm-3 control-label">Signature Opérateur</label>
       <div class="col-sm-5">
-          <canvas id="signature" style="width: 300px;height: 300px; border: 1px solid #cecece;"></canvas>
+          <canvas id="signature" width="300" height="300" style="border: 1px solid #cecece;"></canvas>
+          <p id="signature-pad-reset" class="text-muted" style="padding-left: 240px; cursor: pointer;" title="Effacer la signature"><span class="glyphicon glyphicon-trash">Effacer</span></p>
       </div>
   </div>
 

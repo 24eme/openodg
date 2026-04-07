@@ -1,4 +1,4 @@
-<h3 class="mt-0">Carte<RouterLink :to="{ name: 'listing' }" class="pull-right"><span class="glyphicon glyphicon-remove"></span></RouterLink> <span :class="$root.isSynchro ? 'glyphicon glyphicon-floppy-saved' : 'glyphicon glyphicon-floppy-remove'"></span> <button class="btn btn-default btn-sm pull-right mr-4" @click="downloadKml">Télécharger KML</button></h3>
+<h3 class="mt-0 text-center"><span class="pull-left">Carte</span><a href="#" class="pull-right" onclick="history.go(-1);return false;"><span class="glyphicon glyphicon-remove"></span></RouterLink> <span class="" :class="$root.isSynchro ? 'glyphicon glyphicon-floppy-saved' : 'glyphicon glyphicon-floppy-remove'" :style="$root.isSynchro ? 'color: #8da42a;' : 'color: #dddddd'"></span><button class="btn btn-default btn-sm pull-right mr-4" @click="downloadKml">Télécharger KML</button></h3>
 <hr class="mt-2 mb-4" />
 <div id="map" style="height: 70vh;"></div>
 <hr />

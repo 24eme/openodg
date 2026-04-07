@@ -3,10 +3,11 @@ class controleActions extends sfActions
 {
     public function executeIndex(sfWebRequest $request)
     {
+        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
         $this->controles = ControleClient::getInstance()->findAllByStatus();
         $this->tournees = [];
         foreach ($this->controles as $statut => $controles) {
-            if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_PLANIFIE, ControleClient::CONTROLE_STATUT_EN_MANQUEMENT])) {
+            if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_ORGANISE, ControleClient::CONTROLE_STATUT_EN_MANQUEMENT])) {
                 continue;
             }
             foreach($controles as $c) {
@@ -33,6 +34,18 @@ class controleActions extends sfActions
         }
         ksort($this->tournees);
     }
+
+    public function executeEtablissementSelection(sfWebRequest $request) {
+        $form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        $form->bind($request->getParameter($form->getName()));
+        if (!$form->isValid()) {
+
+            return $this->redirect('controle_index');
+        }
+
+        return $this->redirect('controle_operateur', $form->getEtablissement());
+    }
+
 
     public function executeNouveau(sfWebRequest $request)
     {
@@ -64,11 +77,13 @@ class controleActions extends sfActions
         }
     }
 
-    private function getControlesByDateTourneeAndAgent($dateTournee, $agentIdentifiant)
+    private function getControlesByDateTourneeAndAgentAndSetControle($dateTournee, $agentIdentifiant)
     {
+        $this->controles = [];
         $controles = [];
         foreach (ControleClient::getInstance()->findAll() as $controle) {
             if ($dateTournee == $controle->date_tournee && $agentIdentifiant == $controle->agent_identifiant) {
+                $this->controles[] = $controle;
                 $controles[$controle->_id] = $controle->getDataToDump();
             }
         }
@@ -79,7 +94,7 @@ class controleActions extends sfActions
     {
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
-        $this->json = json_encode($this->getControlesByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->json = json_encode($this->getControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
     }
 
@@ -87,7 +102,7 @@ class controleActions extends sfActions
     {
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
-        $this->json = json_encode($this->getControlesByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->json = json_encode($this->getControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getPointsDeControle(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
     }
@@ -97,9 +112,10 @@ class controleActions extends sfActions
             throw new sfError403Exception();
         }
         $data = json_decode($request->getParameter('data'));
-        foreach ($data as $controleId => $parcellesIds) {
+        foreach ($data as $controleId => $items) {
             if ($controle = ControleClient::getInstance()->find($controleId)) {
-                $controle->updateParcelles($parcellesIds);
+                $controle->heure_tournee = $items->heure_tournee;
+                $controle->updateParcelles($items->parcelles);
                 $controle->save();
             }
         }
@@ -171,7 +187,6 @@ class controleActions extends sfActions
             $controle = ControleClient::getInstance()->find($datas['idControle']);
             $idParcelle = $datas['idParcelle'] ?? null;
             $element = $datas['element'];
-            $reloadStatus = $datas['reloadStatus'];
 
             if ($revApp != $controle->_rev) {
                 $controle->logDifferenceRevision($revApp, $idParcelle, $raw);
@@ -216,6 +231,7 @@ class controleActions extends sfActions
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->document = new ExportControlePDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
+        //$this->controle->cleanTmpSignatureFile();
         return $this->executePdf($request);
     }
 
@@ -236,9 +252,7 @@ class controleActions extends sfActions
 
     public function executeGestionManquements(sfWebRequest $request)
     {
-        $this->controles = ControleClient::getInstance()->findAllByStatus();
-        $this->sorted_controles = $this->controles[ControleClient::CONTROLE_STATUT_EN_MANQUEMENT];
-        usort($this->sorted_controles, "ControleClient::sortControlesByDateNotification");
+        $this->sorted_controles = ControleClient::getInstance()->findByManquements();
     }
 
     public function executeListingManquementsOperateur(sfWebRequest $request)
@@ -305,10 +319,11 @@ class controleActions extends sfActions
         if ($cc) {
             $cc = "cc=".$cc."&";
         }
-        $subject = sprintf("Résultat du contrôle du %s", $this->controle->getDateFormat('d/m/Y'));
+        $subject = sprintf("Suite contrôle interne ODG %s", $this->controle->getDateFormat('Y'));
         $body = html_entity_decode(str_replace("\n", "%0A", strip_tags(get_partial('controle/notificationEmail', [
             'controle' => $this->controle,
             'identifiant' => $identifiant,
+            'agent' => CompteClient::getInstance()->find($controle->agent_identifiant),
         ]))), ENT_QUOTES | ENT_XML1, 'UTF-8');
 
         $mailto = "mailto:$email?".$cc."subject=$subject&body=$body";
@@ -321,5 +336,13 @@ class controleActions extends sfActions
         $this->getResponse()->send();
 
         throw new sfStopException();
+    }
+
+    public function executeOperateur(sfWebRequest $request)
+    {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
+        $this->controles = ControleClient::getInstance()->findAllByIdentifiant($this->etablissement->identifiant);
+        $this->manquements = ControleClient::getInstance()->findByManquements($this->etablissement->identifiant);
     }
 }

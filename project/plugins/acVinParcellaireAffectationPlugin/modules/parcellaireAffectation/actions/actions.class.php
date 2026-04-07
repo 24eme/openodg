@@ -33,13 +33,21 @@ class parcellaireAffectationActions extends sfActions {
 
     	$this->secure(ParcellaireSecurity::EDITION, $parcellaireAffectation);
 
-    	if ($parcellaireAffectation->exist('etape') && $parcellaireAffectation->etape) {
-    		return $this->redirect('parcellaireaffectation_' . $parcellaireAffectation->etape, $parcellaireAffectation);
-    	}
+        if($request->getParameter('coop') && $request->getParameter('etape') == ParcellaireIrrigableClient::TYPE_MODEL) {
+            return $this->redirect('parcellaireaffectation_irrigation', $parcellaireAffectation);
+        }
+
+        if($request->getParameter('coop') && $request->getParameter('etape') == ParcellaireManquantClient::TYPE_MODEL) {
+            return $this->redirect('parcellaireaffectation_manquants', $parcellaireAffectation);
+        }
 
         if($request->getParameter('coop')) {
 
             return $this->redirect('parcellaireaffectation_affectations', $parcellaireAffectation);
+        }
+
+        if ($parcellaireAffectation->exist('etape') && $parcellaireAffectation->etape) {
+            return $this->redirect('parcellaireaffectation_' . $parcellaireAffectation->etape, $parcellaireAffectation);
         }
 
     	return $this->redirect('parcellaireaffectation_exploitation', $parcellaireAffectation);
@@ -74,7 +82,7 @@ class parcellaireAffectationActions extends sfActions {
         ParcellaireAffectationEtapes::getInstance()->setDeclaration($this->parcellaireAffectation);
         $this->coop = $request->getParameter('coop');
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
-    	if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_EXPLOITATION))) {
+        if(!$this->coop && $this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_EXPLOITATION))) {
     		$this->parcellaireAffectation->save();
     	}
 
@@ -147,7 +155,7 @@ class parcellaireAffectationActions extends sfActions {
             $this->hashproduit = array_key_first($this->produits);
         }
 
-        if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, $etape))) {
+        if(!$this->coop && $this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, $etape))) {
             $this->parcellaireAffectation->save();
         }
 
@@ -230,7 +238,7 @@ class parcellaireAffectationActions extends sfActions {
         $this->coop = $request->getParameter('coop');
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
 
-    	if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_VALIDATION))) {
+        if(!$this->coop && $this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_VALIDATION))) {
     		$this->parcellaireAffectation->save();
     	}
 

@@ -1,5 +1,5 @@
 <h3 style="color: black">{{ controleCourant.declarant.nom }}</h3>
-
+<p>{{ controleCourant.identifiant }} / {{ printableSiret() }} / {{ controleCourant.declarant.cvi }}</p>
 <p>
 <a href="mailto:{{ controleCourant.declarant.email }}">{{ controleCourant.declarant.email }}</a><br />
 <a href="callto:{{ controleCourant.declarant.telephone_bureau }}">{{ controleCourant.declarant.telephone_bureau }}</a>

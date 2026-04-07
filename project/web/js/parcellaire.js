@@ -17,7 +17,7 @@ document.querySelectorAll(".tableIntentionAffectation tr").forEach(function (tr)
 
 function changeButtonActiveAll(mention, span, check, btnActiveAll = false, onlyText = false) {
   if (!btnActiveAll) {
-    var btnActiveAll = document.querySelector('#btn-switchactive-all');
+    var btnActiveAll = document.querySelector('[id^=btn-switchactive-all]');
   }
   btnActiveAll.dataset.status = mention;
   btnActiveAll.innerHTML = span;
@@ -30,16 +30,19 @@ function changeButtonActiveAll(mention, span, check, btnActiveAll = false, onlyT
   }
 }
 
-var btnActiveAll = document.querySelector('#btn-switchactive-all');
-if (btnActiveAll) {
-  btnActiveAll.addEventListener('click', function (el) {
-    if (btnActiveAll.dataset.status == 'affecter') {
-        changeButtonActiveAll('retirer', btnActiveAll.dataset.remove, true, btnActiveAll);
-    } else {
-        changeButtonActiveAll('affecter', btnActiveAll.dataset.check, false, btnActiveAll);
-    }
-  });
-}
+var btnActiveAll = document.querySelectorAll('[id^=btn-switchactive-all]');
+btnActiveAll.forEach((item) => {
+  if (item) {
+    item.addEventListener('click', function (el) {
+      if (item.dataset.status == 'affecter') {
+        changeButtonActiveAll('retirer', item.dataset.remove, true, item);
+      } else {
+        changeButtonActiveAll('affecter', item.dataset.check, false, item);
+      }
+    });
+  }
+});
+
 
 document.querySelectorAll(".tableParcellaire input.affecte_superficie").forEach(function(input) {
   input.addEventListener('click', function(e) {
