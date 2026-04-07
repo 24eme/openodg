@@ -25,16 +25,14 @@
 <br/>
 <table><tr><td style="width: 324px;"><?php echo 'Le ' . format_date(date('Y-m-d'), "P", "fr_FR"); ?></td></tr></table>
 <br/><br/>
-    <table><tr><td><strong>Objet :</strong> Prise de mousse d'un lot</td></tr></table>
+    <table><tr><td><strong>Objet :</strong>Déclaration de prise de mousse</td></tr></table>
 <br/><br/>
 
 <table><tr><td>Madame, Monsieur,</td></tr></table>
 
 <?php $lotOrigine = $prisedemousse->getLotOrigine(); ?>
-<?php $isLotVMQ = str_contains($prisedemousse->lots[1]->produit_hash, '/VMQ/'); ?>
-<?php $lotPDMReputeConforme = $isLotVMQ && !$prisedemousse->lots[1]->isAffecte() && !$prisedemousse->lots[1]->isAffectable() && $prisedemousse->getLotOrigine()->isConforme(); ?>
 
-<table><tr><td>Nous vous prions de bien vouloir trouver ci-dessous la <?php if ($lotPDMReputeConforme): ?> confirmation <?php else: ?> demande <?php endif ?> de prise de mousse de votre lot :</td></tr></table>
+<table><tr><td>Nous vous prions de bien vouloir trouver ci-dessous la <?php if (!$prisedemousse->getDegustationVMQ()->isAffecte() && !$prisedemousse->getDegustationVMQ()->isAffectable() && $prisedemousse->getDegustationVMQ()->isConforme()): ?> confirmation <?php else: ?> demande <?php endif ?> de prise de mousse de votre lot originalement déclaré en vin de base :</td></tr></table>
 
 <br/><br/>
 
@@ -74,35 +72,34 @@
 
 <table style="padding:20px auto;font-weight:bold;">
     <tr>
-        <?php if ($lotPDMReputeConforme): ?>
+        <?php if (!$prisedemousse->getDegustationVMQ()->isAffecte() && !$prisedemousse->getDegustationVMQ()->isAffectable() && $prisedemousse->getDegustationVMQ()->isConforme()): ?>
             <td style="text-align:center">qui devient le lot commercialisable suivant :  </td>
-        <?php elseif (! $lotPDMReputeConforme): ?>
-            <td style="text-align:left">qui après le contrôle organoleptique (en attente) et conformément au cahier des charges/plan de contrôle deviendra le lot ci-dessous : </td>
+        <?php else: ?>
+            <td style="text-align:left">qui après le contrôle organisé conformément au cahier des charges/plan de contrôle deviendra le lot ci-dessous : </td>
         <?php endif;?>
     </tr>
 </table>
 <br/>
 
-<?php $lotVMQ = $prisedemousse->lots[1]; ?>
 <table border="1">
     <tr>
-        <th style="font-size: 14px">Lot n°: <?php echo $lotVMQ->numero_dossier.' / '.$lotVMQ->numero_archive ?></th>
+        <th style="font-size: 14px">Lot n°: <?php echo $prisedemousse->lots[1]->numero_dossier.' / '.$prisedemousse->lots[1]->numero_archive ?></th>
     </tr>
     <tr>
-        <td>N° Lot OP : <?php echo $lotVMQ->numero_logement_operateur; ?><br/>
-<?php if ($lotVMQ->adresse_logement): ?><br/>
-            Adresse du site : <?php echo $lotVMQ->adresse_logement; ?><br/>
+        <td>N° Lot OP : <?php echo $prisedemousse->lots[1]->numero_logement_operateur; ?><br/>
+<?php if ($prisedemousse->lots[1]->adresse_logement): ?><br/>
+Adresse du site : <div style="width:5px;"><?php echo $prisedemousse->lots[1]->adresse_logement; ?></div><br/>
 <?php endif; ?>
-            Produit : <?php echo showProduitCepagesLot($lotVMQ); ?><br/>
-            Volume : <?php echo sprintf("%.2f", $lotVMQ->volume) ?> hl
+            Produit : <?php echo showProduitCepagesLot($prisedemousse->lots[1]); ?><br/>
+            Volume : <?php echo sprintf("%.2f", $prisedemousse->lots[1]->volume) ?> hl
         </td>
     </tr>
 </table>
 
 <table style="padding:10px 0;">
     <tr>
-        <?php if ($lotPDMReputeConforme): ?>
-            <td style="text-align:center">Vin dégusté le <?php echo $lotVMQ->getDateCommissionFormat() ?> et réputé conforme le <?php echo $prisedemousse->getValidationOdg() ?>  </td>
+        <?php if (!$prisedemousse->lots[1]->isAffecte() && !$prisedemousse->lots[1]->isAffectable() && $prisedemousse->getDegustationVMQ()->isConforme()): ?>
+            <td style="text-align:center">Vin dégusté et contrôlé conforme le <?php echo $prisedemousse->lots[1]->getDateCommissionFormat(); ?></td>
         <?php endif;?>
     </tr>
 </table>
