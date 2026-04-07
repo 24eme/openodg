@@ -32,7 +32,7 @@ class prisedemousseActions extends sfActions
         $this->secureIsValide($this->prisedemousse);
 
         if($this->prisedemousse->getLotOrigine() === null) {
-            return $this->redirect('prisedemousse_lots', array('sf_subject' => $this->chgtDenom->getEtablissementObject()));
+            return $this->redirect('prisedemousse_lots', array('sf_subject' => $this->prisedemousse->getEtablissementObject()));
         }
 
         $this->form = new PriseDeMousseForm($this->prisedemousse);
@@ -111,31 +111,31 @@ class prisedemousseActions extends sfActions
         if($this->isAdmin) {
             $this->prisedemousse->validateOdg(null, $request->getParameter('region', $this->getUser()->getRegion()));
             $this->prisedemousse->save();
-            $this->getUser()->setFlash("notice", "Le changement dénomination a été validé et approuvé");
+            $this->getUser()->setFlash("notice", "La prise de mousse a été validée et approuvée");
 
             return $this->redirect('prisedemousse_visualisation', $this->prisedemousse);
         }
 
-        return $this->redirect('prisedemousse_visualisation', $this->chgtDenom);
+        return $this->redirect('prisedemousse_visualisation', $this->prisedemousse);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        $this->chgtDenom = $this->getRoute()->getPriseDeMousse();
+        $this->prisedemousse = $this->getRoute()->getPriseDeMousse();
         $this->isAdmin = $this->getUser()->isAdmin();
 
-        if (!$this->chgtDenom->isValide()) {
-            return $this->redirect('prisedemousse_validation', $this->chgtDenom);
+        if (!$this->prisedemousse->isValide()) {
+            return $this->redirect('prisedemousse_validation', $this->prisedemousse);
         }
 
         $this->form = null;
-        if ($this->isAdmin && !$this->chgtDenom->isApprouve()) {
-          $this->validation = new ChgtDenomValidation($this->chgtDenom);
-          $this->form = new ChgtDenomValidationForm($this->chgtDenom, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
+        if ($this->isAdmin && !$this->prisedemousse->isApprouve()) {
+          $this->validation = new PriseDeMousseValidation($this->prisedemousse);
+          $this->form = new ChgtDenomValidationForm($this->prisedemousse, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-            if (!$this->chgtDenom->isApprouve()) {
-                $this->chgtDenom->generateLots();
+            if (!$this->prisedemousse->isApprouve()) {
+                $this->prisedemousse->generateLots();
             }
             return sfView::SUCCESS;
         }
@@ -150,12 +150,12 @@ class prisedemousseActions extends sfActions
         $this->form->save();
 
         if($this->isAdmin) {
-            $this->chgtDenom->validateOdg();
-            $this->chgtDenom->save();
-            $this->getUser()->setFlash("notice", "Le changement dénomination a été approuvé");
+            $this->prisedemousse->validateOdg();
+            $this->prisedemousse->save();
+            $this->getUser()->setFlash("notice", "La prise de mousse a été approuvée");
         }
 
-        return $this->redirect('prisedemousse_visualisation', $this->chgtDenom);
+        return $this->redirect('prisedemousse_visualisation', $this->prisedemousse);
     }
 
     public function executeDevalidation(sfWebRequest $request) {
@@ -181,10 +181,10 @@ class prisedemousseActions extends sfActions
     }
 
     public function executeSuppression(sfWebRequest $request) {
-        $this->chgtDenom = $this->getRoute()->getPriseDeMousse();
-        $this->secureIsValide($this->chgtDenom);
-        $identifiant = $this->chgtDenom->identifiant;
-        $this->chgtDenom->delete();
+        $this->prisedemousse = $this->getRoute()->getPriseDeMousse();
+        $this->secureIsValide($this->prisedemousse);
+        $identifiant = $this->prisedemousse->identifiant;
+        $this->prisedemousse->delete();
         return $this->redirect('declaration_etablissement', array('identifiant' => $identifiant));
     }
 
@@ -197,15 +197,15 @@ class prisedemousseActions extends sfActions
 
     public function executeChgtDenomPDF(sfWebRequest $request)
     {
-        $chgtDenom = $this->getRoute()->getPriseDeMousse(['allow_habilitation' => true, 'allow_stalker' => true]);
-        if (!$chgtDenom->isApprouve()) {
-            $chgtDenom->generateLots();
+        $prisedemousse = $this->getRoute()->getPriseDeMousse(['allow_habilitation' => true, 'allow_stalker' => true]);
+        if (!$prisedemousse->isApprouve()) {
+            $prisedemousse->generateLots();
         }
         if (!$this->getUser()->isStalker()) {
-            $this->secureEtablissement('habilitation', $chgtDenom->getEtablissementObject());
+            $this->secureEtablissement('habilitation', $prisedemousse->getEtablissementObject());
         }
 
-        $this->document = new ExportChgtDenomPDF($chgtDenom, $request->getParameter('output', 'pdf'), false);
+        $this->document = new ExportPriseDeMoussePDF($prisedemousse, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
         if ($request->getParameter('force')) {
             $this->document->removeCache();

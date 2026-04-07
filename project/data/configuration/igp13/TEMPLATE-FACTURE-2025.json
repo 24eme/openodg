@@ -125,6 +125,7 @@
           "docs": [
             "ChgtDenom"
           ],
+          "date": "%periode+1%-07-31",
           "callback": "getVolumeFacturable",
           "callback_parameters": {
             "appellations": "/appellations/MED NOT same "

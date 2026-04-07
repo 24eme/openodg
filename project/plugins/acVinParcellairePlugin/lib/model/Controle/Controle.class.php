@@ -82,12 +82,13 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $parcellaire = $this->getParcellaire();
         $parcelles = [];
         foreach ($parcellaire->getParcelles() as $key => $parcelle) {
+            if (!($parcelle->isRealProduit() && ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration())) continue;
+            if (ControleConfiguration::getInstance()->hasProduitFilter() && strpos($parcelle->produit_hash, ControleConfiguration::getInstance()->getProduitFilter()) === false) continue;
             $parcelles[$key] = $parcelle->getData();
             $parcelles[$key]->hasProblemExpirationCepage = $parcelle->hasProblemExpirationCepage();
             $parcelles[$key]->hasProblemEcartPieds = $parcelle->hasProblemEcartPieds();
             $parcelles[$key]->hasProblemCepageAutorise = $parcelle->hasProblemExpirationCepage();
             $parcelles[$key]->hasJeunesVignes = $parcelle->isJeunesVignes() && ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled();
-            $parcelles[$key]->isRealProduit = $parcelle->isRealProduit() && ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration();
             $parcelles[$key]->aires = $parcelle->getIsInAires();
         }
         return $parcelles;
@@ -143,20 +144,43 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getStatutComputed()
     {
-        if(!$this->date_tournee) {
+        if(!$this->isPlanifie()) {
             return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
         }
-        if (count($this->manquements)) {
+        if ($this->isControle()) {
             return ControleClient::CONTROLE_STATUT_EN_MANQUEMENT;
         }
-        if (count($this->parcelles)) {
-            return ControleClient::CONTROLE_STATUT_PLANIFIE;
+        if ($this->isOrganise()) {
+            return ControleClient::CONTROLE_STATUT_ORGANISE;
         }
-        if($this->date_tournee) {
+        if ($this->isPlanifie()) {
             return ControleClient::CONTROLE_STATUT_A_ORGANISER;
+        }
+        if ($this->isTermine()) {
+            return ControleClient::CONTROLE_STATUT_TERMINE;
         }
         return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
 
+    }
+
+    public function isPlanifie()
+    {
+        return ($this->date_tournee);
+    }
+
+    public function isOrganise()
+    {
+        return $this->isPlanifie() && (count($this->parcelles));
+    }
+
+    public function isControle()
+    {
+        return $this->isOrganise() && count($this->manquements);
+    }
+
+    public function isTermine()
+    {
+        return $this->manquements_valides;
     }
 
     public function generateMouvementsStatuts()
@@ -169,7 +193,22 @@ class Controle extends BaseControle implements InterfacePieceDocument
     }
 
     public function getGeoJson() {
-        return $this->getParcellaire()->getGeoJson();
+        $geojson = $this->getParcellaire()->getGeoJson();
+        $features = [];
+        $parcelles = array_keys($this->getParcellaireParcelles());
+        foreach ($geojson->features as $feature) {
+            $tmp = $feature;
+            foreach ($feature->properties->parcellaires as $i => $parcelle) {
+                if (!in_array($parcelle->parcelle_id, $parcelles)) {
+                    unset($tmp->properties->parcellaires[$i]);
+                }
+            }
+            if (count($tmp->properties->parcellaires)) {
+                $features[] = $tmp;
+            }
+        }
+        $geojson->features = $features;
+        return $geojson;
     }
 
     private $to_dump = false;
@@ -181,39 +220,43 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $d = $this->getData();
         $d->parcellaire_geojson = $this->getGeoJson();
         $d->parcellaire_parcelles = $this->getParcellaireParcelles();
+        $d->agent_libelle = $this->getAgent()->getNomAAfficher();
         $d->validation = false;
+        $d->revision = $this->_rev;
+        $d->audit->needs_to_be_saved = false;
         $this->to_dump = false;
         return $d;
     }
 
-    public function updateParcellePointsControleFromJson($json)
+    public function logDifferenceRevision($revApp, $idParcelle, $element)
     {
-        $retControleByParcelle = array();
-        foreach ($json['controle']['parcelles'] as $parcelle) {
-            $this->audit = $json['controle']['audit'];
-            $this->maturite = $json['controle']['maturite'];
-            // Je met le noeud controle du Json puis j'unset le sous-noeud "points" car c'est la seule update a faire
-            $retControleByParcelle[$parcelle['parcelle_id']] = $parcelle['controle'];
-            unset($retControleByParcelle[$parcelle['parcelle_id']]['points']);
-            foreach ($parcelle['controle']['points'] as $nomPointDeControle => $dataPointDeControle) {
-                if ($dataPointDeControle['conformite'] != 'NC') {
-                    continue;
-                }
-                // Unset pour ne prendre que les manquements qui sont non conformes
-                $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle] = $dataPointDeControle;
-                unset($retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['constats']);
-                foreach ($dataPointDeControle['constats'] as $idConstat => $dataConstat) {
-                    if ($dataConstat['conformite'] != 1) {
-                        continue;
-                    }
-                    $retControleByParcelle[$parcelle['parcelle_id']]['points'][$nomPointDeControle]['constats'][$idConstat] = $dataConstat;
-                }
+        $message = date("Y-m-d H:i:s")." : Document ". $this->_id ." - revisionApp : [".$revApp."] - revisionDocument : [".$this->_rev."] ";
+        if ($idParcelle) {
+            $message .= "pour parcelle [".$idParcelle."] = ";
+        } else {
+            $message .= "pour audit = ";
+        }
+        $message .= $element;
+        error_log($message . "\n");
+    }
+
+    public function updateControle($idParcelle, $element)
+    {
+        unset($element['needs_to_be_saved']);
+        if (!$idParcelle) {
+            $this->audit = $element;
+            return;
+        }
+
+        if (!$this->hasParcelle($idParcelle)) {
+            $parcelleData = $this->getParcellaire()->getParcelleFromParcellaireId($idParcelle);
+            if (!$parcelleData) {
+                return;
             }
+            $this->parcelles->add($idParcelle, $parcelleData);
         }
-        foreach ($this->parcelles as $parcelleId => $dataParcelle) {
-            $dataParcelle->controle = $retControleByParcelle[$parcelleId];
-        }
-        $this->save();
+
+        $this->parcelles[$idParcelle]['controle'] = $element;
     }
 
     public function hasConstatTerrain()
@@ -228,7 +271,21 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return false;
     }
 
-    public function getListeManquements()
+    public function hasConstatTerrainActif()
+    {
+        foreach ($this->parcelles as $parcelleId => $parcelle) {
+            foreach ($parcelle->controle->points as $pointId => $point) {
+                foreach($point->constats as $constat) {
+                    if ($constat->conformite == true) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public function getListeManquements($fromConstatsActif = false)
     {
         $retManquements = array();
         foreach ($this->parcelles as $parcelleId => $parcelle) {
@@ -239,6 +296,9 @@ class Controle extends BaseControle implements InterfacePieceDocument
                         continue;
                     }
                     if ($dataPoint->conformite == null) {continue;}
+                    if ($fromConstatsActif == true) {
+                        if ($dataManquement->conformite == false) {continue;}
+                    }
                     if(!isset($retManquements[$constatId]) || !$retManquements[$constatId]) {
                         $retManquements[$constatId] = ControleManquement::freeInstance($this);
                         $retManquements[$constatId]->observations = '';
@@ -251,7 +311,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
                         $retManquements[$constatId]->libelle_manquement = ControleConfiguration::getInstance()->getLibelleConstatWithPointId($constatId, $pointId);
                     }
                     $retManquements[$constatId]->parcelles_id->add(null, $parcelleId);
-                    $retManquements[$constatId]->delais = ControleConfiguration::getInstance()->getDelaisConstat($pointId, $constatId);
+                    $retManquements[$constatId]->delais = ControleConfiguration::getInstance()->getDelaisConstat($constatId);
                     $retManquements[$constatId]->constat_date = $this->date_tournee;
                     $retManquements[$constatId]->actif = false;
                     $retManquements[$constatId]->observations .= $parcelleId . ' - ' . $dataManquement->observations . "\n";
@@ -316,7 +376,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function generateManquements()
     {
-        foreach ($this->getListeManquements() as $manquementId => $dataManquement) {
+        foreach ($this->getListeManquements(true) as $manquementId => $dataManquement) {
             $this->addManquementTerrain($manquementId, $dataManquement);
         }
     }
@@ -499,5 +559,70 @@ class Controle extends BaseControle implements InterfacePieceDocument
     }
 
     /**** FIN DES PIECES ****/
+
+    public function getResizeSignature($newWidth = 80)
+    {
+        $base64 = $this->audit->operateur_signature;
+        if (!$base64) {
+            return null;
+        }
+        if (strpos($base64, ',') !== false) {
+            $base64 = explode(',', $base64)[1];
+        }
+        $tmpFile = $this->getTmpSignatureFile();
+        if (file_exists($tmpFile)) {
+            return $tmpFile;
+        }
+        $imageData = base64_decode($base64);
+        $src = imagecreatefromstring($imageData);
+        if (!$src) {
+            return null;
+        }
+        $width  = imagesx($src);
+        $height = imagesy($src);
+        $newHeight = intval(($height / $width) * $newWidth);
+        $dst = imagecreatetruecolor($newWidth, $newHeight);
+        $white = imagecolorallocate($dst, 255, 255, 255);
+        imagefill($dst, 0, 0, $white);
+        imagecopyresampled(
+            $dst, $src,
+            0, 0, 0, 0,
+            $newWidth, $newHeight,
+            $width, $height
+        );
+        if (imagejpeg($dst, $tmpFile, 85)) {
+            imagedestroy($src);
+            imagedestroy($dst);
+            return $tmpFile;
+        } else {
+            return null;
+        }
+    }
+
+    public function getSignatureFilename()
+    {
+        $base64 = $this->audit->operateur_signature;
+        if (!$base64) {
+            return null;
+        }
+        return 'signature_' . md5($base64) . '.jpg';
+    }
+
+    public function getTmpSignatureFile()
+    {
+        $tmpDir = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmpsignatures' . DIRECTORY_SEPARATOR;
+        if (!is_dir($tmpDir)) {
+            mkdir($tmpDir, 0777, true);
+        }
+        return ($filename = $this->getSignatureFilename())? $tmpDir . $this->getSignatureFilename() : null;
+    }
+
+    public function cleanTmpSignatureFile()
+    {
+        $tmpFile = $this->getTmpSignatureFile();
+        if (file_exists($tmpFile)) {
+            unlink($tmpFile);
+        }
+    }
 
 }

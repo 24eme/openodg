@@ -4,14 +4,16 @@ class ControleClient extends acCouchdbClient
     const TYPE_MODEL = "Controle";
     const TYPE_COUCHDB = "CONTROLE";
 
-    const CONTROLE_STATUT_A_ORGANISER = "A_ORGANISER";
     const CONTROLE_STATUT_A_PLANIFIER = "A_PLANIFIER";
-    const CONTROLE_STATUT_PLANIFIE = "PLANIFIE";
+    const CONTROLE_STATUT_A_ORGANISER = "A_ORGANISER";
+    const CONTROLE_STATUT_ORGANISE = "ORGANISE";
     const CONTROLE_STATUT_EN_MANQUEMENT = "EN_MANQUEMENT";
     const CONTROLE_STATUT_TERMINE = "TERMINE";
 
     const CONTROLE_TYPE_HABILITATION = "Habilitation";
-    const CONTROLE_TYPE_SUIVI = "Suivi";
+    const CONTROLE_TYPE_SUIVI = "Suivi de manquements";
+    const CONTROLE_TYPE_DOCUMENTAIRE = "Documentaire";
+    const CONTROLE_TYPE_CONDITIONS = "Conditions de production";
 
     public static function getInstance()
     {
@@ -44,30 +46,51 @@ class ControleClient extends acCouchdbClient
         return $controle;
     }
 
-    public function findAll($limit = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
+    public function findAllByIdentifiant($identifiant, $limit = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
     {
-    	$view = $this
-            ->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", "AAA0000000", "00000000"))
-    	    ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", "ZZZ9999999", "99999999"));
+        if (!$identifiant) {
+            return $this->findAll($limit, $hydrate);
+        }
+        $view = $this
+            ->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, "00000000"))
+            ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, "99999999"));
     	if ($limit) {
     		$view->limit($limit);
     	}
     	return $view->execute($hydrate)->getDatas();
     }
 
-    public function findAllByStatus($limit = null , $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
+    public function findAll($limit = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $view = $this
+            ->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", "AAA0000000", "00000000"))
+            ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", "ZZZ9999999", "99999999"));
+        if ($limit) {
+            $view->limit($limit);
+        }
+        return $view->execute($hydrate)->getDatas();
+    }
+
+    public function findAllByStatus($identifiant = null, $limit = null , $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
     {
         $controles = [
             self::CONTROLE_STATUT_A_ORGANISER => [],
             self::CONTROLE_STATUT_A_PLANIFIER => [],
-            self::CONTROLE_STATUT_PLANIFIE => [],
+            self::CONTROLE_STATUT_ORGANISE => [],
             self::CONTROLE_STATUT_EN_MANQUEMENT => [],
             self::CONTROLE_STATUT_TERMINE => [],
         ];
-        foreach ($this->findAll($limit, $hydrate) as $c) {
+        foreach ($this->findAllByIdentifiant($identifiant, $limit, $hydrate) as $c) {
             $controles[$c->mouvements_statuts[0][2]][] = $c;
         }
         return $controles;
+    }
+
+    public function findByManquements($identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
+    {
+        $controles = ControleClient::getInstance()->findAllByStatus($identifiant, $hydrate);
+        $sorted_controles = $controles[ControleClient::CONTROLE_STATUT_EN_MANQUEMENT];
+        usort($sorted_controles, "ControleClient::sortControlesByDateNotification");
+        return $sorted_controles;
     }
 
     public function findAllByDateTourneeAndAgent($date_tournee, $agent_identifiant)

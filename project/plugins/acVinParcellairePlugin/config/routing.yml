@@ -154,6 +154,20 @@ controle_index:
   url: /controles
   param: { module: controle, action: index }
 
+controle_operateur:
+  url: /controles/:identifiant
+  param: { module: controle, action: operateur }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+
+controle_etablissement_selection:
+  url: /controles-etablissement-selection
+  param: { module: controle, action: etablissementSelection }
+
+
+
 controle_nouveau:
   url: /controle/nouveau/:identifiant
   param: { module: controle, action: nouveau }

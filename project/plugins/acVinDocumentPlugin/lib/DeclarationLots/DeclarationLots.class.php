@@ -59,6 +59,13 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           return $this->_get('validation_odg');
       }
 
+      public function getDateValidationOdgFormat($format = 'd/m/Y') {
+          if($this->validation_odg && preg_match("/(\d{4}\-\d{2}-\d{2})/", $this->validation_odg, $m)){
+            return Date::francizeDate(DateTime::createFromFormat('Y-m-d', $m[1])->format($format));
+          }
+          throw new sfException('wrong validation_odg date format : '.$this->validation_odg);
+      }
+
       public function cleanDoc() {
           $this->cleanLots();
           $this->cleanMouvementsLots();
