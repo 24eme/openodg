@@ -41,6 +41,7 @@
     </div>
 
     <?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation, 'coop' => $coop)); ?>
+    <?php include_component('parcellaire', 'syntheseParCepages', array('parcellaire' => $parcellaireAffectation,  'coop' => $coop)); ?>
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="row">

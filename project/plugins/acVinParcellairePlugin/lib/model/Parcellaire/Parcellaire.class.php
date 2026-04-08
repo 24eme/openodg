@@ -325,8 +325,8 @@ class Parcellaire extends BaseParcellaire {
         return $this->habilitation->getProduitsByCepage($cepage, $this->getDate());
     }
 
-    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null) {
-        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee);
+    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null, $filter_destination = null) {
+        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee, $filter_destination);
     }
 
     public function getSuperficieTotale($avec_jv = true) {
