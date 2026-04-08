@@ -73,7 +73,7 @@
             <td class="text-center">
                 <?php if ($parcelle->isPartielle()): ?>Partielle<?php else: ?>Totale<?php endif; ?>
             </td>
-            <td><?php echo implode(", ", $parcelle->getDestinatairesNom()) ?></td>
+            <td><?php echo implode(", ", $parcelle->getDestinatairesNom(true)) ?></td>
             <?php if($parcellaireAffectation->isDeclarationLiee()): ?>
             <td class="text-right"><?php if($parcelle->exist('manquant')): ?><?php echoFloatFr($parcelle->manquant->pourcentage); ?>&nbsp;%<?php endif; ?></td>
             <td class="text-center text-success"><?php if($parcelle->exist('irrigation')): ?><span title="<?php echo $parcelle->irrigation->materiel."\n".$parcelle->irrigation->ressource; ?>" style="cursor: help;" class="glyphicon glyphicon-ok-sign"></span><?php endif; ?></td>
