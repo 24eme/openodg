@@ -131,11 +131,11 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
             }
             $nom  = "";
             if($withHtml && count($this->destinations) > 1) {
-                $nom .= "<acronym title='".$d->superficie." ha'>";
+                $nom .= "<abbr title='".$d->superficie." ha'>";
             }
             $nom .= $d->nom;
             if(!$withHtml) {
-                $nom .= "</acronym>";
+                $nom .= "</abbr>";
             }
             $noms[] = $nom;
 
