@@ -120,13 +120,25 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
         return intval(boolval($this->superficie));
     }
 
-    public function getDestinatairesNom() {
+    public function getDestinatairesNom($withHtml = false) {
         $noms = [];
         if(!$this->exist('destinations')) {
             return $noms;
         }
         foreach($this->destinations as $d) {
-            $noms[] = $d->nom;
+            if(!$d->superficie) {
+                continue;
+            }
+            $nom  = "";
+            if($withHtml && count($this->destinations) > 1) {
+                $nom .= "<acronym title='".$d->superficie." ha'>";
+            }
+            $nom .= $d->nom;
+            if(!$withHtml) {
+                $nom .= "</acronym>";
+            }
+            $noms[] = $nom;
+
         }
         return $noms;
     }
