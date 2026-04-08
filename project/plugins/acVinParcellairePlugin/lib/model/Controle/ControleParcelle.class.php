@@ -52,17 +52,17 @@ class ControleParcelle extends BaseControleParcelle
 
     public function getInfoManquant()
     {
-        return ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant)->getPourcentageFromIdParcelle($this->parcelle_id) : 0;
+        return ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant)->getPourcentageFromParcelleId($this->parcelle_id) : 0;
     }
 
     public function getInfoIrrigation()
     {
-        return ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant)->getInfoFromIdParcelle($this->parcelle_id) : ['materiel' => '', 'ressource' => ''];
+        return ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant)->getInfoFromParcelleId($this->parcelle_id) : ['materiel' => '', 'ressource' => ''];
     }
 
     public function getInfoIrrigue()
     {
-        return ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant) ? date("d/m/Y", strtotime(ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant)->getDateIrrigationFromIdParcelle($this->parcelle_id))) : null;
+        return ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant) ? date("d/m/Y", strtotime(ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant)->getDateIrrigationFromParcelleId($this->parcelle_id))) : null;
     }
 
     public function getInfoAffectation()

@@ -51,21 +51,21 @@
             </tr>
 
             <tr v-if="parcelleCourante.irrigation.materiel.length">
-                <td><strong>Irrigation</strong></td>
+                <td><strong>Irrigabilité</strong></td>
                 <td>
                     <div><strong>Matériel :</strong> {{ parcelleCourante.irrigation.materiel }}</div>
                     <div><strong>Ressource :</strong> {{ parcelleCourante.irrigation.ressource }}</div>
+                    <div><strong>Date d'irrigation :</strong>
+                        <span v-if="parcelleCourante.irrigation.date_irrigation">{{ parcelleCourante.irrigation.date_irrigation }}</span>
+                        <span class="text-muted" v-else>Pas irrigée</span>
+                    </div>
+
+
                 </td>
             </tr>
             <tr v-else>
-                <td><strong>Irrigation</strong></td>
+                <td><strong>Irrigabilité</strong></td>
                 <td class="text-muted">Pas d'irrigation</td>
-            </tr>
-
-            <tr>
-                <td><strong>Date d'irrigation</strong></td>
-                <td v-if="parcelleCourante.irrigation.date_irrigation">{{ parcelleCourante.irrigation.date_irrigation }}</td>
-                <td v-else>Pas de donnée</td>
             </tr>
 
             <tr v-if="parcelleCourante.affectation.length">
@@ -79,6 +79,7 @@
                 <td><strong>Affectation</strong></td>
                 <td class="text-muted">Parcelle pas affectatée</td>
             </tr>
+
         </tbody>
     </table>
 </div>
