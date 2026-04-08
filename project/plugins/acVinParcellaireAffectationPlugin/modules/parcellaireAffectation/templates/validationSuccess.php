@@ -73,9 +73,6 @@
             <?php endif; ?>
         </div>
     </div>
-    <?php if (!isset($validation) || !$validation->hasErreurs()): ?>
-	<?php include_partial('parcellaireAffectation/popupConfirmationValidation', array('form' => $form)); ?>
-	<?php endif; ?>
 </form>
 
 <?php if(isset($coop)): ?>
@@ -106,4 +103,8 @@ $('#parcellaireaffectation-confirmation-validation').modal('show')
             </div>
         </div>
     </div>
+<?php endif; ?>
+
+<?php if (!isset($validation) || !$validation->hasErreurs()): ?>
+<?php include_partial('parcellaireAffectation/popupConfirmationValidation', array('form' => $form)); ?>
 <?php endif; ?>

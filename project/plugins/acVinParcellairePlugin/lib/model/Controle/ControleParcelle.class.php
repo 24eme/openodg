@@ -10,6 +10,8 @@ class ControleParcelle extends BaseControleParcelle
             $data->pourcentageManquant = $this->getInfoManquant();
             $data->irrigation = $this->getInfoIrrigation();
             $data->irrigation['date_irrigation'] = $this->getInfoIrrigue();
+            $data->needs_to_be_saved = false;
+            $data->has_probleme_ecart_pieds = $this->getParcellaire()->parcelles[$this->parcelle_id]->hasProblemEcartPieds();
         }
         return $data;
     }
@@ -65,5 +67,10 @@ class ControleParcelle extends BaseControleParcelle
     public function getInfoPdf()
     {
         return 'Parcelle ' . $this->commune . ' - ' . $this->section . $this->numero_parcelle . ' - ' . $this->cepage . ' - ' . $this->campagne_plantation . ' - ' . $this->superficie . ' ha';
+    }
+
+    public function getParcellaire()
+    {
+        return ParcellaireClient::getInstance()->getLast($this->getDocument()->identifiant);
     }
 }
