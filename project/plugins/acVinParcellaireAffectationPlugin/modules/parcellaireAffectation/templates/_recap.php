@@ -2,19 +2,11 @@
 
 <?php foreach ($parcellaireAffectation->getProduits() as $hash => $produit): ?>
 <?php if (count($parcellaireAffectation->getProduits()) > 1): ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <h2><?php echo $produit; ?></h2>
-        </div>
-    </div>
+    <h2><?php echo $produit; ?></h2>
 <?php endif; ?>
 <?php foreach ($parcellaireAffectation->getGroupedParcelles(false, $hash) as $group => $parcelles): ?>
 <?php if ($group): ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <h3><?php if ($parcellaireAffectation->hasDgc()): ?>Dénomination <?php endif; ?><?php echo $group; ?></h3>
-        </div>
-    </div>
+    <h3><?php if ($parcellaireAffectation->hasDgc()): ?>Dénomination <?php endif; ?><?php echo $group; ?></h3>
 <?php endif; ?>
 <table id="parcelles_<?php echo $dgc; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
     <thead>

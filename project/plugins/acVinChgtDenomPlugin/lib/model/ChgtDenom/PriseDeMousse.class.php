@@ -43,6 +43,7 @@ class PriseDeMousse extends ChgtDenom  {
         $this->updateCepageCoherencyWithVolume($lot);
         $lots[] = $lot;
 
+        $lots[1]->initial_type = PriseDeMousseClient::TYPE_MODEL;
         $this->registerLots($lots);
 
     }

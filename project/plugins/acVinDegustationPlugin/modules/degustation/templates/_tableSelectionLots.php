@@ -21,7 +21,11 @@
         <td>
         <?php if ($lot instanceof stdClass): ?>
             <a href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));  ?>">
-                <?php echo (property_exists($lot, 'type_document')) ? $lot->type_document : $lot->initial_type ;?>
+                <?php if ($lot->initial_type === PriseDeMousseClient::TYPE_MODEL): ?>
+                    <?php echo PriseDeMousseClient::INITIAL_TYPE_PDM; ?>
+                <?php else: ?>
+                    <?php echo (property_exists($lot, 'type_document')) ? $lot->type_document : $lot->initial_type; ?>
+                <?php endif ?>
             </a>
         <?php else : ?>
           <?php if ($lot->getUniqueId()): ?>
