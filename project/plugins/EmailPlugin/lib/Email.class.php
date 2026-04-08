@@ -60,7 +60,7 @@ class Email {
             return array();
         }
         $to = explode(';', $drev->declarant->email);
-        $subject = 'Validation de votre Déclaration de Revendication';
+        $subject = 'Validation de votre Déclaration de Revendication - '.Organisme::getInstance()->getCurrentOrganisme();
         $body = $this->getBodyFromPartial('send_drev_validation', array('drev' => $drev));
         $message = $this->newMailInstance()
                 ->setTo($to)
@@ -97,7 +97,7 @@ class Email {
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
 
         $to = explode(';', $drev->declarant->email);
-        $subject = 'Validation de votre Déclaration de Revendication';
+        $subject = 'Validation de votre Déclaration de Revendication - '.Organisme::getInstance()->getCurrentOrganisme();
         $body = $this->getBodyFromPartial('send_drev_confirmee', array('drev' => $drev));
         $message = $this->newMailInstance(!DRevConfiguration::getInstance()->hasEmailODGInCopyDisabled())
                 ->setTo($to)
@@ -119,7 +119,7 @@ class Email {
         }
 
         $to = explode(';', $drev->declarant->email);
-        $subject = 'Réception de votre Déclaration de Revendication';
+        $subject = 'Réception de votre Déclaration de Revendication - '.Organisme::getInstance()->getCurrentOrganisme();
         $body = $this->getBodyFromPartial('send_drev_confirmee_papier', array('drev' => $drev));
         $message = $this->newMailInstance()
                 ->setTo($to)
@@ -141,11 +141,11 @@ class Email {
         }
 
         $partial = 'send_drev_rappel_documents';
-        $subject = "Rappel - Documents à envoyer pour votre déclaration de Revendication";
+        $subject = "Rappel - Documents à envoyer pour votre déclaration de Revendication - ".Organisme::getInstance()->getCurrentOrganisme();
 
         if ($drev->exist('documents_rappels') && count($drev->documents_rappels->toArray(true, false)) > 0) {
             $partial = 'send_drev_rappel_documents_second';
-            $subject = "2ème Rappel - Documents à envoyer pour la validation définitive de votre déclaration de Revendication";
+            $subject = "2ème Rappel - Documents à envoyer pour la validation définitive de votre déclaration de Revendication - ".Organisme::getInstance()->getCurrentOrganisme();
         }
 
         $to = explode(';', $drev->declarant->email);
@@ -262,7 +262,7 @@ class Email {
         		$complement = ' Crémant';
         	}
         }
-        $subject = sprintf("Validation de votre déclaration d'$titre%s", $complement);
+        $subject = sprintf("Validation de votre déclaration d'%s%s - %s", $titre, $complement, Organisme::getInstance()->getCurrentOrganisme());
         $body = $this->getBodyFromPartial('send_parcellaire_validation', array('parcellaire' => $parcellaire));
         $message = $this->newMailInstance()
                 ->setTo($to)
@@ -550,7 +550,7 @@ class Email {
       }
       $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
       $to = explode(';', $adelphe->declarant->email);
-      $subject = 'Validation de votre Déclaration Adelphe';
+      $subject = 'Validation de votre Déclaration Adelphe - '.Organisme::getInstance()->getCurrentOrganisme();
       $body = $this->getBodyFromPartial('send_adelphe_validation', array('adelphe' => $adelphe));
       $message = $this->newMailInstance()
               ->setFrom($from)
