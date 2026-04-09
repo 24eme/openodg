@@ -126,7 +126,7 @@ class ExportControlePDF extends ExportPDF {
     {
         $ret = 0;
         foreach ($this->controle->parcelles as $id_parcelle => $info_parcelle) {
-            $ret += $this->parcellaireManquant->getPourcentageFromIdParcelle($id_parcelle);
+            $ret += $this->parcellaireManquant->getPourcentageFromParcelleId($id_parcelle);
         }
         return $ret;
     }

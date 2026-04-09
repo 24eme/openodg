@@ -20,6 +20,10 @@ class ControleClient extends acCouchdbClient
         return acCouchdbManager::getClient("Controle");
     }
 
+    public function getTypes() {
+        return [ControleClient::CONTROLE_TYPE_CONDITIONS, ControleClient::CONTROLE_TYPE_SUIVI, ControleClient::CONTROLE_TYPE_DOCUMENTAIRE, ControleClient::CONTROLE_TYPE_HABILITATION];
+    }
+
     public function findByArgs($identifiant, $date)
     {
         $id = self::TYPE_COUCHDB . '-' . $identifiant . '-' . $date;

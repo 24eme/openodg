@@ -102,3 +102,36 @@
         <a href="<?php echo url_for('parcellaire_potentiel_visualisation', array('id' => $parcellaireAffectation->getParcellaire()->_id)); ?>">Voir le détail du potentiel de production</a>
     </div>
 <?php endif;?>
+
+<div class="row">
+    <div class="col-sm-6">
+        <?php include_component('parcellaire', 'syntheseParCepages', array('parcellaire' => $parcellaireAffectation,  'coop' => $coop)); ?>
+    </div>
+    <div class="col-sm-6">
+        <?php $syntheseDestination = $parcellaireAffectation->getSyntheseDestination() ?>
+        <?php if (count($syntheseDestination)): ?>
+        <h3 class="mt-0">Synthèse par destinations</h3>
+
+        <table class="table table-bordered table-condensed table-striped tableParcellaire">
+          <thead>
+            <tr>
+                <th class="col-xs-8">Destination</th>
+                <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
+            </tr>
+          </thead>
+          <tbody>
+          <?php foreach($syntheseDestination as $destination => $s): ?>
+            <tr>
+                    <td><?php echo $destination ; ?></td>
+                    <td class="text-right"><?php echoSuperficie($s); ?></td>
+            </tr>
+          <?php endforeach;?>
+          <tr>
+                <td><strong>Total</strong></td>
+                <td class="text-right"><strong><?php echoSuperficie(array_sum($syntheseDestination->getRawValue())); ?></strong></td>
+            </tr>
+          </tbody>
+        </table>
+        <?php endif; ?>
+    </div>
+</div>

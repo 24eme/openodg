@@ -21,7 +21,7 @@
                 <label class="col-sm-4 control-label" for="type_tournee">Type de tournée</label>
                 <div class="col-sm-4">
                     <select class="form-control" name="type_tournee" id="type_tournee">
-                    <?php foreach([ControleClient::CONTROLE_TYPE_CONDITIONS, ControleClient::CONTROLE_TYPE_SUIVI, ControleClient::CONTROLE_TYPE_DOCUMENTAIRE, ControleClient::CONTROLE_TYPE_HABILITATION] as $type): ?>
+                    <?php foreach(ControleClient::getInstance()->getTypes() as $type): ?>
                         <option<?php if ($type == $controle->type_tournee): ?> SELECTED <?php endif; ?>><?php echo $type; ?></option>
                     <?php endforeach; ?>
                     </select>
@@ -31,7 +31,8 @@
                 <a title='Les agents sont des contacts configurés avec le tag "agent_controle".' data-placement="bottom" data-toggle="tooltip" class="btn-tooltip btn btn-md" style=""><span class="glyphicon glyphicon-question-sign"></span></a>
                 <label class="col-sm-4 control-label" for="agent_identifiant">Agent</label>
                 <div class="col-sm-4">
-                    <select class="form-control" name="agent_identifiant" id="agent_identifiant">
+                    <select class="form-control" name="agent_identifiant" id="agent_identifiant" required="required">
+                        <option></option>
                         <?php foreach ($agents as $agent): ?>
                             <option value="<?php echo $agent->identifiant ?>" <?php if ($agent->identifiant == $controle->agent_identifiant) echo " SELECTED "; ?>><?php echo $agent->getNomAAfficher() ?></option>
                         <?php endforeach; ?>
