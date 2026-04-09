@@ -77,7 +77,17 @@
 </table>
 </div>
 <hr/>
-<div class="row text-center">
-    <p><a class="btn btn-primary" href="<?php echo url_for('controle_nouveau', $etablissement); ?>">Enregistrer un nouveau controle</a></p>
+<div class="row">
+    <div class="dropdown center-block" style="width: 250px;">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Enregistrer un nouveau controle
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <?php foreach(ControleClient::getInstance()->getTypes() as $type): ?>
+        <li><a href="<?php echo url_for('controle_nouveau', $etablissement); ?>?type=<?php echo $type; ?>"><?php echo $type; ?></a></li>
+        <?php endforeach; ?>
+      </ul>
+    </div>
 </div>
 </div>
