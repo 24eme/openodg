@@ -702,6 +702,16 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee, $filter_destination);
     }
 
+    public function getSyntheseDestination() {
+        $synthese = [];
+        foreach($this->getParcelles() as $parcelle) {
+            foreach($parcelle->destinations as $d) {
+                $synthese[$d->nom] += $d->superficie;
+            }
+        }
+        return $synthese;
+    }
+
     public function getProduits()
     {
         return $this->declaration->getProduits();
