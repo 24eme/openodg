@@ -25,7 +25,7 @@
     endforeach;
 ?>
     <tr>
-        <td><strong>Total</strong></td>
+        <td><strong>Total <?php if(isset($coop) && $coop): ?>de le coopérative<?php endif; ?></strong></td>
         <td class="text-right"><strong><?php echoSuperficie(array_sum(array_column($synthese->getRawValue(), 'superficie'))); ?></strong></td>
     </tr>
   </tbody>

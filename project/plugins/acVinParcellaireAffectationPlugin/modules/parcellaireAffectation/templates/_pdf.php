@@ -82,6 +82,28 @@
 </table>
 <?php endforeach; ?>
 
+<?php if($lastPage): ?>
+    <?php $synthese = $parcellaireAffectation->getSyntheseCepages(); ?>
+    <br />
+    <div><span class="h3">&nbsp;Synthèse par cépages&nbsp;</span></div>
+    <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
+        <tr>
+            <th class="th" style="text-align: center; width: 250px;">Cépage</th>
+            <th class="th" style="text-align: center; width: 100px;">Surface</th>
+        </tr>
+        <?php foreach($synthese as $cepage_libelle => $s): ?>
+            <tr>
+                <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $cepage_libelle; ?>&nbsp;</td>
+                <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.4f", $s['superficie']); ?>&nbsp;<small>ha</small>&nbsp;</td>
+            </tr>
+        <?php endforeach; ?>
+        <tr>
+            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<strong>Total</strong>&nbsp;</td>
+            <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<strong><?php printf("%0.4f", array_sum(array_column($synthese->getRawValue(), 'superficie'))); ?>&nbsp;<small>ha</small></strong>&nbsp;</td>
+        </tr>
+    </table>
+<?php endif; ?>
+
 <?php if($lastPage && $parcellaireAffectation->observations): ?>
     <br />
     <div><span class="h3">&nbsp;Observations&nbsp;</span></div>
