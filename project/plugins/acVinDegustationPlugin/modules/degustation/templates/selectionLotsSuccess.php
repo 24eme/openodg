@@ -12,8 +12,7 @@
 </div>
 
 <p>Sélectionnez l'ensemble des lots à prélever pour la dégustation :</p>
-
-<span class="btn btn-primary border-rounded pull-right disabled"><span class="badge" id="nbAdherentsAPrelever"><?php echo $infosDegustation["nbAdherents"]; ?></span> adhérents à prélever</span><span class="btn btn-primary border-rounded pull-right disabled"><span class="badge" id="nbLotsSelectionnes"><?php echo $infosDegustation["nbLots"]; ?></span> lots à prélever</span>
+<div class="pull-right"><span class="btn btn-primary disabled"><span class="badge" id="nbLotsSelectionnes"><?php echo $infosDegustation["nbLots"]; ?></span> lots à prélever</span><span class="btn btn-primary disabled"><span class="badge" id="nbAdherentsAPrelever"><?php echo $infosDegustation["nbAdherents"]; ?></span> adhérents à prélever</span></div>
 <form action="<?php echo url_for("degustation_selection_lots", $degustation) ?>" method="post" class="form-horizontal degustation prelevements selectionlots">
 	<?php echo $form->renderHiddenFields(); ?>
 

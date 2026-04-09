@@ -54,8 +54,6 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
 
         $formLots = new BaseForm();
 
-        ksort($this->lots);
-
         foreach ($this->lots as $key => $lot) {
             $formLots->embedForm($key, new DegustationPrelevementLotForm(null, ['lot' => $lot]));
 
