@@ -22,7 +22,7 @@
     ?>
       <tr class="vertical-center cursor-pointer searchable" data-adherent="<?php echo $lot->declarant_identifiant ?>">
         <td><?php echo DateTime::createFromFormat('Y-m-d', $dates[$lot->unique_id])->format('d/m/Y') ?></td>
-        <td><?php echo $lot->declarant_nom; ?></td>
+        <td><a href="<?php echo url_for("degustation_declarant_lots_liste", ['identifiant' => $lot->declarant_identifiant, 'campagne' => $lot->campagne]) ?>"><?php echo $lot->declarant_nom; ?></a></td>
         <td>
         <?php if ($lot instanceof stdClass): ?>
             <a href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));  ?>">

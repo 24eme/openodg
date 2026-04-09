@@ -13,7 +13,7 @@
 </div>
 
 <div class="row">
-  <div class="form-group col-xs-10">
+  <div class="col-xs-10">
     <p>Sélectionner les lots qui ont été prélevés :</p>
   </div>
 
