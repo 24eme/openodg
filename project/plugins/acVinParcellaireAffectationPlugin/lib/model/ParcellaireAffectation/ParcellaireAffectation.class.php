@@ -726,4 +726,13 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
         return array_unique(array_filter($regions, 'strlen'));
     }
+
+    public function getInfoFromParcelleId($parcellaire_id)
+    {
+        $parcelle = $this->findParcelleByIdParcelle($parcellaire_id);
+        if (!$parcelle) {
+            return [];
+        }
+        return  ['affectation_date' => $parcelle->getDocument()->validation, 'produit_libelle' => $parcelle->getProduitLibelle().' '.$parcelle->getDgcLibelle()];
+    }
 }
