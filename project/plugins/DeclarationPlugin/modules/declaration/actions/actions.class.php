@@ -109,6 +109,11 @@ class declarationActions extends sfActions {
             return $this->redirect("parcellaireirrigable_visualisation", array("id" => $doc_id));
         }
 
+        if($doc_type == "CHGTDENOM" && DeclarationClient::getInstance()->find($doc_id)->type == "PriseDeMousse") {
+
+            return $this->redirect("prisedemousse_visualisation", array("id" => $doc_id));
+        }
+
         if($doc_type == "CHGTDENOM") {
 
             return $this->redirect("chgtdenom_visualisation", array("id" => $doc_id));

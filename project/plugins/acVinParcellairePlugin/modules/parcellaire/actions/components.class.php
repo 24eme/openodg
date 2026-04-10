@@ -5,7 +5,7 @@ class parcellaireComponents extends sfComponents {
     public function executeSyntheseParCepages(sfWebRequest $request) {
         $this->synthese = array();
         if($this->parcellaire) {
-            $this->synthese = $this->parcellaire->getSyntheseCepages(ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration());
+            $this->synthese = $this->parcellaire->getSyntheseCepages(ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration(), null, (isset($this->coop)) ? $this->coop : null);
         }
 
     }
