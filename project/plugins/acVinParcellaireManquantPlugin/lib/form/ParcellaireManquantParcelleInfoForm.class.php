@@ -21,10 +21,11 @@ class ParcellaireManquantParcelleInfoForm extends acCouchdbObjectForm {
         $parcelle = $this->getObject();
         if( $this->getObject()->getDocument()->type == ParcellaireAffectationClient::TYPE_MODEL) {
             $parcelle = $this->getObject()->getParent();
-        }
-        $parcelleParcellaire = $parcelle->getParcelleParcellaire();
-        if($parcelleParcellaire) {
-            $this->setDefault('densite', $parcelleParcellaire->getDensite());
+            $parcelleParcellaire = $parcelle->getParcelleParcellaire();
+
+            if($parcelleParcellaire) {
+                $this->setDefault('densite', $parcelleParcellaire->getDensite());
+            }
         }
     }
 }
