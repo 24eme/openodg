@@ -19,7 +19,7 @@ class ParcellaireManquantParcelleInfoForm extends acCouchdbObjectForm {
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
         $parcelle = $this->getObject();
-        if(!$this->getObject() instanceof ParcellaireAffectationProduitDetail) {
+        if( $this->getObject()->getDocument()->type == ParcellaireAffectationClient::TYPE_MODEL) {
             $parcelle = $this->getObject()->getParent();
             $parcelleParcellaire = $parcelle->getParcelleParcellaire();
 
