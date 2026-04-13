@@ -40,10 +40,8 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
 
       $unite = 0;
       $uniteParPage = 23;
-      $uniteTableau = 3;
+      $uniteTableau = 5;
       $uniteLigne = 1;
-      $uniteTableauCommentaire = 2;
-      $uniteTableauLigne = 0.75;
       $uniteMentionBasDePage = 1;
       $parcellesByPage = array();
       $page = 0;
@@ -66,7 +64,7 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
                $parcellesByPage[] = $currentPage;
                $currentPage = array();
                $unite = 0;
-               $libelleTableau .= " (suite)";
+               $libelleTableau = str_replace(" (suite)", "", $libelleTableau)." (suite)";
                $currentPage[$libelleTableau] = array();
                $unite += $uniteTableau;
            }
@@ -76,28 +74,31 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
 
         if($unite > 0) {
           $parcellesByPage[] = $currentPage;
-        }
-
-        if($this->parcellaireAffectation->observations) {
-          $unite += $uniteTableauLigne + count(explode("\n", $this->parcellaireAffectation->observations));
+          $unite = 0;
         }
 
         foreach($parcellesByPage as $nbPage => $parcelles) {
             $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array(
                 'parcellaireAffectation' => $this->parcellaireAffectation,
                 'parcellesByCommune' => $parcelles,
-                'lastPage' => (($nbPage == count($parcellesByPage) - 1) && (($this->parcellaireAffectation->observations && $unite <= $uniteParPage) || !$this->parcellaireAffectation->observations)),
+                'lastPage' => false,
             )));
         }
 
-        if ($this->parcellaireAffectation->observations && $unite > $uniteParPage) {
+        if ($unite > $uniteParPage) {
             $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array(
                 'parcellaireAffectation' => $this->parcellaireAffectation,
                 'parcellesByCommune' => $parcellesByPage,
-                'lastPage' => true,
+                'lastPage' => false,
             )));
         }
       }
+
+      $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array(
+          'parcellaireAffectation' => $this->parcellaireAffectation,
+          'parcellesByCommune' => [],
+          'lastPage' => true,
+      )));
     }
 
     protected function getHeaderTitle() {

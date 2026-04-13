@@ -55,9 +55,15 @@ class controleActions extends sfActions
             throw new sfError403Exception("Accès admin uniquement");
         }
         $this->controle = ControleClient::getInstance()->findOrCreate($this->etablissement->identifiant);
+        $type = $request->getParameter('type');
+        if (in_array($type, ControleClient::getInstance()->getTypes())) {
+            $this->controle->type_tournee = $type;
+        }else{
+            $this->controle->type_tournee = ControleClient::CONTROLE_TYPE_CONDITIONS;
+        }
         $this->controle->save();
 
-        return $this->redirect('controle_index');
+        return $this->redirect('controle_operateur', $this->etablissement);
     }
 
     public function executeParcelles(sfWebRequest $request)

@@ -2,19 +2,11 @@
 
 <?php foreach ($parcellaireAffectation->getProduits() as $hash => $produit): ?>
 <?php if (count($parcellaireAffectation->getProduits()) > 1): ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <h2><?php echo $produit; ?></h2>
-        </div>
-    </div>
+    <h2><?php echo $produit; ?></h2>
 <?php endif; ?>
 <?php foreach ($parcellaireAffectation->getGroupedParcelles(false, $hash) as $group => $parcelles): ?>
 <?php if ($group): ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <h3><?php if ($parcellaireAffectation->hasDgc()): ?>Dénomination <?php endif; ?><?php echo $group; ?></h3>
-        </div>
-    </div>
+    <h3><?php if ($parcellaireAffectation->hasDgc()): ?>Dénomination <?php endif; ?><?php echo $group; ?></h3>
 <?php endif; ?>
 <table id="parcelles_<?php echo $dgc; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
     <thead>
@@ -81,7 +73,7 @@
             <td class="text-center">
                 <?php if ($parcelle->isPartielle()): ?>Partielle<?php else: ?>Totale<?php endif; ?>
             </td>
-            <td><?php echo implode(", ", $parcelle->getDestinatairesNom()) ?></td>
+            <td><?php echo implode(", ", $parcelle->getDestinatairesNom(true)) ?></td>
             <?php if($parcellaireAffectation->isDeclarationLiee()): ?>
             <td class="text-right"><?php if($parcelle->exist('manquant')): ?><?php echoFloatFr($parcelle->manquant->pourcentage); ?>&nbsp;%<?php endif; ?></td>
             <td class="text-center text-success"><?php if($parcelle->exist('irrigation')): ?><span title="<?php echo $parcelle->irrigation->materiel."\n".$parcelle->irrigation->ressource; ?>" style="cursor: help;" class="glyphicon glyphicon-ok-sign"></span><?php endif; ?></td>
@@ -110,3 +102,36 @@
         <a href="<?php echo url_for('parcellaire_potentiel_visualisation', array('id' => $parcellaireAffectation->getParcellaire()->_id)); ?>">Voir le détail du potentiel de production</a>
     </div>
 <?php endif;?>
+
+<div class="row">
+    <div class="col-sm-6">
+        <?php include_component('parcellaire', 'syntheseParCepages', array('parcellaire' => $parcellaireAffectation,  'coop' => $coop)); ?>
+    </div>
+    <div class="col-sm-6">
+        <?php $syntheseDestination = $parcellaireAffectation->getSyntheseDestination() ?>
+        <?php if (count($syntheseDestination)): ?>
+        <h3 class="mt-0">Synthèse par destinations</h3>
+
+        <table class="table table-bordered table-condensed table-striped tableParcellaire">
+          <thead>
+            <tr>
+                <th class="col-xs-8">Destination</th>
+                <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
+            </tr>
+          </thead>
+          <tbody>
+          <?php foreach($syntheseDestination as $destination => $s): ?>
+            <tr>
+                    <td><?php echo $destination ; ?></td>
+                    <td class="text-right"><?php echoSuperficie($s); ?></td>
+            </tr>
+          <?php endforeach;?>
+          <tr>
+                <td><strong>Total</strong></td>
+                <td class="text-right"><strong><?php echoSuperficie(array_sum($syntheseDestination->getRawValue())); ?></strong></td>
+            </tr>
+          </tbody>
+        </table>
+        <?php endif; ?>
+    </div>
+</div>
