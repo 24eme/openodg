@@ -32,7 +32,7 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
      *
      * @throws Exception Si une parcelle n'est pas conforme
      */
-    public function convert()
+    public function convert($verbose = false)
     {
         $configuration = ConfigurationClient::getInstance()->getCurrent();
 
@@ -89,6 +89,8 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
             $libelle = str_replace(['VDB ', 'VCI '], '', $libelle);
             $libelle = str_replace(' PG', ' PINOT GRIS', $libelle);
             $libelle = str_replace('ALSACE ST-HIPPOLYTE', 'ALSACE COMMUNALE SAINT HIPPOLYTE', $libelle);
+            $libelle = str_replace('ALSACE SAINT HIPPOLYTE', 'ALSACE COMMUNALE SAINT HIPPOLYTE', $libelle);
+            $libelle = str_replace('ALSACE RODERN', 'ALSACE COMMUNALE RODERN', $libelle);
             $libelle = str_replace(['VAL LOIRE', 'VDP JARDIN DE FRANCE', 'VINS DE PAYS DU JARDIN DE LA FRANCE'], 'IGP Val de Loire', $libelle);
             $libelle = str_replace('CX ', 'COTEAUX ', $libelle);
             $libelle = str_replace('COTEAUX LAYON', 'COTEAUX DU LAYON', $libelle);
@@ -96,6 +98,7 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
             $libelle = str_replace('LOIRELOIRE', 'LOIRE LOIRE', $libelle);
             $libelle = str_replace(' RS', ' Rosé', $libelle);
             $libelle = str_replace([' GRENAT', ' ROUGE SEC'], ' ROUGE', $libelle);
+            $libelle = str_replace('COTES GASCOGNE', 'COTES DE GASCOGNE', $libelle);
 
             switch ($libelle) {
                 case "CREMANT D'ALS ROSE":
@@ -160,8 +163,7 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
             $libelle = preg_replace('/COTES? TARN/', 'COTES DU TARN', $libelle);
             $libelle = preg_replace('/rougeE/i', 'rouge', $libelle);
 
-
-            $produit = $configuration->identifyProductByLibelle($libelle);
+            $produit = $configuration->identifyProductByLibelle($libelle, $verbose);
             $nb_reconnaissance = 1;
             if (!$produit) {
                 $cepage = strtoupper($parcelle[self::CSV_FORMAT_CEPAGE - $is_old_format]);
@@ -176,10 +178,21 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
                 }
                 $libelle = preg_replace('/ ?\.?(B|RS|R|N|G)$/', '', $libelle);
                 $produit = $configuration->identifyProductByLibelle($libelle);
+                if ($verbose) {
+                    print_r(['search rename', 'renamed libelle' => $libelle, 'has_produit' => ($produit)]);
+                }
                 $nb_reconnaissance++;
             }
-
+            if (!$produit && $verbose) {
+                $produit = $configuration->identifyProductByLibelle($libelle);
+                if ($verbose) {
+                    print_r(['extra search', 'libelle' => $libelle, 'parcelle' => $parcelle, 'has produit' => ($produit)]);
+                }
+            }
             $hash = ($produit) ? $produit->getHash() : null ;
+            if ($verbose) {
+                print_r(['hash_found', 'libelle' => $libelle, 'hash' => $hash, 'parcelle' => $parcelle]);
+            }
 
             $prefix = substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 5, 3);
 

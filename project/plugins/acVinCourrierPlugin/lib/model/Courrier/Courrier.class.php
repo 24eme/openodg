@@ -210,7 +210,7 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
             $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_AFFECTABLE, Lot::generateTextePassageMouvement($this->lots[0]->getNombrePassage() + 1)));
         }
 
-        if ($this->lots[0]->recours_oc) {
+        if ($this->lots[0]->exist('recours_oc') && $this->lots[0]->recours_oc) {
             $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_RECOURS_OC, null, $this->lots[0]->recours_oc));
             $this->lots[0]->statut = Lot::STATUT_NONCONFORME;
         }

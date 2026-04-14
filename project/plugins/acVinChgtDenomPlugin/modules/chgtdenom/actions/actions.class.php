@@ -188,7 +188,7 @@ class chgtdenomActions extends sfActions
         $this->form->save();
 
         if($this->isAdmin) {
-            $this->chgtDenom->validateOdg();
+            $this->chgtDenom->validateOdg(null, $request->getParameter('region', $this->getUser()->getRegion()));
             $this->chgtDenom->save();
             $this->getUser()->setFlash("notice", "Le changement dénomination a été validé et approuvé");
 

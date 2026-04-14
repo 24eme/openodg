@@ -50,7 +50,7 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
     {
         $produits = array();
         foreach ($this->getDocument()->getProduitsConfig(date('Y-m-d')) as $produit) {
-            $produits[$produit->getHash()] = $produit->getLibelleComplet();
+            $produits[$produit->getHash()] = preg_replace("/ Tranquilles?$/", '', $produit->getLibelleComplet());
         }
         return array_merge(array('' => ''), $produits);
     }
@@ -83,7 +83,7 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
 
         if($this->getOption('controle_habilitation')) {
             foreach($values['activites'] as $activite) {
-                if($values['demande'] != HabilitationClient::DEMANDE_HABILITATION && !$this->getDocument()->isHabiliteFor($values['produit'], $activite)) {
+                if($values['demande'] != HabilitationClient::DEMANDE_HABILITATION && (!$this->getDocument()->exist($values['produit'].'/activites/'.$activite) || !$this->getDocument()->get($values['produit'].'/activites/'.$activite)->statut)) {
                     throw new sfException(sprintf("La demande n'a pas pu être créée car l'exploitation n'est pas habilitée en tant que \"%s\" pour le \"%s\"", $activite, $produits[$values['produit']]));
                 }
             }

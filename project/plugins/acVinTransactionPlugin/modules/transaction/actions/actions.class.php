@@ -11,8 +11,8 @@ class transactionActions extends sfActions {
         }
 
         $date = $request->getParameter("date", date('Y-m-d'));
-        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $transaction = TransactionClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date, $isAdmin);
+        $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentPeriode());
+        $transaction = TransactionClient::getInstance()->createDoc($etablissement->identifiant, $periode, $date, $isAdmin);
         $transaction->save();
 
         return $this->redirect('transaction_edit', $transaction);

@@ -108,8 +108,11 @@ if($compte->getSociete()->isTransaction()){
                         <div class="col-xs-6 text-right">
                             <?php echo $form['mdp1']->renderLabel() ?>
                         </div>
-                        <div class="col-xs-6 text-left">
+                        <div class="col-xs-5 text-left">
                               <?php echo $form['mdp1']->render() ?>
+                        </div>
+                        <div class="col-xs-1 mdp-wrapper">
+                            <span class="mdp mdp1-toggle-icon"><i class="glyphicon glyphicon-eye-open"></i> </span>
                         </div>
                       </div>
                       <div class="row">
@@ -117,8 +120,11 @@ if($compte->getSociete()->isTransaction()){
                         <div class="col-xs-6 text-right">
                             <?php echo $form['mdp2']->renderLabel() ?>
                         </div>
-                        <div class="col-xs-6 text-left">
+                        <div class="col-xs-5 text-left">
                               <?php echo $form['mdp2']->render() ?>
+                        </div>
+                        <div class="col-xs-1 mdp-wrapper">
+                            <span class="mdp mdp2-toggle-icon"><i class="glyphicon glyphicon-eye-open"></i> </span>
                         </div>
                       </div>
                     </div>
@@ -133,7 +139,7 @@ if($compte->getSociete()->isTransaction()){
                         <div class="col-xs-6 text-right">
                             <?php echo $form['email']->renderLabel() ?>
                         </div>
-                        <div class="col-xs-6 text-left">
+                        <div class="col-xs-5 text-left">
                               <?php echo $form['email']->render() ?>
                         </div>
                       </div>
@@ -142,7 +148,7 @@ if($compte->getSociete()->isTransaction()){
                         <div class="col-xs-6 text-right">
                             <?php echo $form['telephone_bureau']->renderLabel() ?>
                         </div>
-                        <div class="col-xs-6 text-left">
+                        <div class="col-xs-5 text-left">
                               <?php echo $form['telephone_bureau']->render() ?>
                         </div>
                       </div>
@@ -151,7 +157,7 @@ if($compte->getSociete()->isTransaction()){
                         <div class="col-xs-6 text-right">
                             <?php echo $form['telephone_mobile']->renderLabel() ?>
                         </div>
-                        <div class="col-xs-6 text-left">
+                        <div class="col-xs-5 text-left">
                               <?php echo $form['telephone_mobile']->render() ?>
                         </div>
                       </div>

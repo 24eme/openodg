@@ -37,7 +37,7 @@
                       <?php $params = array("id" => $doc->id); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
                         <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php if($doc->key[DeclarationTousView::KEY_DATE] && $doc->key[DeclarationTousView::KEY_DATE] !== true): ?><?php echo Date::francizeDate($doc->key[DeclarationTousView::KEY_DATE]); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
                         <td><?php echo $doc->key[DeclarationTousView::KEY_CAMPAGNE]; ?></td>
-                        <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo clarifieTypeDocumentLibelle($doc->key[DeclarationTousView::KEY_TYPE]); ?></a></td>
+                        <td class="text-center"><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo clarifieTypeDocumentLibelle($doc->key[DeclarationTousView::KEY_TYPE]); ?><?php if(substr($doc->id, 0, 4) == "DREV" && strpos($doc->id, 'M')): ?><br /><small class="text-muted"><?php echo substr($doc->id, strpos($doc->id, 'M')); ?></small><?php endif; ?></a></td>
                         <td><a href="<?php echo url_for("declaration_doc", $params); ?>">
                             <?php echo Anonymization::hideIfNeeded($doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]); ?>
                             <small>

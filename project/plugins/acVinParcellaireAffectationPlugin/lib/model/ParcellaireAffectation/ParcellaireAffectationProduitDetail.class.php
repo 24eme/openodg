@@ -84,7 +84,14 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
     public function getSuperficieParcellaireAffectable() {
         $superficieAffectable = $this->getSuperficieParcellaire() - $this->getSuperficie();
 
-        return $superficieAffectable > 0 ? $superficieAffectable : 0;
+        if(!$this->isAffectee()) {
+            foreach($this->getDocument()->getParcellesMultiProduitsByParcelleId($this->getParcelleId()) as $p) {
+                $superficieAffectable -= $p->superficie;
+            }
+            return max(0, $superficieAffectable);
+        }
+
+        return ($superficieAffectable > 0) ? $superficieAffectable : 0;
     }
 
     public function isPartielle() {
@@ -113,13 +120,25 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
         return intval(boolval($this->superficie));
     }
 
-    public function getDestinatairesNom() {
+    public function getDestinatairesNom($withHtml = false) {
         $noms = [];
         if(!$this->exist('destinations')) {
             return $noms;
         }
         foreach($this->destinations as $d) {
-            $noms[] = $d->nom;
+            if(!$d->superficie) {
+                continue;
+            }
+            $nom  = "";
+            if($withHtml && count($this->destinations) > 1) {
+                $nom .= "<abbr title='".$d->superficie." ha'>";
+            }
+            $nom .= $d->nom;
+            if(!$withHtml) {
+                $nom .= "</abbr>";
+            }
+            $noms[] = $nom;
+
         }
         return $noms;
     }

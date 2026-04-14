@@ -14,7 +14,7 @@ class HabilitationDemande extends BaseHabilitationDemande {
 
     public function setProduit($hash) {
         $this->_set('produit', $hash);
-        $this->produit_libelle = $this->getConfig()->getLibelleComplet();
+        $this->produit_libelle = preg_replace('/ Tranquilles?$/', '', $this->getConfig()->getLibelleComplet());
     }
 
     public function getLibelle() {

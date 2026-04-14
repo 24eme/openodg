@@ -10,6 +10,9 @@
 
 <?php if(DRevConfiguration::getInstance()->hasEtapesAOC() || count($drev->getProduitsWithoutLots())): ?>
 <?php    include_partial('drev/recap_aop', array('drev'=>$drev, 'form' =>$form)); ?>
+<?php if($drev->exist('lots')): ?>
+<hr />
+<?php endif; ?>
 <?php endif; ?>
 <?php if($drev->exist('lots')): ?>
 <?php    include_partial('drev/recap_igp', array('drev'=>$drev, 'form' =>$form, 'vip2c' => $vip2c)); ?>

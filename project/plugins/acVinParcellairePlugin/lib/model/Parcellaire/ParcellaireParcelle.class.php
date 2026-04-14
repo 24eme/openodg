@@ -199,21 +199,22 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return ($this->getParcelleParcellaire() != null);
     }
 
+    private $cache_isrealproduit = null;
     public function isRealProduit() {
-        if (!$this->getDocument()->_exist('parcelles')) {
-            return true;
+        if ($this->cache_isrealproduit === null ) {
+            $this->cache_isrealproduit = true;
+            if ($this->getDocument()->_exist('parcelles')) {
+                $p = $this->getParcelleParcellaire();
+                if (!$p) {
+                    $this->cache_isrealproduit = false;
+                } elseif (!$p->produit_hash) {
+                    $this->cache_isrealproduit = false;
+                }elseif (!$p->getConfig()) {
+                    $this->cache_isrealproduit = false;
+                }
+            }
         }
-        $p = $this->getParcelleParcellaire();
-        if (!$p) {
-            return false;
-        }
-        if (!$p->produit_hash) {
-            return false;
-        }
-        if (!$p->getConfig()) {
-            return false;
-        }
-        return true;
+        return $this->cache_isrealproduit;
     }
 
     public function hasProblemParcellaire() {
@@ -244,15 +245,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
       return (count($this->getConfig()->getCepagesAutorises())) && !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
     }
 
-    public function hasJeunesVignes() {
-        //Troisième ou Quatrieme feuille
-        $annee = 3;
-        if (ParcellaireConfiguration::getInstance()->isJeunesVignes3emeFeuille()) {
-            $annee = 2;
-        }
-        $year = ConfigurationClient::getInstance()->getCampagneParcellaire()->getCurrentAnneeRecolte() - $annee;
-        $campagne_troisieme_feuille = $year.'-'.($year + 1);
-        return ($this->campagne_plantation < $campagne_troisieme_feuille);
+    public function isJeunesVignes() {
+        $campagne_troisieme_feuille = ParcellaireConfiguration::getInstance()->getCampagneJeunesVignes();
+        return ($this->campagne_plantation >= $campagne_troisieme_feuille);
     }
 
     public function getGeoJson() {

@@ -14,7 +14,7 @@ class DRevConfiguration extends DeclarationConfiguration {
 
     public function getCampagneDebutMois() {
 
-        return 10;
+        return 9;
     }
 
     public function getModuleName() {
@@ -92,6 +92,11 @@ class DRevConfiguration extends DeclarationConfiguration {
 
     public function hasValidationOdgRegion(){
       return isset($this->configuration['validation_odg']) && $this->configuration['validation_odg'] == 'region';
+    }
+
+    public function hasNotifPourApprobation()
+    {
+        return isset($this->configuration['notif_pour_approbation']) && $this->configuration['notif_pour_approbation'];
     }
 
     public function hasValidationOdgAutoOrRegion(){
@@ -180,12 +185,21 @@ class DRevConfiguration extends DeclarationConfiguration {
         return isset($this->configuration['email_disabled']) && boolval($this->configuration['email_disabled']);
     }
 
+    public function hasEmailODGInCopyDisabled() {
+        return isset($this->configuration['email_odg_in_copy_disabled']) && boolval($this->configuration['email_odg_in_copy_disabled']);
+    }
+
     public function isModificativeEnabled() {
         return $this->isRevendicationParLots();
     }
 
     public function isSentToInnovagro() {
         return isset($this->configuration['send_to_innovagro']) && boolval($this->configuration['send_to_innovagro']);
+    }
+
+    public function isSaisieSuperficieRevendique() {
+
+        return isset($this->configuration['saisie_superficie_revendique']) && boolval($this->configuration['saisie_superficie_revendique']);
     }
 
 }

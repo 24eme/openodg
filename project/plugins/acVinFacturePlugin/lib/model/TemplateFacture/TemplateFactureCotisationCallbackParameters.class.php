@@ -15,7 +15,8 @@ class TemplateFactureCotisationCallbackParameters
         'precision',
         'campagne',
         'region',
-        'secteur'
+        'secteur',
+        'tranche'
     ];
 
     public function __construct($doc, array $params)

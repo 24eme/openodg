@@ -25,7 +25,11 @@ class ExportDegustationConformitePDF extends ExportDeclarationLotsPDF {
 
 
     protected function getHeaderTitle() {
-        return "Résultats contrôle de vos lots conformes";
+        if (DegustationConfiguration::getInstance()->hasAcceptabiliteAoc($this->degustation->getRegion())) {
+            return "Résultats contrôle de vos lots acceptables";
+        } else {
+            return "Résultats contrôle de vos lots conformes";
+        }
     }
 
     protected function getHeaderSubtitle() {

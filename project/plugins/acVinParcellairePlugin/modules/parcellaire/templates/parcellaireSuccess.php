@@ -24,12 +24,13 @@ $list_idu = [];
     <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('parcellaire_etablissement_selection'), 'noautofocus' => true)); ?>
 <?php endif; ?>
 
-<div class="page-header no-border">
+<div class="page-header no-border row">
     <?php if($parcellaire): ?>
-    <h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?> <small class="text-muted"><?= $parcellaire->source ?></small></h2>
+    <h2 class="col-xs-8">Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?> <small class="text-muted"><?= $parcellaire->source ?></small></h2>
     <?php else: ?>
-    <h2>Parcellaire</h2>
+    <h2 class="col-xs-8">Parcellaire</h2>
     <?php endif;?>
+    <p class="col-xs-4 text-muted p-4 mt-4 text-right"><?= $parcellaire->_id ?></p>
 </div>
 
 <div class="clearfix">
@@ -46,7 +47,8 @@ $list_idu = [];
     </div>
 <?php endif; ?>
 
-<?php if ($parcellaire && count($parcellaire->getParcelles()) > 0): ?>
+
+<?php if ($parcellaire && $parcellaire->hasParcelles()): ?>
     <?php $parcellesByCommune = $parcellaire->getParcellesByCommune(false);
     $import = $parcellaire->getGeoJson(); ?>
 
@@ -140,7 +142,8 @@ $list_idu = [];
                                 $ecart_pieds = ($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds'):'&nbsp;';
                                 $ecart_rang = ($detail->exist('ecart_rang')) ? $detail->get('ecart_rang'):'&nbsp;';
                                 $cepage = $detail->cepage;
-                                if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$detail->hasJeunesVignes()) {
+                                $is_jeunes_vignes = ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && $detail->isJeunesVignes();
+                                if ($is_jeunes_vignes) {
                                     $cepage .= ' - jeunes vignes';
                                 }
                             ?>
@@ -153,6 +156,7 @@ $list_idu = [];
                                 </td>
                                 <td class="<?php echo $classcepage; ?>">
                                     <span class="text-muted"><?php echo $detail->getProduitLibelle(); ?></span> <?php echo $cepage; ?><br/>
+                                    <?php if (ParcellaireConfiguration::getInstance()->hasCheckAires()): ?>
                                     <?php $aires = $detail->getIsInAires()->getRawValue(); if ($aires): ?>
                                     <span class="text-muted">Aire(s):</span>
                                     <?php
@@ -180,8 +184,9 @@ $list_idu = [];
                                     <?php else: ?>
                                         <span class="text-danger">Aucune aire<span>
                                     <?php endif; ?>
+                                    <?php endif; ?>
                                 </td>
-                                <td class="" style="text-align: center;"><?php echo $compagne; ?></td>
+                                <td class="" style="text-align: center;"><?php echo $compagne; if ($is_jeunes_vignes) {  echo "<br/><small class='text-muted text-small'>Jeunes vignes</small>"; } ?></td>
                                 <td class="" style="text-align: right;"><?php echoSuperficie($detail->superficie); ?>
                                 </td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?> / <?php echo $ecart_rang; ?></td>
@@ -190,6 +195,8 @@ $list_idu = [];
                                 <td style="text-align: center;">
                                     <div id="<?php echo $detail->idu; ?>">
                                         <button class="btn btn-link" onclick="showParcelle('<?php echo $detail->idu; ?>')"><i class="glyphicon glyphicon-map-marker"></i></button>
+                                        <br/>
+                                        <small class='text-muted'>(<a onclick="showGeoPortail('<?php echo $detail->idu; ?>')" href="#geoportail" class="disabled text-muted">GeoP.</a>)</small>
                                     </div>
                                 </td>
                                 <?php endif; ?>
@@ -242,7 +249,7 @@ $list_idu = [];
   <thead>
     <tr>
         <th class="col-xs-3">Produit</th>
-        <th class="col-xs-8">Cépages autorisés <small class="text-muted">(hors jeunes vignes)</small></th>
+        <th class="col-xs-8">Cépages autorisés <small class="text-muted">(hors <abbr title="de la campagne <?php echo ParcellaireConfiguration::getInstance()->getCampagneJeunesVignes(); ?> à <?php echo ConfigurationClient::getInstance()->getCampagneParcellaire()->getCurrent(); ?>">jeunes vignes</abbr>)</small></th>
         <th class="col-xs-1 text-center">Superficie Pot. max. <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
         <th class="col-xs-1 text-center">Encépa- gement <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
     </tr>

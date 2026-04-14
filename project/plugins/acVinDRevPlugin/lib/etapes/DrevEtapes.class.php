@@ -82,6 +82,11 @@ class DrevEtapes extends Etapes
 			return $doc->getDocumentDouanierType();
 		}
 
+        if($step == self::ETAPE_REVENDICATION_SUPERFICIE) {
+
+            return "Produits";
+        }
+
 		return parent::getLibelle($step, $doc);
     }
 
@@ -111,6 +116,10 @@ class DrevEtapes extends Etapes
 			}
 			return true;
 		}
+
+        if($etape == self::ETAPE_REVENDICATION && DRevConfiguration::getInstance()->hasEtapesAOC()) {
+            return false;
+        }
 
 		if($etape == self::ETAPE_REVENDICATION && !count($doc->getProduitsWithoutLots())) {
 

@@ -284,6 +284,14 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             $needSocieteSave = true;
         }
 
+        $compte->tags->remove('secteur');
+        $compte->tags->add('secteur');
+
+        if (count(EtablissementClient::getSecteurs()) && $this->getSecteurs()) {
+            foreach ($this->getSecteurs() as $secteur) {
+                $compte->addTag('secteur', $secteur);
+            }
+        }
         parent::save();
 
         $this->getMasterCompte()->setStatut($this->getStatut());
@@ -292,6 +300,22 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             $societe->save();
         }
         $compte->save();
+    }
+
+    public function getSecteurs()
+    {
+        $secteurs = [];
+        if ($this->secteur) {
+            $secteurs[] = $this->secteur;
+        }
+        if ($this->exist('chais')) {
+            foreach ($this->chais as $chais => $infos) {
+                if ($infos->secteur) {
+                    $secteurs[] = $infos->secteur;
+                }
+            }
+        }
+        return array_unique($secteurs);
     }
 
     public function updateSecteurs() {
@@ -308,7 +332,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
                 }
             }
         }
-        if(!$this->secteur) {
+        if(!$this->secteur || CommunesConfiguration::getInstance()->hasSecteurAuto()) {
             if (!$this->insee) {
                 $this->insee = CommunesConfiguration::getInstance()->findCodeCommune($this->commune);
             }
@@ -537,7 +561,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
     public function  getLiaisonObjectOfType($type) {
         $etablissements = array();
-        foreach ($this->getLiaisonOfType($type) as $o) {
+        foreach ($this->getLiaisonsOfType($type) as $o) {
             $e = EtablissementClient::getInstance()->find($o->id_etablissement);
             if ($e && ($e->cvi || $e->ppm)) {
                 $etablissements[] = $e;
@@ -546,12 +570,16 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $etablissements;
     }
 
-    public function  getLiaisonOfType($type) {
+    public function getLiaisonsOfType($type, $asArray = false) {
         $liaisons = array();
         if ($this->exist('liaisons_operateurs')) {
             foreach ($this->liaisons_operateurs as $k => $o) {
                 if ($o->type_liaison == $type) {
-                    $liaisons[] = $o;
+                    if ($asArray) {
+                        $liaisons[] = $o->getData();
+                    } else {
+                        $liaisons[] = $o;
+                    }
                 }
             }
         }
@@ -564,7 +592,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             return false;
         }
 
-        $cooperateurs = $this->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR);
+        $cooperateurs = $this->getLiaisonsOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR);
 
         $cooperateurs = array_map(function ($cooperateur) {
             return is_object($cooperateur) ? $cooperateur->cvi : $cooperateur['cvi'];
@@ -574,7 +602,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     }
 
     public function getLaboLibelle() {
-        $labos = $this->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_LABO);
+        $labos = $this->getLiaisonsOfType(EtablissementClient::TYPE_LIAISON_LABO);
         if (!count($labos)) {
             return null;
         }

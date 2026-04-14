@@ -43,6 +43,9 @@ class parcellaireActions extends sfActions {
         if(class_exists("EtablissementChoiceForm")) {
             $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
         }
+        if($this->parcellaire && count($this->parcellaire->getParcelles()) > 150) {
+            ini_set('memory_limit', '512M');
+        }
         $this->setTemplate('parcellaire');
     }
 
@@ -51,6 +54,9 @@ class parcellaireActions extends sfActions {
         $this->secureTeledeclarant();
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->etablissement = $this->getRoute()->getEtablissement();
+        if(count($this->parcellaire->getParcelles()) > 150) {
+            ini_set('memory_limit', '512M');
+        }
         $this->setTemplate('parcellaire');
     }
 
@@ -71,15 +77,54 @@ class parcellaireActions extends sfActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->noscrape = $request->getParameter('noscrape', false);
 
+        $parcellaire = null;
+
         try {
             $errors = [];
-            $errors['csv'] =  '';
-            $errors['json'] = '';
-
             $msg = '';
 
-            if (! ParcellaireClient::getInstance()->saveParcellaire($this->etablissement, $errors, null, !($this->noscrape)) ) {
-                $msg = $errors['csv'].'\n'.$errors['json'];
+            $ret = ParcellaireClient::getInstance()->scrapeCVIAndSaveInParcellaire($this->etablissement, $errors, $parcellaire, null, !($this->noscrape));
+            if (! $ret ) {
+                $themsg = [];
+                foreach ($errors as $line) {
+                    if ((strpos($line, 'router') === false) && ! in_array($line, $themsg) && $line) {
+                        $themsg[] = $line;
+                    }
+                }
+                $msg = implode("\n", $themsg);
+            }
+        } catch (Exception $e) {
+            if (sfConfig::get('sf_environment') == 'dev') {
+                throw $e;
+            }
+            $msg = $e->getMessage();
+        }
+
+        if (! empty($msg)) {
+            $this->getUser()->setFlash('error', $msg);
+            return $this->finalRedirect($request);
+        }
+
+        $this->redirect('parcellaire_convert_csv', array('parcellaire_id' => $parcellaire->_id, 'url' => $request->getParameter('url')));
+
+    }
+
+    private function finalRedirect($request) {
+        if($request->getParameter('url')) {
+            return $this->redirect($request->getParameter('url'));
+        }
+
+        $this->redirect('parcellaire_declarant', $this->etablissement);
+    }
+
+    public function executeConvert(sfWebRequest $request)
+    {
+        $this->secureTeledeclarant();
+        $parcellaire = ParcellaireClient::getInstance()->find($request->getParameter('parcellaire_id'));
+        $this->etablissement = $parcellaire->getEtablissementObject();
+        try {
+            if (! ParcellaireClient::getInstance()->loadParcellaireCSV($parcellaire, $request->getParameter('verbose')) ) {
+                $msg = "Erreur dans la conversion des données du CVI";
             }
         } catch (Exception $e) {
             if (sfConfig::get('sf_environment') == 'dev') {
@@ -94,12 +139,7 @@ class parcellaireActions extends sfActions {
             $this->getUser()->setFlash('success_import', "La mise à jour a été un succès.");
         }
 
-        if($request->getParameter('url')) {
-
-            return $this->redirect($request->getParameter('url'));
-        }
-
-        $this->redirect('parcellaire_declarant', $this->etablissement);
+        return $this->finalRedirect($request);
     }
 
     public function executeCalculPPForm(sfWebRequest $request){

@@ -146,7 +146,7 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
             $lieu = $values['lieuDit'];
         }
         $isKeyModified = false;
-        if($this->getObject()) {
+        if(! $this->mustCreateNew()) {
             $isKeyModified = ($this->getObject()->getCepage()->getHash() != str_replace('-', '/', $cepage) || $this->getObject()->commune != $commune || $this->getObject()->section != $section || $this->getObject()->numero_parcelle != $numero_parcelle || $this->getObject()->lieu != $lieu);
         }
         if($this->mustCreateNew() || $isKeyModified) {
@@ -174,6 +174,9 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
     public function getLieuDetailForAutocomplete() {
         $lieuxDetail = array();
         foreach ($this->getAppellationNode()->getLieuxEditable() as $libelle) {
+            if(!$libelle) {
+                continue;
+            }
         	$lieuxDetail[] = $libelle;
         }
         $entries = array();

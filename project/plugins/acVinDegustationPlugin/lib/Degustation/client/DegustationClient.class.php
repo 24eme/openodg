@@ -124,7 +124,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
             $lotKey = $lot->value->date.$lot->value->unique_id;
 	        $lots[$lotKey] = $this->cleanLotForDegustation($lot->value);
             $lots[$lotKey]->type_document = substr(strtok($lot->id, '-'), 0, 4);
-            $nb_passage = MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lot->value) + 1;
+            $nb_passage = MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lot->value);
             if ($nb_passage > 1) {
                 $lots[$lotKey]->specificite = Lot::generateTextePassage($lots[$lotKey], $nb_passage);
             }

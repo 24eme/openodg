@@ -81,7 +81,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function getCodeCreation() {
-        if(strpos("{TEXT}") === false) {
+        if(strpos($this->mot_de_passe, "{TEXT}") === false) {
             return null;
         }
 
@@ -366,7 +366,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $societe = $this->getSociete();
 
             foreach($societe->getEtablissementsObj() as $etablissement) {
-                if($etablissement->etablissement->isSameCompteThanSociete()) {
+                if($etablissement->etablissement && $etablissement->etablissement->isSameCompteThanSociete()) {
 
                     return $etablissement->etablissement;
                 }
@@ -809,6 +809,14 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
       return $this->getIdentifiant();
     }
 
+    public function getInitiales()
+    {
+        $str = trim($this->prenom . ' ' . $this->nom);
+        $str = preg_replace('/[-\'_]+/u', ' ', $str);
+        preg_match_all('/\b\p{L}/u', $str, $matches);
+        return strtoupper(implode('', $matches[0]));
+    }
+
     public function getRegion() {
         if (!$this->exist('region')) {
             return null;
@@ -820,7 +828,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
       return ($this->getSociete())? $this->getSociete()->getCodeComptable() : null;
     }
 
-    public function getTagsDegustateur()
+    public function getTagsDegustateur($college = null)
     {
         $tags = [];
 
@@ -829,6 +837,12 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
                 if (strpos($tag, 'degustateur_') === 0) {
                     $tags[] = ucfirst(str_replace('_', ' ', substr($tag, strlen('degustateur_'))));
                 }
+            }
+        }
+
+        foreach ($this->droits as $droit) {
+            if (strpos($droit, str_replace('_', ':', $college).':') === 0) {
+                $tags[] = ucfirst(str_replace(str_replace('_', ':', $college).':', '', $droit));
             }
         }
 

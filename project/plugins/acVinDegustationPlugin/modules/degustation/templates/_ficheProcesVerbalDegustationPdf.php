@@ -15,44 +15,12 @@ th {
   <p>TABLEAU DE SYNTHÈSE GLOBAL DES LOTS DE VIN PRÉSENTÉS À LA COMMISSION :</p>
   <table>
     <tr>
-      <td style="width:2%"></td>
-      <td style="width:60%">
-        <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
-          <thead>
-            <tr>
-              <th rowspan="2" style="width:35%"></th>
-              <th rowspan="2" style="width:15%"><small>Synthèse</small></th>
-              <th colspan="2" style="width:20%"><small>Résultat</small></th>
-            </tr>
-            <tr>
-              <th><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A' : 'C';?></small></th>
-              <th><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'NA' : 'NC';?></small></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th><small>Nombre de lots</small></th>
-              <td><small><?php echo $degustation->getNbLotsConformes(true) + $degustation->getNbLotsNonConformes(true) ?></small></td>
-              <td><small><?php echo $degustation->getNbLotsConformes(true) ?></small></td>
-              <td><small><?php echo $degustation->getNbLotsNonConformes(true) ?></small></td>
-            </tr>
-            <tr>
-              <th><small>Volumes total (hl)</small></th>
-              <?php $volumeNC = $degustation->getVolumeLotsConformesOrNot(false); $volumeC = $degustation->getVolumeLotsConformesOrNot(true) ?>
-              <td style="text-align: right"><small><?php echoFloat($volumeNC + $volumeC) ?> hl</small>&nbsp;&nbsp;</td>
-              <td style="text-align: right"><small><?php echoFloat($volumeC) ?> hl</small>&nbsp;&nbsp;</td>
-              <td style="text-align: right"><small><?php echoFloat($volumeNC) ?> hl</small>&nbsp;&nbsp;</td>
-            </tr>
-            <tr>
-              <th><small>Nombre d'opérateurs</small></th>
-              <td><small><?php echo count($etablissements) ?></small></td>
-              <td><small><?php echo count($degustation->getEtablissementLotsConformesOrNot(true)) ?></small></td>
-              <td><small><?php echo count($degustation->getEtablissementLotsConformesOrNot(false)) ?></small></td>
-            </tr>
-          </tbody>
-        </table>
-      </td>
+      <td style="width:5%"></td>
       <td style="width:35%">
+          <?php include_component('degustation', 'ficheProcesVerbalDegustationTableSynthese', array('lotsDegustes' => $lotsDegustes)); ?>
+      </td>
+      <td style="width:30%">&nbsp;</td>
+      <td style="width:30%">
         <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
           <tr style="width:12%">
             <th ><small>Nombre de tables</small></th>
@@ -76,46 +44,7 @@ th {
     <tr>
       <td style="width: 50%">Tableau des échantillons de <?php echo $appellation ?> présentés à la commission</td>
       <td style="width: 50%">
-        <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
-          <thead>
-            <tr>
-              <th rowspan="2" style="width:30%"></th>
-              <th rowspan="2" style="width:15%"><small>Synthèse</small></th>
-              <th colspan="2" style="width:30%"><small>Résultat</small></th>
-            </tr>
-            <tr>
-              <th><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A' : 'C';?></small></th>
-              <th><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'NA' : 'NC';?></small></th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php $c = []; $nc = []; $vc = 0; $vnc = 0; foreach ($lotsDegustes as $l) {
-                if ($l->conformite == Lot::CONFORMITE_CONFORME) :
-                    $c[$l->declarant_identifiant]++; $vc += $l->volume;
-                else:
-                    $nc[$l->declarant_identifiant]++; $vnc += $l->volume;
-                endif;
-            } ?>
-            <tr>
-              <th><small>Nombre de lots</small></th>
-              <td><small><?php echo count($lotsDegustes) ?></small></td>
-              <td><small><?php echo array_sum($c) ?></small></td>
-              <td><small><?php echo array_sum($nc) ?></small></td>
-            </tr>
-            <tr>
-              <th><small>Volumes total (hl)</small></th>
-              <td style="text-align: right"><small><?php echoFloat($vc + $vnc) ?> hl</small></td>
-              <td style="text-align: right"><small><?php echoFloat($vc) ?> hl</small></td>
-              <td style="text-align: right"><small><?php echoFloat($vnc) ?> hl</small></td>
-            </tr>
-            <tr>
-              <th><small>Nombre d'opérateurs</small></th>
-              <td><small><?php echo count($c) + count($nc) ?></small></td>
-              <td><small><?php echo count($c) ?></small></td>
-              <td><small><?php echo count($nc) ?></small></td>
-            </tr>
-          </tbody>
-        </table>
+          <?php include_component('degustation', 'ficheProcesVerbalDegustationTableSynthese', array('lotsDegustes' => $lotsDegustes)); ?>
       </td>
     </tr>
     <tr>
@@ -131,8 +60,8 @@ th {
               <th style="width: 20%"><?php echo tdStart() ?><small>Produit</small></th>
               <th style="width: 5%"><?php echo tdStart() ?><small>Volume<br/>(hl)</small></th>
               <th style="width: 5%"><?php echo tdStart() ?><small>N° P</small></th>
-              <th style="width: 5%"><?php echo tdStart() ?><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A/NA' : 'C/NC';?></small></th>
-              <th style="width: 20%"><?php echo tdStart() ?><small>Motif <?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'NA' : 'NC';?> <br/>Observation <?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'd\'Acceptabilité' : 'de Conformité';?></small></th>
+              <th style="width: 5%"><?php echo tdStart() ?><small><?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A/AD/NA' : 'C/NC';?></small></th>
+              <th style="width: 20%"><?php echo tdStart() ?><small>Motif <?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'AD/NA' : 'NC';?> <br/>Observation <?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'd\'Acceptabilité' : 'de Conformité';?></small></th>
             </tr>
           <?php $page1 = 0; $pages = 0; foreach ($lotsDegustes as $key => $lotDeguste): ?>
           <?php if ($page1 == 7 || $pages == 15): ?>
@@ -149,15 +78,18 @@ th {
               <td><small><?php echo showProduitCepagesLot($lotDeguste, false) ?></small></td>
               <td style="float:right; text-align:right;"><small><?php echo number_format($lotDeguste->volume, 2) ?> hl</small></td>
               <td><small><?php echo $lotDeguste->getTextPassage() ?></small></td>
-              <td><small><?php if ($lotDeguste->statut == Lot::STATUT_CONFORME):?>
-                                <?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A' : 'C'; ?>
+              <td><small><?php if ($lotDeguste->isConforme()):?>
+                                <?php
+                                    echo $lotsDegustes[0]->isLibelleAcceptable() ? 'A' : 'C';
+                                    echo $lotDeguste->isConformeAvecDefaut() ? 'D' : '';
+                                ?>
                             <?php else:?>
                                 <?php echo $lotsDegustes[0]->isLibelleAcceptable() ? 'NA' : 'NC'; ?>
                         <?php endif;?>
               </small></td>
               <td><small>
                 <?php if ($lotDeguste->getMouvement(Lot::STATUT_CONFORME)): ?>
-                    <?php echo $lotDeguste->observation ?>
+                    <?php echo $lotDeguste->observation ?> <?php echo $lotDeguste->motif; ?>
                 <?php else: ?>
                     <?php echo $lotDeguste->getLibelleConformite() ?> :
                     <?php echo $lotDeguste->motif ?>

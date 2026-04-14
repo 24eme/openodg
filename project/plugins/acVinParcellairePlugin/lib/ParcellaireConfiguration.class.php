@@ -56,6 +56,10 @@ class ParcellaireConfiguration {
         return $this->configuration['aires'];
     }
 
+    public function hasCheckAires() {
+        return $this->configuration['aires'] && count($this->configuration['aires']);
+    }
+
     public function getAireInfoFromDenominationId($id) {
         foreach($this->getAiresInfos() as $k => $aire) {
             if ($aire['denomination_id'] == $id) {
@@ -155,17 +159,33 @@ class ParcellaireConfiguration {
         }
         return array_keys($this->configuration['potentiel_de_production']);
     }
+
+    public function getGroupeKeyByProduitConf($prod) {
+        if (!$prod) {
+            return null;
+        }
+        if (isset($this->configuration['potentiel_de_production'])) {
+          foreach($this->configuration['potentiel_de_production'] as $k => $pp) {
+            $index = strpos($prod->getHash(), $pp['produit_hash']);
+            if (isset($pp['produit_hash']) && $index !== false) {
+                return $k;
+            }
+          }
+        }
+        return null;
+    }
+
     public function getGroupeSyntheseLibelle($k) {
         return $this->configuration['potentiel_de_production'][$k]['synthese_libelle'];
     }
     public function getGroupeCategories($k) {
         return $this->configuration['potentiel_de_production'][$k]['categories'];
     }
-    public function getGroupeFilterProduitHash($k) {
-        if (!isset($this->configuration['potentiel_de_production'][$k]['filter_produit_hash'])) {
+    public function getGroupeFilterParcellaireProduitHash($k) {
+        if (!isset($this->configuration['potentiel_de_production'][$k]['filter_parcellaire_produit_hash'])) {
             return null;
         }
-        return $this->configuration['potentiel_de_production'][$k]['filter_produit_hash'];
+        return $this->configuration['potentiel_de_production'][$k]['filter_parcellaire_produit_hash'];
     }
     public function getGroupeFilterINSEE($k) {
         if (!isset($this->configuration['potentiel_de_production'][$k]['filter_insee'])) {
@@ -182,15 +202,24 @@ class ParcellaireConfiguration {
     public function getGroupeRegles($k) {
         return $this->configuration['potentiel_de_production'][$k]['regles'];
     }
+    public function getHashProduitAffectation($k) {
+        if (!isset($this->configuration['potentiel_de_production'][$k]['has_affectation']) || !$this->configuration['potentiel_de_production'][$k]['has_affectation']) {
+            return null;
+        }
+        return $this->configuration['potentiel_de_production'][$k]['produit_hash'];
+    }
 
     public function hasEngagements() {
         return isset($this->configuration['irrigable']['engagements']) && boolval($this->configuration['irrigable']['engagements']);
     }
 
-    public function hasIrrigableMaterielRessource() {
-        return isset($this->configuration['irrigable']['hasIrrigableMaterielRessource']) && boolval($this->configuration['irrigable']['hasIrrigableMaterielRessource']);
+    public function hasIrrigableMateriel() {
+        return isset($this->configuration['irrigable']['hasIrrigableMateriel']) && boolval($this->configuration['irrigable']['hasIrrigableMateriel']);
     }
 
+    public function hasIrrigableRessource() {
+        return isset($this->configuration['irrigable']['hasIrrigableRessource']) && boolval($this->configuration['irrigable']['hasIrrigableRessource']);
+    }
 
     public function hasJeunesVignes() {
         return isset($this->configuration['jeunesVignes']);
@@ -200,11 +229,28 @@ class ParcellaireConfiguration {
         return $this->configuration['jeunesVignes']['vtsgn'];
     }
 
+    public function getCampagneJeunesVignes() {
+        $annee = 3;
+        if (ParcellaireConfiguration::getInstance()->isJeunesVignes3emeFeuille()) {
+            $annee = 2;
+        }
+        $year = ConfigurationClient::getInstance()->getCampagneParcellaire()->getCurrentAnneeRecolte() - $annee;
+        return $year.'-'.($year + 1);
+    }
+
     public function getAnneeJeunesVignesGrdCruCommunalLieuDit() {
         return $this->configuration['jeunesVignes']['grdcru_communale_lieudit'];
     }
 
     public function getAnneeJeunesVignesCremant() {
         return $this->configuration['jeunesVignes']['alsace_cremant'];
+    }
+
+    public function hasEngagementANePasIrriguer() {
+        return $this->configuration['irrigable']['nePasIrriguer'];
+    }
+
+    public function hasEngagementVciIrrigation() {
+        return $this->configuration['irrigable']['vciIrrigation'];
     }
 }

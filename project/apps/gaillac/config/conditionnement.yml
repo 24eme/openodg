@@ -2,7 +2,7 @@ all:
   configuration:
     conditionnement:
       exploitation_save: false
-      validation_odg: true
+      validation_odg: false
       logement_adresse: true
       contenances:
         bouteille:

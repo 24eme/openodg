@@ -4,7 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[francais]{babel}
-\usepackage[top=1cm, bottom=1.5cm, left=1cm, right=1cm, headheight=2cm, headsep=0mm, marginparwidth=0cm]{geometry}
+\usepackage[top=1cm, bottom=<?php if(!$facture->hasTalonDetachable()):?>1.5<?php else:?>5<?php endif;?>cm, left=1cm, right=1cm, headheight=2cm, headsep=0mm, marginparwidth=0cm]{geometry}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage[table]{xcolor}
@@ -24,6 +24,9 @@
 \usepackage{longfbox}
 \usepackage{enumitem}
 
+\newcommand{\CutlnPapillon}{\Rightscissors \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline  \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline  \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline  \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline \Cutline
+\\&nbsp;
+}
 \definecolor{noir}{rgb}{0,0,0}
 \definecolor{blanc}{rgb}{1,1,1}
 \definecolor{verttresclair}{rgb}{0.90,0.90,0.90}
@@ -68,9 +71,26 @@
 \fancyhead[R]{
 
 }
-\cfoot{\small{
-    \EMETTEURCONTACT~~Email~:~\EMETTEUREMAIL \\
-}}
+\fancyfoot{
+    \centering
+    \EMETTEURCONTACT~~Email~:~\EMETTEUREMAIL\\
+    <?php if (!$facture->isAvoir() && $facture->hasTalonDetachable()): ?>
+    \CutlnPapillon
+    \\
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|>{\raggedright}m{18.5cm}|}
+      \hline \\
+      Nom : \FACTUREDECLARANTRS \\
+      Client : \NUMADHERENT \\
+      Facture : \NUMFACTURE \\
+      	\begin{center}
+      	PARTIE DETACHABLE - À joindre à votre règlement
+      	\end{center}
+      \tabularnewline
+      \hline
+      \end{tabular}
+    <?php endif;?>
+}
 
 \begin{document}
 
@@ -194,7 +214,7 @@
         <?php endif; ?>
         <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
 		\hline
-    <?php if ($i) $i++ ; else $i = 12; endforeach; ?>
+    <?php if ($i) $i++ ; else $i = 13; endforeach; ?>
   <?php endforeach; ?>
   \end{tabular}
 
@@ -255,6 +275,7 @@ le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?>
 \\ \\
 \textbf{ * : Exonération de TVA en vertu du 9° du 4. de l'article 261 du Code général des impôts}
 <?php endif ?>
+
 
 \end{center}
 \end{document}

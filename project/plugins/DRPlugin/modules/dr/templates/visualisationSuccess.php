@@ -82,7 +82,7 @@
     <thead>
         <tr>
             <th class="col-xs-5" style="border-top: hidden; border-left: hidden"></th>
-            <th colspan="11" class="text-center">Lignes</th>
+            <th colspan="12" class="text-center">Lignes</th>
         </tr>
     </thead>
     <thead>
@@ -209,7 +209,7 @@
                         if ($a['etablissement']) {
                             $list[] = '<a href="'.url_for('dr_redirect', array('identifiant' => $a['etablissement']->identifiant, 'campagne' => $dr->campagne)).'">'.$a['etablissement']->raison_sociale.'</a>';
                         }else{
-                            $list[] = $a['raison_sociale'].' ('.$a['cvi'].')';
+                            $list[] = $a['raison_sociale'].' (cvi <a href="'.url_for("cvi_check", array('cvi' => $a['cvi'])).'">'.$a['cvi'].'</a> non connu)';
                         }
                     }
                     echo implode(', ', $list);

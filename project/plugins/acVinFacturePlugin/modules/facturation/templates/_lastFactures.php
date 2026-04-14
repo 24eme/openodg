@@ -10,7 +10,9 @@
             <th class="col-xs-1">Type</th>
             <th class="col-xs-4">Opérateur</th>
             <th class="col-xs-2 text-right">Montant TTC Facture</th>
+            <?php if (FactureConfiguration::getInstance()->hasPaiements()):?>
             <th class="col-xs-2 text-right">Montant payé</th>
+            <?php endif; ?>
         </tr>
     </thead>
     <tbody>
@@ -27,7 +29,9 @@
                 <?php endif; ?>
             </td>
             <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->doc->total_ttc)); ?>&nbsp;€</td>
+            <?php if (FactureConfiguration::getInstance()->hasPaiements()): ?>
             <td class="text-right"><?php (!isset($facture->doc->montant_paiement) || $facture->doc->montant_paiement == 0) ? $amount = "" : $amount = $facture->doc->montant_paiement . "€"; ?>&nbsp;<?php echo $amount ?></td>
+            <?php endif; ?>
         </tr>
     <?php endforeach;
     if(!count($factures)):

@@ -27,18 +27,18 @@ EOF;
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $denominations = array();
         $communes = array();
         if ($arguments['commune_insee']) {
-            $communes[] = $arguments['commune_insee'];
+            $communes[$arguments['commune_insee']] = 'commune insee '.$arguments['commune_insee'];
         }
         if ($arguments['identifiant_inao']) {
             $denominations[] = $arguments['identifiant_inao'];
         }else {
             if (count($communes) == 1)  {
-                $denominations[] = AireClient::getInstance()->getDelimitationsArrayFromCommune($communes[0]);
+                $denominations = AireClient::getInstance()->getDelimitationsArrayFromCommune(array_keys($communes)[0]);
             }else{
                 foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $a) {
                     $denominations[] = $a['denomination_id'];

@@ -61,12 +61,15 @@
           <?php echo $form['affectable']->renderError() ?>
           <div class="">
               Dégustable :
-              <?php echo $form['affectable']->render(array('class' => "chgtDenom bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+              <label class="switch-xl">
+                  <?php echo $form['affectable']->render(array('class' => "chgtDenom", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id")); ?>
+                <span class="slider-xl round"></span>
+              </label>
           </div>
         </div>
       <?php else: ?>
         <?php if($chgtDenom->isChgtDenomination()): ?>
-          <span>Dégustable :</span>
+          <span>Contrôle :</span>
           <?php echo pictoDegustable($lot); ?>
         <?php endif; ?>
       <?php endif; ?>

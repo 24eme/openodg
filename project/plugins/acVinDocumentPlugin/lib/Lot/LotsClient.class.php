@@ -191,6 +191,7 @@ class LotsClient
             CourrierClient::TYPE_MODEL => "04",
             PMCNCClient::TYPE_MODEL => "05",
             ChgtDenomClient::TYPE_MODEL => "05",
+            PriseDeMousseClient::TYPE_MODEL => "05",
         );
 
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($declarantIdentifiant, $uniqueId);
@@ -267,7 +268,7 @@ class LotsClient
             if($doc instanceof InterfaceVersionDocument) {
                 $master = $doc->getMaster();
                 if (!$master->verifyGenerateModificative()) {
-                    throw new sfException("il n'est pas possible d'avoir une modificatrice pour le doc ".$id);
+                    throw new sfException("il n'est pas possible d'avoir une modificatrice pour le doc ".$id.". Vérifier si une déclaration n'est pas ouverte en brouillon pour cet utilisateur." );
                 }
                 $ids2Save[$master->_id] = $master->_id;
                 continue;

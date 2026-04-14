@@ -1,16 +1,9 @@
 <?php
 
-class ExportDegustationFicheIndividuellePDF extends ExportPDF {
-
-    protected $degustation = null;
+class ExportDegustationFicheIndividuellePDF extends ExportDegustationPDF {
 
     public function __construct($degustation, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
-        $this->degustation = $degustation;
-
-        if (!$filename) {
-            $filename = $this->getFileName(true);
-        }
-        parent::__construct($type, $use_cache, $file_dir, $filename);
+        parent::__construct($degustation, $type, $use_cache, $file_dir, $filename);
     }
 
     public function create() {
@@ -64,14 +57,8 @@ class ExportDegustationFicheIndividuellePDF extends ExportPDF {
         }
     }
 
-
     protected function getFooterText() {
         return sprintf("<br/>%s     %s - %s - %s<br/>%s    %s", Organisme::getInstance(null, 'degustation')->getNom(), Organisme::getInstance(null, 'degustation')->getAdresse(), Organisme::getInstance(null, 'degustation')->getCodePostal(), Organisme::getInstance(null, 'degustation')->getCommune(), Organisme::getInstance(null, 'degustation')->getTelephone(), Organisme::getInstance(null, 'degustation')->getEmail());
-    }
-
-    protected function getConfig() {
-
-        return new ExportDegustationFicheIndividuellePDFConfig();
     }
 
     public function getFileName($with_rev = false) {

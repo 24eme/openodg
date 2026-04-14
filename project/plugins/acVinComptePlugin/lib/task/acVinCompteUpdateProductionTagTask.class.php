@@ -40,12 +40,12 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
 
         $this->namespace = 'compte';
         $this->name = 'updateProductionTag';
-        $this->briefDescription = '';
+        $this->briefDescription = 'Ajoute les tags lié aux documents des denières campagne';
         $this->detailedDescription = '';
     }
 
     protected function execute($arguments = array(), $options = array()) {
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $context = sfContext::createInstance($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 

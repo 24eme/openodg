@@ -339,13 +339,18 @@
         	$('.bootstrap-switch-removeall').show();
         }
 
-        $('tr td').click(function (event) {
-            if (!$(this).hasClass('edit')) {
-                var value = $(this).parent().find('.bsswitch').is(':checked');
-                $(this).parent().find('td .bsswitch').bootstrapSwitch('state', !value, false);
-            }
+        $('table:not(.tableParcellaire) tr td').click(function (event) {
+          const tr = event.target.closest('tr')
+          if (tr.classList.contains('edit') === false) {
+            const inputswitch = tr.querySelector('input.degustation.switch')
+
+            if (! inputswitch) return
+
+            inputswitch.checked = ! inputswitch.checked
+            inputswitch.dispatchEvent(new Event('click'))
+          }
         });
-        $('tr').click(function (event) {
+        $('table:not(.tableParcellaire) tr').click(function (event) {
             $.trBsSwitchHighlight($(this));
         });
 
@@ -402,7 +407,15 @@
                             fieldsToDuplicate[$(this).data("duplicate")] = $(this).select2('data');
                         }
                     });
-                    confirmtxt = confirmtxt.replace('MATERIEL','"'+fieldsToDuplicate.materiel.id+'"').replace('RESSOURCE','"'+fieldsToDuplicate.ressources.id+'"');
+                    confirmtxt = confirmtxt
+                      .replace(
+                        'MATERIEL',
+                        fieldsToDuplicate?.materiel?.id ? `"${fieldsToDuplicate.materiel.id}"` : ''
+                      )
+                      .replace(
+                        'RESSOURCE',
+                        fieldsToDuplicate?.ressources?.id ? `"${fieldsToDuplicate.ressources.id}"` : ''
+                      );
                     if (confirm(confirmtxt)) {
 
                         for (var f in fieldsToDuplicate) {
@@ -581,6 +594,7 @@
         if($('.modal').find('.has-error').length !== 0) {
         	$('.modal').modal('show');
         }
+        $('.modal.modal-auto-open').modal();
     }
 
     $.initCheckboxBtnGroup = function() {
@@ -1041,3 +1055,68 @@
       };
     });
 })(jQuery);
+
+// Afficher / cacher le mot de passe
+const passwordField1 = document.getElementById("ac_vin_compte_mdp1");
+const passwordField2 = document.getElementById("ac_vin_compte_mdp2");
+
+const togglePassword1 = document.querySelector(".mdp1-toggle-icon i");
+const togglePassword2 = document.querySelector(".mdp2-toggle-icon i");
+
+function togglePasswordVisibility(toggleButton, passwordField) {
+  if (passwordField.type === "password") {
+    passwordField.type = "text";
+    toggleButton.classList.remove("glyphicon-eye-open");
+    toggleButton.classList.add("glyphicon-eye-close");
+  } else {
+    passwordField.type = "password";
+    toggleButton.classList.remove("glyphicon-eye-close");
+    toggleButton.classList.add("glyphicon-eye-open");
+  }
+}
+
+if (togglePassword1 || togglePassword2) {
+  togglePassword1.addEventListener("click", function () {
+    togglePasswordVisibility(togglePassword1, passwordField1);
+  });
+
+  togglePassword2.addEventListener("click", function () {
+    togglePasswordVisibility(togglePassword2, passwordField2);
+  });
+}
+
+function exportTableToCsv(tableId, filename) {
+  const table = document.getElementById(tableId);
+  const csvData = [];
+
+  for (const row of table.rows) {
+    if(!row.classList.contains("hidden")) {
+      const rowValues = [];
+      for (const cell of row.cells) {
+        let text = cell.innerText.trim();
+        if(!text && cell.querySelector(":not(span[title=''])")) {
+        text = cell.querySelector(":not(span[title=''])").title;
+        }
+        if(!text && cell.querySelector(":not(span[data-original-title=''])")) {
+        text = cell.querySelector(":not(span[data-original-title=''])").dataset.originalTitle;
+        }
+        if(text && text.includes(';')) {
+          text = '"' + text + '"'
+        }
+        rowValues.push(text);
+      }
+      csvData.push(rowValues.join(';'));
+    }
+  }
+
+  const csvContent = csvData.join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+
+  URL.revokeObjectURL(url);
+}

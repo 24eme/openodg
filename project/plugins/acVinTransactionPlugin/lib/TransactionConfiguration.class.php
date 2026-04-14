@@ -147,6 +147,13 @@ class TransactionConfiguration extends DeclarationConfiguration {
         return "Transaction";
     }
 
+    public function getDestinationDefaut() {
+        if(isset($this->configuration['destination_defaut']) && $this->configuration['destination_defaut']) {
+            return $this->configuration['destination_defaut'];
+        }
+        return null;
+    }
+
     public function getModuleName() {
 
         return 'transaction';

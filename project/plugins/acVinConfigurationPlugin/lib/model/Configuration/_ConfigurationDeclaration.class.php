@@ -144,6 +144,28 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         }
     }
 
+    public function getProduitsInterGenre($date = null, $interpro = "INTERPRO-declaration", $departement = null, $attributes = array()) {
+        $prods = $this->getProduits($date, $interpro, $departement, $attributes);
+        foreach(['TRANQ', 'MOU', 'EFF'] as $s) {
+            if (strpos($this->getHash(), $s) === false) {
+                continue;
+            }
+            foreach(['TRANQ', 'MOU', 'EFF'] as $d) {
+                $d_hash = str_replace('/'.$s.'/', '/'.$d.'/', $this->getHash());
+                if ($this->getHash() != $d_hash) {
+                    if ($s == $d) {
+                        continue;
+                    }
+                    if ($this->getDocument()->exist($d_hash)) {
+                        $prods2add = $this->getDocument()->get($d_hash)->getProduits($date, $interpro, $departement, $attributes);
+                        $prods = array_merge($prods, $prods2add);
+                    }
+                }
+            }
+        }
+        return $prods;
+    }
+
     public function getProduits($date = null, $interpro = "INTERPRO-declaration", $departement = null, $attributes = array()) {
         if (!$date) {
             $date = date('Y-m-d');

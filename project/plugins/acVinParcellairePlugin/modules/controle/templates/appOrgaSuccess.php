@@ -1,0 +1,517 @@
+<script id="dataJson" type="application/json">
+<?php echo $sf_data->getRaw('json') ?>
+</script>
+<script>
+    const { createWebHashHistory, createRouter, useRoute, useRouter } = VueRouter
+    const { createApp } = Vue;
+
+    const templates = [];
+
+    <?php foreach(['operateurs', 'operateur'] as $template): ?>
+        templates["<?php echo $template ?>"] = { template: "<?php echo str_replace(['"', "\n"], ['\"', ""], get_partial('controle/orga'.ucfirst($template))) ?>" }
+    <?php endforeach; ?>
+
+    const routes = [
+      { path: '/', name: "operateurs", component: templates.operateurs },
+      { path: '/:id/', name: "operateur", component: templates.operateur },
+    ]
+
+    const router = createRouter({
+      history: createWebHashHistory(),
+      routes,
+    });
+
+    const controles = JSON.parse(document.getElementById("dataJson").textContent);
+    const parcellesSelectionneesControles = [];
+    for(controleId in controles) {
+        let controle = controles[controleId]
+        const parcellesIds = [];
+        for(parcelleId in controle.parcelles) {
+            parcellesIds.push(parcelleId)
+        }
+        parcellesSelectionneesControles[controle._id] = parcellesIds;
+    }
+
+    var aires = [];
+<?php
+    $communes = [];
+    foreach ($controles as $controle) {
+        $p = $controle->getParcellaire();
+        echo "//".$p->_id."\n";
+        foreach ($p->getCommunes() as $com) {
+            $communes[$com] = $com;
+        }
+    }
+    foreach(array_keys($communes) as $commune):
+    $aires =  AireClient::getInstance()->getMergedAiresForInseeCommunes(array($commune));
+    foreach($aires as $aire): ?>
+    aires.push({'color': '<?php echo $aire->getColor(); ?>', 'name': '<?php echo $aire->getName() ?> commune <?php echo $commune; ?>', 'geojson': '<?php echo addslashes($aire->geojson); ?>'});
+<?php endforeach; endforeach; ?>
+
+    function addDelimitation(map) {
+        layers = [];
+        for(i in aires) {
+            name = '<span style="background-color: '+aires[i]['color']+'; width: 25px; display:inline-block;"> &nbsp; </span> ' + aires[i]['name'];
+            console.log(['load', aires[i]['name']]);
+            layers[name] = L.geoJSON(JSON.parse(aires[i]['geojson']), { style: {  fillColor: aires[i]['color'],  weight: 0,  opacity: 0.5,  dashArray: '5',  color: 'black',  fillOpacity: 0.4 } });
+            layers[name].addTo(map);
+        };
+    }
+
+    let activeMap = null;
+
+    const app = createApp({
+        data() {
+          return {
+              controles: controles,
+            }
+        },
+        template: '<RouterView :key="$route.fullPath" />'
+    });
+    app.use(router);
+    app.mount('#content');
+
+    /* Action Operateurs */
+
+    templates.operateurs.data = function() {
+        return {
+            controles: controles,
+        }
+    };
+    templates.operateurs.computed = {
+        controlesSorted() {
+            return Object.fromEntries(
+                Object.entries(this.controles).sort(([, a], [, b]) => (a.heure_tournee || '99:99').localeCompare(b.heure_tournee || '99:99'))
+            );
+        }
+    };
+    templates.operateurs.methods = {
+        nbParcellesSelectionnees(controleId) {
+            if (controleId in parcellesSelectionneesControles) {
+                return parcellesSelectionneesControles[controleId].length;
+            }
+            return 0;
+        },
+        nbParcelles(controleId) {
+            if (controleId in controles) {
+                return Object.entries(controles[controleId].parcellaire_parcelles).length;
+            }
+            return 0;
+        },
+        pourcentageSelectionne(controleId) {
+            const parcellesSelectionnees = parcellesSelectionneesControles[controleId];
+            const controleCourant = controles[controleId];
+            let superficieTotale = 0;
+            let superficieSelectionnee = 0;
+            for (const [parcelleId, parcelle] of Object.entries(controleCourant.parcellaire_parcelles)) {
+                superficieTotale += parcelle.superficie;
+                if (parcellesSelectionnees.includes(parcelleId)) {
+                    superficieSelectionnee += parcelle.superficie;
+                }
+            }
+            if (superficieTotale > 0) {
+                return Math.round(superficieSelectionnee / superficieTotale * 100);
+            }
+            return 0;
+        },
+        setHeures() {
+            let heure = '09:00';
+            for (let controleId in controles) {
+                if (parcellesSelectionneesControles.hasOwnProperty(controleId) && parcellesSelectionneesControles[controleId].length) {
+                    if (!this.controles[controleId].heure_tournee) {
+                        this.controles[controleId].heure_tournee = heure;
+                    }
+                    let [h, m] = heure.split(':');
+                    heure = `${String((+h + 1) % 24).padStart(2,'0')}:${m}`;
+                } else {
+                    this.controles[controleId].heure_tournee = '';
+                }
+            }
+        },
+        libelleTournee() {
+            const items = Object.values(controles);
+            if (!items.length) return '';
+            const [y, m, d] = items[0].date_tournee.split('-');
+            const agent = items[0].agent_libelle;
+            return `Tournée du ${d}/${m}/${y} par ${agent}`;
+        }
+    }
+    templates.operateurs.mounted = function() {
+        this.setHeures();
+        const map = new L.map('map');
+        activeMap = map;
+        map.setView([43.8293, 7.2977], 8);
+        const tileLayer = L.tileLayer('https://data.geopf.fr/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM&LAYER={ignLayer}&STYLE={style}&FORMAT={format}&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
+        {
+            ignApiKey: 'pratique',
+            ignLayer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+            style: 'normal',
+            format: 'image/jpeg',
+            service: 'WMTS',
+            minZoom: 8,
+            maxZoom: 19,
+            attribution: 'Map data &copy;<a href="https://www.24eme.fr/">24eme Société coopérative</a>, <a href="https://cadastre.data.gouv.fr/">Cadastre</a>, Imagery © <a href="https://www.ign.fr/">IGN</a>',
+            id: 'mapbox.light'
+        });
+        tileLayer.addTo(map)
+        const gps = new L.Control.Gps({
+            autoCenter:true
+        });
+        gps.addTo(map);
+        const popup = L.control({position: "bottomright"});
+        popup.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'popup');
+            this._div.style.display = 'none';
+            return this._div;
+        };
+        popup.update = function (layer) {
+            this._div.style.background = 'rgba(255,255,255,0.9)';
+            if(!layer) {
+                this._div.style.display = 'none';
+                return null
+            }
+            let props = layer.feature.properties;
+            this._div.style.display = 'block';
+            var popupContent = '<h2 class="text-center">'+props.declarant.nom+'<br /><small class="muted">CVI : '+props.declarant.cvi+' Siret : '+props.declarant.siret+'</small></h2>';
+            this._div.innerHTML = popupContent;
+        };
+        popup.addTo(map);
+
+        const parcelles = [];
+        for (const [idControle, controle] of Object.entries(controles)) {
+            for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
+                feature.properties.controleId = idControle;
+                feature.properties.declarant = controle.declarant;
+                parcelles.push(feature);
+            }
+        }
+
+        addDelimitation(map)
+
+        const parcellesLayer = L.geoJSON(parcelles, { onEachFeature: onEachFeature });
+        parcellesLayer.addTo(map);
+
+        map.fitBounds(parcellesLayer.getBounds());
+        function onEachFeature(feature, layer) {
+            let find = false;
+            for(controleId in parcellesSelectionneesControles) {
+                for(parcelleId of parcellesSelectionneesControles[controleId]) {
+                    if(parcelleId.match(feature.id)) {
+                        find = true;
+                    }
+                }
+            }
+            if(find) {
+                layer.setStyle({fillColor: '#c80064', color: '#c80064'});
+            } else {
+                layer.setStyle({fillColor: '#3388ff', color: '#3388ff'});
+            }
+            layer.on({
+                click: function (e) {
+                    L.DomEvent.stopPropagation(e);
+                    map.fitBounds(e.target.getBounds());
+                    router.push({ name: 'operateur', params: { id: e.target.feature.properties.controleId } })
+                    return false;
+                },
+                mouseover: highlightFeature,
+                mouseout: resetHighlight,
+            });
+        }
+
+        function highlightFeature(e) {
+            e.target.setStyle({fillOpacity: 0.6 });
+            const controleId = e.target.feature.properties.controleId
+            activeMap.eachLayer(function(layer) {
+                if(!layer.feature || !layer.feature.id) {
+                    return;
+                }
+                if(layer.feature.properties.controleId == controleId) {
+                    layer.setStyle({fillOpacity: 1, opacity: 1 });
+                } else {
+                    layer.setStyle({fillOpacity: 0.3, opacity: 0.3 });
+                }
+            });
+            popup.update(e.target);
+        }
+
+        function resetHighlight(e) {
+            activeMap.eachLayer(function(layer) {
+                if(!layer.feature || !layer.feature.id) {
+                    return;
+                }
+                layer.setStyle({fillOpacity: 0.3, opacity: 1 });
+            });
+            popup.update();
+        }
+    };
+
+    /* Action Operateur */
+    templates.operateur.data = function() {
+        const route = useRoute();
+
+        const controleCourant = controles[route.params.id];
+
+        const parcelles = [];
+        for (const [idFeature, feature] of Object.entries(controleCourant.parcellaire_geojson.features)) {
+            feature.properties.controleId = controleCourant._id;
+            parcelles.push(feature);
+        }
+
+        let parcellesSelectionnees = [];
+        if(parcellesSelectionneesControles[controleCourant._id]) {
+            parcellesSelectionnees = parcellesSelectionneesControles[controleCourant._id]
+        }
+
+        return {
+          controleCourant: controleCourant,
+          parcelles: parcelles,
+          parcellesSelectionnees: parcellesSelectionnees,
+        }
+    };
+
+    templates.operateur.computed = {
+        watchTrigger() {
+            return {
+                parcelles: this.parcellesSelectionnees,
+                controle: this.controleCourant
+            };
+        }
+    };
+
+    templates.operateur.mounted = function() {
+        const map = new L.map('map');
+        activeMap = map;
+        map.setView([43.8293, 7.2977], 8);
+        const tileLayer = L.tileLayer('https://data.geopf.fr/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM&LAYER={ignLayer}&STYLE={style}&FORMAT={format}&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
+        {
+            ignApiKey: 'pratique',
+            ignLayer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+            style: 'normal',
+            format: 'image/jpeg',
+            service: 'WMTS',
+            minZoom: 8,
+            maxZoom: 19,
+            attribution: 'Map data &copy;<a href="https://www.24eme.fr/">24eme Société coopérative</a>, <a href="https://cadastre.data.gouv.fr/">Cadastre</a>, Imagery © <a href="https://www.ign.fr/">IGN</a>',
+            id: 'mapbox.light'
+        });
+        tileLayer.addTo(map)
+        const gps = new L.Control.Gps({
+            autoCenter:true
+        });
+        gps.addTo(map);
+
+        const popup = L.control({position: "bottomright"});
+        popup.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'popup');
+            this._div.style.display = 'none';
+            L.DomEvent.disableClickPropagation(this._div);
+            L.DomEvent.disableScrollPropagation(this._div);
+            return this._div;
+        };
+        popup.update = async (layer) => {
+            document.querySelectorAll('.bloc_parcelle').forEach(function(item) {
+                item.classList.add('hidden');
+            });
+            if(layer) {
+                document.getElementById(layer.feature.id).classList.remove('hidden');
+                layer.setStyle({fillOpacity: 1, opacity: 1 });
+            }
+        }
+        popup.addTo(map);
+
+        const popupAutre = L.control({position: "bottomright"});
+        popupAutre.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'popup');
+            this._div.style.display = 'none';
+            return this._div;
+        };
+        popupAutre.update = function (layer) {
+            this._div.style.background = 'rgba(255,255,255,0.9)';
+            if(!layer) {
+                this._div.style.display = 'none';
+                return null
+            }
+            let props = layer.feature.properties;
+            this._div.style.display = 'block';
+            var popupContent = '<h2 class="text-center">'+props.declarant.nom+'<br /><small class="muted">CVI : '+props.declarant.cvi+' Siret : '+props.declarant.siret+'</small></h2>';
+            this._div.innerHTML = popupContent;
+        };
+        popupAutre.addTo(map);
+
+        function onEachFeatureAutre(feature, layer) {
+            layer.on({
+                mouseover: function (e) {
+                    e.target.setStyle({fillOpacity: 0.6 });
+                    popupAutre.update(e.target);
+                },
+                mouseout: function (e) {
+                    activeMap.eachLayer(function(layer) {
+                        if(!layer.feature || !layer.feature.id) {
+                            return;
+                        }
+                        layer.setStyle({fillOpacity: 0.3, opacity: 1 });
+                    });
+                    popupAutre.update();
+                },
+            });
+        }
+
+        const autresParcelles = [];
+        for (const [idControle, controle] of Object.entries(controles)) {
+            for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
+                if (idControle != this.controleCourant._id) {
+                    feature.properties.controleId = idControle;
+                    autresParcelles.push(feature);
+                }
+            }
+        }
+
+        L.geoJSON(autresParcelles, {onEachFeature: onEachFeatureAutre}).addTo(map);
+
+        addDelimitation(map)
+
+        const parcellesLayer = L.geoJSON(this.parcelles, { onEachFeature: onEachFeature });
+        parcellesLayer.addTo(map);
+        map.fitBounds(parcellesLayer.getBounds());
+
+        function onEachFeature(feature, layer) {
+            layer.on({
+                click: function (e) {
+                    clearParcelleSelected();
+                    L.DomEvent.stopPropagation(e);
+                    popup.update(e.target);
+                    return false;
+                },
+            });
+        }
+        map.on('click', function(e) { clearParcelleSelected(); });
+
+        function clearParcelleSelected() {
+            activeMap.eachLayer(function(layer) {
+                if(!layer.feature || !layer.feature.id) {
+                    return;
+                }
+                layer.setStyle({fillOpacity: 0.3, opacity: 1 });
+            });
+            popup.update();
+        }
+        document.addEventListener('click', function(e) {
+          const btn = e.target.closest('#btn-close-info');
+          if (!btn) return;
+          e.stopPropagation();
+          clearParcelleSelected();
+        });
+
+        this.updateMap();
+    };
+
+    templates.operateur.methods = {
+        showParcelle(idu) {
+            activeMap.eachLayer(function(layer) {
+              if(layer.feature) {
+                  if(Object.keys(layer.feature.properties).includes('parcellaires')){
+                      if(layer.feature.properties.parcellaires[0].idu == idu){
+                        layer.fireEvent('click');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }
+                  }
+              }
+            });
+        },
+        removeParcelle(id) {
+            const index = this.parcellesSelectionnees.indexOf(id);
+            if (index !== -1) {
+                this.parcellesSelectionnees.splice(index, 1);
+            }
+        },
+        updateMap() {
+            const parcellesSelectionnees = this.parcellesSelectionnees;
+            const controleCourant = this.controleCourant;
+            activeMap.eachLayer(function(layer) {
+                if(!layer.feature || !layer.feature.id) {
+                    return;
+                }
+                let find = false;
+                for(parcelleId of parcellesSelectionnees) {
+                    if(parcelleId.match(layer.feature.id)) {
+                        find = true;
+                    }
+                }
+                let findAutre = false;
+                for(controleId in parcellesSelectionneesControles) {
+                    for(parcelleId of parcellesSelectionneesControles[controleId]) {
+                        if(parcelleId.match(layer.feature.id)) {
+                            findAutre = true;
+                        }
+                    }
+                }
+                if(find || findAutre) {
+                    layer.setStyle({fillColor: '#c80064', color: '#c80064'});
+                } else if (layer.feature.properties.controleId == controleCourant._id) {
+                    layer.setStyle({fillColor: '#3388ff', color: '#3388ff'});
+                } else {
+                    layer.setStyle({fillColor: '#000000', color: '#000000'});
+                }
+            });
+        },
+        pourcentageSelectionne() {
+            const parcellesSelectionnees = this.parcellesSelectionnees;
+            const controleCourant = this.controleCourant;
+            let superficieTotale = 0;
+            let superficieSelectionnee = 0;
+            for (const [parcelleId, parcelle] of Object.entries(controleCourant.parcellaire_parcelles)) {
+                superficieTotale += parcelle.superficie;
+                if (parcellesSelectionnees.includes(parcelleId)) {
+                    superficieSelectionnee += parcelle.superficie;
+                }
+            }
+            if (superficieTotale > 0) {
+                return Math.round(superficieSelectionnee / superficieTotale * 100);
+            }
+            return 0;
+        },
+        nbParcellesSelectionnees() {
+            return this.parcellesSelectionnees.length;
+        },
+        getParcellesSorted() {
+            const parcellesSorted = [];
+            for(const parcelleId of this.parcellesSelectionnees) {
+                parcellesSorted.push(parcelleId);
+            }
+            for (const [parcelleId, parcelle] of Object.entries(this.controleCourant.parcellaire_parcelles)) {
+                if (!parcellesSorted.includes(parcelleId)) {
+                    parcellesSorted.push(parcelleId);
+                }
+            }
+            return parcellesSorted;
+        },
+        isParcelleSelectionnee(parcelleId) {
+            return this.parcellesSelectionnees.includes(parcelleId);
+        }
+    };
+
+    templates.operateur.watch = {
+        watchTrigger: {
+            handler() {
+                this.updateMap();
+                parcellesSelectionneesControles[this.controleCourant._id] = this.parcellesSelectionnees
+                const data = {};
+                for(let id in parcellesSelectionneesControles) {
+                    data[id] = {};
+                    data[id]['heure_tournee'] = controles[id].heure_tournee;
+                    data[id]['parcelles'] = [];
+                    for(parcelleId of parcellesSelectionneesControles[id]) {
+                        data[id]['parcelles'].push(parcelleId);
+                    }
+                }
+                document.getElementById('form_data').value = JSON.stringify(data);
+            },
+            deep: true
+        }
+    };
+</script>
+
+<form action="<?php echo url_for('controle_apporga_save') ?>" method="POST">
+    <input id="form_data" type="hidden" name="data" value="" />
+    <button id="btn_save" type="submit" class="btn btn-primary hidden">Enregistrer</button>
+</form>

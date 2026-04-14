@@ -10,6 +10,8 @@ all:
   parcellaire_irrigable:
     ressources: ["Canal de Provence", "Forage", "Etang", "Retenue collinaire","Réseau urbain"]
     materiels: ["Goutte à goutte", "Canon", "Système enterré"]
+  controle:
+    points: ["Ampélographie", "Densité", "Tenue à jour CVI", "Manquants", "Taille", "Hauteur de Feuillage", "Ebourgeonnage", "Etat sanitaire", "Entretien du sol", "CMMP", "Irrigation", "DAE tournières", "DAE parcelles", "Travaux", "Boues/Compost", "Vendange totale"]
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4

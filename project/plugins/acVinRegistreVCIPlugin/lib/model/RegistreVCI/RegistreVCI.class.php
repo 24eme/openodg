@@ -326,9 +326,9 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
 
       /**** MOUVEMENTS ****/
 
-      public function getTemplateFacture() {
+      public function getTemplateFacture($region = null) {
 
-          return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
+          return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne(), $region);
       }
 
       public function getMouvementsFactures() {

@@ -610,7 +610,11 @@ class FactureClient extends acCouchdbClient {
         }
 
         usort($factures, function($a, $b) {
-            return strtotime($b->doc->date_facturation) - strtotime($a->doc->date_facturation);
+            if ($b->doc->date_facturation == $a->doc->date_facturation)  {
+                return $a->doc->numero_odg <= $b->doc->numero_odg;
+            }
+
+            return (strtotime($b->doc->date_facturation) - strtotime($a->doc->date_facturation));
         });
         return array_slice($factures, 0, 10);
     }

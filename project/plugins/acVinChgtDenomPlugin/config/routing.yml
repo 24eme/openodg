@@ -127,3 +127,123 @@ chgtdenom_devalidation:
     type:     object
   requirements:
     sf_method: [get]
+
+prisedemousse_create_from_lot:
+  url: /prisedemousse/:identifiant/creation-lot/:lot
+  param: { module: prisedemousse, action: createFromLot }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+prisedemousse_create:
+  url: /prisedemousse/creation/:identifiant/:campagne
+  param: { module: prisedemousse, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+prisedemousse_create_papier:
+  url: /prisedemousse/creation-papier/:identifiant/:campagne
+  param: { module: prisedemousse, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+prisedemousse_lots:
+  url: /prisedemousse/lots/:identifiant/:campagne
+  param: { module: prisedemousse, action: lots }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+prisedemousse_ajout_lot:
+  url: /prisedemousse/lots/:identifiant/:campagne/ajout
+  param: { module: prisedemousse, action: ajoutLot }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+prisedemousse_edition:
+  url: /prisedemousse/edition/:id
+  param: { module: prisedemousse, action: edition }
+  class: PriseDeMousseRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+prisedemousse_validation:
+  url: /prisedemousse/validation/:id
+  param: { module: prisedemousse, action: validation }
+  class: PriseDeMousseRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+prisedemousse_logement:
+  url: /prisedemousse/logement/:id
+  param: { module: prisedemousse, action: logement }
+  class: PriseDeMousseRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [post]
+
+prisedemousse_visualisation:
+  url: /prisedemousse/visualisation/:id
+  param: { module: prisedemousse, action: visualisation }
+  class: PriseDeMousseRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+prisedemousse_delete:
+  url: /prisedemousse/suppression/:id
+  param: { module: prisedemousse, action: suppression }
+  class: PriseDeMousseRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [get]
+
+prisedemousse_pdf:
+  url: /prisedemousse/:id/pdf
+  param: { module: prisedemousse, action: chgtDenomPDF }
+  class: PriseDeMousseRoute
+  options:
+    model: ChgtDenom
+    type: object
+  requirements:
+    sf_method: [get]
+
+prisedemousse_devalidation:
+  url: /prisedemousse/devalidation/:id
+  param: { module: prisedemousse, action: devalidation }
+  class: PriseDeMousseRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [get]

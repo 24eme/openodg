@@ -15,20 +15,8 @@ if (!DRevConfiguration::getInstance()->isModuleEnabled()){
     return;
 }
 
-$has_etape_lot = false;
-$has_produit_lot = false;
-$has_aoc = true;
-
-if ($application == 'igp13') {
-    $has_etape_lot = true;
-    $has_produit_lot = true;
-    $has_aoc = false;
-}
-if ($application == 'loire') {
-    $has_etape_lot = true;
-    $has_produit_lot = false;
-}
-
+$has_etape_lot = ConfigurationClient::getCurrent()->declaration->isRevendicationParLots();
+$has_aoc = ConfigurationClient::getCurrent()->declaration->isRevendicationAOC();
 
 foreach(DRevClient::getInstance()->getHistory($etablissement->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $drev = DRevClient::getInstance()->find($k);
@@ -124,7 +112,7 @@ if ($has_vci) {
 
 if($has_etape_lot) {
     $b->isForwardedTo('drev', 'lots');
-    if ($has_produit_lot) {
+    if (!$has_aoc) {
         $t->is($b->getResponse()->getStatuscode(), 200, "Étape lot");
         $b->click('button[id="lots_continue"]')->followRedirect();
     }else{

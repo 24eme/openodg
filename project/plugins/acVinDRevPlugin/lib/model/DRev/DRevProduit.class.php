@@ -82,7 +82,7 @@ class DRevProduit extends BaseDRevProduit
 		if($this->exist('volume_revendique_issu_mutage') && $this->volume_revendique_issu_mutage) {
 			return ($this->volume_revendique_total - $this->volume_revendique_issu_mutage);
 		}
-        return intval($this->volume_revendique_total);
+        return floatval($this->volume_revendique_total);
 	}
 
 
@@ -130,6 +130,15 @@ class DRevProduit extends BaseDRevProduit
 		}
 
         return false;
+    }
+
+    public function setVolumeRevendiqueIssuRecolte($volume) {
+        $beforeVolume = $this->_get('volume_revendique_issu_recolte');
+        $ret = $this->_set('volume_revendique_issu_recolte', $volume);
+        if($beforeVolume != $volume) {
+            $this->update();
+        }
+        return $ret;
     }
 
 	public function update($params = array()) {
@@ -252,7 +261,7 @@ class DRevProduit extends BaseDRevProduit
                 continue;
             }
 
-            if (str_replace(" déclassé", "", $chgt->origine_specificite) !== $this->denomination_complementaire) {
+            if (trim(str_replace("déclassé", "", $chgt->origine_specificite)) !== trim($this->denomination_complementaire)) {
                 continue;
             }
 
@@ -425,8 +434,14 @@ class DRevProduit extends BaseDRevProduit
 	}
 
     public function hasVolumeOrSuperficieRevendicables() {
+        if (strpos($this->getHash(), 'genres/MOU/') || strpos($this->getHash(), 'genres/EFF/')) {
+            $hashVDB = str_replace(['genres/MOU/', 'genres/EFF/'], 'genres/VDB/', $this->getCepage()->getHash());
+            if ($this->getDocument()->exist($hashVDB)) {
+                $vdn = $this->getDocument()->get($hashVDB)->getFirst();
+                return $vdn->hasVolumeOrSuperficieRevendicables();
+            }
+        }
         return $this->recolte->volume_sur_place || $this->volume_revendique_total || $this->superficie_revendique;
-
     }
 
     public function getRegion() {

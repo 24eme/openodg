@@ -233,4 +233,8 @@ class FactureConfiguration {
 
     }
 
+    public function hasTalonDetachable()
+    {
+        return isset($this->configuration['talon_detachable']) && $this->configuration['talon_detachable'];
+    }
 }

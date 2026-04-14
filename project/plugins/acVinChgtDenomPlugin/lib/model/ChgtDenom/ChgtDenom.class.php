@@ -14,7 +14,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function __construct() {
         parent::__construct();
         $this->initDocuments();
-				$this->cm = new CampagneManager('08-01');
+                $this->cm = ConfigurationClient::getInstance()->getCampagneVinicole();
     }
 
     public function __clone() {
@@ -35,6 +35,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->mouvement_document = new MouvementFacturesDocument($this);
         $this->piece_document = new PieceDocument($this);
         $this->archivage_document = new ArchivageDocument($this);
+    }
+
+    public function getDocumentType() {
+        return ChgtDenomClient::TYPE_MODEL;
     }
 
         public function getDateFormat($format = 'Y-m-d') {
@@ -144,6 +148,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $date = date('c');
         }
         $this->validation_odg = $date;
+        if ($region) {
+            $this->add('region', $region);
+        }
         if(!$this->isFactures()){
             $this->save();
             $this->clearMouvementsFactures();
@@ -338,6 +345,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     }
 
+    public function getDegustationVMQ() {
+        $doc = acCouchdbManager::getClient()->find($this->lots[1]->id_document_affectation);
+        $lot = $doc->getLotByNumArchive($doc->lots[0]->numero_archive);
+        return $lot;
+    }
+
     public function getLotKey() {
 
       return $this->changement_origine_id_document.":".$this->changement_origine_lot_unique_id;
@@ -415,6 +428,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $this->generateMouvementsLots();
             $this->fillDocToSaveFromLots();
         }
+
+        if ($this->origine_produit_hash) {
+            $this->add('region', RegionConfiguration::getInstance()->getOdgRegion($this->origine_produit_hash));
+        }
+
         $saved = parent::save($saveDependants);
         if ($saveDependants) {
             $this->saveDocumentsDependants();
@@ -440,6 +458,15 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function isChgtDenomination() {
         return !$this->isDeclassement();
     }
+    public function isRepli()
+    {
+        if ($this->isDeclassement()) {
+            return false;
+        }
+        $produitOrigineAplHash = $this->getConfigProduitOrigine()->getAppellation()->getHash();
+        $produitChgtAplHash = $this->getConfigProduitChangement()->getAppellation()->getHash();
+        return $produitOrigineAplHash == $produitChgtAplHash;
+    }
 
     public function isTotal()
     {
@@ -447,7 +474,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return $this->changement_volume == $this->origine_volume;
         }
 
-        return ($this->changement_volume == $this->getLotOrigine()->volume);
+        return ($this->changement_volume >= $this->getLotOrigine()->volume);
     }
 
     public function getPourcentagesCepages() {
@@ -462,109 +489,131 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return $cepages;
     }
 
-    public function generateLots() {
-      $this->clearMouvementsLots();
-      $this->clearLots();
-
-      $lots = array();
-      $lot = $this->getLotOrigine();
-      if ($lot === null) {
-          return;
-      }
-
-      if ($lot !== false) { // Lot d'origine
-          $lot = $lot->getData();
-          unset($lot->numero_anonymat);
-
-          $lotDef = ChgtDenomLot::freeInstance($this);
-          foreach($lot as $key => $value) {
-              if($lotDef->getDefinition()->exist($key)) {
-                  continue;
-              }
-
-              unset($lot->{$key});
-          }
-      } else { // Lot de négociant créé
-        $lot = new stdClass;
-        $lot->document_ordre = "00";
-        $lot->volume = $this->origine_volume;
-        $lot->campagne = $this->campagne;
-      }
-      $lot->numero_logement_operateur = $this->origine_numero_logement_operateur;
-      $lot->millesime = $this->origine_millesime;
-      $lot->produit_libelle = $this->origine_produit_libelle;
-      $lot->produit_hash = $this->origine_produit_hash;
-      $lot->declarant_nom = $this->declarant->raison_sociale;
-      $lot->declarant_identifiant = $this->identifiant;
-      $lot->statut = $this->origine_statut;
-      if($lot->statut) {
-          $lot->affectable = false;
-      }
-
-      $ordre = sprintf('%02d', intval($lot->document_ordre) + 1 );
-      $lot->date = $this->date;
-      $lot->document_ordre = $ordre;
-      $lot->id_document_provenance = $this->changement_origine_id_document;
-
-      $lot->volume = $this->changement_volume;
-
-      if ($this->isChgtDenomination()) {
-          $lotOrig = clone $lot;
-          $lotOrig->initial_type = null;
-          $lotOrig->volume = $this->origine_volume - $this->changement_volume;
-          if (!$lotOrig->volume) {
-              $lotOrig->affectable = false;
-          }
-          if ($this->origine_numero_logement_operateur !== $this->getLotOrigine()->numero_logement_operateur) {
-              $lotOrig->numero_logement_operateur = $this->origine_numero_logement_operateur;
-          }
-          $this->updateCepageCoherencyWithVolume($lotOrig);
-          $lots[] = $lotOrig;
-          $lot->initial_type = null;
-          $lot->campagne = $this->campagne;
-          $lot->numero_archive = null;
-          $lot->unique_id = null;
-          $lot->document_ordre = '01';
-          $lot->specificite = $this->changement_specificite;
-
-          $lot->volume = $this->changement_volume;
-          $lot->produit_hash = $this->changement_produit_hash;
-          $lot->produit_libelle = $this->changement_produit_libelle;
-          if($lot instanceof acCouchdbJson) {
-              $lot->remove('cepages');
-              $lot->add('cepages', $this->changement_cepages->toArray());
-          } else {
-            $lot->cepages = $this->changement_cepages->toArray();
-          }
-          $lot->affectable = $this->changement_affectable;
-          $lot->statut = null;
-          if(!$lot->affectable) {
-              $lot->statut = Lot::STATUT_NONAFFECTABLE;
-          }
-
-          if ($this->exist('changement_numero_logement_operateur') && $this->changement_numero_logement_operateur) {
-              $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
-          }
-      } else {
-          $lot->volume = $this->origine_volume - $this->changement_volume;
-          if (!$lot->volume) {
-              $lot->affectable = false;
-          }
-          $lot->produit_libelle = $this->origine_produit_libelle;
-          $lot->cepages = $this->origine_cepages;
-      }
-
-      $this->updateCepageCoherencyWithVolume($lot);
-      $lots[] = $lot;
-
-      foreach($lots as $l) {
-        $lot = $this->lots->add(null, $l);
-        $lot->id_document = $this->_id;
-        $lot->updateDocumentDependances();
-      }
+    protected function prepareGenerateLots() {
+        $this->clearMouvementsLots();
+        $this->clearLots();
     }
 
-    private function updateCepageCoherencyWithVolume($lot) {
+    protected function prepareInitialLot() {
+        $lot = $this->getLotOrigine();
+        if ($lot === null) {
+            return null;
+        }
+
+        if ($lot !== false) { // Lot d'origine
+            $lot = $lot->getData();
+            unset($lot->numero_anonymat);
+
+            $lotDef = ChgtDenomLot::freeInstance($this);
+            foreach($lot as $key => $value) {
+                if($lotDef->getDefinition()->exist($key)) {
+                    continue;
+                }
+
+                unset($lot->{$key});
+            }
+        } else { // Lot de négociant créé
+            $lot = new stdClass;
+            $lot->document_ordre = "00";
+            $lot->campagne = $this->campagne;
+        }
+        $lot->numero_logement_operateur = $this->origine_numero_logement_operateur;
+        $lot->millesime = $this->origine_millesime;
+        $lot->produit_libelle = $this->origine_produit_libelle;
+        $lot->produit_hash = $this->origine_produit_hash;
+        $lot->declarant_nom = $this->declarant->raison_sociale;
+        $lot->declarant_identifiant = $this->identifiant;
+        $lot->statut = $this->origine_statut;
+        if($lot->statut) {
+            $lot->affectable = false;
+        }
+
+        $ordre = sprintf('%02d', intval($lot->document_ordre) + 1 );
+        $lot->date = ($this->validation < $this->date) ? $this->validation : $this->date;
+        $lot->document_ordre = $ordre;
+        $lot->id_document_provenance = $this->changement_origine_id_document;
+
+        $lot->volume = $this->changement_volume;
+        if (!$lot->volume) {
+            $lot->affectable = false;
+        }
+        return $lot;
+    }
+
+    protected function generateLotOrigine($lot) {
+        $lotOrig = clone $lot;
+        $lotOrig->initial_type = null;
+        $lotOrig->volume = $this->origine_volume - $this->changement_volume;
+        if (!$lotOrig->volume) {
+            $lotOrig->affectable = false;
+        }
+        if ($this->origine_numero_logement_operateur !== $this->getLotOrigine()->numero_logement_operateur) {
+            $lotOrig->numero_logement_operateur = $this->origine_numero_logement_operateur;
+        }
+        $this->updateCepageCoherencyWithVolume($lotOrig);
+        return $lotOrig;
+    }
+
+    public function generateLots() {
+        $this->prepareGenerateLots();
+
+        $lots = array();
+        $lot = $this->prepareInitialLot();
+        if (!$lot) {
+            return ;
+        }
+
+        if ($this->isChgtDenomination()) {
+            $lotOrig = $this->generateLotOrigine($lot);
+            $lots[] = $lotOrig;
+            $lot->initial_type = null;
+            $lot->campagne = $this->campagne;
+            $lot->numero_archive = null;
+            $lot->unique_id = null;
+            $lot->document_ordre = '01';
+            $lot->specificite = $this->changement_specificite;
+
+            $lot->volume = $this->changement_volume;
+            $lot->produit_hash = $this->changement_produit_hash;
+            $lot->produit_libelle = $this->changement_produit_libelle;
+            if($lot instanceof acCouchdbJson) {
+                $lot->remove('cepages');
+                $lot->add('cepages', $this->changement_cepages->toArray());
+            } else {
+                $lot->cepages = $this->changement_cepages->toArray();
+            }
+            $lot->affectable = $this->changement_affectable;
+            $lot->statut = null;
+            if($lot->affectable === false) {
+                $lot->statut = Lot::STATUT_NONAFFECTABLE;
+            }
+
+            if ($this->exist('changement_numero_logement_operateur') && $this->changement_numero_logement_operateur) {
+                $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
+            }
+        } else {
+            $lot->volume = $this->origine_volume - $this->changement_volume;
+            if (!$lot->volume) {
+                $lot->affectable = false;
+            }
+            $lot->produit_libelle = $this->origine_produit_libelle;
+            $lot->cepages = $this->origine_cepages;
+        }
+        $this->updateCepageCoherencyWithVolume($lot);
+        $lots[] = $lot;
+
+        $this->registerLots($lots);
+    }
+
+    protected function registerLots($lots) {
+        foreach($lots as $l) {
+            $lot = $this->lots->add(null, $l);
+            $lot->id_document = $this->_id;
+            $lot->updateDocumentDependances();
+        }
+    }
+
+    protected function updateCepageCoherencyWithVolume($lot) {
         if (!$lot->cepages || !count((array) $lot->cepages)) {
             return $lot;
         }
@@ -625,6 +674,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function addCepage($cepage, $repartition) {
+        if(!$repartition) {
+            $repartition = -1;
+        }
         $this->changement_cepages->add($cepage, $repartition);
     }
 
@@ -721,7 +773,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     /**** PIECES ****/
     public function getAllPieces() {
       $lot = $this->getLotOrigine();
-      $libelle = ($this->isDeclassement())? 'Déclassement' : 'Changement de dénomination';
+      if ($this->isDeclassement()) {
+          $libelle = 'Déclassement';
+      } elseif ($this->isRepli()) {
+          $libelle = 'Repli';
+      } else {
+          $libelle = 'Changement de dénomination';
+      }
       $libelle .= ($this->isTotal())? '' : ' partiel';
       $libelle .= ' n° '.$this->numero_archive.' -';
       $libelle .= ' lot de '.$this->origine_produit_libelle.' '.$this->origine_millesime;
@@ -930,17 +988,20 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     private function produitFilter($produitFilter = null, $chgtdenom = null)
     {
-      $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
-			$produitExclude = (bool) $produitExclude;
-			$regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
-			if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
-					return false;
-			}
-			if($produitFilter && $produitExclude && preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
-					return false;
-			}
-
-            return true;
+        $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
+        $produitFilter = preg_replace('/ *NOT same( |$)/', '', $produitFilter, -1, $hasExcludeSame);
+        $produitExclude = (bool) $produitExclude;
+        $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
+        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
+            return false;
+        }
+        if($produitFilter && $produitExclude && preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
+            return false;
+        }
+        if ($hasExcludeSame && $chgtdenom->changement_produit_hash == $chgtdenom->origine_produit_hash) {
+            return false;
+        }
+        return true;
     }
 
     public function getVolumeFacturable(TemplateFactureCotisationCallbackParameters $filter)
@@ -1007,10 +1068,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $not = strpos($filter, 'NOT') === 0;
 
         $c = substr($this->changement_origine_lot_unique_id, 0, 4) + 1;
-        $dateLimite = new DateTimeImmutable($c."-07-31");
+        $dateLimite = new DateTimeImmutable($c."-08-31");
         $dateValidation = new DateTimeImmutable($this->validation);
 
-        $result = $dateLimite > $dateValidation;
+        $result = $dateLimite >= $dateValidation;
 
         if ($not) {
             $result = ! $result;

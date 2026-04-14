@@ -47,7 +47,10 @@
                         <div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
                           <?php echo $form[$name]->renderError() ?>
                           <div class="col-xs-12">
-                            <?php echo $form[$name]->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                            <label class="switch-xl">
+                                <?php echo $form[$name]->render(array('class' => "")); ?>
+                                <span class="slider-xl round"></span>
+                            </label>
                           </div>
                         </div>
                       </td>

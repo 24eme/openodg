@@ -56,4 +56,8 @@ class ChgtDenomConfiguration extends DeclarationConfiguration {
         return parent::isOpen($date) && $this->isDematEnabled();
     }
 
+    public function isPriseDeMousseEnabled() {
+        return in_array('prisedemousse', sfConfig::get('sf_enabled_modules'));
+    }
+
 }

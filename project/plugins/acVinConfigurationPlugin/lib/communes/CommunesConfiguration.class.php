@@ -104,4 +104,11 @@ class CommunesConfiguration {
         return $this->secteurs[$i];
     }
 
+    public function hasSecteurAuto() {
+        if (isset($this->config['secteur_auto'])) {
+            return $this->config['secteur_auto'];
+        }
+        return false;
+    }
+
 }

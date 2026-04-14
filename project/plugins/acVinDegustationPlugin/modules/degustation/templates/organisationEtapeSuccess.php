@@ -1,7 +1,7 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Lot') ?>
 <?php use_javascript('hamza_style.js'); ?>
-<?php use_javascript('degustation.js'); ?>
+<?php use_javascript('degustation.js?'.$_ENV['GIT_LAST_COMMIT']); ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_ORGANISATION)); ?>
@@ -75,15 +75,6 @@ echo $form->renderGlobalErrors();
     </div>
     </div>
 
-    <div class="row row-margin row-button mb-4">
-        <div class="col-xs-4"></div>
-        <div class="col-xs-4 text-center"></div>
-        <div class="col-xs-4 text-right">
-            <button type="submit" class="btn btn-xs btn-primary">
-                Enregistrer
-            </button>
-        </div>
-    </div>
 
     <div class="row row-margin row-button">
         <div class="col-xs-4"><a href="<?php echo url_for("degustation_selection_operateurs", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>

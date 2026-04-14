@@ -2,8 +2,10 @@ all:
   configuration:
     facture:
       echeances: false
+      talon_detachable: true
       modalite_paiement: "- comptant par virement ou chèque \\"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
-      export_type: "isa"
+      numero_format: "DREV%02d%04d"
+      export_type: "sage"
       liste_dernier_exercice: true

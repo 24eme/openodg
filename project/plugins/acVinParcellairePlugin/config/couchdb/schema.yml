@@ -145,3 +145,193 @@ Aire:
       denomination_libelle: { }
       geojson: {}
       md5: {}
+
+Controle:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      date: { }
+      date_tournee: { }
+      heure_tournee: { }
+      type_tournee: { }
+      agent_identifiant: { }
+      identifiant: { }
+      campagne: { }
+      notification_date:
+      declarant:
+        type: collection
+        class: ControleDeclarant
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { required : false}
+            telephone_bureau: { }
+            telephone_mobile: { }
+            fax: { }
+            email: { }
+      secteur: { }
+      liaisons_operateurs:
+         type: collection
+         definition:
+           fields:
+             '*':
+               class: EtablissementLiaisonsOperateurs
+               type: collection
+               definition:
+                 fields:
+                   id_etablissement: { }
+                   libelle_etablissement: { }
+                   type_liaison: { }
+                   cvi: { }
+                   ppm: { }
+                   hash_chai: { }
+                   attributs_chai:
+                     type: collection
+                     definition:
+                       fields:
+                         '*': { }
+                   aliases:
+                     type: collection
+                     definition:
+                       fields:
+                         '*': { }
+      liaisons: { required: false }
+      audit:
+        type: collection
+        definition:
+          fields:
+            maturite:
+            all_points_controles: {}
+            all_points_conformes: {}
+            agent_observation:
+            operateur_observation:
+            operateur_signature: {}
+            saisie: {}
+            nom_prenom:
+      parcelles:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: ControleParcelle
+              inheritance: ParcellaireParcelle
+              definition:
+                fields:
+                  superficie: { type: float }
+                  superficie_cadastrale: { type: float }
+                  commune: { }
+                  code_postal: { required: false }
+                  code_commune: { }
+                  section: { }
+                  numero_parcelle: { }
+                  idu: { }
+                  lieu: { }
+                  cepage: { }
+                  campagne_plantation: { }
+                  numero_ordre: { }
+                  departement: { required: false }
+                  code_insee: { required: false }
+                  ecart_rang: { type: float }
+                  ecart_pieds: { type: float }
+                  mode_savoirfaire: { required: false }
+                  porte_greffe: { required: false }
+                  prefix: { }
+                  produit_hash: { }
+                  source_produit_libelle: { }
+                  parcelle_id: {}
+                  controle:
+                    type: collection
+                    definition:
+                      fields:
+                        points:
+                          type: collection
+                          definition:
+                            fields:
+                              '*':
+                                type: collection
+                                definition:
+                                  fields:
+                                    conformite: {}
+                                    libelle: {}
+                                    constats:
+                                      type: collection
+                                      definition:
+                                        fields:
+                                          '*':
+                                            type: collection
+                                            definition:
+                                              fields:
+                                                libelle: {}
+                                                observations: {}
+                                                conformite: {}
+                        superficie_a_retirer: {}
+                        saisie: {}
+                        observations: { required: false } # deprecated
+      manquements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: ControleManquement
+              definition:
+                fields:
+                  constat_date:
+                  notification_date:
+                  cloture_date:
+                  actif: false
+                  parcelles_id:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': {}
+                  libelle_point_de_controle: {}
+                  libelle_manquement: {}
+                  observations: {}
+                  delais: {}
+      superficie_totale:
+      surface_de_production:
+        type: collection
+        definition:
+          fields:
+            '*': {}
+      manquements_valides:
+      mouvements_statuts:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: array_collection
+              definition:
+                fields:
+                  '*': {}
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: ControlePiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

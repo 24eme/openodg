@@ -92,4 +92,8 @@ class Conditionnement extends BaseConditionnement
         return $this->declaration->getProduits($region);
     }
 
+    public function setDateDegustationSouhaitee($date)
+    {
+        $this->_add('date_degustation_voulue', $date);
+    }
 }

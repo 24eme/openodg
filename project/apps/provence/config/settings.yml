@@ -25,7 +25,7 @@ test:
 
 all:
   .settings:
-    enabled_modules:        [default, global, Email, piece, compte, compte_teledeclarant, etablissement, societe, etablissement_autocomplete, produit, auth, common, declaration, etablissement, export, fichier, generation, habilitation, parcellaire, parcellaireIrrigable, parcellaireIrrigue, parcellaireAffectation, parcellaireIntentionAffectation, parcellaireManquant, drev, facturation, potentielProduction, parcellaireAffectationCoop, dr]
+    enabled_modules:        [default, global, Email, piece, compte, compte_teledeclarant, etablissement, societe, etablissement_autocomplete, produit, auth, common, declaration, etablissement, export, fichier, generation, habilitation, parcellaire, parcellaireIrrigable, parcellaireIrrigue, parcellaireAffectation, parcellaireIntentionAffectation, parcellaireManquant, drev, facturation, potentielProduction, parcellaireAffectationCoop, dr, controle]
     # Form security secret (CSRF protection)
     csrf_secret:            false
 

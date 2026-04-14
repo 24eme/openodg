@@ -17,7 +17,9 @@
           <?php if(!$transaction->validation_odg && $sf_user->isAdmin()): ?>
           <div class="row text-right">
             <div class="col-xs-3 col-xs-offset-9">
-              <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
+              <span>Tout dégustable : <label class="switch-xl"><input checked type="checkbox" id="btn-degustable-all" class="switch"></input>
+              <span class="slider-xl round"></span>
+          </label>
             </span>
 
             </div>
@@ -68,7 +70,7 @@
                         </td>
                         <td class="text-right"><?php echo $lot->pays; ?></td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
-                        <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
+                        <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::getLotDestinationsType($lot->destination_type) : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
                         <?php if ($sf_user->isAdmin()): ?>
                           <td class="text-center">
                             <?php if(isset($form['lots'])): ?>
@@ -76,7 +78,10 @@
                               <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
                                 <div class="col-xs-12">
                                   <?php if ($sf_user->isAdmin() && !$transaction->validation_odg): ?>
-                                  	<?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "transaction bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                                    <label class="switch-xl">
+                                        <?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "transaction switch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id")); ?>
+                                    <span class="slider-xl round"></span>
+                                    </label>
                                   <?php else: ?>
                                       <?php echo pictoDegustable($lot); ?>
                                   <?php endif; ?>
@@ -117,7 +122,7 @@
 
           <?php if (DRevConfiguration::getInstance()->hasDegustation()): ?>
           <h3>Contrôle</h3>
-          <p>Date de controle souhaitée (hors lots en élevage) : <?php if ($transaction->exist('date_degustation_voulue')): ?><?php echo $transaction->get('date_degustation_voulue'); ?><?php else: ?><?php echo date('d/m/Y'); ?><?php endif; ?></p>
+          <p>Date de controle souhaitée (hors lots en élevage) : <?php if ($transaction->exist('date_degustation_voulue')): ?><?php echo date_format(date_create($transaction->get('date_degustation_voulue')), 'd/m/Y') ?><?php else: ?><?php echo date('d/m/Y'); ?><?php endif; ?></p>
 
           <?php if(isset($form["date_commission"])): ?>
               <?php echo $form["date_commission"]->renderError(); ?>
@@ -125,7 +130,7 @@
               <?php echo $form['degustation']->renderError(); ?>
               <?php endif; ?>
               <div class="form-group" style="margin-bottom: 20px;">
-                  <?php echo $form["date_commission"]->renderLabel("Date de la commission :", array("class" => "col-xs-3 control-label")); ?>
+                  <?php echo $form["date_commission"]->renderLabel("Date de retiraison :", array("class" => "col-xs-3 control-label")); ?>
                   <div class="input-group date-picker-week col-xs-3" style="z-index: 100px; position: relative;">
                       <?php if(isset($form["degustation"])): ?>
                       <?php echo $form['degustation']->render(); ?>
@@ -141,12 +146,14 @@
                   <?php endif; ?>
                   </div>
                   <script>
+                  if (document.querySelector('#validation_degustation')) {
                       document.querySelector('#validation_degustation').addEventListener('change', function(e) {
                           document.querySelector('#validation_date_commission').value = this.value;
                       });
+                  }
                   </script>
               </div>
           <?php elseif($transaction->date_commission): ?>
-              <p>Date de la commission : <?php echo ($transaction->exist('date_commission')) ? date_format(date_create($transaction->get('date_commission')), 'd/m/Y') : null; ?></p>
+              <p>Date de retiraison : <?php echo ($transaction->exist('date_commission')) ? date_format(date_create($transaction->get('date_commission')), 'd/m/Y') : null; ?></p>
               <?php endif ?>
           <?php endif; ?>

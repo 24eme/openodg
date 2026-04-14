@@ -10,18 +10,16 @@
     <?php echo $form->renderGlobalErrors(); ?>
 
     <?php if(isset($form["date"])): ?>
-    <div class="row">
-        <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
-            <?php if ($form["date"]->hasError()): ?>
-                <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
-            <?php endif; ?>
-            <?php echo $form["date"]->renderLabel("Date de réception du document :", array("class" => "col-xs-6 control-label")); ?>
-            <div class="col-xs-6">
-                <div class="input-group date-picker">
-                    <?php echo $form["date"]->render(array("class" => "form-control")); ?>
-                    <div class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </div>
+    <div class="<?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
+        <?php if ($form["date"]->hasError()): ?>
+            <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
+        <?php endif; ?>
+        <?php echo $form["date"]->renderLabel("Date de réception du document :", array("class" => "col-xs-6 control-label")); ?>
+        <div class="col-xs-6">
+            <div class="input-group date-picker">
+                <?php echo $form["date"]->render(array("class" => "form-control", "required" => "required")); ?>
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
                 </div>
             </div>
         </div>
@@ -32,11 +30,7 @@
         <?php include_partial('conditionnement/pointsAttentions', array('conditionnement' => $conditionnement, 'validation' => $validation)); ?>
     <?php endif; ?>
 
-    <?php if($sf_user->isAdmin()): ?>
-      <?php include_partial('conditionnement/recap', array('conditionnement' => $conditionnement, 'form' => $form)); ?>
-    <?php else:?>
-      <?php include_partial('conditionnement/recap', array('conditionnement' => $conditionnement)); ?>
-    <?php endif; ?>
+    <?php include_partial('conditionnement/recap', array('conditionnement' => $conditionnement, 'form' => $form)); ?>
 
 	<?php  if (!$conditionnement->isPapier() && count($validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)) > 0): ?>
     	<?php include_partial('conditionnement/engagements', array('conditionnement' => $conditionnement, 'validation' => $validation, 'form' => $form)); ?>

@@ -7,12 +7,12 @@ mkdir $EXPORTDIR 2> /dev/null
 split_export_by_annee () {
     EXPORTTYPE=$1
     FILEPART=$EXPORTDIR/$EXPORTTYPE.csv.part
-    cat $FILEPART | cut -d ";" -f 1 | sort -u | grep -E "^[0-9]+" | while read annee; do
+    cat $FILEPART | cut -d ";" -f 1 | cut -d "-" -f 1 | sort -u | grep -E "^[0-9]+" | while read annee; do
         FILEPARTANNEE=$EXPORTDIR/$annee/"$annee"_$EXPORTTYPE.csv.part
         FILEANNEE=$EXPORTDIR/$annee/"$annee"_$EXPORTTYPE.csv
         mkdir $EXPORTDIR/$annee 2> /dev/null;
         head -n 1 $FILEPART > $FILEPARTANNEE
-        cat $FILEPART | grep -E "^$annee;" >> $FILEPARTANNEE
+        cat $FILEPART | grep -E "^$annee(;|-)" >> $FILEPARTANNEE
         iconv -f UTF8 -t ISO88591//TRANSLIT $FILEPARTANNEE > $FILEANNEE
         rm $FILEPARTANNEE
     done;
@@ -36,6 +36,16 @@ bash bin/export_docs.sh ParcellaireAffectation > $EXPORTDIR/parcellaire_affectat
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaire_affectation.csv.part > $EXPORTDIR/parcellaire_affectation.csv
 split_export_by_annee "parcellaire_affectation"
 rm $EXPORTDIR/parcellaire_affectation.csv.part
+
+bash bin/export_docs.sh ParcellaireIrrigable > $EXPORTDIR/parcellaire_irrigable.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaire_irrigable.csv.part > $EXPORTDIR/parcellaire_irrigable.csv
+split_export_by_annee "parcellaire_irrigable"
+rm $EXPORTDIR/parcellaire_irrigable.csv.part
+
+bash bin/export_docs.sh ParcellaireIrrigue > $EXPORTDIR/parcellaire_irrigue.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaire_irrigue.csv.part > $EXPORTDIR/parcellaire_irrigue.csv
+split_export_by_annee "parcellaire_irrigue"
+rm $EXPORTDIR/parcellaire_irrigue.csv.part
 
 curl -s "http://$COUCHHOST:$COUCHDBPORT/$COUCHDBBASE/_all_docs?startkey=\"PARCELLAIRE-\"&endkey=\"PARCELLAIRE-Z\"" | cut -d '"' -f 4 | grep "PARCELLAIRE" | sort -r | awk -F '-' 'BEGIN { } { if(!identifiant[$2]) { print $0 } identifiant[$2] = $0; }' | while read id;do php symfony declaration:export-csv --header=$(if ! test $header;then echo -n "1"; fi) $SYMFONYTASKOPTIONS $id; header=0; done > $EXPORTDIR/parcellaire.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaire.csv.part > $EXPORTDIR/parcellaire.csv

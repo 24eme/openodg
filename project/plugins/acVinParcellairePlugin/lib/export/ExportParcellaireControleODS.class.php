@@ -35,7 +35,7 @@ class ExportParcellaireControleODS extends ExportGenericParcellaireODS {
                     '%%ID_PCV_YS_IT' => $id_pcv_ys . ' ' . ($detail->numero_ordre ? ($detail->numero_ordre+1) : 1),
                     '%%ID_PCV_YS' => $id_pcv_ys,
                     '%%EVV' => $parcellaire->declarant['cvi'],
-                    '%%OPERATEUR' => $parcellaire->declarant['raison_sociale'],
+                    '%%OPERATEUR' => "<![CDATA[".$parcellaire->declarant['raison_sociale']."]]>",
                     '%%SIRET' => $parcellaire->declarant['siret'],
                     '%%COMMUNE' => $detail->commune,
                     '%%LIEU_DIT' => "<![CDATA[".$detail->lieu."]]>",

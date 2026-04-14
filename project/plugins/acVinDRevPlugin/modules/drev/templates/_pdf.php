@@ -98,10 +98,10 @@ Les produits déclarés sont du millésime du VCI
 <?php endif; ?>
 <?php endif; ?>
 
-<?php if(count($drev->getLotsRevendiques())): ?>
+<?php if(count($drev->getLotsRevendiques($region))): ?>
 <br />
 <div><span class="h3">&nbsp;Déclaration des lots&nbsp;</span></div>
-<?php if (count($drev->getLotsRevendiques())): ?>
+<?php if (count($drev->getLotsRevendiques($region))): ?>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr style="line-height:20em;">
         <th class="th" style="text-align: center; width: 10%">&nbsp;Num. Dossier</th>
@@ -146,7 +146,7 @@ Les produits déclarés sont du millésime du VCI
 <?php endforeach; ?>
 </table>
 <?php endif; ?>
-<?php if($drev->exist('lots')): ?>
+<?php if($drev->exist('lots') && count($drev->getLotsRevendiques($region))): ?>
     <br/><br/>
     <span class="h3">&nbsp;Prélèvement&nbsp;</span><br/>
     <?php if($drev->isAllDossiersHaveSameAddress()): ?>

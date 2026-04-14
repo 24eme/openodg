@@ -36,7 +36,7 @@ class HabilitationProduit extends BaseHabilitationProduit {
 
     public function getLibelle() {
       if(!$this->_get('libelle')) {
-          $this->libelle = $this->getConfig()->getLibelleComplet();
+          $this->libelle = preg_replace('/ Tranquilles?$/', '', $this->getConfig()->getLibelleComplet());
       }
 
       return $this->_get('libelle');

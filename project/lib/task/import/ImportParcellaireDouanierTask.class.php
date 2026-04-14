@@ -30,7 +30,7 @@ EOF;
 
     protected function execute($arguments = array(), $options = array())
     {
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $contextInstance = sfContext::createInstance($this->configuration);
         $errors = array();
@@ -42,7 +42,7 @@ EOF;
         }
 
         try {
-            $create = ParcellaireClient::getInstance()->saveParcellaire($etablissement, $errors, $contextInstance, !$options['noscrapping']);
+            $create = ParcellaireClient::getInstance()->retrieveParcellaireFromScrapy($etablissement, $errors, $contextInstance, !$options['noscrapping']);
         } catch(Exception $e) {
             $errors[] = $e->getMessage();
             $create = false;

@@ -3,12 +3,10 @@ all:
     drev:
       mentions_complementaire: true
       import_with_mentions_complementaire: true
-      validation_odg: 'auto'
+      validation_odg: 'admin'
+      notif_pour_approbation: true
       etape_superficie: false
       dr_douane_required: false
       degustation: true
-      specificite_lot: true
+      specificite_lot: false
       engagement_pdf: true
-      specificites:
-        primeur: "primeur"
-        nouveau: "nouveau"

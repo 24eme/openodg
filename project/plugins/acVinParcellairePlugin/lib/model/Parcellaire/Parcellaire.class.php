@@ -87,12 +87,14 @@ class Parcellaire extends BaseParcellaire {
         return $this->getConfiguration()->declaration->getProduits();
     }
 
+    private $cache_declarationparcelles = null;
     public function getDeclarationParcelles() {
-        $parcelles = [];
-        foreach($this->declaration->getParcelles() as $k => $p) {
-            $parcelles[$p->getParcelleId()] = $p;
+        if ($this->cache_declarationparcelles === null ) {
+            foreach($this->declaration->getParcelles() as $k => $p) {
+                $this->cache_declarationparcelles[$p->getParcelleId()] = $p;
+            }
         }
-        return $parcelles;
+        return $this->cache_declarationparcelles;
     }
 
     private $idunumbers = null;
@@ -106,18 +108,28 @@ class Parcellaire extends BaseParcellaire {
         return $this->idunumbers[$idu]++;
     }
 
-    public function getParcelles() {
-        if ($this->exist('parcelles')) {
-            $p = $this->_get('parcelles');
-            if (count($p)) {
-                return $this->_get('parcelles');
-            }
+    public function hasParcelles() {
+        if ($this->hasRealParcelles()) {
+            return true;
         }
+        return $this->hasTheoriticalParcelles();
+    }
+
+    public function hasRealParcelles() {
+        return $this->exist('parcelles') && count($this->_get('parcelles'));
+    }
+
+    public function hasTheoriticalParcelles() {
+        return boolval(count($this->declaration));
+    }
+
+    public function getParcelles() {
+        if ($this->hasRealParcelles()) {
+            return $this->_get('parcelles');
+        }
+        $this->add('parcelles');
         foreach($this->declaration->getParcelles() as $dp) {
             $id = $dp->getParcelleId();
-            if (!$this->exist('parcelles') || !$this->_get('parcelles')) {
-                $this->add('parcelles', null);
-            }
             $p = $this->_get('parcelles')->add($id);
             $dp->produit_hash = preg_replace('/\/detail\/.*/', '', $dp->getHash());
             ParcellaireClient::CopyParcelle($p, $dp, true);
@@ -294,14 +306,13 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) {
-        return $this->getProduitsByCepageFromHabilitationOrConfiguration($cepage);
-            if (!$this->cache_produitsbycepagefromhabilitationorconfiguration) {
-                $this->cache_produitsbycepagefromhabilitationorconfiguration = array();
-            }
-            if(!isset($this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage])) {
-                $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage] = $this->getProduitsByCepageFromHabilitationOrConfiguration($cepage);
-            }
-            return $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage];
+        if (!$this->cache_produitsbycepagefromhabilitationorconfiguration) {
+            $this->cache_produitsbycepagefromhabilitationorconfiguration = array();
+        }
+        if(!isset($this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage])) {
+            $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage] = $this->getProduitsByCepageFromHabilitationOrConfiguration($cepage);
+        }
+        return $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage];
     }
 
     public function getProduitsByCepageFromHabilitationOrConfiguration($cepage) {
@@ -314,8 +325,8 @@ class Parcellaire extends BaseParcellaire {
         return $this->habilitation->getProduitsByCepage($cepage, $this->getDate());
     }
 
-    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null) {
-        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee);
+    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null, $filter_destination = null) {
+        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee, $filter_destination);
     }
 
     public function getSuperficieTotale($avec_jv = true) {
@@ -407,8 +418,14 @@ class Parcellaire extends BaseParcellaire {
         if(strpos($import, "Document is missing attachment")) {
             sfContext::getInstance()->getLogger()->info("getGeoJson() : Document is missing attachment for ".$this->_id);
             $this->cache_geojson = array();
-        }else{
+        } else {
             $this->cache_geojson = json_decode($import);
+            $parcelles = $this->getParcellesByIdu();
+            foreach ($this->cache_geojson->features as $feature) {
+                if (isset($parcelles[$feature->properties->id]) && $parcelles[$feature->properties->id]) {
+                    $feature->properties->parcellaires = array_map(function($item) {return $item->toJson();}, $parcelles[$feature->properties->id]);
+                }
+            }
         }
         return $this->cache_geojson;
 

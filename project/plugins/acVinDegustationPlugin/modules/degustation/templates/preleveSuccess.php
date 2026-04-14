@@ -1,7 +1,7 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
 <?php use_helper('Lot') ?>
-<?php use_javascript('degustation.js') ?>
+<?php use_javascript('degustation.js?'.$_ENV['GIT_LAST_COMMIT']); ?>
 <?php use_javascript('hamza_style.js'); ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, 'options' => array('route' => 'degustation_preleve', 'nom' => 'Prélevements réalisés'))); ?>
@@ -12,21 +12,20 @@
   <h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?> <small><?php echo $degustation->getLieuNom(); ?></small></h3>
 </div>
 
-<?php include_partial('degustation/synthese', array('degustation' => $degustation, 'infosDegustation' => $infosDegustation)); ?>
-
 <div class="row">
-  <div class="form-group col-xs-10">
-    <p>Sélectionner les lots qui ont été prélevés</p>
+  <div class="col-xs-10">
+    <p>Sélectionner les lots qui ont été prélevés :</p>
   </div>
 
   <div class="col-xs-2">
-    <button class="btn btn-block btn-default" id="btn-preleve-all">
+    <button class="btn btn-block btn-xs btn-default" id="btn-preleve-all" data-status="prelever">
       <i class="glyphicon glyphicon-ok-sign"></i>
       Tout prélever
     </button>
   </div>
 </div>
 
+<div class="pull-right"><span class="btn btn-primary disabled"><span class="badge" id="nbLotsSelectionnes"><?php echo $infosDegustation["nbLotsSansLeurre"]; ?></span> lots prélevés</span><span class="btn btn-primary disabled"><span class="badge" id="nbAdherentsAPrelever"><?php echo $infosDegustation["nbAdherents"]; ?></span> adhérents prélevés</span></div>
 <div class="input-group" style="margin-bottom: 0; position: relative;">
     <span class="input-group-addon">Filtrer le tableau</span>
     <input id="table_filtre" type="text" class="form-control" placeholder="Rechercher par opérateur, produit ou numéro de logement" autofocus="autofocus" />
@@ -39,7 +38,7 @@
     <?php echo $form->renderGlobalErrors(); ?>
     </div>
 
-    <table class="table table-bordered table-condensed table-striped table_filterable" id="table_prelevements">
+    <table class="table table-bordered table-condensed table-striped table_filterable" id="table_prelevements" style="border-width: 0;">
         <thead>
             <tr>
                 <th class="col-xs-2">Opérateur</th>
@@ -82,7 +81,10 @@
               <div style="margin-bottom: 0;" class="<?php if($formLot->hasError()): ?>has-error<?php endif; ?>">
               	<?php echo $formLot['preleve']->renderError() ?>
                   <div class="col-xs-12">
-            	<?php echo $formLot['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                    <label class="switch-xl">
+            	        <?php echo $formLot['preleve']->render(array('class' => "degustation switch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id")); ?>
+                        <span class="slider-xl round"></span>
+                    </label>
                   </div>
               </div>
       	</td>

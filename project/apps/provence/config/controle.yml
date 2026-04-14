@@ -1,0 +1,944 @@
+all:
+  configuration:
+    controle:
+      produit_filter: "/CDP/"
+      points_de_controle:
+        CMMP:
+          libelle: CMMP
+          constats:
+            RTM046:
+              libelle: Non-respect de la CMMP/ CMMP pour parcelles irriguées après mi-véraison
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              modalite_verif_retour_conformite: Contrôle supplémentaire à la campagne suivante
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+        DI:
+          libelle: DI
+          constats:
+            RTM001:
+              libelle: Déclaration ou document d’identification erroné(e)
+              types:
+                - habilitation
+              plan: true
+              mesure_odg: Refus temporaire d’habilitation
+              modalite_verif_retour_conformite: Contrôle documentaire
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+            RTM002:
+              libelle: Identification erronée avec incidence forte sur le respect du cahier des charges
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Suspension d'habilitation
+              modalite_verif_retour_conformite: Contrôle supplémentaire
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+            RTM003:
+              libelle: Identification erronée avec incidence faible sur le respect du cahier des charges
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Avertissement
+              modalite_verif_retour_conformite: Contrôle documentaire, ou prochain contrôle de suivi interne ou externe
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+            RTM004:
+              libelle: Absence d'information de l'opérateur à l’ODG de toute modification concernant l'opérateur et affectant son (ou ses) outil(s) de production
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Avertissement
+              modalite_verif_retour_conformite: Contrôle documentaire, ou prochain contrôle de suivi interne ou externe
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+        H_DI:
+          libelle: H DI
+          constats:
+            RTM001:
+              libelle: Déclaration ou document d’identification erroné(e)
+              types:
+                - habilitation
+              plan: true
+              mesure_odg: Refus temporaire d’habilitation
+              modalite_verif_retour_conformite: Contrôle documentaire
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+        aire_parcellaire_delimitee:
+          libelle: Aire parcellaire délimitée
+          constats:
+            RTM018:
+              libelle: Cas de certaines parcelles hors de l’aire
+              types:
+                - Habilitation
+              plan: false
+              mesure_odg: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
+              modalite_verif_retour_conformite: NA
+              mesure_odg_ou_avpi: Les parcelles concernées ne doivent pas faire l'objet d'une revendication. Une vérification des déclaration de Revendications sera réalisée par l'ODG pour les vendanges de l'année concernée
+              delais: /
+              terrain: false
+              documentaire: true
+            RTM020:
+              libelle: Fiche CVI non tenue à jour ou erronée
+              types:
+                - Habilitation
+              plan: true
+              mesure_odg: Refus d’habilitation temporaire
+              modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur préalable à l’octroi de l’habilitation
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: false
+              documentaire: true
+            RTM021:
+              libelle: Fiche CVI non tenue à jour ou erronée
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Avertissement
+              modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur
+              mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange.
+              delais: 2 semaines
+              terrain: false
+              documentaire: true
+            RTM019:
+              libelle: Parcelle déclarée située en dehors de l’aire parcellaire délimité
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              modalite_verif_retour_conformite: Contrôle supplémentaire
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: false
+              documentaire: true
+            RTM017:
+              libelle: Totalité des parcelles hors de l’aire parcellaire délimitée
+              types:
+                - Habilitation
+              plan: false
+              mesure_odg: Refus d’habilitation
+              modalite_verif_retour_conformite: Totalité des parcelles hors de l’aire parcellaire délimitée
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: false
+              documentaire: true
+        cmmp_des_parcelles_irriguees:
+          libelle: CMMP des parcelles irriguées
+          constats:
+            RTM047:
+              libelle: Non-respect de la CMMP/ CMMP pour parcelles irriguées avant mi-véraison
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              modalite_verif_retour_conformite: Contrôle supplémentaire à la campagne suivante
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+        densite_de_plantation:
+          libelle: Densité de plantation
+          constats:
+            RTM033:
+              libelle: Aucune parcelle ne respectant la densité (dont écartement)
+              types:
+                - Habilitation
+              plan: true
+              mesure_odg: Refus  d’habilitation
+              modalite_verif_retour_conformite: NA
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: false
+              documentaire: true
+            RTM034:
+              libelle: Certaines parcelles ne respectant pas la densité (dont écartement)
+              types:
+                - Habilitation
+              plan: false
+              mesure_odg: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
+              modalite_verif_retour_conformite: NA
+              mesure_odg_ou_avpi: Les parcelles concernées ne doivent pas faire l'objet d'une revendication. Une vérification des déclaration de Revendications sera réalisée par l'ODG pour les vendanges de l'année 2024
+              delais: Vérification de la revendication 2025
+              terrain: true
+              documentaire: false
+            RTM035:
+              libelle: Non-respect de la densité (dont écartement)
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              modalite_verif_retour_conformite: Contrôle documentaire supplémentaire  sur la base des éléments transmis par l’opérateur
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+        ebourgeonnage:
+          libelle: Ebourgeonnage
+          constats:
+            RTM056:
+              libelle: Non-respect des règles d’ébourgeonnage
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Avertissement et contrôle supplémentaire
+              modalite_verif_retour_conformite: Lors du contrôle supplémentaire sur site avant la fin du cycle de production
+              mesure_odg_ou_avpi: L'ebourgeonnage doit être effectué obligatoirement
+              delais: 45884
+              terrain: true
+              documentaire: false
+        encepagement:
+          libelle: Encépagement
+          constats:
+            RTM027:
+              libelle: Aucune parcelle ne respectant l’encépagement
+              types:
+                - Habilitation
+              plan: true
+              mesure_odg: Refus d’habilitation
+              modalite_verif_retour_conformite: NA
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+            RTM028:
+              libelle: Certaines parcelles ne respectant pas l’encépagement
+              types:
+                - Habilitation
+              plan: false
+              mesure_odg: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
+              modalite_verif_retour_conformite: NA
+              mesure_odg_ou_avpi: Les parcelles concernées ne doivent pas faire l'objet d'une revendication. Une vérification des déclaration de Revendications sera réalisée par l'ODG pour les vendanges de l'année 2024
+              delais: Vérification de la revendication 2025
+              terrain: true
+              documentaire: false
+            RTM029:
+              libelle: Non-respect de l’encépagement
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées ou pour la part de production concernée
+              modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+            RTM062:
+              libelle: Absence de la convention « Variétés d’intérêt à fin d’adaptation » ou de la Convention de suivi du dispositif d’évaluation des innovations signée
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Retrait du bénéfice de l’appellation pour la production de la parcelle
+              modalite_verif_retour_conformite: Sans objet
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+            RTM162:
+              libelle: Absence de la convention « Variétés d’intérêt à fin d’adaptation » ou de la Convention de suivi du dispositif d’évaluation des innovations signée
+              types:
+                - Habilitation
+              plan: false
+              mesure_odg: Rappel à l'opérateur qu'il ne pourra pas revendiquer sur les parcelles concernées
+              modalite_verif_retour_conformite: NA
+              mesure_odg_ou_avpi: Les parcelles concernées ne doivent pas faire l'objet d'une revendication. Une vérification des déclaration de Revendications sera réalisée par l'ODG pour les vendanges de l'année 2023
+              delais: Vérification de la revendication 2025
+              terrain: true
+              documentaire: false
+        entree_en_production:
+          libelle: Entrée en production
+          constats:
+            RTM026:
+              libelle: Revendication de la production des jeunes vignes (D. 645-8) ou des vignes surgreffées avant la date d’entrée en production
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Retrait du bénéfice de l’appellation pour la part de la production concernée + Avertissement
+              modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur  preuve de livraison des volumes en vue de leur destruction par envoi aux usages industriels
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+        etat_general_dentretien_du_vignoble:
+          libelle: Etat général d’entretien du vignoble
+          constats:
+            RTM042:
+              libelle: Mauvais état sanitaire de la vigne
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Retrait du bénéfice de l’appellation pour la part de la production concernée
+              modalite_verif_retour_conformite: Contrôle supplémentaire à la campagne suivante
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+            RTM043:
+              libelle: Parcelles à l’abandon ou friche
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              modalite_verif_retour_conformite: Contrôle supplémentaire à échéance du plan d’action
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+            RTM044:
+              libelle: Mauvais état d’entretien du sol
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Avertissement
+              modalite_verif_retour_conformite: Contrôle supplémentaire à la campagne suivante
+              mesure_odg_ou_avpi: Le rang et l'inter rang doivent être maintenus propres (désherbés, labourés, enherbement naturel maitrisé ou couvert végétal controlé, absence d'adventices concurrentiels)
+              delais: Au cours de l'année 2026
+              terrain: true
+              documentaire: false
+        fiche_cvi:
+          libelle: Fiche CVI
+          constats:
+            RTM022:
+              libelle: Non tenue à jour avec prise en compte de l’erreur
+              types:
+                - Habilitation
+              plan: true
+              mesure_odg: /
+              modalite_verif_retour_conformite: Contrôle documentaire hors site sur la base des éléments transmis par l’opérateur
+              mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange.
+              delais: 1 mois
+              terrain: false
+              documentaire: true
+            RTM023:
+              libelle: Non tenue à jour avec prise en compte de l’erreur
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: /
+              modalite_verif_retour_conformite: Contrôle documentaire hors site sur la base des éléments transmis par l’opérateur
+              mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange.
+              delais: 1 mois
+              terrain: false
+              documentaire: true
+            RTM024:
+              libelle: Non tenue à jour SANS prise en compte de l’erreur
+              types:
+                - Habilitation
+              plan: true
+              mesure_odg: Refus d’habilitation temporaire
+              modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur préalable à l’octroi de l’habilitation
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: false
+              documentaire: true
+            RTM025:
+              libelle: Non tenue à jour SANS prise en compte de l’erreur
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Avertissement
+              modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur
+              mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange.
+              delais: 1 mois
+              terrain: false
+              documentaire: true
+        h_aire_parcellaire_delimitee:
+          libelle: H Aire parcellaire délimitée
+          constats:
+            RTM017:
+              libelle: Totalité des parcelles hors de l’aire parcellaire délimitée
+              types:
+                - Habilitation
+              plan: false
+              mesure_odg: Refus d’habilitation
+              modalite_verif_retour_conformite: Totalité des parcelles hors de l’aire parcellaire délimitée
+              mesure_odg_ou_avpi: AVPI
+              delais: ""
+              terrain: false
+              documentaire: true
+            RTM018:
+              libelle: Cas de certaines parcelles hors de l’aire
+              types:
+                - Habilitation
+              plan: false
+              mesure_odg: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
+              modalite_verif_retour_conformite: NA
+              mesure_odg_ou_avpi: Les parcelles concernées ne doivent pas faire l'objet d'une revendication. Une vérification des déclaration de Revendications sera réalisée par l'ODG pour les vendanges de l'année concernée
+              delais: Vérification de la revendication 2025
+              terrain: false
+              documentaire: true
+            RTM020:
+              libelle: Fiche CVI non tenue à jour ou erronée
+              types:
+                - Habilitation
+              plan: true
+              mesure_odg: Refus d’habilitation temporaire
+              modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur préalable à l’octroi de l’habilitation
+              mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange.
+              delais: 2 semaines
+              terrain: false
+              documentaire: true
+        h_densite_de_plantation:
+          libelle: H Densité de plantation
+          constats:
+            RTM033:
+              libelle: Aucune parcelle ne respectant la densité (dont écartement)
+              types:
+                - Habilitation
+              plan: true
+              mesure_odg: Refus  d’habilitation
+              modalite_verif_retour_conformite: NA
+              mesure_odg_ou_avpi: AVPI
+              delais: ""
+              terrain: true
+              documentaire: false
+            RTM034:
+              libelle: Certaines parcelles ne respectant pas la densité (dont écartement)
+              types:
+                - Habilitation
+              plan: false
+              mesure_odg: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
+              modalite_verif_retour_conformite: NA
+              mesure_odg_ou_avpi: Les parcelles concernées ne doivent pas faire l'objet d'une revendication. Une vérification des déclaration de Revendications sera réalisée par l'ODG pour les vendanges de l'année 2024
+              delais: Vérification de la revendication 2025
+              terrain: true
+              documentaire: false
+        h_encepagement:
+          libelle: H Encépagement
+          constats:
+            RTM027:
+              libelle: Aucune parcelle ne respectant l’encépagement
+              types:
+                - Habilitation
+              plan: true
+              mesure_odg: Refus d’habilitation
+              modalite_verif_retour_conformite: NA
+              mesure_odg_ou_avpi: AVPI
+              delais: ""
+              terrain: true
+              documentaire: false
+            RTM028:
+              libelle: Certaines parcelles ne respectant pas l’encépagement
+              types:
+                - Habilitation
+              plan: false
+              mesure_odg: Rappel à l’opérateur que les parcelles concernées ne pourront pas faire l’objet d’une revendication
+              modalite_verif_retour_conformite: NA
+              mesure_odg_ou_avpi: Les parcelles concernées ne doivent pas faire l'objet d'une revendication. Une vérification des déclaration de Revendications sera réalisée par l'ODG pour les vendanges de l'année 2024
+              delais: Vérification de la revendication 2025
+              terrain: true
+              documentaire: false
+        h_fiche_cvi:
+          libelle: H Fiche CVI
+          constats:
+            RTM022:
+              libelle: Non tenue à jour avec prise en compte de l’erreur
+              types:
+                - Habilitation
+              plan: true
+              mesure_odg: /
+              modalite_verif_retour_conformite: Contrôle documentaire hors site sur la base des éléments transmis par l’opérateur
+              mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange.
+              delais: 1 mois
+              terrain: false
+              documentaire: true
+            RTM024:
+              libelle: Non tenue à jour SANS prise en compte de l’erreur
+              types:
+                - Habilitation
+              plan: true
+              mesure_odg: Refus d’habilitation temporaire
+              modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur préalable à l’octroi de l’habilitation
+              mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit être à jour avant la vendange.
+              delais: 1 mois
+              terrain: false
+              documentaire: true
+        h_operateur:
+          libelle: H Opérateur
+          constats:
+            RTM005:
+              libelle: Document requis absent, incomplet ou non mis à jour
+              types:
+                - Habilitation
+              plan: true
+              mesure_odg: Refus temporaire d'habilitation
+              modalite_verif_retour_conformite: Contrôle documentaire supplémentaire préalable à l'octroi de l'habilitation
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+        h_realisation_des_controles:
+          libelle: H Réalisation des contrôles
+          constats:
+            RTM011:
+              libelle: Absence de réalisation du contrôle
+              types:
+                - Habilitation
+              plan: true
+              mesure_odg: Refus temporaire d’habilitation
+              modalite_verif_retour_conformite: Contrôle supplémentaire
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+        h_regles_de_proportion_a _lexploitation:
+          libelle: H Règles de proportion à l’exploitation
+          constats:
+            RTM030:
+              libelle: Outil de production ne permettant pas le respect des règles de proportion à l’exploitation
+              types:
+                - Habilitation
+              plan: false
+              mesure_odg: Refus d’habilitation
+              modalite_verif_retour_conformite: NA
+              mesure_odg_ou_avpi: AVPI
+              delais: ""
+              terrain: false
+              documentaire: true
+        hauteur_de_feuillage:
+          libelle: Hauteur de feuillage
+          constats:
+            RTM038:
+              libelle: Non-respect de la hauteur de feuillage
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Contrôle supplémentaire
+              modalite_verif_retour_conformite: Lors du contrôle supplémentaire au plus tard au cours de la campagne suivante
+              mesure_odg_ou_avpi: Respect de la hauteur du feuillage en année 2025
+              delais: ""
+              terrain: true
+              documentaire: false
+        interdiction_dirrigation:
+          libelle: Interdiction d’irrigation
+          constats:
+            RTM045:
+              libelle: Non-respect de l’interdiction d’irrigation
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              modalite_verif_retour_conformite: Contrôle supplémentaire à la campagne suivante
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+        interdiction_dutilisation_de_boues_et_compost_en_tant_quapport_organique:
+          libelle: Interdiction d’utilisation de boues et compost en tant qu’apport organique
+          constats:
+            RTM032:
+              libelle: Utilisation non autorisée de composts et déchets organiques ménagers et de boues de station d'épuration autres que celles des installations viti-vinicoles seuls ou en mélange cultivés)
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              modalite_verif_retour_conformite: Contrôle supplémentaire
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+        maturite:
+          libelle: Maturité
+          constats:
+            RTM053:
+              libelle: Absence de suivi ou d’enregistrement de la maturité
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Avertissement
+              modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur
+              mesure_odg_ou_avpi: Envoi du registre de contrôle de maturité à l'ODG
+              delais: Campagne à venir
+              terrain: true
+              documentaire: false
+            RTM054:
+              libelle: Non-respect de la richesse minimale en sucre des raisins
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Retrait du bénéfice de l'appellation pour le lot ou produit concerné + contrôle supplémentaire
+              modalite_verif_retour_conformite: A l’occasion du contrôle supplémentaire
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+        operateur:
+          libelle: Opérateur
+          constats:
+            RTM005:
+              libelle: Document requis absent, incomplet ou non mis à jour
+              types:
+                - Habilitation
+              plan: true
+              mesure_odg: Refus temporaire d'habilitation
+              modalite_verif_retour_conformite: Contrôle documentaire supplémentaire préalable à l'octroi de l'habilitation
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+            RTM006:
+              libelle: Non-respect d'obligations déclaratives ou de tenue de registres, absence ou erreur ayant une incidence faible sur le respect du cahier des charges
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: /
+              modalite_verif_retour_conformite: Contrôle documentaire, ou prochain contrôle de suivi interne ou externe
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+            RTM007:
+              libelle: Non-respect d'obligations déclaratives ou de tenue de registres, absence ou erreur ayant une incidence forte sur le respect du cahier des charges
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Retrait du bénéfice du signe ou contrôle supplémentaire
+              modalite_verif_retour_conformite: Contrôle supplémentaire ou prochain contrôle de suivi externe
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+        parcelle_totalement_vendangee:
+          libelle: Parcelle totalement vendangée
+          constats:
+            RTM052:
+              libelle: Parcelle non totalement vendangée
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              modalite_verif_retour_conformite: Contrôle supplémentaire
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+        realisation_des_controles:
+          libelle: Réalisation des contrôles
+          constats:
+            RTM011:
+              libelle: Absence de réalisation du contrôle
+              types:
+                - Habilitation
+              plan: true
+              mesure_odg: Refus temporaire d’habilitation
+              modalite_verif_retour_conformite: Contrôle supplémentaire
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+            RTM012:
+              libelle: Absence de réalisation du contrôle lié au non acquittement des sommes dues à l’ODG ou à l’organisme de contrôle au titre du code rural et de la pêche maritime, leur permettant l’organisation et la réalisation des contrôles.
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Suspension d'habilitation
+              modalite_verif_retour_conformite: Contrôle supplémentaire
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+            RTM013:
+              libelle: Absence de tout ou partie des autocontrôles
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Avertissement
+              modalite_verif_retour_conformite: Contrôle supplémentaire
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+            RTM014:
+              libelle: Refus caractérisé de contrôle ou d’accès à certains documents, fausse déclaration
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Suspension d’habilitation
+              modalite_verif_retour_conformite: Contrôle supplémentaire
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+        rendement:
+          libelle: Rendement
+          constats:
+            RTM055:
+              libelle: Non-respect du rendement annuel avec réfaction de rendement, le cas échéant
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Avertissement et retrait du bénéfice de l’appellation pour la part de production représentant un surplus
+              modalite_verif_retour_conformite: "Contrôle documentaire sur la base des éléments transmis par l’opérateur : attestation de livraison des volumes en vue de leur destruction par envoi aux usages industriels"
+              mesure_odg_ou_avpi: ""
+              delais: ""
+              terrain: false
+              documentaire: true
+        respect_de_linterdiction_du_desherbage_chimique_des_tournieres:
+          libelle: Respect de l’interdiction du désherbage chimique des tournières
+          constats:
+            RTM057:
+              libelle: Désherbage chimique des tournières
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Avertissement
+              modalite_verif_retour_conformite: Contrôle supplémentaire
+              mesure_odg_ou_avpi: Le désherbage chimique total de la parcelle ne doit pas être réalisé et le cahier de culture doit être à jour.
+              delais: ""
+              terrain: true
+              documentaire: false
+        respect_des_conditions_dirrigation_lorsque_cest_autorise:
+          libelle: Respect des conditions d’irrigation lorsque c’est autorisé
+          constats:
+            RTM048:
+              libelle: Absence de déclaration d’ « irrigabilité »
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Avertissement
+              modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur
+              mesure_odg_ou_avpi: Déclaration d'irrigabilité à effectuer sur l'espace personnel du Syndicat
+              delais: 15 jours
+              terrain: true
+              documentaire: false
+            RTM049:
+              libelle: Absence de déclaration d’irrigation ou déclaration d’irrigation postérieure aux délais impartis
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées
+              modalite_verif_retour_conformite: Contrôle supplémentaire des parcelles susceptibles d’être irriguées au cours de la campagne suivante
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+            RTM050:
+              libelle: Non-respect des dates d’autorisations d’irrigation
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées + contrôle supplémentaire
+              modalite_verif_retour_conformite: Contrôle supplémentaire
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+        respect_du_programme_previsionnel_de_travaux:
+          libelle: Respect du programme prévisionnel de travaux
+          constats:
+            RTM060:
+              libelle: Non-respect du programme prévisionnel de travaux
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées ou retrait d’habilitation, et information des services de l’INAO et de l’ODG
+              modalite_verif_retour_conformite: Sans objet
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: false
+              documentaire: true
+            RTM061:
+              libelle: Réalisation d’un programme de travaux non validé par la commission professionnelle de l’ODG
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées ou retrait d’habilitation, et information des services de l’INAO et de l’ODG
+              modalite_verif_retour_conformite: Sans objet
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: false
+              documentaire: true
+        regles_de_proportion_a_lexploitation:
+          libelle: Règles de proportion à l’exploitation
+          constats:
+            RTM030:
+              libelle: Outil de production ne permettant pas le respect des règles de proportion à l’exploitation
+              types:
+                - Habilitation
+              plan: false
+              mesure_odg: Refus d’habilitation
+              modalite_verif_retour_conformite: NA
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: false
+              documentaire: true
+            RTM031:
+              libelle: Non-respect des règles de proportion à l’exploitation
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Avertissement
+              modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur
+              mesure_odg_ou_avpi: Modification du CVI auprès des douanes, envoi de la preuve de demande de modification auprès des douanes.  Le CVI doit à jour avant la vendange.
+              delais: 1 mois
+              terrain: false
+              documentaire: true
+        regles_de_taille:
+          libelle: Règles de taille
+          constats:
+            RTM039:
+              libelle: Non-respect du nombre d’yeux par courson avec un nombre total d’yeux inférieur ou égal à 12
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Avertissement
+              modalite_verif_retour_conformite: Contrôle sur site lors du prochain contrôle de suivi
+              mesure_odg_ou_avpi: Respect du nombre d'yeux par courson, le nombre total d'yeux devra être inférieur ou égal à 12 lors du prochain contrôle
+              delais: ""
+              terrain: true
+              documentaire: false
+            RTM040:
+              libelle: Non-respect du nombre d’yeux par souche
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Contrôle supplémentaire sur la charge lors de la campagne en cours pour la parcelle concernée et contrôlé supplémentaire la campagne suivante
+              modalite_verif_retour_conformite: Lors du contrôle supplémentaire lors de la campagne suivante
+              mesure_odg_ou_avpi: Respect de la charge à la parcelle pour 2025 (un contrôle sera effectué avant vendange) et respect du nombre d'yeux par souche lors du prochain contrôle
+              delais: ""
+              terrain: true
+              documentaire: false
+            RTM041:
+              libelle: Stade phénologique pour la taille non respecté
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Avertissement
+              modalite_verif_retour_conformite: Contrôle sur site lors du prochain contrôle de suivi
+              mesure_odg_ou_avpi: Taille à réaliser avant le stade phénologique E (trois feuilles étalées)
+              delais: ""
+              terrain: true
+              documentaire: false
+            RTM163:
+              libelle: Non-respect des règles de taille
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Contrôle supplémentaire sur la charge lors de la campagne en cours pour la parcelle concernée
+              modalite_verif_retour_conformite: Contrôle supplémentaire lors de la campagne suivante
+              mesure_odg_ou_avpi: Respect de la charge à la parcelle pour 2024 (un contrôle sera effectué avant vendange). Le mode de taille indiqué dans le cahier des charges doit être respecté pour la campagne suivante.
+              delais: ""
+              terrain: true
+              documentaire: false
+        seuils_des_manquants_et_liste_des_manquants:
+          libelle: Seuils des manquants et liste des manquants
+          constats:
+            RTM036:
+              libelle: Liste des parcelles de pieds morts ou manquants non tenue à jour ou absente
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Avertissement
+              modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur Vérification supplémentaire de la déclaration de récolte et réfaction de rendement
+              mesure_odg_ou_avpi: Envoi à l'ODG de la liste des manquants de l'exploitation.
+              delais: 1 mois
+              terrain: false
+              documentaire: true
+            RTM037:
+              libelle: Absence / Erreur de calcul de réfaction du rendement proportionnel au taux selon les conditions fixées par le cahier des charges
+              types:
+                - Habilitation
+                - Suivi
+              plan: true
+              mesure_odg: Retrait du bénéfice de l’appellation pour la part de la production concernée
+              modalite_verif_retour_conformite: Contrôle documentaire sur la base des éléments transmis par l’opérateur
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: false
+              documentaire: true
+        traitements_phytopharmaceutiques_:
+          libelle: Traitements phytopharmaceutiques
+          constats:
+            RTM051:
+              libelle: Désherbage chimique total de la parcelle
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Avertissement
+              modalite_verif_retour_conformite: Contrôle supplémentaire
+              mesure_odg_ou_avpi: Le désherbage chimique total de la parcelle ne doit pas être réalisé et le cahier de culture doit être à jour.
+              delais: ""
+              terrain: true
+              documentaire: false
+        travaux_damenagement_de_la_parcelle:
+          libelle: Travaux d’aménagement de la parcelle
+          constats:
+            RTM058:
+              libelle: Apport de terre exogène
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Retrait du bénéfice de l’appellation pour la parcelle concernée
+              modalite_verif_retour_conformite: Contrôle sur site lors du prochain contrôle de suivi
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false
+            RTM059:
+              libelle: Absence de déclaration préalable de travaux
+              types:
+                - Habilitation
+                - Suivi
+              plan: false
+              mesure_odg: Retrait du bénéfice de l’appellation pour les parcelles concernées ou retrait d’habilitation après information des services de l’INAO et de l’ODG pour déclenchement d’une commission professionnelle selon les conclusions
+              modalite_verif_retour_conformite: Sans objet
+              mesure_odg_ou_avpi: AVPI
+              delais: NA
+              terrain: true
+              documentaire: false

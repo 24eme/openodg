@@ -30,7 +30,7 @@
       <tbody>
         <?php foreach ($drev->declaration->getProduitsWithoutLots() as $produit) : ?>
           <tr>
-            <td><?php echo $produit->getRawValue()->getLibelleCompletHTML() ?><?php if($produit->isValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?><small class="pull-right <?php if($produit->getRendementEffectif() > $produit->getConfig()->getRendement()): ?>text-danger<?php endif; ?>">&nbsp;<?php echoFloat(round($produit->getRendementEffectif(), 2)); ?> hl/ha</small></td>
+            <td><?php echo $produit->getRawValue()->getLibelleCompletHTML() ?><?php if($produit->isValidateOdg()): ?>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" ></span><?php endif ?><small class="pull-right <?php if($produit->getRendementEffectif() > $produit->getConfig()->getRendement()): ?>text-danger<?php endif; ?>">&nbsp;<?php if($produit->superficie_revendique) { echoFloat(round($produit->getRendementEffectif(), 2)); echo ' hl/ha'; } ?></small></td>
             <td class="text-right <?php echo isVersionnerCssClass($produit, 'superficie_revendique') ?>"><?php if($produit->superficie_revendique): ?><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ha</small><?php endif; ?></td>
             <?php if (($drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) || ($drev->getDocumentDouanierType() == SV11CsvFile::CSV_TYPE_SV11)): ?>
               <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_issu_vci') ?>"><?php if($produit->volume_revendique_issu_vci): ?><?php echoFloat($produit->volume_revendique_issu_vci) ?> <small class="text-muted">hl</small><?php endif; ?></td>
@@ -71,20 +71,18 @@
           </p>
         <?php endif; ?>
 <?php if (DRevConfiguration::getInstance()->hasEtapesAOC()): ?>
-<div class="row">
-    <div class="col-xs-12" style="margin-bottom: 20px;">
 <?php if($drev->isValideeOdg() && $drev->isModifiable()): ?>
-          <a onclick="return confirm('Êtes vous sûr de vouloir modifier la DREV ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Modifier la revendication</a>
-<?php elseif(!$drev->isValideeOdg()): ?>
-        <div class="pull-right">
+    <div class="text-right" style="margin-bottom: 20px;">
+          <a onclick="return confirm('Êtes vous sûr de vouloir modifier la DREV ?')" class="btn btn-primary" href="<?php echo url_for('drev_modificative', $drev) ?>">Modifier la revendication</a>
+      </div>
+<?php elseif($drev->isValidee() && !$drev->isValideeOdg()): ?>
+        <div class="text-right">
           <p class="text-danger">La DREV est en attente d'approbation</p>
           <p>Vous ne pouvez donc pas la modifier</p>
         </div>
-<?php else: ?>
-        <div class="pull-right">
-          <p class="text-danger">Cette DREV n'est la dernière et donc pas modifiable</p>
+<?php elseif($drev->isValideeOdg()): ?>
+        <div class="text-right">
+          <p class="text-danger">Cette DREV n'est pas la dernière et donc pas modifiable</p>
         </div>
 <?php endif; ?>
-    </div>
-</div>
 <?php endif; ?>

@@ -152,8 +152,8 @@
     foreach($facets as $type => $ftype):
       if (count($ftype['buckets'])): ?>
            <?php foreach($ftype['buckets'] as $f):
-             $targs = $args_copy->getRawValue();
-             $sargs = $args_copy->getRawValue();
+             $targs = ($args_copy) ? $args_copy->getRawValue() : [];
+             $sargs = $targs;
              $sargs['tags'] = implode(',', array_diff($selected_rawtags->getRawValue(), array($type.':'.$f['key'])));
           if($type == 'groupes' && (isset($selected_typetags->getRawValue()[$type]) && in_array($f['key'], $selected_typetags->getRawValue()[$type]))): ?>
           <div class="list-group">
@@ -191,8 +191,8 @@
                                 $count = '!';
                                 $not = '!';
                             }
-                            $targs = $args_copy->getRawValue();
-                            $sargs = $args_copy->getRawValue();
+                            $targs = ($args_copy) ? $args_copy->getRawValue() : [];
+                            $sargs = $targs;
     						$targs['tags'] = implode(',', array_merge($selected_rawtags->getRawValue(), array($type.':'.$f['key'])));
     						$sargs['tags'] = implode(',', array_diff($selected_rawtags->getRawValue(), array($not.$type.':'.$f['key'])));
     						if ($type == 'manuel') {

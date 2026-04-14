@@ -1,42 +1,19 @@
 <?php use_helper('Float') ?>
 
-<?php if ($parcellaireAffectation->hasProblemProduitCVI()): ?>
-    <p class="alert alert-warning">
-    Les parcelles mises en valeur pourrait rencontrer des problèmes de dénomination déclarée au CVI.
-    </p>
-<?php endif; ?>
-<?php if ($parcellaireAffectation->hasProblemEcartPieds()): ?>
-    <p class="alert alert-warning">Les parcelles dont la superficie en mise en valeur pourrait rencontrer des problèmes de densité d'après l'analyse du CVI.</p>
-<?php endif; ?>
-<?php if ($parcellaireAffectation->hasProblemCepageAutorise()): ?>
-    <p class="alert alert-warning">Les parcelles dont le cépage est mis en valeur pourrait rencontrer des problèmes de conformité avec le cahier des charges.</p>
-<?php endif; ?>
-<?php if ($parcellaireAffectation->hasProblemParcellaire()): ?>
-    <p class="alert alert-warning">
-    Les parcelles dont l'identifiant est mis en valeur pourrait rencontrer de conformité avec votre parcellaire CVI.
-    </p>
-<?php endif; ?>
-
 <?php foreach ($parcellaireAffectation->getProduits() as $hash => $produit): ?>
 <?php if (count($parcellaireAffectation->getProduits()) > 1): ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <h2><?php echo $produit; ?></h2>
-        </div>
-    </div>
+    <h2><?php echo $produit; ?></h2>
 <?php endif; ?>
 <?php foreach ($parcellaireAffectation->getGroupedParcelles(false, $hash) as $group => $parcelles): ?>
 <?php if ($group): ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <h3><?php if ($parcellaireAffectation->hasDgc()): ?>Dénomination <?php endif; ?><?php echo $group; ?></h3>
-        </div>
-    </div>
+    <h3><?php if ($parcellaireAffectation->hasDgc()): ?>Dénomination <?php endif; ?><?php echo $group; ?></h3>
 <?php endif; ?>
 <table id="parcelles_<?php echo $dgc; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
     <thead>
         <tr>
+            <?php if(!$parcellaireAffectation->isDeclarationLiee()): ?>
         	<th class="col-xs-2">Commune</th>
+            <?php endif; ?>
             <th class="col-xs-2">Lieu-dit</th>
             <th class="col-xs-1">Section /<br />N° parcelle</th>
             <th class="col-xs-2">Cépage</th>
@@ -44,6 +21,10 @@
             <th class="col-xs-1" style="text-align: right;">Superficie affectée&nbsp;<span class="text-muted small">(ha)</span></th>
             <th class="col-xs-1">Affectation</th>
             <th class="col-xs-2">Destination</th>
+            <?php if($parcellaireAffectation->isDeclarationLiee()): ?>
+            <th class="col-xs-1">% de pieds manquants</th>
+            <th class="col-xs-1">Irrigable</th>
+            <?php endif; ?>
         </tr>
     </thead>
     <tbody>
@@ -75,7 +56,9 @@
             <?php $parcellesCommune = 0; $nomCommune = $parcelle->commune; $superficieCommune = 0 ?>
         <?php endif ?>
         <tr class="vertical-center<?php if ($parcelle->hasProblemProduitCVI()) echo ' warning' ?>">
+            <?php if(!$parcellaireAffectation->isDeclarationLiee()): ?>
             <td><?php echo $parcelle->commune; ?></td>
+            <?php endif; ?>
             <td><?php echo $parcelle->lieu; ?></td>
             <td class="text-center<?php if ($parcelle->hasProblemParcellaire()) echo ' warning text-danger'; ?>">
                 <?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?>
@@ -90,7 +73,11 @@
             <td class="text-center">
                 <?php if ($parcelle->isPartielle()): ?>Partielle<?php else: ?>Totale<?php endif; ?>
             </td>
-            <td><?php echo implode(", ", $parcelle->getDestinatairesNom()) ?></td>
+            <td><?php echo implode(", ", $parcelle->getDestinatairesNom(true)) ?></td>
+            <?php if($parcellaireAffectation->isDeclarationLiee()): ?>
+            <td class="text-right"><?php if($parcelle->exist('manquant')): ?><?php echoFloatFr($parcelle->manquant->pourcentage); ?>&nbsp;%<?php endif; ?></td>
+            <td class="text-center text-success"><?php if($parcelle->exist('irrigation')): ?><span title="<?php echo $parcelle->irrigation->materiel."\n".$parcelle->irrigation->ressource; ?>" style="cursor: help;" class="glyphicon glyphicon-ok-sign"></span><?php endif; ?></td>
+            <?php endif; ?>
         </tr>
 
         <?php $parcellesCommune++; $nomCommune = $parcelle->commune; $superficieCommune += $parcelle->superficie  ?>
@@ -110,3 +97,41 @@
 </table>
 <?php  endforeach; ?>
 <?php  endforeach; ?>
+<?php if (PotentielProduction::cacheCreatePotentielProduction($parcellaireAffectation->getRawValue()->getParcellaire(), $parcellaireAffectation->getRawValue(), false)->parcellaire2refIsAffectation()):?>
+    <div class="text-right mb-5">
+        <a href="<?php echo url_for('parcellaire_potentiel_visualisation', array('id' => $parcellaireAffectation->getParcellaire()->_id)); ?>">Voir le détail du potentiel de production</a>
+    </div>
+<?php endif;?>
+
+<div class="row">
+    <div class="col-sm-6">
+        <?php include_component('parcellaire', 'syntheseParCepages', array('parcellaire' => $parcellaireAffectation,  'coop' => $coop)); ?>
+    </div>
+    <div class="col-sm-6">
+        <?php $syntheseDestination = $parcellaireAffectation->getSyntheseDestination() ?>
+        <?php if (count($syntheseDestination)): ?>
+        <h3 class="mt-0">Synthèse par destinations</h3>
+
+        <table class="table table-bordered table-condensed table-striped tableParcellaire">
+          <thead>
+            <tr>
+                <th class="col-xs-8">Destination</th>
+                <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
+            </tr>
+          </thead>
+          <tbody>
+          <?php foreach($syntheseDestination as $destination => $s): ?>
+            <tr>
+                    <td><?php echo $destination ; ?></td>
+                    <td class="text-right"><?php echoSuperficie($s); ?></td>
+            </tr>
+          <?php endforeach;?>
+          <tr>
+                <td><strong>Total</strong></td>
+                <td class="text-right"><strong><?php echoSuperficie(array_sum($syntheseDestination->getRawValue())); ?></strong></td>
+            </tr>
+          </tbody>
+        </table>
+        <?php endif; ?>
+    </div>
+</div>

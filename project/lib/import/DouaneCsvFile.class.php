@@ -58,6 +58,7 @@ class DouaneCsvFile
           '06kg' => '6. Récolte sous forme de raisins en kg',
           '07' => "7. Récolte sous forme de moûts",
           '08' => "8. Récolte à une cave coopérative par l'adhérent",
+          '08kg' => "8. Récolte à une cave coopérative par l'adhérent en kg",
           '09' => "9. Récolte en cave particulière",
           '10' => "10. Volume en vinification",
           '11' => "11. Volume en concentration",
@@ -72,6 +73,7 @@ class DouaneCsvFile
           '18' => "18. Volume Substituable Individuel (VSI)",
           '19' => "19. Volume complémentaire individuel (VCI)",
           '22' => "22. Motif de non récolte",
+          '23' => "23. Volume d’alcool ajouté", // Code P2 de la DR >= 2025
       );
   }
 

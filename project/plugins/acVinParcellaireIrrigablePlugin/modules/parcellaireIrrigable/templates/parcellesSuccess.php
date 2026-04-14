@@ -11,6 +11,12 @@
     <h2>Parcelles irrigables sur votre exploitation <br/><small>Merci d'indiquer vos parcelles irrigables en cliquant sur la ligne de la parcelle concernée.</small></h2>
 </div>
 
+<?php if(!$parcellaireIrrigable->isAllPreviousParcellesExists()): ?>
+    <div class="alert alert-warning">
+        Toutes les parcelles affectées issues de <a href="<?php echo url_for('parcellaireirrigable_visualisation', $parcellaireIrrigable->getPreviousDocument()) ?>">la déclaration de la précédente campagne</a> n'ont pas pu être reprises, il est conseillé de vérifier l'ensemble des parcelles affectées.
+    </div>
+<?php endif; ?>
+
 <form action="<?php echo url_for("parcellaireirrigable_parcelles", $parcellaireIrrigable) ?>" method="post" class="form-horizontal">
 
     <?php $parcellaire = $parcellaireIrrigable->getParcellaire2Reference(); ?>
@@ -21,7 +27,7 @@
                 <h3><?php echo $commune; ?></h3>
             </div>
             <div class="col-xs-6">
-               <p class="text-right" style="margin-top: 20px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo preg_replace('/[^a-z]/i', '', $commune); ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irrigables</a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo preg_replace('/[^a-z]/i', '', $commune); ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune</a></p>
+               <p class="text-right" style="margin-top: 20px;"><a id="btn-switchactive-all<?php echo '_'.$commune ?>" href="javascript:void(0)" data-status="affecter" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irrigables" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune" data-target="#parcelles_<?php echo preg_replace('/[^a-z]/i', '', $commune); ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irrigables</a></p>
            </div>
         </div>
         <table id="parcelles_<?php echo preg_replace('/[^a-z]/i', '', $commune); ?>" class="table table-bordered table-condensed table-striped tableParcellaire">
@@ -39,7 +45,7 @@
     		</thead>
     		<tbody>
     		<?php foreach ($parcelles as $parcelle): ?>
-    			<tr style="cursor: pointer;" class="parcellerow switch-to-higlight <?php if ($parcellaireIrrigable->findParcelle($parcelle)): ?>success<?php endif; ?>" >
+    			<tr style="cursor: pointer;" class="<?php if ($parcellaireIrrigable->findParcelle($parcelle)): ?>success<?php endif; ?>" >
                     <td><?php echo $parcelle->lieu; ?></td>
                     <td style="text-align: right;"><?php echo $parcelle->section; ?></td>
                     <td><?php echo $parcelle->numero_parcelle; ?></td>
@@ -50,7 +56,12 @@
                     <?php else: ?>
                         <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie()); ?></td>
                     <?php endif ?>
-    				<td class="text-center"><input <?php if (array_key_exists($parcelle->getParcelleId(), $previousParcelles)): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getParcelleId() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
+    				<td class="text-center input-td">
+                        <label class="switch-xl">
+                            <input <?php if (array_key_exists($parcelle->getParcelleId(), $previousParcelles)): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getParcelleId() ?>" class="switch"/>
+                            <span class="slider-xl round"></span>
+                        </label>
+                    </td>
                 </tr>
             <?php  endforeach; ?>
             </tbody>

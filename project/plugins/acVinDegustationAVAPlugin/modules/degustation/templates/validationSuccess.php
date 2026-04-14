@@ -5,9 +5,7 @@
 <?php include_partial('degustation/step', array('tournee' => $tournee, 'active' => TourneeEtapes::ETAPE_VALIDATION)); ?>
 
 <div class="page-header no-border">
-    <h2>Validation de la dégustation du <?php echo format_date($tournee->date, "P", "fr_FR") ?></span>
-    </h2>
-
+    <h2>Validation de la dégustation du <?php echo format_date($tournee->date, "P", "fr_FR") ?></h2>
 </div>
 <?php if ($validation->hasPoints()): ?>
     <?php include_partial('degustation/pointsAttentions', array('tournee' => $tournee, 'validation' => $validation)); ?>

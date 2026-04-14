@@ -42,7 +42,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
     public function getParcellaire() {
         if (!$this->parcellaire) {
             $cm = new CampagneManager('08-01');
-            $date = ($this->periode + 1).'-07-31';
+            $date = $this->periode.'-07-31';
             if ($this->exist('date')) {
                 $date = $this->date;
             }
@@ -54,7 +54,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
     }
 
     public function getParcellaireAffectation() {
-        return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, ($this->periode + 1).'-07-31');
+        return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode.'-07-31');
     }
 
     protected $parcelles_idu = null;
@@ -118,7 +118,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
 
       	$parcelles = $this->getParcellesFromReference();
         if (!$parcelles || !count($parcelles)) {
-            throw new sfException('pas de parcelles du parcellaire');
+            return;
         }
         foreach($hashes as $h) {
             $pid = $h;
@@ -162,8 +162,16 @@ class DeclarationParcellaire extends acCouchdbDocument {
         return $p[$id];
     }
 
-    public function findParcelleByParcelleId($parcelle) {
-        $p = $this->getParcelleById($parcelle->getParcelleId());
+    public function findProduitParcelle($parcelle) {
+        $hash = str_replace('/declaration/', '', $parcelle->produit_hash);
+        if (!$this->declaration->exist($hash)) {
+            return null;
+        }
+        if (!$this->declaration->get($hash)->detail->exist($parcelle->getParcelleId())) {
+            return null;
+        }
+
+        $p = $this->declaration->get($hash)->detail->get($parcelle->getParcelleId());
 
         if($p && $p->cepage == $parcelle->cepage && $p->campagne_plantation == $parcelle->campagne_plantation) {
             return $p;
@@ -186,6 +194,18 @@ class DeclarationParcellaire extends acCouchdbDocument {
             $this->idunumbers[$idu] = 0;
         }
         return $this->idunumbers[$idu]++;
+    }
+
+    public function findParcelleByIdParcelle($idParcelle)
+    {
+        foreach ($this['declaration'] as $produit) {
+            foreach ($produit['detail'] as $parcelleId => $info) {
+                if ($parcelleId == $idParcelle) {
+                    return $info;
+                }
+            }
+        }
+        return null;
     }
 
 }

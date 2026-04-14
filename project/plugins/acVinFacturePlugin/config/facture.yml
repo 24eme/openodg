@@ -3,6 +3,7 @@ all:
     facture:
       ligneMsg: false
       echeances: false
+      talon_detachable: false
       uniq_template_prefix: false
       export_sage_width_txt: false
       paiements: false

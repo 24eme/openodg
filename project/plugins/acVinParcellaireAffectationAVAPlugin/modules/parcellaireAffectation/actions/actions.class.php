@@ -180,7 +180,13 @@ class parcellaireAffectationActions extends sfActions {
                 $parc[$p->getParcelleIdentifiant().' '.$p->getKey().' '.$p->superficie.' '.$p->parcelle_id.' '.$p->campagne_plantation.' '.$p->prefix] = $p;
             }
             foreach($this->parcellaire->getDeclaration()->getProduitsCepageDetails(true, true) as $p) {
-                $parc[$p->getParcelleIdentifiant().' '.$p->getKey().' '.$p->superficie.' '.$p->parcelle_id.' '.$p->campagne_plantation.' '.$p->prefix] = $p;
+                $parc_hash = $p->getParcelleIdentifiant().' '.$p->getKey().' '.$p->superficie.' '.$p->parcelle_id.' '.$p->campagne_plantation.' '.$p->prefix;
+                if (isset($parc[$parc_hash]) && $parc[$parc_hash]->active && $p->vtsgn && strpos($p->getHash(), 'appellation_ALSACEBLANC') !== false &&
+                    $p->source_produit_libelle && $p->source_produit_libelle != 'AOC ALSACE BLANC')
+                {
+                    $parc_hash .= ' hidden parcelle';
+                }
+                $parc[$parc_hash] = $p;
             }
             ksort($parc);
             $this->parcelles = array_values($parc);

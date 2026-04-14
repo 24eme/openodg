@@ -25,6 +25,7 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_WARNING, 'declaration_surface_bailleur', "Vous n'avez pas reparti votre part de surface avec le bailleur");
         $this->addControle(self::TYPE_WARNING, 'vci_complement', "Vous ne complétez pas tout votre volume malgré votre stock VCI disponible");
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', "Le volume récolté de la DR est absent ou à zéro");
+        $this->addControle(self::TYPE_WARNING, 'declaration_elevage', "Vous avez déclaré un lot en élevage. Vous devez prendre contact avec votre ODG lorsque vous souhaiterez le commercialiser.");
 
         /*
          * Error
@@ -153,7 +154,6 @@ class DRevValidation extends DeclarationLotsValidation
                 $this->controleVolumeSeuilDeclare($produit);
             }
         }
-
         $this->controleEngagementVCI();
         $this->controleEngagementSv();
         $this->controleEngagementMutage();
@@ -172,12 +172,11 @@ class DRevValidation extends DeclarationLotsValidation
         $volume = 0;
         foreach($this->document->getProduits() as $p) {
             $volume += $p->volume_revendique_total;
+            if ($volume) {
+                return;
+            }
             $superficie += $p->superficie_revendique;
         }
-        if ($volume) {
-            return;
-        }
-
         if($this->document->exist('lots') && count($this->document->lots) && (!$this->document->hasDocumentDouanier() || $superficie)) {
     		return;
     	}
@@ -186,11 +185,17 @@ class DRevValidation extends DeclarationLotsValidation
 
     protected function controleProduitsDocumentDouanier($produits)
     {
+        $produits_hash = [];
+        foreach(array_keys($produits) as $h) {
+            $h = str_replace(['/EFF/', '/MOU/'], '/VDB/', $h);
+            $produits_hash[] = $h;
+        }
     	$drev = $this->document->getFictiveFromDocumentDouanier();
     	$hasDiff = false;
     	foreach ($drev->getProduits() as $hash_prod => $produit) {
             $hash = $produit->getParent()->getHash();
-    		if (!array_key_exists($hash, $produits)) {
+            $hash = str_replace(['/EFF/', '/MOU/'], '/VDB/', $hash);
+            if (!in_array($hash, $produits_hash)) {
     			$hasDiff = true;
     		}
     	}
@@ -306,14 +311,16 @@ class DRevValidation extends DeclarationLotsValidation
             $this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
             $has_point_dr = true;
         } elseif ($this->document->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR && !$produit->getSommeProduitsCepage('recolte/recolte_nette')) {
-            $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            if (strpos($produit->getHash(), '/MOU/') === false) {
+                $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            }
             $has_point_dr = true;
         } else {
 
             if ((round($produit->getSommeProduitsCepage('volume_revendique_issu_recolte') + $produit->getSommeProduitsCepage('vci/rafraichi'), 4)) != round($produit->getSommeProduitsCepage('recolte/recolte_nette'), 4) && round($produit->getSommeProduitsCepage('recolte/volume_total'), 4) == round($produit->getSommeProduitsCepage('recolte/volume_sur_place'), 4)) {
                 $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
             }
-            if (round($produit->getVolumeRevendiqueRendement(), 4) > round($produit->getSommeProduitsCepage('recolte/recolte_nette') + $produit->getSommeProduitsCepage('vci/complement') + $produit->getSommeProduitsCepage('recolte/vsi') , 4) && round($produit->getSommeProduitsCepage('recolte/volume_total'), 4) == round($produit->getSommeProduitsCepage('recolte/volume_sur_place'), 4) && (!$this->document->exist('achat_tolerance') || !$this->document->achat_tolerance)) {
+            if (round($produit->getVolumeRevendiqueRendement(), 4) > round($produit->getSommeProduitsCepage('recolte/recolte_nette') + $produit->getSommeProduitsCepage('vci/complement') + $produit->getSommeProduitsCepage('recolte/vsi') , 4) && (!$this->document->exist('achat_tolerance') || !$this->document->achat_tolerance)) {
                 $this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_complement', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
             }
             if ($produit->recolte->recolte_nette && ($produit->recolte->recolte_nette + $produit->vci->complement) < ($produit->vci->substitution + $produit->vci->rafraichi)) {
@@ -382,13 +389,14 @@ class DRevValidation extends DeclarationLotsValidation
         if(!$produit->hasVci()) {
             return;
         }
-        if(round(intval($produit->vci->stock_precedent), 4) != round($produit->getTotalVciUtilise(), 4)) {
+
+        if(round(floatval($produit->vci->stock_precedent), 4) != round($produit->getTotalVciUtilise(), 4)) {
             $this->addPoint(self::TYPE_ERROR, 'vci_stock_utilise', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
         }
         if($produit->getConfig()->rendement_vci_total !== null && round($produit->getPlafondStockVci(), 4) < $produit->vci->stock_final) {
             $point = $this->addPoint(self::TYPE_WARNING, 'vci_rendement_total', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
             $vol = $produit->vci->stock_final - round($produit->getPlafondStockVci(), 4);
-            $point->setMessage($point->getMessage() . " soit $vol hl");
+            $point->setMessage($point->getMessage() . " soit $vol hl (plafond du stock VCI : ".round($produit->getPlafondStockVci(), 4)." hl : ".$produit->recolte->superficie_total." ha * ".$produit->getConfig()->rendement_vci_total." hl/ha)");
         }
         if(round($produit->getCepage()->getRendementVCIConstitue(), 2) > $produit->getConfig()->getRendementVci()) {
             $point = $this->addPoint(self::TYPE_ERROR, 'vci_rendement', $produit->getLibelleComplet() . ' (rendement VCI de ' . round($produit->getCepage()->getRendementVciConstitue(), 2) . ' hl/ha pour '. $produit->getConfig()->getRendementVci().' hl/ha autorisé)', $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
@@ -444,6 +452,7 @@ class DRevValidation extends DeclarationLotsValidation
 
         $this->controleLotsGenerique('drev_lots');
 
+        $is_elevage = false;
         foreach ($this->document->lots as $key => $lot) {
             if($lot->hasBeenEdited()){
               continue;
@@ -462,6 +471,12 @@ class DRevValidation extends DeclarationLotsValidation
                     $this->addPoint(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr_err', $lot->getProduitLibelle(). " ( ".$lot->volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
                 }
             }
+            if ($lot->isInElevage()) {
+                $is_elevage = true;
+            }
+        }
+        if ($is_elevage) {
+            $this->addPoint(self::TYPE_WARNING, 'declaration_elevage', '');
         }
 
         $synthese = $this->document->summerizeProduitsLotsByCouleur('couleur');
@@ -529,6 +544,9 @@ class DRevValidation extends DeclarationLotsValidation
             return;
         }
         foreach($this->document->getProduits() as $produit) {
+            if (!$produit->getConfig()->getRendementVsi()) {
+                continue;
+            }
             if(round($produit->getCepage()->getRendementVsi(), 2) <= $produit->getConfig()->getRendementVsi()) {
                 continue;
             }

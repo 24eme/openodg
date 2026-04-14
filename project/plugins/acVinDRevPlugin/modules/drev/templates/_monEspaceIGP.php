@@ -20,10 +20,7 @@
                     <a class="btn btn-block btn-primary" href="<?php echo           url_for('drev_edit', $drev) ?>"><span class="glyphicon glyphicon-pencil"></span> Reprendre la saisie</a>
                     <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('drev_delete', $drev) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                 <?php else: ?>
-                    <a class="btn btn-default btn-block" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
-                    <?php if ($sf_user->isAdmin()): ?>
-                    <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('drev_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisie papier</a>
-                    <?php endif; ?>
+                    <a class="btn btn-default btn-block" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la déclaration</a>
                 <?php endif; ?>
             </div>
         </div>

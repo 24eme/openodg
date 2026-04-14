@@ -12,22 +12,23 @@
     <?php if($conditionnement->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($conditionnement->validation && $conditionnement->validation !== true): ?> reçue le <?php echo format_date($conditionnement->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
     <?php elseif($conditionnement->validation): ?>
-    <small class="pull-right" style="font-size:50%">Télédéclaration<?php if($conditionnement->validation && $conditionnement->validation !== true): ?> signée le <?php echo format_date($conditionnement->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($conditionnement->validation_odg): ?> et approuvée le <?php echo format_date($conditionnement->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?>
+    <small class="pull-right" style="font-size:50%">Télédéclaration<?php if($conditionnement->validation && $conditionnement->validation !== true): ?> signée le <?php echo format_date($conditionnement->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($conditionnement->validation_odg): ?> et approuvée le <?php echo format_date($conditionnement->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?></small>
+      <?php endif; ?>
+      </h2>
+    </div>
+    <?php include_partial('global/flash'); ?>
+
+    <?php if($conditionnement->validation): ?>
+    <div class="well mb-5">
+        <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $conditionnement->getEtablissementObject())); ?>
+    </div>
+    <?php else: ?>
+    <div class="alert alert-warning">
+         La saisie de cette déclaration n'est pas terminée elle est en cours d'édition
+    </div>
     <?php endif; ?>
-  </small>
-    </h2>
-    <h4 class="mt-5 mb-0"><?php echo $conditionnement->declarant->nom; ?><span class="text-muted"> (<?php echo $conditionnement->declarant->famille; ?>)</span></h4>
-</div>
 
-<?php include_partial('global/flash'); ?>
-
-<?php if(!$conditionnement->validation): ?>
-<div class="alert alert-warning">
-    La saisie de cette déclaration n'est pas terminée elle est en cours d'édition
-</div>
-<?php endif; ?>
-
-<?php if(!$conditionnement->isMaster()): ?>
+    <?php if(!$conditionnement->isMaster()): ?>
     <div class="alert alert-info">
       Ce n'est pas la <a class="" href="<?php echo ($conditionnement->getMaster()->isValidee())? url_for('conditionnement_visualisation', $conditionnement->getMaster()) :  url_for('conditionnement_edit', $conditionnement->getMaster()) ?>"><strong>dernière version</strong></a> de la déclaration, le tableau récapitulatif n'est donc pas à jour.
 
@@ -62,7 +63,7 @@
     </div>
 
     <div class="col-xs-4 text-right">
-        <div class="btn-group row">
+        <div class="btn-group">
         <?php if ($conditionnement->validation && ConditionnementSecurity::getInstance($sf_user, $conditionnement->getRawValue())->isAuthorized(ConditionnementSecurity::DEVALIDATION) && !$conditionnement->hasLotsUtilises()):
                 if (!$conditionnement->validation_odg): ?>
                     <a class="btn btn-default" href="<?php echo url_for('conditionnement_devalidation', $conditionnement) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette Conditionnement ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
@@ -71,7 +72,7 @@
                 <?php endif; ?>
         <?php endif; ?>
         <?php if(!$conditionnement->validation): ?>
-                <a href="<?php echo url_for("conditionnement_delete", $conditionnement) ?>" class="btn btn-default alert-danger" onclick="return confirm('Souhaitez-vous vraiment SUPPRIMER ce document ?')"><span class="glyphicon glyphicon-remove"></span> Supprimer cette saisie</a>
+                <a href="<?php echo url_for("conditionnement_delete", $conditionnement) ?>" class="btn btn-default alert-danger" onclick="return confirm('Souhaitez-vous vraiment SUPPRIMER ce document ?')"><span class="glyphicon glyphicon-remove"></span> Supprimer la saisie</a>
                 <a href="<?php echo url_for("conditionnement_edit", $conditionnement) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
         <?php elseif(!$conditionnement->validation_odg && ( $sf_user->isAdmin() ||
                                                  ($sf_user->hasConditionnementAdmin() && ConditionnementConfiguration::getInstance()->hasValidationOdgRegion() && !$conditionnement->isValidateOdgByRegion($regionParam))
