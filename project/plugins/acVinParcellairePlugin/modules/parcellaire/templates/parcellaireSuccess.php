@@ -195,6 +195,8 @@ $list_idu = [];
                                 <td style="text-align: center;">
                                     <div id="<?php echo $detail->idu; ?>">
                                         <button class="btn btn-link" onclick="showParcelle('<?php echo $detail->idu; ?>')"><i class="glyphicon glyphicon-map-marker"></i></button>
+                                        <br/>
+                                        <small class='text-muted'>(<a onclick="showGeoPortail('<?php echo $detail->idu; ?>')" href="#geoportail" class="disabled text-muted">GeoP.</a>)</small>
                                     </div>
                                 </td>
                                 <?php endif; ?>
