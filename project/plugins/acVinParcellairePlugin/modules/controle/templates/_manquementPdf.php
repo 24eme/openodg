@@ -76,7 +76,7 @@ table, th, td {
             <td class="center-grey" colspan="4">Mesure ODG</td>
         </tr>
         <tr>
-            <td colSpan="4" style="height: 134px;"><?php echo ControleConfiguration::getInstance()->getMesureOdgFromConstatId($manquementId); ?></td>
+            <td colSpan="4" style="height: 125px;"><?php echo ControleConfiguration::getInstance()->getMesureOdgFromConstatId($manquementId); ?></td>
         </tr>
         <tr>
             <td colSpan="4">Date limite de mise en œuvre des actions correctrices : <?php echo ControleConfiguration::getInstance()->getDelaisConstat($manquementId); ?></td>
@@ -85,16 +85,12 @@ table, th, td {
             <td class="center-grey" colspan="4">Observations de l'opérateur</td>
         </tr>
         <tr>
-            <td colSpan="4" style="height: 100px;"></td>
+            <td colSpan="4" style="height: 70px;"></td>
         </tr>
         <tr>
-            <td colSpan="2" style="height: 45px">Date&nbsp;:&nbsp;<?php echo format_date($manquement->constat_date, "dd/MM/yyyy", "fr_FR"); ?></td>
-            <td colSpan="2" rowSpan="2" style="height: 90px">
-                Signature
-            </td>
-        </tr>
-        <tr>
-            <td colSpan="2" style="height: 45px">Nom,&nbsp;Prénom&nbsp;:&nbsp;&nbsp;<?php echo $controle->audit->nom_prenom; ?></td>
+            <td colSpan="2">Date&nbsp;:&nbsp;<?php echo format_date($manquement->constat_date, "dd/MM/yyyy", "fr_FR"); ?></td>
+            <td colSpan="2">Nom,&nbsp;Prénom&nbsp;:&nbsp;&nbsp;<?php echo $controle->audit->nom_prenom; ?></td>
         </tr>
     </tbody>
 </table>
+<p style="text-align:right;">Signature<?php if($controle->audit->operateur_signature): ?><br /><img style="height: 90px" src="<?php echo $controle->audit->operateur_signature; ?>" alt="" /><?php endif; ?></p>
