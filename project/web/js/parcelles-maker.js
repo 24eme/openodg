@@ -292,11 +292,10 @@ function showGeoPortail(id) {
 
 function getParcelleLayer(id) {
   let layerFinded = null;
-
   map.eachLayer(function(layer) {
       if(layer.feature){
           if(Object.keys(layer.feature.properties).includes('parcellaires')){
-              if(layer.feature.properties.parcellaires[0].IDU == id){
+              if(layer.feature.properties.parcellaires[0].idu == id || layer.feature.properties.parcellaires[0].IDU == id){
                 layerFinded = layer;
               }
           }
