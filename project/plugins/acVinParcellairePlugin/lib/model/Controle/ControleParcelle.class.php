@@ -36,10 +36,12 @@ class ControleParcelle extends BaseControleParcelle
             $url .= '://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'#/'.$this->getDocument()->_id.'/parcelle/'.$this->getKey();
             $kml .= '<p><a href="'.$url.'">Controle la parcelle '.$this->getKey().'</a></p>';
             foreach (["Commune","Lieu dit","Produit","Cepage","Superficie"] as $prop) {
-                if ($prop == "Lieu dit" && ! $parcellaire_detail->{$prop}) {
+                if ($prop == "Lieu dit" && ! (isset($parcellaire_detail->{$prop}) && $parcellaire_detail->{$prop})) {
                     continue;
                 }
-                $kml .= '<p>' . $prop . ' : ' . $parcellaire_detail->{$prop} . '</p>';
+                if (isset($parcellaire_detail->{$prop})) {
+                    $kml .= '<p>' . $prop . ' : ' . $parcellaire_detail->{$prop} . '</p>';
+                }
             }
             $kml .= "<p>-----------------</p>";
         }
