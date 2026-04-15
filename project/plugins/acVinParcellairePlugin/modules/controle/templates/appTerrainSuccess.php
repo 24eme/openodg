@@ -18,6 +18,7 @@
     let controles = JSON.parse(localStorage.getItem("controles_" + date_tournee)) || {}
     let no_by_default = {}
     let reloadStatus = false;
+    let is_synchro = true;
 
     var aires = [];
     <?php
@@ -74,7 +75,8 @@
         },
         computed: {
           isSynchro() {
-            return this.checkNeedsToBeSaved(this.controles);
+            is_synchro = this.checkNeedsToBeSaved(this.controles);
+            return is_synchro;
           }
         },
 
@@ -82,11 +84,13 @@
             checkNeedsToBeSaved(controles) {
               for (const controle of Object.values(controles)) {
                 if (controle.audit.needs_to_be_saved === true) {
+                  console.log(controle._id + ' : audit needs to be saved');
                   return false;
                 }
 
                 for (const parcelle of Object.values(controle.parcelles)) {
                   if (parcelle.needs_to_be_saved === true) {
+                    console.log(controle._id + ' : parcelle ' + parcelle.parcelle_id + ' needs to be saved');
                     return false;
                   }
                 }
@@ -504,23 +508,28 @@
       if (! isStartingup) {
           saveControlesInLocalStorage();
       }
-      needsaving = false;
+      let is_saved = true;
+      let need_reload = false;
       for (const controle of Object.values(controles)) {
         if (controle.audit.needs_to_be_saved === true) {
-          needsaving = true;
-          await submitElement(controle, null, controle.audit);
+          is_saved = await submitElement(controle, null, controle.audit) && is_saved;
         }
 
         for (const parcelle of Object.values(controle.parcelles)) {
           if (parcelle.needs_to_be_saved === true) {
-            needsaving = true;
-            await submitElement(controle, parcelle.parcelle_id, parcelle.controle);
+            is_saved = await submitElement(controle, parcelle.parcelle_id, parcelle.controle) && is_saved;
           }
         }
+        need_reload = need_reload || needReload(controle);
       }
-      if (! needsaving) {
-        loadFromServerIfNeeded();
+      if (need_reload) {
+          if (confirm("Un autre utilisateur utilise cette partie de l'app Terrain. Par sécurité, rechargez l'application. (pour ne pas recharger, annulez)")) {
+              return location.reload();
+          }
+      } else if (is_saved) {
+          is_synchro = true;
       }
+      loadFromServerIfNeeded();
     }
 
     async function submitElement(controle, idParcelle, element)
@@ -544,20 +553,24 @@
         if (data && data.success === true) {
             controle._rev = data.revision;
             if (idParcelle) {
+                console.log(controle._id + ' parcelle ' + idParcelle + 'saved');
                 controle.parcelles[idParcelle].needs_to_be_saved = false;
             } else {
+                console.log(controle._id + ' audit saved');
                 controle.audit.needs_to_be_saved = false;
             }
             element.needs_to_be_saved = false;
+            is_synchro = false;
             if (data.reloadStatus) {
                 reloadStatus = true;
             }
             saveControlesInLocalStorage();
+            return true;
         }
-        needReload(controle);
+        return false;
       } catch(exception) {
         console.log(['submitElement exception', exception]);
-        return ;
+        return false;
       }
     }
 
@@ -568,23 +581,20 @@
 
     function needReload(controle) {
         if (!reloadStatus) {
-            return ;
+            return false;
         }
         if (controle.audit.needs_to_be_saved === true) {
-            return ;
+            return false;
         }
         for (const parcelle of Object.values(controle.parcelles)) {
             if (parcelle.needs_to_be_saved === true) {
                 console.log("parcelle doit être sauvée : " + parcelle.parcelle_id);
-                return;
+                return false;
             }
         }
         controle._rev = "00-Needs Update";
         saveControlesInLocalStorage();
-        if (confirm("Un autre utilisateur utilise cette partie de l'app Terrain. Par sécurité, rechargez l'application. (pour ne pas recharger, annulez)")) {
-            location.reload();
-        }
-        loadFromServerIfNeeded();
+        return true;
     }
 
     function loadFromServerIfNeeded()
