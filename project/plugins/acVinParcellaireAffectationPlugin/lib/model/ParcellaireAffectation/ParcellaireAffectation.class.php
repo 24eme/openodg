@@ -178,6 +178,36 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
     }
 
+    public function isDeclarationLiee() {
+
+        return $this->exist('declaration_liee') && $this->declaration_liee;
+    }
+    public function recoverDeclarationsLiees() {
+        $this->add('declaration_liee', true);
+        $previous_document = ParcellaireManquantClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
+        foreach($previous_document->declaration as $produit) {
+          foreach($produit->detail as $previousParcelle) {
+            $pMatch = $this->findProduitParcelle($previousParcelle);
+            if(!$pMatch) {
+                continue;
+            }
+            $pMatch->add('manquant')->pourcentage = $previousParcelle->pourcentage;
+          }
+        }
+
+        $previous_document = ParcellaireIrrigableClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
+        foreach($previous_document->declaration as $produit) {
+          foreach($produit->detail as $previousParcelle) {
+            $pMatch = $this->findProduitParcelle($previousParcelle);
+            if(!$pMatch) {
+                continue;
+            }
+            $pMatch->add('irrigation')->materiel = $previousParcelle->materiel;
+            $pMatch->add('irrigation')->ressource = $previousParcelle->ressource;
+          }
+        }
+    }
+
     public function getParcellesMultiProduits() {
         $parcelles = [];
         foreach($this->declaration as $produit) {
@@ -258,7 +288,50 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             }
         }
 
+        if($this->getValidationOdg() && $this->isDeclarationLiee()) {
+            $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($this->identifiant, $this->periode);
+            if($manquant->isNew()) {
+                $this->copyToDeclarationLiee($manquant);
+                $manquant->validate();
+                $manquant->save();
+            }
+            $irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($this->identifiant, $this->periode);
+            if($irrigable->isNew()) {
+                $this->copyToDeclarationLiee($irrigable);
+                $irrigable->validate();
+                $irrigable->save();
+            }
+            if(!$manquant->isNew() && !$irrigable->isNew()) {
+                $this->remove('declaration_liee');
+            }
+        }
+
         parent::save();
+    }
+
+    public function copyToDeclarationLiee($declaration) {
+        if($declaration instanceof ParcellaireManquant) {
+            $noeud = 'manquant';
+        } elseif($declaration instanceof ParcellaireIrrigable) {
+            $noeud = 'irrigation';
+        } else {
+            throw new Exception("Déclaration non géré");
+        }
+
+        foreach($this->declaration as $produit) {
+            $declarationProduit = $declaration->declaration->add(str_replace('/declaration/', '', $produit->getHash()));
+            $declarationProduit->libelle = $produit->libelle;
+            foreach($produit->detail as $parcelle) {
+                if(!$parcelle->exist($noeud)) {
+                    continue;
+                }
+                $declarationParcelle = $declarationProduit->detail->add($parcelle->getKey());
+                ParcellaireClient::CopyParcelle($declarationParcelle, $parcelle, true);
+                foreach($parcelle->get($noeud) as $key => $value) {
+                    $declarationParcelle->set($key, $value);
+                }
+            }
+        }
     }
 
     public function cleanNonAffectee() {
@@ -625,8 +698,18 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $detail;
     }
 
-    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null) {
-        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee);
+    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null, $filter_destination = null) {
+        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee, $filter_destination);
+    }
+
+    public function getSyntheseDestination() {
+        $synthese = [];
+        foreach($this->getParcelles() as $parcelle) {
+            foreach($parcelle->destinations as $d) {
+                $synthese[$d->nom] += $d->superficie;
+            }
+        }
+        return $synthese;
     }
 
     public function getProduits()
@@ -642,5 +725,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
 
         return array_unique(array_filter($regions, 'strlen'));
+    }
+
+    public function getInfoFromParcelleId($parcellaire_id)
+    {
+        $parcelle = $this->findParcelleByIdParcelle($parcellaire_id);
+        if (!$parcelle) {
+            return [];
+        }
+        return  ['affectation_date' => $parcelle->getDocument()->validation, 'produit_libelle' => $parcelle->getProduitLibelle().' '.$parcelle->getDgcLibelle()];
     }
 }

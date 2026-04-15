@@ -28,7 +28,7 @@ class ParcellaireIrrigableValidationForm extends acCouchdbObjectForm {
             foreach ($engagements as $engagement) {
                 $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
                 $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => true)));
-                $this->getValidator('engagement_'.$engagement->getCode())->setMessage("required", "L'engagement à ne pas irriguer est requis");
+                $this->getValidator('engagement_'.$engagement->getCode())->setMessage("required", "Veuillez prendre connaissances de tous les engagements");
             }
         }
 

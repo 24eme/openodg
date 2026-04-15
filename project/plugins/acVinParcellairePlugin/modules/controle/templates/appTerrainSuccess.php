@@ -16,20 +16,41 @@
 
     const date_tournee = "<?php echo $date_tournee ?>"
     let controles = JSON.parse(localStorage.getItem("controles_" + date_tournee)) || {}
+    let no_by_default = {}
+    let reloadStatus = false;
+
+    var aires = [];
+    <?php
+    $communes = [];
+    foreach ($controles as $controle) {
+        $p = $controle->getParcellaire();
+        echo "//".$p->_id."\n";
+        foreach ($p->getCommunes() as $com) {
+            $communes[$com] = $com;
+        }
+    }
+    foreach(array_keys($communes) as $commune):
+    $aires =  AireClient::getInstance()->getMergedAiresForInseeCommunes(array($commune));
+    foreach($aires as $aire): ?>
+    aires.push({'color': '<?php echo $aire->getColor(); ?>', 'name': '<?php echo $aire->getName() ?> commune <?php echo $commune; ?>', 'geojson': '<?php echo addslashes($aire->geojson); ?>'});
+    <?php endforeach; endforeach; ?>
+
+    function addDelimitation(map) {
+        layers = [];
+        for(i in aires) {
+            name = '<span style="background-color: '+aires[i]['color']+'; width: 25px; display:inline-block;"> &nbsp; </span> ' + aires[i]['name'];
+            console.log(['load', aires[i]['name']]);
+            layers[name] = L.geoJSON(JSON.parse(aires[i]['geojson']), { style: {  fillColor: aires[i]['color'],  weight: 0,  opacity: 0.5,  dashArray: '5',  color: 'black',  fillOpacity: 0.4 } });
+            layers[name].addTo(map);
+        };
+    }
+
     const server_controle = JSON.parse(document.getElementById("dataJson").textContent);
     const points_de_controle = JSON.parse(document.getElementById("dataConf").textContent);
     let localstorage_updated = false;
-    for (let i in server_controle) {
-        if (controles[server_controle[i]._id]) {
-            console.log(['ignore controle exists', controles[server_controle[i]._id]]);
-            continue;
-        }
-        controles[server_controle[i]._id] = server_controle[i];
-        localstorage_updated = true;
-    }
-    if (localstorage_updated) {
-        localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
-    }
+
+    let isStartingup = true;
+    submitNeedsToBeSaved();
 
     const routes = [
       { path: '/', name: "listing", component: templates.listing },
@@ -51,30 +72,85 @@
               controles: controles,
             }
         },
-        template: '<RouterView :key="$route.fullPath" />',
-        watch: {
-          controles: {
-            handler(newControles) {
-              if (newControles) {
-                  localStorage.setItem("controles_" + date_tournee, JSON.stringify(newControles));
-              }
-            },
-            deep: true
+        computed: {
+          isSynchro() {
+            return this.checkNeedsToBeSaved(this.controles);
           }
         },
+
+        methods: {
+            checkNeedsToBeSaved(controles) {
+              for (const controle of Object.values(controles)) {
+                if (controle.audit.needs_to_be_saved === true) {
+                  return false;
+                }
+
+                for (const parcelle of Object.values(controle.parcelles)) {
+                  if (parcelle.needs_to_be_saved === true) {
+                    return false;
+                  }
+                }
+              }
+
+              return true;
+            }
+        },
+        template: '<RouterView :key="$route.fullPath" />',
+        // watch: {
+        //   controles: {
+        //     handler(newControles) {
+        //       if (newControles) {
+        //           localStorage.setItem("controles_" + date_tournee, JSON.stringify(newControles));
+        //       }
+        //     },
+        //     deep: true
+        //   }
+        // },
       });
     app.use(router)
     app.mount('#content')
 
+    templates.listing.mounted = function() {
+        submitNeedsToBeSaved();
+    }
+
     templates.listing.data = function() {
         return {
-          controles: controles
+            controles: controles,
+            date_tournee: date_tournee
         }
     };
 
+    templates.listing.computed = {
+        agentIdentifiant() {
+            const path = window.location.pathname
+            const parts = path.split('/').filter(Boolean)
+            return parts[parts.length - 1]
+        },
+
+        filteredControles() {
+            return Object.values(this.controles).filter(c =>
+                c.agent_identifiant === this.agentIdentifiant
+            )
+        }
+    }
+
     templates.listing.methods = {
+        nbParcellesControlees(controleCible) {
+          return (Object.keys(controleCible.parcelles || {}).filter(k => controleCible.parcelles[k].controle.saisie == 1)).length;
+      },
+      libelleTournee() {
+          const items = Object.values(controles);
+          if (!items.length) return '';
+          const [y, m, d] = items[0].date_tournee.split('-');
+          const agent = items[0].agent_libelle;
+          return `Tournée du ${d}/${m}/${y} par ${agent}`;
+      }
     };
 
+    templates.operateur.mounted = function() {
+        submitNeedsToBeSaved();
+    }
     templates.operateur.data = function() {
         const route = useRoute()
 
@@ -83,6 +159,21 @@
         }
     };
     templates.operateur.methods = {
+      countConstatForThisParcelle(parcelleCouranteId) {
+          let ret = 0;
+          const parcelleCourante = this.controleCourant.parcelles[parcelleCouranteId];
+          for (const pointKey in parcelleCourante.controle.points) {
+              const point = parcelleCourante.controle.points[pointKey];
+              if (point.conformite != 'NC') {continue;}
+              for (const constatKey in point.constats) {
+                  const constat = point.constats[constatKey];
+                  if (constat.conformite == true) {
+                      ret += 1;
+                  }
+              }
+          }
+          return ret;
+      },
       nbParcellesControlees() {
         return (Object.keys(this.controleCourant.parcelles || {}).filter(k => this.controleCourant.parcelles[k].controle.saisie == 1)).length;
       },
@@ -92,58 +183,99 @@
       echoFloat(val, nbDecimal = 5) {
         return val ? Number(val).toFixed(nbDecimal) : '';
       },
-      transmitDataControle() {
-        fetch('<?php echo url_for('controle_transmission_data'); ?>', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              controle: this.controleCourant
-            })
-        })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Erreur HTTP ' + response.status);
-          }
-          this.controleCourant.validation = true;
-        })
-        .catch(error => {
-          console.error('Transmission error:', error);
-        });
+      printableSiret() {
+          return this.controleCourant.declarant.siret.substring(0,3)+" "+
+                 this.controleCourant.declarant.siret.substring(3,6) +" "+
+                 this.controleCourant.declarant.siret.substring(6,9) +" "+
+                 this.controleCourant.declarant.siret.substring(9);
+      },
+      libelleTournee() {
+            const [y, m, d] = this.controleCourant.date_tournee.split('-');
+            const heure = this.controleCourant.heure_tournee;
+            const agent = this.controleCourant.agent_libelle;
+            return `Tournée du ${d}/${m}/${y} à ${heure} par ${agent}`;
       }
     };
 
+    templates.parcelle.mounted = function() {
+        submitNeedsToBeSaved();
+    }
+
     templates.parcelle.data = function() {
         const route = useRoute()
-
+        for (const pointKey in controles[route.params.id].parcelles[route.params.parcelle].controle.points) {
+            const point = controles[route.params.id].parcelles[route.params.parcelle].controle.points[pointKey];
+            if (no_by_default[pointKey]) {
+                point.conformite = 'NO';
+            }
+        }
         return {
           controleCourant: controles[route.params.id],
           parcelleCourante: controles[route.params.id].parcelles[route.params.parcelle],
-          pointsDeControle: points_de_controle
+          pointsDeControle: points_de_controle,
+          date_tournee: date_tournee
         }
     };
     templates.parcelle.methods = {
-        allConforme() {
+        allOtherConforme() {
             for (const pointKey in this.parcelleCourante.controle.points) {
                 const point = this.parcelleCourante.controle.points[pointKey];
+                if (point.conformite) {
+                    continue;
+                }
                 point.conformite = 'C';
             }
         },
         save() {
             this.parcelleCourante.controle.saisie = 1;
-            this.controleCourant.validation = false;
+            this.parcelleCourante.needs_to_be_saved = true;
+            for (const pointKey in this.parcelleCourante.controle.points) {
+                if (this.parcelleCourante.controle.points[pointKey].conformite == 'NO') {
+                    no_by_default[pointKey] = 1;
+                } else {
+                    no_by_default[pointKey] = 0;
+                }
+            }
             router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
         },
         echoFloat(val, nbDecimal = 5) {
             return val ? Number(val).toFixed(nbDecimal) : '';
+        },
+        printableSiret() {
+            return this.controleCourant.declarant.siret.substring(0,3)+" "+
+                   this.controleCourant.declarant.siret.substring(3,6) +" "+
+                   this.controleCourant.declarant.siret.substring(6,9) +" "+
+                   this.controleCourant.declarant.siret.substring(9);
+        },
+        libelleTournee() {
+            const [y, m, d] = this.controleCourant.date_tournee.split('-');
+            const heure = this.controleCourant.heure_tournee;
+            const agent = this.controleCourant.agent_libelle;
+            const parcelle = this.parcelleCourante.parcelle_id;
+            return `Tournée du ${d}/${m}/${y} à ${heure} par ${agent} parcelle ${parcelle} `;
         }
     };
     templates.audit.mounted = function() {
-        let signaturePad = new SignaturePad(document.getElementById('signature'), {
-            backgroundColor: 'rgba(255, 255, 255, 0)',
-            penColor: 'rgb(0, 0, 0)'
+        submitNeedsToBeSaved();
+        let signatureBase64 = null;
+        const controleCourant = this.controleCourant;
+        const signaturePad = new SignaturePad(document.getElementById('signature'), {
+            penColor: 'rgb(0, 0, 0)',
+            minWidth: 1,
+            maxWidth: 2,
+            onEnd: function () {
+                if (!signaturePad.isEmpty()) {
+                    controleCourant.audit.operateur_signature = signaturePad.toDataURL();
+                }
+            }
         });
+        document.getElementById('signature-pad-reset').addEventListener('click', function () {
+            signaturePad.clear();
+            controleCourant.audit.operateur_signature = null;
+        });
+        if (controleCourant.audit.operateur_signature) {
+            signaturePad.fromDataURL(controleCourant.audit.operateur_signature);
+        }
     }
     templates.audit.data = function() {
         const route = useRoute()
@@ -186,9 +318,20 @@
       },
       save() {
         this.controleCourant.audit.saisie = 1;
-        this.controleCourant.validation = false;
+        this.controleCourant.audit.needs_to_be_saved = true;
         router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+    },
+      devalider() {
+          this.controleCourant.audit.saisie = 0;
+          this.controleCourant.audit.needs_to_be_saved = true;
+      },
+      printableSiret() {
+          return this.controleCourant.declarant.siret.substring(0,3)+" "+
+                 this.controleCourant.declarant.siret.substring(3,6) +" "+
+                 this.controleCourant.declarant.siret.substring(6,9) +" "+
+                 this.controleCourant.declarant.siret.substring(9);
       }
+
     };
     templates.map.data = function() {
         const route = useRoute()
@@ -272,12 +415,13 @@
             }
             parcellesGeojson.features.push(feature)
         }
+        addDelimitation(map);
         const parcellesLayer = L.geoJSON(parcellesGeojson, { style: {
             fillColor: 'red',
             weight: 3,
             opacity: 1,
             color: 'red',
-            fillOpacity: 0.3
+            fillOpacity: 0.15
         }, onEachFeature: function (feature, layer) {
             layer.on({
                 click: function(e) {
@@ -354,4 +498,116 @@
     function getTileUrl(urlTemplate, data) {
         return L.Util.template(urlTemplate, Object.assign(Object.assign({}, data), { r: L.Browser.retina ? '@2x' : '' }));
     }
+
+    async function submitNeedsToBeSaved() {
+
+      if (! isStartingup) {
+          saveControlesInLocalStorage();
+      }
+      needsaving = false;
+      for (const controle of Object.values(controles)) {
+        if (controle.audit.needs_to_be_saved === true) {
+          needsaving = true;
+          await submitElement(controle, null, controle.audit);
+        }
+
+        for (const parcelle of Object.values(controle.parcelles)) {
+          if (parcelle.needs_to_be_saved === true) {
+            needsaving = true;
+            await submitElement(controle, parcelle.parcelle_id, parcelle.controle);
+          }
+        }
+      }
+      if (! needsaving) {
+        loadFromServerIfNeeded();
+      }
+    }
+
+    async function submitElement(controle, idParcelle, element)
+    {
+      try {
+        const revision = controle._rev;
+        const idControle = controle._id;
+        const response = await fetch('<?php echo url_for('controle_transmission_data'); ?>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                revision,
+                idControle,
+                idParcelle,
+                element
+            })
+        });
+        data = await response.json();
+        if (data && data.success === true) {
+            controle._rev = data.revision;
+            if (idParcelle) {
+                controle.parcelles[idParcelle].needs_to_be_saved = false;
+            } else {
+                controle.audit.needs_to_be_saved = false;
+            }
+            element.needs_to_be_saved = false;
+            if (data.reloadStatus) {
+                reloadStatus = true;
+            }
+            saveControlesInLocalStorage();
+        }
+        needReload(controle);
+      } catch(exception) {
+        console.log(['submitElement exception', exception]);
+        return ;
+      }
+    }
+
+    function saveControlesInLocalStorage()
+    {
+        localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
+    }
+
+    function needReload(controle) {
+        if (!reloadStatus) {
+            return ;
+        }
+        if (controle.audit.needs_to_be_saved === true) {
+            return ;
+        }
+        for (const parcelle of Object.values(controle.parcelles)) {
+            if (parcelle.needs_to_be_saved === true) {
+                console.log("parcelle doit être sauvée : " + parcelle.parcelle_id);
+                return;
+            }
+        }
+        controle._rev = "00-Needs Update";
+        saveControlesInLocalStorage();
+        if (confirm("Un autre utilisateur utilise cette partie de l'app Terrain. Par sécurité, rechargez l'application. (pour ne pas recharger, annulez)")) {
+            location.reload();
+        }
+        loadFromServerIfNeeded();
+    }
+
+    function loadFromServerIfNeeded()
+    {
+        if (!isStartingup) {
+            return;
+        }
+        for (let i in server_controle) {
+            if (controles[server_controle[i]._id]) {
+                server_rev = server_controle[i]._rev.split('-')[0];
+                local_rev = (controles[server_controle[i]._id]._rev) ? controles[server_controle[i]._id]._rev.split('-')[0] : 0;
+                if (local_rev >= server_rev) {
+                    continue;
+                }
+            }
+            controles[server_controle[i]._id] = server_controle[i];
+            localstorage_updated = true;
+        }
+        if (localstorage_updated) {
+            localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
+        }
+        isStartingup = false;
+        console.log(['End of starting up', isStartingup]);
+    }
+
 </script>

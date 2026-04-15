@@ -325,8 +325,8 @@ class Parcellaire extends BaseParcellaire {
         return $this->habilitation->getProduitsByCepage($cepage, $this->getDate());
     }
 
-    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null) {
-        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee);
+    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null, $filter_destination = null) {
+        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee, $filter_destination);
     }
 
     public function getSuperficieTotale($avec_jv = true) {
@@ -418,8 +418,14 @@ class Parcellaire extends BaseParcellaire {
         if(strpos($import, "Document is missing attachment")) {
             sfContext::getInstance()->getLogger()->info("getGeoJson() : Document is missing attachment for ".$this->_id);
             $this->cache_geojson = array();
-        }else{
+        } else {
             $this->cache_geojson = json_decode($import);
+            $parcelles = $this->getParcellesByIdu();
+            foreach ($this->cache_geojson->features as $feature) {
+                if (isset($parcelles[$feature->properties->id]) && $parcelles[$feature->properties->id]) {
+                    $feature->properties->parcellaires = array_map(function($item) {return $item->toJson();}, $parcelles[$feature->properties->id]);
+                }
+            }
         }
         return $this->cache_geojson;
 

@@ -61,14 +61,14 @@ class ControleConfiguration extends DeclarationConfiguration {
         }
     }
 
-    public function getLibelleConstatWithPointId($codeConstat, $pointId)
+    public function getLibelleConstatWithPointId($codeConstat)
     {
-        return $this->configuration['points_de_controle'][$pointId]['constats'][$codeConstat]['libelle'];
+        return $this->getConstat($codeConstat)['libelle'];
     }
 
-    public function getDelaisConstat($pointId, $codeConstat)
+    public function getDelaisConstat($codeConstat)
     {
-        return $this->configuration['points_de_controle'][$pointId]['constats'][$codeConstat]['delais'];
+        return $this->getConstat($codeConstat)['delais'];
     }
 
     public function getConseilConstat($pointId, $codeConstat)
@@ -135,4 +135,39 @@ class ControleConfiguration extends DeclarationConfiguration {
 
         return $libellesConstats;
     }
+
+    public function getConstat($codeConstat)
+    {
+        foreach ($this->configuration['points_de_controle'] as $point) {
+            foreach ($point['constats'] as $idConstat => $manquement) {
+                if ($idConstat == $codeConstat) {
+                    return $manquement;
+                }
+            }
+        }
+    }
+
+    public function isTerrain($numRtm)
+    {
+        return $this->getConstat($numRtm)['terrain'];
+    }
+
+    public function isDocumentaire($numRtm)
+    {
+        return $this->getConstat($numRtm)['documentaire'];
+    }
+
+    public function hasProduitFilter() {
+        return isset($this->configuration['produit_filter']) && ($this->configuration['produit_filter']);
+    }
+
+    public function getProduitFilter() {
+        return $this->configuration['produit_filter'];
+    }
+
+    public function getMesureOdgFromConstatId($numRtm)
+    {
+        return $this->getConstat($numRtm)['mesure_odg'];
+    }
+
 }

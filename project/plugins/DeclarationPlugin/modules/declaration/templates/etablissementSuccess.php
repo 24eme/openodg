@@ -86,6 +86,9 @@
     <?php if(class_exists("ChgtDenomConfiguration") && ChgtDenomConfiguration::getInstance()->isModuleEnabled()): ?>
     <?php include_component('chgtdenom', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ChgtDenomConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
+    <?php if(class_exists("ChgtDenomConfiguration") && ChgtDenomConfiguration::getInstance()->isPriseDeMousseEnabled()): ?>
+    <?php include_component('prisedemousse', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ChgtDenomConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php endif; ?>
     <?php if(in_array('parcellaireAffectationCoop', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_partial('parcellaireAffectationCoop/monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireAffectationConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>

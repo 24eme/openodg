@@ -372,9 +372,17 @@ class ParcellaireClient extends acCouchdbClient {
 
     }
 
-    public function getSyntheseCepages($parcellairedoc, $filter_produit_hash = null, $filter_insee = null) {
+    public function getSyntheseCepages($parcellairedoc, $filter_produit_hash = null, $filter_insee = null, $filter_destination = null) {
         $synthese = array();
+
+        $coop_id = null;
+        if (isset($filter_destination) && $filter_destination) {
+            $coop_id = explode('-', $filter_destination)[1];
+        }
         foreach($parcellairedoc->getParcelles() as $p) {
+            if ($coop_id && $p->exist('destinations') && !$p->destinations->exist($coop_id)) {
+                continue;
+            }
             if ($filter_produit_hash) {
                 if (is_string($filter_produit_hash)) {
                     if (strpos($p->produit_hash, $filter_produit_hash) === false) {

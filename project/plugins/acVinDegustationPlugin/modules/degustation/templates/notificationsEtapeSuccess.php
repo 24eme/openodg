@@ -53,7 +53,6 @@
                         ><span class="glyphicon glyphicon-<?= ($lot->isManquement()) ? 'remove' : 'ok' ?>"></span></a>&nbsp;
                         <?php endforeach; ?>
                       </td>
-                        <?php ?>
                         <td>
                           <a class="pull-right" title="Ouvrir le mail" style="color: white;" href="<?php echo url_for('degustation_mail_to_resultats', array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>"><span class="glyphicon glyphicon-envelope"></span></a>
                         <?php if ($lot->email_envoye === null): ?>

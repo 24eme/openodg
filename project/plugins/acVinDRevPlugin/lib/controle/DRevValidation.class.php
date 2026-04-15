@@ -154,7 +154,6 @@ class DRevValidation extends DeclarationLotsValidation
                 $this->controleVolumeSeuilDeclare($produit);
             }
         }
-
         $this->controleEngagementVCI();
         $this->controleEngagementSv();
         $this->controleEngagementMutage();

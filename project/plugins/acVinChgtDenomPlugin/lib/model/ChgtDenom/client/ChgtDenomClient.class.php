@@ -6,6 +6,7 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
     const TYPE_COUCHDB = "CHGTDENOM";
     const CHANGEMENT_TYPE_CHANGEMENT = "CHANGEMENT";
     const CHANGEMENT_TYPE_DECLASSEMENT = "DECLASSEMENT";
+    const CHANGEMENT_TYPE_PRISEDEMOUSSE = "PRISEDEMOUSSE";
 
     public static function getInstance() {
         return acCouchdbManager::getClient("ChgtDenom");
@@ -13,9 +14,6 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
         $doc = parent::find($id, $hydrate, $force_return_ls);
-        if($doc && $doc->type != self::TYPE_MODEL) {
-            throw new sfException(sprintf("Document \"%s\" is not type of \"%s\"", $id, self::TYPE_MODEL));
-        }
         return $doc;
     }
 

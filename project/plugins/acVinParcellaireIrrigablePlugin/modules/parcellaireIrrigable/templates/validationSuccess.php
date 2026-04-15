@@ -40,7 +40,7 @@
 
     <?php if (ParcellaireConfiguration::getInstance()->hasEngagements() && count($validation->getEngagements()) > 0) : ?>
     <br/>
-        <h3> Engagement à ne pas irriguer</h3>
+        <h3>Engagements</h3>
         <div class="alert" role="alert" id="engagements"  style="padding-top:0;">
             <div class="form-group">
                 <?php foreach ($validation->getEngagements() as $engagement): ?>
@@ -78,7 +78,7 @@
     <div style="padding-top: 10px;" class="row row-margin row-button">
         <div class="col-xs-4">
             <a href=
-            <?php if(ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource() === false): ?>
+            <?php if(ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() === false && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() === false): ?>
                 "<?php echo url_for(ParcellaireIrrigableEtapes::getInstance()->getPreviousLink(ParcellaireIrrigableEtapes::ETAPE_VALIDATION), $parcellaireIrrigable); ?>"
             <?php else: ?>
                 "<?php echo url_for("parcellaireirrigable_irrigations", $parcellaireIrrigable) ?>"
