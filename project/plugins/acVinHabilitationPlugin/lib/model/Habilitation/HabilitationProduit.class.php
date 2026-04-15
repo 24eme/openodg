@@ -134,7 +134,7 @@ class HabilitationProduit extends BaseHabilitationProduit {
         }
         foreach($this->activites as $a) {
             if ($activite === null && $a->isHabilite()) {
-                return true;
+                return $a->statut;
             }
 
             if(strpos($a->activite, $activite) !==  0) {
@@ -142,7 +142,7 @@ class HabilitationProduit extends BaseHabilitationProduit {
             }
 
             if($a->isHabilite()) {
-                return true;
+                return $a->statut;
             }
         }
 
