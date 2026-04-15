@@ -422,7 +422,9 @@ class Parcellaire extends BaseParcellaire {
             $this->cache_geojson = json_decode($import);
             $parcelles = $this->getParcellesByIdu();
             foreach ($this->cache_geojson->features as $feature) {
-                $feature->properties->parcellaires = array_map(function($item) {return $item->toJson();}, $parcelles[$feature->properties->id]);
+                if (isset($parcelles[$feature->properties->id]) && $parcelles[$feature->properties->id]) {
+                    $feature->properties->parcellaires = array_map(function($item) {return $item->toJson();}, $parcelles[$feature->properties->id]);
+                }
             }
         }
         return $this->cache_geojson;
