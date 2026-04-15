@@ -237,7 +237,6 @@ class controleActions extends sfActions
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->document = new ExportControlePDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
-        //$this->controle->cleanTmpSignatureFile();
         return $this->executePdf($request);
     }
 

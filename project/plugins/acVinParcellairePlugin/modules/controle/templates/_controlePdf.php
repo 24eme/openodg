@@ -121,15 +121,9 @@ table, th, td {
             <td class="center-grey" colSpan="8" style="height: 50px;">&nbsp;<br/><strong>&nbsp;L'OPÉRATEUR OU SON REPRÉSENTANT</strong></td>
         </tr>
         <tr>
-            <td colSpan="3">&nbsp;<br/>Nom et Prénom :<br/></td>
-            <td colSpan="3">&nbsp;<br/><?php echo $controle->audit->nom_prenom; ?></td>
-            <td colSpan="2" style="text-align: center;">&nbsp;<br/>Signature :<br/></td>
-        </tr>
-        <tr>
-            <td colSpan="3"><u>Observation :</u><br/><?php echo $controle->getObservationOperateur(); ?></td>
-            <td class="center-grey" colSpan="3">La signature de la présente déclaration signifie l'acceptation des constats effectués</td>
-            <td colSpan="2">
-            </td>
+            <td colSpan="4"><u>Nom et Prénom :</u><br/><?php echo $controle->audit->nom_prenom; ?></td>
+            <td colSpan="4"><u>Observation :</u><br/><?php echo $controle->getObservationOperateur(); ?></td>
         </tr>
     </thead>
 </table>
+<p style="text-align:right;">La signature de la présente déclaration signifie l'acceptation des constats effectués<?php if($controle->audit->operateur_signature): ?><br /><img style="height: 90px" src="<?php echo $controle->audit->operateur_signature; ?>" alt="" /><?php endif; ?></p>
