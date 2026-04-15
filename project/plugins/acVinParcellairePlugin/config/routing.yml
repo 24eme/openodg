@@ -241,7 +241,7 @@ controle_pdf_manquements:
   param: { module: controle, action: manquementPdf }
 
 controle_pdf:
-  url: /controle/:id/pdf
+  url: /controle/:id/controle/pdf
   param: { module: controle, action: exportControlePdf }
 
 controle_gestion_manquements:
