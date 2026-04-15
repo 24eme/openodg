@@ -245,11 +245,16 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             $chgt->addDonneesForProduction($this);
         }
 
+        $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->date_depot);
+
         $this->enhanced_donnees = array();
         $colonnesid = array();
         $colonneid = 0;
         $drev = DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->getCampagne());
         foreach($this->donnees as $i => $donnee) {
+            if($habilitation && $habilitation->isHabiliteExterieur($donnee->produit, HabilitationClient::ACTIVITE_VINIFICATEUR)) {
+                continue;
+            }
             $d = (object) $donnee->toArray();
             $d->produit_conf = $this->configuration->declaration->get($donnee->produit);
             $p = array();

@@ -136,8 +136,8 @@
         }
       }
 
-      $('tr strong#nbLotsSelectionnes').html(""+nbLotsSelectionnes);
-      $('tr strong#nbAdherentsAPrelever').html(""+nbAdherentsLots);
+      $('#nbLotsSelectionnes').html(""+nbLotsSelectionnes);
+      $('#nbAdherentsAPrelever').html(""+nbAdherentsLots);
        });
     }
     updateSynthesePrelevementLots();
