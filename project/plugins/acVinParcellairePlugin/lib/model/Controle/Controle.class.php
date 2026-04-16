@@ -30,7 +30,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $this->set('_id', ControleClient::TYPE_COUCHDB."-".$identifiant."-".str_replace('-', '', $date));
         $this->initDocuments();
         $this->storeDeclarant();
-        $this->getPotentielProductionProduits();
+        $this->initPotentielProductionProduits();
         $this->superficie_totale = $this->getSuperficieTotale();
     }
 
@@ -81,7 +81,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
     {
         $parcellaire = $this->getParcellaire();
         $parcelles = [];
-        foreach ($parcellaire->getParcelles() as $key => $parcelle) {
+        if ($parcellaire) foreach ($parcellaire->getParcelles() as $key => $parcelle) {
             if (!($parcelle->isRealProduit() && ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration())) continue;
             if (ControleConfiguration::getInstance()->hasProduitFilter() && strpos($parcelle->produit_hash, ControleConfiguration::getInstance()->getProduitFilter()) === false) continue;
             $parcelles[$key] = $parcelle->getData();
@@ -193,6 +193,9 @@ class Controle extends BaseControle implements InterfacePieceDocument
     }
 
     public function getGeoJson() {
+        if ( ! $this->getParcellaire() ) {
+            return [];
+        }
         $geojson = $this->getParcellaire()->getGeoJson();
         $features = [];
         $parcelles = array_keys($this->getParcellaireParcelles());
@@ -451,8 +454,11 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return $this->audit->operateur_observation;
     }
 
-    public function getPotentielProductionProduits()
+    public function initPotentielProductionProduits()
     {
+        if  ( ! $this->getParcellaire() ) {
+            return ;
+        }
         $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->getParcellaire());
         foreach ($potentiel->getProduits() as $ppproduit) {
             $this->surface_de_production->add($ppproduit->getLibelle(), $ppproduit->getSuperficieMax());
@@ -461,6 +467,9 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getSuperficieTotale()
     {
+        if ( ! $this->getParcellaire() ) {
+            return 0;
+        }
         return round($this->getParcellaire()->getSuperficieTotale(), 3);
     }
 
