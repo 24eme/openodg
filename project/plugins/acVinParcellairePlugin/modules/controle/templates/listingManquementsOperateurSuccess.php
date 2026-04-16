@@ -25,9 +25,18 @@
         <td><?php echo $manquement->delais ?></td>
         <td class="text-center">
             <?php if (!$manquement->cloture_date): ?>
-                <a href="<?php echo url_for('controle_lever_manquement', ['id_controle' => $controle->_id, 'id_manquement' => $numRtm]); ?>" class="btn btn-sm btn-primary">Lever le manquements</a>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Traier
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li><a href="<?php echo url_for('controle_cloture_manquement', ['id_controle' => $controle->_id, 'id_manquement' => $numRtm, 'type' => ControleClient::CONTROLE_CLOTURE_OC]); ?>">Enregistrer une Transmission à l'OC</a></li>
+                        <li><a href="<?php echo url_for('controle_cloture_manquement', ['id_controle' => $controle->_id, 'id_manquement' => $numRtm, 'type' => ControleClient::CONTROLE_CLOTURE_LEVER]); ?>">Lever le manquements</a></li>
+                    </ul>
+                </div>
             <?php else: ?>
-                <a class="btn btn-sm btn-primary" disabled>Levé le <?php echo format_date($manquement->cloture_date, "dd/MM/yyyy", "fr_FR"); ?></a>
+                <a class="btn btn-sm btn-primary" disabled><?php if($manquement->cloture_type == ControleClient::CONTROLE_CLOTURE_OC): ?>Transmis à l'OC<?php else: ?>Levé<?php endif; ?> le <?php echo format_date($manquement->cloture_date, "dd/MM/yyyy", "fr_FR"); ?></a>
             <?php endif; ?>
         </td>
     </tr>

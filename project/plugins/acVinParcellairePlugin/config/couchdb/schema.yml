@@ -288,6 +288,7 @@ Controle:
                   constat_date:
                   notification_date:
                   cloture_date:
+                  cloture_type:
                   actif: false
                   parcelles_id:
                     type: array_collection

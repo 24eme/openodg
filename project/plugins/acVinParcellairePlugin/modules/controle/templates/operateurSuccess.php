@@ -65,13 +65,13 @@
         <th class="text-center">Délais</th>
         <th></th>
     </tr>
-<?php foreach($manquements as $controle_manquements): foreach($controle_manquements->manquements as $manquement): if ($manquement->actif): ?>
+<?php foreach($manquements as $controle_manquements): foreach($controle_manquements->manquements as $manquement): if ($manquement && $manquement->actif): ?>
     <tr>
         <td><?php echo Date::francizeDate($controle_manquements->date_tournee); ?></td>
         <td><?php echo Date::francizeDate($manquement->notification_date); ?></td>
         <td><?php echo $manquement->libelle_manquement; ?></td>
         <td class="text-center"><?php echo $manquement->delais; ?></td>
-        <td><a class="btn" href="<?php echo url_for('controle_liste_manquements_controle', $controle_manquements); ?>">traiter</a></td>
+        <td><a class="btn" href="<?php echo url_for('controle_liste_manquements_controle', ['id' => $controle_manquements->_id]); ?>">traiter</a></td>
     </tr>
 <?php endif; endforeach; endforeach; ?>
 </table>
