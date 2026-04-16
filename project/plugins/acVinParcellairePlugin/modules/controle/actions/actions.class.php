@@ -158,7 +158,7 @@ class controleActions extends sfActions
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->listeManquements = $this->controle->getManquementsListe();
-        if (! $this->controle->hasManquementTerrain() && $this->controle->hasConstatTerrain()) {
+        if (! $this->controle->hasManquementTerrain() && $this->controle->hasConstatTerrainActif()) {
             $this->redirect('controle_update_manquements', array('id' => $this->controle->_id));
         }
         $this->form = new ControleManquementsForm($this->controle);

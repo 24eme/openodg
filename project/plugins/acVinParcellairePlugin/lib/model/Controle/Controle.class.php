@@ -259,18 +259,6 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $this->parcelles[$idParcelle]['controle'] = $element;
     }
 
-    public function hasConstatTerrain()
-    {
-        foreach ($this->parcelles as $parcelleId => $parcelle) {
-            foreach ($parcelle->controle->points as $dataPoint) {
-                if (! empty($dataPoint)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public function hasConstatTerrainActif()
     {
         foreach ($this->parcelles as $parcelleId => $parcelle) {
