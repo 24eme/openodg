@@ -4,9 +4,10 @@ class controleActions extends sfActions
     public function executeIndex(sfWebRequest $request)
     {
         $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
-        $this->controles = ControleClient::getInstance()->findAllByStatus();
+        $allControles = ControleClient::getInstance()->findAllByStatus();
         $this->tournees = [];
-        foreach ($this->controles as $statut => $controles) {
+        $this->nbOperateur = count($allControles);
+        foreach ($allControles as $statut => $controles) {
             if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_ORGANISE, ControleClient::CONTROLE_STATUT_EN_MANQUEMENT])) {
                 continue;
             }
@@ -33,6 +34,11 @@ class controleActions extends sfActions
             }
         }
         ksort($this->tournees);
+    }
+
+    public function executeOperateurs(sfWebRequest $request)
+    {
+        $this->controles = ControleClient::getInstance()->findAllByStatus();
     }
 
     public function executeEtablissementSelection(sfWebRequest $request) {
