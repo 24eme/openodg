@@ -89,6 +89,9 @@ class controleActions extends sfActions
         $controles = [];
         foreach (ControleClient::getInstance()->findAll() as $controle) {
             if ($dateTournee == $controle->date_tournee && $agentIdentifiant == $controle->agent_identifiant) {
+                if (! $controle->getParcellaire() || ! count($controle->getParcellaire()->getParcelles()) ) {
+                    continue;
+                }
                 $this->controles[] = $controle;
                 $controles[$controle->_id] = $controle->getDataToDump();
             }
