@@ -236,25 +236,27 @@
         save() {
             this.parcelleCourante.controle.saisie = 1;
             this.parcelleCourante.needs_to_be_saved = true;
-            for (const pointKey in this.parcelleCourante.controle.points) {
-                if (this.parcelleCourante.controle.points[pointKey].conformite == 'NO') {
-                    no_by_default[pointKey] = 1;
-                } else {
-                    no_by_default[pointKey] = 0;
-                }
-            }
-            for (const pointKey in this.parcelleCourante.controle.points) {
-                const point = this.parcelleCourante.controle.points[pointKey];
-                if (point.conformite != 'NC') {
+
+            this.cleanPoints();
+
+            router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+        },
+        cleanPoints() {
+            const points = this.parcelleCourante.controle.points;
+
+            for (const pointKey in points) {
+                const point = points[pointKey];
+
+                no_by_default[pointKey] = (point.conformite === 'NO') ? 1 : 0;
+
+                if (point.conformite !== 'NC') {
                     for (const constatKey in point.constats) {
                         const constat = point.constats[constatKey];
                         constat.conformite = false;
                         constat.observations = null;
                     }
                 }
-
             }
-            router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
         },
         echoFloat(val, nbDecimal = 5) {
             return val ? Number(val).toFixed(nbDecimal) : '';
