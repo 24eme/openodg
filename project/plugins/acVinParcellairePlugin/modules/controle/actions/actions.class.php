@@ -35,6 +35,11 @@ class controleActions extends sfActions
         ksort($this->tournees);
     }
 
+    public function executeOperateurs(sfWebRequest $request)
+    {
+        $this->controles = ControleClient::getInstance()->findAllByStatus();
+    }
+
     public function executeEtablissementSelection(sfWebRequest $request) {
         $form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
         $form->bind($request->getParameter($form->getName()));

@@ -154,6 +154,10 @@ controle_index:
   url: /controles
   param: { module: controle, action: index }
 
+controle_operateurs:
+  url: /controles/operateurs
+  param: { module: controle, action: operateurs }
+
 controle_operateur:
   url: /controles/:identifiant
   param: { module: controle, action: operateur }
