@@ -243,6 +243,17 @@
                     no_by_default[pointKey] = 0;
                 }
             }
+            for (const pointKey in this.parcelleCourante.controle.points) {
+                const point = this.parcelleCourante.controle.points[pointKey];
+                if (point.conformite != 'NC') {
+                    for (const constatKey in point.constats) {
+                        const constat = point.constats[constatKey];
+                        constat.conformite = false;
+                        constat.observations = null;
+                    }
+                }
+
+            }
             router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
         },
         echoFloat(val, nbDecimal = 5) {
