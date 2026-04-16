@@ -14,8 +14,7 @@
     <tr>
         <th class="col-xs-4">Opérateurs</th>
         <th class="col-xs-2">Type de tournée</th>
-        <th class="col-xs-2"></th>
-        <th class="col-xs-2"></th>
+        <th class="col-xs-4" colSpan="2">Documents</th>
         <th style="width: 0;"></th>
     </tr>
     </thead>
@@ -27,14 +26,16 @@
             </td>
             <td><?php echo $controle->type_tournee; ?></td>
             <td><a href="<?php echo url_for('controle_pdf', array('id' => $controle->_id)); ?>">PDF du contrôle</a></td>
-            <td>
-                <?php if ($controle->isTermine()): ?>
+            <td class="col-xs-2">
+                <?php if ($controle->isTermine() && count($controle->getManquementsActif())): ?>
                     <a href="<?php echo url_for('controle_pdf_manquements', array('id' => $controle->_id)); ?>">PDF des manquements</a>
+                <?php elseif ($controle->isTermine() && !count($controle->getManquementsActif())): ?>
+                    <small>Aucun manquement</small>
                 <?php else: ?>
                     <a class="btn btn-xs btn-default" href="<?php echo url_for('controle_liste_manquements_controle', array('id' => $controle->_id)); ?>">Générer les manquements</a>
                 <?php endif;?>
             </td>
-            <td>
+            <td class="col-xs-2">
             <?php if ($controle->notification_date === null): ?>
                 <div class="btn-group pull-right">
                   <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"<?php if (!$controle->manquements_valides):?> title="Les manquements doivent être générés afin de pouvoir notifier l'opérateur" disabled<?php endif;?>>
