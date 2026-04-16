@@ -48,6 +48,7 @@ table, th, td {
         <tr>
             <td class="center-grey" colspan="4"><strong>Identification MANQUEMENT</strong></td>
         </tr>
+        <?php if (isset($manquement) && $manquement): ?>
         <tr>
             <td colSpan="2"><strong>Code : </strong><?php echo $manquementId ?></td>
             <td colSpan="2"><strong>N° du manquement : </strong></td>
@@ -81,6 +82,11 @@ table, th, td {
         <tr>
             <td colSpan="4">Date limite de mise en œuvre des actions correctrices : <?php echo ControleConfiguration::getInstance()->getDelaisConstat($manquementId); ?></td>
         </tr>
+<?php else: ?>
+        <tr>
+            <td colSpan="4" style="height: 500px;text-align:center;"><br/><br><br/><br/><center>Pas de manquement constaté</center></td>
+        </tr>
+<?php endif; ?>
         <tr>
             <td class="center-grey" colspan="4">Observations de l'opérateur</td>
         </tr>
