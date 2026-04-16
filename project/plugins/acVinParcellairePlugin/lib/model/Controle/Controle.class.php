@@ -30,7 +30,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $this->set('_id', ControleClient::TYPE_COUCHDB."-".$identifiant."-".str_replace('-', '', $date));
         $this->initDocuments();
         $this->storeDeclarant();
-        $this->getPotentielProductionProduits();
+        $this->initPotentielProductionProduits();
         $this->superficie_totale = $this->getSuperficieTotale();
     }
 
@@ -463,8 +463,11 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return $this->audit->operateur_observation;
     }
 
-    public function getPotentielProductionProduits()
+    public function initPotentielProductionProduits()
     {
+        if  ( ! $this->getParcellaire() ) {
+            return ;
+        }
         $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->getParcellaire());
         foreach ($potentiel->getProduits() as $ppproduit) {
             $this->surface_de_production->add($ppproduit->getLibelle(), $ppproduit->getSuperficieMax());
