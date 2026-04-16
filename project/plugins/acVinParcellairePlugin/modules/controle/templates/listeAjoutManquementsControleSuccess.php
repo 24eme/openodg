@@ -35,7 +35,7 @@
 
     <?php $parcellesByCommune = $controle->getParcellaire()->getParcellesByCommune(false);
     $import = $controle->getParcellaire()->getGeoJson(); ?>
-    <?php include_partial('parcellaire/tableauCommune', array('parcellesByCommune' => $parcellesByCommune, 'import' => $import, 'addCheckbox' => true)); ?>
+    <?php include_partial('parcellaire/tableauCommune', array('parcellesByCommune' => $parcellesByCommune, 'import' => $import, 'listForControle' => true)); ?>
 
     <div class="row">
         <div class="col-sm-6 text-left">

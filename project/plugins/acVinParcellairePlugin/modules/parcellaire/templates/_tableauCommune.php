@@ -34,9 +34,9 @@
                         <th class="col-xs-1" style="text-align: center;">Année plantat°</th>
                         <th class="col-xs-1" style="text-align: right;">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
                         <th class="col-xs-1">Écart Pieds/Rang</th>
-                        <?php if(!empty($import) && !$addCheckbox): ?>
+                        <?php if(!empty($import) && !$listForControle): ?>
                             <th class="col-xs-1" style="text-align: center;">Carte</th>
-                        <?php elseif ($addCheckbox): ?>
+                        <?php elseif ($listForControle): ?>
                             <th class="col-xs-1" style="text-align: center;">Ajout</th>
                         <?php endif; ?>
                         </tr>
@@ -118,13 +118,13 @@
                                     </td>
                                     <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?> / <?php echo $ecart_rang; ?></td>
 
-                                    <?php if(!empty($import) && !$addCheckbox): ?>
+                                    <?php if(!empty($import) && !$listForControle): ?>
                                         <td style="text-align: center;">
                                             <div id="<?php echo $detail->idu; ?>">
                                                 <button class="btn btn-link" onclick="showParcelle('<?php echo $detail->idu; ?>')"><i class="glyphicon glyphicon-map-marker"></i></button>
                                             </div>
                                         </td>
-                                    <?php elseif ($addCheckbox): ?>
+                                    <?php elseif ($listForControle): ?>
                                         <td style="text-align: center;"><input type="checkbox" name="parcelles_id[]" value="<?php echo $detail->parcelle_id; ?>"/></td>
                                     <?php endif; ?>
                                 </tr>
