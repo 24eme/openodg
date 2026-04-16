@@ -55,9 +55,15 @@ class controleActions extends sfActions
             throw new sfError403Exception("Accès admin uniquement");
         }
         $this->controle = ControleClient::getInstance()->findOrCreate($this->etablissement->identifiant);
+        $type = $request->getParameter('type');
+        if (in_array($type, ControleClient::getInstance()->getTypes())) {
+            $this->controle->type_tournee = $type;
+        }else{
+            $this->controle->type_tournee = ControleClient::CONTROLE_TYPE_CONDITIONS;
+        }
         $this->controle->save();
 
-        return $this->redirect('controle_index');
+        return $this->redirect('controle_operateur', $this->etablissement);
     }
 
     public function executeParcelles(sfWebRequest $request)
@@ -152,7 +158,7 @@ class controleActions extends sfActions
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->listeManquements = $this->controle->getManquementsListe();
-        if (! $this->controle->hasManquementTerrain() && $this->controle->hasConstatTerrain()) {
+        if (! $this->controle->hasManquementTerrain() && $this->controle->hasConstatTerrainActif()) {
             $this->redirect('controle_update_manquements', array('id' => $this->controle->_id));
         }
         $this->form = new ControleManquementsForm($this->controle);
@@ -231,7 +237,6 @@ class controleActions extends sfActions
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->document = new ExportControlePDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
-        //$this->controle->cleanTmpSignatureFile();
         return $this->executePdf($request);
     }
 

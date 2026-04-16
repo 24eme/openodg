@@ -16,7 +16,6 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
         $this->object = $object;
         $this->date_degustation = $object->getDateFormat('Ymd');
         $this->filter_empty = isset($options['filter_empty']) && $options['filter_empty'];
-
         if (isset($options['auto_select_lots'])) {
             $this->auto_select_lots = $options['auto_select_lots'];
         }

@@ -27,6 +27,7 @@ all:
           categories:
             cepages_principaux: ["LEN DE L'EL B", 'MAUZAC B', 'MAUZAC ROSE RS', 'MUSCADELLE B']
             cepages_accessoires: ['ONDENC B', 'SAUVIGNON B']
+            cepages_vifa: ['VERDANEL B', 'FELEN B', 'ALVARINHO B', 'FURMINT B']
           regles:
             -
               fonction: 'ProportionSomme'
@@ -43,6 +44,11 @@ all:
               category: 'cepages_accessoires'
               sens: "<="
               limit: 0.50
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_vifa'
+              sens: "<="
+              limit: 0.05
         gaillac_blanc_doux:
           synthese_libelle: "Gaillac - Blanc doux"
           filter_parcellaire_produit_hash: 'certifications/AOP/'
@@ -53,6 +59,7 @@ all:
           categories:
             cepages_principaux: ["LEN DE L'EL B", 'MAUZAC B', 'MAUZAC ROSE RS', 'MUSCADELLE B']
             cepages_accessoires: ['ONDENC B', 'SAUVIGNON B']
+            cepages_vifa: ['VERDANEL B', 'FELEN B', 'ALVARINHO B', 'FURMINT B']
           regles:
             -
               fonction: 'ProportionSomme'
@@ -69,6 +76,11 @@ all:
               category: 'cepages_accessoires'
               sens: "<="
               limit: 0.50
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_vifa'
+              sens: "<="
+              limit: 0.05
         gaillac_blanc_primeur:
           synthese_libelle: "Gaillac - Primeur Blanc sec"
           filter_parcellaire_produit_hash: 'certifications/AOP/'
@@ -79,6 +91,7 @@ all:
           categories:
             cepages_principaux: ["LEN DE L'EL B", 'MAUZAC B', 'MAUZAC ROSE RS', 'MUSCADELLE B']
             cepages_accessoires: ['ONDENC B', 'SAUVIGNON B']
+            cepages_vifa: ['VERDANEL B', 'FELEN B', 'ALVARINHO B', 'FURMINT B']
           regles:
             -
               fonction: 'ProportionSomme'
@@ -95,6 +108,11 @@ all:
               category: 'cepages_accessoires'
               sens: "<="
               limit: 0.50
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_vifa'
+              sens: "<="
+              limit: 0.05
         premiere_blanc:
           synthese_libelle: "Gaillac - Premieres Côtes Blanc sec"
           filter_parcellaire_produit_hash: 'certifications/AOP'
@@ -105,6 +123,7 @@ all:
           categories:
             cepages_principaux: ["LEN DE L'EL B", 'MAUZAC B', 'MAUZAC ROSE RS', 'MUSCADELLE B']
             cepages_accessoires: ['ONDENC B', 'SAUVIGNON B']
+            cepages_vifa: ['VERDANEL B', 'FELEN B', 'ALVARINHO B', 'FURMINT B']
           regles:
             -
               fonction: 'ProportionSomme'
@@ -121,6 +140,11 @@ all:
               category: 'cepages_accessoires'
               sens: "<="
               limit: 0.50
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_vifa'
+              sens: "<="
+              limit: 0.05
         gaillac_rouge:
           synthese_libelle: "Gaillac - Rouge"
           filter_parcellaire_produit_hash: 'certifications/AOP/'
@@ -133,6 +157,7 @@ all:
             cepages_duras_fer_prunelard: ['DURAS N', 'FER N', 'PRUNELARD N']
             cepages_secondaires: ['CABERNET SAUVIGNON N', 'GAMAY N', 'MERLOT N']
             cepages_accessoires: ['CABERNET FRANC N']
+            cepages_vifa: ['JURANCON NOIR N']
           regles:
             -
               fonction: 'ProportionSomme'
@@ -154,6 +179,11 @@ all:
               category: 'cepages_secondaires'
               sens: "<="
               limit: 0.30
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_vifa'
+              sens: "<="
+              limit: 0.05
         gaillac_rose:
           synthese_libelle: "Gaillac - Rosé"
           filter_parcellaire_produit_hash: 'certifications/AOP/'
@@ -166,6 +196,7 @@ all:
             cepages_duras_fer_prunelard: ['DURAS N', 'FER N', 'PRUNELARD N']
             cepages_secondaires: ['CABERNET SAUVIGNON N', 'GAMAY N', 'MERLOT N']
             cepages_accessoires: ['CABERNET FRANC N']
+            cepages_vifa: ['JURANCON NOIR N']
           regles:
             -
               fonction: 'ProportionSomme'
@@ -192,6 +223,11 @@ all:
               category: 'cepages_secondaires'
               sens: "<="
               limit: 0.30
+            -
+              fonction: 'ProportionSomme'
+              category: 'cepages_vifa'
+              sens: "<="
+              limit: 0.05
         gaillac_rouge_primeur:
           synthese_libelle: "Gaillac - Primeur Rouge"
           filter_parcellaire_produit_hash: 'certifications/AOP/'
@@ -200,7 +236,7 @@ all:
           denomination_aire: "AOC Gaillac"
           parcellaire2reference: 'ParcellaireAffectation'
           categories:
-            cepages_principaux: ['GAMAY N']
+            cepages_principaux: ['GAMAY N', 'DURAS N']
           regles:
             -
               fonction: 'ProportionSomme'

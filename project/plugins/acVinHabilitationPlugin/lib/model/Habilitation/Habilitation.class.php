@@ -337,6 +337,11 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return $this->addProduit($hash_produit, $date)->isHabiliteFor($activite);
     }
 
+    public function isHabiliteExterieur($hash_produit, $activite, $date = null) {
+
+        return $this->isHabiliteFor($hash_produit, $activite, $date) == HabilitationClient::STATUT_EXTERIEUR;
+    }
+
   public function containHashProduit($hash) {
       foreach($this->getProduits() as $produit) {
           if(preg_match("|".$hash."|", $produit->getHash())) {
