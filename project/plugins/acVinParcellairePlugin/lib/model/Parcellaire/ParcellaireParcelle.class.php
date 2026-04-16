@@ -188,6 +188,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function getParcelleParcellaire() {
+        if ( ! $this->getDocument()->getParcellaire() ) {
+            return null;
+        }
         $p = $this->getDocument()->getParcellaire()->getDeclarationParcelles();
         if (!isset($p[$this->getParcelleId()])) {
             return null;

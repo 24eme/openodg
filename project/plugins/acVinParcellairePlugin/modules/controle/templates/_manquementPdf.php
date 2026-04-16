@@ -58,7 +58,7 @@ table, th, td {
         <tr>
             <td colSpan="4" style="height: 200px;"><strong>Portée du manquement (parcelles, cépages...) :</strong><br/>
                 <?php foreach($manquement->parcelles_id as $parcelle_id):
-                    echo $controle->parcelles[$parcelle_id]->getInfoPdf(); ?>
+                    echo $controle->getInfoPdf($controle->identifiant, $parcelle_id); ?>
                     <br/>
                 <?php endforeach; ?>
             </td>
