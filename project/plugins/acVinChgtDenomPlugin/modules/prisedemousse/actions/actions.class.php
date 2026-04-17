@@ -195,7 +195,7 @@ class prisedemousseActions extends sfActions
         }
     }
 
-    public function executeChgtDenomPDF(sfWebRequest $request)
+    public function executePriseDeMoussePDF(sfWebRequest $request)
     {
         $prisedemousse = $this->getRoute()->getPriseDeMousse(['allow_habilitation' => true, 'allow_stalker' => true]);
         if (!$prisedemousse->isApprouve()) {
