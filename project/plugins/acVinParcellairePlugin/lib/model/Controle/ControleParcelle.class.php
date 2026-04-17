@@ -13,6 +13,7 @@ class ControleParcelle extends BaseControleParcelle
             $data->affectation = $this->getInfoAffectation();
             $data->needs_to_be_saved = false;
             $data->has_probleme_ecart_pieds = $this->getParcellaire()->parcelles[$this->parcelle_id]->hasProblemEcartPieds();
+            $data->controle->points = ControleConfiguration::getInstance()->getAllPointsDeControle();
         }
         return $data;
     }

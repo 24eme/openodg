@@ -33,9 +33,13 @@
     </div>
     </div>
 
+    <a href="#" id="btnToggle" class="pull-right mb-5">Masquer les parcelles</a>
+
+<span id="tableauCommune">
     <?php $parcellesByCommune = $controle->getParcellaire()->getParcellesByCommune(false);
     $import = $controle->getParcellaire()->getGeoJson(); ?>
     <?php include_partial('parcellaire/tableauCommune', array('parcellesByCommune' => $parcellesByCommune, 'import' => $import, 'listForControle' => true)); ?>
+</span>
 
     <div class="row">
         <div class="col-sm-6 text-left">
@@ -83,4 +87,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+
+    document.getElementById("btnToggle").addEventListener("click", function(e) {
+        e.preventDefault();
+        var el = document.getElementById("tableauCommune");
+console.log(el);
+        if (el.style.display == "none") {
+            el.style.display = "block";
+            this.textContent = "Masquer les parcelles";
+        } else {
+            el.style.display = "none";
+            this.textContent = "Afficher les parcelles";
+        }
+    });
 </script>

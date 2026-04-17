@@ -31,14 +31,14 @@
 <br/>
 <table><tr><td style="width: 324px;"><?php echo 'Le ' . format_date(date('Y-m-d'), "P", "fr_FR"); ?></td></tr></table>
 <br/><br/>
-<table><tr><td><strong>Objet :</strong> Résultats contrôle interne, notification d'avertissement relevé lors du contrôle interne sur le lot revendiqué de l'IGP Comté Tolosan</td></tr></table>
+<table><tr><td><strong>Objet :</strong> Résultats contrôle interne, notification d'avertissement relevé lors du contrôle interne sur le lot revendiqué</td></tr></table>
 <br/><br/>
 
 
 <table>
   <tr><td>Madame, Monsieur,</td></tr>
   <br/>
-  <tr><td>Dans le cadre du contrôle interne organoleptique réalisé le :<br/><strong><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")); ?></strong> sur le lot de vin que vous avez revendiqué en IGP Comté Tolosan, nous avons relevé le manquement suivant</td></tr>
+  <tr><td>Dans le cadre du contrôle interne organoleptique réalisé le :<br/><strong><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")); ?></strong> sur le lot de vin que vous avez revendiqué, nous avons relevé le manquement suivant</td></tr>
 </table><br/><br/>
 
 <table border="0.5" class="" cellspacing=0 cellpadding=0 style="width:100%;text-align:center;">
@@ -65,7 +65,7 @@
 
 <table>
     <tr><td>Il en résulte que <strong>ce lot fait l'objet d'un <u>avertissement</u></strong> car il à été jugé « acceptable ».</td></tr>
-    <tr><td><strong>Ce lot peut être commercialisé en IGP Comté Tolosan, mais nous vous invitons à prendre en compte les remarques formulées avant toute transaction ou conditionnement.</strong></td></tr>
+    <tr><td><strong>Ce lot peut être commercialisé en IGP, mais nous vous invitons à prendre en compte les remarques formulées avant toute transaction ou conditionnement.</strong></td></tr>
 </table>
 <br/>
 <br/>
