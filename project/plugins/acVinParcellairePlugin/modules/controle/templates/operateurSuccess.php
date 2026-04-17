@@ -71,7 +71,7 @@
         <td><?php echo Date::francizeDate($manquement->notification_date); ?></td>
         <td><?php echo $manquement->libelle_manquement; ?></td>
         <td class="text-center"><?php echo $manquement->delais; ?></td>
-        <td><a class="btn" href="<?php echo url_for('controle_liste_manquements_controle', ['id' => $controle_manquements->_id]); ?>">traiter</a></td>
+        <td><a class="btn" href="<?php echo url_for('controle_liste_manquements_operateur', ['id_controle' => $controle_manquements->_id]); ?>">traiter</a></td>
     </tr>
 <?php endif; endforeach; endforeach; ?>
 </table>
