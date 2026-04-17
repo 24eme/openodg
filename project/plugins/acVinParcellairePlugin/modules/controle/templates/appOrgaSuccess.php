@@ -478,14 +478,17 @@
         nbParcellesSelectionnees() {
             return this.parcellesSelectionnees.length;
         },
-        getParcellesSorted() {
+        getParcellesSorted(selection = true) {
             const parcellesSorted = [];
-            for(const parcelleId of this.parcellesSelectionnees) {
-                parcellesSorted.push(parcelleId);
-            }
-            for (const [parcelleId, parcelle] of Object.entries(this.controleCourant.parcellaire_parcelles)) {
-                if (!parcellesSorted.includes(parcelleId)) {
+            if (selection) {
+                for(const parcelleId of this.parcellesSelectionnees) {
                     parcellesSorted.push(parcelleId);
+                }
+            } else {
+                for (const [parcelleId, parcelle] of Object.entries(this.controleCourant.parcellaire_parcelles)) {
+                    if (!this.parcellesSelectionnees.includes(parcelleId)) {
+                        parcellesSorted.push(parcelleId);
+                    }
                 }
             }
             return parcellesSorted;
