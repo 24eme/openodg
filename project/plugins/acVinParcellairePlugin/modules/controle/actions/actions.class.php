@@ -4,9 +4,10 @@ class controleActions extends sfActions
     public function executeIndex(sfWebRequest $request)
     {
         $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
-        $this->controles = ControleClient::getInstance()->findAllByStatus();
+        $allControles = ControleClient::getInstance()->findAllByStatus();
         $this->tournees = [];
-        foreach ($this->controles as $statut => $controles) {
+        $this->nbOperateur = count($allControles);
+        foreach ($allControles as $statut => $controles) {
             if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_ORGANISE, ControleClient::CONTROLE_STATUT_EN_MANQUEMENT])) {
                 continue;
             }
@@ -35,6 +36,11 @@ class controleActions extends sfActions
         ksort($this->tournees);
     }
 
+    public function executeOperateurs(sfWebRequest $request)
+    {
+        $this->controles = ControleClient::getInstance()->findAllByStatus();
+    }
+
     public function executeEtablissementSelection(sfWebRequest $request) {
         $form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
         $form->bind($request->getParameter($form->getName()));
@@ -55,9 +61,15 @@ class controleActions extends sfActions
             throw new sfError403Exception("Accès admin uniquement");
         }
         $this->controle = ControleClient::getInstance()->findOrCreate($this->etablissement->identifiant);
+        $type = $request->getParameter('type');
+        if (in_array($type, ControleClient::getInstance()->getTypes())) {
+            $this->controle->type_tournee = $type;
+        }else{
+            $this->controle->type_tournee = ControleClient::CONTROLE_TYPE_CONDITIONS;
+        }
         $this->controle->save();
 
-        return $this->redirect('controle_index');
+        return $this->redirect('controle_operateur', $this->etablissement);
     }
 
     public function executeParcelles(sfWebRequest $request)
@@ -83,6 +95,9 @@ class controleActions extends sfActions
         $controles = [];
         foreach (ControleClient::getInstance()->findAll() as $controle) {
             if ($dateTournee == $controle->date_tournee && $agentIdentifiant == $controle->agent_identifiant) {
+                if (! $controle->getParcellaire() || ! count($controle->getParcellaire()->getParcelles()) ) {
+                    continue;
+                }
                 $this->controles[] = $controle;
                 $controles[$controle->_id] = $controle->getDataToDump();
             }
@@ -103,7 +118,7 @@ class controleActions extends sfActions
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->json = json_encode($this->getControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
-        $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getPointsDeControle(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getAllPointsDeControle(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
     }
 
@@ -152,7 +167,7 @@ class controleActions extends sfActions
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->listeManquements = $this->controle->getManquementsListe();
-        if (! $this->controle->hasManquementTerrain() && $this->controle->hasConstatTerrain()) {
+        if (! $this->controle->hasManquementTerrain() && $this->controle->hasConstatTerrainActif()) {
             $this->redirect('controle_update_manquements', array('id' => $this->controle->_id));
         }
         $this->form = new ControleManquementsForm($this->controle);
@@ -213,8 +228,9 @@ class controleActions extends sfActions
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->libellesConstats = ControleConfiguration::getInstance()->getAllLibellesConstats(false, $this->controle->type_tournee);
+        $this->errors = [];
         if ($request->isMethod(sfWebRequest::POST)) {
-            $this->controle->addManquementManuel($_POST['manquement'], $_POST['parcelle']);
+            $this->controle->addManquementManuel($_POST['manquement'], $POST['parcelles_id']);
             $this->controle->save();
             return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
         }
@@ -231,7 +247,6 @@ class controleActions extends sfActions
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->document = new ExportControlePDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
-        //$this->controle->cleanTmpSignatureFile();
         return $this->executePdf($request);
     }
 
@@ -261,10 +276,11 @@ class controleActions extends sfActions
         $this->sorted_manquements = $this->controle->getSortedManquementsActif();
     }
 
-    public function executeLeverManquement(sfWebRequest $request)
+    public function executeClotureManquement(sfWebRequest $request)
     {
         $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
         $this->controle->manquements[$request->getParameter('id_manquement')]->cloture_date = date('Y-m-d');
+        $this->controle->manquements[$request->getParameter('id_manquement')]->cloture_type = $request->getParameter('type', ControleClient::CONTROLE_CLOTURE_LEVER);
         $this->controle->save();
         return $this->redirect('controle_liste_manquements_operateur', array('id_controle' => $this->controle->_id));
     }

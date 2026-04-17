@@ -15,9 +15,16 @@ class ControleClient extends acCouchdbClient
     const CONTROLE_TYPE_DOCUMENTAIRE = "Documentaire";
     const CONTROLE_TYPE_CONDITIONS = "Conditions de production";
 
+    const CONTROLE_CLOTURE_LEVER = 'LEVER';
+    const CONTROLE_CLOTURE_OC = 'OC';
+
     public static function getInstance()
     {
         return acCouchdbManager::getClient("Controle");
+    }
+
+    public function getTypes() {
+        return [ControleClient::CONTROLE_TYPE_CONDITIONS, ControleClient::CONTROLE_TYPE_SUIVI, ControleClient::CONTROLE_TYPE_DOCUMENTAIRE, ControleClient::CONTROLE_TYPE_HABILITATION];
     }
 
     public function findByArgs($identifiant, $date)

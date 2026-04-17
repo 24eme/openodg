@@ -8,7 +8,7 @@ class ExportParcellaireIrrigableCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Type de matériel;Type de ressource;Signataire;Date de validation;Type de declaration\n";
+        return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Type de matériel;Type de ressource;Signataire;Date de validation;Type de declaration;parcelle id;doc id\n";
     }
 
     public function __construct($doc, $header = true, $region = null) {
@@ -49,7 +49,7 @@ class ExportParcellaireIrrigableCSV implements InterfaceDeclarationExportCsv {
             	$inao = $configProduit->getCodeDouane();
 
             	$libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
-            	$csv .= sprintf("%s;Parcellaire Irrigable;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
+                $csv .= sprintf("%s;Parcellaire Irrigable;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
                 DeclarationExportCsv::getProduitKeysCsv($configProduit),
                 $inao,$libelle_complet,
             	$this->protectStr($parcelle->idu),
@@ -65,7 +65,10 @@ class ExportParcellaireIrrigableCSV implements InterfaceDeclarationExportCsv {
             	$this->protectStr($parcelle->ressource),
             	$this->protectStr($this->doc->signataire),
             	$this->doc->validation,
-            	$mode);
+                $mode,
+                (($parcelle->exist('parcelle_id')) ? $parcelle->get('parcelle_id') : ""),
+                $this->doc->_id
+                );
         	}
         }
 

@@ -17,14 +17,17 @@
     const date_tournee = "<?php echo $date_tournee ?>"
     let controles = JSON.parse(localStorage.getItem("controles_" + date_tournee)) || {}
     let no_by_default = {}
-
-    submitNeedsToBeSaved(controles);
+    let reloadStatus = false;
+    let is_synchro = true;
 
     var aires = [];
     <?php
     $communes = [];
     foreach ($controles as $controle) {
         $p = $controle->getParcellaire();
+        if ( ! $p ) {
+            continue;
+        }
         echo "//".$p->_id."\n";
         foreach ($p->getCommunes() as $com) {
             $communes[$com] = $com;
@@ -49,21 +52,9 @@
     const server_controle = JSON.parse(document.getElementById("dataJson").textContent);
     const points_de_controle = JSON.parse(document.getElementById("dataConf").textContent);
     let localstorage_updated = false;
-    for (let i in server_controle) {
-        if (controles[server_controle[i]._id]) {
-            server_rev = server_controle[i]._rev.split('-')[0];
-            local_rev = (controles[server_controle[i]._id]._rev) ? controles[server_controle[i]._id]._rev.split('-')[0] : 0;
-            if (local_rev >= server_rev) {
-                console.log(['ignore controle loading : exists and local storage rev is older', 'controle id', server_controle[i]._id, 'local_rev', local_rev, 'server_rev', server_rev, controles[server_controle[i]._id]]);
-                continue;
-            }
-        }
-        controles[server_controle[i]._id] = server_controle[i];
-        localstorage_updated = true;
-    }
-    if (localstorage_updated) {
-        localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
-    }
+
+    let isStartingup = true;
+    submitNeedsToBeSaved();
 
     const routes = [
       { path: '/', name: "listing", component: templates.listing },
@@ -87,7 +78,8 @@
         },
         computed: {
           isSynchro() {
-            return this.checkNeedsToBeSaved(this.controles);
+            is_synchro = this.checkNeedsToBeSaved(this.controles);
+            return is_synchro;
           }
         },
 
@@ -95,11 +87,13 @@
             checkNeedsToBeSaved(controles) {
               for (const controle of Object.values(controles)) {
                 if (controle.audit.needs_to_be_saved === true) {
+                  console.log(controle._id + ' : audit needs to be saved');
                   return false;
                 }
 
                 for (const parcelle of Object.values(controle.parcelles)) {
                   if (parcelle.needs_to_be_saved === true) {
+                    console.log(controle._id + ' : parcelle ' + parcelle.parcelle_id + ' needs to be saved');
                     return false;
                   }
                 }
@@ -124,7 +118,7 @@
     app.mount('#content')
 
     templates.listing.mounted = function() {
-        submitNeedsToBeSaved(controles);
+        submitNeedsToBeSaved();
     }
 
     templates.listing.data = function() {
@@ -162,7 +156,7 @@
     };
 
     templates.operateur.mounted = function() {
-        submitNeedsToBeSaved(controles);
+        submitNeedsToBeSaved();
     }
     templates.operateur.data = function() {
         const route = useRoute()
@@ -211,7 +205,7 @@
     };
 
     templates.parcelle.mounted = function() {
-        submitNeedsToBeSaved(controles);
+        submitNeedsToBeSaved();
     }
 
     templates.parcelle.data = function() {
@@ -242,14 +236,27 @@
         save() {
             this.parcelleCourante.controle.saisie = 1;
             this.parcelleCourante.needs_to_be_saved = true;
-            for (const pointKey in this.parcelleCourante.controle.points) {
-                if (this.parcelleCourante.controle.points[pointKey].conformite == 'NO') {
-                    no_by_default[pointKey] = 1;
-                } else {
-                    no_by_default[pointKey] = 0;
+
+            this.cleanPoints();
+
+            router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+        },
+        cleanPoints() {
+            const points = this.parcelleCourante.controle.points;
+
+            for (const pointKey in points) {
+                const point = points[pointKey];
+
+                no_by_default[pointKey] = (point.conformite === 'NO') ? 1 : 0;
+
+                if (point.conformite !== 'NC') {
+                    for (const constatKey in point.constats) {
+                        const constat = point.constats[constatKey];
+                        constat.conformite = false;
+                        constat.observations = null;
+                    }
                 }
             }
-            router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
         },
         echoFloat(val, nbDecimal = 5) {
             return val ? Number(val).toFixed(nbDecimal) : '';
@@ -269,7 +276,7 @@
         }
     };
     templates.audit.mounted = function() {
-        submitNeedsToBeSaved(controles);
+        submitNeedsToBeSaved();
         let signatureBase64 = null;
         const controleCourant = this.controleCourant;
         const signaturePad = new SignaturePad(document.getElementById('signature'), {
@@ -512,49 +519,41 @@
         return L.Util.template(urlTemplate, Object.assign(Object.assign({}, data), { r: L.Browser.retina ? '@2x' : '' }));
     }
 
-    function submitNeedsToBeSaved(controles) {
+    async function submitNeedsToBeSaved() {
+
+      if (! isStartingup) {
+          saveControlesInLocalStorage();
+      }
+      let is_saved = true;
+      let need_reload = false;
       for (const controle of Object.values(controles)) {
-        let reloadStatus = false;
-
         if (controle.audit.needs_to_be_saved === true) {
-
-          const response = submitElement(controle, null, controle.audit);
-          if (response && response.success === true) {
-            if (response.reloadStatus) {
-                  reloadStatus = true;
-            }
-            localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
-          }
+          is_saved = await submitElement(controle, null, controle.audit) && is_saved;
         }
 
         for (const parcelle of Object.values(controle.parcelles)) {
-
           if (parcelle.needs_to_be_saved === true) {
-
-            localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
-
-            const response = submitElement(controle, parcelle.parcelle_id, parcelle.controle);
-            if (response && response.success === true) {
-              if (response.reloadStatus) {
-                  reloadStatus = true;
-              }
-              localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
-            }
+            is_saved = await submitElement(controle, parcelle.parcelle_id, parcelle.controle) && is_saved;
           }
         }
-        if (reloadStatus) {
-            controle._rev = "00-Needs Update";
-            alert("Rev app < Rev couchdb - Rechargez l'app");
-        }
+        need_reload = need_reload || needReload(controle);
       }
+      if (need_reload) {
+          if (confirm("Un autre utilisateur utilise cette partie de l'app Terrain. Par sécurité, rechargez l'application. (pour ne pas recharger, annulez)")) {
+              return location.reload();
+          }
+      } else if (is_saved) {
+          is_synchro = true;
+      }
+      loadFromServerIfNeeded();
     }
 
-    function submitElement(controle, idParcelle, element)
+    async function submitElement(controle, idParcelle, element)
     {
       try {
         const revision = controle._rev;
         const idControle = controle._id;
-        const response = fetch('<?php echo url_for('controle_transmission_data'); ?>', {
+        const response = await fetch('<?php echo url_for('controle_transmission_data'); ?>', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -566,15 +565,75 @@
                 element
             })
         });
-
-        const data = response.json();
-        controle._rev = data.revision;
-        element.needs_to_be_saved = false;
-        return data;
+        data = await response.json();
+        if (data && data.success === true) {
+            controle._rev = data.revision;
+            if (idParcelle) {
+                console.log(controle._id + ' parcelle ' + idParcelle + 'saved');
+                controle.parcelles[idParcelle].needs_to_be_saved = false;
+            } else {
+                console.log(controle._id + ' audit saved');
+                controle.audit.needs_to_be_saved = false;
+            }
+            element.needs_to_be_saved = false;
+            is_synchro = false;
+            if (data.reloadStatus) {
+                reloadStatus = true;
+            }
+            saveControlesInLocalStorage();
+            return true;
+        }
+        return false;
       } catch(exception) {
         console.log(['submitElement exception', exception]);
-        return { success: false };
+        return false;
       }
+    }
+
+    function saveControlesInLocalStorage()
+    {
+        localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
+    }
+
+    function needReload(controle) {
+        if (!reloadStatus) {
+            return false;
+        }
+        if (controle.audit.needs_to_be_saved === true) {
+            return false;
+        }
+        for (const parcelle of Object.values(controle.parcelles)) {
+            if (parcelle.needs_to_be_saved === true) {
+                console.log("parcelle doit être sauvée : " + parcelle.parcelle_id);
+                return false;
+            }
+        }
+        controle._rev = "00-Needs Update";
+        saveControlesInLocalStorage();
+        return true;
+    }
+
+    function loadFromServerIfNeeded()
+    {
+        if (!isStartingup) {
+            return;
+        }
+        for (let i in server_controle) {
+            if (controles[server_controle[i]._id]) {
+                server_rev = server_controle[i]._rev.split('-')[0];
+                local_rev = (controles[server_controle[i]._id]._rev) ? controles[server_controle[i]._id]._rev.split('-')[0] : 0;
+                if (local_rev >= server_rev) {
+                    continue;
+                }
+            }
+            controles[server_controle[i]._id] = server_controle[i];
+            localstorage_updated = true;
+        }
+        if (localstorage_updated) {
+            localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
+        }
+        isStartingup = false;
+        console.log(['End of starting up', isStartingup]);
     }
 
 </script>

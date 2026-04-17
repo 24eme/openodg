@@ -3,6 +3,7 @@
 class PriseDeMousseClient extends ChgtDenomClient {
 
     const TYPE_MODEL = "PriseDeMousse";
+    const INITIAL_TYPE_PDM = "PDM";
 
     public static function getInstance() {
         return acCouchdbManager::getClient("PriseDeMousse");

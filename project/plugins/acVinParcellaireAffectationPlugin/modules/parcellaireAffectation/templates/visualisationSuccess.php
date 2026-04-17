@@ -39,8 +39,6 @@
 
 <?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation, 'coop' => $coop)); ?>
 
-<?php include_component('parcellaire', 'syntheseParCepages', array('parcellaire' => $parcellaireAffectation)); ?>
-
 <?php if($parcellaireAffectation->observations): ?>
     <div class="panel panel-default">
         <div class="panel-body">
@@ -56,7 +54,7 @@
    </div>
 <?php endif; ?>
 
-<div class="row row-margin row-button">
+<div class="row row-margin row-button pt-2">
     <div class="col-xs-5">
         <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireAffectation->identifiant, 'campagne' => $parcellaireAffectation->campagne)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
@@ -65,13 +63,10 @@
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
             </a>
     </div>
-
-    <div class="col-xs-2 text-right">
+    <div class="col-xs-5 text-right">
         <?php if (!isset($coop) && $parcellaireAffectation->validation && ParcellaireSecurity::getInstance($sf_user, $parcellaireAffectation->getRawValue())->isAuthorized(ParcellaireSecurity::DEVALIDATION)): ?>
-                    <a class="btn btn-xs btn-default pull-right" href="<?php echo url_for('parcellaireaffectation_devalidation', $parcellaireAffectation) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider votre declaration d\'affectation parcellaire ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
+                    <a class="btn btn-xs btn-default" href="<?php echo url_for('parcellaireaffectation_devalidation', $parcellaireAffectation) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider votre declaration d\'affectation parcellaire ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
         <?php endif; ?>
-    </div>
-    <div class="col-xs-3 text-right">
         <?php if(!$parcellaireAffectation->validation): ?>
                 <a href="<?php echo url_for("parcellaireaffectation_edit", $parcellaireAffectation) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
         <?php endif; ?>

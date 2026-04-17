@@ -242,7 +242,7 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
         return false;
     }
 
-    public function getInfoFromIdParcelle($idParcelle)
+    public function getInfoFromParcelleId($idParcelle)
     {
         if ($parcelle = $this->findParcelleByIdParcelle($idParcelle)) {
             return ['materiel' => $parcelle->materiel, 'ressource' => $parcelle->ressource];

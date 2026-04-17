@@ -698,8 +698,18 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $detail;
     }
 
-    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null) {
-        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee);
+    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null, $filter_destination = null) {
+        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee, $filter_destination);
+    }
+
+    public function getSyntheseDestination() {
+        $synthese = [];
+        foreach($this->getParcelles() as $parcelle) {
+            foreach($parcelle->destinations as $d) {
+                $synthese[$d->nom] += $d->superficie;
+            }
+        }
+        return $synthese;
     }
 
     public function getProduits()
@@ -715,5 +725,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
 
         return array_unique(array_filter($regions, 'strlen'));
+    }
+
+    public function getInfoFromParcelleId($parcellaire_id)
+    {
+        $parcelle = $this->findParcelleByIdParcelle($parcellaire_id);
+        if (!$parcelle) {
+            return [];
+        }
+        return  ['affectation_date' => $parcelle->getDocument()->validation, 'produit_libelle' => $parcelle->getProduitLibelle().' '.$parcelle->getDgcLibelle()];
     }
 }
