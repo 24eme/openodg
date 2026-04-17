@@ -29,7 +29,7 @@ class ControleConfiguration extends DeclarationConfiguration {
       return sfConfig::get('app_controle_'.$type);
     }
 
-    public function getPointsDeControle()
+    public function getAllPointsDeControle()
     {
         return $this->configuration['points_de_controle'];
     }

@@ -30,7 +30,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $this->set('_id', ControleClient::TYPE_COUCHDB."-".$identifiant."-".str_replace('-', '', $date));
         $this->initDocuments();
         $this->storeDeclarant();
-        $this->getPotentielProductionProduits();
+        $this->initPotentielProductionProduits();
         $this->superficie_totale = $this->getSuperficieTotale();
     }
 
@@ -81,7 +81,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
     {
         $parcellaire = $this->getParcellaire();
         $parcelles = [];
-        foreach ($parcellaire->getParcelles() as $key => $parcelle) {
+        if ($parcellaire) foreach ($parcellaire->getParcelles() as $key => $parcelle) {
             if (!($parcelle->isRealProduit() && ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration())) continue;
             if (ControleConfiguration::getInstance()->hasProduitFilter() && strpos($parcelle->produit_hash, ControleConfiguration::getInstance()->getProduitFilter()) === false) continue;
             $parcelles[$key] = $parcelle->getData();
@@ -103,7 +103,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
             foreach ($parcellesIds as $pId) {
                 if ($parcelles->exist($pId)) {
                     $parcelle = $this->parcelles->add($pId, $parcelles->get($pId));
-                    foreach (ControleConfiguration::getInstance()->getPointsDeControle() as $pointKey => $pointConf) {
+                    foreach (ControleConfiguration::getInstance()->getAllPointsDeControle() as $pointKey => $pointConf) {
                         $point = $parcelle->controle->points->add($pointKey);
                         $point->libelle = $pointConf['libelle'];
                         $hasConstat = false;
@@ -193,6 +193,9 @@ class Controle extends BaseControle implements InterfacePieceDocument
     }
 
     public function getGeoJson() {
+        if ( ! $this->getParcellaire() ) {
+            return [];
+        }
         $geojson = $this->getParcellaire()->getGeoJson();
         $features = [];
         $parcelles = array_keys($this->getParcellaireParcelles());
@@ -257,18 +260,6 @@ class Controle extends BaseControle implements InterfacePieceDocument
         }
 
         $this->parcelles[$idParcelle]['controle'] = $element;
-    }
-
-    public function hasConstatTerrain()
-    {
-        foreach ($this->parcelles as $parcelleId => $parcelle) {
-            foreach ($parcelle->controle->points as $dataPoint) {
-                if (! empty($dataPoint)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public function hasConstatTerrainActif()
@@ -339,15 +330,26 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return $parcelles_id_list;
     }
 
-    public function addManquementManuel($manquementId, $parcelleId)
+    public function addManquementManuel($manquementId, $parcellesId)
     {
-        if ($this->manquements->exist($manquementId) && in_array($parcelleId, $this->getManquementParcellesIdListe($manquementId))) {return ;}
-        $manquement = $this->getInfosManquement($manquementId);
-        if (! $this->manquements->exist($manquementId)) {
-            $this->manquements->add($manquementId, $manquement);
+        if (! $parcellesId) {
+            $manquement = $this->getInfosManquement($manquementId);
+            if (! $this->manquements->exist($manquementId)) {
+                $this->manquements->add($manquementId, $manquement);
+            }
+            $this->manquements->get($manquementId)->parcelles_id->add(null, null);
         }
-        $this->manquements->get($manquementId)->parcelles_id->add(null, $parcelleId);
-        $this->save();
+        else {
+            foreach ($parcellesId as $parcelleId) {
+                if ($this->manquements->exist($manquementId) && in_array($parcelleId, $this->getManquementParcellesIdListe($manquementId))) {return ;}
+                $manquement = $this->getInfosManquement($manquementId);
+                if (! $this->manquements->exist($manquementId)) {
+                    $this->manquements->add($manquementId, $manquement);
+                }
+                $this->manquements->get($manquementId)->parcelles_id->add(null, $parcelleId);
+                // $this->save();
+            }
+        }
     }
 
     public function addManquementTerrain($manquementId, $dataManquement)
@@ -463,8 +465,11 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return $this->audit->operateur_observation;
     }
 
-    public function getPotentielProductionProduits()
+    public function initPotentielProductionProduits()
     {
+        if  ( ! $this->getParcellaire() ) {
+            return ;
+        }
         $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->getParcellaire());
         foreach ($potentiel->getProduits() as $ppproduit) {
             $this->surface_de_production->add($ppproduit->getLibelle(), $ppproduit->getSuperficieMax());
@@ -473,6 +478,9 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getSuperficieTotale()
     {
+        if ( ! $this->getParcellaire() ) {
+            return 0;
+        }
         return round($this->getParcellaire()->getSuperficieTotale(), 3);
     }
 
@@ -559,5 +567,12 @@ class Controle extends BaseControle implements InterfacePieceDocument
     }
 
     /**** FIN DES PIECES ****/
+
+
+    public function getInfoPdf($controleIdentifiant, $parcelleId)
+    {
+        $parcellaireParcelles = ParcellaireClient::getInstance()->getLast($controleIdentifiant)->getParcelles();
+        return 'Parcelle ' . $parcellaireParcelles[$parcelleId]->commune . ' - ' . $parcellaireParcelles[$parcelleId]->section . $parcellaireParcelles[$parcelleId]->numero_parcelle . ' - ' . $parcellaireParcelles[$parcelleId]->cepage . ' - ' . $parcellaireParcelles[$parcelleId]->campagne_plantation . ' - ' . $parcellaireParcelles[$parcelleId]->superficie . ' ha';
+    }
 
 }

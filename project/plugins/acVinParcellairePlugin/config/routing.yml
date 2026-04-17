@@ -154,6 +154,10 @@ controle_index:
   url: /controles
   param: { module: controle, action: index }
 
+controle_operateurs:
+  url: /controles/operateurs
+  param: { module: controle, action: operateurs }
+
 controle_operateur:
   url: /controles/:identifiant
   param: { module: controle, action: operateur }
@@ -241,7 +245,7 @@ controle_pdf_manquements:
   param: { module: controle, action: manquementPdf }
 
 controle_pdf:
-  url: /controle/:id/pdf
+  url: /controle/:id/controle/pdf
   param: { module: controle, action: exportControlePdf }
 
 controle_gestion_manquements:
@@ -252,9 +256,9 @@ controle_liste_manquements_operateur:
   url: /controle/:id_controle/manquements/liste
   param: { module: controle, action: listingManquementsOperateur }
 
-controle_lever_manquement:
-  url: /controle/:id_controle/manquement/:id_manquement/lever
-  param: { module: controle, action: leverManquement }
+controle_cloture_manquement:
+  url: /controle/:id_controle/manquement/:id_manquement/cloture
+  param: { module: controle, action: clotureManquement }
 
 controle_mail_resultats_previsualisation:
   url: /controle/:id_controle/mail-previsualisation

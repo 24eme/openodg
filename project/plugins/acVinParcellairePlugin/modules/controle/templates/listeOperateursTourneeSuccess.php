@@ -14,8 +14,7 @@
     <tr>
         <th class="col-xs-4">Opérateurs</th>
         <th class="col-xs-2">Type de tournée</th>
-        <th class="col-xs-2"></th>
-        <th class="col-xs-2"></th>
+        <th class="col-xs-2" colSpan="2">Documents</th>
         <th style="width: 0;"></th>
     </tr>
     </thead>
@@ -26,8 +25,8 @@
                 <a href="<?php echo url_for("controle_liste_manquements_controle", array('id' => $controle->_id)) ?>"><?php echo $controle->declarant->raison_sociale ?></a>
             </td>
             <td><?php echo $controle->type_tournee; ?></td>
-            <td><a href="<?php echo url_for('controle_pdf', array('id' => $controle->_id)); ?>">PDF du contrôle</a></td>
-            <td>
+            <td class="col-xs-2"><a href="<?php echo url_for('controle_pdf', array('id' => $controle->_id)); ?>">PDF du contrôle</a></td>
+            <td class="col-xs-2">
                 <?php if ($controle->isTermine()): ?>
                     <a href="<?php echo url_for('controle_pdf_manquements', array('id' => $controle->_id)); ?>">PDF des manquements</a>
                 <?php else: ?>
