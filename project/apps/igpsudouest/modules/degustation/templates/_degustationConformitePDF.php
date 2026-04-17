@@ -80,7 +80,7 @@
     <table>
       <tr><td>Il en résulte <?php echo count($lots) > 1 ? "qu'au moins <strong>un de vos lot" : "que <strong>votre lot"?> fait l'objet d'un <u>avertissement</u></strong> car il a été jugé "acceptable".</td></tr>
       <br/>
-      <tr><td><strong><?php echo $nombreObs > 1 ? "Ces lots peuvent être commercalisés" : "Ce lot peut être commercialisé"; ?> en IGP Comté Tolosan, mais nous vous invitons à prendre en compte les remarques formulées avant toute transaction ou conditionnement.</strong></td></tr>
+      <tr><td><strong><?php echo $nombreObs > 1 ? "Ces lots peuvent être commercalisés" : "Ce lot peut être commercialisé"; ?> en IGP, mais nous vous invitons à prendre en compte les remarques formulées avant toute transaction ou conditionnement.</strong></td></tr>
     </table>
 <?php endif; ?>
 <br/>

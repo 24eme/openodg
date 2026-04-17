@@ -248,6 +248,7 @@ Controle:
                   produit_hash: { }
                   source_produit_libelle: { }
                   parcelle_id: {}
+                  position: {}
                   controle:
                     type: collection
                     definition:

@@ -100,9 +100,10 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $this->add('parcelles');
         if ($parcellesIds) {
             $parcelles = $this->getParcellaire()->getParcelles();
-            foreach ($parcellesIds as $pId) {
+            foreach ($parcellesIds as $index => $pId) {
                 if ($parcelles->exist($pId)) {
                     $parcelle = $this->parcelles->add($pId, $parcelles->get($pId));
+                    $parcelle->position = $index;
                     foreach (ControleConfiguration::getInstance()->getAllPointsDeControle() as $pointKey => $pointConf) {
                         $point = $parcelle->controle->points->add($pointKey);
                         $point->libelle = $pointConf['libelle'];
