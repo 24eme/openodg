@@ -31,7 +31,7 @@
 <table><tr><td style="width: 324px;"><?php echo 'Le ' . format_date(date('Y-m-d'), "P", "fr_FR"); ?></td></tr></table>
 <br/><br/>
 
-<table><tr><td><strong>Objet : Information de manquement grave relevé lors d'un contrôle interne analytique sur les conditions de production de l'IGP Comté Tolosan</strong></td></tr></table>
+<table><tr><td><strong>Objet : Information de manquement grave relevé lors d'un contrôle interne analytique sur les conditions de production</strong></td></tr></table>
 <br/><br/>
 
 <table>
@@ -41,7 +41,7 @@
   <tr><td><strong><?php echo $lot->motif ?></strong></td></tr>
   <tr><td>Pour : <strong><?php echo showProduitCepagesLot($lot, false) ?> de <?php echo $lot->volume ?> hl (<?php echo $lot->getNumeroLogementOperateur(); ?>)</strong></td></tr>
   <br/>
-  <tr><td>Il en résulte que <strong>ce lot de vin est non loyal et marchand</strong> et ne peut être commercialisé en IGP Comté Tolosan. Le plan de contrôle prévoit donc que l'opérateur doit procéder à <strong>son déclassement en VSIG, dans un délais de 10 jours.</strong> Sans réponse de votre part, nous serons dans l'obligation de communiquer ce manquement grave à notre organisme de contrôle externe, QUALISUD, qui procédera à un contrôle externe, qui vous sera facturé.</td></tr>
+  <tr><td>Il en résulte que <strong>ce lot de vin est non loyal et marchand</strong> et ne peut être commercialisé en IGP. Le plan de contrôle prévoit donc que l'opérateur doit procéder à <strong>son déclassement en VSIG, dans un délais de 10 jours.</strong> Sans réponse de votre part, nous serons dans l'obligation de communiquer ce manquement grave à notre organisme de contrôle externe, QUALISUD, qui procédera à un contrôle externe, qui vous sera facturé.</td></tr>
 </table><br/><br/>
 
 <table>
