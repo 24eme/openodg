@@ -25,14 +25,14 @@
 <br/>
 <table><tr><td style="width: 324px;"><?php echo 'Le ' . format_date(date('Y-m-d'), "P", "fr_FR"); ?></td></tr></table>
 <br/><br/>
-    <table><tr><td><strong>Objet :</strong>Déclaration de prise de mousse</td></tr></table>
+    <table><tr><td><strong>Objet : </strong>Déclaration de prise de mousse</td></tr></table>
 <br/><br/>
 
 <table><tr><td>Madame, Monsieur,</td></tr></table>
 
 <?php $lotOrigine = $prisedemousse->getLotOrigine(); ?>
 
-<table><tr><td>Nous vous prions de bien vouloir trouver ci-dessous la <?php if (!$prisedemousse->getDegustationVMQ()->isAffecte() && !$prisedemousse->getDegustationVMQ()->isAffectable() && $prisedemousse->getDegustationVMQ()->isConforme()): ?> confirmation <?php else: ?> demande <?php endif ?> de prise de mousse de votre lot originalement déclaré en vin de base :</td></tr></table>
+<table><tr><td>Nous vous prions de bien vouloir trouver ci-dessous la  <?php if ( $prisedemousse->getDegustationVMQ() !== null && !$prisedemousse->getDegustationVMQ()->isAffecte() && !$prisedemousse->getDegustationVMQ()->isAffectable() && $prisedemousse->getDegustationVMQ()->isConforme()): ?> confirmation <?php else: ?> demande <?php endif ?> de prise de mousse de votre lot originalement déclaré en vin de base :</td></tr></table>
 
 <br/><br/>
 
@@ -72,7 +72,7 @@
 
 <table style="padding:20px auto;font-weight:bold;">
     <tr>
-        <?php if (!$prisedemousse->getDegustationVMQ()->isAffecte() && !$prisedemousse->getDegustationVMQ()->isAffectable() && $prisedemousse->getDegustationVMQ()->isConforme()): ?>
+        <?php if ($prisedemousse->getDegustationVMQ() !== null && !$prisedemousse->getDegustationVMQ()->isAffecte() && !$prisedemousse->getDegustationVMQ()->isAffectable() && $prisedemousse->getDegustationVMQ()->isConforme()): ?>
             <td style="text-align:center">qui devient le lot commercialisable suivant :  </td>
         <?php else: ?>
             <td style="text-align:left">qui après le contrôle organisé conformément au cahier des charges/plan de contrôle deviendra le lot ci-dessous : </td>
