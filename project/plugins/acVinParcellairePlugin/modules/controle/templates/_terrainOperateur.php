@@ -8,7 +8,7 @@
 <h2>Parcelles contrôlées <span class="badge">{{ nbParcellesControlees() }} / {{ Object.keys(controleCourant.parcelles).length }}</span></h2>
 
 <div class="list-group mt-4">
-    <RouterLink v-for="(parcelle, key, index) in controleCourant.parcelles" :to="{ name: 'parcelle', params: { id: controleCourant._id, parcelle: key }}" class="list-group-item" :class="{ 'list-group-item-success': parcelle.controle.saisie == 1 }">
+    <RouterLink v-for="(parcelle, key, index) in parcellesSorted()" :to="{ name: 'parcelle', params: { id: controleCourant._id, parcelle: key }}" class="list-group-item" :class="{ 'list-group-item-success': parcelle.controle.saisie == 1 }">
         <div class="row">
             <div class="col-xs-2 col-md-1" style="font-size: 20px;">
                 <strong>N° {{ index + 1 }}</strong>

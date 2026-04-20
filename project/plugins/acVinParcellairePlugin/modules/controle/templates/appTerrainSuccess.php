@@ -201,6 +201,16 @@
             const heure = this.controleCourant.heure_tournee;
             const agent = this.controleCourant.agent_libelle;
             return `Tournée du ${d}/${m}/${y} à ${heure} par ${agent}`;
+      },
+      parcellesSorted() {
+        const entries = Object.entries(this.controleCourant.parcelles)
+          .sort((a, b) => {
+            const posA = a[1].position ?? Infinity;
+            const posB = b[1].position ?? Infinity;
+            return posA - posB;
+          });
+
+        return Object.fromEntries(entries);
       }
     };
 
