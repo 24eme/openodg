@@ -33,6 +33,10 @@ function format_date($date, $format = 'd', $culture = null, $charset = null)
 {
     static $dateFormats = [];
 
+    if (strpos($date, '-') === false) {
+        $date = substr($date, 0, 4).'-'.substr($date, 4, 2).'-'.substr($date, 6, 2);
+    }
+
     if (null === $date) {
         return null;
     }
