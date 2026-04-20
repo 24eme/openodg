@@ -22,7 +22,7 @@
     <?php foreach ($controles as $controle): ?>
         <tr>
             <td>
-                <a href="<?php echo url_for("controle_liste_manquements_controle", array('id' => $controle->_id)) ?>"><?php echo $controle->declarant->raison_sociale ?></a>
+                <a href="<?php echo url_for("controle_operateur", array('identifiant' => $controle->identifiant)) ?>"><?php echo $controle->declarant->raison_sociale ?></a>
             </td>
             <td><?php echo $controle->type_tournee; ?></td>
             <td class="col-xs-2"><a href="<?php echo url_for('controle_pdf', array('id' => $controle->_id)); ?>">PDF du contrôle</a></td>

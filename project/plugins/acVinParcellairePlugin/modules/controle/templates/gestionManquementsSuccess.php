@@ -1,6 +1,11 @@
 <?php use_helper('Date'); ?>
 <?php include_partial('global/flash'); ?>
 
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('controle_index'); ?>">Contrôles</a></li>
+  <li class="active"><a href="">Liste des manquements à gérer</a></li>
+</ol>
+
 <h2>Manquements à gérer</h2>
 <table class="table table-bordered table-striped">
     <thead>
@@ -26,3 +31,7 @@
 <?php endforeach; ?>
         </tbody>
     </table>
+
+    <div class="row col-xs-12">
+        <a href="<?php echo url_for('controle_index') ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+    </div>

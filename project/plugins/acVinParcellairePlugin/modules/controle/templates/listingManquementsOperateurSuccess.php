@@ -1,5 +1,11 @@
 <?php use_helper('Date'); ?>
 
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('controle_index'); ?>">Contrôles</a></li>
+  <li><a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)) ?>">Tournée du <?php echo Date::francizeDate($controle->date_tournee); ?></a></li>
+  <li class="active"><a href="">Listes des manquements</a></li>
+</ol>
+
 <div class="well mb-5">
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $controle->getEtablissementObject()]); ?>
 </div>
@@ -27,7 +33,7 @@
             <?php if (!$manquement->cloture_date): ?>
                 <div class="dropdown">
                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        Traier
+                        Traiter
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -43,3 +49,7 @@
 <?php endforeach; ?>
         </tbody>
     </table>
+
+    <div class="row col-xs-12">
+        <a href="<?php echo url_for('controle_index') ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+    </div>
