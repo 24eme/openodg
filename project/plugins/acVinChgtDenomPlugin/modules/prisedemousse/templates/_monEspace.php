@@ -21,7 +21,7 @@
             <?php endif; ?>
         </div>
         <div class="panel-footer" style="padding-top: 0; padding-bottom: 0;">
-            <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'chgtdenom')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+            <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'prisedemousse')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
         </div>
     </div>
 </div>
