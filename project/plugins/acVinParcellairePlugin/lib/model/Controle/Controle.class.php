@@ -103,7 +103,12 @@ class Controle extends BaseControle implements InterfacePieceDocument
             foreach ($parcellesIds as $index => $pId) {
                 if ($parcelles->exist($pId)) {
                     $parcelle = $this->parcelles->add($pId, $parcelles->get($pId));
-                    $parcelle->position = $index;
+                    if (is_null($parcelle->position)) {
+                        $parcelle->position = $index;
+                    }
+                    if ( $parcelle->position != $index ) {
+                        throw new sfException("La position (".$parcelle->position.") de la parcelle controlée est différent de son index ($index) dans le tableau parcelles");
+                    }
                     foreach (ControleConfiguration::getInstance()->getAllPointsDeControle() as $pointKey => $pointConf) {
                         $point = $parcelle->controle->points->add($pointKey);
                         $point->libelle = $pointConf['libelle'];

@@ -480,13 +480,16 @@
         },
         getParcellesSorted(selection = true) {
             const parcellesSorted = [];
+            let parcelle_ordre = 0;
             if (selection) {
                 for(const parcelleId of this.parcellesSelectionnees) {
+                    this.controleCourant.parcellaire_parcelles[parcelleId].position = parcelle_ordre++;
                     parcellesSorted.push(parcelleId);
                 }
             } else {
                 for (const [parcelleId, parcelle] of Object.entries(this.controleCourant.parcellaire_parcelles)) {
                     if (!this.parcellesSelectionnees.includes(parcelleId)) {
+                        this.controleCourant.parcellaire_parcelles[parcelleId].position = parcelle_ordre++;
                         parcellesSorted.push(parcelleId);
                     }
                 }
