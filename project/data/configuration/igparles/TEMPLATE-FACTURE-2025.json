@@ -26,7 +26,10 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getSuperficieHorsApportCoopFromDocumentProduction"
+                   "callback": "getSuperficieHorsApportCoopFromDocumentProduction",
+                   "callback_parameters": {
+                       "appellations": "certifications/IGP"
+                   }
                },
                "cotisation_dr_hl": {
                    "modele": "CotisationVariable",
@@ -38,7 +41,10 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getVolumeVininifieFromDocumentDouanier"
+                   "callback": "getVolumeVininifieFromDocumentDouanier",
+                   "callback_parameters": {
+                       "appellations": "certifications/IGP"
+                   }
                },
                "cotisation_intermed": {
                    "modele": "CotisationVariable",
@@ -50,7 +56,10 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getVolumeVininifieFromDocumentDouanier"
+                   "callback": "getVolumeVininifieFromDocumentDouanier",
+                   "callback_parameters": {
+                       "appellations": "certifications/IGP"
+                   }
                },
                "cotisation_vinsigp": {
                    "modele": "CotisationVariable",
@@ -82,7 +91,10 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getSuperficieHorsApportCoopFromDocumentProduction"
+                   "callback": "getSuperficieHorsApportCoopFromDocumentProduction",
+                   "callback_parameters": {
+                       "appellations": "certifications/IGP"
+                   }
                },
                "revendication": {
                    "modele": "CotisationVariable",
@@ -269,7 +281,7 @@
                }
            }
        },
-      "09_conditionnement": {
+       "09_conditionnement": {
            "modele": "CotisationsCollection",
            "callback": "",
            "libelle": "IGP Arles",
