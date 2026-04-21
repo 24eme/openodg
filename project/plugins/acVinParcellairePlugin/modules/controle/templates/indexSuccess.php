@@ -11,7 +11,7 @@
 
 <div>
     <p><?php echo $nb_operateurs_a_planifier; ?> opérateurs à planifier</p>
-    <a href="<?php echo url_for('controle_operateurs') ?>" class="btn btn-primary">Planifier les controles</a>
+    <a href="<?php echo url_for('controle_aplanifier') ?>" class="btn btn-primary">Planifier les controles</a>
 </div>
 
 <h2 class="hidden-xs">Contrôles terrain à gérer</h2>

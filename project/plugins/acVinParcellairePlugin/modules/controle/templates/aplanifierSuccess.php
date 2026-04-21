@@ -3,7 +3,7 @@
 
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('controle_index'); ?>">Contrôles</a></li>
-  <li class="active"><a href="<?php echo url_for('controle_operateurs'); ?>">Plannification des opérateurs</a></li>
+  <li class="active"><a href="<?php echo url_for('controle_aplanifier'); ?>">Plannification des opérateurs</a></li>
 </ol>
 
 <h2 class="hidden-xs">Opérateurs dont le contrôle est à planifier</h2>
@@ -34,9 +34,7 @@
         $hamza = array($controle->declarant->nom, $controle->identifiant, $controle->declarant->cvi, $controle->declarant->commune, 'secteur:'.$controle->secteur, $controle->type_tournee);
         if ($controle->hasLiaisons()) {
             $caves = $controle->getLiaisonsLibellesArray()->getRawValue();
-            $caves = explode(', ', $caves );
             $hamza = array_merge($hamza, array_map( fn($v): string => 'cave:'.$v, $caves ));
-
         } else {
             $caves = array();
             $hamza[] = 'cave:non coopérateur';

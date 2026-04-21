@@ -37,7 +37,7 @@ class controleActions extends sfActions
         ksort($this->tournees);
     }
 
-    public function executeOperateurs(sfWebRequest $request)
+    public function executeAplanifier(sfWebRequest $request)
     {
         $controles = ControleClient::getInstance()->findAllByStatus();
         $this->controles_a_planifier = $controles[ControleClient::CONTROLE_STATUT_A_PLANIFIER];
