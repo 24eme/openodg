@@ -13,6 +13,9 @@ class controleActions extends sfActions
                 continue;
             }
             foreach($controles as $c) {
+                if ($c->isTermine()) {
+                    continue;
+                }
                 $index = $c->date_tournee.'-'.$c->agent_identifiant.'-'.$c->type_tournee;
                 if (!isset($this->tournees[$index])) {
                     $this->tournees[$index] = [
