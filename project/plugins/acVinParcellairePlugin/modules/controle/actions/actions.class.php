@@ -39,7 +39,16 @@ class controleActions extends sfActions
 
     public function executeOperateurs(sfWebRequest $request)
     {
-        $this->controles = ControleClient::getInstance()->findAllByStatus();
+        $controles = ControleClient::getInstance()->findAllByStatus();
+        $this->controles_a_planifier = $controles[ControleClient::CONTROLE_STATUT_A_PLANIFIER];
+        $this->nb_controles_by_types = ['Tous' => 0];
+        foreach(ControleClient::getInstance()->getTypes() as $type) {
+            $this->nb_controles_by_types[$type] = 0;
+        }
+        foreach($this->controles_a_planifier as $c) {
+            $this->nb_controles_by_types[$c->type_tournee]++;
+            $this->nb_controles_by_types['Tous']++;
+        }
     }
 
     public function executeEtablissementSelection(sfWebRequest $request) {

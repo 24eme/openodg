@@ -8,9 +8,17 @@
 
 <h2 class="hidden-xs">Opérateurs dont le contrôle est à planifier</h2>
 
+
 <div class="mb-2">
-    <input type="hidden" data-placeholder="Sélectionner un opérateur" data-hamzastyle-container=".table_operateurs" class="hamzastyle" style="width: 100%;">
+    <input type="hidden" data-placeholder="Sélectionner un opérateur ou un mot clé" data-hamzastyle-container=".table_operateurs" class="hamzastyle" style="width: 100%;">
 </div>
+
+<ul class="nav nav-pills" role="tablist">
+<?php foreach($nb_controles_by_types as $type => $nb): ?>
+    <li><a href='#<?php echo ($type != 'Tous') ? 'filtre=["'.$type.'"]' : ''; ?>'><?php echo $type; ?> <span class="badge"><?php echo $nb; ?></span></a></li>
+<?php endforeach; ?>
+</ul>
+
 <table class="table table-bordered table-striped hidden-xs table_operateurs">
     <thead>
     <tr>
@@ -21,17 +29,18 @@
     </tr>
     </thead>
     <tbody>
-<?php foreach ($controles[ControleClient::CONTROLE_STATUT_A_PLANIFIER] as $controle): ?>
+<?php foreach ($controles_a_planifier as $controle): ?>
     <?php
-        $hamza = array($controle->declarant->nom, $controle->identifiant, $controle->declarant->cvi, $controle->declarant->commune, $controle->secteur, $controle->type_tournee);
+        $hamza = array($controle->declarant->nom, $controle->identifiant, $controle->declarant->cvi, $controle->declarant->commune, 'secteur:'.$controle->secteur, $controle->type_tournee);
         $caves = $controle->getLibelleLiaison();
         if ($caves) {
-            $caves = explode(', ', $caves);
+            $caves = explode(', ', $caves );
+            $hamza = array_merge($hamza, array_map( fn($v): string => 'cave:'.$v, $caves ));
+
         } else {
             $caves = array();
-            $hamza[] = 'non coopérateur';
+            $hamza[] = 'cave:non coopérateur';
         }
-        $hamza = array_merge($hamza, $caves);
     ?>
     <tr class="hamzastyle-item" data-words='<?php echo json_encode($hamza, JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'>
         <td><?php echo format_date($controle->date); ?></td>
@@ -49,7 +58,14 @@
             <?php $has_secteur = true; endif; ?>
             <?php if (count($caves)): ?>
                 <?php if ($has_secteur) : ?> - <?php endif; ?>
-                Caves : <abbr title="<?php echo implode("\n", $caves); ?>"><?php echo count($caves); ?></abbr>
+                <span class="text-muted">
+                Caves :
+                <span>
+                    <?php foreach($caves as $c): ?>
+                        <a style="color:grey;" href='#filtre=["cave:<?php echo $c; ?>"]'><?php echo $c; ?></a> /
+                    <?php endforeach; ?>
+                </span>
+                </span>
             <?php endif; ?>
         </td>
         <td><?php echo $controle->type_tournee; ?></td>
