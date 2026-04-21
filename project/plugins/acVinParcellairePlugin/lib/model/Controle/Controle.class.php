@@ -394,21 +394,9 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return $this->manquements;
     }
 
-    public function getDateFr()
-    {
-        preg_match('/([0-9]{4})([0-9]{2})([0-9]{2})/', $this->date, $matches);
-        return $matches[3].'/'.$matches[2].'/'.$matches[1];
-    }
-
-    public function getDateEn()
-    {
-        preg_match('/([0-9]{4})([0-9]{2})([0-9]{2})/', $this->date, $matches);
-        return $matches[1].'-'.$matches[2].'-'.$matches[3];
-    }
-
     public function getActiviteClient()
     {
-        return HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getDateEn())->getActivitesHabilites();
+        return HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->date)->getActivitesHabilites();
     }
 
     public function getManquementsActif()
