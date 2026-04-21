@@ -13,7 +13,7 @@ class controleActions extends sfActions
                 continue;
             }
             foreach($controles as $c) {
-                $index = $c->date_tournee.'-'.$c->agent_identifiant;
+                $index = $c->date_tournee.'-'.$c->agent_identifiant.'-'.$c->type_tournee;
                 if (!isset($this->tournees[$index])) {
                     $this->tournees[$index] = [
                         'parcelles' => [],
