@@ -32,8 +32,8 @@
 <?php foreach ($controles_a_planifier as $controle): ?>
     <?php
         $hamza = array($controle->declarant->nom, $controle->identifiant, $controle->declarant->cvi, $controle->declarant->commune, 'secteur:'.$controle->secteur, $controle->type_tournee);
-        $caves = $controle->getLibelleLiaison();
-        if ($caves) {
+        if ($controle->hasLiaisons()) {
+            $caves = $controle->getLiaisonsLibellesArray()->getRawValue();
             $caves = explode(', ', $caves );
             $hamza = array_merge($hamza, array_map( fn($v): string => 'cave:'.$v, $caves ));
 

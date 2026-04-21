@@ -64,12 +64,20 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return EtablissementClient::getInstance()->findByCvi($this->declarant->cvi)->getLiaisonsOfType(EtablissementFamilles::FAMILLE_COOPERATIVE, true);
     }
 
-    public function getLibelleLiaison() {
+    public function getLiaisonsLibellesArray() {
         $libelles = [];
         foreach($this->liaisons_operateurs as $liaison) {
             $libelles[] = $liaison->libelle_etablissement;
         }
-        return implode(', ', $libelles);
+        return $libelles;
+    }
+
+    public function hasLiaisons() {
+        return count($this->getLiaisonsLibellesArray());
+    }
+
+    public function getLiaisonsLibellesString() {
+        return implode(', ', $this->getLiaisonsLibellesArray());
     }
 
     public function getParcellaire()
