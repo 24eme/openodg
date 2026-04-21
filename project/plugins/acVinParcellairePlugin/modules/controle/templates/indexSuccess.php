@@ -7,10 +7,11 @@
 <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('controle_etablissement_selection'))); ?>
 
 
-<h2 class="hidden-xs">Contrôles à planifier</h2>
+<h2>Contrôles à planifier</h2>
 
 <div>
-    <a href="<?php echo url_for('controle_operateurs') ?>" class="btn btn-primary"><?php echo $nbOperateur ?> opérateur<?php echo $nbOperateur > 0 ? 's' : ''; ?> à planifier</a>
+    <p><?php echo $nb_operateurs_a_planifier; ?> opérateurs à planifier</p>
+    <a href="<?php echo url_for('controle_operateurs') ?>" class="btn btn-primary">Planifier les controles</a>
 </div>
 
 <h2 class="hidden-xs">Contrôles terrain à gérer</h2>
@@ -76,12 +77,9 @@
     <?php endforeach; ?>
 </ul>
 
+<h2>Manquements à gérer</h2>
 
-<?php if(class_exists("ControleConfiguration") && ControleConfiguration::getInstance()->isModuleEnabled()): ?>
-<div class="row col-xs-10">
-    <a href="<?php echo url_for('controle_index') ?>" class="btn btn-primary">Accéder au contrôle terrain</a>
-</div>
-<div class="col-xs-2">
+<div>
+    <p><?php echo $nb_operateurs_en_manquement; ?> opérateurs en manquements</p>
     <a href="<?php echo url_for('controle_gestion_manquements', array())?>" class="btn btn-primary">Liste des manquements</a>
 </div>
-<?php endif; ?>

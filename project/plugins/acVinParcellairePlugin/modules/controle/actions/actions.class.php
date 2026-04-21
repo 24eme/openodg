@@ -6,7 +6,8 @@ class controleActions extends sfActions
         $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
         $allControles = ControleClient::getInstance()->findAllByStatus();
         $this->tournees = [];
-        $this->nbOperateur = count($allControles);
+        $this->nb_operateurs_a_planifier = count($allControles[ControleClient::CONTROLE_STATUT_A_PLANIFIER]);
+        $this->nb_operateurs_en_manquement = count($allControles[ControleClient::CONTROLE_STATUT_EN_MANQUEMENT]);
         foreach ($allControles as $statut => $controles) {
             if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_ORGANISE, ControleClient::CONTROLE_STATUT_EN_MANQUEMENT])) {
                 continue;
