@@ -1,16 +1,16 @@
 <h3 style="color: black">{{ controleCourant.declarant.nom }}</h3>
-
+<p>{{ controleCourant.identifiant }} / {{ printableSiret() }} / {{ controleCourant.declarant.cvi }}</p>
 <p>
 <a href="mailto:{{ controleCourant.declarant.email }}">{{ controleCourant.declarant.email }}</a><br />
 <a href="callto:{{ controleCourant.declarant.telephone_bureau }}">{{ controleCourant.declarant.telephone_bureau }}</a>
 <a href="callto:{{ controleCourant.declarant.telephone_mobile }}">{{ controleCourant.declarant.telephone_mobile }}</a>
 </p>
-<p>Potentiels de production : </p>
+<p>Potentiel de production : </p>
 
 <ul style="list-style-type:none;">
-  <li v-for="(pp, produit) in controleCourant.ppp">{{ produit }} : {{ pp }} ha</li>
+  <li v-for="(pp, produit) in controleCourant.surface_de_production">{{ produit }} : {{ pp }} ha</li>
 </ul>
-<p>Surface de production : {{ controleCourant.surface_production }} ha</p>
+<p>Surface de production : {{ controleCourant.superficie_totale }} ha</p>
 <br/>
 <div v-if="controleCourant.liaisons_operateurs[0]">
     <p>Cave(s) coopérative affectée(s) à cet opérateur :</p>

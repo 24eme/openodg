@@ -77,7 +77,3 @@ factures_meta[['Date', 'Raison sociale', 'Adresse', 'Code Postal', 'Ville', 'Tel
 
 
 # In[ ]:
-
-
-
-

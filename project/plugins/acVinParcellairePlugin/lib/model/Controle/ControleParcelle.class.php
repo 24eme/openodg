@@ -10,6 +10,10 @@ class ControleParcelle extends BaseControleParcelle
             $data->pourcentageManquant = $this->getInfoManquant();
             $data->irrigation = $this->getInfoIrrigation();
             $data->irrigation['date_irrigation'] = $this->getInfoIrrigue();
+            $data->affectation = $this->getInfoAffectation();
+            $data->needs_to_be_saved = false;
+            $data->has_probleme_ecart_pieds = $this->getParcellaire()->parcelles[$this->parcelle_id]->hasProblemEcartPieds();
+            $data->controle->points = ControleConfiguration::getInstance()->getAllPointsDeControle();
         }
         return $data;
     }
@@ -33,10 +37,12 @@ class ControleParcelle extends BaseControleParcelle
             $url .= '://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'#/'.$this->getDocument()->_id.'/parcelle/'.$this->getKey();
             $kml .= '<p><a href="'.$url.'">Controle la parcelle '.$this->getKey().'</a></p>';
             foreach (["Commune","Lieu dit","Produit","Cepage","Superficie"] as $prop) {
-                if ($prop == "Lieu dit" && ! $parcellaire_detail->{$prop}) {
+                if ($prop == "Lieu dit" && ! (isset($parcellaire_detail->{$prop}) && $parcellaire_detail->{$prop})) {
                     continue;
                 }
-                $kml .= '<p>' . $prop . ' : ' . $parcellaire_detail->{$prop} . '</p>';
+                if (isset($parcellaire_detail->{$prop})) {
+                    $kml .= '<p>' . $prop . ' : ' . $parcellaire_detail->{$prop} . '</p>';
+                }
             }
             $kml .= "<p>-----------------</p>";
         }
@@ -49,21 +55,36 @@ class ControleParcelle extends BaseControleParcelle
 
     public function getInfoManquant()
     {
-        return ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant)->getPourcentageFromIdParcelle($this->parcelle_id) : 0;
+        return ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant)->getPourcentageFromParcelleId($this->parcelle_id) : 0;
     }
 
     public function getInfoIrrigation()
     {
-        return ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant)->getInfoFromIdParcelle($this->parcelle_id) : ['materiel' => '', 'ressource' => ''];
+        return ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant)->getInfoFromParcelleId($this->parcelle_id) : ['materiel' => '', 'ressource' => ''];
     }
 
     public function getInfoIrrigue()
     {
-        return ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant) ? date("d/m/Y", strtotime(ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant)->getDateIrrigationFromIdParcelle($this->parcelle_id))) : null;
+        return ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant) ? date("d/m/Y", strtotime(ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant)->getDateIrrigationFromParcelleId($this->parcelle_id))) : null;
+    }
+
+    public function getInfoAffectation()
+    {
+        $a = ParcellaireAffectationClient::getInstance()->getLast($this->getDocument()->identifiant);
+        $res = ($a) ? $a->getInfoFromParcelleId($this->parcelle_id) : [];
+        if (isset($res['affectation_date'])) {
+            $res['affectation_date'] = date("d/m/Y", strtotime($res['affectation_date']));
+        }
+        return $res;
     }
 
     public function getInfoPdf()
     {
         return 'Parcelle ' . $this->commune . ' - ' . $this->section . $this->numero_parcelle . ' - ' . $this->cepage . ' - ' . $this->campagne_plantation . ' - ' . $this->superficie . ' ha';
+    }
+
+    public function getParcellaire()
+    {
+        return ParcellaireClient::getInstance()->getLast($this->getDocument()->identifiant);
     }
 }

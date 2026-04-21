@@ -210,17 +210,15 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
     }
 
     public function generateDonnees() {
-        if (!$this->exist('_attachments') || !count($this->_attachments))  {
-            return false;
+        if ($this->exist('donnees') && count($this->donnees) > 0) {
+            return;
         }
-        if (!$this->exist('donnees') || count($this->donnees) < 1) {
-            $this->add('donnees');
-            $generate = false;
-            foreach ($this->getCsv() as $datas) {
-                $this->addDonnee($datas);
-            }
+
+        $this->add('donnees');
+
+        foreach ($this->getCsv() as $datas) {
+            $this->addDonnee($datas);
         }
-        return false;
     }
 
     private $bailleuretablissements = null;
@@ -235,7 +233,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
     }
 
     public function getEnhancedDonnees($drev_produit_filter = null) {
-        if (isset($this->enhanced_donnees) && count($this->enhanced_donnees)) {
+        if (isset($this->enhanced_donnees)) {
             return $this->enhanced_donnees;
         }
 
@@ -243,19 +241,20 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
         $this->generateDonnees();
 
-        if(!$this->exist('donnees')) {
-            return [];
-        }
-
         foreach (ChgtDenomClient::getInstance()->getChgtDenomProduction($this->identifiant, $this->campagne) as $chgt) {
             $chgt->addDonneesForProduction($this);
         }
+
+        $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->date_depot);
 
         $this->enhanced_donnees = array();
         $colonnesid = array();
         $colonneid = 0;
         $drev = DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->getCampagne());
         foreach($this->donnees as $i => $donnee) {
+            if($habilitation && $habilitation->isHabiliteExterieur($donnee->produit, HabilitationClient::ACTIVITE_VINIFICATEUR)) {
+                continue;
+            }
             $d = (object) $donnee->toArray();
             $d->produit_conf = $this->configuration->declaration->get($donnee->produit);
             $p = array();

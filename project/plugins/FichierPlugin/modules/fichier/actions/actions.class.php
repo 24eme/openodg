@@ -304,6 +304,7 @@ class fichierActions extends sfActions
 
     public function executeCvi(sfWebRequest $request) {
         $this->cvi = $request->getParameter('cvi');
+        $this->etablissement = EtablissementClient::getInstance()->findByCvi($this->cvi, true);
         $this->cvi_details = ProdouaneScrappyClient::checkCVI($this->cvi);
         return sfView::SUCCESS;
     }

@@ -1,7 +1,7 @@
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('controle_index'); ?>">Contrôles</a></li>
   <li><a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>">Tournée du <?php echo Date::francizeDate($controle->date_tournee); ?></a></li>
-  <li><a href=""><?php echo $controle->declarant->nom ?> (<?php echo $controle->identifiant ?> - <?php echo $controle->declarant->cvi ?>)</a></li>
+  <li><a href="<?php echo url_for('controle_operateur', $controle->getEtablissementObject()); ?>"><?php echo $controle->declarant->nom ?> (<?php echo $controle->identifiant ?> - <?php echo $controle->declarant->cvi ?>)</a></li>
   <li class="active"><a href="">Visualisation des manquements</a></li>
 </ol>
 
@@ -9,7 +9,7 @@
     <button type="submit" class="btn btn-default mt-3"><span class="glyphicon glyphicon-repeat"></span> Regénérer les manquements</button>
 </form>
 
-<h2 class="mb-4">Manquement du contrôle du <?php echo Date::francizeDate($controle->date_tournee); ?></h2>
+<h2 class="mb-4">Manquements du contrôle du <?php echo Date::francizeDate($controle->date_tournee); ?></h2>
 
 <div class="well mb-5">
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $controle->getEtablissementObject()]); ?>
@@ -35,7 +35,7 @@
                         <strong><?php echo $parcelle_id; ?> </strong>
                     <?php endforeach; ?>
                 </p>
-                <p>Délais : <?php echo $listeManquements[$manquementId]['delais']; ?></p>
+                <p>Délais : <?php if ($listeManquements[$manquementId]['delais']) { echo $listeManquements[$manquementId]['delais']; } else { echo 'NA'; } ?></p>
                 <p>Point de controle : <?php echo $listeManquements[$manquementId]['libelle_point_de_controle']; ?></p>
                 <p>Observations : <?php echo $manquement['observations']->render(['class' => 'form-control']); ?></p>
             </div>
@@ -45,7 +45,7 @@
 <div class="row">
     <div class="col-xs-4"><a class="btn btn-default" href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
     <div class="col-xs-4 text-center">
-    <a class="btn btn-default" href="<?php echo url_for('controle_ajout_liste_manquements', array("id" => $controle->_id))?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un manquement</a>
+        <button type="submit" form="formListeManquements" class="btn btn-success">Valider les manquements</button>
     </div>
-    <div class="col-xs-4"><button type="submit" form="formListeManquements" class="btn btn-primary pull-right">Enregistrer</button></div>
+    <div class="col-xs-4"><a class="btn btn-default pull-right" href="<?php echo url_for('controle_ajout_liste_manquements', array("id" => $controle->_id))?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un manquement</a></div>
 </div>

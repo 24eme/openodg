@@ -1,5 +1,6 @@
 {
   "_id": "TEMPLATE-FACTURE-2025",
+  "_rev": "6-334564b00c67ba4fc34c5fa07731e5c6",
   "type": "TemplateFacture",
   "campagne": "2025",
   "template": "IGP",
@@ -56,7 +57,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables",
+          "callback": "getVolumeVininifieFromDocumentDouanier",
           "callback_parameters": {
             "appellations": "NOT certifications/VSIG/"
           }
@@ -127,7 +128,7 @@
           ],
           "callback": "getVolumeFacturable",
           "callback_parameters": {
-            "appellations": "/appellations/MED NOT same "
+            "appellations": "/appellations/MED NOT same AND NOT /millesime/courant"
           }
         }
       }
@@ -280,28 +281,28 @@
         }
       }
     },
-   "09_conditionnement": {
-        "modele": "CotisationsCollection",
-        "callback": "",
-        "libelle": "Contrôle des conditionnés - N° %detail_identifiant%",
-        "code_comptable": "70600502",
-        "details": {
-            "cotisation": {
-                "modele": "Cotisation",
-                "prix": 80,
-                "tva": 0.2,
-                "libelle": "",
-                "unite": "",
-                "complement_libelle": "",
-                "docs": [
-                    "Degustation"
-                ],
-                "callback": "getForfaitConditionnement",
-                "callback_parameters": {
-                    "appellations": "NOT /genres/EFF/appellations/MED"
-                }
-            }
+    "09_conditionnement": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Contrôle des conditionnés - N° %detail_identifiant%",
+      "code_comptable": "70600502",
+      "details": {
+        "cotisation": {
+          "modele": "Cotisation",
+          "prix": 80,
+          "tva": 0.2,
+          "libelle": "",
+          "unite": "",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getForfaitConditionnement",
+          "callback_parameters": {
+            "appellations": "NOT /genres/EFF/appellations/MED"
+          }
         }
+      }
     }
   }
 }

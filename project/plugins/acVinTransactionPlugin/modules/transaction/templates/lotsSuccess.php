@@ -53,7 +53,7 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <?php echo $lot['numero_logement_operateur']->renderLabel("Numéro de logement", array('class' => "col-sm-3 control-label")); ?>
+                      <?php echo $lot['numero_logement_operateur']->renderLabel("N° de logement et destinataire", array('class' => "col-sm-3 control-label pt-0")); ?>
                       <div class="col-sm-5">
                             <?php echo $lot['numero_logement_operateur']->render(); ?>
                       </div>

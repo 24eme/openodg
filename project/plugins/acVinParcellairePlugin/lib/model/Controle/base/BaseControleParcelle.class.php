@@ -1,7 +1,7 @@
 <?php
 /**
  * BaseControleParcelle
- *
+ * 
  * Base model for ControleParcelle
 
  * @property float $superficie
@@ -74,14 +74,14 @@
  * @method string setParcelleId()
  * @method acCouchdbJson getControle()
  * @method acCouchdbJson setControle()
-
+ 
  */
 
 abstract class BaseControleParcelle extends ParcellaireParcelle {
-
+                
     public function configureTree() {
        $this->_root_class_name = 'Controle';
        $this->_tree_class_name = 'ControleParcelle';
     }
-
+                
 }

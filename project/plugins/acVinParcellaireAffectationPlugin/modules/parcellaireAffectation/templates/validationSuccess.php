@@ -41,6 +41,7 @@
     </div>
 
     <?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation, 'coop' => $coop)); ?>
+
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="row">
@@ -56,7 +57,7 @@
              </div>
         </div>
    </div>
-    <div style="padding-top: 10px;" class="row row-margin row-button">
+    <div class="row row-margin row-button pt-2">
         <div class="col-xs-4">
         	<a href="<?php echo url_for("parcellaireaffectation_affectations", $parcellaireAffectation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
@@ -73,9 +74,6 @@
             <?php endif; ?>
         </div>
     </div>
-    <?php if (!isset($validation) || !$validation->hasErreurs()): ?>
-	<?php include_partial('parcellaireAffectation/popupConfirmationValidation', array('form' => $form)); ?>
-	<?php endif; ?>
 </form>
 
 <?php if(isset($coop)): ?>
@@ -106,4 +104,8 @@ $('#parcellaireaffectation-confirmation-validation').modal('show')
             </div>
         </div>
     </div>
+<?php endif; ?>
+
+<?php if (!isset($validation) || !$validation->hasErreurs()): ?>
+<?php include_partial('parcellaireAffectation/popupConfirmationValidation', array('form' => $form)); ?>
 <?php endif; ?>

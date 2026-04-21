@@ -11,14 +11,14 @@ class ExportControleManquementPDFConfig extends ExportPDFConfig
         $this->author = 'ODG';
 
         $this->font_name = 'helvetica';
-        $this->margin_left = 0;
-        $this->margin_top = 4.7;
-        $this->margin_right = 0;
-        $this->margin_bottom = 0;
-        $this->margin_header = 0;
-        $this->margin_footer = 0;
+        $this->margin_left = 5;
+        $this->margin_top = 5;
+        $this->margin_right = 5;
+        $this->margin_bottom = 5;
+
         $this->font_size = 10;
         $this->font_size_main = 10;
+        $this->header_enabled = false;
 
         $this->path_images = sfConfig::get('sf_web_dir').'/images/pdf/';
         $this->header_logo = 'logo_'.sfConfig::get('sf_app').'.jpg';

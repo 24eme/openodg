@@ -79,7 +79,13 @@ class ProdouaneScrappyClient {
         if (!isset($res->files)) {
             return [];
         }
-        return $res->files;
+        $files = [];
+        foreach($res->files as $f) {
+            if (strpos($f, '.log') === false) {
+                $files[] = $f;
+            }
+        }
+        return $files;
     }
 
     public static function saveFile($type, $millesime, $cvi, $filename, $dest_dir_path) {

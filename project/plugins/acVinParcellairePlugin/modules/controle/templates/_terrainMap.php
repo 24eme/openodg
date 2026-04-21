@@ -1,6 +1,14 @@
-<h3 class="mt-0">Carte<RouterLink :to="{ name: 'listing' }" class="pull-right"><span class="glyphicon glyphicon-remove"></span></RouterLink><button class="btn btn-default btn-sm pull-right mr-4" @click="downloadKml">Télécharger KML</button></h3>
+<div class="mt-0 text-center">
+    <div class="pull-right" >
+        <a href="#" onclick="history.go(-1);return false;"><span class="glyphicon glyphicon-remove"></span></a>
+    </div>
+    <h3>Carte</h3>
+</div>
 <hr class="mt-2 mb-4" />
 <div id="map" style="height: 70vh;"></div>
+<div class="col-xs-offset-10 col-xs-2 mt-2" >
+    <button class="btn btn-default btn-sm pull-right mr-4" @click="downloadKml">Télécharger KML</button>
+</div>
 <hr />
 <RouterLink :to="{ name: 'map' }" v-if="idu">Supprimer la séléction</RouterLink>
 <div class="list-group mt-4">
