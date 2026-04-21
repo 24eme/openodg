@@ -1,6 +1,7 @@
 <?php use_helper('TemplatingPDF'); ?>
 <?php use_helper('Text') ?>
 <?php use_helper('Lot') ?>
+<?php use_helper('Date') ?>
 
 <style>
 table, th, td {
@@ -26,7 +27,7 @@ table, th, td {
             <td colSpan="4"><u>Activités : </u><br/><?php foreach ($controle->getActiviteClient() as $activite) {echo $activite . '   ';} ?></td>
         </tr>
         <tr>
-            <td colSpan="5" style="height: 30px;">&nbsp;<br/><strong>DATE :&nbsp;</strong><?php echo $controle->getDateFr(); ?><br/></td>
+            <td colSpan="5" style="height: 30px;">&nbsp;<br/><strong>DATE :&nbsp;</strong><?php echo format_date($controle->date_tournee); ?><br/></td>
             <td colSpan="3">&nbsp;<br/><strong>AGENT :</strong>&nbsp;&nbsp;<?php echo CompteClient::getInstance()->find($controle->agent_identifiant)->getInitiales(); ?></td>
         </tr>
         <tr>
