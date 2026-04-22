@@ -180,16 +180,6 @@ controle_nouveau:
     model:    Etablissement
     type:     object
 
-controle_parcelles:
-  url: /controle/:id/parcelles
-  param: { module: controle, action: parcelles }
-  class: ControleRoute
-  options:
-    model:    Controle
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
 controle_saveinlocalstorage:
   url: /controle/:id/saveinlocalstorage
   param: { module: controle, action: saveInLocalStorage }

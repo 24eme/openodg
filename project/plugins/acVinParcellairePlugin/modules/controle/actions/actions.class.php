@@ -85,24 +85,12 @@ class controleActions extends sfActions
         return $this->redirect('controle_operateur', $this->etablissement);
     }
 
-    public function executeParcelles(sfWebRequest $request)
-    {
-    	$this->controle = $this->getRoute()->getControle();
 
-        if(!$this->getUser()->isAdmin()) {
-            throw new sfError403Exception("Accès admin uniquement");
-        }
 
-        $this->parcellaire = $this->controle->getParcellaire();
 
-        if ($request->isMethod(sfWebRequest::POST)) {
-            $this->controle->updateParcelles($request->getPostParameter('parcelles', []));
-            $this->controle->save();
-            return $this->redirect('controle_index');
-        }
-    }
 
-    private function getControlesByDateTourneeAndAgentAndSetControle($dateTournee, $agentIdentifiant)
+
+    private function getDataControlesByDateTourneeAndAgentAndSetControle($dateTournee, $agentIdentifiant)
     {
         $controles = [];
         foreach (ControleClient::getInstance()->findAll() as $controle) {
@@ -110,6 +98,8 @@ class controleActions extends sfActions
                 if (! $controle->getParcellaire() || ! count($controle->getParcellaire()->getParcelles()) ) {
                     continue;
                 }
+                $controle->updateParcellesNoeudControleIfNeeded();
+                $controle->save();
                 $controles[$controle->_id] = $controle->getDataToDump();
             }
         }
@@ -120,7 +110,7 @@ class controleActions extends sfActions
     {
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
-        $this->json = json_encode($this->getControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->json = json_encode($this->getDataControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
     }
 
@@ -128,7 +118,7 @@ class controleActions extends sfActions
     {
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
-        $this->json = json_encode($this->getControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->json = json_encode($this->getDataControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getAllPointsDeControle(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
     }
@@ -141,7 +131,7 @@ class controleActions extends sfActions
         foreach ($data as $controleId => $items) {
             if ($controle = ControleClient::getInstance()->find($controleId)) {
                 $controle->heure_tournee = $items->heure_tournee;
-                $controle->updateParcelles($items->parcelles);
+                $controle->resetParcellesWithParcellesIds($items->parcelles);
                 $controle->save();
             }
         }
@@ -159,7 +149,7 @@ class controleActions extends sfActions
         $this->controle->type_tournee = $request->getParameter('type_tournee');
         $this->controle->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->controle->save();
-        return $this->redirect('controle_index');
+        return $this->redirect('controle_operateur', $this->controle->getEtablissementObject());
     }
 
     public function executeVisualisation(sfWebRequest $request)

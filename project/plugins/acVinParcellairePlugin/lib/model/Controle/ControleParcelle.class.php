@@ -13,7 +13,6 @@ class ControleParcelle extends BaseControleParcelle
             $data->affectation = $this->getInfoAffectation();
             $data->needs_to_be_saved = false;
             $data->has_probleme_ecart_pieds = $this->getParcellaire()->parcelles[$this->parcelle_id]->hasProblemEcartPieds();
-            $data->controle->points = ControleConfiguration::getInstance()->getAllPointsDeControle();
         }
         return $data;
     }
@@ -86,5 +85,36 @@ class ControleParcelle extends BaseControleParcelle
     public function getParcellaire()
     {
         return ParcellaireClient::getInstance()->getLast($this->getDocument()->identifiant);
+    }
+
+    public function needsUpdateNoeudControle()
+    {
+        $pointsDeControle = ControleConfiguration::getInstance()->getAllPointsDeControle();
+        foreach ($pointsDeControle as $idPoint => $dataPoint) {
+            if (! $this->controle->points->exist($idPoint)) {
+                return true;
+            }
+            foreach ($dataPoint['constats'] as $idConstat => $dataConstat) {
+                if (! $this->controle->points[$idPoint]->constats->exist($idConstat)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function updateNoeudControle()
+    {
+        $pointsDeControle = ControleConfiguration::getInstance()->getAllPointsDeControle();
+        foreach ($pointsDeControle as $idPoint => $dataPoint) {
+            if (! $this->controle->points->exist($idPoint)) {
+                $this->controle->points->add($idPoint, array('libelle' => $dataPoint['libelle']));
+            }
+            foreach ($dataPoint['constats'] as $idConstat => $dataConstat) {
+                if (! $this->controle->points[$idPoint]->constats->exist($idConstat)) {
+                    $this->controle->points[$idPoint]->constats->add($idConstat, array('libelle' => $dataConstat['libelle'], 'observations' => null, 'non_conforme' => false));
+                }
+            }
+        }
     }
 }

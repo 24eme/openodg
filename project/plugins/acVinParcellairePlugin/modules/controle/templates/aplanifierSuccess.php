@@ -68,7 +68,7 @@
         </td>
         <td><?php echo $controle->type_tournee; ?></td>
         <td class="text-right">
-            <a href="<?php echo url_for('controle_set_date_tournee', $controle); ?>" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-time"></span> Planifier le controle</a>
+            <a href="<?php echo url_for('controle_set_date_tournee', $controle); ?>" class="btn btn-sm btn-primary" target="_blank"><span class="glyphicon glyphicon-time"></span> Planifier le controle</a>
         </td>
     </tr>
 <?php endforeach; ?>
