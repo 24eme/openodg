@@ -89,7 +89,8 @@ class controleActions extends sfActions
 
 
 
-    private function getControlesByDateTourneeAndAgentAndSetControle($dateTournee, $agentIdentifiant)
+
+    private function getDataControlesByDateTourneeAndAgentAndSetControle($dateTournee, $agentIdentifiant)
     {
         $controles = [];
         foreach (ControleClient::getInstance()->findAll() as $controle) {
@@ -109,7 +110,7 @@ class controleActions extends sfActions
     {
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
-        $this->json = json_encode($this->getControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->json = json_encode($this->getDataControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
     }
 
@@ -117,7 +118,7 @@ class controleActions extends sfActions
     {
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
-        $this->json = json_encode($this->getControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->json = json_encode($this->getDataControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getAllPointsDeControle(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
     }
