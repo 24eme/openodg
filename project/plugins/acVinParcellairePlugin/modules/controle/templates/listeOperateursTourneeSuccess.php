@@ -14,8 +14,7 @@
     <tr>
         <th class="col-xs-4">Opérateurs</th>
         <th class="col-xs-2">Type de tournée</th>
-        <th class="col-xs-2" colSpan="2">Documents</th>
-        <th style="width: 0;"></th>
+        <th class="col-xs-6" colSpan="3">Documents</th>
     </tr>
     </thead>
     <tbody>
@@ -25,12 +24,17 @@
                 <a href="<?php echo url_for("controle_operateur", array('identifiant' => $controle->identifiant)) ?>"><?php echo $controle->declarant->raison_sociale ?></a>
             </td>
             <td><?php echo $controle->type_tournee; ?></td>
-            <td class="col-xs-2"><a href="<?php echo url_for('controle_pdf', array('id' => $controle->_id)); ?>">PDF du contrôle</a></td>
-            <td class="col-xs-2">
-                <?php if ($controle->isTermine()): ?>
-                    <a href="<?php echo url_for('controle_pdf_manquements', array('id' => $controle->_id)); ?>">PDF des manquements</a>
-                <?php else: ?>
+            <td>
+                <a href="<?php echo url_for('controle_pdf', array('id' => $controle->_id)); ?>">PDF du contrôle</a>
+            </td>
+            <td>
+                <?php if ($controle->needConstatsToBeCreated()): ?>
                     <a class="btn btn-xs btn-default" href="<?php echo url_for('controle_liste_manquements_controle', array('id' => $controle->_id)); ?>">Générer les manquements</a>
+                <?php else: ?>
+                    <a href="<?php echo url_for('controle_pdf_manquements', array('id' => $controle->_id)); ?>">PDF des manquements</a>
+                    <?php if ($controle->isANotifier()) :?>
+                    <a class="btn btn-xs btn-default" href="<?php echo url_for('controle_liste_manquements_controle', array('id' => $controle->_id)); ?>"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <?php endif; ?>
                 <?php endif;?>
             </td>
             <td>
