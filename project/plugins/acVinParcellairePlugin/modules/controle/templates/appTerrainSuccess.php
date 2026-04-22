@@ -174,7 +174,7 @@
               if (point.conformite != 'NC') {continue;}
               for (const constatKey in point.constats) {
                   const constat = point.constats[constatKey];
-                  if (constat.conformite == true) {
+                  if (constat.non_conforme == true) {
                       ret += 1;
                   }
               }
@@ -262,7 +262,7 @@
                 if (point.conformite !== 'NC') {
                     for (const constatKey in point.constats) {
                         const constat = point.constats[constatKey];
-                        constat.conformite = false;
+                        constat.non_conforme = false;
                         constat.observations = null;
                     }
                 }

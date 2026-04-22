@@ -273,7 +273,8 @@ Controle:
                                               fields:
                                                 libelle: {}
                                                 observations: {}
-                                                conformite: {}
+                                                conformite: { required: false }
+                                                non_conforme: {}
                         superficie_a_retirer: {}
                         saisie: {}
                         observations: { required: false } # deprecated
