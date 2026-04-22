@@ -46,7 +46,7 @@ class ControleClient extends acCouchdbClient
     public function findOrCreate($identifiant, $date = null, $type = self::TYPE_COUCHDB)
     {
         if (!$date) {
-            $date = date('Ymd');
+            $date = date('Y-m-d');
         }
         $controle = new Controle();
         $controle->initDoc($identifiant, $date);

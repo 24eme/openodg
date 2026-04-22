@@ -62,7 +62,7 @@ class PriseDeMousse extends ChgtDenom  {
         $lot = $this->getLotOrigine();
         $libelle = 'Prise de mousse';
 
-        // $libelle .= ($this->isTotal())? '' : ' partiel';
+        $libelle .= ($this->isTotal())? '' : ' partielle';
         $libelle .= ' n° '.$this->numero_archive.' -';
         $libelle .= ' lot de '.$this->origine_produit_libelle.' '.$this->origine_millesime;
         $libelle .= ' - logement '.$this->origine_numero_logement_operateur.' ';
@@ -76,5 +76,22 @@ class PriseDeMousse extends ChgtDenom  {
             'source' => null
             ));
         return array();
+    }
+
+    public function isTotal()
+    {
+        if (!$this->getLotOrigine()) {
+            return $this->changement_volume == $this->origine_volume;
+        }
+
+        return ($this->changement_volume >= $this->getLotOrigine()->volume);
+    }
+
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+        return sfContext::getInstance()->getRouting()->generate('prisedemousse_visualisation', array('id' => $id));
+    }
+
+    public function generateUrlPiece($source = null) {
+        return sfContext::getInstance()->getRouting()->generate('prisedemousse_pdf', $this);
     }
 }

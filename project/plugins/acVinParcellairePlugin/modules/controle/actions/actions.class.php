@@ -13,6 +13,9 @@ class controleActions extends sfActions
                 continue;
             }
             foreach($controles as $c) {
+                if ($c->isTermine()) {
+                    continue;
+                }
                 $index = $c->date_tournee.'-'.$c->agent_identifiant.'-'.$c->type_tournee;
                 if (!isset($this->tournees[$index])) {
                     $this->tournees[$index] = [
@@ -37,7 +40,7 @@ class controleActions extends sfActions
         ksort($this->tournees);
     }
 
-    public function executeOperateurs(sfWebRequest $request)
+    public function executeAplanifier(sfWebRequest $request)
     {
         $controles = ControleClient::getInstance()->findAllByStatus();
         $this->controles_a_planifier = $controles[ControleClient::CONTROLE_STATUT_A_PLANIFIER];
