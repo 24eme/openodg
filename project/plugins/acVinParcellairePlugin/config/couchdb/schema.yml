@@ -307,7 +307,7 @@ Controle:
         definition:
           fields:
             '*': {}
-      manquements_valides:
+      manquements_valides: {required: true}
       mouvements_statuts:
         type: array_collection
         definition:

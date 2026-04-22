@@ -153,20 +153,22 @@ class Controle extends BaseControle implements InterfacePieceDocument
         if(!$this->isPlanifie()) {
             return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
         }
-        if ($this->isControle()) {
-            return ControleClient::CONTROLE_STATUT_EN_MANQUEMENT;
-        }
         if ($this->isOrganise()) {
             return ControleClient::CONTROLE_STATUT_ORGANISE;
         }
         if ($this->isPlanifie()) {
             return ControleClient::CONTROLE_STATUT_A_ORGANISER;
         }
-        if ($this->isTermine()) {
-            return ControleClient::CONTROLE_STATUT_TERMINE;
+        if ($this->isANotifier()) {
+            return ControleClient::CONTROLE_STATUT_A_NOTIFIER;
+        }
+        if ($this->isControleCloture()) {
+            return ControleClient::CONTROLE_STATUT_CONTROLE_CLOTURE;
+        }
+        if ($this->isTourneeTerminee()) {
+            return ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER;
         }
         return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
-
     }
 
     public function isPlanifie()
@@ -184,9 +186,52 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return $this->isOrganise() && count($this->manquements);
     }
 
-    public function isTermine()
+    public function isTourneeTerminee()
     {
-        return $this->manquements_valides;
+        return $this->isNotifiee();
+    }
+
+    public function isNotifiee()
+    {
+        return ($this->notification_date);
+    }
+
+    public function isANotifier()
+    {
+        return $this->needConstatsToBeCreated() || ! $this->isNotifiee();
+    }
+
+    public function hasManquements()
+    {
+        return $this->manquements && (count($this->manquements) > 0);
+    }
+
+    public function isControleCloture()
+    {
+        if (! $this->hasManquements() && $this->notification_date ) {
+            return true;
+        }
+        return ! $this->hasManquementsActif();
+    }
+
+    public function needConstatsToBeCreated()
+    {
+        $constats_id = [];
+        foreach($this->parcelles as $pid => $p) {
+            foreach ($p->controle->points as $key => $p) {
+                foreach ($p->constats as $rtm => $constat) {
+                    if ($constat->non_conforme) {
+                        $constats_id[$rtm] = $rtm;
+                    }
+                }
+            }
+        }
+        foreach(array_keys($constats_id) as $rtm) {
+            if (!isset($this->manquements[$rtm])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function generateMouvementsStatuts()

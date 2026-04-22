@@ -7,13 +7,13 @@ class controleActions extends sfActions
         $allControles = ControleClient::getInstance()->findAllByStatus();
         $this->tournees = [];
         $this->nb_operateurs_a_planifier = count($allControles[ControleClient::CONTROLE_STATUT_A_PLANIFIER]);
-        $this->nb_operateurs_en_manquement = count($allControles[ControleClient::CONTROLE_STATUT_EN_MANQUEMENT]);
+        $this->nb_operateurs_en_manquement = count($allControles[ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER]);
         foreach ($allControles as $statut => $controles) {
-            if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_ORGANISE, ControleClient::CONTROLE_STATUT_EN_MANQUEMENT])) {
+            if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_ORGANISE, ControleClient::CONTROLE_STATUT_A_NOTIFIER, ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER])) {
                 continue;
             }
             foreach($controles as $c) {
-                if ($c->isTermine()) {
+                if ($c->isTourneeTerminee()) {
                     continue;
                 }
                 $index = $c->date_tournee.'-'.$c->agent_identifiant.'-'.$c->type_tournee;
@@ -179,7 +179,6 @@ class controleActions extends sfActions
             if (! $this->form->isValid()) {
                 return sfView::SUCCESS;
             }
-            $this->controle->manquements_valides = true;
             $this->form->save();
             return $this->redirect('controle_liste_operateur_tournee', array('date' => $this->controle->date_tournee, 'agent_identifiant' => $this->controle->agent_identifiant));
         }
