@@ -90,4 +90,8 @@ class PriseDeMousse extends ChgtDenom  {
     public static function getUrlVisualisationPiece($id, $admin = false) {
         return sfContext::getInstance()->getRouting()->generate('prisedemousse_visualisation', array('id' => $id));
     }
+
+    public function generateUrlPiece($source = null) {
+        return sfContext::getInstance()->getRouting()->generate('prisedemousse_pdf', $this);
+    }
 }
