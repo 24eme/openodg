@@ -77,4 +77,8 @@ class PriseDeMousse extends ChgtDenom  {
             ));
         return array();
     }
+
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+        return sfContext::getInstance()->getRouting()->generate('prisedemousse_visualisation', array('id' => $id));
+    }
 }
