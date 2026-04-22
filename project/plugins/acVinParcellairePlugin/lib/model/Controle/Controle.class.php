@@ -287,14 +287,14 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $retManquements = array();
         foreach ($this->parcelles as $parcelleId => $parcelle) {
             foreach ($parcelle->controle->points as $pointId => $dataPoint) {
-                foreach ($dataPoint->constats as $constatId => $dataManquement) {
+                foreach ($dataPoint->constats as $constatId => $constat) {
                     if ($this->manquements->exist($constatId) && ($this->manquements->$constatId->observations && $this->manquements->$constatId->parcelles_id)) {
                         $retManquements[$constatId] = $this->manquements[$constatId];
                         continue;
                     }
                     if ($dataPoint->conformite == null) {continue;}
                     if ($fromConstatsActif == true) {
-                        if ($dataManquement->conformite == false) {continue;}
+                        if ($constat->non_conforme == false) {continue;}
                     }
                     if(!isset($retManquements[$constatId]) || !$retManquements[$constatId]) {
                         $retManquements[$constatId] = ControleManquement::freeInstance($this);
@@ -311,7 +311,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
                     $retManquements[$constatId]->delais = ControleConfiguration::getInstance()->getDelaisConstat($constatId);
                     $retManquements[$constatId]->constat_date = $this->date_tournee;
                     $retManquements[$constatId]->actif = false;
-                    $retManquements[$constatId]->observations .= $parcelleId . ' - ' . $dataManquement->observations . "\n";
+                    $retManquements[$constatId]->observations .= $parcelleId . ' - ' . $constat->observations . "\n";
                 }
             }
         }
