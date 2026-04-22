@@ -85,22 +85,9 @@ class controleActions extends sfActions
         return $this->redirect('controle_operateur', $this->etablissement);
     }
 
-    public function executeParcelles(sfWebRequest $request)
-    {
-    	$this->controle = $this->getRoute()->getControle();
 
-        if(!$this->getUser()->isAdmin()) {
-            throw new sfError403Exception("Accès admin uniquement");
-        }
 
-        $this->parcellaire = $this->controle->getParcellaire();
 
-        if ($request->isMethod(sfWebRequest::POST)) {
-            $this->controle->updateParcelles($request->getPostParameter('parcelles', []));
-            $this->controle->save();
-            return $this->redirect('controle_index');
-        }
-    }
 
     private function getControlesByDateTourneeAndAgentAndSetControle($dateTournee, $agentIdentifiant)
     {
