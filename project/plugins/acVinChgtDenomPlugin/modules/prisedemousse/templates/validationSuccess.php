@@ -5,7 +5,7 @@
 
 
     <div class="page-header no-border">
-      <h2>Prise de Mousse</h2>
+      <h2>Prise de mousse<?php if (!$prisedemousse->isTotal()): ?> partielle<?php endif; ?></h2>
       <h3><small></small></h3>
     </div>
 
