@@ -112,7 +112,7 @@ class ControleParcelle extends BaseControleParcelle
             }
             foreach ($dataPoint['constats'] as $idConstat => $dataConstat) {
                 if (! $this->controle->points[$idPoint]->constats->exist($idConstat)) {
-                    $this->controle->points[$idPoint]->constats->add($idConstat, array('libelle' => $dataConstat['libelle'], 'observations' => null, 'conformite' => false));
+                    $this->controle->points[$idPoint]->constats->add($idConstat, array('libelle' => $dataConstat['libelle'], 'observations' => null, 'non_conforme' => false));
                 }
             }
         }
