@@ -149,7 +149,7 @@ class controleActions extends sfActions
         $this->controle->type_tournee = $request->getParameter('type_tournee');
         $this->controle->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->controle->save();
-        return $this->redirect('controle_index');
+        return $this->redirect('controle_operateur', $this->controle->getEtablissementObject());
     }
 
     public function executeVisualisation(sfWebRequest $request)
