@@ -97,6 +97,8 @@ class controleActions extends sfActions
                 if (! $controle->getParcellaire() || ! count($controle->getParcellaire()->getParcelles()) ) {
                     continue;
                 }
+                $controle->updateParcellesNoeudControleIfNeeded();
+                $controle->save();
                 $controles[$controle->_id] = $controle->getDataToDump();
             }
         }
@@ -128,7 +130,7 @@ class controleActions extends sfActions
         foreach ($data as $controleId => $items) {
             if ($controle = ControleClient::getInstance()->find($controleId)) {
                 $controle->heure_tournee = $items->heure_tournee;
-                $controle->updateParcelles($items->parcelles);
+                $controle->resetParcellesWithParcellesIds($items->parcelles);
                 $controle->save();
             }
         }

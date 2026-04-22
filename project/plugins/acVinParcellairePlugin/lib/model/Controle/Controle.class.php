@@ -105,7 +105,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return $parcelles;
     }
 
-    public function updateParcelles(array $parcellesIds)
+    public function resetParcellesWithParcellesIds(array $parcellesIds)
     {
         $this->remove('parcelles');
         $this->add('parcelles');
@@ -120,19 +120,8 @@ class Controle extends BaseControle implements InterfacePieceDocument
                     if ( $parcelle->position != $index ) {
                         throw new sfException("La position (".$parcelle->position.") de la parcelle controlée est différent de son index ($index) dans le tableau parcelles");
                     }
-                    foreach (ControleConfiguration::getInstance()->getAllPointsDeControle() as $pointKey => $pointConf) {
-                        $point = $parcelle->controle->points->add($pointKey);
-                        $point->libelle = $pointConf['libelle'];
-                        $hasConstat = false;
-                        foreach ($pointConf['constats'] as $constatKey => $constatConf) {
-                            if ($constatConf['terrain'] && in_array($this->type_tournee, $constatConf['types'])) {
-                                $point->constats->add($constatKey, ['libelle' => $constatConf['libelle'], 'conformite' => false, 'observations' => null]);
-                                $hasConstat = true;
-                            }
-                        }
-                        if (! $hasConstat) {
-                            $parcelle->controle->points->remove($pointKey);
-                        }
+                    if ($parcelle->needsUpdateNoeudControle()) {
+                        $parcelle->updateNoeudControle();
                     }
                 }
             }
@@ -580,4 +569,12 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return 'Parcelle ' . $parcellaireParcelles[$parcelleId]->commune . ' - ' . $parcellaireParcelles[$parcelleId]->section . $parcellaireParcelles[$parcelleId]->numero_parcelle . ' - ' . $parcellaireParcelles[$parcelleId]->cepage . ' - ' . $parcellaireParcelles[$parcelleId]->campagne_plantation . ' - ' . $parcellaireParcelles[$parcelleId]->superficie . ' ha';
     }
 
+    public function updateParcellesNoeudControleIfNeeded()
+    {
+        foreach ($this->parcelles as $parcelle) {
+            if ($parcelle->needsUpdateNoeudControle()) {
+                $parcelle->updateNoeudControle();
+            }
+        }
+    }
 }
