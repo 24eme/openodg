@@ -294,7 +294,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
                     }
                     if ($dataPoint->conformite == null) {continue;}
                     if ($fromConstatsActif == true) {
-                        if ($dataManquement->conformite == false) {continue;}
+                        if ($dataManquement->non_conforme == false) {continue;}
                     }
                     if(!isset($retManquements[$constatId]) || !$retManquements[$constatId]) {
                         $retManquements[$constatId] = ControleManquement::freeInstance($this);
