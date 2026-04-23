@@ -78,6 +78,19 @@ class ControleClient extends acCouchdbClient
         return $view->execute($hydrate)->getDatas();
     }
 
+    public static function getOrdreStatut($statut)
+    {
+        $ordre = array(
+            self::CONTROLE_STATUT_A_PLANIFIER => 0,
+            self::CONTROLE_STATUT_A_ORGANISER => 1,
+            self::CONTROLE_STATUT_ORGANISE => 2,
+            self::CONTROLE_STATUT_A_NOTIFIER => 3,
+            self::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER => 4,
+            self::CONTROLE_STATUT_CONTROLE_CLOTURE => 5
+        );
+        return $ordre[$statut];
+    }
+
     public function findAllByStatus($identifiant = null, $limit = null , $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
     {
         $controles = [

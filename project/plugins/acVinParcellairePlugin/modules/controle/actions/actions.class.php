@@ -9,14 +9,16 @@ class controleActions extends sfActions
         $this->nb_operateurs_a_planifier = count($allControles[ControleClient::CONTROLE_STATUT_A_PLANIFIER]);
         $this->nb_operateurs_en_manquement = count($allControles[ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER]);
         foreach ($allControles as $statut => $controles) {
+            /*
             if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_ORGANISE, ControleClient::CONTROLE_STATUT_A_NOTIFIER, ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER])) {
                 continue;
             }
+            */
             foreach($controles as $c) {
-                if ($c->isTourneeTerminee()) {
+                if (!$c->date_tournee) {
                     continue;
                 }
-                $index = $c->date_tournee.'-'.$c->agent_identifiant.'-'.$c->type_tournee;
+                $index = $c->date_tournee.'-'.$c->agent_identifiant;
                 if (!isset($this->tournees[$index])) {
                     $this->tournees[$index] = [
                         'parcelles' => [],
@@ -26,16 +28,34 @@ class controleActions extends sfActions
                         'date_tournee' => $c->date_tournee,
                         'agent' => $c->getAgent(),
                         'type_tournee' => $c->type_tournee,
-                        'statut' => $statut
+                        'statut' => $statut,
+                        'ids' => []
                     ];
                 }
                 $this->tournees[$index]['parcelles'] += $c->parcelles->toArray(true,false);
                 $this->tournees[$index]['operateurs'][$c->identifiant] = $c->declarant->nom;
+                $this->tournees[$index]['ids'][$c->_id] = $c->_id;
                 $this->tournees[$index]['secteurs'][$c->secteur] = $c->secteur;
+                if (ControleClient::getOrdreStatut($statut) < ControleClient::getOrdreStatut($this->tournees[$index]['statut'])) {
+                    $this->tournees[$index]['statut'] = $statut;
+                }
+                if (strpos($this->tournees[$index]['type_tournee'], $c->type_tournee) === false) {
+                    $this->tournees[$index]['type_tournee'] .= ', '.$c->type_tournee;
+                }
                 foreach($c->liaisons_operateurs as $liaison) {
                     $this->tournees[$index]['cooperatives'][$liaison->id_etablissement] = "Coopérateurs pour " .$liaison->libelle_etablissement;
                 }
             }
+        }
+        $tournee_to_remove = [];
+        foreach($this->tournees as $k => $t) {
+            if (!in_array($t['statut'], [ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER, ControleClient::CONTROLE_STATUT_CONTROLE_CLOTURE])) {
+                continue;
+            }
+            $tournee_to_remove[] = $k;
+        }
+        foreach($tournee_to_remove as $k) {
+            unset($this->tournees[$k]);
         }
         ksort($this->tournees);
     }
