@@ -380,7 +380,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
     public function getManquementParcellesIdListe($manquementId)
     {
         $parcelles_id_list = array();
-        foreach ($this->manquements[$manquementId]->parcelles_id as $id) {
+        foreach ($this->manquements[$manquementId]->parcelles_id as $id) if ($id) {
             $parcelles_id_list[] = $id;
         }
         return $parcelles_id_list;
@@ -393,7 +393,6 @@ class Controle extends BaseControle implements InterfacePieceDocument
             if (! $this->manquements->exist($manquementId)) {
                 $this->manquements->add($manquementId, $manquement);
             }
-            $this->manquements->get($manquementId)->parcelles_id->add(null, null);
         }
         else {
             foreach ($parcellesId as $parcelleId) {
@@ -625,8 +624,18 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getInfoPdf($controleIdentifiant, $parcelleId)
     {
-        $parcellaireParcelles = ParcellaireClient::getInstance()->getLast($controleIdentifiant)->getParcelles();
-        return 'Parcelle ' . $parcellaireParcelles[$parcelleId]->commune . ' - ' . $parcellaireParcelles[$parcelleId]->section . $parcellaireParcelles[$parcelleId]->numero_parcelle . ' - ' . $parcellaireParcelles[$parcelleId]->cepage . ' - ' . $parcellaireParcelles[$parcelleId]->campagne_plantation . ' - ' . $parcellaireParcelles[$parcelleId]->superficie . ' ha';
+        if (!$parcelleId) {
+            throw new sfException('wrong parcelleId ('.$parcelleId.')');
+        }
+        $parcellaire = ParcellaireClient::getInstance()->getLast($controleIdentifiant);
+        if (!$parcellaire) {
+            throw new sfException('pas de parcellaire trouvé pour '.$controleIdentifiant);
+        }
+        $parcelle = $parcellaire->parcelles->get($parcelleId);
+        if (!$parcelle) {
+            throw new sfException('pas de parcelll trouvée pour '.$controleIdentifiant.'/'.$parcelleId);
+        }
+        return 'Parcelle ' . $parcelle->commune . ' - ' . $parcelle->section . $parcelle->numero_parcelle . ' - ' . $parcelle->cepage . ' - ' . $parcelle->campagne_plantation . ' - ' . $parcelle->superficie . ' ha';
     }
 
     public function updateParcellesNoeudControleIfNeeded()
