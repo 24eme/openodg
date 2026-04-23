@@ -150,23 +150,20 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getStatutComputed()
     {
-        if(!$this->isPlanifie()) {
-            return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
+        if ($this->isControleCloture()) {
+            return ControleClient::CONTROLE_STATUT_CONTROLE_CLOTURE;
+        }
+        if ($this->isTourneeTerminee()) {
+            return ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER;
+        }
+        if($this->isANotifier()) {
+            return ControleClient::CONTROLE_STATUT_A_NOTIFIER;
         }
         if ($this->isOrganise()) {
             return ControleClient::CONTROLE_STATUT_ORGANISE;
         }
         if ($this->isPlanifie()) {
             return ControleClient::CONTROLE_STATUT_A_ORGANISER;
-        }
-        if ($this->isANotifier()) {
-            return ControleClient::CONTROLE_STATUT_A_NOTIFIER;
-        }
-        if ($this->isControleCloture()) {
-            return ControleClient::CONTROLE_STATUT_CONTROLE_CLOTURE;
-        }
-        if ($this->isTourneeTerminee()) {
-            return ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER;
         }
         return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
     }
@@ -198,7 +195,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function isANotifier()
     {
-        return $this->needConstatsToBeCreated() || ! $this->isNotifiee();
+        return $this->isAuditValide() && ($this->needConstatsToBeCreated() || ! $this->isNotifiee());
     }
 
     public function hasManquements()
@@ -206,12 +203,20 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return $this->manquements && (count($this->manquements) > 0);
     }
 
+    public function isAuditValide()
+    {
+        return $this->audit && $this->audit->saisie;
+    }
+
     public function isControleCloture()
     {
+        if (!$this->date_tournee || ! count($this->parcelles)) {
+            return false;
+        }
         if (! $this->hasManquements() && $this->notification_date ) {
             return true;
         }
-        return ! $this->hasManquementsActif();
+        return ! $this->hasManquementNonCloture();
     }
 
     public function needConstatsToBeCreated()
@@ -453,6 +458,16 @@ class Controle extends BaseControle implements InterfacePieceDocument
             }
         }
         return $ret;
+    }
+
+    public function hasManquementNonCloture()
+    {
+        foreach($this->getManquementsActif() as $m) {
+            if (! $m->cloture_date) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function hasManquementsActif()

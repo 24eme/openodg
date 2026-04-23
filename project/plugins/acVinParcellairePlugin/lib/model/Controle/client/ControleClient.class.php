@@ -8,7 +8,7 @@ class ControleClient extends acCouchdbClient
     const CONTROLE_STATUT_A_ORGANISER = "A_ORGANISER";
     const CONTROLE_STATUT_ORGANISE = "ORGANISE";
     const CONTROLE_STATUT_A_NOTIFIER = 'A_NOTIFIER';
-    const CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER = "TERMINE";
+    const CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER = "EN_MANQUEMENT";
     const CONTROLE_STATUT_CONTROLE_CLOTURE = "CLOTURE";
 
     const CONTROLE_TYPE_HABILITATION = "Habilitation";
@@ -81,8 +81,8 @@ class ControleClient extends acCouchdbClient
     public function findAllByStatus($identifiant = null, $limit = null , $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
     {
         $controles = [
-            self::CONTROLE_STATUT_A_ORGANISER => [],
             self::CONTROLE_STATUT_A_PLANIFIER => [],
+            self::CONTROLE_STATUT_A_ORGANISER => [],
             self::CONTROLE_STATUT_ORGANISE => [],
             self::CONTROLE_STATUT_A_NOTIFIER => [],
             self::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER => [],
