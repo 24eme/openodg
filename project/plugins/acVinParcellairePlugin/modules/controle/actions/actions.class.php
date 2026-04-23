@@ -231,7 +231,9 @@ class controleActions extends sfActions
         $this->libellesConstats = ControleConfiguration::getInstance()->getAllLibellesConstats(false, $this->controle->type_tournee);
         $this->errors = [];
         if ($request->isMethod(sfWebRequest::POST)) {
-            $this->controle->addManquementManuel($_POST['manquement'], $POST['parcelles_id']);
+            $this->constatId = $request->getParameter('manquement');
+            $this->parcellesIds = $request->getParameter('parcelles_id');
+            $this->controle->addManquementManuel($this->constatId, $this->parcellesIds);
             $this->controle->save();
             return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
         }

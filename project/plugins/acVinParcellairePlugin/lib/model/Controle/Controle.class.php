@@ -336,24 +336,22 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return $parcelles_id_list;
     }
 
-    public function addManquementManuel($manquementId, $parcellesId)
+    public function addManquementManuel($constatId, $parcellesId)
     {
         if (! $parcellesId) {
-            $manquement = $this->getInfosManquement($manquementId);
-            if (! $this->manquements->exist($manquementId)) {
-                $this->manquements->add($manquementId, $manquement);
+            $manquement = $this->getInfosManquement($constatId);
+            if (! $this->manquements->exist($constatId)) {
+                $this->manquements->add($constatId, $manquement);
             }
-            $this->manquements->get($manquementId)->parcelles_id->add(null, null);
         }
         else {
             foreach ($parcellesId as $parcelleId) {
-                if ($this->manquements->exist($manquementId) && in_array($parcelleId, $this->getManquementParcellesIdListe($manquementId))) {return ;}
-                $manquement = $this->getInfosManquement($manquementId);
-                if (! $this->manquements->exist($manquementId)) {
-                    $this->manquements->add($manquementId, $manquement);
+                if ($this->manquements->exist($constatId) && in_array($parcelleId, $this->getManquementParcellesIdListe($constatId))) {return ;}
+                $manquement = $this->getInfosManquement($constatId);
+                if (! $this->manquements->exist($constatId)) {
+                    $this->manquements->add($constatId, $manquement);
                 }
-                $this->manquements->get($manquementId)->parcelles_id->add(null, $parcelleId);
-                // $this->save();
+                $this->manquements->get($constatId)->parcelles_id->add(null, $parcelleId);
             }
         }
     }
