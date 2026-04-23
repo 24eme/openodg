@@ -1,0 +1,106 @@
+#PARCELLAIREIRRIGABLE
+ParcellaireIrrigable:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      campagne: { }
+      identifiant: { }
+      etape: { }
+      validation: { }
+      validation_odg: { }
+      signataire: { }
+      papier: { required: false }
+      declarant:
+        type: collection
+        class: ParcellaireIrrigableDeclarant
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            ppm: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { required : false}
+            telephone_bureau: { }
+            telephone_mobile: { }
+            fax: { }
+            email: { }
+      declaration:
+        type: collection
+        class: ParcellaireIrrigableDeclaration
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: ParcellaireIrrigableProduit
+              definition:
+                fields:
+                  libelle: { }
+                  detail:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          class: ParcellaireIrrigableProduitDetail
+                          definition:
+                            fields:
+                              superficie: { type: float }
+                              superficie_parcellaire: { type: float }
+                              commune: { }
+                              code_commune: { }
+                              prefix: { }
+                              section: { }
+                              numero_parcelle: { }
+                              numero_ordre: { }
+                              idu: { }
+                              lieu: {  }
+                              cepage: {  }
+                              departement: { required: false }
+                              active: { type: integer }
+                              vtsgn: { type: integer, required: false }
+                              campagne_plantation: {  }
+                              materiel: {  }
+                              ressource: {  }
+                              produit_hash: { }
+                              parcelle_id: { }
+                              source_produit_libelle: { }
+      region: { required: false }
+      observations: {  }
+      documents:
+        class: ParcellaireIrrigableDocuments
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  statut: { }
+                  libelle: { }
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: ParcellaireIrrigablePiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }
