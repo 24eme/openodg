@@ -216,6 +216,9 @@ class Controle extends BaseControle implements InterfacePieceDocument
         if (! $this->hasManquements() && $this->notification_date ) {
             return true;
         }
+        if (!$this->notification_date) {
+            return false;
+        }
         return ! $this->hasManquementNonCloture();
     }
 
