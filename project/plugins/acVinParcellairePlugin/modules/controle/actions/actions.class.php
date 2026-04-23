@@ -93,6 +93,10 @@ class controleActions extends sfActions
         if(!$this->getUser()->isAdmin()) {
             throw new sfError403Exception("Accès admin uniquement");
         }
+        $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->etablissement->identifiant);
+        if (!$this->parcellaire) {
+            throw new sfException($this->etablissement->identifiant." n'a pas de pas de parcellaire");
+        }
         $this->controle = ControleClient::getInstance()->findOrCreate($this->etablissement->identifiant);
         $type = $request->getParameter('type');
         if (in_array($type, ControleClient::getInstance()->getTypes())) {
