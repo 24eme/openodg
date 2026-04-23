@@ -28,7 +28,7 @@
                 <a href="<?php echo url_for('controle_pdf', array('id' => $controle->_id)); ?>">PDF du contrôle</a>
             </td>
             <td>
-                <?php if ($controle->needConstatsToBeCreated()): ?>
+                <?php if ($controle->isANotifier() && $controle->needConstatsToBeCreated()): ?>
                     <a class="btn btn-xs btn-default" href="<?php echo url_for('controle_liste_manquements_controle', array('id' => $controle->_id)); ?>">Générer les manquements</a>
                 <?php else: ?>
                     <a href="<?php echo url_for('controle_pdf_manquements', array('id' => $controle->_id)); ?>">PDF des manquements</a>
@@ -40,7 +40,7 @@
             <td>
             <?php if ($controle->notification_date === null): ?>
                 <div class="btn-group pull-right">
-                  <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"<?php if (!$controle->manquements_valides):?> title="Les manquements doivent être générés afin de pouvoir notifier l'opérateur" disabled<?php endif;?>>
+                  <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"<?php if ($controle->needConstatsToBeCreated()):?> title="Des manquements doivent être générés afin de pouvoir notifier l'opérateur" disabled<?php endif;?>>
                     Notifier <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu text-left">
