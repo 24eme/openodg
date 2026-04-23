@@ -1,0 +1,282 @@
+<?php
+
+class drapActions extends sfActions {
+
+    public function executeCreate(sfWebRequest $request) {
+    	$etablissement = $this->getRoute()->getEtablissement();
+        $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() * 1);
+        $parcellaireIrrigable = DRapClient::getInstance()->createDocFromPrevious($etablissement->identifiant, $periode);
+        $this->secure(ParcellaireSecurity::EDITION, $parcellaireIrrigable);
+
+        $parcellaireIrrigable->save();
+
+        return $this->redirect('drap_edit', $parcellaireIrrigable);
+    }
+
+    public function executeCreatePapier(sfWebRequest $request) {
+    	$etablissement = $this->getRoute()->getEtablissement();
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
+
+        $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() * 1);
+        $parcellaireIrrigable = DRapClient::getInstance()->createDocFromPrevious($etablissement->identifiant, $periode, true);
+        $parcellaireIrrigable->save();
+
+        return $this->redirect('drap_edit', $parcellaireIrrigable);
+    }
+
+    public function executeEdit(sfWebRequest $request) {
+    	$parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+
+    	$this->secure(ParcellaireSecurity::EDITION, $parcellaireIrrigable);
+
+    	if ($parcellaireIrrigable->exist('etape') && $parcellaireIrrigable->etape) {
+    		return $this->redirect('drap_' . $parcellaireIrrigable->etape, $parcellaireIrrigable);
+    	}
+
+        if($request->getParameter('coop')) {
+
+            return $this->redirect('drap_parcelles', $parcellaireIrrigable);
+        }
+
+    	return $this->redirect('parcellaireirrigable_exploitation', $parcellaireIrrigable);
+    }
+    public function executeDelete(sfWebRequest $request) {
+    	$parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+    	$etablissement = $parcellaireIrrigable->getEtablissementObject();
+    	$this->secure(ParcellaireSecurity::EDITION, $parcellaireIrrigable);
+
+    	$parcellaireIrrigable->delete();
+    	$this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
+
+        return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $parcellaireIrrigable->campagne));
+    }
+
+    public function executeDevalidation(sfWebRequest $request) {
+    	$parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+    	if (!$this->getUser()->isAdmin()) {
+    		$this->secure(ParcellaireSecurity::DEVALIDATION , $parcellaireIrrigable);
+    	}
+
+    	$parcellaireIrrigable->validation = null;
+    	$parcellaireIrrigable->validation_odg = null;
+    	$parcellaireIrrigable->add('etape', null);
+    	$parcellaireIrrigable->save();
+
+    	$this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
+
+    	return $this->redirect($this->generateUrl('drap_edit', $parcellaireIrrigable));
+    }
+
+    public function executeExploitation(sfWebRequest $request) {
+    	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+        $this->coop = $request->getParameter('coop');
+    	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireIrrigable);
+
+    	if($this->parcellaireIrrigable->storeEtape($this->getEtape($this->parcellaireIrrigable, DRapEtapes::ETAPE_EXPLOITATION))) {
+    		$this->parcellaireIrrigable->save();
+    	}
+
+    	$this->etablissement = $this->parcellaireIrrigable->getEtablissementObject();
+
+    	$this->form = new EtablissementForm($this->parcellaireIrrigable->declarant, array("use_email" => !$this->parcellaireIrrigable->isPapier()));
+
+    	if (!$request->isMethod(sfWebRequest::POST)) {
+
+    		return sfView::SUCCESS;
+    	}
+
+    	$this->form->bind($request->getParameter($this->form->getName()));
+
+    	if (!$this->form->isValid()) {
+
+    		return sfView::SUCCESS;
+    	}
+
+    	$this->form->save();
+
+    	if ($this->form->hasUpdatedValues() && !$this->parcellaireIrrigable->isPapier()) {
+    		Email::getInstance()->sendNotificationModificationsExploitation($this->parcellaireIrrigable->getEtablissementObject(), $this->form->getUpdatedValues());
+    	}
+
+    	if ($request->isXmlHttpRequest()) {
+
+    		return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->etablissement->_id, "revision" => $this->etablissement->_rev))));
+    	}
+
+    	if ($request->getParameter('redirect', null)) {
+    		return $this->redirect('drap_validation', $this->parcellaireIrrigable);
+    	}
+
+    	return $this->redirect('drap_parcelles', $this->parcellaireIrrigable);
+    }
+
+    public function executeParcelles(sfWebRequest $request) {
+    	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+        $this->coop = $request->getParameter('coop');
+    	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireIrrigable);
+
+    	if($this->parcellaireIrrigable->storeEtape($this->getEtape($this->parcellaireIrrigable, DRapEtapes::ETAPE_PARCELLES))) {
+    		$this->parcellaireIrrigable->save();
+    	}
+
+    	$this->etablissement = $this->parcellaireIrrigable->getEtablissementObject();
+
+    	if (!$request->isMethod(sfWebRequest::POST)) {
+
+    		return sfView::SUCCESS;
+    	}
+    	$this->parcellaireIrrigable->setParcellesFromParcellaire($request->getPostParameter('parcelles', array()));
+    	$this->parcellaireIrrigable->save();
+        if($request->getParameter('saveandquit')) {
+
+            return $this->redirect('declaration_etablissement', $this->parcellaireIrrigable->getEtablissementObject());
+        }
+
+        return ($next = $this->getRouteNextEtape(DRapEtapes::ETAPE_PARCELLES)) ? $this->redirect($next, $this->parcellaireIrrigable) : $this->redirect('drap_validation', $this->parcellaireIrrigable);
+    }
+
+    public function executeIrrigations(sfWebRequest $request) {
+    	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+        $this->coop = $request->getParameter('coop');
+    	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireIrrigable);
+
+    	if($this->parcellaireIrrigable->storeEtape($this->getEtape($this->parcellaireIrrigable, DRapEtapes::ETAPE_IRRIGATIONS))) {
+    		$this->parcellaireIrrigable->save();
+    	}
+
+    	$this->etablissement = $this->parcellaireIrrigable->getEtablissementObject();
+
+    	$this->form = new ParcellaireIrrigableProduitsForm($this->parcellaireIrrigable);
+
+    	if (!$request->isMethod(sfWebRequest::POST)) {
+
+    		return sfView::SUCCESS;
+    	}
+
+    	$this->form->bind($request->getParameter($this->form->getName()));
+
+    	if (!$this->form->isValid()) {
+
+    		return sfView::SUCCESS;
+    	}
+
+    	$this->form->save();
+
+        if($request->getParameter('saveandquit')) {
+
+            return $this->redirect('declaration_etablissement', $this->parcellaireIrrigable->getEtablissementObject());
+        }
+
+    	return $this->redirect('drap_validation', $this->parcellaireIrrigable);
+    }
+
+
+    public function executeValidation(sfWebRequest $request) {
+    	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+        $this->coop = $request->getParameter('coop');
+    	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireIrrigable);
+
+    	if($this->parcellaireIrrigable->storeEtape($this->getEtape($this->parcellaireIrrigable, DRapEtapes::ETAPE_VALIDATION))) {
+    		$this->parcellaireIrrigable->save();
+    	}
+
+		if($this->getUser()->isAdmin()) {
+	       	$this->parcellaireIrrigable->validateOdg();
+	    }
+
+		$this->validation = new DRapValidation($this->parcellaireIrrigable);
+		$this->form = new DRapValidationForm($this->parcellaireIrrigable, array('engagements' => $this->validation->getPoints(DRapValidation::TYPE_ENGAGEMENT)));
+
+    	if (!$request->isMethod(sfWebRequest::POST)) {
+    		return sfView::SUCCESS;
+    	}
+
+    	$this->form->bind($request->getParameter($this->form->getName()));
+
+    	if (!$this->form->isValid()) {
+
+    		return sfView::SUCCESS;
+    	}
+
+        $documents = $this->parcellaireIrrigable->getOrAdd('documents');
+
+        foreach ($this->validation->getPoints(DRapValidation::TYPE_ENGAGEMENT) as $engagement) {
+            $document = $documents->add($engagement->getCode());
+            $document->libelle =DRapDocuments::getDocumentLibelle($document->getKey());
+        }
+
+    	$this->form->save();
+
+    	$this->getUser()->setFlash("notice", "Vos parcelles irrigables ont bien été enregistrées");
+    	return $this->redirect('drap_visualisation', $this->parcellaireIrrigable);
+    }
+
+    public function executePDF(sfWebRequest $request) {
+    	set_time_limit(180);
+        $this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable(['allow_habilitation' => true, 'allow_stalker' => true]);
+    	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireIrrigable);
+
+
+    	$this->document = new ExportDRapPDF($this->parcellaireIrrigable, $this->getRequestParameter('output', 'pdf'), false);
+    	$this->document->setPartialFunction(array($this, 'getPartial'));
+
+    	if ($request->getParameter('force')) {
+    		$this->document->removeCache();
+    	}
+
+    	$this->document->generate();
+
+    	$this->document->addHeaders($this->getResponse());
+
+    	return $this->renderText($this->document->output());
+    }
+
+
+    public function executeVisualisation(sfWebRequest $request) {
+    	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+        $this->coop = $request->getParameter('coop');
+    	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireIrrigable);
+    }
+
+
+    protected function getEtape($parcellaireIrrigable, $etape) {
+    	$parcellaireIrrigableEtapes = DRapEtapes::getInstance();
+    	if (!$parcellaireIrrigableEtapes->exist('etape')) {
+    		return $etape;
+    	}
+    	return ($parcellaireIrrigableEtapes->isLt($parcellaireIrrigableEtapes->etape, $etape)) ? $etape : $parcellaireIrrigableEtapes->etape;
+    }
+
+
+    protected function getRouteNextEtape($etape = null, $class = "DRapEtapes") {
+        $etapes = $class::getInstance();
+        $routes = $etapes->getRouteLinksHash();
+        if (!$etape) {
+            $etape = $etapes->getFirst();
+        } else {
+            $etape = $etapes->getNext($etape);
+        }
+        return (isset($routes[$etape])) ? $routes[$etape] : null;
+    }
+
+    protected function secure($droits, $doc) {
+    	if (!ParcellaireSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
+
+    		return $this->forwardSecure();
+    	}
+    }
+
+    protected function secureEtablissement($droits, $etablissement) {
+        if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized($droits)) {
+
+            return $this->forwardSecure();
+        }
+    }
+
+    protected function forwardSecure() {
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        throw new sfStopException();
+    }
+
+}
