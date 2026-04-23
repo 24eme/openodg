@@ -38,7 +38,7 @@
                 <?php endif;?>
             </td>
             <td>
-            <?php if ($controle->notification_date === null): ?>
+            <?php if ($controle->isANotifier()): ?>
                 <div class="btn-group pull-right">
                   <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"<?php if ($controle->needConstatsToBeCreated()):?> title="Des manquements doivent être générés afin de pouvoir notifier l'opérateur" disabled<?php endif;?>>
                     Notifier <span class="caret"></span>
