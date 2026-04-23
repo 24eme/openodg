@@ -156,7 +156,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
         if ($this->isTourneeTerminee()) {
             return ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER;
         }
-        if($this->isANotifier()) {
+        if($this->isANotifier() && $this->isAuditValide()) {
             return ControleClient::CONTROLE_STATUT_A_NOTIFIER;
         }
         if ($this->isOrganise()) {
@@ -195,7 +195,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function isANotifier()
     {
-        return $this->isAuditValide() && ($this->needConstatsToBeCreated() || ! $this->isNotifiee());
+        return $this->needConstatsToBeCreated() || ! $this->isNotifiee();
     }
 
     public function hasManquements()
