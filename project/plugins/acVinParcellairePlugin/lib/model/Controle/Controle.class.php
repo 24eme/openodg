@@ -424,13 +424,6 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return false;
     }
 
-    public function deleteManquement($manquementId)
-    {
-        if ($this->manquements->exist($manquementId)) {
-            $this->manquement->remove($manquementId);
-        }
-    }
-
     public function generateManquements()
     {
         foreach ($this->getListeManquements(true) as $manquementId => $dataManquement) {
