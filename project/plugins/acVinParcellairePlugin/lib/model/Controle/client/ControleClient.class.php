@@ -96,7 +96,7 @@ class ControleClient extends acCouchdbClient
 
     public function findByManquements($identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
     {
-        $controles = ControleClient::getInstance()->findAllByStatus($identifiant, $hydrate);
+        $controles = ControleClient::getInstance()->findAllByStatus($identifiant, null, $hydrate);
         $sorted_controles = $controles[ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER];
         usort($sorted_controles, "ControleClient::sortControlesByDateNotification");
         return $sorted_controles;
