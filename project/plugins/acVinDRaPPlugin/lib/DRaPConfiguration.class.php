@@ -6,24 +6,24 @@ class DRaPConfiguration extends DeclarationConfiguration {
 
     public static function getInstance() {
         if (is_null(self::$_instance)) {
-            self::$_instance = new ParcellaireIrrigableConfiguration();
+            self::$_instance = new DRaPConfiguration();
         }
         return self::$_instance;
     }
 
     public function getCampagneDebutMois() {
 
-        return ParcellaireAffectationConfiguration::getInstance()->getCampagneDebutMois();
+        return DRaPConfiguration::getInstance()->getCampagneDebutMois();
     }
 
     public function getModuleName() {
 
-        return 'parcellaireIrrigable';
+        return 'drap';
     }
 
     public function getDateOuvertureConfigName() {
 
-        return 'parcellaire_irrigable';
+        return 'drap';
     }
 
     public function getRessources($value = null)
