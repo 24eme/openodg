@@ -150,11 +150,14 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getStatutComputed()
     {
-        if(!$this->isPlanifie()) {
-            return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
+        if ($this->isControleCloture()) {
+            return ControleClient::CONTROLE_STATUT_CONTROLE_CLOTURE;
         }
-        if ($this->isControle()) {
-            return ControleClient::CONTROLE_STATUT_EN_MANQUEMENT;
+        if ($this->isTourneeTerminee()) {
+            return ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER;
+        }
+        if($this->isANotifier() && $this->isAuditValide()) {
+            return ControleClient::CONTROLE_STATUT_A_NOTIFIER;
         }
         if ($this->isOrganise()) {
             return ControleClient::CONTROLE_STATUT_ORGANISE;
@@ -162,11 +165,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
         if ($this->isPlanifie()) {
             return ControleClient::CONTROLE_STATUT_A_ORGANISER;
         }
-        if ($this->isTermine()) {
-            return ControleClient::CONTROLE_STATUT_TERMINE;
-        }
         return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
-
     }
 
     public function isPlanifie()
@@ -184,9 +183,63 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return $this->isOrganise() && count($this->manquements);
     }
 
-    public function isTermine()
+    public function isTourneeTerminee()
     {
-        return $this->manquements_valides;
+        return $this->isNotifiee();
+    }
+
+    public function isNotifiee()
+    {
+        return ($this->notification_date);
+    }
+
+    public function isANotifier()
+    {
+        return $this->needConstatsToBeCreated() || ! $this->isNotifiee();
+    }
+
+    public function hasManquements()
+    {
+        return $this->manquements && (count($this->manquements) > 0);
+    }
+
+    public function isAuditValide()
+    {
+        return $this->audit && $this->audit->saisie;
+    }
+
+    public function isControleCloture()
+    {
+        if (!$this->date_tournee || ! count($this->parcelles)) {
+            return false;
+        }
+        if (! $this->hasManquements() && $this->notification_date ) {
+            return true;
+        }
+        if (!$this->notification_date) {
+            return false;
+        }
+        return ! $this->hasManquementNonCloture();
+    }
+
+    public function needConstatsToBeCreated()
+    {
+        $constats_id = [];
+        foreach($this->parcelles as $pid => $p) {
+            foreach ($p->controle->points as $key => $p) {
+                foreach ($p->constats as $rtm => $constat) {
+                    if ($constat->non_conforme) {
+                        $constats_id[$rtm] = $rtm;
+                    }
+                }
+            }
+        }
+        foreach(array_keys($constats_id) as $rtm) {
+            if (!isset($this->manquements[$rtm])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function generateMouvementsStatuts()
@@ -287,14 +340,14 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $retManquements = array();
         foreach ($this->parcelles as $parcelleId => $parcelle) {
             foreach ($parcelle->controle->points as $pointId => $dataPoint) {
-                foreach ($dataPoint->constats as $constatId => $dataManquement) {
+                foreach ($dataPoint->constats as $constatId => $constat) {
                     if ($this->manquements->exist($constatId) && ($this->manquements->$constatId->observations && $this->manquements->$constatId->parcelles_id)) {
                         $retManquements[$constatId] = $this->manquements[$constatId];
                         continue;
                     }
                     if ($dataPoint->conformite == null) {continue;}
                     if ($fromConstatsActif == true) {
-                        if ($dataManquement->non_conforme == false) {continue;}
+                        if ($constat->non_conforme == false) {continue;}
                     }
                     if(!isset($retManquements[$constatId]) || !$retManquements[$constatId]) {
                         $retManquements[$constatId] = ControleManquement::freeInstance($this);
@@ -311,7 +364,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
                     $retManquements[$constatId]->delais = ControleConfiguration::getInstance()->getDelaisConstat($constatId);
                     $retManquements[$constatId]->constat_date = $this->date_tournee;
                     $retManquements[$constatId]->actif = false;
-                    $retManquements[$constatId]->observations .= $parcelleId . ' - ' . $dataManquement->observations . "\n";
+                    $retManquements[$constatId]->observations .= $parcelleId . ' - ' . $constat->observations . "\n";
                 }
             }
         }
@@ -330,7 +383,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
     public function getManquementParcellesIdListe($manquementId)
     {
         $parcelles_id_list = array();
-        foreach ($this->manquements[$manquementId]->parcelles_id as $id) {
+        foreach ($this->manquements[$manquementId]->parcelles_id as $id) if ($id) {
             $parcelles_id_list[] = $id;
         }
         return $parcelles_id_list;
@@ -373,13 +426,6 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return false;
     }
 
-    public function deleteManquement($manquementId)
-    {
-        if ($this->manquements->exist($manquementId)) {
-            $this->manquement->remove($manquementId);
-        }
-    }
-
     public function generateManquements()
     {
         foreach ($this->getListeManquements(true) as $manquementId => $dataManquement) {
@@ -406,6 +452,16 @@ class Controle extends BaseControle implements InterfacePieceDocument
             }
         }
         return $ret;
+    }
+
+    public function hasManquementNonCloture()
+    {
+        foreach($this->getManquementsActif() as $m) {
+            if (! $m->cloture_date) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function hasManquementsActif()
@@ -563,8 +619,18 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getInfoPdf($controleIdentifiant, $parcelleId)
     {
-        $parcellaireParcelles = ParcellaireClient::getInstance()->getLast($controleIdentifiant)->getParcelles();
-        return 'Parcelle ' . $parcellaireParcelles[$parcelleId]->commune . ' - ' . $parcellaireParcelles[$parcelleId]->section . $parcellaireParcelles[$parcelleId]->numero_parcelle . ' - ' . $parcellaireParcelles[$parcelleId]->cepage . ' - ' . $parcellaireParcelles[$parcelleId]->campagne_plantation . ' - ' . $parcellaireParcelles[$parcelleId]->superficie . ' ha';
+        if (!$parcelleId) {
+            throw new sfException('wrong parcelleId ('.$parcelleId.')');
+        }
+        $parcellaire = ParcellaireClient::getInstance()->getLast($controleIdentifiant);
+        if (!$parcellaire) {
+            throw new sfException('pas de parcellaire trouvé pour '.$controleIdentifiant);
+        }
+        $parcelle = $parcellaire->parcelles->get($parcelleId);
+        if (!$parcelle) {
+            throw new sfException('pas de parcelll trouvée pour '.$controleIdentifiant.'/'.$parcelleId);
+        }
+        return 'Parcelle ' . $parcelle->commune . ' - ' . $parcelle->section . $parcelle->numero_parcelle . ' - ' . $parcelle->cepage . ' - ' . $parcelle->campagne_plantation . ' - ' . $parcelle->superficie . ' ha';
     }
 
     public function updateParcellesNoeudControleIfNeeded()

@@ -24,7 +24,7 @@
         <th>Manquements</th>
         <th>PDF</th>
     <tr>
-<?php foreach($controles as $controle): ?>
+<?php foreach($controles as $controle): if ($controle->isControleCloture()) { continue ; } ?>
     <tr>
     <th><?php echo $controle->campagne; ?></th>
     <th><?php echo $controle->type_tournee; ?></th>
@@ -40,13 +40,13 @@
     <td><a href="<?php echo url_for('controle_apporga', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>#/<?php echo $controle->_id; ?>" class="btn btn-sm <?php if($controle->getStatutComputed() == ControleClient::CONTROLE_STATUT_A_ORGANISER): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-th-list"></span> Préparer    </a></td>
     <td><a href="<?php echo url_for('controle_appterrain', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>#/<?php echo $controle->_id; ?>" class="btn btn-sm <?php if($controle->getStatutComputed() == ControleClient::CONTROLE_STATUT_ORGANISE): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-road"></span> Tournée</a></td>
     <?php endif; ?>
-    <td><a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>" class="btn btn-sm <?php if($controle->getStatutComputed() == ControleClient::CONTROLE_STATUT_EN_MANQUEMENT): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-cog"></span> Manquements</a></td>
+    <td><a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>" class="btn btn-sm <?php if($controle->getStatutComputed() == ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-cog"></span> Manquements</a></td>
     <td>
         <small>
         <?php if ($controle->isControle()):?>
         <a href="<?php echo url_for('controle_pdf', array('id' => $controle->_id)); ?>">contrôle</a><br/>
         <?php endif; ?>
-        <?php if ($controle->isTermine()): ?>
+        <?php if ($controle->isTourneeTerminee()): ?>
         <a href="<?php echo url_for('controle_pdf_manquements', array('id' => $controle->_id)); ?>">manquements</a>
         <?php endif; ?>
         </small>
