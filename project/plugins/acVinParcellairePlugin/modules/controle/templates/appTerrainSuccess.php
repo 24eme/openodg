@@ -331,6 +331,10 @@
         if(!controles[route.params.id].audit) {
           controles[route.params.id].audit = {}
         }
+        if (controles[route.params.id].audit.saisie != 1) {
+            copySignatureIfCaveCoopAlreadySigned(controles[route.params.id]);
+        }
+
         return {
           controleCourant: controles[route.params.id],
           isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
@@ -492,6 +496,30 @@
             map.fitBounds(parcellesLayer.getBounds());
         }
     };
+
+    function copySignatureIfCaveCoopAlreadySigned(controleCourant) {
+        for (const controle of Object.values(controles)) {
+            if (controle._id === controleCourant._id) continue;
+            if (controle.audit.saisie != 1) continue;
+
+            const liaisonsCourantes = Object.values(controleCourant.liaisons_operateurs ?? {});
+
+            const liaisonsAutreControle = Object.values(controle.liaisons_operateurs ?? {});
+
+            const caveCommune = liaisonsCourantes.some(liaisonCourante =>
+                liaisonsAutreControle.some(liaison =>
+                    liaison.id_etablissement === liaisonCourante.id_etablissement
+                )
+            );
+
+            if (!caveCommune) continue;
+
+            controleCourant.audit.nom_prenom = controle.audit.nom_prenom;
+            controleCourant.audit.operateur_signature = controle.audit.operateur_signature;
+
+            return;
+        }
+    }
 
     function updateDataSynchroStatusBasedOnNeedsToBeSaved()
     {
