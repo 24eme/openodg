@@ -14,8 +14,8 @@
  * @property string $validation_odg
  * @property string $signataire
  * @property integer $papier
- * @property ParcellaireIrrigableDeclarant $declarant
- * @property ParcellaireIrrigableDeclaration $declaration
+ * @property DRaPDeclarant $declarant
+ * @property DRaPDeclaration $declaration
  * @property string $observations
  * @property acCouchdbJson $pieces
 
@@ -39,10 +39,10 @@
  * @method string setSignataire()
  * @method integer getPapier()
  * @method integer setPapier()
- * @method ParcellaireIrrigableDeclarant getDeclarant()
- * @method ParcellaireIrrigableDeclarant setDeclarant()
- * @method ParcellaireIrrigableDeclaration getDeclaration()
- * @method ParcellaireIrrigableDeclaration setDeclaration()
+ * @method DRaPDeclarant getDeclarant()
+ * @method DRaPDeclarant setDeclarant()
+ * @method DRaPDeclaration getDeclaration()
+ * @method DRaPDeclaration setDeclaration()
  * @method string getObservations()
  * @method string setObservations()
  * @method acCouchdbJson getPieces()
