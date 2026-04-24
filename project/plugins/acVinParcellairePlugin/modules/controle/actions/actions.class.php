@@ -32,7 +32,9 @@ class controleActions extends sfActions
                         'ids' => []
                     ];
                 }
-                $this->tournees[$index]['parcelles'] += $c->parcelles->toArray(true,false);
+                if (array_values($c->parcelles)[0]->parcelle_id) {
+                    $this->tournees[$index]['parcelles'] += $c->parcelles->toArray(true,false);
+                }
                 $this->tournees[$index]['operateurs'][$c->identifiant] = $c->declarant->nom;
                 $this->tournees[$index]['ids'][$c->_id] = $c->_id;
                 $this->tournees[$index]['secteurs'][$c->secteur] = $c->secteur;
