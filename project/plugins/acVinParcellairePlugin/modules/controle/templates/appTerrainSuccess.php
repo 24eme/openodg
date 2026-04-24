@@ -491,61 +491,7 @@
         if(!data.idu) {
             map.fitBounds(parcellesLayer.getBounds());
         }
-        /*let tilesUrl = []
-        for(layerIndex in parcellesLayer._layers) {
-            let layer = parcellesLayer._layers[layerIndex];
-            for(let zoom = 19; zoom >=8; zoom--) {
-                const area = L.bounds(map.project(layer.getBounds().getNorthWest(), zoom), map.project(layer.getBounds().getSouthEast(), zoom));
-                for(tile of getTileUrls(tileLayer, area, zoom)) {
-                    tilesUrl[tile.url] = tile.url
-                }
-            }
-        }
-        for(tileUrl in tilesUrl) {
-            fetch(tileUrl+'?'+tileUrl, { cache: "force-cache" })
-        }*/
     };
-
-    function getTileUrls(tileLayer, bounds, zoom) {
-            var _a;
-            const tiles = [];
-            const tilePoints = getTilePoints(bounds, tileLayer.getTileSize());
-            for (let index = 0; index < tilePoints.length; index += 1) {
-                const tilePoint = tilePoints[index];
-                const data = Object.assign(Object.assign({}), { x: tilePoint.x, y: tilePoint.y, z: zoom });
-                tiles.push({
-                    key: getTileUrl(tileLayer._url, Object.assign(Object.assign({}, data), { s: (_a = tileLayer.options.subdomains) === null || _a === void 0 ? void 0 : _a[0] })),
-                    url: getTileUrl(tileLayer._url, Object.assign(Object.assign({}, data), {
-                        // @ts-ignore: Undefined
-                        s: tileLayer._getSubdomain(tilePoint) })),
-                    z: zoom,
-                    x: tilePoint.x,
-                    y: tilePoint.y,
-                    urlTemplate: L._url,
-                    createdAt: Date.now(),
-                });
-            }
-            return tiles;
-    }
-
-    function getTilePoints(area, tileSize) {
-        const points = [];
-        if (!area.min || !area.max) {
-            return points;
-        }
-        const topLeftTile = area.min.divideBy(tileSize.x).floor();
-        const bottomRightTile = area.max.divideBy(tileSize.x).floor();
-        for (let j = topLeftTile.y; j <= bottomRightTile.y; j += 1) {
-            for (let i = topLeftTile.x; i <= bottomRightTile.x; i += 1) {
-                points.push(new L.Point(i, j));
-            }
-        }
-        return points;
-    }
-
-    function getTileUrl(urlTemplate, data) {
-        return L.Util.template(urlTemplate, Object.assign(Object.assign({}, data), { r: L.Browser.retina ? '@2x' : '' }));
-    }
 
     function updateDataSynchroStatusBasedOnNeedsToBeSaved()
     {
