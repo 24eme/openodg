@@ -21,7 +21,7 @@ drap_create_papier:
 drap_edit:
   url: /drap/edition/:id
   param: { module: drap, action: edit }
-  class: DRaPRoute.class
+  class: DRaPRoute
   options:
     model:    DRaP
     type:     object
@@ -31,7 +31,7 @@ drap_edit:
 drap_delete:
   url: /drap/suppression/:id
   param: { module: drap, action: delete }
-  class: DRaPRoute.class
+  class: DRaPRoute
   options:
     model:    DRaP
     type:     object
@@ -41,7 +41,7 @@ drap_delete:
 drap_devalidation:
   url: /drap/devalidation/:id
   param: { module: drap, action: devalidation }
-  class: DRaPRoute.class
+  class: DRaPRoute
   options:
     model:    DRaP
     type:     object
@@ -51,7 +51,7 @@ drap_devalidation:
 drap_exploitation:
   url: /drap/exploitation/:id
   param: { module: drap, action: exploitation }
-  class: DRaPRoute.class
+  class: DRaPRoute
   options:
     model:    DRaP
     type:     object
@@ -61,7 +61,7 @@ drap_exploitation:
 drap_parcelles:
   url: /drap/parcelles/:id
   param: { module: drap, action: parcelles }
-  class: DRaPRoute.class
+  class: DRaPRoute
   options:
     model:    DRaP
     type:     object
@@ -71,7 +71,7 @@ drap_parcelles:
 drap_validation:
   url: /drap/validation/:id
   param: { module: drap, action: validation }
-  class: DRaPRoute.class
+  class: DRaPRoute
   options:
     model:    DRaP
     type:     object
@@ -81,7 +81,7 @@ drap_validation:
 drap_visualisation:
   url: /drap/visualisation/:id
   param: { module: drap, action: visualisation }
-  class: DRaPRoute.class
+  class: DRaPRoute
   options:
     model:    DRaP
     type:     object
@@ -91,7 +91,7 @@ drap_visualisation:
 drap_export_pdf:
   url: /drap/pdf/:id
   param: { module: drap, action: PDF }
-  class: DRaPRoute.class
+  class: DRaPRoute
   options:
     model:    DRaP
     type:     object

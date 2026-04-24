@@ -1,5 +1,5 @@
 <?php
-class ParcellaireIrrigableRoute extends EtablissementRoute implements InterfaceDeclarationRoute {
+class DRaPRoute extends EtablissementRoute implements InterfaceDeclarationRoute {
 
     protected $parcellaireIrrigable = null;
 
