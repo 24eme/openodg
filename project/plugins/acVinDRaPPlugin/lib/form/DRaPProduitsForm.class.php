@@ -27,7 +27,7 @@ class DRaPProduitsForm extends acCouchdbObjectForm {
             }
             $node = $parcelles[$pid];
 
-            if($node->getDefinition()->exist('destination') && !$value['appellation_destination'] && !$value['appellation_renonciation']) {
+            if($node->getDefinition()->exist('destination') && !$value['appellation_destination']) {
                 $node->remove('destination');
                 continue;
             }

@@ -81,7 +81,7 @@
             <?php if(ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() === false && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() === false): ?>
                 "<?php echo url_for(DRaPEtapes::getInstance()->getPreviousLink(DRaPEtapes::ETAPE_VALIDATION), $parcellaireIrrigable); ?>"
             <?php else: ?>
-                "<?php echo url_for("drap_destination", $parcellaireIrrigable) ?>"
+                "<?php echo url_for("drap_destinations", $parcellaireIrrigable) ?>"
             <?php endif; ?> class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
