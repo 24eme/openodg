@@ -58,17 +58,17 @@
    </div>
 
    <div class="form-group">
-       <label class="col-sm-3 control-label">Nom et prénom de l'opérateur ou du représentant</label>
+       <label class="col-sm-3 control-label">Nom et prénom de l'opérateur.ice (ou représentant.e)</label>
        <div class="col-sm-4">
            <textarea rows="1" class="form-control" v-model="controleCourant.audit.nom_prenom" :disabled="controleCourant.audit.saisie == 1"></textarea>
        </div>
    </div>
 
   <div class="form-group">
-      <label class="col-sm-3 control-label">Signature Opérateur</label>
+      <label class="col-sm-3 control-label">Signature opérateur.ice</label>
       <div class="col-sm-5">
           <canvas id="signature" width="300" height="300" style="border: 1px solid #cecece;"></canvas>
-          <p id="signature-pad-reset" class="text-muted" style="padding-left: 240px; cursor: pointer;" title="Effacer la signature"><span class="glyphicon glyphicon-trash">Effacer</span></p>
+          <p id="signature-pad-reset" class="text-muted" style="padding-left: 240px; cursor: pointer;" title="Effacer la signature"><span class="glyphicon glyphicon-trash"></span>&nbsp;Effacer</p>
       </div>
   </div>
 
