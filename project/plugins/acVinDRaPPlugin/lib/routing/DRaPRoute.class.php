@@ -1,16 +1,16 @@
 <?php
-class ParcellaireIrrigableRoute extends EtablissementRoute implements InterfaceDeclarationRoute {
+class DRaPRoute extends EtablissementRoute implements InterfaceDeclarationRoute {
 
-    protected $parcellaireIrrigable = null;
+    protected $drap = null;
 
     protected function getObjectForParameters($parameters = null) {
-        $this->parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->find($parameters['id']);
-        if (!$this->parcellaireIrrigable) {
+        $this->drap = DRaPClient::getInstance()->find($parameters['id']);
+        if (!$this->drap) {
 
-            throw new sfError404Exception(sprintf('No ParcellaireIrrigable found with the id "%s".', $parameters['id']));
+            throw new sfError404Exception(sprintf('No DRaP found with the id "%s".', $parameters['id']));
         }
-        parent::getObjectForParameters(array('identifiant' => $this->parcellaireIrrigable->identifiant));
-        return $this->parcellaireIrrigable;
+        parent::getObjectForParameters(array('identifiant' => $this->drap->identifiant));
+        return $this->drap;
     }
 
     protected function doConvertObjectToArray($object = null) {
@@ -18,10 +18,10 @@ class ParcellaireIrrigableRoute extends EtablissementRoute implements InterfaceD
         return $parameters;
     }
 
-    public function getParcellaireIrrigable() {
-        if (!$this->parcellaireIrrigable) {
+    public function getDRaP() {
+        if (!$this->drap) {
             $this->getObject();
         }
-        return $this->parcellaireIrrigable;
+        return $this->drap;
     }
 }

@@ -6,24 +6,24 @@ class DRaPConfiguration extends DeclarationConfiguration {
 
     public static function getInstance() {
         if (is_null(self::$_instance)) {
-            self::$_instance = new ParcellaireIrrigableConfiguration();
+            self::$_instance = new DRaPConfiguration();
         }
         return self::$_instance;
     }
 
     public function getCampagneDebutMois() {
 
-        return ParcellaireAffectationConfiguration::getInstance()->getCampagneDebutMois();
+        return DRaPConfiguration::getInstance()->getCampagneDebutMois();
     }
 
     public function getModuleName() {
 
-        return 'parcellaireIrrigable';
+        return 'drap';
     }
 
     public function getDateOuvertureConfigName() {
 
-        return 'parcellaire_irrigable';
+        return 'drap';
     }
 
     public function getRessources($value = null)
@@ -31,14 +31,14 @@ class DRaPConfiguration extends DeclarationConfiguration {
       return $this->getFromConfig('ressources', $value);
     }
 
-    public function getMateriels($value = null)
+    public function getDestinations($value = null)
     {
-      return $this->getFromConfig('materiels', $value);
+      return $this->getFromConfig('destinations', $value);
     }
 
     private function getFromConfig($type, $value = null)
     {
-      $items = sfConfig::get('app_parcellaire_irrigable_'.$type);
+      $items = sfConfig::get('app_drap_'.$type);
       $entries = array();
       foreach ($items as $item) {
           $entry = new stdClass();

@@ -6,7 +6,7 @@
 
 <?php include_partial('drap/step', array('step' => 'validation', 'parcellaireIrrigable' => $parcellaireIrrigable)) ?>
 <div class="page-header no-border">
-    <h2>Validation des parcelles en renoncement à produire sur l'exploitation</h2>
+    <h2>Validation des parcelles en renonciation à produire sur l'exploitation</h2>
 </div>
 
 <?php if (isset($validation) && $validation->hasPoints()): ?>

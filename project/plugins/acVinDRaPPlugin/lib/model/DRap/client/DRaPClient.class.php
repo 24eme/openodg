@@ -3,22 +3,22 @@
 class DRaPClient extends acCouchdbClient {
 
       const TYPE_MODEL = "DRaP";
-      const TYPE_COUCHDB = "PARCELLAIREIRRIGABLE";
-      const TYPE_LIBELLE = "Déclaration d'irrigation";
+      const TYPE_COUCHDB = "DRAP";
+      const TYPE_LIBELLE = "Déclaration de renonciation à produire";
 
       public static function getInstance() {
-          return acCouchdbManager::getClient("parcellaireIrrigable");
+          return acCouchdbManager::getClient("DRaP");
       }
 
       public function findOrCreate($identifiant, $periode, $type = self::TYPE_COUCHDB) {
           if (strlen($periode) != 4)
               throw new sfException("La periode doit être une année et non " . $periode);
-          $parcellaireIrrigable = $this->find($this->buildId($identifiant, $periode, $type));
-          if (is_null($parcellaireIrrigable)) {
-              $parcellaireIrrigable = $this->createDoc($identifiant, $periode, false, $type);
+          $drap = $this->find($this->buildId($identifiant, $periode, $type));
+          if (is_null($drap)) {
+              $drap = $this->createDoc($identifiant, $periode, false, $type);
           }
 
-          return $parcellaireIrrigable;
+          return $drap;
       }
 
 
@@ -37,14 +37,14 @@ class DRaPClient extends acCouchdbClient {
       }
 
       public function createDoc($identifiant, $periode, $papier = false, $type = self::TYPE_COUCHDB) {
-          $parcellaireIrrigable = new parcellaireIrrigable();
-          $parcellaireIrrigable->initDoc($identifiant, $periode, $type);
+          $drap = new DRaP();
+          $drap->initDoc($identifiant, $periode, $type);
 
           if($papier) {
-          	$parcellaireIrrigable->add('papier', 1);
+              $drap->add('papier', 1);
           }
 
-          return $parcellaireIrrigable;
+          return $drap;
       }
 
       public function getLast($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
