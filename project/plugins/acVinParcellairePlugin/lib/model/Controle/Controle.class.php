@@ -107,6 +107,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function resetParcellesWithParcellesIds(array $parcellesIds)
     {
+        if ($this->isAuditValide()) { return; }
         $this->remove('parcelles');
         $this->add('parcelles');
         if ($parcellesIds) {
