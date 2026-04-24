@@ -24,23 +24,29 @@
         <th>Manquements</th>
         <th>PDF</th>
     <tr>
-<?php foreach($controles as $controle): if ($controle->isControleCloture()) { continue ; } ?>
+<?php foreach($controles as $controle): ?>
     <tr>
     <th><?php echo $controle->campagne; ?></th>
     <th><?php echo $controle->type_tournee; ?></th>
     <th>
         <?php if ($controle->date_tournee): ?><?php echo Date::francizeDate($controle->date_tournee); ?><?php else:?>A venir<?php endif; ?>
-        <a href="<?php echo url_for('controle_set_date_tournee', $controle); ?>" class="btn btn-sm"><span class="glyphicon glyphicon-edit"></span></a>
+        <?php  if (! $controle->isControleCloture()): ?>
+            <a href="<?php echo url_for('controle_set_date_tournee', $controle); ?>" class="btn btn-sm"><span class="glyphicon glyphicon-edit"></span></a>
+        <?php endif;?>
     </th>
     <td class="text-center"><?php echo count($controle->parcelles); ?> / <?php echo count($controle->manquements); ?></td>
-    <?php if (!$controle->isPlanifie()): ?>
-        <td colspan="3"><a href="<?php echo url_for('controle_set_date_tournee', $controle); ?>" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-time"></span> Planifier le controle</a></td>
+    <?php  if (! $controle->isControleCloture()): ?>
+        <?php if (!$controle->isPlanifie()): ?>
+            <td colspan="3"><a href="<?php echo url_for('controle_set_date_tournee', $controle); ?>" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-time"></span> Planifier le controle</a></td>
+        <?php else: ?>
+            <td></td>
+            <td><a href="<?php echo url_for('controle_apporga', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>#/<?php echo $controle->_id; ?>" class="btn btn-sm <?php if($controle->getStatutComputed() == ControleClient::CONTROLE_STATUT_A_ORGANISER): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-th-list"></span> Préparer    </a></td>
+            <td><a href="<?php echo url_for('controle_appterrain', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>#/<?php echo $controle->_id; ?>" class="btn btn-sm <?php if($controle->getStatutComputed() == ControleClient::CONTROLE_STATUT_ORGANISE): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-road"></span> Tournée</a></td>
+        <?php endif; ?>
+        <td><a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>" class="btn btn-sm <?php if($controle->getStatutComputed() == ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-cog"></span> Manquements</a></td>
     <?php else: ?>
-    <td></td>
-    <td><a href="<?php echo url_for('controle_apporga', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>#/<?php echo $controle->_id; ?>" class="btn btn-sm <?php if($controle->getStatutComputed() == ControleClient::CONTROLE_STATUT_A_ORGANISER): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-th-list"></span> Préparer    </a></td>
-    <td><a href="<?php echo url_for('controle_appterrain', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>#/<?php echo $controle->_id; ?>" class="btn btn-sm <?php if($controle->getStatutComputed() == ControleClient::CONTROLE_STATUT_ORGANISE): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-road"></span> Tournée</a></td>
-    <?php endif; ?>
-    <td><a href="<?php echo url_for('controle_liste_operateur_tournee', array('date' => $controle->date_tournee, 'agent_identifiant' => $controle->agent_identifiant)); ?>" class="btn btn-sm <?php if($controle->getStatutComputed() == ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-cog"></span> Manquements</a></td>
+        <th colspan="4" class="text-center">Contrôle cloturé</th>
+    <?php endif;?>
     <td>
         <small>
         <?php if ($controle->isControle()):?>
