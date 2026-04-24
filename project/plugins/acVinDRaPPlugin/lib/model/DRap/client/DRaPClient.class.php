@@ -7,7 +7,7 @@ class DRaPClient extends acCouchdbClient {
       const TYPE_LIBELLE = "Déclaration de renonciation à produire";
 
       public static function getInstance() {
-          return acCouchdbManager::getClient("drap");
+          return acCouchdbManager::getClient("DRaP");
       }
 
       public function findOrCreate($identifiant, $periode, $type = self::TYPE_COUCHDB) {
