@@ -52,7 +52,7 @@
              <br/>
             <?php $has_secteur = false; ?>
             <?php if ($controle->secteur): ?>
-                Sect. : <?php echo $controle->secteur; ?>
+                <a style="color:#333333;" href='#filtre=["secteur:<?php echo $controle->secteur; ?>"]'>Sect. : <?php echo $controle->secteur; ?></a>
             <?php $has_secteur = true; endif; ?>
             <?php if (count($caves)): ?>
                 <?php if ($has_secteur) : ?> - <?php endif; ?>
