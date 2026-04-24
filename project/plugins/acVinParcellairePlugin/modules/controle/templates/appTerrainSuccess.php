@@ -18,7 +18,6 @@
     let controles = JSON.parse(localStorage.getItem("controles_" + date_tournee)) || {}
     let no_by_default = {}
     let reloadStatus = false;
-    let is_synchro = true;
 
     var aires = [];
     <?php
@@ -76,43 +75,7 @@
               controles: controles,
             }
         },
-        computed: {
-          isSynchro() {
-            is_synchro = this.checkNeedsToBeSaved(this.controles);
-            return is_synchro;
-          }
-        },
-
-        methods: {
-            checkNeedsToBeSaved(controles) {
-              for (const controle of Object.values(controles)) {
-                if (controle.audit.needs_to_be_saved === true) {
-                  console.log(controle._id + ' : audit needs to be saved');
-                  return false;
-                }
-
-                for (const parcelle of Object.values(controle.parcelles)) {
-                  if (parcelle.needs_to_be_saved === true) {
-                    console.log(controle._id + ' : parcelle ' + parcelle.parcelle_id + ' needs to be saved');
-                    return false;
-                  }
-                }
-              }
-
-              return true;
-            }
-        },
         template: '<RouterView :key="$route.fullPath" />',
-        // watch: {
-        //   controles: {
-        //     handler(newControles) {
-        //       if (newControles) {
-        //           localStorage.setItem("controles_" + date_tournee, JSON.stringify(newControles));
-        //       }
-        //     },
-        //     deep: true
-        //   }
-        // },
       });
     app.use(router)
     app.mount('#content')
@@ -530,7 +493,6 @@
     }
 
     async function submitNeedsToBeSaved() {
-
       if (! isStartingup) {
           saveControlesInLocalStorage();
       }
@@ -552,8 +514,6 @@
           if (confirm("Un autre utilisateur utilise cette partie de l'app Terrain. Par sécurité, rechargez l'application. (pour ne pas recharger, annulez)")) {
               return location.reload();
           }
-      } else if (is_saved) {
-          is_synchro = true;
       }
       loadFromServerIfNeeded();
     }
@@ -586,7 +546,6 @@
                 controle.audit.needs_to_be_saved = false;
             }
             element.needs_to_be_saved = false;
-            is_synchro = false;
             if (data.reloadStatus) {
                 reloadStatus = true;
             }
