@@ -49,7 +49,7 @@ class DRaP extends BaseDRaP implements InterfaceDeclaration {
   public function initDoc($identifiant, $periode) {
       $this->identifiant = $identifiant;
       $this->campagne = $periode.'-'.($periode + 1);
-      $this->set('_id', ParcellaireIrrigableClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->periode);
+      $this->set('_id', DRaPClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->periode);
       $this->storeDeclarant();
   }
 
@@ -99,7 +99,7 @@ class DRaP extends BaseDRaP implements InterfaceDeclaration {
     public function setParcellesFromParcellaire(array $hashes) {
         parent::setParcellesFromParcellaire($hashes);
 
-        $last = ParcellaireIrrigableClient::getInstance()->getLast($this->identifiant);
+        $last = DRaPClient::getInstance()->getLast($this->identifiant);
 
         if (! $last) {
             return;
@@ -109,8 +109,7 @@ class DRaP extends BaseDRaP implements InterfaceDeclaration {
         foreach ($this->getDeclarationParcelles() as $pid => $p) {
             $parcelle = $lastParcelles[$pid];
             if ($parcelle) {
-                $p->materiel = $parcelle->materiel;
-                $p->ressource = $parcelle->ressource;
+                $p->destination = $parcelle->destination;
             }
         }
     }
@@ -211,7 +210,7 @@ class DRaP extends BaseDRaP implements InterfaceDeclaration {
         return (!$this->getValidation())? array() : array(array(
             'identifiant' => $this->getIdentifiant(),
             'date_depot' => $this->getValidation(),
-            'libelle' => 'Identification des parcelles irrigables '.$this->getPeriode().' '.$complement,
+            'libelle' => 'Identification des parcelles en renoncement à produire '.$this->getPeriode().' '.$complement,
             'mime' => Piece::MIME_PDF,
             'visibilite' => 1,
             'source' => null
@@ -223,11 +222,11 @@ class DRaP extends BaseDRaP implements InterfaceDeclaration {
     }
 
     public function generateUrlPiece($source = null) {
-        return sfContext::getInstance()->getRouting()->generate('parcellaireirrigable_export_pdf', $this);
+        return sfContext::getInstance()->getRouting()->generate('drap_export_pdf', $this);
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
-        return sfContext::getInstance()->getRouting()->generate('parcellaireirrigable_visualisation', array('id' => $id));
+        return sfContext::getInstance()->getRouting()->generate('drap_visualisation', array('id' => $id));
     }
 
     public static function getUrlGenerationCsvPiece($id, $admin = false) {
@@ -245,9 +244,9 @@ class DRaP extends BaseDRaP implements InterfaceDeclaration {
     public function getInfoFromParcelleId($idParcelle)
     {
         if ($parcelle = $this->findParcelleByIdParcelle($idParcelle)) {
-            return ['materiel' => $parcelle->materiel, 'ressource' => $parcelle->ressource];
+            return ['destination' => $parcelle->destination];
         }
-        return ['materiel' => '', 'ressource' => ''];
+        return ['destination' => ''];
     }
 
     public function getPreviousDocument() {
@@ -255,7 +254,7 @@ class DRaP extends BaseDRaP implements InterfaceDeclaration {
            return $this->previous_document;
         }
 
-        $this->previous_document = ParcellaireIrrigableClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
+        $this->previous_document = DRaPClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
 
         return $this->previous_document;
     }

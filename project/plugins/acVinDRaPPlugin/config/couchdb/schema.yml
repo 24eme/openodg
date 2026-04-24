@@ -1,5 +1,5 @@
 #DRAP
-Drap:
+DRaP:
   definition:
     fields:
       _id: { }
@@ -65,8 +65,7 @@ Drap:
                               active: { type: integer }
                               vtsgn: { type: integer, required: false }
                               campagne_plantation: {  }
-                              materiel: {  }
-                              ressource: {  }
+                              destination: {  }
                               produit_hash: { }
                               parcelle_id: { }
                               source_produit_libelle: { }

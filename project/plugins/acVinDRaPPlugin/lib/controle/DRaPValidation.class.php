@@ -1,6 +1,6 @@
 <?php
 
-class ParcellaireIrrigableValidation extends DocumentValidation {
+class DRaPValidation extends DocumentValidation {
 
     const TYPE_ERROR = 'erreur';
     const TYPE_WARNING = 'vigilance';
