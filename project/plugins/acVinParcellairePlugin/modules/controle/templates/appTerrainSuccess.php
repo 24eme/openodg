@@ -53,7 +53,7 @@
     let localstorage_updated = false;
 
     let isStartingup = true;
-    submitNeedsToBeSaved();
+    submitNeedsToBeSaved(null);
 
     const routes = [
       { path: '/', name: "listing", component: templates.listing },
@@ -81,13 +81,14 @@
     app.mount('#content')
 
     templates.listing.mounted = function() {
-        submitNeedsToBeSaved();
+        submitNeedsToBeSaved(this);
     }
 
     templates.listing.data = function() {
         return {
             controles: controles,
-            date_tournee: date_tournee
+            date_tournee: date_tournee,
+            isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
         }
     };
 
@@ -102,6 +103,18 @@
             return Object.values(this.controles).filter(c =>
                 c.agent_identifiant === this.agentIdentifiant
             )
+        },
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
         }
     }
 
@@ -119,13 +132,28 @@
     };
 
     templates.operateur.mounted = function() {
-        submitNeedsToBeSaved();
-    }
+        submitNeedsToBeSaved(this);
+    };
+    templates.operateur.computed = {
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
+        }
+    };
     templates.operateur.data = function() {
         const route = useRoute()
 
         return {
           controleCourant: controles[route.params.id],
+          isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
         }
     };
     templates.operateur.methods = {
@@ -174,13 +202,26 @@
           });
 
         return Object.fromEntries(entries);
-      }
+    }
     };
 
     templates.parcelle.mounted = function() {
-        submitNeedsToBeSaved();
+        submitNeedsToBeSaved(this);
     }
-
+    templates.parcelle.computed = {
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
+        }
+    }
     templates.parcelle.data = function() {
         const route = useRoute()
         for (const pointKey in controles[route.params.id].parcelles[route.params.parcelle].controle.points) {
@@ -193,7 +234,8 @@
           controleCourant: controles[route.params.id],
           parcelleCourante: controles[route.params.id].parcelles[route.params.parcelle],
           pointsDeControle: points_de_controle,
-          date_tournee: date_tournee
+          date_tournee: date_tournee,
+          isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
         }
     };
     templates.parcelle.methods = {
@@ -249,7 +291,7 @@
         }
     };
     templates.audit.mounted = function() {
-        submitNeedsToBeSaved();
+        submitNeedsToBeSaved(this);
         let signatureBase64 = null;
         const controleCourant = this.controleCourant;
         const signaturePad = new SignaturePad(document.getElementById('signature'), {
@@ -270,14 +312,28 @@
             signaturePad.fromDataURL(controleCourant.audit.operateur_signature);
         }
     }
+    templates.audit.computed = {
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
+        }
+    }
     templates.audit.data = function() {
         const route = useRoute()
         if(!controles[route.params.id].audit) {
           controles[route.params.id].audit = {}
         }
         return {
-          controleCourant: controles[route.params.id]
-
+          controleCourant: controles[route.params.id],
+          isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
         }
     };
     templates.audit.methods = {
@@ -324,7 +380,6 @@
                  this.controleCourant.declarant.siret.substring(6,9) +" "+
                  this.controleCourant.declarant.siret.substring(9);
       }
-
     };
     templates.map.data = function() {
         const route = useRoute()
@@ -492,7 +547,22 @@
         return L.Util.template(urlTemplate, Object.assign(Object.assign({}, data), { r: L.Browser.retina ? '@2x' : '' }));
     }
 
-    async function submitNeedsToBeSaved() {
+    function updateDataSynchroStatusBasedOnNeedsToBeSaved()
+    {
+        for (const controle of Object.values(controles)) {
+            if (controle.audit.needs_to_be_saved === true) {
+                return false;
+            }
+            for (const parcelle of Object.values(controle.parcelles)) {
+                if (parcelle.needs_to_be_saved === true) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    async function submitNeedsToBeSaved(context) {
       if (! isStartingup) {
           saveControlesInLocalStorage();
       }
@@ -509,6 +579,9 @@
           }
         }
         need_reload = need_reload || needReload(controle);
+      }
+      if (context) {
+          context.isSaved = is_saved;
       }
       if (need_reload) {
           if (confirm("Un autre utilisateur utilise cette partie de l'app Terrain. Par sécurité, rechargez l'application. (pour ne pas recharger, annulez)")) {
