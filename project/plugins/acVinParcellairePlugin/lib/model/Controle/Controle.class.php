@@ -61,7 +61,11 @@ class Controle extends BaseControle implements InterfacePieceDocument
     }
 
     public function getLiaisonsCooperative() {
-        return EtablissementClient::getInstance()->findByCvi($this->declarant->cvi)->getLiaisonsOfType(EtablissementFamilles::FAMILLE_COOPERATIVE, true);
+        $e = EtablissementClient::getInstance()->findByCvi($this->declarant->cvi);
+        if (!$e) {
+            return [];
+        }
+        return $e->getLiaisonsOfType(EtablissementFamilles::FAMILLE_COOPERATIVE, true);
     }
 
     public function getLiaisonsLibellesArray() {
