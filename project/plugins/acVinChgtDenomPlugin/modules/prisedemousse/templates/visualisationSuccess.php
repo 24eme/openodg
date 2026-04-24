@@ -5,7 +5,7 @@
 <?php include_partial('prisedemousse/breadcrumb', array('prisedemousse' => $prisedemousse )); ?>
 
     <div class="page-header no-border">
-      <h2>Prise de mousse  n° <?php echo $prisedemousse->numero_archive; ?>
+      <h2>Prise de mousse <?php if (!$prisedemousse->isTotal()): ?>partielle <?php endif; ?>n° <?php echo $prisedemousse->numero_archive; ?>
       <?php if ($prisedemousse->isValide()): ?>
       <small class="pull-right">Télédéclaration signée le <?php echo format_date($prisedemousse->validation, "dd/MM/yyyy", "fr_FR"); ?><?php if($prisedemousse->isApprouve()): ?> et approuvée le <?php echo format_date($prisedemousse->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?></small>
       <?php endif; ?>

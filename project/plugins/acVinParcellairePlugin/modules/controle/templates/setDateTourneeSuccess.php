@@ -41,7 +41,7 @@
             </div>
             <div class="row mt-5">
                 <div class="col-xs-6 text-left">
-                    <a class="btn btn-default" href="<?php echo url_for('controle_index'); ?>"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+                    <a class="btn btn-default" href="<?php echo url_for('controle_operateur', array('identifiant' => $controle->identifiant)); ?>"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
                 </div>
                 <div class="col-xs-6 text-right">
                     <button class="btn btn-primary" type="submit">Valider</button>

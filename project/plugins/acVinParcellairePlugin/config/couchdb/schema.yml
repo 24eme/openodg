@@ -273,7 +273,8 @@ Controle:
                                               fields:
                                                 libelle: {}
                                                 observations: {}
-                                                conformite: {}
+                                                conformite: { required: false }
+                                                non_conforme: {}
                         superficie_a_retirer: {}
                         saisie: {}
                         observations: { required: false } # deprecated
@@ -306,7 +307,7 @@ Controle:
         definition:
           fields:
             '*': {}
-      manquements_valides:
+      manquements_valides: {required: true}
       mouvements_statuts:
         type: array_collection
         definition:

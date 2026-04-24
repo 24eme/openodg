@@ -1,5 +1,5 @@
 <h3 class="mt-0">
-    <RouterLink :to="{ name: 'operateur', params: { id: controleCourant._id } }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ libelleTournee() }} <RouterLink :to="{ name: 'map_parcelle', params: { idu: parcelleCourante.idu }}" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink><span class="pull-right mr-3" :class="$root.isSynchro ? 'glyphicon glyphicon-floppy-saved' : 'glyphicon glyphicon-floppy-remove'" :style="$root.isSynchro ? 'color: #8da42a' : 'color: #aaaaaa'"></span></h3>
+    <RouterLink :to="{ name: 'operateur', params: { id: controleCourant._id } }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ libelleTournee() }} <RouterLink :to="{ name: 'map_parcelle', params: { idu: parcelleCourante.idu }}" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink><span class="pull-right mr-3" :class="savedClass" :style="savedStyle"></span></h3>
 <hr class="mt-2" />
 
 <?php include_partial('controle/terrainBlocDeclarant'); ?>
@@ -116,11 +116,11 @@
     <div class="col-sm-12" v-show="valPoint.conformite === 'NC'">
       <div class="" style="margin-top:10px;">
         <div class="panel-body">
-            <div class="manquement" v-for="(infos, codeManquement) in valPoint.constats">
-                <input :id="'checkbox_' + codeManquement" type="checkbox" v-model="infos.conformite" style="font-weight: normal;"/>
-                <label :for="'checkbox_' + codeManquement" style="margin-top: 5px;">&nbsp; {{ infos.libelle }}<span class="text-muted"> - {{ codeManquement }}</span> </label>
+            <div class="manquement" v-for="(constat, codeManquement) in valPoint.constats">
+                <input :id="'checkbox_' + codeManquement" type="checkbox" v-model="constat.non_conforme" style="font-weight: normal;"/>
+                <label :for="'checkbox_' + codeManquement" style="margin-top: 5px;">&nbsp; {{ constat.libelle }}<span class="text-muted"> - {{ codeManquement }}</span> </label>
                 <div class="col-sm-12" style="margin-top: 5px;">
-                    <textarea rows="2" class="form-control" :name="'obs_' + codeManquement" :id="'obs_' + codeManquement" v-model="infos.observations" placeholder="Observations"></textarea>
+                    <textarea rows="2" class="form-control" :name="'obs_' + codeManquement" :id="'obs_' + codeManquement" v-model="constat.observations" placeholder="Observations"></textarea>
                 </div>
             </div>
         </div>

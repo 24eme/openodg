@@ -92,7 +92,7 @@ class prisedemousseActions extends sfActions
 
         $this->validation = new PriseDeMousseValidation($this->prisedemousse);
 
-        $this->form = new ChgtDenomValidationForm($this->prisedemousse, array(), array('isAdmin' => $this->isAdmin, 'withDate' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
+        $this->form = new PriseDeMousseValidationForm($this->prisedemousse, array(), array('isAdmin' => $this->isAdmin, 'withDate' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
