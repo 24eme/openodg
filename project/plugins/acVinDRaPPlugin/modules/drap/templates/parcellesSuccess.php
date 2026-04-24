@@ -8,7 +8,7 @@
 
 <?php include_partial('parcellaireIrrigable/step', array('step' => 'parcelles', 'parcellaireIrrigable' => $parcellaireIrrigable)) ?>
 <div class="page-header">
-    <h2>Parcelles sur votre exploitation <br/><small>Merci d'indiquer vos parcelles en renoncement à produire en cliquant sur la ligne de la parcelle concernée.</small></h2>
+    <h2>Parcelles sur votre exploitation <br/><small>Merci d'indiquer vos parcelles en renonciation à produire en cliquant sur la ligne de la parcelle concernée.</small></h2>
 </div>
 
 <?php if(!$parcellaireIrrigable->isAllPreviousParcellesExists()): ?>
@@ -27,7 +27,7 @@
                 <h3><?php echo $commune; ?></h3>
             </div>
             <div class="col-xs-6">
-               <p class="text-right" style="margin-top: 20px;"><a id="btn-switchactive-all<?php echo '_'.$commune ?>" href="javascript:void(0)" data-status="affecter" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune peuvent être en renoncement à produire" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune" data-target="#parcelles_<?php echo preg_replace('/[^a-z]/i', '', $commune); ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune peuvent être en renoncement à produire</a></p>
+               <p class="text-right" style="margin-top: 20px;"><a id="btn-switchactive-all<?php echo '_'.$commune ?>" href="javascript:void(0)" data-status="affecter" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune peuvent être en renonciation à produire" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune" data-target="#parcelles_<?php echo preg_replace('/[^a-z]/i', '', $commune); ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune peuvent être en renonciation à produire</a></p>
            </div>
         </div>
         <table id="parcelles_<?php echo preg_replace('/[^a-z]/i', '', $commune); ?>" class="table table-bordered table-condensed table-striped tableParcellaire">

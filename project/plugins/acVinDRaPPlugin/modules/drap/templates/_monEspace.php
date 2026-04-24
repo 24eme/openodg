@@ -47,7 +47,7 @@ endif; ?>
     </div>
 <?php elseif(!$parcellaireIrrigable->validation): ?>
     <div class="panel-body">
-        <p class="explications">Vous avez débuté votre Identification des parcelles en renoncement à produire sans la valider.</p>
+        <p class="explications">Vous avez débuté votre Identification des parcelles en renonciation à produire sans la valider.</p>
         <div class="actions">
             <a class="btn btn-block btn-primary" href="<?php echo url_for('drap_edit', $parcellaireIrrigable) ?>">Continuer la déclaration « irrigable »</a>
             <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-xs btn-default btn-block" href="<?php echo url_for('drap_delete', $parcellaireIrrigable) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>

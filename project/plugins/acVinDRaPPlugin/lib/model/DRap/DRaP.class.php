@@ -210,7 +210,7 @@ class DRaP extends BaseDRaP implements InterfaceDeclaration {
         return (!$this->getValidation())? array() : array(array(
             'identifiant' => $this->getIdentifiant(),
             'date_depot' => $this->getValidation(),
-            'libelle' => 'Identification des parcelles en renoncement à produire '.$this->getPeriode().' '.$complement,
+            'libelle' => 'Identification des parcelles en renonciation à produire '.$this->getPeriode().' '.$complement,
             'mime' => Piece::MIME_PDF,
             'visibilite' => 1,
             'source' => null
