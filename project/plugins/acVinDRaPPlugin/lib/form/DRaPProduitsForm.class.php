@@ -14,7 +14,7 @@ class DRaPProduitsForm extends acCouchdbObjectForm {
             if($this->destinataire && !$p->destinations->exist(str_replace("ETABLISSEMENT-", "", $this->destinataire))) {
                 continue;
             }
-            $this->embedForm($p->getParcelleId(), new ParcellaireIrrigableProduitIrrigationForm((!$p->exist('irrigation')) ? $p : $p->irrigation));
+            $this->embedForm($p->getParcelleId(), new DRaPProduitDestinationsForm((!$p->exist('destinations')) ? $p : $p->destinations));
         }
         $this->widgetSchema->setNameFormat('parcelles[%s]');
     }
@@ -27,13 +27,13 @@ class DRaPProduitsForm extends acCouchdbObjectForm {
             }
             $node = $parcelles[$pid];
 
-            if($node->getDefinition()->exist('irrigation') && !$value['materiel'] && !$value['ressource']) {
-                $node->remove('irrigation');
+            if($node->getDefinition()->exist('destination') && !$value['appellation_destination'] && !$value['appellation_renonciation']) {
+                $node->remove('destination');
                 continue;
             }
 
-            if($node->getDefinition()->exist('irrigation')) {
-                $node = $node->add('irrigation');
+            if($node->getDefinition()->exist('destination')) {
+                $node = $node->add('destination');
             }
 
             foreach ($value as $k => $v) {

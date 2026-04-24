@@ -68,6 +68,16 @@ drap_parcelles:
   requirements:
     sf_method: [get, post]
 
+drap_destinations:
+  url: /drap/destinations/:id
+  param: { module: drap, action: destinations }
+  class: DRaPRoute
+  options:
+    model:    DRaP
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 drap_validation:
   url: /drap/validation/:id
   param: { module: drap, action: validation }

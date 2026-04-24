@@ -135,12 +135,12 @@ class drapActions extends sfActions {
         return ($next = $this->getRouteNextEtape(DRaPEtapes::ETAPE_PARCELLES)) ? $this->redirect($next, $this->drap) : $this->redirect('drap_validation', $this->drap);
     }
 
-    public function executeIrrigations(sfWebRequest $request) {
+    public function executeDestinations(sfWebRequest $request) {
         $this->drap = $this->getRoute()->getDRaP();
         $this->coop = $request->getParameter('coop');
         $this->secure(ParcellaireSecurity::EDITION, $this->drap);
 
-        if($this->drap->storeEtape($this->getEtape($this->drap, DRaPEtapes::ETAPE_IRRIGATIONS))) {
+        if($this->drap->storeEtape($this->getEtape($this->drap, DRaPEtapes::ETAPE_DESTINATIONS))) {
             $this->drap->save();
         }
 
