@@ -27,13 +27,13 @@ class DRaPProduitsForm extends acCouchdbObjectForm {
             }
             $node = $parcelles[$pid];
 
-            if($node->getDefinition()->exist('destination') && !$value['appellation_destination']) {
-                $node->remove('destination');
+            if($node->getDefinition()->exist('fields') && !$value['destination']) {
+                $node->remove('fields');
                 continue;
             }
 
-            if($node->getDefinition()->exist('destination')) {
-                $node = $node->add('destination');
+            if($node->getDefinition()->exist('fields')) {
+                $node = $node->add('fields');
             }
 
             foreach ($value as $k => $v) {

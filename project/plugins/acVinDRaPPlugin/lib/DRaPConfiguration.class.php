@@ -26,11 +26,6 @@ class DRaPConfiguration extends DeclarationConfiguration {
         return 'drap';
     }
 
-    public function getRessources($value = null)
-    {
-      return $this->getFromConfig('ressources', $value);
-    }
-
     public function getDestinations($value = null)
     {
       return $this->getFromConfig('destinations', $value);

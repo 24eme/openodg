@@ -10,7 +10,7 @@
             <th class="col-xs-1">Section /<br />N° parcelle</th>
             <th class="col-xs-2">Cépage</th>
             <th class="col-xs-1 text-center">Année plantat°</th>
-            <th class="col-xs-1 text-right">Surf. <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
+            <th class="col-xs-2 text-right">Surface renoncée <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
             <th class="col-xs-2 text-center">Appellation à laquelle on renonce</th>
             <th class="col-xs-2 text-center">Destination </br> Appellation revendiquée</th>
             <th class="col-xs-1 text-center">Dupliquer les destinations</th>
@@ -27,18 +27,23 @@
             <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
             <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
             <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
-            <?php if (ParcellaireConfiguration::getInstance()->isAres()): ?>
-                <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)); ?></td>
-            <?php else: ?>
-                <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie()); ?></td>
-            <?php endif ?>
+            <td class="text-right">
+                <div style="margin-bottom: 0;" class=" <?php if($form[$parcelle->getParcelleId()]['superficie']->hasError()): ?>has-error<?php endif; ?>">
+                    <?php echo $form[$parcelle->getParcelleId()]['superficie']->renderError(); ?>
+                    <?php if (ParcellaireConfiguration::getInstance()->isAres()): ?>
+                        <?php echo $form[$parcelle->getParcelleId()]['superficie'](ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)->render(); ?>
+                    <?php else: ?>
+                        <?php echo $form[$parcelle->getParcelleId()]['superficie']->render(); ?>
+                    <?php endif ?>
+                </div>
+            </td>
             <?php if (ParcellaireConfiguration::getInstance()->hasDRaP()): ?>
             <td class="text-center"><?php echo $parcelle->getAppellation()->getLibelleComplet(); ?></td>
             <td>
-                <div style="margin-bottom: 0;" class="form-group <?php if($form[$parcelle->getParcelleId()]['appellation_destination']->hasError()): ?>has-error<?php endif; ?>">
-                    <?php echo $form[$parcelle->getParcelleId()]['appellation_destination']->renderError() ?>
+                <div style="margin-bottom: 0;" class="form-group <?php if($form[$parcelle->getParcelleId()]['destination']->hasError()): ?>has-error<?php endif; ?>">
+                    <?php echo $form[$parcelle->getParcelleId()]['destination']->renderError(); ?>
                     <div class="col-xs-12">
-                        <?php echo $form[$parcelle->getParcelleId()]['appellation_destination']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax toDuplicate', "placeholder" => "Saisir une destination", "data-new" => "ajouter", "data-duplicate" => "destination", "data-choices" => json_encode(DRaPConfiguration::getInstance()->getDestinations($form[$parcelle->getParcelleId()]['appellation_destination']->getValue())))) ?>
+                        <?php echo $form[$parcelle->getParcelleId()]['destination']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax toDuplicate', "placeholder" => "Saisir une destination", "data-new" => "ajouter", "data-duplicate" => "destination", "data-choices" => json_encode(DRaPConfiguration::getInstance()->getDestinations($form[$parcelle->getParcelleId()]['destination']->getValue())))) ?>
                     </div>
                 </div>
             </td>
