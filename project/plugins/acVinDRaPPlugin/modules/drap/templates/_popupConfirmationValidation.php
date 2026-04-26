@@ -1,4 +1,4 @@
-<div class="modal fade" id="parcellaireirrigable-confirmation-validation" role="dialog" aria-labelledby="Confirmation de validation" aria-hidden="true">
+<div class="modal fade" id="drap-confirmation-validation" role="dialog" aria-labelledby="Confirmation de validation" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 				<div class="modal-header">
