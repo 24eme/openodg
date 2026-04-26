@@ -1,19 +1,19 @@
 <?php if(isset($coop)): ?>
-    <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigable]); ?>
+    <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $drap]); ?>
 <?php else: ?>
-    <?php include_partial('drap/breadcrumb', array('parcellaireIrrigable' => $parcellaireIrrigable)); ?>
+    <?php include_partial('drap/breadcrumb', array('drap' => $drap)); ?>
 <?php endif; ?>
 
-<?php include_partial('drap/step', array('step' => 'validation', 'parcellaireIrrigable' => $parcellaireIrrigable)) ?>
+<?php include_partial('drap/step', array('step' => 'validation', 'drap' => $drap)) ?>
 <div class="page-header no-border">
     <h2>Validation des parcelles en renonciation à produire sur l'exploitation</h2>
 </div>
 
 <?php if (isset($validation) && $validation->hasPoints()): ?>
-    <?php include_partial('drap/pointsAttentions', array('parcellaireIrrigable' => $parcellaireIrrigable, 'validation' => $validation)); ?>
+    <?php include_partial('drap/pointsAttentions', array('drap' => $drap, 'validation' => $validation)); ?>
 <?php endif; ?>
 
-<form role="form" action="<?php echo url_for('drap_validation', $parcellaireIrrigable) ?>" method="post" id="validation-form">
+<form role="form" action="<?php echo url_for('drap_validation', $drap) ?>" method="post" id="validation-form">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
@@ -36,7 +36,7 @@
     </div>
     <?php endif; ?>
 
-    <?php include_partial('drap/recap', array('parcellaireIrrigable' => $parcellaireIrrigable)); ?>
+    <?php include_partial('drap/recap', array('drap' => $drap)); ?>
 
     <?php if (ParcellaireConfiguration::getInstance()->hasEngagements() && count($validation->getEngagements()) > 0) : ?>
     <br/>
@@ -78,14 +78,10 @@
     <div style="padding-top: 10px;" class="row row-margin row-button">
         <div class="col-xs-4">
             <a href=
-            <?php if(ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() === false && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() === false): ?>
-                "<?php echo url_for(DRaPEtapes::getInstance()->getPreviousLink(DRaPEtapes::ETAPE_VALIDATION), $parcellaireIrrigable); ?>"
-            <?php else: ?>
-                "<?php echo url_for("drap_destinations", $parcellaireIrrigable) ?>"
-            <?php endif; ?> class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
+                "<?php echo url_for("drap_destinations", $drap) ?>"
         </div>
         <div class="col-xs-4 text-center">
-            <a href="<?php echo url_for('drap_export_pdf', $parcellaireIrrigable) ?>" class="btn btn-primary">
+            <a href="<?php echo url_for('drap_export_pdf', $drap) ?>" class="btn btn-primary">
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Prévisualiser
             </a>
         </div>
@@ -99,7 +95,7 @@
 </form>
 
 <?php if(isset($coop)): ?>
-    <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigable]); ?>
+    <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $drap]); ?>
 <?php endif; ?>
 
 <?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
