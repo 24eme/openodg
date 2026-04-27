@@ -13,7 +13,7 @@ class DRaPConfiguration extends DeclarationConfiguration {
 
     public function getCampagneDebutMois() {
 
-        return DRaPConfiguration::getInstance()->getCampagneDebutMois();
+        return ParcellaireAffectationConfiguration::getInstance()->getCampagneDebutMois();
     }
 
     public function getModuleName() {
