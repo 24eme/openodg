@@ -248,6 +248,7 @@ Controle:
                   produit_hash: { }
                   source_produit_libelle: { }
                   parcelle_id: {}
+                  position: {}
                   controle:
                     type: collection
                     definition:
@@ -272,7 +273,8 @@ Controle:
                                               fields:
                                                 libelle: {}
                                                 observations: {}
-                                                conformite: {}
+                                                conformite: { required: false }
+                                                non_conforme: {}
                         superficie_a_retirer: {}
                         saisie: {}
                         observations: { required: false } # deprecated
@@ -288,6 +290,7 @@ Controle:
                   constat_date:
                   notification_date:
                   cloture_date:
+                  cloture_type:
                   actif: false
                   parcelles_id:
                     type: array_collection
@@ -304,7 +307,7 @@ Controle:
         definition:
           fields:
             '*': {}
-      manquements_valides:
+      manquements_valides: {required: true}
       mouvements_statuts:
         type: array_collection
         definition:

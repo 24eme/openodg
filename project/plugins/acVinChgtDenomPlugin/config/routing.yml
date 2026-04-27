@@ -230,7 +230,7 @@ prisedemousse_delete:
 
 prisedemousse_pdf:
   url: /prisedemousse/:id/pdf
-  param: { module: prisedemousse, action: chgtDenomPDF }
+  param: { module: prisedemousse, action: priseDeMoussePDF }
   class: PriseDeMousseRoute
   options:
     model: ChgtDenom

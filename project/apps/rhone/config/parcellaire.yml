@@ -302,3 +302,4 @@ all:
         vciIrrigation: true
         hasIrrigableMateriel: true
         hasIrrigableRessource: false
+      drap: true

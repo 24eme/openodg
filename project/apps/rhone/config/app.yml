@@ -11,3 +11,5 @@ all:
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4
+  drap:
+    destinations : ["Vin sans IG", "IGP", "Côtes du Rhône", "Côtes du Rhône Villages", "Aucune / Friche"]

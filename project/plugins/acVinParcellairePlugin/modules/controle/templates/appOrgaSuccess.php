@@ -37,6 +37,9 @@
     $communes = [];
     foreach ($controles as $controle) {
         $p = $controle->getParcellaire();
+        if ( ! $p ) {
+            continue;
+        }
         echo "//".$p->_id."\n";
         foreach ($p->getCommunes() as $com) {
             $communes[$com] = $com;
@@ -179,7 +182,8 @@
 
         const parcelles = [];
         for (const [idControle, controle] of Object.entries(controles)) {
-            for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
+            if (Object.keys(controle.parcellaire_parcelles).length)
+              for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
                 feature.properties.controleId = idControle;
                 feature.properties.declarant = controle.declarant;
                 parcelles.push(feature);
@@ -252,7 +256,8 @@
         const controleCourant = controles[route.params.id];
 
         const parcelles = [];
-        for (const [idFeature, feature] of Object.entries(controleCourant.parcellaire_geojson.features)) {
+        if (Object.keys(controleCourant.parcellaire_parcelles).length)
+          for (const [idFeature, feature] of Object.entries(controleCourant.parcellaire_geojson.features)) {
             feature.properties.controleId = controleCourant._id;
             parcelles.push(feature);
         }
@@ -473,14 +478,20 @@
         nbParcellesSelectionnees() {
             return this.parcellesSelectionnees.length;
         },
-        getParcellesSorted() {
+        getParcellesSorted(selection = true) {
             const parcellesSorted = [];
-            for(const parcelleId of this.parcellesSelectionnees) {
-                parcellesSorted.push(parcelleId);
-            }
-            for (const [parcelleId, parcelle] of Object.entries(this.controleCourant.parcellaire_parcelles)) {
-                if (!parcellesSorted.includes(parcelleId)) {
+            let parcelle_ordre = 0;
+            if (selection) {
+                for(const parcelleId of this.parcellesSelectionnees) {
+                    this.controleCourant.parcellaire_parcelles[parcelleId].position = parcelle_ordre++;
                     parcellesSorted.push(parcelleId);
+                }
+            } else {
+                for (const [parcelleId, parcelle] of Object.entries(this.controleCourant.parcellaire_parcelles)) {
+                    if (!this.parcellesSelectionnees.includes(parcelleId)) {
+                        this.controleCourant.parcellaire_parcelles[parcelleId].position = parcelle_ordre++;
+                        parcellesSorted.push(parcelleId);
+                    }
                 }
             }
             return parcellesSorted;

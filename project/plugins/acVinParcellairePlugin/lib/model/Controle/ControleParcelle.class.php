@@ -36,10 +36,12 @@ class ControleParcelle extends BaseControleParcelle
             $url .= '://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'#/'.$this->getDocument()->_id.'/parcelle/'.$this->getKey();
             $kml .= '<p><a href="'.$url.'">Controle la parcelle '.$this->getKey().'</a></p>';
             foreach (["Commune","Lieu dit","Produit","Cepage","Superficie"] as $prop) {
-                if ($prop == "Lieu dit" && ! $parcellaire_detail->{$prop}) {
+                if ($prop == "Lieu dit" && ! (isset($parcellaire_detail->{$prop}) && $parcellaire_detail->{$prop})) {
                     continue;
                 }
-                $kml .= '<p>' . $prop . ' : ' . $parcellaire_detail->{$prop} . '</p>';
+                if (isset($parcellaire_detail->{$prop})) {
+                    $kml .= '<p>' . $prop . ' : ' . $parcellaire_detail->{$prop} . '</p>';
+                }
             }
             $kml .= "<p>-----------------</p>";
         }
@@ -83,5 +85,36 @@ class ControleParcelle extends BaseControleParcelle
     public function getParcellaire()
     {
         return ParcellaireClient::getInstance()->getLast($this->getDocument()->identifiant);
+    }
+
+    public function needsUpdateNoeudControle()
+    {
+        $pointsDeControle = ControleConfiguration::getInstance()->getAllPointsDeControle();
+        foreach ($pointsDeControle as $idPoint => $dataPoint) {
+            if (! $this->controle->points->exist($idPoint)) {
+                return true;
+            }
+            foreach ($dataPoint['constats'] as $idConstat => $dataConstat) {
+                if (! $this->controle->points[$idPoint]->constats->exist($idConstat)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function updateNoeudControle()
+    {
+        $pointsDeControle = ControleConfiguration::getInstance()->getAllPointsDeControle();
+        foreach ($pointsDeControle as $idPoint => $dataPoint) {
+            if (! $this->controle->points->exist($idPoint)) {
+                $this->controle->points->add($idPoint, array('libelle' => $dataPoint['libelle']));
+            }
+            foreach ($dataPoint['constats'] as $idConstat => $dataConstat) {
+                if (! $this->controle->points[$idPoint]->constats->exist($idConstat)) {
+                    $this->controle->points[$idPoint]->constats->add($idConstat, array('libelle' => $dataConstat['libelle'], 'observations' => null, 'non_conforme' => false));
+                }
+            }
+        }
     }
 }

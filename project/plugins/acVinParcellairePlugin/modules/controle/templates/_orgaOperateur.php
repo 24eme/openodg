@@ -41,7 +41,7 @@
             'danger':  controleCourant.parcellaire_parcelles[parcelleId].hasProblemEcartPieds || controleCourant.parcellaire_parcelles[parcelleId].hasProblemCepageAutorise
             }"
             v-for="(parcelleId, numero) in getParcellesSorted()">
-            <td><span v-if="isParcelleSelectionnee(parcelleId)" class="label label-primary lead" style="border-radius: 24px;">{{ numero + 1 }}</span></td>
+            <td><span v-if="isParcelleSelectionnee(parcelleId)" class="label label-primary lead" style="border-radius: 24px;">{{ controleCourant.parcellaire_parcelles[parcelleId].position + 1 }}</span></td>
             <td><small class="text-muted">{{ controleCourant.parcellaire_parcelles[parcelleId].commune }}</small> {{ controleCourant.parcellaire_parcelles[parcelleId].lieu }}</td>
             <td class="text-center">
                 <button class="btn-link" style="padding:0;" @click="showParcelle(controleCourant.parcellaire_parcelles[parcelleId].idu)"><i class="glyphicon glyphicon-map-marker"></i></button>
@@ -74,43 +74,59 @@
             </td>
             <td><button v-if="isParcelleSelectionnee(parcelleId)" class="btn btn-link" @click="removeParcelle(parcelleId)"><span class="glyphicon glyphicon-trash"></span></button></td>
         </tr>
-    </tbody>
-</table>
-<div class="hidden">
-<hr class="mt-2 mb-4" />
-<h3 class="">Toutes les parcelles</h3>
-<table id="tableParcelle" class="table table-bordered table-condensed table-striped tableParcellaire">
-    <thead>
         <tr>
-            <th class="col-xs-2">Commune</th>
-            <th class="col-xs-2">Lieu-dit</th>
-            <th class="col-xs-1" style="text-align: right;">Section</th>
-            <th class="col-xs-1">N° parcelle</th>
-            <th class="col-xs-3">Cépage</th>
-            <th class="col-xs-1">Année plantat°</th>
-            <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small"><?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?></span></th>
-            <th class="col-xs-1 text-center">Contrôle ?</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
         </tr>
-    </thead>
-    <tbody>
-        <tr style="cursor: pointer;" class="parcellerow switch-to-higlight" v-for="parcelle in controleCourant.parcellaire_parcelles">
-            <td>{{ parcelle.commune }}</td>
-            <td>{{ parcelle.lieu }}</td>
-            <td class="text-right">{{ parcelle.section }}</td>
-            <td class="text-center">{{ parcelle.numero_parcelle }}</td>
-            <td><span class="text-muted">{{ parcelle.source_produit_libelle }}</span> {{ parcelle.cepage }}</td>
-            <td class="text-center">{{ parcelle.campagne_plantation }}</td>
-            <td class="text-right">{{ parcelle.superficie }}</td>
-            <td class="text-center inputTd">
+        <tr :class="{
+            'text-muted': !isParcelleSelectionnee(parcelleId),
+            'warning': controleCourant.parcellaire_parcelles[parcelleId].hasProblemExpirationCepage,
+            'danger':  controleCourant.parcellaire_parcelles[parcelleId].hasProblemEcartPieds || controleCourant.parcellaire_parcelles[parcelleId].hasProblemCepageAutorise
+            }"
+            v-for="(parcelleId, numero) in getParcellesSorted(false)">
+            <td><span class="label lead" style="border-radius: 24px;">&nbsp</span></td>
+            <td><small class="text-muted">{{ controleCourant.parcellaire_parcelles[parcelleId].commune }}</small> {{ controleCourant.parcellaire_parcelles[parcelleId].lieu }}</td>
+            <td class="text-center">
+                <button class="btn-link" style="padding:0;" @click="showParcelle(controleCourant.parcellaire_parcelles[parcelleId].idu)"><i class="glyphicon glyphicon-map-marker"></i></button>
+                {{ controleCourant.parcellaire_parcelles[parcelleId].section }} {{ controleCourant.parcellaire_parcelles[parcelleId].numero_parcelle }}
+            </td>
+            <td :class="{
+                'text-warning strong hasProblemExpirationCepage': controleCourant.parcellaire_parcelles[parcelleId].hasProblemExpirationCepage,
+                'text-danger strong hasProblemCepageAutorise': controleCourant.parcellaire_parcelles[parcelleId].hasProblemCepageAutorise,
+            }">
+                <span class="text-muted">{{ controleCourant.parcellaire_parcelles[parcelleId].source_produit_libelle }}</span> {{ controleCourant.parcellaire_parcelles[parcelleId].cepage }}<span v-if="controleCourant.parcellaire_parcelles[parcelleId].hasJeunesVignes"> - jeunes vignes</span><br />
+                <span v-if="controleCourant.parcellaire_parcelles[parcelleId].aires" class="text-muted">
+                    Aire(s):
+                    <span v-for="(a, nom) in controleCourant.parcellaire_parcelles[parcelleId].aires" :class="{'text-danger': a != 'OUI', 'text-muted': a == 'OUI'}">
+                        <span v-if="a == false">Hors de l'aire </span>
+                        <span v-if="a == 'PARTIEL'">Partiellement </span>
+                        <span v-if="a == 'ERREUR'">Erreur interne sur </span>
+                        {{ nom }}
+                    </span>
+                </span>
+                <span v-else class="text-danger">Aucune aire<span>
+            </td>
+            <td class="text-center">{{ controleCourant.parcellaire_parcelles[parcelleId].campagne_plantation }}</td>
+            <td class="text-right">{{ controleCourant.parcellaire_parcelles[parcelleId].superficie }}</td>
+            <td class="text-right">{{ controleCourant.parcellaire_parcelles[parcelleId].ecart_pieds }} / {{ controleCourant.parcellaire_parcelles[parcelleId].ecart_rang }}</td>
+            <td>
                 <label class="switch-xl">
-                    <input type="checkbox" name="parcelles[]" :value="parcelle.parcelle_id" v-model="parcellesSelectionnees" />
+                    <input type="checkbox" name="parcelles[]" :value="parcelleId" v-model="parcellesSelectionnees" />
                     <span class="slider-xl round"></span>
                 </label>
             </td>
+            <td><button class="btn btn-link"><span>&nbsp;</span></button></td>
         </tr>
     </tbody>
 </table>
-</div>
+
 
 <div class="row">
     <div class="col-xs-6"><RouterLink class="btn btn-default" :to="{ name: 'operateurs' }"><span class="glyphicon glyphicon-chevron-left"></span> Retour</RouterLink></div>

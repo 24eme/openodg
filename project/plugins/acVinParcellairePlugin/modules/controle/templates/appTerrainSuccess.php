@@ -17,14 +17,16 @@
     const date_tournee = "<?php echo $date_tournee ?>"
     let controles = JSON.parse(localStorage.getItem("controles_" + date_tournee)) || {}
     let no_by_default = {}
-
-    submitNeedsToBeSaved(controles);
+    let reloadStatus = false;
 
     var aires = [];
     <?php
     $communes = [];
     foreach ($controles as $controle) {
         $p = $controle->getParcellaire();
+        if ( ! $p ) {
+            continue;
+        }
         echo "//".$p->_id."\n";
         foreach ($p->getCommunes() as $com) {
             $communes[$com] = $com;
@@ -49,21 +51,9 @@
     const server_controle = JSON.parse(document.getElementById("dataJson").textContent);
     const points_de_controle = JSON.parse(document.getElementById("dataConf").textContent);
     let localstorage_updated = false;
-    for (let i in server_controle) {
-        if (controles[server_controle[i]._id]) {
-            server_rev = server_controle[i]._rev.split('-')[0];
-            local_rev = (controles[server_controle[i]._id]._rev) ? controles[server_controle[i]._id]._rev.split('-')[0] : 0;
-            if (local_rev >= server_rev) {
-                console.log(['ignore controle loading : exists and local storage rev is older', 'controle id', server_controle[i]._id, 'local_rev', local_rev, 'server_rev', server_rev, controles[server_controle[i]._id]]);
-                continue;
-            }
-        }
-        controles[server_controle[i]._id] = server_controle[i];
-        localstorage_updated = true;
-    }
-    if (localstorage_updated) {
-        localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
-    }
+
+    let isStartingup = true;
+    submitNeedsToBeSaved(null);
 
     const routes = [
       { path: '/', name: "listing", component: templates.listing },
@@ -85,52 +75,20 @@
               controles: controles,
             }
         },
-        computed: {
-          isSynchro() {
-            return this.checkNeedsToBeSaved(this.controles);
-          }
-        },
-
-        methods: {
-            checkNeedsToBeSaved(controles) {
-              for (const controle of Object.values(controles)) {
-                if (controle.audit.needs_to_be_saved === true) {
-                  return false;
-                }
-
-                for (const parcelle of Object.values(controle.parcelles)) {
-                  if (parcelle.needs_to_be_saved === true) {
-                    return false;
-                  }
-                }
-              }
-
-              return true;
-            }
-        },
         template: '<RouterView :key="$route.fullPath" />',
-        // watch: {
-        //   controles: {
-        //     handler(newControles) {
-        //       if (newControles) {
-        //           localStorage.setItem("controles_" + date_tournee, JSON.stringify(newControles));
-        //       }
-        //     },
-        //     deep: true
-        //   }
-        // },
       });
     app.use(router)
     app.mount('#content')
 
     templates.listing.mounted = function() {
-        submitNeedsToBeSaved(controles);
+        submitNeedsToBeSaved(this);
     }
 
     templates.listing.data = function() {
         return {
             controles: controles,
-            date_tournee: date_tournee
+            date_tournee: date_tournee,
+            isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
         }
     };
 
@@ -145,6 +103,18 @@
             return Object.values(this.controles).filter(c =>
                 c.agent_identifiant === this.agentIdentifiant
             )
+        },
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
         }
     }
 
@@ -162,13 +132,28 @@
     };
 
     templates.operateur.mounted = function() {
-        submitNeedsToBeSaved(controles);
-    }
+        submitNeedsToBeSaved(this);
+    };
+    templates.operateur.computed = {
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
+        }
+    };
     templates.operateur.data = function() {
         const route = useRoute()
 
         return {
           controleCourant: controles[route.params.id],
+          isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
         }
     };
     templates.operateur.methods = {
@@ -180,7 +165,7 @@
               if (point.conformite != 'NC') {continue;}
               for (const constatKey in point.constats) {
                   const constat = point.constats[constatKey];
-                  if (constat.conformite == true) {
+                  if (constat.non_conforme == true) {
                       ret += 1;
                   }
               }
@@ -207,13 +192,36 @@
             const heure = this.controleCourant.heure_tournee;
             const agent = this.controleCourant.agent_libelle;
             return `Tournée du ${d}/${m}/${y} à ${heure} par ${agent}`;
-      }
+      },
+      parcellesSorted() {
+        const entries = Object.entries(this.controleCourant.parcelles)
+          .sort((a, b) => {
+            const posA = a[1].position ?? Infinity;
+            const posB = b[1].position ?? Infinity;
+            return posA - posB;
+          });
+
+        return Object.fromEntries(entries);
+    }
     };
 
     templates.parcelle.mounted = function() {
-        submitNeedsToBeSaved(controles);
+        submitNeedsToBeSaved(this);
     }
-
+    templates.parcelle.computed = {
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
+        }
+    }
     templates.parcelle.data = function() {
         const route = useRoute()
         for (const pointKey in controles[route.params.id].parcelles[route.params.parcelle].controle.points) {
@@ -226,7 +234,8 @@
           controleCourant: controles[route.params.id],
           parcelleCourante: controles[route.params.id].parcelles[route.params.parcelle],
           pointsDeControle: points_de_controle,
-          date_tournee: date_tournee
+          date_tournee: date_tournee,
+          isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
         }
     };
     templates.parcelle.methods = {
@@ -242,14 +251,27 @@
         save() {
             this.parcelleCourante.controle.saisie = 1;
             this.parcelleCourante.needs_to_be_saved = true;
-            for (const pointKey in this.parcelleCourante.controle.points) {
-                if (this.parcelleCourante.controle.points[pointKey].conformite == 'NO') {
-                    no_by_default[pointKey] = 1;
-                } else {
-                    no_by_default[pointKey] = 0;
+
+            this.cleanPoints();
+
+            router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+        },
+        cleanPoints() {
+            const points = this.parcelleCourante.controle.points;
+
+            for (const pointKey in points) {
+                const point = points[pointKey];
+
+                no_by_default[pointKey] = (point.conformite === 'NO') ? 1 : 0;
+
+                if (point.conformite !== 'NC') {
+                    for (const constatKey in point.constats) {
+                        const constat = point.constats[constatKey];
+                        constat.non_conforme = false;
+                        constat.observations = null;
+                    }
                 }
             }
-            router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
         },
         echoFloat(val, nbDecimal = 5) {
             return val ? Number(val).toFixed(nbDecimal) : '';
@@ -269,7 +291,7 @@
         }
     };
     templates.audit.mounted = function() {
-        submitNeedsToBeSaved(controles);
+        submitNeedsToBeSaved(this);
         let signatureBase64 = null;
         const controleCourant = this.controleCourant;
         const signaturePad = new SignaturePad(document.getElementById('signature'), {
@@ -290,14 +312,32 @@
             signaturePad.fromDataURL(controleCourant.audit.operateur_signature);
         }
     }
+    templates.audit.computed = {
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
+        }
+    }
     templates.audit.data = function() {
         const route = useRoute()
         if(!controles[route.params.id].audit) {
           controles[route.params.id].audit = {}
         }
-        return {
-          controleCourant: controles[route.params.id]
+        if (controles[route.params.id].audit.saisie != 1) {
+            copySignatureIfCaveCoopAlreadySigned(controles[route.params.id]);
+        }
 
+        return {
+          controleCourant: controles[route.params.id],
+          isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
         }
     };
     templates.audit.methods = {
@@ -332,7 +372,7 @@
       save() {
         this.controleCourant.audit.saisie = 1;
         this.controleCourant.audit.needs_to_be_saved = true;
-        router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+        router.push({ name: 'listing' })
     },
       devalider() {
           this.controleCourant.audit.saisie = 0;
@@ -344,7 +384,6 @@
                  this.controleCourant.declarant.siret.substring(6,9) +" "+
                  this.controleCourant.declarant.siret.substring(9);
       }
-
     };
     templates.map.data = function() {
         const route = useRoute()
@@ -456,105 +495,82 @@
         if(!data.idu) {
             map.fitBounds(parcellesLayer.getBounds());
         }
-        /*let tilesUrl = []
-        for(layerIndex in parcellesLayer._layers) {
-            let layer = parcellesLayer._layers[layerIndex];
-            for(let zoom = 19; zoom >=8; zoom--) {
-                const area = L.bounds(map.project(layer.getBounds().getNorthWest(), zoom), map.project(layer.getBounds().getSouthEast(), zoom));
-                for(tile of getTileUrls(tileLayer, area, zoom)) {
-                    tilesUrl[tile.url] = tile.url
+    };
+
+    function copySignatureIfCaveCoopAlreadySigned(controleCourant) {
+        for (const controle of Object.values(controles)) {
+            if (controle._id === controleCourant._id) continue;
+            if (controle.audit.saisie != 1) continue;
+
+            const liaisonsCourantes = Object.values(controleCourant.liaisons_operateurs ?? {});
+
+            const liaisonsAutreControle = Object.values(controle.liaisons_operateurs ?? {});
+
+            const caveCommune = liaisonsCourantes.some(liaisonCourante =>
+                liaisonsAutreControle.some(liaison =>
+                    liaison.id_etablissement === liaisonCourante.id_etablissement
+                )
+            );
+
+            if (!caveCommune) continue;
+
+            controleCourant.audit.nom_prenom = controle.audit.nom_prenom;
+            controleCourant.audit.operateur_signature = controle.audit.operateur_signature;
+
+            return;
+        }
+    }
+
+    function updateDataSynchroStatusBasedOnNeedsToBeSaved()
+    {
+        for (const controle of Object.values(controles)) {
+            if (controle.audit.needs_to_be_saved === true) {
+                return false;
+            }
+            for (const parcelle of Object.values(controle.parcelles)) {
+                if (parcelle.needs_to_be_saved === true) {
+                    return false;
                 }
             }
         }
-        for(tileUrl in tilesUrl) {
-            fetch(tileUrl+'?'+tileUrl, { cache: "force-cache" })
-        }*/
-    };
-
-    function getTileUrls(tileLayer, bounds, zoom) {
-            var _a;
-            const tiles = [];
-            const tilePoints = getTilePoints(bounds, tileLayer.getTileSize());
-            for (let index = 0; index < tilePoints.length; index += 1) {
-                const tilePoint = tilePoints[index];
-                const data = Object.assign(Object.assign({}), { x: tilePoint.x, y: tilePoint.y, z: zoom });
-                tiles.push({
-                    key: getTileUrl(tileLayer._url, Object.assign(Object.assign({}, data), { s: (_a = tileLayer.options.subdomains) === null || _a === void 0 ? void 0 : _a[0] })),
-                    url: getTileUrl(tileLayer._url, Object.assign(Object.assign({}, data), {
-                        // @ts-ignore: Undefined
-                        s: tileLayer._getSubdomain(tilePoint) })),
-                    z: zoom,
-                    x: tilePoint.x,
-                    y: tilePoint.y,
-                    urlTemplate: L._url,
-                    createdAt: Date.now(),
-                });
-            }
-            return tiles;
+        return true;
     }
 
-    function getTilePoints(area, tileSize) {
-        const points = [];
-        if (!area.min || !area.max) {
-            return points;
-        }
-        const topLeftTile = area.min.divideBy(tileSize.x).floor();
-        const bottomRightTile = area.max.divideBy(tileSize.x).floor();
-        for (let j = topLeftTile.y; j <= bottomRightTile.y; j += 1) {
-            for (let i = topLeftTile.x; i <= bottomRightTile.x; i += 1) {
-                points.push(new L.Point(i, j));
-            }
-        }
-        return points;
-    }
-
-    function getTileUrl(urlTemplate, data) {
-        return L.Util.template(urlTemplate, Object.assign(Object.assign({}, data), { r: L.Browser.retina ? '@2x' : '' }));
-    }
-
-    function submitNeedsToBeSaved(controles) {
+    async function submitNeedsToBeSaved(context) {
+      if (! isStartingup) {
+          saveControlesInLocalStorage();
+      }
+      let is_saved = true;
+      let need_reload = false;
       for (const controle of Object.values(controles)) {
-        let reloadStatus = false;
-
         if (controle.audit.needs_to_be_saved === true) {
-
-          const response = submitElement(controle, null, controle.audit);
-          if (response && response.success === true) {
-            if (response.reloadStatus) {
-                  reloadStatus = true;
-            }
-            localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
-          }
+          is_saved = await submitElement(controle, null, controle.audit) && is_saved;
         }
 
         for (const parcelle of Object.values(controle.parcelles)) {
-
           if (parcelle.needs_to_be_saved === true) {
-
-            localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
-
-            const response = submitElement(controle, parcelle.parcelle_id, parcelle.controle);
-            if (response && response.success === true) {
-              if (response.reloadStatus) {
-                  reloadStatus = true;
-              }
-              localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
-            }
+            is_saved = await submitElement(controle, parcelle.parcelle_id, parcelle.controle) && is_saved;
           }
         }
-        if (reloadStatus) {
-            controle._rev = "00-Needs Update";
-            alert("Rev app < Rev couchdb - Rechargez l'app");
-        }
+        need_reload = need_reload || needReload(controle);
       }
+      if (context) {
+          context.isSaved = is_saved;
+      }
+      if (need_reload) {
+          if (confirm("Un autre utilisateur utilise cette partie de l'app Terrain. Par sécurité, rechargez l'application. (pour ne pas recharger, annulez)")) {
+              return location.reload();
+          }
+      }
+      loadFromServerIfNeeded();
     }
 
-    function submitElement(controle, idParcelle, element)
+    async function submitElement(controle, idParcelle, element)
     {
       try {
         const revision = controle._rev;
         const idControle = controle._id;
-        const response = fetch('<?php echo url_for('controle_transmission_data'); ?>', {
+        const response = await fetch('<?php echo url_for('controle_transmission_data'); ?>', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -566,15 +582,74 @@
                 element
             })
         });
-
-        const data = response.json();
-        controle._rev = data.revision;
-        element.needs_to_be_saved = false;
-        return data;
+        data = await response.json();
+        if (data && data.success === true) {
+            controle._rev = data.revision;
+            if (idParcelle) {
+                console.log(controle._id + ' parcelle ' + idParcelle + 'saved');
+                controle.parcelles[idParcelle].needs_to_be_saved = false;
+            } else {
+                console.log(controle._id + ' audit saved');
+                controle.audit.needs_to_be_saved = false;
+            }
+            element.needs_to_be_saved = false;
+            if (data.reloadStatus) {
+                reloadStatus = true;
+            }
+            saveControlesInLocalStorage();
+            return true;
+        }
+        return false;
       } catch(exception) {
         console.log(['submitElement exception', exception]);
-        return { success: false };
+        return false;
       }
+    }
+
+    function saveControlesInLocalStorage()
+    {
+        localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
+    }
+
+    function needReload(controle) {
+        if (!reloadStatus) {
+            return false;
+        }
+        if (controle.audit.needs_to_be_saved === true) {
+            return false;
+        }
+        for (const parcelle of Object.values(controle.parcelles)) {
+            if (parcelle.needs_to_be_saved === true) {
+                console.log("parcelle doit être sauvée : " + parcelle.parcelle_id);
+                return false;
+            }
+        }
+        controle._rev = "00-Needs Update";
+        saveControlesInLocalStorage();
+        return true;
+    }
+
+    function loadFromServerIfNeeded()
+    {
+        if (!isStartingup) {
+            return;
+        }
+        for (let i in server_controle) {
+            if (controles[server_controle[i]._id]) {
+                server_rev = server_controle[i]._rev.split('-')[0];
+                local_rev = (controles[server_controle[i]._id]._rev) ? controles[server_controle[i]._id]._rev.split('-')[0] : 0;
+                if (local_rev >= server_rev) {
+                    continue;
+                }
+            }
+            controles[server_controle[i]._id] = server_controle[i];
+            localstorage_updated = true;
+        }
+        if (localstorage_updated) {
+            localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
+        }
+        isStartingup = false;
+        console.log(['End of starting up', isStartingup]);
     }
 
 </script>

@@ -29,7 +29,7 @@ class ControleConfiguration extends DeclarationConfiguration {
       return sfConfig::get('app_controle_'.$type);
     }
 
-    public function getPointsDeControle()
+    public function getAllPointsDeControle()
     {
         return $this->configuration['points_de_controle'];
     }
@@ -114,9 +114,6 @@ class ControleConfiguration extends DeclarationConfiguration {
                 foreach ($domaines as $domaine => $actif) {
                     if (! $actif) continue;
                     if (! isset($libellesConstats[$domaine])) continue;
-                    if (!isset($types[$type_tournee])) {
-                        continue;
-                    }
                     $libellesConstats[$domaine][$type_tournee][$idConstat] = $libelle;
                 }
             }
