@@ -88,6 +88,12 @@ EOF;
                 }
             }
 
+            $communes2insee = [];
+            foreach ($parcellaire->getParcelles() as $k => $p) {
+                $communes2insee[$p->commune] = $p->code_commune;
+                $communes2insee[KeyInflector::slugify($p->commune)] = $p->code_commune;
+            }
+
             $p = new stdClass();
             $p->campagne_plantation = ($data[self::CSV_ANNEE_DE_PLANTATION] - 1).'-'.$data[self::CSV_ANNEE_DE_PLANTATION];
             $p->section = trim(strtoupper($data[self::CSV_SECTION]));
@@ -98,6 +104,8 @@ EOF;
             $p->cepage = trim(str_replace(['é', 'è'], 'E', strtoupper($data[self::CSV_CEPAGE])));
             $p->lieu = trim(strtoupper($data[self::CSV_LIEU_DIT])) ?? null;
             $p->commune = trim(strtoupper($data[self::CSV_VILLE]));
+            $p->code_commune = $communes2insee[$p->commune];
+            $p->idu = Parcellaire::computeIDU($p->code_commune, $p->prefix, $p->section, $p->numero_parcelle);
             $this->cpt++;
             $pt = ParcellaireClient::getInstance()->findParcelle($parcellaire, $p, 1, true);
             if ($pt) {
@@ -145,9 +153,14 @@ EOF;
                 if (!$pkey) {
                     continue;
                 }
-                $pkey = explode('-', $pkey)[0].'-X'.$pkeyid++;
                 $pt = ParcellaireParcelle::freeInstance($parcellaire);
-                $pt->idu = $data[self::CSV_CODE_COMMUNE]."0000".$p->section.sprintf("%04d",$p->numero_parcelle);
+                if (isset($p->idu) && $p->idu) {
+                    $pt->idu = $p->idu;
+                    $pkey = $p->idu.'-X'.$pkeyid++;
+                } else {
+                    $pt->idu = $data[self::CSV_CODE_COMMUNE]."0000".$p->section.sprintf("%04d",$p->numero_parcelle);
+                    $pkey = explode('-', $pkey)[0].'-X'.$pkeyid++;
+                }
                 $pt->campagne_plantation = $p->campagne_plantation;
                 $pt->section = $p->section;
                 $pt->numero_parcelle = $p->numero_parcelle;
@@ -155,6 +168,7 @@ EOF;
                 $pt->superficie = $p->superficie;
                 $pt->cepage = $p->cepage;
                 $pt->commune = $p->commune;
+                $pt->code_commune = $p->code_commune;
                 $pt->lieu = $p->lieu;
                 $pt->parcelle_id = $pkey;
             }
