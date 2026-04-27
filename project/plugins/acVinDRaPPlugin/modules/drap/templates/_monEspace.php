@@ -10,7 +10,7 @@ endif; ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if($drap && !$drap->validation): ?>panel-success <?php elseif ($drap): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">Déclaration de renonciation à produire <?php echo $periode ?></h3>
+            <h3 class="panel-title">Déclaration de Renonciation à Produire <?php echo $periode ?></h3>
         </div>
 <?php if (!$drap): ?>
     <?php if (!DRaPConfiguration::getInstance()->isOpen()): ?>
