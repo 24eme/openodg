@@ -82,8 +82,6 @@ EOF;
             }
             if (!$parcellaire) {
                 $parcellaire = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
-                if (! $parcellaire = ParcellaireClient::getInstance()->getLastByCampagne($etablissement->identifiant, (self::CSV_CAMPAGNE - 1).'-'.self::CSV_CAMPAGNE)) {
-                }
                 if (!$parcellaire) {
                     echo "Error: pas de parcellaire pour ".$data[self::CSV_CVI]."/".$etablissement->_id."\n";
                     continue;
