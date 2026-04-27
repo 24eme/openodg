@@ -107,9 +107,11 @@ EOF;
             if (isset($communes2insee[$p->commune])) {
                 $p->code_commune = $communes2insee[$p->commune];
             } elseif (isset($communes2insee[KeyInflector::slugify($p->commune)])) {
-                $p->code_commune = $communes2insee[KeyInflector::slugify($p->commune)];
+                $p->code_commune = $communes2insee[KeyInflector::slugify(str_replace(['é', 'è', 'ê', 'ë', 'É', 'È', 'Ê', 'Ë'], 'E', $p->commune))];
             }
-            $p->idu = Parcellaire::computeIDU($p->code_commune, $p->prefix, $p->section, $p->numero_parcelle);
+            if ($p->code_commune) {
+                $p->idu = Parcellaire::computeIDU($p->code_commune, $p->prefix, $p->section, $p->numero_parcelle);
+            }
             $this->cpt++;
             $pt = ParcellaireClient::getInstance()->findParcelle($parcellaire, $p, 1, true);
             if ($pt) {
