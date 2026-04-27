@@ -18,10 +18,14 @@ abstract class Piece extends acCouchdbDocumentTree
 
 	public static function getUrlVisualisation($id, $isadmin = false)
 	{
+	    $docObject = acCouchdbManager::getClient()->find($id);
 		if (preg_match('/^([a-zA-Z0-9]+)-.*$/', $id, $m)) {
-			$doc = $m[1];
-			return $doc::getUrlVisualisationPiece($id, $isadmin);
-
+		    if ($docObject instanceof PriseDeMousse) {
+                $doc = $docObject->type;
+            } else {
+                $doc = $m[1];
+            }
+            return $doc::getUrlVisualisationPiece($id, $isadmin);
 		}
 		return null;
 	}

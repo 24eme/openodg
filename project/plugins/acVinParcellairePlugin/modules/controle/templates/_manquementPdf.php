@@ -58,10 +58,10 @@ table, th, td {
         </tr>
         <tr>
             <td colSpan="4" style="height: 200px;"><strong>Portée du manquement (parcelles, cépages...) :</strong><br/>
-                <?php foreach($manquement->parcelles_id as $parcelle_id):
-                    echo $controle->getInfoPdf($controle->identifiant, $parcelle_id); ?>
+                <?php foreach($manquement->parcelles_id as $parcelle_id): if ($parcelle_id): ?>
+                    <?php echo $controle->getInfoPdf($controle->identifiant, $parcelle_id); ?>
                     <br/>
-                <?php endforeach; ?>
+                <?php endif; endforeach; ?>
             </td>
         </tr>
         <tr>

@@ -51,5 +51,5 @@
     </table>
 
     <div class="row col-xs-12">
-        <a href="<?php echo url_for('controle_index') ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+        <a href="<?php echo url_for('controle_operateur', $controle->getEtablissementObject()) ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>

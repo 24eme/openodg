@@ -429,6 +429,7 @@ all:
         cdp_stevictoire_rouge:
           synthese_libelle: "Côtes de Provence Sainte Victoire - Rouge"
           filter_parcellaire_produit_hash: 'appellations/CDP'
+          filter_insee: ['13025', '13060', '13072', '13079', '13087', '13109', '13110', '83096', '83097']
           denomination_aire: "AOC CdP Sainte-Victoire"
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/SVI/couleurs/rouge/cepages/DEFAUT
           parcellaire2reference: 'ParcellaireAffectation'
@@ -488,6 +489,7 @@ all:
         cdp_stevictoire_rose:
           synthese_libelle: "Côtes de Provence Sainte Victoire - Rosé"
           filter_parcellaire_produit_hash: 'appellations/CDP'
+          filter_insee: ['13025', '13060', '13072', '13079', '13087', '13109', '13110', '83096', '83097']
           denomination_aire: "AOC CdP Sainte-Victoire"
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/SVI/couleurs/rose/cepages/DEFAUT
           parcellaire2reference: 'ParcellaireAffectation'

@@ -41,7 +41,7 @@
             'danger':  controleCourant.parcellaire_parcelles[parcelleId].hasProblemEcartPieds || controleCourant.parcellaire_parcelles[parcelleId].hasProblemCepageAutorise
             }"
             v-for="(parcelleId, numero) in getParcellesSorted()">
-            <td><span v-if="isParcelleSelectionnee(parcelleId)" class="label label-primary lead" style="border-radius: 24px;">{{ numero + 1 }}</span></td>
+            <td><span v-if="isParcelleSelectionnee(parcelleId)" class="label label-primary lead" style="border-radius: 24px;">{{ controleCourant.parcellaire_parcelles[parcelleId].position + 1 }}</span></td>
             <td><small class="text-muted">{{ controleCourant.parcellaire_parcelles[parcelleId].commune }}</small> {{ controleCourant.parcellaire_parcelles[parcelleId].lieu }}</td>
             <td class="text-center">
                 <button class="btn-link" style="padding:0;" @click="showParcelle(controleCourant.parcellaire_parcelles[parcelleId].idu)"><i class="glyphicon glyphicon-map-marker"></i></button>

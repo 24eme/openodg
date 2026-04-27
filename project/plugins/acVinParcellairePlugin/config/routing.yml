@@ -154,9 +154,9 @@ controle_index:
   url: /controles
   param: { module: controle, action: index }
 
-controle_operateurs:
-  url: /controles/operateurs
-  param: { module: controle, action: operateurs }
+controle_aplanifier:
+  url: /controles/aplanifier
+  param: { module: controle, action: aplanifier }
 
 controle_operateur:
   url: /controles/:identifiant
@@ -179,16 +179,6 @@ controle_nouveau:
   options:
     model:    Etablissement
     type:     object
-
-controle_parcelles:
-  url: /controle/:id/parcelles
-  param: { module: controle, action: parcelles }
-  class: ControleRoute
-  options:
-    model:    Controle
-    type:     object
-  requirements:
-    sf_method: [get, post]
 
 controle_saveinlocalstorage:
   url: /controle/:id/saveinlocalstorage

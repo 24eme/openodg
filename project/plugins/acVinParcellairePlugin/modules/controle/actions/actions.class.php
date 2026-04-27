@@ -6,12 +6,18 @@ class controleActions extends sfActions
         $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
         $allControles = ControleClient::getInstance()->findAllByStatus();
         $this->tournees = [];
-        $this->nbOperateur = count($allControles);
+        $this->nb_operateurs_a_planifier = count($allControles[ControleClient::CONTROLE_STATUT_A_PLANIFIER]);
+        $this->nb_operateurs_en_manquement = count($allControles[ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER]);
         foreach ($allControles as $statut => $controles) {
-            if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_ORGANISE, ControleClient::CONTROLE_STATUT_EN_MANQUEMENT])) {
+            /*
+            if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_ORGANISE, ControleClient::CONTROLE_STATUT_A_NOTIFIER, ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER])) {
                 continue;
             }
+            */
             foreach($controles as $c) {
+                if (!$c->date_tournee) {
+                    continue;
+                }
                 $index = $c->date_tournee.'-'.$c->agent_identifiant;
                 if (!isset($this->tournees[$index])) {
                     $this->tournees[$index] = [
@@ -22,23 +28,52 @@ class controleActions extends sfActions
                         'date_tournee' => $c->date_tournee,
                         'agent' => $c->getAgent(),
                         'type_tournee' => $c->type_tournee,
-                        'statut' => $statut
+                        'statut' => $statut,
+                        'ids' => []
                     ];
                 }
-                $this->tournees[$index]['parcelles'] += $c->parcelles->toArray(true,false);
+                if (array_values($c->parcelles)[0]->parcelle_id) {
+                    $this->tournees[$index]['parcelles'] += $c->parcelles->toArray(true,false);
+                }
                 $this->tournees[$index]['operateurs'][$c->identifiant] = $c->declarant->nom;
+                $this->tournees[$index]['ids'][$c->_id] = $c->_id;
                 $this->tournees[$index]['secteurs'][$c->secteur] = $c->secteur;
+                if (ControleClient::getOrdreStatut($statut) < ControleClient::getOrdreStatut($this->tournees[$index]['statut'])) {
+                    $this->tournees[$index]['statut'] = $statut;
+                }
+                if (strpos($this->tournees[$index]['type_tournee'], $c->type_tournee) === false) {
+                    $this->tournees[$index]['type_tournee'] .= ', '.$c->type_tournee;
+                }
                 foreach($c->liaisons_operateurs as $liaison) {
                     $this->tournees[$index]['cooperatives'][$liaison->id_etablissement] = "Coopérateurs pour " .$liaison->libelle_etablissement;
                 }
             }
         }
+        $tournee_to_remove = [];
+        foreach($this->tournees as $k => $t) {
+            if (!in_array($t['statut'], [ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER, ControleClient::CONTROLE_STATUT_CONTROLE_CLOTURE])) {
+                continue;
+            }
+            $tournee_to_remove[] = $k;
+        }
+        foreach($tournee_to_remove as $k) {
+            unset($this->tournees[$k]);
+        }
         ksort($this->tournees);
     }
 
-    public function executeOperateurs(sfWebRequest $request)
+    public function executeAplanifier(sfWebRequest $request)
     {
-        $this->controles = ControleClient::getInstance()->findAllByStatus();
+        $controles = ControleClient::getInstance()->findAllByStatus();
+        $this->controles_a_planifier = $controles[ControleClient::CONTROLE_STATUT_A_PLANIFIER];
+        $this->nb_controles_by_types = ['Tous' => 0];
+        foreach(ControleClient::getInstance()->getTypes() as $type) {
+            $this->nb_controles_by_types[$type] = 0;
+        }
+        foreach($this->controles_a_planifier as $c) {
+            $this->nb_controles_by_types[$c->type_tournee]++;
+            $this->nb_controles_by_types['Tous']++;
+        }
     }
 
     public function executeEtablissementSelection(sfWebRequest $request) {
@@ -60,6 +95,10 @@ class controleActions extends sfActions
         if(!$this->getUser()->isAdmin()) {
             throw new sfError403Exception("Accès admin uniquement");
         }
+        $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->etablissement->identifiant);
+        if (!$this->parcellaire) {
+            throw new sfException($this->etablissement->identifiant." n'a pas de pas de parcellaire");
+        }
         $this->controle = ControleClient::getInstance()->findOrCreate($this->etablissement->identifiant);
         $type = $request->getParameter('type');
         if (in_array($type, ControleClient::getInstance()->getTypes())) {
@@ -72,33 +111,21 @@ class controleActions extends sfActions
         return $this->redirect('controle_operateur', $this->etablissement);
     }
 
-    public function executeParcelles(sfWebRequest $request)
+
+
+
+
+
+    private function getDataControlesByDateTourneeAndAgentAndSetControle($dateTournee, $agentIdentifiant)
     {
-    	$this->controle = $this->getRoute()->getControle();
-
-        if(!$this->getUser()->isAdmin()) {
-            throw new sfError403Exception("Accès admin uniquement");
-        }
-
-        $this->parcellaire = $this->controle->getParcellaire();
-
-        if ($request->isMethod(sfWebRequest::POST)) {
-            $this->controle->updateParcelles($request->getPostParameter('parcelles', []));
-            $this->controle->save();
-            return $this->redirect('controle_index');
-        }
-    }
-
-    private function getControlesByDateTourneeAndAgentAndSetControle($dateTournee, $agentIdentifiant)
-    {
-        $this->controles = [];
         $controles = [];
         foreach (ControleClient::getInstance()->findAll() as $controle) {
             if ($dateTournee == $controle->date_tournee && $agentIdentifiant == $controle->agent_identifiant) {
                 if (! $controle->getParcellaire() || ! count($controle->getParcellaire()->getParcelles()) ) {
                     continue;
                 }
-                $this->controles[] = $controle;
+                $controle->updateParcellesNoeudControleIfNeeded();
+                $controle->save();
                 $controles[$controle->_id] = $controle->getDataToDump();
             }
         }
@@ -109,7 +136,7 @@ class controleActions extends sfActions
     {
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
-        $this->json = json_encode($this->getControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->json = json_encode($this->getDataControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
     }
 
@@ -117,7 +144,7 @@ class controleActions extends sfActions
     {
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
-        $this->json = json_encode($this->getControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
+        $this->json = json_encode($this->getDataControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->points_de_controle = json_encode(ControleConfiguration::getInstance()->getAllPointsDeControle(), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
         $this->setLayout('appLayout');
     }
@@ -130,7 +157,7 @@ class controleActions extends sfActions
         foreach ($data as $controleId => $items) {
             if ($controle = ControleClient::getInstance()->find($controleId)) {
                 $controle->heure_tournee = $items->heure_tournee;
-                $controle->updateParcelles($items->parcelles);
+                $controle->resetParcellesWithParcellesIds($items->parcelles);
                 $controle->save();
             }
         }
@@ -148,7 +175,7 @@ class controleActions extends sfActions
         $this->controle->type_tournee = $request->getParameter('type_tournee');
         $this->controle->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->controle->save();
-        return $this->redirect('controle_index');
+        return $this->redirect('controle_operateur', $this->controle->getEtablissementObject());
     }
 
     public function executeVisualisation(sfWebRequest $request)
@@ -178,7 +205,6 @@ class controleActions extends sfActions
             if (! $this->form->isValid()) {
                 return sfView::SUCCESS;
             }
-            $this->controle->manquements_valides = true;
             $this->form->save();
             return $this->redirect('controle_liste_operateur_tournee', array('date' => $this->controle->date_tournee, 'agent_identifiant' => $this->controle->agent_identifiant));
         }
@@ -230,7 +256,9 @@ class controleActions extends sfActions
         $this->libellesConstats = ControleConfiguration::getInstance()->getAllLibellesConstats(false, $this->controle->type_tournee);
         $this->errors = [];
         if ($request->isMethod(sfWebRequest::POST)) {
-            $this->controle->addManquementManuel($_POST['manquement'], $POST['parcelles_id']);
+            $this->constatId = $request->getParameter('manquement');
+            $this->parcellesIds = $request->getParameter('parcelles_id');
+            $this->controle->addManquementManuel($this->constatId, $this->parcellesIds);
             $this->controle->save();
             return $this->redirect('controle_liste_manquements_controle', array('id' => $this->controle->_id));
         }

@@ -47,6 +47,9 @@ class Parcellaire extends BaseParcellaire {
 
     public function initDoc($identifiant, $date, $type = ParcellaireClient::TYPE_COUCHDB) {
         $this->identifiant = $identifiant;
+        if (strpos($date, '-') === false) {
+            throw new sfException('wrong date format y-m-d: '.$date);
+        }
         $this->date = $date;
         $this->campagne = ConfigurationClient::getInstance()->buildCampagne($date);
         $this->set('_id', ParcellaireClient::TYPE_COUCHDB."-".$identifiant."-".str_replace('-', '', $date));
