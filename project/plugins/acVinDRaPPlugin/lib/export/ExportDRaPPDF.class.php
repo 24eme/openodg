@@ -39,7 +39,7 @@ class ExportDRaPPDF extends ExportPDF {
        $unite = 0;
        $uniteParPage = 23;
        $uniteTableau = 3;
-       $uniteLigne = 1;
+       $uniteLigne = 2;
        $uniteTableauCommentaire = 2;
        $uniteTableauLigne = 0.75;
        $uniteMentionBasDePage = 1;

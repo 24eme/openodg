@@ -52,19 +52,17 @@
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: center; width: 200px;">Lieu-dit</th>
-        <th class="th" style="text-align: center; width: 70px;">Section</th>
-        <th class="th" style="text-align: center; width: 70px;">N° parcelle</th>
-        <th class="th" style="text-align: center; width: 180px;">Cépage</th>
+        <th class="th" style="text-align: center; width: 90px;">Section - N° parcelle</th>
+        <th class="th" style="text-align: center; width: 160px;">Cépage</th>
         <th class="th" style="text-align: center; width: 80px;">Année de plantation</th>
         <th class="th" style="text-align: center; width: 80px;">Surface</th>
-        <th class="th" style="text-align: center; width: 135px;">Appellation<br/>à laquelle on renonce</th>
-        <th class="th" style="text-align: center; width: 130px;">Destination<br/>appellation revendiquée</th>
+        <th class="th" style="text-align: center; width: 190px;">Appellation<br/>renoncée</th>
+        <th class="th" style="text-align: center; width: 145px;">Appellation<br/>revendiquée</th>
     </tr>
     <?php foreach ($parcelles as $parcelle): ?>
     	<tr>
 			<td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->lieu; ?>&nbsp;</td>
-			<td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->section; ?>&nbsp;</td>
-            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->numero_parcelle; ?>&nbsp;</td>
+			<td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->section . ' - ' . $parcelle->numero_parcelle; ?>&nbsp;</td>
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->cepage; ?>&nbsp;</td>
             <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->campagne_plantation; ?>&nbsp;</td>
             <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echoFloatFr($parcelle->superficie, 4); ?>&nbsp;<small>ha</small>&nbsp;</td>
