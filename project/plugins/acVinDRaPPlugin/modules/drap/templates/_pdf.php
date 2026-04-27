@@ -57,8 +57,8 @@
         <th class="th" style="text-align: center; width: 180px;">Cépage</th>
         <th class="th" style="text-align: center; width: 80px;">Année de plantation</th>
         <th class="th" style="text-align: center; width: 80px;">Surface</th>
-        <th class="th" style="text-align: center; width: 135px;">Origine</th>
-        <th class="th" style="text-align: center; width: 130px;">Destination</th>
+        <th class="th" style="text-align: center; width: 135px;">Appellation<br/>à laquelle on renonce</th>
+        <th class="th" style="text-align: center; width: 130px;">Destination<br/>appellation revendiquée</th>
     </tr>
     <?php foreach ($parcelles as $parcelle): ?>
     	<tr>
