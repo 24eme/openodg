@@ -1009,8 +1009,9 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         $produits = $this->getProduits();
         $etab_declarant =  $this->getEtablissementObject();
         foreach ($this->getDonnees() as $data) {
-            if (($this->type == 'SV12' && $data->categorie == '15') || $this->type == 'SV11' && $data->categorie == '08') {
-                $produit_key = $data->produit.'|'.$data->produit_libelle;
+            if (($this->type == 'SV12' && $data->categorie == '15') || ($this->type == 'SV11' && $data->categorie == '08') || $data->categorie == '04') {
+                $volume_superficie = ($data->categorie == '04') ? 'Superficie' : 'Volume';
+                $produit_key = $data->produit.'|'.$data->produit_libelle.' - '.$volume_superficie;
                 if (! isset($this->tableau_comparaison[$produit_key])) {
                     $this->tableau_comparaison[$produit_key] = [];
                 }
