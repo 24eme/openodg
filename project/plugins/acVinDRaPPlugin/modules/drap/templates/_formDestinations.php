@@ -28,13 +28,14 @@
             <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
             <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
             <td class="text-right">
-                <div style="margin-bottom: 0;" class=" <?php if($form[$parcelle->getParcelleId()]['superficie']->hasError()): ?>has-error<?php endif; ?>">
+                <div style="position: relative;" class=" <?php if($form[$parcelle->getParcelleId()]['superficie']->hasError()): ?>has-error<?php endif; ?>">
+                    <small class="part-superficie text-muted" style="position: absolute; left: 8px; top: 8px;"></small>
                     <?php echo $form[$parcelle->getParcelleId()]['superficie']->renderError(); ?>
                     <?php if (ParcellaireConfiguration::getInstance()->isAres()): ?>
-                        <?php echo $form[$parcelle->getParcelleId()]['superficie'](ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)->render(array("placeholder" => $parcelle->superficie_parcellaire)); ?>
+                        <?php echo $form[$parcelle->getParcelleId()]['superficie'](ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)->render(array("placeholder" => $parcelle->superficie_parcellaire, 'class' => 'valeur-superficie form-control text-right input-float')); ?>
                     <?php else: ?>
-                        <?php echo $form[$parcelle->getParcelleId()]['superficie']->render(array("placeholder" => $parcelle->superficie_parcellaire)); ?>
-                    <?php endif ?>
+                        <?php echo $form[$parcelle->getParcelleId()]['superficie']->render(array("placeholder" => $parcelle->superficie_parcellaire, 'class' => 'valeur-superficie form-control text-right input-float')); ?>
+                    <?php endif; ?>
                 </div>
             </td>
             <?php if (ParcellaireConfiguration::getInstance()->hasDRaP()): ?>
@@ -62,3 +63,17 @@
     </tbody>
 </table>
 <?php endforeach; ?>
+
+<script>
+    document.querySelectorAll("input[class^=valeur-superficie]").forEach(function (input) {
+        input.addEventListener("change", (event) => {
+            if (parseFloat(input.value || 0) < parseFloat(input.placeholder || 0)) {
+                input.parentNode.querySelector(".part-superficie").innerText = "Partielle";
+            } else {
+                input.parentNode.querySelector(".part-superficie").innerText = "Totale";
+            }
+        })
+        input.dispatchEvent(new Event("change"));
+    });
+
+</script>
