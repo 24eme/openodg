@@ -31,9 +31,9 @@
                 <div style="margin-bottom: 0;" class=" <?php if($form[$parcelle->getParcelleId()]['superficie']->hasError()): ?>has-error<?php endif; ?>">
                     <?php echo $form[$parcelle->getParcelleId()]['superficie']->renderError(); ?>
                     <?php if (ParcellaireConfiguration::getInstance()->isAres()): ?>
-                        <?php echo $form[$parcelle->getParcelleId()]['superficie'](ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)->render(); ?>
+                        <?php echo $form[$parcelle->getParcelleId()]['superficie'](ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)->render(array("placeholder" => $parcelle->superficie)); ?>
                     <?php else: ?>
-                        <?php echo $form[$parcelle->getParcelleId()]['superficie']->render(); ?>
+                        <?php echo $form[$parcelle->getParcelleId()]['superficie']->render(array("placeholder" => $parcelle->superficie)); ?>
                     <?php endif ?>
                 </div>
             </td>
