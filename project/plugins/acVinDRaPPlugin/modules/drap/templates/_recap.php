@@ -7,9 +7,9 @@
                 <th class="col-xs-1 text-center">Section / N° parcelle</th>
                 <th class="col-xs-2">Cépage</th>
                 <th class="col-xs-1 text-center">Année plantat°</th>
-                <th class="col-xs-1 text-right">Surface renoncée <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
-                <th class="col-xs-2 text-center">Appellation à laquelle on renonce</th>
-                <th class="col-xs-2 text-center">Destination </br> Appellation revendiquée</th>
+                <th class="col-xs-1 text-center">Surface renoncée <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
+                <th class="col-xs-1 text-center">Part de surface renoncée</th>
+                <th class="col-xs-3 text-center">Appellation renoncée → Destination</th>
             </tr>
 		</thead>
 		<tbody>
@@ -24,14 +24,16 @@ foreach ($drap->declaration->getParcellesByCommune() as $commune => $parcelles):
 				<td class="text-center"><?php echo $parcelle->section; ?> <?php echo $parcelle->numero_parcelle; ?></td>
 				<td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
 				<td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
-                <?php if (ParcellaireConfiguration::getInstance()->isAres()): ?>
-                    <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)); ?></td>
-                <?php else: ?>
-                    <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie()); ?></td>
-                <?php endif ?>
-                <?php $somme_superficie += $parcelle->superficie; ?>
-                    <td class="text-center"><?php echo $parcelle->getAppellation()->getLibelleComplet(); ?></td>
-                    <td class="text-center"><?php echo $parcelle->destination; ?></td>
+                <td class="text-right">
+                    <?php if (ParcellaireConfiguration::getInstance()->isAres()): ?>
+                        <?php echoFloatFr($parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)); ?>
+                    <?php else: ?>
+                        <?php echoFloatFr($parcelle->getSuperficie()); ?>
+                    <?php endif ?>
+                </td>
+                <td class="text-center"><?php echo $parcelle->getSuperficie() < $parcelle->getSuperficieParcellaire() ? 'Partielle' : 'Totale' ?></td>
+                <td class="text-center"><?php echo $parcelle->getAppellation()->getLibelleComplet() .' → '. $parcelle->destination; ?></td>
+                    <?php $somme_superficie += $parcelle->superficie; ?>
             </tr>
         <?php  endforeach; ?>
 <?php  endforeach; ?>
