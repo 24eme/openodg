@@ -97,7 +97,7 @@ class ExportDRaPPDF extends ExportPDF {
 
     protected function getHeaderTitle() {
 
-        return sprintf("Déclaration de Renonciation à Produire %s", $this->drap->campagne."-".(intval($this->drap->campagne) + 1));
+        return sprintf("Déclaration de Renonciation à Produire %s", $this->drap->campagne);
     }
 
     protected function getHeaderSubtitle() {
