@@ -163,6 +163,10 @@ class declarationActions extends sfActions {
             return $this->redirect('adelphe_visualisation', array('id' => $doc_id));
         }
 
+        if($doc_type == "DRaP") {
+            return $this->redirect('adelphe_visualisation', array('id' => $doc_id));
+        }
+
         return $this->forward404();
     }
 
