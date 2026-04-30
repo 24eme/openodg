@@ -47,8 +47,7 @@
                           ->changement_cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
                              id="lien_prisedemousse_changement_cepages" data-toggle="modal"
                              data-target="#prisedemousse_changement_cepages" />
-                      <span class="checkboxtext_prisedemousse_changement_cepages"><?php echo (count($prisedemousse
-                          ->changement_cepages->toArray(true, false))) ? "Mention : " :  "Sans mention de cépage <a>(Changer)</a>" ?></span></label>
+                      </label>
                     </div>
                   </div>
               </div>
