@@ -39,6 +39,7 @@ class PriseDeMousse extends ChgtDenom  {
         $lot->document_ordre = '01';
         $lot->specificite = $this->changement_specificite;
         $lot->affectable = $this->changement_affectable;
+        $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
 
         $this->updateCepageCoherencyWithVolume($lot);
         $lots[] = $lot;
