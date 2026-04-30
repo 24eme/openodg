@@ -39,7 +39,7 @@
 
 ?>
             <tbody>
-                <tr>
+                <tr class="<?php if (strpos($produit, 'Superficie') !== false) { echo "active"; } ?>">
                     <div class="row">
                         <td class="col-xs-4"><?php echo explode('|', $produit)[1]; ?></td>
                         <td class="col-xs-3 text-right"><?php echoFloat(abs($totalDeclarantSV), 4) ; ?></td>
@@ -58,7 +58,7 @@
             <tbody class="collapse" id="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>">
                 <?php foreach($cvis as $cvi => $valeur): ?>
                     <?php if ($cvi == $sv->getEtablissementObject()->cvi) { continue; } ?>
-                    <?php if (round($valeur['DR'] - $valeur['SV'], 2) == 0) { continue; } ?>
+                    <?php if (is_float($valeur['DR']) && round($valeur['DR'] - $valeur['SV'], 2) == 0) { continue; } ?>
                     <tr>
                         <td class="text-right">
                             <?php $etablissement = $sv->getCachedTiersByCVI($cvi); ?>
@@ -75,17 +75,21 @@
                             <?php endif; ?>
                         </td>
                         <td class="text-right">
-                            <?php echo abs($valeur['SV']); ?>
+                            <?php echoFloat(abs($valeur['SV']), 4); ?>
                         </td>
                         <td class="text-right">
-                            <?php if ($valeur['DR'] || isset($dr_apporteur) && $dr_apporteur): ?>
-                                <?php echo abs($valeur['DR']); ?>
+                            <?php if ($valeur['DR'] == 'IMPOSSIBLE'): ?>
+                                <small>Superficie livrée indispo</small>
+                            <?php elseif (is_float($valeur['DR']) || isset($dr_apporteur) && $dr_apporteur): ?>
+                                <?php echoFloat(abs($valeur['DR']), 4); ?>
                             <?php else: ?>
                                 <small>DR absente</small>
                             <?php endif; ?>
                         </td>
                         <td class="text-right">
-                            <?php echo round($valeur['SV'] - $valeur['DR'], 2); ?>
+                            <?php if ($valeur && is_float($valeur['DR'])): ?>
+                            <?php echoFloat(round($valeur['SV'] - $valeur['DR'], 2)); ?>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
