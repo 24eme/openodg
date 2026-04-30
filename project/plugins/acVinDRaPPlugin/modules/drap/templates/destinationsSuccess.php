@@ -8,7 +8,7 @@
 
 <?php include_partial('drap/step', array('step' => 'destinations', 'drap' => $drap)) ?>
 <div class="page-header">
-    <h2>Parcelles irrigables sur votre exploitation <br/><small>Merci d'indiquer le type de matériel et de ressource utilisés sur chaque parcelle irrigable</small></h2>
+    <h2>Parcelles en renonciation à produire sur votre exploitation <br/><small>Merci d'indiquer la nouvelle destination sur chaque parcelle</small></h2>
 </div>
 
 <form action="<?php echo url_for("drap_destinations", $drap) ?>" method="post" class="form-horizontal">

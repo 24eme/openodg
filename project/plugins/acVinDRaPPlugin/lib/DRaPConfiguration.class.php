@@ -13,7 +13,7 @@ class DRaPConfiguration extends DeclarationConfiguration {
 
     public function getCampagneDebutMois() {
 
-        return DRaPConfiguration::getInstance()->getCampagneDebutMois();
+        return ParcellaireAffectationConfiguration::getInstance()->getCampagneDebutMois();
     }
 
     public function getModuleName() {
@@ -24,11 +24,6 @@ class DRaPConfiguration extends DeclarationConfiguration {
     public function getDateOuvertureConfigName() {
 
         return 'drap';
-    }
-
-    public function getRessources($value = null)
-    {
-      return $this->getFromConfig('ressources', $value);
     }
 
     public function getDestinations($value = null)
@@ -46,7 +41,7 @@ class DRaPConfiguration extends DeclarationConfiguration {
           $entry->text = $item;
           $entries[] = $entry;
       }
-      if ($value) {
+      if (!in_array($value, $items) && $value) {
           $entry = new stdClass();
           $entry->id = $value;
           $entry->text = $value;

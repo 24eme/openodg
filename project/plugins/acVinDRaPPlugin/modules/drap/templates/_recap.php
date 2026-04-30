@@ -2,45 +2,20 @@
     <table class="table table-bordered table-condensed table-striped tableParcellaire">
 		<thead>
         	<tr>
-            <?php if ((ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() === false) && (ParcellaireConfiguration::getInstance()->hasIrrigableRessource() === false)): ?>
-                <th class="col-xs-3">Commune</th>
-                <th class="col-xs-3">Lieu-dit</th>
-                <th class="col-xs-1 text-center">Section / N° parcelle</th>
-                <th class="col-xs-2">Cépage</th>
-                <th class="col-xs-1 text-center">Année plantat°</th>
-                <th class="col-xs-2 text-right">Surf. <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
-            <?php elseif ((ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() === true) && (ParcellaireConfiguration::getInstance()->hasIrrigableRessource() === false)): ?>
                 <th class="col-xs-1">Commune</th>
                 <th class="col-xs-2">Lieu-dit</th>
                 <th class="col-xs-1 text-center">Section / N° parcelle</th>
                 <th class="col-xs-2">Cépage</th>
                 <th class="col-xs-1 text-center">Année plantat°</th>
-                <th class="col-xs-1 text-right">Surf. <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
-                <th class="col-xs-2 text-center">Type de matériel</th>
-            <?php elseif ((ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() === false) && (ParcellaireConfiguration::getInstance()->hasIrrigableRessource() === true)): ?>
-                <th class="col-xs-1">Commune</th>
-                <th class="col-xs-2">Lieu-dit</th>
-                <th class="col-xs-1 text-center">Section / N° parcelle</th>
-                <th class="col-xs-2">Cépage</th>
-                <th class="col-xs-1 text-center">Année plantat°</th>
-                <th class="col-xs-1 text-right">Surf. <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
-                <th class="col-xs-2 text-center">Type de ressource</th>
-			<?php else: ?>
-                <th class="col-xs-1">Commune</th>
-                <th class="col-xs-2">Lieu-dit</th>
-                <th class="col-xs-1 text-center">Section / N° parcelle</th>
-                <th class="col-xs-2">Cépage</th>
-                <th class="col-xs-1 text-center">Année plantat°</th>
-                <th class="col-xs-1 text-right">Surf. <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
-                <th class="col-xs-2 text-center">Type de matériel</th>
-                <th class="col-xs-2 text-center">Type de ressource</th>
-			<?php endif; ?>
+                <th class="col-xs-1 text-center">Surface renoncée <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
+                <th class="col-xs-1 text-center">Part de surface renoncée</th>
+                <th class="col-xs-3 text-center">Appellation renoncée → Destination</th>
             </tr>
 		</thead>
 		<tbody>
 <?php
 $somme_superficie = 0;
-foreach ($parcellaireIrrigable->declaration->getParcellesByCommune() as $commune => $parcelles):
+foreach ($drap->declaration->getParcellesByCommune() as $commune => $parcelles):
 			foreach ($parcelles as $parcelle):
 		?>
 			<tr class="vertical-center">
@@ -49,20 +24,16 @@ foreach ($parcellaireIrrigable->declaration->getParcellesByCommune() as $commune
 				<td class="text-center"><?php echo $parcelle->section; ?> <?php echo $parcelle->numero_parcelle; ?></td>
 				<td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
 				<td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
-                <?php if (ParcellaireConfiguration::getInstance()->isAres()): ?>
-                    <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)); ?></td>
-                <?php else: ?>
-                    <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie()); ?></td>
-                <?php endif ?>
-                <?php $somme_superficie += $parcelle->superficie; ?>
-                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() && ParcellaireConfiguration::getInstance()->hasIrrigableRessource()): ?>
-                    <td class="text-center"><?php echo $parcelle->materiel; ?></td>
-                    <td class="text-center"><?php echo $parcelle->ressource; ?></td>
-                <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == false): ?>
-                    <td class="text-center"><?php echo $parcelle->materiel; ?></td>
-                <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableRessource() && ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == false): ?>
-                    <td class="text-center"><?php echo $parcelle->ressource; ?></td>
-                <?php endif; ?>
+                <td class="text-right">
+                    <?php if (ParcellaireConfiguration::getInstance()->isAres()): ?>
+                        <?php echoFloatFr($parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)); ?>
+                    <?php else: ?>
+                        <?php echoFloatFr($parcelle->getSuperficie()); ?>
+                    <?php endif ?>
+                </td>
+                <td class="text-center"><?php echo $parcelle->getSuperficie() < $parcelle->getSuperficieParcellaire() ? 'Partielle' : 'Totale' ?></td>
+                <td class="text-center"><?php echo $parcelle->getAppellation()->getLibelleComplet() .' → '. $parcelle->destination; ?></td>
+                    <?php $somme_superficie += $parcelle->superficie; ?>
             </tr>
         <?php  endforeach; ?>
 <?php  endforeach; ?>
@@ -75,12 +46,7 @@ foreach ($parcellaireIrrigable->declaration->getParcellesByCommune() as $commune
         <?php else: ?>
             <th class="text-right"><?php echoFloatFr($somme_superficie, 4); ?></th>
         <?php endif ?>
-        <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() && ParcellaireConfiguration::getInstance()->hasIrrigableRessource()): ?>
             <th colspan="2">&nbsp;</th>
-        <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() || ParcellaireConfiguration::getInstance()->hasIrrigableRessource()): ?>
-            <th colspan="1">&nbsp;</th>
-        <?php endif ?>
-
     <tr>
 <tfooter>
 </table>

@@ -228,7 +228,7 @@ class drapActions extends sfActions {
 
         $this->document->addHeaders($this->getResponse());
 
-            return $this->renderText($this->document->output());
+        return $this->renderText($this->document->output());
     }
 
 

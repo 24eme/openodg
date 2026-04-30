@@ -1,9 +1,9 @@
-<div class="modal fade" id="parcellaireirrigable-confirmation-validation" role="dialog" aria-labelledby="Confirmation de validation" aria-hidden="true">
+<div class="modal fade" id="drap-confirmation-validation" role="dialog" aria-labelledby="Confirmation de validation" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Validation de votre déclaration de renonciation à produire</h4>
+					<h4 class="modal-title" id="myModalLabel">Validation de votre Déclaration de Renonciation à Produire</h4>
 				</div>
 				<div class="modal-body">
 					<?php if(isset($form["signataire"])): ?>
