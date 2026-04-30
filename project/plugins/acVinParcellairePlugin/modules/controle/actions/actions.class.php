@@ -126,7 +126,6 @@ class controleActions extends sfActions
                     continue;
                 }
                 $controle->updateParcellesNoeudControleIfNeeded();
-                $controle->save();
                 $this->obj_controles_for_aires[] = $controle;
                 $controles[$controle->_id] = $controle->getDataToDump();
             }
