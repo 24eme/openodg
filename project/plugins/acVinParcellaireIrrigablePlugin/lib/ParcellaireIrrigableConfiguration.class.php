@@ -33,7 +33,7 @@ class ParcellaireIrrigableConfiguration extends DeclarationConfiguration {
 
     public function getMateriels($value = null)
     {
-      return $this->getFromConfig('materiels', $value);
+        return $this->getFromConfig('materiels', $value);
     }
 
     private function getFromConfig($type, $value = null)
@@ -46,7 +46,7 @@ class ParcellaireIrrigableConfiguration extends DeclarationConfiguration {
           $entry->text = $item;
           $entries[] = $entry;
       }
-      if ($value) {
+      if (!in_array($value, $items) && $value) {
           $entry = new stdClass();
           $entry->id = $value;
           $entry->text = $value;

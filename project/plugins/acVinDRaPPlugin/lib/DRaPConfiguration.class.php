@@ -41,7 +41,7 @@ class DRaPConfiguration extends DeclarationConfiguration {
           $entry->text = $item;
           $entries[] = $entry;
       }
-      if ($value) {
+      if (!in_array($value, $items) && $value) {
           $entry = new stdClass();
           $entry->id = $value;
           $entry->text = $value;

@@ -85,5 +85,5 @@
 
 <?php if ($lastPage): ?>
     <small><br /></small>
-    <i>Pour toute modification, contacter l'ODG.</i>
+    <i>Pour toute modification, contacter l'ODG par mail à l'adresse <?php echo Organisme::getInstance()->getEmail(); ?></i>
 <?php endif; ?>
