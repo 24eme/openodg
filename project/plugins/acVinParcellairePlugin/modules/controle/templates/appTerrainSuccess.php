@@ -22,7 +22,7 @@
     var aires = [];
     <?php
     $communes = [];
-    foreach ($controles as $controle) {
+    foreach ($obj_controles_for_aires as $controle) {
         $p = $controle->getParcellaire();
         if ( ! $p ) {
             continue;
