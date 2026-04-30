@@ -23,10 +23,10 @@
     <thead>
         <tr>
             <th>Produit</th>
-            <th>Volumes issus de la SV</th>
-            <th>Volumes issus de la DR</th>
-            <th>Différence</th>
-            <th>Détails</th>
+            <th class="text-center">issus de la SV</th>
+            <th class="text-center">issus de la DR</th>
+            <th class="text-center">Différence</th>
+            <th class="text-center">Détails</th>
         </tr>
     </thead>
 <?php
@@ -39,13 +39,13 @@
 
 ?>
             <tbody>
-                <tr>
+                <tr class="<?php if (strpos($produit, 'Superficie') !== false) { echo "active"; } ?>">
                     <div class="row">
                         <td class="col-xs-4"><?php echo explode('|', $produit)[1]; ?></td>
-                        <td class="col-xs-3 text-right"><?php echo abs($totalDeclarantSV) ; ?></td>
-                        <td class="col-xs-3 text-right"><?php echo abs($totalApporteurDR) ; ?></td>
-                        <td class="col-xs-1 text-center strong <?php if (! $diffSVDR) { echo 'bg-success'; } else { echo 'bg-danger'; }; ?>">
-                            <?php echo abs($diffSVDR); ?>
+                        <td class="col-xs-3 text-right"><?php echoFloat(abs($totalDeclarantSV), 4) ; ?></td>
+                        <td class="col-xs-3 text-right"><?php echoFloat(abs($totalApporteurDR), 4) ; ?></td>
+                        <td class="col-xs-1 text-right strong <?php if (! $diffSVDR) { echo 'bg-success'; } else { echo 'bg-danger'; }; ?>">
+                            <?php echoFloat(abs($diffSVDR), 2); ?>
                         </td>
                         <td class="col-xs-1 text-center">
                             <?php if ($diffSVDR): ?>
@@ -58,7 +58,7 @@
             <tbody class="collapse" id="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>">
                 <?php foreach($cvis as $cvi => $valeur): ?>
                     <?php if ($cvi == $sv->getEtablissementObject()->cvi) { continue; } ?>
-                    <?php if (round($valeur['DR'] - $valeur['SV'], 2) == 0) { continue; } ?>
+                    <?php if (is_float($valeur['DR']) && round($valeur['DR'] - $valeur['SV'], 2) == 0) { continue; } ?>
                     <tr>
                         <td class="text-right">
                             <?php $etablissement = $sv->getCachedTiersByCVI($cvi); ?>
@@ -75,17 +75,21 @@
                             <?php endif; ?>
                         </td>
                         <td class="text-right">
-                            <?php echo abs($valeur['SV']); ?>
+                            <?php echoFloat(abs($valeur['SV']), 4); ?>
                         </td>
                         <td class="text-right">
-                            <?php if ($valeur['DR'] || isset($dr_apporteur) && $dr_apporteur): ?>
-                                <?php echo abs($valeur['DR']); ?>
+                            <?php if ($valeur['DR'] == 'IMPOSSIBLE'): ?>
+                                <small>Superficie livrée indispo</small>
+                            <?php elseif (is_float($valeur['DR']) || isset($dr_apporteur) && $dr_apporteur): ?>
+                                <?php echoFloat(abs($valeur['DR']), 4); ?>
                             <?php else: ?>
                                 <small>DR absente</small>
                             <?php endif; ?>
                         </td>
                         <td class="text-right">
-                            <?php echo round($valeur['SV'] - $valeur['DR'], 2); ?>
+                            <?php if ($valeur && is_float($valeur['DR'])): ?>
+                            <?php echoFloat(round($valeur['SV'] - $valeur['DR'], 2)); ?>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -102,7 +106,7 @@
     <thead>
         <tr>
             <th>Etablissement</th>
-            <th>Habilitation Producteur (<a href="#" onclick="$('.habilitation').show(); return false;">toutes</a>)</th>
+            <th class="text-center">Habilitation Producteur (<a href="#" onclick="$('.habilitation').show(); return false;">toutes</a>)</th>
         </tr>
     </thead>
     <tbody>
@@ -116,7 +120,7 @@
             <?php echo 'inconnu - <a href="'.url_for('cvi_check', array('cvi' => $cvi)).'">'.$cvi.'</a>'; ?>
             <?php endif; ?>
         </td>
-        <td class="<?php echo (isset($hab['habilitation_ok'])  && $hab['habilitation_ok']) ? 'bg-success': 'bg-danger'; ?>">
+        <td class="<?php echo (isset($hab['habilitation_ok'])  && $hab['habilitation_ok']) ? 'bg-success': 'bg-danger'; ?> text-center">
             <?php if($hab['habilitation_ok']): $habilitation_ok++ ; ?>
                 <a href="<?php echo url_for('habilitation_visualisation', $hab['habilitation']); ?>">Habilitation OK</a>
             <?php else: ?>

@@ -13,11 +13,11 @@
  */
 class ExportDRaPPDF extends ExportPDF {
 
-    protected $parcellaireIrrigable = null;
+    protected $drap = null;
     protected $nomFilter = null;
 
-    public function __construct($parcellaireIrrigable, $type = 'pdf', $use_cache = false, $file_dir = null,  $filename = null) {
-        $this->parcellaireIrrigable = $parcellaireIrrigable;
+    public function __construct($drap, $type = 'pdf', $use_cache = false, $file_dir = null,  $filename = null) {
+        $this->drap = $drap;
         $this->nomFilter = null;
         if(!$filename) {
             $filename = $this->getFileName(true, true);
@@ -28,10 +28,10 @@ class ExportDRaPPDF extends ExportPDF {
 
     public function create() {
 
-       $parcellesByCommune = $this->parcellaireIrrigable->declaration->getParcellesByCommune();
+       $parcellesByCommune = $this->drap->declaration->getParcellesByCommune();
 
        if(count($parcellesByCommune) == 0) {
-           $this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array('parcellaireIrrigable' =>    $this->parcellaireIrrigable, 'parcellesByCommune' => false)));
+           $this->printable_document->addPage($this->getPartial('drap/pdf', array('drap' =>    $this->drap, 'parcellesByCommune' => false)));
 
            return;
        }
@@ -39,7 +39,7 @@ class ExportDRaPPDF extends ExportPDF {
        $unite = 0;
        $uniteParPage = 23;
        $uniteTableau = 3;
-       $uniteLigne = 1;
+       $uniteLigne = 2;
        $uniteTableauCommentaire = 2;
        $uniteTableauLigne = 0.75;
        $uniteMentionBasDePage = 1;
@@ -74,21 +74,21 @@ class ExportDRaPPDF extends ExportPDF {
             $parcellesByPage[] = $currentPage;
         }
 
-        if($this->parcellaireIrrigable->observations) {
-            $unite += $uniteTableauLigne + count(explode("\n", $this->parcellaireIrrigable->observations));
+        if($this->drap->observations) {
+            $unite += $uniteTableauLigne + count(explode("\n", $this->drap->observations));
         }
 
         foreach($parcellesByPage as $nbPage => $parcelles) {
-            $this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array(
-                'parcellaireIrrigable' => $this->parcellaireIrrigable,
+            $this->printable_document->addPage($this->getPartial('drap/pdf', array(
+                'drap' => $this->drap,
                 'parcellesByCommune' => $parcelles,
-                'lastPage' => (($nbPage == count($parcellesByPage) - 1) && (($this->parcellaireIrrigable->observations && $unite <= $uniteParPage) || !$this->parcellaireIrrigable->observations)),
+                'lastPage' => (($nbPage == count($parcellesByPage) - 1) && (($this->drap->observations && $unite <= $uniteParPage) || !$this->drap->observations)),
             )));
         }
 
-        if ($this->parcellaireIrrigable->observations && $unite > $uniteParPage) {
-            $this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array(
-                'parcellaireIrrigable' => $this->parcellaireIrrigable,
+        if ($this->drap->observations && $unite > $uniteParPage) {
+            $this->printable_document->addPage($this->getPartial('drap/pdf', array(
+                'drap' => $this->drap,
                 'parcellesByCommune' => array(),
                 'lastPage' => true,
             )));
@@ -96,36 +96,33 @@ class ExportDRaPPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-         if (! class_exists('ParcellaireManquantClient')) {
-            return sprintf("Parcellaire Irrigable %s", $this->parcellaireIrrigable->campagne);
-         }
 
-        return sprintf("Parcellaire Irrigable %s", $this->parcellaireIrrigable->campagne."-".(intval($this->parcellaireIrrigable->campagne) + 1));
+        return sprintf("Déclaration de Renonciation à Produire %s", $this->drap->campagne);
     }
 
     protected function getHeaderSubtitle() {
-        $header_subtitle = sprintf("%s", $this->parcellaireIrrigable->declarant->nom);
+        $header_subtitle = sprintf("%s", $this->drap->declarant->nom);
         $header_subtitle .= "\n\n";
 
-        if (!$this->parcellaireIrrigable->isPapier()) {
-            if (!$this->parcellaireIrrigable->validation) {
+        if (!$this->drap->isPapier()) {
+            if (!$this->drap->validation) {
                 $header_subtitle .= sprintf("Exemplaire brouilllon");
-            }elseif($this->parcellaireIrrigable->isAuto()) {
-                $date = new DateTime($this->parcellaireIrrigable->validation);
+            }elseif($this->drap->isAuto()) {
+                $date = new DateTime($this->drap->validation);
                 $header_subtitle .= sprintf("Générée automatiquement le %s", $date->format('d/m/Y'));
-            }elseif($this->parcellaireIrrigable->isPapier()) {
-                $date = new DateTime($this->parcellaireIrrigable->validation);
+            }elseif($this->drap->isPapier()) {
+                $date = new DateTime($this->drap->validation);
                 $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
             }else {
-                 $date = new DateTime($this->parcellaireIrrigable->validation);
-                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'), $this->parcellaireIrrigable->signataire);
-                if($this->parcellaireIrrigable->exist('signataire') && $this->parcellaireIrrigable->signataire) {
-                    $header_subtitle .= " par " . $this->parcellaireIrrigable->signataire;
+                 $date = new DateTime($this->drap->validation);
+                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'), $this->drap->signataire);
+                if($this->drap->exist('signataire') && $this->drap->signataire) {
+                    $header_subtitle .= " par " . $this->drap->signataire;
                 }
             }
         }
 
-        if ($this->parcellaireIrrigable->isPapier() && $this->parcellaireIrrigable->validation && $this->parcellaireIrrigable->validation !== true) {
+        if ($this->drap->isPapier() && $this->drap->validation && $this->drap->validation !== true) {
         }
 
         return $header_subtitle;
@@ -133,20 +130,20 @@ class ExportDRaPPDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportParcellaireIrrigablePDFConfig();
+        return new ExportDRaPPDFConfig();
     }
 
     public function getFileName($with_rev = false) {
 
-      return self::buildFileName($this->parcellaireIrrigable, $with_rev, $this->nomFilter);
+      return self::buildFileName($this->drap, $with_rev, $this->nomFilter);
     }
 
-    public static function buildFileName($parcellaireIrrigable, $with_rev = false, $nomFilter = null) {
+    public static function buildFileName($drap, $with_rev = false, $nomFilter = null) {
 
-        $prefixName = $parcellaireIrrigable->getTypeParcellaire()."_%s_%s";
-        $filename = sprintf($prefixName, $parcellaireIrrigable->identifiant, $parcellaireIrrigable->campagne);
+        $prefixName = $drap->getTypeParcellaire()."_%s_%s";
+        $filename = sprintf($prefixName, $drap->identifiant, $drap->campagne);
 
-        $declarant_nom = strtoupper(KeyInflector::slugify($parcellaireIrrigable->declarant->nom));
+        $declarant_nom = strtoupper(KeyInflector::slugify($drap->declarant->nom));
         $filename .= '_' . $declarant_nom;
 
         if($nomFilter) {
@@ -154,7 +151,7 @@ class ExportDRaPPDF extends ExportPDF {
         }
 
         if ($with_rev) {
-            $filename .= '_' . $parcellaireIrrigable->_rev;
+            $filename .= '_' . $drap->_rev;
         }
 
         return $filename . '.pdf';

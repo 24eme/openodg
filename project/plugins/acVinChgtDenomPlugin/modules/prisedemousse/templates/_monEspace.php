@@ -14,7 +14,7 @@
                 <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('prisedemousse_delete', $enCours) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
             </div>
             <?php else: ?>
-            <p class="explications">Espace permettant la déclaration de prise de mousse pour vos lot en vin de base.</p>
+            <p class="explications">Espace permettant la déclaration de prise de mousse pour vos lot en vin de base déjà revendiqués.</p>
             <div class="actions">
             <a class="btn btn-default btn-block" href="<?php echo url_for('prisedemousse_lots', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><?php if($sf_user->isAdmin()): ?><span class="glyphicon glyphicon-file"></span> Saisie papier<?php else: ?>Démarrer la télédéclaration<?php endif; ?></a>
             </div>

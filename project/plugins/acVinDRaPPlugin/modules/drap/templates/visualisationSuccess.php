@@ -51,22 +51,23 @@
    </div>
 <?php endif; ?>
 
+
 <div class="row row-margin row-button">
-    <div class="col-xs-5">
+    <div class="col-xs-4">
         <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $drap->identifiant, 'campagne' => $drap->campagne)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
-    <div class="col-xs-2 text-center">
+    <div class="col-xs-4 text-center">
             <a href="<?php echo url_for('drap_export_pdf', $drap) ?>" class="btn btn-success">
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
             </a>
     </div>
 
-    <div class="col-xs-2 text-right">
+    <div class="col-xs-4 text-right">
         <?php if ($drap->validation && ParcellaireSecurity::getInstance($sf_user, $drap->getRawValue())->isAuthorized(ParcellaireSecurity::DEVALIDATION)): ?>
-                    <a class="btn btn-xs btn-default pull-right" href="<?php echo url_for('drap_devalidation', $drap) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider votre déclaration ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
+                    <a class="btn btn-default pull-right" href="<?php echo url_for('drap_devalidation', $drap) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider votre déclaration ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
         <?php endif; ?>
     </div>
-    <div class="col-xs-3 text-right">
+    <div class="col-xs-4 text-right">
         <?php if(!$drap->validation): ?>
                 <a href="<?php echo url_for("drap_edit", $drap) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
                 <?php elseif(!$drap->validation_odg && $sf_user->isAdmin()): ?>
