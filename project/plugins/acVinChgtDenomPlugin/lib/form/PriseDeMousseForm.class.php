@@ -16,6 +16,11 @@ class PriseDeMousseForm extends acCouchdbObjectForm
         $this->setWidget('changement_produit_hash', new bsWidgetFormChoice(array('choices' => $produits)));
         $this->setValidator('changement_produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
 
+        $prisedemousse = $this->getObject()->getLotOrigine();
+
+        $this->setWidget('changement_numero_logement_operateur', new bsWidgetFormInput());
+        $this->setValidator('changement_numero_logement_operateur', new sfValidatorString());
+
         for($i = 0; $i < DRevLotForm::NBCEPAGES; $i++) {
             $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
             $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));
@@ -54,6 +59,7 @@ class PriseDeMousseForm extends acCouchdbObjectForm
       $defaults = $this->getDefaults();
       $defaults['changement_type'] = PriseDeMousseClient::CHANGEMENT_TYPE_PRISEDEMOUSSE;
       $defaults['changement_volume'] = ($this->getObject()->exist('prisedemousse_volume'))? $this->getObject()->changement_volume : $this->getObject()->getLotOrigine()->volume;
+      $defaults['changement_numero_logement_operateur'] = $this->getObject()->changement_numero_logement_operateur;
       if (ChgtDenomConfiguration::getInstance()->hasSpecificiteLot()) {
         $defaults['changement_specificite'] = $this->getObject()->changement_specificite;
       }
