@@ -7,7 +7,7 @@
     <RouterLink v-for="(controle, index) in filteredControles" :key="controle._id" :to="{ name: 'operateur', params: { id: controle._id } }" class="list-group-item" :class="{ 'list-group-item-success': controle.audit.saisie == 1 && controle.validation == true }">
         <div class="row">
             <div class="col-xs-2 col-md-1" style="font-size: 20px;">
-                <strong>{{ (10 + index) }}:00</strong>
+                <strong>{{ controle.heure_tournee }}</strong>
             </div>
             <div class="col-xs-8 col-md-9">
                 <h4 class="list-group-item-heading">{{ controle.declarant.nom }}  <small>{{ controle.declarant.cvi }}</small></h4>

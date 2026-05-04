@@ -119,13 +119,14 @@ class controleActions extends sfActions
     private function getDataControlesByDateTourneeAndAgentAndSetControle($dateTournee, $agentIdentifiant)
     {
         $controles = [];
+        $this->obj_controles_for_aires = [];
         foreach (ControleClient::getInstance()->findAll() as $controle) {
             if ($dateTournee == $controle->date_tournee && $agentIdentifiant == $controle->agent_identifiant) {
                 if (! $controle->getParcellaire() || ! count($controle->getParcellaire()->getParcelles()) ) {
                     continue;
                 }
                 $controle->updateParcellesNoeudControleIfNeeded();
-                $controle->save();
+                $this->obj_controles_for_aires[] = $controle;
                 $controles[$controle->_id] = $controle->getDataToDump();
             }
         }

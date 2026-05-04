@@ -22,7 +22,7 @@
     var aires = [];
     <?php
     $communes = [];
-    foreach ($controles as $controle) {
+    foreach ($obj_controles_for_aires as $controle) {
         $p = $controle->getParcellaire();
         if ( ! $p ) {
             continue;
@@ -102,7 +102,7 @@
         filteredControles() {
             return Object.values(this.controles).filter(c =>
                 c.agent_identifiant === this.agentIdentifiant
-            )
+            ).sort( (a,b) => { if (a.heure_tournee < b.heure_tournee) return -1; if (a.heure_tournee > b.heure_tournee) return 1; return 0;} );
         },
         savedClass() {
             if (this.isSaved) {
