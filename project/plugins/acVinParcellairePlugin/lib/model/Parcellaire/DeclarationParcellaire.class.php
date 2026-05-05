@@ -16,9 +16,6 @@ class DeclarationParcellaire extends acCouchdbDocument {
     public function getParcelles($hashproduitFilter = null) {
         $parcelles = [];
         if ($this->declaration && count($this->declaration)) foreach ($this->declaration->getParcelles($hashproduitFilter) as $p) {
-            if ($p->getParcelleId() === null) {
-                continue; // si parcelle n'existe plus ?
-            }
             if (isset($parcelles[$p->getParcelleId()])) {
                 throw new sfException('parcelleid '.$p->getParcelleId().' already exists');
             }
