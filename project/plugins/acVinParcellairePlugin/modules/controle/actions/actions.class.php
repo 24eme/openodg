@@ -32,7 +32,7 @@ class controleActions extends sfActions
                         'ids' => []
                     ];
                 }
-                if (array_values($c->parcelles)[0]->parcelle_id) {
+                if (array_values($c->parcelles->toArray(false))[0]->parcelle_id) {
                     $this->tournees[$index]['parcelles'] += $c->parcelles->toArray(true,false);
                 }
                 $this->tournees[$index]['operateurs'][$c->identifiant] = $c->declarant->nom;
@@ -119,13 +119,14 @@ class controleActions extends sfActions
     private function getDataControlesByDateTourneeAndAgentAndSetControle($dateTournee, $agentIdentifiant)
     {
         $controles = [];
+        $this->obj_controles_for_aires = [];
         foreach (ControleClient::getInstance()->findAll() as $controle) {
             if ($dateTournee == $controle->date_tournee && $agentIdentifiant == $controle->agent_identifiant) {
                 if (! $controle->getParcellaire() || ! count($controle->getParcellaire()->getParcelles()) ) {
                     continue;
                 }
                 $controle->updateParcellesNoeudControleIfNeeded();
-                $controle->save();
+                $this->obj_controles_for_aires[] = $controle;
                 $controles[$controle->_id] = $controle->getDataToDump();
             }
         }

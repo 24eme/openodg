@@ -1008,9 +1008,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         $this->tableau_comparaison = [];
         $produits = $this->getProduits();
         $etab_declarant =  $this->getEtablissementObject();
+        $dr_cvi = [];
         foreach ($this->getDonnees() as $data) {
-            if (($this->type == 'SV12' && $data->categorie == '15') || $this->type == 'SV11' && $data->categorie == '08') {
-                $produit_key = $data->produit.'|'.$data->produit_libelle;
+            if (($this->type == 'SV12' && $data->categorie == '15') || ($this->type == 'SV11' && $data->categorie == '08') || $data->categorie == '04') {
+                $volume_superficie = ($data->categorie == '04') ? 'Superficie' : 'Volume';
+                $produit_key = $data->produit.'|'.$data->produit_libelle.' - '.$volume_superficie;
                 if (! isset($this->tableau_comparaison[$produit_key])) {
                     $this->tableau_comparaison[$produit_key] = [];
                 }
@@ -1018,49 +1020,79 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                     $this->tableau_comparaison[$produit_key][$data->tiers_cvi] = ['SV' => 0, 'DR' => 0];
                 }
                 $this->tableau_comparaison[$produit_key][$data->tiers_cvi]['SV'] += $data->valeur;
-
+                $dr_cvi[$data->tiers_cvi] = $data->tiers_cvi;
                 if (! isset($this->tableau_comparaison[$produit_key][$etab_declarant->cvi])) {
                     $this->tableau_comparaison[$produit_key][$etab_declarant->cvi] = ['SV' => 0, 'DR' => 0];
                 }
                 $this->tableau_comparaison[$produit_key][$etab_declarant->cvi]['SV'] += $data->valeur;
             }
         }
-        foreach ($this->tableau_comparaison as $produit => $cvis) {
-            $totalDR = 0;
-            foreach ($cvis as $cvi => $valeur) {
-                if ($etab_declarant->cvi == $cvi) {
-                    continue;
-                }
-                if (!isset($this->tiers[$cvi])) {
-                    $this->tiers[$cvi] = EtablissementClient::getInstance()->findByCvi($cvi);
-                }
-                $dr = null;
-                if ($this->tiers[$cvi]) {
-                    $dr = DRClient::getInstance()->find('DR-'.$this->tiers[$cvi]['identifiant'].'-'.$this->campagne);
-                }
-                if (!$dr) {
-                    continue;
-                }
-                $datas = $dr->getEnhancedDonnees();
-                foreach ($datas as $data) {
-                    if ($data->tiers_cvi != $etab_declarant->cvi && substr($data->tiers, 0, -2) != substr($etab_declarant->_id, 0, -2)) {
-                        continue;
+        foreach (array_keys($dr_cvi) as $cvi) {
+            if (!isset($this->tiers[$cvi])) {
+                $this->tiers[$cvi] = EtablissementClient::getInstance()->findByCvi($cvi);
+            }
+            $dr = null;
+            if ($this->tiers[$cvi]) {
+                $dr = DRClient::getInstance()->find('DR-'.$this->tiers[$cvi]['identifiant'].'-'.$this->campagne);
+            }
+            if (!$dr) {
+                continue;
+            }
+            $datas = $dr->getEnhancedDonnees();
+//                print_r([$produit, $datas]);exit;
+            $last_superficie = 0;
+            foreach ($datas as $data) {
+                if ($data->categorie == '04') {
+                    if (in_array($data->colonne_famille, [DouaneProduction::FAMILLE_APPORTEUR_NEGOCE_TOTAL, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL])) {
+                        $last_superficie = $data->valeur;
+                    } else {
+                        $last_superficie = 'IMPOSSIBLE';
                     }
-                    $produit_key = $data->produit.'|'.$data->produit_libelle;
+                }
+                if ( ! ($this->type == 'SV12' && ($data->categorie == '06' || $data->categorie == '07')) &&
+                     ! ($this->type == 'SV11' && $data->categorie == '08') ) {
+                        continue;
+                }
+                if ($data->tiers_cvi != $etab_declarant->cvi) {
+                    continue;
+                }
+                foreach ($this->tableau_comparaison as $produit => $prod_cvis) {
+                    $produit_key = $data->produit.'|'.$data->produit_libelle.' - Volume';
                     if (strpos($produit,  $produit_key) === false) {
                         continue;
                     }
-                    $dr_cvi = $cvi;
-                    if ( ($this->type == 'SV12' && ($data->categorie == '06' || $data->categorie == '07')) || ($this->type == 'SV11' && $data->categorie == '08') ) {
+                    foreach ($prod_cvis as $pcvi => $valeur) {
+                        if ($cvi != $pcvi) {
+                            continue;
+                        }
+                        if ($etab_declarant->cvi == $pcvi) {
+                            continue;
+                        }
+                        if ( ($data->tiers_cvi != $etab_declarant->cvi) && (substr($data->tiers, 0, -2) != substr($etab_declarant->_id, 0, -2)) ) {
+                            continue;
+                        }
+                        $dr_cvi = $cvi;
                         if (! isset($this->tableau_comparaison[$produit][$dr_cvi])) {
                             $this->tableau_comparaison[$produit][$dr_cvi] = ['SV' => 0, 'DR' => 0];
                         }
                         $this->tableau_comparaison[$produit][$dr_cvi]['DR'] += $data->valeur;
-                        $totalDR += $data->valeur;
+                        $this->tableau_comparaison[$produit][$etab_declarant->cvi]['DR'] += $data->valeur;
+                        if ($last_superficie) {
+                            $produitsuperficie_key = str_replace(' - Volume', ' - Superficie', $produit);
+                            if (! isset($this->tableau_comparaison[$produitsuperficie_key][$dr_cvi])) {
+                                $this->tableau_comparaison[$produitsuperficie_key][$dr_cvi] = ['SV' => 0, 'DR' => 0];
+                            }
+                            if ($last_superficie == 'IMPOSSIBLE' ||  $this->tableau_comparaison[$produitsuperficie_key][$dr_cvi]['DR'] == 'IMPOSSIBLE') {
+                                $this->tableau_comparaison[$produitsuperficie_key][$dr_cvi]['DR'] = 'IMPOSSIBLE';
+                            } else {
+                                $this->tableau_comparaison[$produitsuperficie_key][$dr_cvi]['DR'] += $last_superficie;
+                                $this->tableau_comparaison[$produitsuperficie_key][$etab_declarant->cvi]['DR'] += $last_superficie;
+                            }
+                            $last_superficie = 0;
+                        }
                     }
                 }
             }
-            $this->tableau_comparaison[$produit][$etab_declarant->cvi]['DR'] = $totalDR;
         }
         return isset($this->tableau_comparaison) ? $this->tableau_comparaison : null;
     }
