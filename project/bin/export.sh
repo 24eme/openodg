@@ -320,6 +320,8 @@ echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '[A-Z]' | while read subhab; 
         cat $EXPORTDIR/parcellaireirrigue.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/parcellaireirrigue.csv
         head -n 1 $EXPORTDIR/parcellaireirrigable.csv > $SUBDIR/parcellaireirrigable.csv
         cat $EXPORTDIR/parcellaireirrigable.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/parcellaireirrigable.csv
+        head -n 1 $EXPORTDIR/drap.csv > $SUBDIR/drap.csv
+        cat $EXPORTDIR/drap.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/drap.csv
     fi
     if test "$SUBMETABASE"; then
         python3 bin/csv2sql.py $SUBMETABASE".tmp" $SUBDIR
