@@ -17,7 +17,7 @@ class ParcellaireIrrigableProduitsForm extends acCouchdbObjectForm {
             if($this->getObject()->getDocument()->isDeclarationLiee()) {
                 $value = $value->add('irrigation');
             }
-            $this->embedForm($p->getParcelleId(), new ParcellaireIrrigableProduitIrrigationForm($value);
+            $this->embedForm($p->getParcelleId(), new ParcellaireIrrigableProduitIrrigationForm($value));
         }
         $this->widgetSchema->setNameFormat('parcelles[%s]');
     }
