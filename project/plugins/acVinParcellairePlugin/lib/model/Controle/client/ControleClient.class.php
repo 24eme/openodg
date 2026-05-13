@@ -7,13 +7,17 @@ class ControleClient extends acCouchdbClient
     const CONTROLE_STATUT_A_PLANIFIER = "A_PLANIFIER";
     const CONTROLE_STATUT_A_ORGANISER = "A_ORGANISER";
     const CONTROLE_STATUT_ORGANISE = "ORGANISE";
-    const CONTROLE_STATUT_EN_MANQUEMENT = "EN_MANQUEMENT";
-    const CONTROLE_STATUT_TERMINE = "TERMINE";
+    const CONTROLE_STATUT_A_NOTIFIER = 'A_NOTIFIER';
+    const CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER = "EN_MANQUEMENT";
+    const CONTROLE_STATUT_CONTROLE_CLOTURE = "CLOTURE";
 
     const CONTROLE_TYPE_HABILITATION = "Habilitation";
     const CONTROLE_TYPE_SUIVI = "Suivi de manquements";
     const CONTROLE_TYPE_DOCUMENTAIRE = "Documentaire";
     const CONTROLE_TYPE_CONDITIONS = "Conditions de production";
+
+    const CONTROLE_CLOTURE_LEVER = 'LEVER';
+    const CONTROLE_CLOTURE_OC = 'OC';
 
     public static function getInstance()
     {
@@ -43,7 +47,7 @@ class ControleClient extends acCouchdbClient
     public function findOrCreate($identifiant, $date = null, $type = self::TYPE_COUCHDB)
     {
         if (!$date) {
-            $date = date('Ymd');
+            $date = date('Y-m-d');
         }
         $controle = new Controle();
         $controle->initDoc($identifiant, $date);
@@ -74,14 +78,28 @@ class ControleClient extends acCouchdbClient
         return $view->execute($hydrate)->getDatas();
     }
 
+    public static function getOrdreStatut($statut)
+    {
+        $ordre = array(
+            self::CONTROLE_STATUT_A_PLANIFIER => 0,
+            self::CONTROLE_STATUT_A_ORGANISER => 1,
+            self::CONTROLE_STATUT_ORGANISE => 2,
+            self::CONTROLE_STATUT_A_NOTIFIER => 3,
+            self::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER => 4,
+            self::CONTROLE_STATUT_CONTROLE_CLOTURE => 5
+        );
+        return $ordre[$statut];
+    }
+
     public function findAllByStatus($identifiant = null, $limit = null , $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
     {
         $controles = [
-            self::CONTROLE_STATUT_A_ORGANISER => [],
             self::CONTROLE_STATUT_A_PLANIFIER => [],
+            self::CONTROLE_STATUT_A_ORGANISER => [],
             self::CONTROLE_STATUT_ORGANISE => [],
-            self::CONTROLE_STATUT_EN_MANQUEMENT => [],
-            self::CONTROLE_STATUT_TERMINE => [],
+            self::CONTROLE_STATUT_A_NOTIFIER => [],
+            self::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER => [],
+            self::CONTROLE_STATUT_CONTROLE_CLOTURE => [],
         ];
         foreach ($this->findAllByIdentifiant($identifiant, $limit, $hydrate) as $c) {
             $controles[$c->mouvements_statuts[0][2]][] = $c;
@@ -91,8 +109,8 @@ class ControleClient extends acCouchdbClient
 
     public function findByManquements($identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
     {
-        $controles = ControleClient::getInstance()->findAllByStatus($identifiant, $hydrate);
-        $sorted_controles = $controles[ControleClient::CONTROLE_STATUT_EN_MANQUEMENT];
+        $controles = ControleClient::getInstance()->findAllByStatus($identifiant, null, $hydrate);
+        $sorted_controles = $controles[ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER];
         usort($sorted_controles, "ControleClient::sortControlesByDateNotification");
         return $sorted_controles;
     }

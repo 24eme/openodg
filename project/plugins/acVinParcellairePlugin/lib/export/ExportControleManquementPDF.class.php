@@ -22,6 +22,10 @@ class ExportControleManquementPDF extends ExportPDF {
     }
 
     public function create() {
+        if (! count($this->manquements)) {
+            $this->printable_document->addPage($this->getPartial('controle/manquementPdf', array('controle' => $this->controle)));
+            return;
+        }
         foreach ($this->manquements as $manquementId => $manquement) {
             $this->printable_document->addPage($this->getPartial('controle/manquementPdf', array('controle' => $this->controle, 'manquementId' => $manquementId, 'manquement' => $manquement)));
         }

@@ -281,13 +281,21 @@ function showParcelle(id){
     document.getElementById("jump").scrollIntoView();
 }
 
+function showGeoPortail(id) {
+  let layer = getParcelleLayer(id);
+  if (layer && layer._latlngs[0]) {
+    url = "https://www.geoportail.gouv.fr/carte?c="+layer._latlngs[0][0].lng+","+layer._latlngs[0][0].lat+"&z=17&l0=ORTHOIMAGERY.ORTHOPHOTOS::GEOPORTAIL:OGC:WMTS(1)&l1=Aire-Parcellaire::GEOPORTAIL:OGC:WMTS(0.6)&permalink=yes";
+    window.open(url, '_blank').focus();
+  }
+  return false;
+}
+
 function getParcelleLayer(id) {
   let layerFinded = null;
-
   map.eachLayer(function(layer) {
       if(layer.feature){
           if(Object.keys(layer.feature.properties).includes('parcellaires')){
-              if(layer.feature.properties.parcellaires[0].IDU == id){
+              if(layer.feature.properties.parcellaires[0].idu == id || layer.feature.properties.parcellaires[0].IDU == id){
                 layerFinded = layer;
               }
           }

@@ -8,7 +8,7 @@ class ExportParcellaireIrrigueCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Type de matériel;Type de ressource;Signataire;Date de validation;Date d'irrigation;Type de declaration\n";
+        return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Type de matériel;Type de ressource;Signataire;Date de validation;Date d'irrigation;Type de declaration;parcelle id;doc id\n";
     }
 
     public function __construct($doc, $header = true, $region = null) {
@@ -66,7 +66,10 @@ class ExportParcellaireIrrigueCSV implements InterfaceDeclarationExportCsv {
             	$this->protectStr($this->doc->signataire),
             	$this->doc->validation,
                 $this->protectStr($parcelle->date_irrigation),
-            	$mode);
+                $mode,
+                str_replace(explode('-', $this->doc->_id)[0].'-', '', $this->doc->_id),
+                $this->doc->_id
+                );
         	}
         }
 

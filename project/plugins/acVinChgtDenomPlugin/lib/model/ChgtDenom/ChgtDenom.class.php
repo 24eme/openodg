@@ -346,8 +346,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function getDegustationVMQ() {
-        $doc = acCouchdbManager::getClient()->find($this->lots[1]->id_document_affectation);
-        $lot = $doc->getLotByNumArchive($doc->lots[0]->numero_archive);
+        if ($this->lots[1]->id_document_affectation !== null) {
+            $doc = acCouchdbManager::getClient()->find($this->lots[1]->id_document_affectation);
+            $lot = $doc->getLotByNumArchive($doc->lots[0]->numero_archive);
+        } else {
+            $lot = null;
+        }
         return $lot;
     }
 

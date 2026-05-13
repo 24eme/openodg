@@ -165,6 +165,10 @@ bash bin/export_docs.sh ParcellaireManquant $EXPORTSLEEP $1 > $EXPORTDIR/parcell
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellairemanquant.csv.part > $EXPORTDIR/parcellairemanquant.csv
 rm $EXPORTDIR/parcellairemanquant.csv.part
 
+bash bin/export_docs.sh DRaP $EXPORTSLEEP $1 > $EXPORTDIR/drap.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drap.csv.part > $EXPORTDIR/drap.csv
+rm $EXPORTDIR/drap.csv.part
+
 curl -s "http://$COUCHHOST:$COUCHDBPORT/$COUCHDBBASE/_all_docs?startkey=\"PARCELLAIRE-\"&endkey=\"PARCELLAIRE-Z\"" | cut -d '"' -f 4 | grep "PARCELLAIRE" | sort -r | awk -F '-' 'BEGIN { } { if(!identifiant[$2]) { print $0 } identifiant[$2] = $0; }' | while read id;do php symfony declaration:export-csv --header=$(if ! test $header;then echo -n "1"; fi) $SYMFONYTASKOPTIONS $id; header=0; done > $EXPORTDIR/parcellaire.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaire.csv.part > $EXPORTDIR/parcellaire.csv
 rm $EXPORTDIR/parcellaire.csv.part
@@ -316,6 +320,8 @@ echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '[A-Z]' | while read subhab; 
         cat $EXPORTDIR/parcellaireirrigue.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/parcellaireirrigue.csv
         head -n 1 $EXPORTDIR/parcellaireirrigable.csv > $SUBDIR/parcellaireirrigable.csv
         cat $EXPORTDIR/parcellaireirrigable.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/parcellaireirrigable.csv
+        head -n 1 $EXPORTDIR/drap.csv > $SUBDIR/drap.csv
+        cat $EXPORTDIR/drap.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/drap.csv
     fi
     if test "$SUBMETABASE"; then
         python3 bin/csv2sql.py $SUBMETABASE".tmp" $SUBDIR

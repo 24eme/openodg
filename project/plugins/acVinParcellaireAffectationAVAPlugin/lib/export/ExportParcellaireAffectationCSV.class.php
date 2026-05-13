@@ -19,7 +19,7 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée ou dédiée;Acheteur CVI;Acheteur Nom;Autorisation de transmission;Date de validation / récéption;Type de transmission;VTSGN\n";
+        return "Campagne;Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée ou dédiée;Acheteur CVI;Acheteur Nom;Autorisation de transmission;Date de validation / récéption;Type de transmission;VTSGN;parcelle id;doc id\n";
     }
 
     public function __construct($parcellaire, $header = true, $region = null) {
@@ -137,6 +137,8 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
         $export .= $this->parcellaire->getDateDepot().";";
         $export .= ($this->parcellaire->isPapier()) ? "PAPIER" : "TÉLÉDECLARATION";
         $export .= ";".(($parcelle->vtsgn) ? "VTSGN" : "");
+        $export .= ";".(($parcelle->exist('parcelle_id')) ? $parcelle->get('parcelle_id') : "");
+        $export .= ";".$this->parcellaire->_id;
         $export .="\n";
 
         return $export;

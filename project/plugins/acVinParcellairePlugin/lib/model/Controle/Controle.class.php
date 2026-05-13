@@ -25,12 +25,15 @@ class Controle extends BaseControle implements InterfacePieceDocument
     public function initDoc($identifiant, $date, $type = ControleClient::TYPE_COUCHDB)
     {
         $this->identifiant = $identifiant;
+        if (strpos($date, '-') === false) {
+            throw new sfException('wrong date format y-m-d: '.$date);
+        }
         $this->date = $date;
         $this->campagne = ConfigurationClient::getInstance()->buildCampagne($date);
         $this->set('_id', ControleClient::TYPE_COUCHDB."-".$identifiant."-".str_replace('-', '', $date));
         $this->initDocuments();
         $this->storeDeclarant();
-        $this->getPotentielProductionProduits();
+        $this->initPotentielProductionProduits();
         $this->superficie_totale = $this->getSuperficieTotale();
     }
 
@@ -58,15 +61,27 @@ class Controle extends BaseControle implements InterfacePieceDocument
     }
 
     public function getLiaisonsCooperative() {
-        return EtablissementClient::getInstance()->findByCvi($this->declarant->cvi)->getLiaisonsOfType(EtablissementFamilles::FAMILLE_COOPERATIVE, true);
+        $e = EtablissementClient::getInstance()->findByCvi($this->declarant->cvi);
+        if (!$e) {
+            return [];
+        }
+        return $e->getLiaisonsOfType(EtablissementFamilles::FAMILLE_COOPERATIVE, true);
     }
 
-    public function getLibelleLiaison() {
+    public function getLiaisonsLibellesArray() {
         $libelles = [];
         foreach($this->liaisons_operateurs as $liaison) {
             $libelles[] = $liaison->libelle_etablissement;
         }
-        return implode(', ', $libelles);
+        return $libelles;
+    }
+
+    public function hasLiaisons() {
+        return count($this->getLiaisonsLibellesArray());
+    }
+
+    public function getLiaisonsLibellesString() {
+        return implode(', ', $this->getLiaisonsLibellesArray());
     }
 
     public function getParcellaire()
@@ -81,7 +96,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
     {
         $parcellaire = $this->getParcellaire();
         $parcelles = [];
-        foreach ($parcellaire->getParcelles() as $key => $parcelle) {
+        if ($parcellaire) foreach ($parcellaire->getParcelles() as $key => $parcelle) {
             if (!($parcelle->isRealProduit() && ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration())) continue;
             if (ControleConfiguration::getInstance()->hasProduitFilter() && strpos($parcelle->produit_hash, ControleConfiguration::getInstance()->getProduitFilter()) === false) continue;
             $parcelles[$key] = $parcelle->getData();
@@ -94,28 +109,24 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return $parcelles;
     }
 
-    public function updateParcelles(array $parcellesIds)
+    public function resetParcellesWithParcellesIds(array $parcellesIds)
     {
+        if ($this->isAuditValide()) { return; }
         $this->remove('parcelles');
         $this->add('parcelles');
         if ($parcellesIds) {
             $parcelles = $this->getParcellaire()->getParcelles();
-            foreach ($parcellesIds as $pId) {
+            foreach ($parcellesIds as $index => $pId) {
                 if ($parcelles->exist($pId)) {
                     $parcelle = $this->parcelles->add($pId, $parcelles->get($pId));
-                    foreach (ControleConfiguration::getInstance()->getPointsDeControle() as $pointKey => $pointConf) {
-                        $point = $parcelle->controle->points->add($pointKey);
-                        $point->libelle = $pointConf['libelle'];
-                        $hasConstat = false;
-                        foreach ($pointConf['constats'] as $constatKey => $constatConf) {
-                            if ($constatConf['terrain'] && in_array($this->type_tournee, $constatConf['types'])) {
-                                $point->constats->add($constatKey, ['libelle' => $constatConf['libelle'], 'conformite' => false, 'observations' => null]);
-                                $hasConstat = true;
-                            }
-                        }
-                        if (! $hasConstat) {
-                            $parcelle->controle->points->remove($pointKey);
-                        }
+                    if (is_null($parcelle->position)) {
+                        $parcelle->position = $index;
+                    }
+                    if ( $parcelle->position != $index ) {
+                        throw new sfException("La position (".$parcelle->position.") de la parcelle controlée est différent de son index ($index) dans le tableau parcelles");
+                    }
+                    if ($parcelle->needsUpdateNoeudControle()) {
+                        $parcelle->updateNoeudControle();
                     }
                 }
             }
@@ -144,11 +155,14 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getStatutComputed()
     {
-        if(!$this->isPlanifie()) {
-            return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
+        if ($this->isControleCloture()) {
+            return ControleClient::CONTROLE_STATUT_CONTROLE_CLOTURE;
         }
-        if ($this->isControle()) {
-            return ControleClient::CONTROLE_STATUT_EN_MANQUEMENT;
+        if ($this->isTourneeTerminee()) {
+            return ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER;
+        }
+        if($this->isANotifier() && $this->isAuditValide()) {
+            return ControleClient::CONTROLE_STATUT_A_NOTIFIER;
         }
         if ($this->isOrganise()) {
             return ControleClient::CONTROLE_STATUT_ORGANISE;
@@ -156,11 +170,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
         if ($this->isPlanifie()) {
             return ControleClient::CONTROLE_STATUT_A_ORGANISER;
         }
-        if ($this->isTermine()) {
-            return ControleClient::CONTROLE_STATUT_TERMINE;
-        }
         return ControleClient::CONTROLE_STATUT_A_PLANIFIER;
-
     }
 
     public function isPlanifie()
@@ -178,9 +188,63 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return $this->isOrganise() && count($this->manquements);
     }
 
-    public function isTermine()
+    public function isTourneeTerminee()
     {
-        return $this->manquements_valides;
+        return $this->isNotifiee();
+    }
+
+    public function isNotifiee()
+    {
+        return ($this->notification_date);
+    }
+
+    public function isANotifier()
+    {
+        return $this->needConstatsToBeCreated() || ! $this->isNotifiee();
+    }
+
+    public function hasManquements()
+    {
+        return $this->manquements && (count($this->manquements) > 0);
+    }
+
+    public function isAuditValide()
+    {
+        return $this->audit && $this->audit->saisie;
+    }
+
+    public function isControleCloture()
+    {
+        if (!$this->date_tournee || ! count($this->parcelles)) {
+            return false;
+        }
+        if (! $this->hasManquements() && $this->notification_date ) {
+            return true;
+        }
+        if (!$this->notification_date) {
+            return false;
+        }
+        return ! $this->hasManquementNonCloture();
+    }
+
+    public function needConstatsToBeCreated()
+    {
+        $constats_id = [];
+        foreach($this->parcelles as $pid => $p) {
+            foreach ($p->controle->points as $key => $p) {
+                foreach ($p->constats as $rtm => $constat) {
+                    if ($constat->non_conforme) {
+                        $constats_id[$rtm] = $rtm;
+                    }
+                }
+            }
+        }
+        foreach(array_keys($constats_id) as $rtm) {
+            if (!isset($this->manquements[$rtm])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function generateMouvementsStatuts()
@@ -193,6 +257,9 @@ class Controle extends BaseControle implements InterfacePieceDocument
     }
 
     public function getGeoJson() {
+        if ( ! $this->getParcellaire() ) {
+            return [];
+        }
         $geojson = $this->getParcellaire()->getGeoJson();
         $features = [];
         $parcelles = array_keys($this->getParcellaireParcelles());
@@ -259,24 +326,12 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $this->parcelles[$idParcelle]['controle'] = $element;
     }
 
-    public function hasConstatTerrain()
-    {
-        foreach ($this->parcelles as $parcelleId => $parcelle) {
-            foreach ($parcelle->controle->points as $dataPoint) {
-                if (! empty($dataPoint)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public function hasConstatTerrainActif()
     {
         foreach ($this->parcelles as $parcelleId => $parcelle) {
             foreach ($parcelle->controle->points as $pointId => $point) {
                 foreach($point->constats as $constat) {
-                    if ($constat->conformite == true) {
+                    if ($constat->non_conforme == true) {
                         return true;
                     }
                 }
@@ -290,14 +345,14 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $retManquements = array();
         foreach ($this->parcelles as $parcelleId => $parcelle) {
             foreach ($parcelle->controle->points as $pointId => $dataPoint) {
-                foreach ($dataPoint->constats as $constatId => $dataManquement) {
+                foreach ($dataPoint->constats as $constatId => $constat) {
                     if ($this->manquements->exist($constatId) && ($this->manquements->$constatId->observations && $this->manquements->$constatId->parcelles_id)) {
                         $retManquements[$constatId] = $this->manquements[$constatId];
                         continue;
                     }
                     if ($dataPoint->conformite == null) {continue;}
                     if ($fromConstatsActif == true) {
-                        if ($dataManquement->conformite == false) {continue;}
+                        if ($constat->non_conforme == false) {continue;}
                     }
                     if(!isset($retManquements[$constatId]) || !$retManquements[$constatId]) {
                         $retManquements[$constatId] = ControleManquement::freeInstance($this);
@@ -314,7 +369,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
                     $retManquements[$constatId]->delais = ControleConfiguration::getInstance()->getDelaisConstat($constatId);
                     $retManquements[$constatId]->constat_date = $this->date_tournee;
                     $retManquements[$constatId]->actif = false;
-                    $retManquements[$constatId]->observations .= $parcelleId . ' - ' . $dataManquement->observations . "\n";
+                    $retManquements[$constatId]->observations .= $parcelleId . ' - ' . $constat->observations . "\n";
                 }
             }
         }
@@ -333,21 +388,30 @@ class Controle extends BaseControle implements InterfacePieceDocument
     public function getManquementParcellesIdListe($manquementId)
     {
         $parcelles_id_list = array();
-        foreach ($this->manquements[$manquementId]->parcelles_id as $id) {
+        foreach ($this->manquements[$manquementId]->parcelles_id as $id) if ($id) {
             $parcelles_id_list[] = $id;
         }
         return $parcelles_id_list;
     }
 
-    public function addManquementManuel($manquementId, $parcelleId)
+    public function addManquementManuel($constatId, $parcellesId)
     {
-        if ($this->manquements->exist($manquementId) && in_array($parcelleId, $this->getManquementParcellesIdListe($manquementId))) {return ;}
-        $manquement = $this->getInfosManquement($manquementId);
-        if (! $this->manquements->exist($manquementId)) {
-            $this->manquements->add($manquementId, $manquement);
+        if (! $parcellesId) {
+            $manquement = $this->getInfosManquement($constatId);
+            if (! $this->manquements->exist($constatId)) {
+                $this->manquements->add($constatId, $manquement);
+            }
         }
-        $this->manquements->get($manquementId)->parcelles_id->add(null, $parcelleId);
-        $this->save();
+        else {
+            foreach ($parcellesId as $parcelleId) {
+                if ($this->manquements->exist($constatId) && in_array($parcelleId, $this->getManquementParcellesIdListe($constatId))) {return ;}
+                $manquement = $this->getInfosManquement($constatId);
+                if (! $this->manquements->exist($constatId)) {
+                    $this->manquements->add($constatId, $manquement);
+                }
+                $this->manquements->get($constatId)->parcelles_id->add(null, $parcelleId);
+            }
+        }
     }
 
     public function addManquementTerrain($manquementId, $dataManquement)
@@ -367,13 +431,6 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return false;
     }
 
-    public function deleteManquement($manquementId)
-    {
-        if ($this->manquements->exist($manquementId)) {
-            $this->manquement->remove($manquementId);
-        }
-    }
-
     public function generateManquements()
     {
         foreach ($this->getListeManquements(true) as $manquementId => $dataManquement) {
@@ -386,21 +443,9 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return $this->manquements;
     }
 
-    public function getDateFr()
-    {
-        preg_match('/([0-9]{4})([0-9]{2})([0-9]{2})/', $this->date, $matches);
-        return $matches[3].'/'.$matches[2].'/'.$matches[1];
-    }
-
-    public function getDateEn()
-    {
-        preg_match('/([0-9]{4})([0-9]{2})([0-9]{2})/', $this->date, $matches);
-        return $matches[1].'-'.$matches[2].'-'.$matches[3];
-    }
-
     public function getActiviteClient()
     {
-        return HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getDateEn())->getActivitesHabilites();
+        return HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->date)->getActivitesHabilites();
     }
 
     public function getManquementsActif()
@@ -412,6 +457,16 @@ class Controle extends BaseControle implements InterfacePieceDocument
             }
         }
         return $ret;
+    }
+
+    public function hasManquementNonCloture()
+    {
+        foreach($this->getManquementsActif() as $m) {
+            if (! $m->cloture_date) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function hasManquementsActif()
@@ -463,8 +518,11 @@ class Controle extends BaseControle implements InterfacePieceDocument
         return $this->audit->operateur_observation;
     }
 
-    public function getPotentielProductionProduits()
+    public function initPotentielProductionProduits()
     {
+        if  ( ! $this->getParcellaire() ) {
+            return ;
+        }
         $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($this->getParcellaire());
         foreach ($potentiel->getProduits() as $ppproduit) {
             $this->surface_de_production->add($ppproduit->getLibelle(), $ppproduit->getSuperficieMax());
@@ -473,6 +531,9 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getSuperficieTotale()
     {
+        if ( ! $this->getParcellaire() ) {
+            return 0;
+        }
         return round($this->getParcellaire()->getSuperficieTotale(), 3);
     }
 
@@ -560,69 +621,29 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     /**** FIN DES PIECES ****/
 
-    public function getResizeSignature($newWidth = 80)
+
+    public function getInfoPdf($controleIdentifiant, $parcelleId)
     {
-        $base64 = $this->audit->operateur_signature;
-        if (!$base64) {
-            return null;
+        if (!$parcelleId) {
+            throw new sfException('wrong parcelleId ('.$parcelleId.')');
         }
-        if (strpos($base64, ',') !== false) {
-            $base64 = explode(',', $base64)[1];
+        $parcellaire = ParcellaireClient::getInstance()->getLast($controleIdentifiant);
+        if (!$parcellaire) {
+            throw new sfException('pas de parcellaire trouvé pour '.$controleIdentifiant);
         }
-        $tmpFile = $this->getTmpSignatureFile();
-        if (file_exists($tmpFile)) {
-            return $tmpFile;
+        $parcelle = $parcellaire->parcelles->get($parcelleId);
+        if (!$parcelle) {
+            throw new sfException('pas de parcelll trouvée pour '.$controleIdentifiant.'/'.$parcelleId);
         }
-        $imageData = base64_decode($base64);
-        $src = imagecreatefromstring($imageData);
-        if (!$src) {
-            return null;
-        }
-        $width  = imagesx($src);
-        $height = imagesy($src);
-        $newHeight = intval(($height / $width) * $newWidth);
-        $dst = imagecreatetruecolor($newWidth, $newHeight);
-        $white = imagecolorallocate($dst, 255, 255, 255);
-        imagefill($dst, 0, 0, $white);
-        imagecopyresampled(
-            $dst, $src,
-            0, 0, 0, 0,
-            $newWidth, $newHeight,
-            $width, $height
-        );
-        if (imagejpeg($dst, $tmpFile, 85)) {
-            imagedestroy($src);
-            imagedestroy($dst);
-            return $tmpFile;
-        } else {
-            return null;
-        }
+        return 'Parcelle ' . $parcelle->commune . ' - ' . $parcelle->section . $parcelle->numero_parcelle . ' - ' . $parcelle->cepage . ' - ' . $parcelle->campagne_plantation . ' - ' . $parcelle->superficie . ' ha';
     }
 
-    public function getSignatureFilename()
+    public function updateParcellesNoeudControleIfNeeded()
     {
-        $base64 = $this->audit->operateur_signature;
-        if (!$base64) {
-            return null;
-        }
-        return 'signature_' . md5($base64) . '.jpg';
-    }
-
-    public function getTmpSignatureFile()
-    {
-        $tmpDir = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmpsignatures' . DIRECTORY_SEPARATOR;
-        if (!is_dir($tmpDir)) {
-            mkdir($tmpDir, 0777, true);
-        }
-        return ($filename = $this->getSignatureFilename())? $tmpDir . $this->getSignatureFilename() : null;
-    }
-
-    public function cleanTmpSignatureFile()
-    {
-        $tmpFile = $this->getTmpSignatureFile();
-        if (file_exists($tmpFile)) {
-            unlink($tmpFile);
+        foreach ($this->parcelles as $parcelle) {
+            if ($parcelle->needsUpdateNoeudControle()) {
+                $parcelle->updateNoeudControle();
+            }
         }
     }
-
 }

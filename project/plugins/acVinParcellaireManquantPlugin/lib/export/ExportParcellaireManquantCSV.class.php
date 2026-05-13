@@ -8,7 +8,7 @@ class ExportParcellaireManquantCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Densite;Pourcentage de manquants;Signataire;Date de validation;Mode de declaration;Doc Id;Hash produit;Doc Region;Pseudo Production Id\n";
+        return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Densite;Pourcentage de manquants;Signataire;Date de validation;Mode de declaration;Doc Id;Hash produit;Parcelle Id;Doc Region;Pseudo Production Id\n";
     }
 
     public function __construct($doc, $header = true, $region = null) {
@@ -50,7 +50,7 @@ class ExportParcellaireManquantCSV implements InterfaceDeclarationExportCsv {
             	$inao = $configProduit->getCodeDouane();
 
             	$libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
-                $csv .= sprintf("%s;Parcellaire Manquant;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
+                $csv .= sprintf("%s;Parcellaire Manquant;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
                 DeclarationExportCsv::getProduitKeysCsv($configProduit),
                 $inao,$libelle_complet,
             	$this->protectStr($parcelle->idu),
@@ -69,6 +69,7 @@ class ExportParcellaireManquantCSV implements InterfaceDeclarationExportCsv {
             	$mode,
                 $this->doc->_id,
                 $parcelle->getProduit()->getHash(),
+                (($parcelle->exist('parcelle_id')) ? $parcelle->get('parcelle_id') : ""),
                 $this->doc->region,
                 $this->doc->declarant->cvi."-".substr($this->doc->campagne, 0, 4)
                 );
