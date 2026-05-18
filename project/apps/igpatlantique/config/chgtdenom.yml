@@ -1,0 +1,4 @@
+all:
+  configuration:
+    chgtdenom:
+      demat_enabled: true
