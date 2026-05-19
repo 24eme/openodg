@@ -322,8 +322,8 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $hash_produit = str_replace(['/declaration/', 'declaration/'], '', $hash_produit);
         $hash_produit = str_replace('/VDN/appellations/VDR', '/TRANQ/appellations/RTA', $hash_produit);
         $hash_produit = str_replace(['/EFF', '/MOU', '/VMQ'], '/TRANQ', $hash_produit);
-        $hash_produit = str_replace('/genres/VDB', '/genres/TRANQ', $hash_produit);
-        if (strpos($hash_produit, '/mentions/MA') !== false) {
+        if (strpos($hash_produit, '/genres/VDB') !== false) {
+            $hash_produit = str_replace('/genres/VDB', '/genres/TRANQ', $hash_produit);
             $hash_produit = str_replace('/mentions/MA', '/mentions/DEFAUT', $hash_produit);
             $hash_produit = str_replace('/couleurs/blanc/', '/couleurs/blanc_sec/', $hash_produit);
         }
