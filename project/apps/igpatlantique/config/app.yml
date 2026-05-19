@@ -10,7 +10,7 @@ all:
   organisme:
     nom: "Syndicat des vins IGP Atlantique"
   societe:
-    format_identifiant: "ATL%06d"
+    format_identifiant: "ATL%05d"
   donnees_viticoles:
     regions:
       IGPATLANTIQUE: "IGPATLANTIQUE"
