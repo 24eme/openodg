@@ -8,6 +8,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   protected $previous_document = null;
   protected $etablissement = null;
   protected $habilitation = null;
+  protected $parcellesMultiProduits = null;
 
   public function isAdresseLogementDifferente() {
       return false;
@@ -209,19 +210,23 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getParcellesMultiProduits() {
-        $parcelles = [];
+        if(!is_null($this->parcellesMultiProduits)) {
+            return $this->parcellesMultiProduits;
+        }
+
+        $this->parcellesMultiProduits = [];
         foreach($this->declaration as $produit) {
             foreach($produit->detail as $parcelle) {
                 if(!$parcelle->isAffectee()) {
                     continue;
                 }
-                if(!isset($parcelles[$parcelle->getParcelleId()])) {
-                    $parcelles[$parcelle->getParcelleId()] = [];
+                if(!isset($this->parcellesMultiProduits[$parcelle->getParcelleId()])) {
+                    $this->parcellesMultiProduits[$parcelle->getParcelleId()] = [];
                 }
-                $parcelles[$parcelle->getParcelleId()][] = $parcelle;
+                $this->parcellesMultiProduits[$parcelle->getParcelleId()][] = $parcelle;
             }
         }
-        return $parcelles;
+        return $this->parcellesMultiProduits;
     }
 
     public function getParcellesMultiProduitsByParcelleId($parcelleId) {
