@@ -98,6 +98,10 @@ EOF;
                 $e = null;
             }
         }
+
+        if($data[self::CSV_NOCVI] && strlen($data[self::CSV_NOCVI]) != 10) {
+            echo "Warning CVI != 10 caractères pour CVI = " . $data[self::CSV_NOCVI]." ".(implode(";", $data))."\n";
+        }
         if ($e) {
             echo("Etablissement existe " . $e->_id . ", ". $data[self::CSV_NOCVI]." ".$data[self::CSV_SIRET]."\n");
             return $e;
@@ -108,7 +112,11 @@ EOF;
         if (!$societe) {
             $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
 
-            $id = self::$idPrefixe[$data[self::CSV_EXTRA_TYPE_OPERATEUR]].''.str_pad(intval($data[self::CSV_NUM_OPERATEUR]), 4, '0', STR_PAD_LEFT);
+            $id = intval($data[self::CSV_NUM_OPERATEUR])."";
+            if(strlen($id) < 3) {
+                $id = str_pad(intval($data[self::CSV_NUM_OPERATEUR]), 3, '0', STR_PAD_LEFT);
+            }
+            $id = self::$idPrefixe[$data[self::CSV_EXTRA_TYPE_OPERATEUR]].$id;
 
             $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $id);
 
@@ -191,7 +199,7 @@ EOF;
         if($suspendu) {
             HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, date('Y-m-d'), $activites, [], HabilitationClient::STATUT_RETRAIT);
         } else {
-            //HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, $date->format('Y-m-d'), $activites, [], HabilitationClient::STATUT_HABILITE);
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, $date->format('Y-m-d'), $activites, [], HabilitationClient::STATUT_HABILITE);
         }
     }
 }
