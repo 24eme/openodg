@@ -30,8 +30,8 @@ class importOperateursHabilitationsIGPAtlantiqueCsvTask extends sfBaseTask
 
     private static $familles = [
         'PVC' => EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR,
-        'VC' => EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR,
-        'C' => EtablissementFamilles::FAMILLE_NEGOCIANT,
+        'VC' => EtablissementFamilles::FAMILLE_CAVE_COOPERATIVE,
+        'C' => EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR,
         'P' => EtablissementFamilles::FAMILLE_PRODUCTEUR,
     ];
 
