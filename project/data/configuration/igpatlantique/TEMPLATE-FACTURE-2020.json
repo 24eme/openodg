@@ -1,0 +1,36 @@
+{
+  "_id": "TEMPLATE-FACTURE-2020",
+  "type": "TemplateFacture",
+  "campagne": 2020,
+  "template": "IGP",
+  "libelle": "2020 - IGP Atlantique",
+  "docs": [
+    "DRev"
+  ],
+  "cotisations": {
+    "00_cotisationSyndicale": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "volumeRevendiqueMillesimeCourant": {
+          "modele": "CotisationVariable",
+          "prix": 0.045,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "Cotisation Syndicale volume revendiqué millésime %millesime_courant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "date": "%periode+1%-07-31",
+          "callback": "getVolumeRevendiqueLots",
+          "callback_parameters": {
+            "millesime": "/millesime/courant"
+          }
+        }
+      }
+    }
+  }
+}

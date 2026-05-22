@@ -58,6 +58,9 @@ class ConfigurationClient extends acCouchdbClient {
         }
 
         $current = CurrentClient::getCurrent();
+        if (! $current) {
+            throw new sfException("Pas de CurrentClient");
+        }
         $id = $current->getConfigurationId($date);
 
         if(array_key_exists($id, $this->configurations)) {
