@@ -4,6 +4,37 @@ ODG=igpatlantique
 
 . bin/config.inc
 
+echo "Using database http://$COUCHHOST:$COUCHPORT/$COUCHBASE"
+
+DATA_DIR=$WORKINGDIR/import/igp/imports/$ODG
+mkdir -p $DATA_DIR 2> /dev/null
+
+if test "$1" = "--delete"; then
+
+    echo -n "Delete database http://$COUCHHOST:$COUCHPORT/$COUCHBASE, type database name to confirm ($COUCHBASE) : "
+    read databasename
+
+    if test "$databasename" = "$COUCHBASE"; then
+        curl -sX DELETE http://$COUCHHOST:$COUCHPORT/$COUCHBASE
+        echo "Suppression de la base couchdb"
+    fi
+fi
+
+echo "Création de la base couchdb"
+
+curl -sX PUT http://$COUCHHOST:$COUCHPORT/$COUCHBASE
+
+cd .. > /dev/null
+make clean > /dev/null
+make couchurl=http://$COUCHHOST:$COUCHPORT/$COUCHBASE > /dev/null
+cd - > /dev/null
+
+echo "Création des documents de configuration"
+
+ls $WORKINGDIR/data/configuration/$ODG | while read jsonFile
+do
+    curl -s -X POST -d @data/configuration/$ODG/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
+done
 
 xlsx2csv -s 4 -d ';' $TMPDIR/FICHIER_IGP_ATLANTIQUE_2025-2026-1.xlsx $TMPDIR/f4.csv
 xlsx2csv -s 5 -d ';' $TMPDIR/FICHIER_IGP_ATLANTIQUE_2025-2026-1.xlsx $TMPDIR/f5.csv
