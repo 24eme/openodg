@@ -9,7 +9,7 @@ class ParcellaireIrrigableDeclaration extends BaseParcellaireIrrigableDeclaratio
     public function getParcellesByCommune() {
         $parcelles = array();
 
-        foreach($this->getDocument()->getParcelles() as $parcelle) {
+        foreach($this->getParcelles() as $parcelle) {
             if(!isset($parcelles[$parcelle->commune])) {
                 $parcelles[$parcelle->commune] = array();
             }
@@ -17,6 +17,17 @@ class ParcellaireIrrigableDeclaration extends BaseParcellaireIrrigableDeclaratio
         }
 
         ksort($parcelles);
+        return $parcelles;
+    }
+
+    public function getParcelles() {
+        $parcelles = array();
+        foreach($this as $produit) {
+            foreach ($produit->detail as $parcelle) {
+                $parcelles[$parcelle->getParcelleId()] = $parcelle;
+            }
+        }
+
         return $parcelles;
     }
 }
