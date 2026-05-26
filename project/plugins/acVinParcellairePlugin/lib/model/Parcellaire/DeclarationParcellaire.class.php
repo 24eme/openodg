@@ -15,18 +15,11 @@ class DeclarationParcellaire extends acCouchdbDocument {
 
     public function getParcelles($hashproduitFilter = null) {
         $parcelles = [];
-        if ($this->declaration && count($this->declaration)) {
-            foreach ($this->declaration as $hash => $produit) {
-                if ($hashproduitFilter && strpos($hashproduitFilter, '/') !== false && strpos($hash, $hashproduitFilter) === false) {
-                    continue;
-                }
-                foreach ($produit->detail as $parcelle) {
-                    if (isset($parcelles[$parcelle->getHash()])) {
-                        throw new sfException('parcelleid '.$parcelle->getHash().' already exists');
-                    }
-                    $parcelles[$parcelle->getHash()] = $parcelle;
-                }
+        if ($this->declaration && count($this->declaration)) foreach ($this->declaration->getParcelles($hashproduitFilter) as $p) {
+            if (isset($parcelles[$p->getHash()])) {
+                throw new sfException('parcelleid '.$p->getParcelleId().' already exists');
             }
+            $parcelles[$p->getHash()] = $p;
         }
         return $parcelles;
     }
