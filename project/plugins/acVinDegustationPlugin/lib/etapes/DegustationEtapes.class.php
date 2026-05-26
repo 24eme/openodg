@@ -132,6 +132,17 @@ class DegustationEtapes extends Etapes {
             unset($items[self::ETAPE_PRELEVEMENTS]);
         }
 
+        if (DegustationConfiguration::getInstance()->isDegustationExternalisee()) {
+            unset($items[self::ETAPE_DEGUSTATEURS]);
+            unset($items[self::ETAPE_CONVOCATIONS]);
+            unset($items[self::ETAPE_PRELEVEMENTS]);
+            unset($items[self::ETAPE_ORGANISATION]);
+            unset($items[self::ETAPE_TOURNEES]);
+            unset($items[self::ETAPE_ANONYMISATION_MANUELLE]);
+            unset($items[self::ETAPE_ANONYMATS]);
+            unset($items[self::ETAPE_TABLES]);
+        }
+
         return $items;
     }
 
