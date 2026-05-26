@@ -18,4 +18,3 @@ all:
       anonymisation_format: %s%02d
       has_degustateurs_prerempli: false
       has_degustateur_par_region: false
-      is_externalisee: false

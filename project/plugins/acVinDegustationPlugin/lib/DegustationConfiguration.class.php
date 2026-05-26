@@ -142,8 +142,4 @@ class DegustationConfiguration {
     {
         return isset($this->configuration['has_degustateur_par_region']) && $this->configuration['has_degustateur_par_region'];
     }
-
-    public function isDegustationExternalisee() {
-        return $this->configuration['is_externalisee'];
-    }
 }
