@@ -9,7 +9,7 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
     public function getParcellesByCommune($onlyAffectee = true, $hashproduitFilter = null) {
         $parcelles = array();
 
-        foreach($this->getDocument()->getParcelles($hashproduitFilter) as $hash => $parcelle) {
+        foreach($this->getParcelles($hashproduitFilter) as $hash => $parcelle) {
             if ($onlyAffectee && !$parcelle->affectee) {
                 continue;
             }
@@ -64,6 +64,19 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
           }
         }
         ksort($parcelles);
+        return $parcelles;
+    }
+
+    public function getParcelles($hashproduitFilter = null) {
+        $parcelles = array();
+        foreach($this as $keyProduit => $produit) {
+            if ($hashproduitFilter && strpos($hashproduitFilter, '/') !== false && strpos($keyProduit, $hashproduitFilter) === false) {
+                continue;
+            }
+            foreach ($produit->detail as $parcelle) {
+                $parcelles[$parcelle->getHash()] = $parcelle;
+            }
+        }
         return $parcelles;
     }
 

@@ -82,6 +82,17 @@
                        "Degustation"
                    ],
                    "callback": "buildMouvementsNbLotsDegustes"
+               },
+               "lots_2nd_passage": {
+                   "modele": "Cotisation",
+                   "prix": 10,
+                   "tva": 0.2,
+                   "libelle": "2nd passage - N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "Degustation"
+                   ],
+                   "callback": "buildMouvementsFacturesLotRedeguste"
                }
            }
        },
