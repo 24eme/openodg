@@ -135,6 +135,9 @@ class controleActions extends sfActions
 
     public function executeAppOrga(sfWebRequest $request)
     {
+        ini_set('memory_limit', '512M');
+        set_time_limit(60);
+
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->json = json_encode($this->getDataControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
@@ -143,6 +146,9 @@ class controleActions extends sfActions
 
     public function executeAppTerrain(sfWebRequest $request)
     {
+        ini_set('memory_limit', '512M');
+        set_time_limit(60);
+
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->json = json_encode($this->getDataControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
