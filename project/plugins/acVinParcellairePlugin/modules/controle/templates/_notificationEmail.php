@@ -2,7 +2,12 @@
 <?php use_helper('Date') ?>
 Bonjour,
 
-Suite au contrôle de votre exploitation, veuillez en trouver ci-joint le compte rendu.
+Suite au contrôle de votre exploitation, vous pouvez télécharger le document suivant : <a href="<?php echo url_for('controle_pdf_auth', [ 'id' => $controle->_id,
+    'auth' => UrlSecurity::generateAuthKey($controle->_id)
+], true) ?>"><?php echo url_for('controle_pdf_auth', [
+    'id' => $controle->_id,
+    'auth' => UrlSecurity::generateAuthKey($controle->_id)
+], true) ?></a>
 
 Le potentiel de production devra être respecté pour la prochaine récolte.
 

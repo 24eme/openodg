@@ -274,19 +274,58 @@ class controleActions extends sfActions
 
     public function executeManquementPdf(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $this->controle = $this->getRoute()->getControle();
         $this->document = new ExportControleManquementPDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
         return $this->executePdf($request);
     }
 
     public function executeExportControlePdf(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $this->controle = $this->getRoute()->getControle();
         $this->document = new ExportControlePDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
         return $this->executePdf($request);
     }
 
-    public function executePDF(sfWebRequest $request) {
+    public function executePdfAuth(sfWebRequest $request)
+    {
+        $this->controle = $this->getRoute()->getControle();
+        if (!UrlSecurity::verifyAuthKey($request->getParameter('auth'), $this->controle->_id)) {
+            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+        }
+        set_time_limit(180);
+
+        $this->document_controle = new ExportControlePDF($this->controle, $this->controle->identifiant);
+        $this->document_controle->setPartialFunction(array($this, 'getPartial'));
+        $this->document_controle->generate();
+        $this->document_controle->output();
+
+        $tmpfilecontrole = tempnam(sys_get_temp_dir(), "controle");
+        file_put_contents($tmpfilecontrole, $this->document_controle->output());
+
+        $this->document_manquements = new ExportControleManquementPDF($this->controle, $this->controle->identifiant);
+        $this->document_manquements->setPartialFunction(array($this, 'getPartial'));
+        $this->document_manquements->generate();
+        $this->document_manquements->output();
+
+        $tmpfilemanquements = tempnam(sys_get_temp_dir(), "manquement");
+        file_put_contents($tmpfilemanquements, $this->document_manquements->output());
+
+        $tmpfileconcat = tempnam(sys_get_temp_dir(), "concat");
+        shell_exec(sprintf("pdftk %s %s cat output %s", $tmpfilecontrole, $tmpfilemanquements, $tmpfileconcat));
+
+        $response = $this->getResponse();
+        $response->setHttpHeader('Content-Type', 'application/pdf');
+        $response->setHttpHeader('Content-disposition', 'attachment; filename="'.$this->contrat->_id.'rapport_controle.pdf"');
+        $response->setHttpHeader('Content-Transfer-Encoding', 'binary');
+        $response->setHttpHeader('Content-Length', filesize($tmpfileconcat));
+        $response->setHttpHeader('Pragma', '');
+        $response->setHttpHeader('Cache-Control', 'public');
+        $response->setHttpHeader('Expires', '0');
+
+        return $this->renderText(file_get_contents($tmpfileconcat));
+    }
+
+    protected function executePDF(sfWebRequest $request) {
         set_time_limit(180);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
