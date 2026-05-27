@@ -271,6 +271,16 @@ controle_pdf:
   requirements:
     sf_method: [get, post]
 
+controle_pdf_auth:
+  url: /controle/:id/:auth/pdf
+  param: { module: controle, action: pdfAuth }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 controle_gestion_manquements:
   url: /controle/gestionmanquements
   param: { module: controle, action: gestionManquements }
