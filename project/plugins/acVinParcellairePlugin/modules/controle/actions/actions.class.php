@@ -308,22 +308,22 @@ class controleActions extends sfActions
 
     public function executeListingManquementsOperateur(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->sorted_manquements = $this->controle->getSortedManquementsActif();
     }
 
     public function executeClotureManquement(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->controle->manquements[$request->getParameter('id_manquement')]->cloture_date = date('Y-m-d');
         $this->controle->manquements[$request->getParameter('id_manquement')]->cloture_type = $request->getParameter('type', ControleClient::CONTROLE_CLOTURE_LEVER);
         $this->controle->save();
-        return $this->redirect('controle_liste_manquements_operateur', array('id_controle' => $this->controle->_id));
+        return $this->redirect('controle_liste_manquements_operateur', array('id' => $this->controle->_id));
     }
 
     public function executeMailPrevisualisation(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
 
         $this->date_tournee = $this->controle->date_tournee;
         $this->agent_identifiant = $this->controle->agent_identifiant;
@@ -336,7 +336,7 @@ class controleActions extends sfActions
 
     public function executeSetEnvoiMail(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $identifiant = $request->getParameter('identifiant');
         $mailto = $identifiant;
         $date = $request->getParameter('envoye', date('Y-m-d H:i:s'));
@@ -358,7 +358,7 @@ class controleActions extends sfActions
 
     public function executeMailToNotification(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $identifiant = $request->getParameter('identifiant');
 
         sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date', 'Partial'));

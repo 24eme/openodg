@@ -35,7 +35,7 @@
                   </div>
               </div>
               <div class="col-md-4">
-                  <a class="btn btn-primary" href="<?php echo url_for('controle_envoi_mail_resultats', array('id_controle' => $controle->_id, 'identifiant' => $controle->identifiant)); ?>">
+                  <a class="btn btn-primary" href="<?php echo url_for('controle_envoi_mail_resultats', array('id' => $controle->_id, 'identifiant' => $controle->identifiant)); ?>">
                       <i class="glyphicon glyphicon-envelope"></i>&nbsp;Envoyer par mail
                   </a>
               </div>
