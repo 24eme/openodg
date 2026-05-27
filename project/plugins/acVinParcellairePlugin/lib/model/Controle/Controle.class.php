@@ -600,7 +600,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
-    	return sfContext::getInstance()->getRouting()->generate('controle_liste_manquements_operateur', array('id_controle' => $id));
+        return sfContext::getInstance()->getRouting()->generate('controle_liste_manquements_operateur', array('id' => $id));
     }
 
     public static function getUrlGenerationCsvPiece($id, $admin = false) {
