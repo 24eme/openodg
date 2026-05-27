@@ -7,3 +7,4 @@ all:
         - NONCONFORME_MINEUR
         - NONCONFORME_MAJEUR
       has_notification: true
+      is_externalisee: true

@@ -509,7 +509,16 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsNotAnonymized();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_COMMISSION))) {
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_COMMISSION_INTERNE))) {
+            $this->degustation->save(false);
+          }
+    }
+
+    public function executeCommissionExterneEtape(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->redirectIfIsNotAnonymized();
+        $this->infosDegustation = $this->degustation->getInfosDegustation();
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_COMMISSION_EXTERNE))) {
             $this->degustation->save(false);
           }
     }
@@ -588,8 +597,11 @@ class degustationActions extends sfActions {
       $this->form->save();
 
       if($this->degustation->isAnonymized()) {
-
-        return $this->redirect('degustation_commission_etape', $this->degustation);
+        if (DegustationConfiguration::getInstance()->isDegustationExternalisee()) {
+            return $this->redirect('degustation_commission_externe_etape', $degustation);
+        } else {
+            return $this->redirect('degustation_commission_interne_etape', $degustation);
+        }
       }
 
       return $this->redirect('degustation_prelevements_etape', $this->degustation);
@@ -1153,7 +1165,11 @@ class degustationActions extends sfActions {
       $degustation = $this->getRoute()->getDegustation();
       $degustation->anonymize();
       $degustation->save();
-      return $this->redirect('degustation_commission_etape', $degustation);
+      if (DegustationConfiguration::getInstance()->isDegustationExternalisee()) {
+          return $this->redirect('degustation_commission_externe_etape', $degustation);
+      } else {
+          return $this->redirect('degustation_commission_interne_etape', $degustation);
+      }
     }
 
     public function executeDesanonymize(sfWebRequest $request){
