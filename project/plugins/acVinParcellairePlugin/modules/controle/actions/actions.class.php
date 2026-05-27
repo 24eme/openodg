@@ -195,6 +195,7 @@ class controleActions extends sfActions
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->controles = ControleClient::getInstance()->findAllByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant);
+        $this->mail_to_identifiant = $request->getParameter('mail_to_identifiant');
     }
 
     public function executeListeManquementsControle(sfWebRequest $request)
@@ -374,7 +375,7 @@ class controleActions extends sfActions
         $body = html_entity_decode(str_replace("\n", "%0A", strip_tags(get_partial('controle/notificationEmail', [
             'controle' => $this->controle,
             'identifiant' => $identifiant,
-            'agent' => CompteClient::getInstance()->find($controle->agent_identifiant),
+            'agent' => CompteClient::getInstance()->find($this->controle->agent_identifiant),
         ]))), ENT_QUOTES | ENT_XML1, 'UTF-8');
 
         $mailto = "mailto:$email?".$cc."subject=$subject&body=$body";
