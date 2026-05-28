@@ -970,12 +970,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                 // filtre sur produit
                 $match = $match && $this->produitFilter($filter, $chgtdenom);
             } elseif ($type === 'millesime') {
-                // filtre sur millesime
-                $isMillesimeCourant = ($this->changement_millesime == substr($this->getCampagneByDate(),0, 4));
-                if(strpos($filter, 'NOT') !== false) {
-                    $isMillesimeCourant = !$isMillesimeCourant;
-                }
-                $match = $match && $isMillesimeCourant;
+                $match = $match && $this->millesimeFilter($filter);
             } elseif ($type === 'origine') {
                 $match = $match && $this->origineFilter($filter);
             } elseif ($type === 'famille') {
@@ -1077,6 +1072,26 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $dateValidation = new DateTimeImmutable($this->validation);
 
         $result = $dateLimite >= $dateValidation;
+
+        if ($not) {
+            $result = ! $result;
+        }
+
+        return $result;
+    }
+
+    private function millesimeFilter($filter)
+    {
+        $not = strpos($filter, 'NOT') === 0;
+        $campagne = substr($this->getCampagneByDate(), 0, 4);
+
+        if (strpos($filter, '/courant') !== false) {
+            $result = $this->changement_millesime === $campagne;
+        }
+
+        if (strpos($filter, '/precedent') !== false) {
+            $result = $this->changement_millesime < $campagne;
+        }
 
         if ($not) {
             $result = ! $result;
