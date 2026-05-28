@@ -127,4 +127,4 @@ table, th, td {
         </tr>
     </thead>
 </table>
-<p style="text-align:right;">La signature de la présente déclaration signifie l'acceptation des constats effectués<?php if($controle->audit->operateur_signature): ?><br /><img style="height: 90px" src="<?php echo $controle->audit->operateur_signature; ?>" alt="" /><?php endif; ?></p>
+<p style="text-align:right;">Signature<?php if($controle->audit->operateur_signature): ?><br /><img style="height: 90px" src="<?php echo $controle->audit->operateur_signature; ?>" alt="" /><?php endif; ?></p>
