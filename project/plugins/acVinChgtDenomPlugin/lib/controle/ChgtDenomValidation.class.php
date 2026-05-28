@@ -11,7 +11,8 @@ class ChgtDenomValidation extends DocumentValidation
     public function __construct($document, $options = null)
     {
         $this->etablissement = $document->getEtablissementObject();
-        $lastDrev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($document->identifiant, $document->changement_millesime);
+        $periode = is_numeric($document->changement_millesime) ? $document->changement_millesime : strtok($document->campagne, '-');
+        $lastDrev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($document->identifiant, $periode);
         if($lastDrev) {
             $this->vip2c = VIP2C::gatherInformations($lastDrev, $lastDrev->getPeriode());
         } else {

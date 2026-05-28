@@ -72,7 +72,11 @@
       <?php if(!$degustation->isAnonymized()): ?>
        <a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_anonymize', $degustation) ?>" onclick="return confirm('Voulez-vous confirmer l\'anonymat?');" >&nbsp;Anonymiser&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
    <?php else : ?>
-      <a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_commission_etape', $degustation) ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+       <?php if (! DegustationConfiguration::getInstance()->isDegustationExternalisee()): ?>
+          <a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_commission_interne_etape', $degustation) ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+      <?php else: ?>
+          <a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_commission_externe_etape', $degustation) ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+      <?php endif; ?>
   <?php endif; ?>
   </div>
 </div>
