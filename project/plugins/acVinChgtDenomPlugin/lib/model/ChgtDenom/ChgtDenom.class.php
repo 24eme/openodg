@@ -993,16 +993,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     private function produitFilter($produitFilter = null, $chgtdenom = null)
     {
         $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
-        $produitFilter = preg_replace('/ *NOT same( |$)/', '', $produitFilter, -1, $hasExcludeSame);
         $produitExclude = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
         if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
             return false;
         }
         if($produitFilter && $produitExclude && preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
-            return false;
-        }
-        if ($hasExcludeSame && $chgtdenom->changement_produit_hash == $chgtdenom->origine_produit_hash) {
             return false;
         }
         return true;
@@ -1059,6 +1055,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         });
 
         $found = count($matches) > 0;
+
+        if (strpos($filter, '/same') !== false) {
+            $same = $this->origine_produit_hash === $this->changement_produit_hash;
+            $found = $found && $same;
+        }
 
         if ($not) {
             $found = ! $found;
