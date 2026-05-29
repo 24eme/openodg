@@ -120,7 +120,7 @@ class ControleClient extends acCouchdbClient
         $ret = array();
         foreach ($this->findAll() as $c) {
             if ($c->date_tournee === $date_tournee && $c->agent_identifiant === $agent_identifiant) {
-                $ret[] = $c;
+                $ret[$c->identifiant] = $c;
             }
         }
         return $ret;
