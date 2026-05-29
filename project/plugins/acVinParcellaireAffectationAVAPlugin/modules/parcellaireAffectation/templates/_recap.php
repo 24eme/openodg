@@ -29,7 +29,12 @@ if ($last) {
                             <th class="col-xs-4 text-center">Appellation</th>
                             <th class="col-xs-2 text-center">Commune</th>
                             <th class="col-xs-1 text-center">Section / Numéro</th>
-                            <th class="col-xs-2 text-center">Lieu-dit revendiqué</th>
+                            <th class="col-xs-2 text-center">Lieu-dit revendiqué
+                                <?php if(is_object($appellation) && (strpos($appellation->getHash(), 'CREMANT') === null || strpos($appellation->getHash(), 'CREMANT') === false)  && strpos($appellation->getHash(), 'LIEUDIT')): ?>
+                                    <p class="small text-muted" style="margin:0;">Lieu-dit cadastral</p>
+                                <?php endif; ?>
+                            </th>
+
                             <th class="col-xs-2 text-center">Cépage</th>
                             <th class="col-xs-1 text-center">Superficie</th>
                         </tr>
@@ -52,7 +57,10 @@ if ($last) {
                                     <?php echo $detail->getSection(); ?> <?php echo $detail->getNumeroParcelle(); ?>
                                 </td>
                                 <td>
-                                    <?php echo $detail->getLieuLibelle(); ?>
+                                    <?php echo $detail->getLieuLibelle() ? $detail->getLieuLibelle() : '<p style="margin:0;"> - </p>'; ?>
+                                    <?php if($detail->getLieuDitCadastral() && strpos($detail->getProduitHash(), 'LIEUDIT')) : ?>
+                                        <p class="small text-muted" style="margin:0;"><?php echo $detail->getLieuDitCadastral() ?></p>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <?php echo $detail->getCepageLibelle();  ?>

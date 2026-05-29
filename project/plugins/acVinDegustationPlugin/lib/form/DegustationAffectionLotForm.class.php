@@ -59,17 +59,21 @@ class DegustationAffectionLotForm extends BaseForm
 
         $lot = $degustation->getLot($lot->unique_id);
         $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
-        if ($values['preleve']  && in_array($degustation->etape,array(DegustationEtapes::ETAPE_PRELEVEMENTS,DegustationEtapes::ETAPE_TABLES,DegustationEtapes::ETAPE_ANONYMATS,DegustationEtapes::ETAPE_COMMISSION)) ){
+        if ($values['preleve']  && in_array($degustation->etape,array(DegustationEtapes::ETAPE_PRELEVEMENTS,DegustationEtapes::ETAPE_TABLES,DegustationEtapes::ETAPE_ANONYMATS,DegustationEtapes::ETAPE_COMMISSION_INTERNE,DegustationEtapes::ETAPE_COMMISSION_EXTERNE)) ){
            $lot->setIsPreleve();
         }
 
-        if ($values['numero_table'] && in_array($degustation->etape, array(DegustationEtapes::ETAPE_TABLES,DegustationEtapes::ETAPE_ANONYMATS,DegustationEtapes::ETAPE_COMMISSION)) ) {
+        if ($values['numero_table'] && in_array($degustation->etape, array(DegustationEtapes::ETAPE_TABLES,DegustationEtapes::ETAPE_ANONYMATS,DegustationEtapes::ETAPE_COMMISSION_INTERNE,DegustationEtapes::ETAPE_COMMISSION_EXTERNE)) ) {
           $lot->setNumeroTable($values['numero_table']);
         }
 
         if ($degustation->isAnonymized()) {
-            $key = $degustation->getNbLotsPreleves() + 1;
-            $lot->anonymize($key);
+            if (DegustationConfiguration::getInstance()->isDegustationExternalisee()) {
+                $lot->anonymizeForDegustationExternalisee();
+            } else {
+                $key = $degustation->getNbLotsPreleves() + 1;
+                $lot->anonymize($key);
+            }
         }
 
         $degustation->save();
