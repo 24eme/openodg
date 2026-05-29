@@ -84,7 +84,7 @@ class DegustationLot extends BaseDegustationLot {
 
     public function anonymizeForDegustationExternalisee()
     {
-        $this->numero_anonymat = sprintf(DegustationConfiguration::getInstance()->getFormatAnonymat(), 'A', $this->numero_archive);
+        $this->numero_anonymat = sprintf(DegustationConfiguration::getInstance()->getFormatAnonymat(), $this->getNumeroTableStr(), $this->numero_archive);
     }
 
     public function setNumeroAnonymat($numero) {
