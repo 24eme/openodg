@@ -39,7 +39,7 @@ class ParcellaireIrrigueProduitsForm extends acCouchdbObjectForm {
     	} else {
     		$this->getObject()->validate();
     	}
-        $parcelles = $this->getObject()->getParcelles();
+        $parcelles = $this->getObject()->getDeclarationParcelles();
         $object = $this->getObject();
         foreach ($values as $pid => $items) {
             if (!isset($parcelles[$pid])) {
