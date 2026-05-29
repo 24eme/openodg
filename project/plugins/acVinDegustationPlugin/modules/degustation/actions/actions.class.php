@@ -108,9 +108,13 @@ class degustationActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-
         $this->form->save();
 
+        if (DegustationConfiguration::getInstance()->isDegustationExternalisee() && $request->getParameter('force_interne') != true) {
+            $this->degustation->simulateEtapes();
+            $this->degustation->save();
+            return ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_ANONYMATS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
+        }
         return ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_LOTS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
     }
 
