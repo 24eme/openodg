@@ -133,7 +133,12 @@ class DeclarationClient
           return 'ExportAdelpheCSV';
         }
 
-        if (class_exists('CourrierClient') && $type = CourrierClient::TYPE_MODEL) {
+        if (class_exists('DRaPClient') && $type == DRaPClient::TYPE_MODEL) {
+
+            return 'ExportDRaPCSV';
+        }
+
+        if (class_exists('CourrierClient') && $type == CourrierClient::TYPE_MODEL) {
 
             return 'ExportCourrierCSV';
         }

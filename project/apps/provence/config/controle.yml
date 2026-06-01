@@ -21,7 +21,7 @@ all:
         DI:
           libelle: DI
           constats:
-            RTM001:
+            RTM001_DI:
               libelle: Déclaration ou document d’identification erroné(e)
               types:
                 - habilitation
@@ -71,7 +71,7 @@ all:
         H_DI:
           libelle: H DI
           constats:
-            RTM001:
+            RTM001_H_DI:
               libelle: Déclaration ou document d’identification erroné(e)
               types:
                 - habilitation
@@ -85,7 +85,7 @@ all:
         aire_parcellaire_delimitee:
           libelle: Aire parcellaire délimitée
           constats:
-            RTM018:
+            RTM018_AIRE_PARCELLAIRE_DELIMITEE:
               libelle: Cas de certaines parcelles hors de l’aire
               types:
                 - Habilitation
@@ -96,7 +96,7 @@ all:
               delais: /
               terrain: false
               documentaire: true
-            RTM020:
+            RTM020_AIRE_PARCELLAIRE_DELIMITEE:
               libelle: Fiche CVI non tenue à jour ou erronée
               types:
                 - Habilitation
@@ -131,7 +131,7 @@ all:
               delais: NA
               terrain: false
               documentaire: true
-            RTM017:
+            RTM017_AIRE_PARCELLAIRE_DELIMITEE:
               libelle: Totalité des parcelles hors de l’aire parcellaire délimitée
               types:
                 - Habilitation
@@ -160,7 +160,7 @@ all:
         densite_de_plantation:
           libelle: Densité de plantation
           constats:
-            RTM033:
+            RTM033_DENSITE_DE_PLANTATION:
               libelle: Aucune parcelle ne respectant la densité (dont écartement)
               types:
                 - Habilitation
@@ -171,7 +171,7 @@ all:
               delais: NA
               terrain: false
               documentaire: true
-            RTM034:
+            RTM034_DENSITE_DE_PLANTATION:
               libelle: Certaines parcelles ne respectant pas la densité (dont écartement)
               types:
                 - Habilitation
@@ -212,7 +212,7 @@ all:
         encepagement:
           libelle: Encépagement
           constats:
-            RTM027:
+            RTM027_ENCEPAGEMENT:
               libelle: Aucune parcelle ne respectant l’encépagement
               types:
                 - Habilitation
@@ -223,7 +223,7 @@ all:
               delais: NA
               terrain: true
               documentaire: false
-            RTM028:
+            RTM028_ENCEPAGEMENT:
               libelle: Certaines parcelles ne respectant pas l’encépagement
               types:
                 - Habilitation
@@ -326,7 +326,7 @@ all:
         fiche_cvi:
           libelle: Fiche CVI
           constats:
-            RTM022:
+            RTM022_FICHE_CVI:
               libelle: Non tenue à jour avec prise en compte de l’erreur
               types:
                 - Habilitation
@@ -349,7 +349,7 @@ all:
               delais: 1 mois
               terrain: false
               documentaire: true
-            RTM024:
+            RTM024_FICHE_CVI:
               libelle: Non tenue à jour SANS prise en compte de l’erreur
               types:
                 - Habilitation
@@ -375,7 +375,7 @@ all:
         h_aire_parcellaire_delimitee:
           libelle: H Aire parcellaire délimitée
           constats:
-            RTM017:
+            RTM017_H_AIRE_PARCELLAIRE_DELIMITEE:
               libelle: Totalité des parcelles hors de l’aire parcellaire délimitée
               types:
                 - Habilitation
@@ -386,7 +386,7 @@ all:
               delais: ""
               terrain: false
               documentaire: true
-            RTM018:
+            RTM018_H_AIRE_PARCELLAIRE_DELIMITEE:
               libelle: Cas de certaines parcelles hors de l’aire
               types:
                 - Habilitation
@@ -397,7 +397,7 @@ all:
               delais: Vérification de la revendication 2025
               terrain: false
               documentaire: true
-            RTM020:
+            RTM020_H_AIRE_PARCELLAIRE_DELIMITEE:
               libelle: Fiche CVI non tenue à jour ou erronée
               types:
                 - Habilitation
@@ -411,7 +411,7 @@ all:
         h_densite_de_plantation:
           libelle: H Densité de plantation
           constats:
-            RTM033:
+            RTM033_H_DENSITE_DE_PLANTATION:
               libelle: Aucune parcelle ne respectant la densité (dont écartement)
               types:
                 - Habilitation
@@ -422,7 +422,7 @@ all:
               delais: ""
               terrain: true
               documentaire: false
-            RTM034:
+            RTM034_H_DENSITE_DE_PLANTATION:
               libelle: Certaines parcelles ne respectant pas la densité (dont écartement)
               types:
                 - Habilitation
@@ -436,7 +436,7 @@ all:
         h_encepagement:
           libelle: H Encépagement
           constats:
-            RTM027:
+            RTM027_H_ENCEPAGEMENT:
               libelle: Aucune parcelle ne respectant l’encépagement
               types:
                 - Habilitation
@@ -447,7 +447,7 @@ all:
               delais: ""
               terrain: true
               documentaire: false
-            RTM028:
+            RTM028_H_ENCEPAGEMENT:
               libelle: Certaines parcelles ne respectant pas l’encépagement
               types:
                 - Habilitation
@@ -461,7 +461,7 @@ all:
         h_fiche_cvi:
           libelle: H Fiche CVI
           constats:
-            RTM022:
+            RTM022_H_FICHE_CVI:
               libelle: Non tenue à jour avec prise en compte de l’erreur
               types:
                 - Habilitation
@@ -472,7 +472,7 @@ all:
               delais: 1 mois
               terrain: false
               documentaire: true
-            RTM024:
+            RTM024_H_FICHE_CVI:
               libelle: Non tenue à jour SANS prise en compte de l’erreur
               types:
                 - Habilitation
@@ -486,7 +486,7 @@ all:
         h_operateur:
           libelle: H Opérateur
           constats:
-            RTM005:
+            RTM005_H_OPERATEUR:
               libelle: Document requis absent, incomplet ou non mis à jour
               types:
                 - Habilitation
@@ -500,7 +500,7 @@ all:
         h_realisation_des_controles:
           libelle: H Réalisation des contrôles
           constats:
-            RTM011:
+            RTM011_H_REALISATION_DES_CONTROLES:
               libelle: Absence de réalisation du contrôle
               types:
                 - Habilitation
@@ -511,10 +511,10 @@ all:
               delais: ""
               terrain: false
               documentaire: true
-        h_regles_de_proportion_a _lexploitation:
+        h_regles_de_proportion_a_lexploitation:
           libelle: H Règles de proportion à l’exploitation
           constats:
-            RTM030:
+            RTM030_H_REGLES:
               libelle: Outil de production ne permettant pas le respect des règles de proportion à l’exploitation
               types:
                 - Habilitation
@@ -600,7 +600,7 @@ all:
         operateur:
           libelle: Opérateur
           constats:
-            RTM005:
+            RTM005_OPERATEUR:
               libelle: Document requis absent, incomplet ou non mis à jour
               types:
                 - Habilitation
@@ -653,7 +653,7 @@ all:
         realisation_des_controles:
           libelle: Réalisation des contrôles
           constats:
-            RTM011:
+            RTM011_REALISATION_DES_CONTROLES:
               libelle: Absence de réalisation du contrôle
               types:
                 - Habilitation
@@ -799,7 +799,7 @@ all:
         regles_de_proportion_a_lexploitation:
           libelle: Règles de proportion à l’exploitation
           constats:
-            RTM030:
+            RTM030_REGLES:
               libelle: Outil de production ne permettant pas le respect des règles de proportion à l’exploitation
               types:
                 - Habilitation

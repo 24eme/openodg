@@ -47,6 +47,9 @@ class Parcellaire extends BaseParcellaire {
 
     public function initDoc($identifiant, $date, $type = ParcellaireClient::TYPE_COUCHDB) {
         $this->identifiant = $identifiant;
+        if (strpos($date, '-') === false) {
+            throw new sfException('wrong date format y-m-d: '.$date);
+        }
         $this->date = $date;
         $this->campagne = ConfigurationClient::getInstance()->buildCampagne($date);
         $this->set('_id', ParcellaireClient::TYPE_COUCHDB."-".$identifiant."-".str_replace('-', '', $date));
@@ -422,7 +425,9 @@ class Parcellaire extends BaseParcellaire {
             $this->cache_geojson = json_decode($import);
             $parcelles = $this->getParcellesByIdu();
             foreach ($this->cache_geojson->features as $feature) {
-                $feature->properties->parcellaires = array_map(function($item) {return $item->toJson();}, $parcelles[$feature->properties->id]);
+                if (isset($parcelles[$feature->properties->id]) && $parcelles[$feature->properties->id]) {
+                    $feature->properties->parcellaires = array_map(function($item) {return $item->toJson();}, $parcelles[$feature->properties->id]);
+                }
             }
         }
         return $this->cache_geojson;

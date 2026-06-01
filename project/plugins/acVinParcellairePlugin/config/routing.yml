@@ -153,11 +153,17 @@ parcellaire_export_geojson:
 controle_index:
   url: /controles
   param: { module: controle, action: index }
+  class: ControleGeneralRoute
+
+controle_aplanifier:
+  url: /controles/aplanifier
+  param: { module: controle, action: aplanifier }
+  class: ControleGeneralRoute
 
 controle_operateur:
   url: /controles/:identifiant
   param: { module: controle, action: operateur }
-  class: EtablissementRoute
+  class: ControleDeclarantRoute
   options:
     model:    Etablissement
     type:     object
@@ -166,25 +172,13 @@ controle_etablissement_selection:
   url: /controles-etablissement-selection
   param: { module: controle, action: etablissementSelection }
 
-
-
 controle_nouveau:
   url: /controle/nouveau/:identifiant
   param: { module: controle, action: nouveau }
-  class: EtablissementRoute
+  class: ControleDeclarantRoute
   options:
     model:    Etablissement
     type:     object
-
-controle_parcelles:
-  url: /controle/:id/parcelles
-  param: { module: controle, action: parcelles }
-  class: ControleRoute
-  options:
-    model:    Controle
-    type:     object
-  requirements:
-    sf_method: [get, post]
 
 controle_saveinlocalstorage:
   url: /controle/:id/saveinlocalstorage
@@ -207,6 +201,7 @@ controle_set_date_tournee:
 controle_appterrain:
   url: /controle/appterrain/:date/:agent_identifiant
   param: { module: controle, action: appTerrain }
+  class: ControleGeneralRoute
 
 controle_apporga_save:
   url: /controle/apporga/save
@@ -215,14 +210,22 @@ controle_apporga_save:
 controle_apporga:
   url: /controle/apporga/:date/:agent_identifiant
   param: { module: controle, action: appOrga }
+  class: ControleGeneralRoute
 
 controle_liste_operateur_tournee:
   url: /controle/listeoperateur/:date/:agent_identifiant
   param: { module: controle, action: listeOperateursTournee}
+  class: ControleGeneralRoute
 
 controle_liste_manquements_controle:
   url: /controle/:id/manquements
   param: { module:controle, action: listeManquementsControle}
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 controle_transmission_data:
   url: /controle/transmit
@@ -231,39 +234,104 @@ controle_transmission_data:
 controle_update_manquements:
   url: /controle/:id/manquements/update
   param: { module: controle, action: updateManquements }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 controle_ajout_liste_manquements:
   url: /controle/:id/manquements/ajout
   param: { module: controle, action: listeAjoutManquementsControle}
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 controle_pdf_manquements:
   url: /controle/:id/manquement/pdf
   param: { module: controle, action: manquementPdf }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 controle_pdf:
-  url: /controle/:id/pdf
+  url: /controle/:id/controle/pdf
   param: { module: controle, action: exportControlePdf }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+controle_pdf_auth:
+  url: /controle/:id/:auth/pdf
+  param: { module: controle, action: pdfAuth }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 controle_gestion_manquements:
   url: /controle/gestionmanquements
   param: { module: controle, action: gestionManquements }
+  class: ControleGeneralRoute
 
 controle_liste_manquements_operateur:
-  url: /controle/:id_controle/manquements/liste
+  url: /controle/:id/manquements/liste
   param: { module: controle, action: listingManquementsOperateur }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
-controle_lever_manquement:
-  url: /controle/:id_controle/manquement/:id_manquement/lever
-  param: { module: controle, action: leverManquement }
+controle_cloture_manquement:
+  url: /controle/:id/manquement/:id_manquement/cloture
+  param: { module: controle, action: clotureManquement }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 controle_mail_resultats_previsualisation:
-  url: /controle/:id_controle/mail-previsualisation
+  url: /controle/:id/mail-previsualisation
   param: { module: controle, action: mailPrevisualisation }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 controle_envoi_mail_resultats:
-  url: /controle/:id_controle/:identifiant/envoi-mail
+  url: /controle/:id/:identifiant/envoi-mail
   param: { module: controle, action: setEnvoiMail }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 controle_mail_to_resultats:
-  url: /controle/:id_controle/:identifiant/mail_to_resultat
+  url: /controle/:id/:identifiant/mail_to_resultat
   param: { module: controle, action: mailToNotification }
+  class: ControleRoute
+  options:
+    model:    Controle
+    type:     object
+  requirements:
+    sf_method: [get, post]

@@ -186,7 +186,8 @@ class FactureClient extends acCouchdbClient {
                 continue;
             }
 
-            $templates[] = TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($campagne, strtoupper(sfConfig::get('app_region', sfConfig::get('sf_app'))));
+            $r = $region ?: strtoupper(sfConfig::get('app_region', sfConfig::get('sf_app')));
+            $templates[] = TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($campagne, $r);
         }
         $templates = array_unique($templates);
 

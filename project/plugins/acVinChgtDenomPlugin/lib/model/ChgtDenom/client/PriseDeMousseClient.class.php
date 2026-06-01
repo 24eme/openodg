@@ -42,12 +42,15 @@ class PriseDeMousseClient extends ChgtDenomClient {
     public function getLotsAvailable($identifiant) {
         $lots = array();
         $lots_filtre = array();
-        foreach (MouvementLotView::getInstance()->getByIdentifiant($identifiant, Lot::STATUT_CONFORME)->rows as $row_lot) {
-            if (strpos($row_lot->value->produit_hash, '/VDB/') === false) {
-                continue;
+            foreach (MouvementLotView::getInstance()->getByIdentifiant($identifiant, Lot::STATUT_CHANGEABLE)->rows as $row_lot) {
+            if ($row_lot->value->statut == Lot::STATUT_CONFORME) {
+                if (strpos($row_lot->value->produit_hash, '/VDB/') === false) {
+                    continue;
+                }
+                $lots[$row_lot->value->unique_id] = $row_lot->value;
+                $lots[$row_lot->value->unique_id]->type_document = substr($row_lot->value->id_document, 0, 4);
             }
-            $lots[$row_lot->value->unique_id] = $row_lot->value;
-            $lots[$row_lot->value->unique_id]->type_document = substr($row_lot->value->id_document, 0, 4);
+
         }
 
         if($campagne){

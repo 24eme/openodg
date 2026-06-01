@@ -66,6 +66,7 @@ class ExportControlePDF extends ExportPDF {
         }
 
         $this->printable_document->addPage($this->getPartial('controle/controlePdf', array('controle' => $this->controle, 'parcellaire' => $this->parcellaire, 'ppproduits' => $ppproduits, 'hasVIFA' => $hasVIFA, 'dgc' => $dgc, 'manquant' => $manquant)));
+        $this->printable_document->addPage($this->getPartial('controle/annexePdf', array('controle' => $this->controle, 'parcellaire' => $this->parcellaire)));
     }
 
 

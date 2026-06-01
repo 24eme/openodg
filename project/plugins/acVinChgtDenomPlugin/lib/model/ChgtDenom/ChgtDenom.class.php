@@ -346,8 +346,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function getDegustationVMQ() {
-        $doc = acCouchdbManager::getClient()->find($this->lots[1]->id_document_affectation);
-        $lot = $doc->getLotByNumArchive($doc->lots[0]->numero_archive);
+        if ($this->lots[1]->id_document_affectation !== null) {
+            $doc = acCouchdbManager::getClient()->find($this->lots[1]->id_document_affectation);
+            $lot = $doc->getLotByNumArchive($doc->lots[0]->numero_archive);
+        } else {
+            $lot = null;
+        }
         return $lot;
     }
 
@@ -966,12 +970,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                 // filtre sur produit
                 $match = $match && $this->produitFilter($filter, $chgtdenom);
             } elseif ($type === 'millesime') {
-                // filtre sur millesime
-                $isMillesimeCourant = ($this->changement_millesime == substr($this->getCampagneByDate(),0, 4));
-                if(strpos($filter, 'NOT') !== false) {
-                    $isMillesimeCourant = !$isMillesimeCourant;
-                }
-                $match = $match && $isMillesimeCourant;
+                $match = $match && $this->millesimeFilter($filter);
             } elseif ($type === 'origine') {
                 $match = $match && $this->origineFilter($filter);
             } elseif ($type === 'famille') {
@@ -989,16 +988,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     private function produitFilter($produitFilter = null, $chgtdenom = null)
     {
         $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
-        $produitFilter = preg_replace('/ *NOT same( |$)/', '', $produitFilter, -1, $hasExcludeSame);
         $produitExclude = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
         if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
             return false;
         }
         if($produitFilter && $produitExclude && preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
-            return false;
-        }
-        if ($hasExcludeSame && $chgtdenom->changement_produit_hash == $chgtdenom->origine_produit_hash) {
             return false;
         }
         return true;
@@ -1056,6 +1051,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
         $found = count($matches) > 0;
 
+        if (strpos($filter, '/same') !== false) {
+            $same = $this->origine_produit_hash === $this->changement_produit_hash;
+            $found = $found && $same;
+        }
+
         if ($not) {
             $found = ! $found;
         }
@@ -1072,6 +1072,26 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $dateValidation = new DateTimeImmutable($this->validation);
 
         $result = $dateLimite >= $dateValidation;
+
+        if ($not) {
+            $result = ! $result;
+        }
+
+        return $result;
+    }
+
+    private function millesimeFilter($filter)
+    {
+        $not = strpos($filter, 'NOT') === 0;
+        $campagne = substr($this->getCampagneByDate(), 0, 4);
+
+        if (strpos($filter, '/courant') !== false) {
+            $result = $this->changement_millesime === $campagne;
+        }
+
+        if (strpos($filter, '/precedent') !== false) {
+            $result = $this->changement_millesime < $campagne;
+        }
 
         if ($not) {
             $result = ! $result;

@@ -1,4 +1,4 @@
-<h3 class="mt-0"><span class="glyphicon glyphicon-th-list"></span> {{ libelleTournee() }} <RouterLink :to="{ name: 'map' }" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink><span class="pull-right mr-3" :class="$root.isSynchro ? 'glyphicon glyphicon-floppy-saved' : 'glyphicon glyphicon-floppy-remove'" :style="$root.isSynchro ? 'color: #8da42a' : 'color: #aaaaaa'"></span></h3>
+<h3 class="mt-0"><span class="glyphicon glyphicon-th-list"></span> {{ libelleTournee() }} <RouterLink :to="{ name: 'map' }" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink><span class="pull-right mr-3" :class="savedClass" :style="savedStyle"></span></h3>
 <hr class="mt-2" />
 
 <h2>Opérateurs à contrôler</h2>
@@ -7,7 +7,7 @@
     <RouterLink v-for="(controle, index) in filteredControles" :key="controle._id" :to="{ name: 'operateur', params: { id: controle._id } }" class="list-group-item" :class="{ 'list-group-item-success': controle.audit.saisie == 1 && controle.validation == true }">
         <div class="row">
             <div class="col-xs-2 col-md-1" style="font-size: 20px;">
-                <strong>{{ (10 + index) }}:00</strong>
+                <strong>{{ controle.heure_tournee }}</strong>
             </div>
             <div class="col-xs-8 col-md-9">
                 <h4 class="list-group-item-heading">{{ controle.declarant.nom }}  <small>{{ controle.declarant.cvi }}</small></h4>
