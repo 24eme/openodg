@@ -1,0 +1,192 @@
+{
+   "_id": "TEMPLATE-FACTURE-2026",
+   "type": "TemplateFacture",
+   "campagne": "2026",
+   "template": "IGP",
+   "libelle": "2026 - IGPArdeche",
+   "docs": [
+       "DRev",
+       "ChgtDenom",
+       "Degustation",
+       "Conditionnement"
+   ],
+   "cotisations": {
+       "01_cotisationSyndicale": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation Syndicale",
+           "code_comptable": "706200",
+           "details": {
+               "cotisationSyndicaleDocumentDouanier": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.02,
+                   "tva": 0.2,
+                   "unite": "hl",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeVininifieFromDocumentDouanier",
+                   "callback_parameters": {
+                       "appellations": "NOT certifications/VSIG"
+                   }
+               }
+           }
+       },
+       "10_cotisationODG": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation ODG",
+           "code_comptable": "706000",
+           "details": {
+               "revendication_med": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.3,
+                   "tva": 0.2,
+                   "unite": "hl",
+                   "libelle": "Volume revendiqué Med. - N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev",
+                       "Conditionnement"
+                   ],
+                   "callback": "getVolumeLotsFacturables",
+                   "callback_parameters": {
+                       "appellations": "/appellations/MED"
+                   }
+               },
+               "revendication_dep": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.27,
+                   "tva": 0.2,
+                   "unite": "hl",
+                   "libelle": "Volume revendiqué Dep. - N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev",
+                       "Conditionnement"
+                   ],
+                   "callback": "getVolumeLotsFacturables",
+                   "callback_parameters": {
+                       "appellations": "NOT /appellations/MED"
+                   }
+               },
+               "lots": {
+                   "modele": "Cotisation",
+                   "prix": 10,
+                   "tva": 0.2,
+                   "libelle": "Nombre de lots presentés",
+                   "complement_libelle": "",
+                   "docs": [
+                       "Degustation"
+                   ],
+                   "callback": "buildMouvementsNbLotsDegustes"
+               },
+               "lots_2nd_passage": {
+                   "modele": "Cotisation",
+                   "prix": 10,
+                   "tva": 0.2,
+                   "libelle": "2nd passage - N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "Degustation"
+                   ],
+                   "callback": "buildMouvementsFacturesLotRedeguste"
+               }
+           }
+       },
+       "20_fraisDossier": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Frais de dossier",
+           "code_comptable": "706100",
+           "details": {
+               "forfait": {
+                   "modele": "CotisationFixe",
+                   "prix": 80,
+                   "tva": 0.2,
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeLotsFacturables"
+               }
+           }
+       },
+       "30_inao": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Droits INAO",
+           "code_comptable": "706400",
+           "details": {
+               "revendication": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.03,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "Volume revendiqué - N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev",
+                       "Conditionnement"
+                   ],
+                   "callback": "getVolumeLotsFacturables"
+               }
+           }
+       },
+       "40_changementDenomination": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Changement de dénomination",
+           "code_comptable": "706300",
+           "details": {
+               "premier": {
+                   "modele": "CotisationFixe",
+                   "prix": 15,
+                   "tva": 0.2,
+                   "libelle": "N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "ChgtDenom"
+                   ],
+                   "callback": "getFirstChgtDenomOrDeclassementFacturable"
+               },
+               "suivant": {
+                   "modele": "CotisationFixe",
+                   "prix": 10,
+                   "tva": 0.2,
+                   "libelle": "N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "ChgtDenom"
+                   ],
+                   "callback": "getSecondChgtDenomOrDeclassementFacturable"
+               }
+           }
+       },
+       "40_changementDenomination_MED": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Changement de dénomination vers Méditerranée",
+           "code_comptable": "706300",
+           "details": {
+               "frais": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.15,
+                   "tva": 0.2,
+                   "libelle": "Volume changé - N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "ChgtDenom"
+                   ],
+                   "callback": "getVolumeFacturable",
+                   "callback_parameters": {
+                       "appellations": "/appellations/MED"
+                   }
+               }
+           }
+       }
+   }
+}

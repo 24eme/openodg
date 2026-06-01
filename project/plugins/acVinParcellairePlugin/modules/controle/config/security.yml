@@ -1,2 +1,6 @@
 all:
   credentials: [[ADMIN, ADMIN_ODG]]
+
+pdfAuth:
+  is_secure: false
+  credentials: []

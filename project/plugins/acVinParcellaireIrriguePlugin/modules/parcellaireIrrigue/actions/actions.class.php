@@ -4,11 +4,14 @@ class parcellaireIrrigueActions extends sfActions {
 
     public function executeIrrigation(sfWebRequest $request) {
     	$this->etablissement = $this->getRoute()->getEtablissement();
+        $this->coop = $request->getParameter('coop');
+
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $this->etablissement);
 
         if(!$this->getUser()->isAdminODG() && !ParcellaireIrrigueConfiguration::getInstance()->isOpen()) {
             throw new sfError403Exception("La téléclaration n'est pas encore ouverte");
         }
+
 
 		$this->papier = $request->getParameter('papier', false);
 		$this->periode = $request->getParameter('periode');
