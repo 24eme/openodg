@@ -359,10 +359,9 @@
                       ret.nombreNC += 1;
                       for (const constatKey in point.constats) {
                           const constat = point.constats[constatKey];
-                          if (! constat.conformite) {
-                              continue ;
+                          if (constat.non_conforme) {
+                              ret.manquements.push(point.libelle + "\n" + constat.libelle + ' - ' + constatKey + "\n" + parcelleId + ' - '+ constat.observations);
                           }
-                          ret.manquements.push(point.libelle + "\n" + constat.libelle + ' - ' + constatKey + "\n" + parcelleId + ' - '+ constat.observations);
                       }
                   }
               }
