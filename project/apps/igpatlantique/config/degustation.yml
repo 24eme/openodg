@@ -8,3 +8,4 @@ all:
         - NONCONFORME_MAJEUR
       has_notification: true
       is_externalisee: true
+      anonymisation_manuelle: false

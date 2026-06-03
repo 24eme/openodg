@@ -10,12 +10,13 @@ class ParcellaireIrrigableProduitsForm extends acCouchdbObjectForm {
     }
 
     public function configure() {
-        foreach ($this->getObject()->getParcelles() as $p) {
+        foreach ($this->getObject()->getDeclarationParcelles() as $p) {
             if($this->destinataire && !$p->destinations->exist(str_replace("ETABLISSEMENT-", "", $this->destinataire))) {
                 continue;
             }
             $value = $p;
-            if($this->getObject()->getDocument()->isDeclarationLiee()) {
+            $doc = $this->getObject()->getDocument();
+            if(method_exists($doc, 'isDeclarationLiee') && $doc->isDeclarationLiee()) {
                 $value = $p->add('irrigation');
             }
             $this->embedForm($p->getParcelleId(), new ParcellaireIrrigableProduitIrrigationForm($value));
@@ -24,7 +25,7 @@ class ParcellaireIrrigableProduitsForm extends acCouchdbObjectForm {
     }
 
     protected function doUpdateObject($values) {
-        $parcelles = $this->getObject()->getParcelles();
+        $parcelles = $this->getObject()->getDeclarationParcelles();
         foreach ($values as $pid => $value) {
             if (!isset($parcelles[$pid])) {
                 continue;

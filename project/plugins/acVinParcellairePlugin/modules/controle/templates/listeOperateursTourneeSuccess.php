@@ -77,7 +77,7 @@
 
 <?php
 if(isset($popup)):
-  include_component('controle','previewMailPopup', array('controle' => $controle));
+  include_component('controle', 'previewMailPopup', array('controle' => $preview_controle));
 endif;
 ?>
 
@@ -94,13 +94,13 @@ endif;
          </div>
          <div class="modal-footer">
            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Annuler</button>
-           <a href="<?php echo url_for('controle_mail_to_resultats', array('id' => $controle->_id, 'identifiant' => $controle->identifiant)); ?>" class="btn btn-primary">Ouvrir le mail manuellement</a>
+           <a href="<?php echo url_for('controle_mail_to_resultats', array('id' => $controles[$mail_to_identifiant]->_id, 'identifiant' => $mail_to_identifiant)); ?>" class="btn btn-primary">Ouvrir le mail manuellement</a>
          </div>
        </div>
      </div>
    </div>
 <script>
-    var newWin = window.open("<?php echo url_for('controle_mail_to_resultats', array('id' => $controle->_id, 'identifiant' => $controle->identifiant)); ?>");
+    var newWin = window.open("<?php echo url_for('controle_mail_to_resultats', array('id' => $controles[$mail_to_identifiant]->_id, 'identifiant' => $mail_to_identifiant)); ?>");
     if(!newWin || newWin.closed || typeof newWin.closed=='undefined')
     {
        setTimeout(function() {$('#modal_mailto').modal('show')}, 1000);
