@@ -21,23 +21,16 @@ class DRaPProduitsForm extends acCouchdbObjectForm {
 
     protected function doUpdateObject($values) {
         $parcelles = $this->getObject()->getParcelles();
-        foreach ($values as $pid => $value) {
-            if (!isset($parcelles[$pid])) {
-                continue;
-            }
-            $node = $parcelles[$pid];
-
-            if($node->getDefinition()->exist('fields') && !$value['destination']) {
-                $node->remove('fields');
+        foreach ($parcelles as $parcelle) {
+            $pid = $parcelle->getParcelleId();
+            if (! isset($values[$pid])) {
                 continue;
             }
 
-            if($node->getDefinition()->exist('fields')) {
-                $node = $node->add('fields');
-            }
+            $value = $values[$pid];
 
             foreach ($value as $k => $v) {
-                $node->add($k, $v);
+                $parcelle->add($k, $v);
             }
         }
     }
