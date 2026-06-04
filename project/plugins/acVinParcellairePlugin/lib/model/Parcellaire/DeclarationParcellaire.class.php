@@ -48,6 +48,9 @@ class DeclarationParcellaire extends acCouchdbDocument {
             }
             $date_end = $cm->getDateFinByDate($date);
             $this->parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $date_end);
+            if (! $this->parcellaire) {
+                $this->parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
+            }
             $this->parcellaire_origine = ($this->parcellaire) ? $this->parcellaire->_id : null;
         }
         return $this->parcellaire;
