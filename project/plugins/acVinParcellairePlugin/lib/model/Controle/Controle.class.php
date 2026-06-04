@@ -330,8 +330,8 @@ class Controle extends BaseControle implements InterfacePieceDocument
     {
         foreach ($this->parcelles as $parcelleId => $parcelle) {
             foreach ($parcelle->controle->points as $pointId => $point) {
-                foreach($point->constats as $constat) {
-                    if ($constat->non_conforme == true) {
+                foreach($point->constats as $key => $constat) {
+                    if ($constat->non_conforme == true && ControleConfiguration::getInstance()->isTerrain($key)) {
                         return true;
                     }
                 }
