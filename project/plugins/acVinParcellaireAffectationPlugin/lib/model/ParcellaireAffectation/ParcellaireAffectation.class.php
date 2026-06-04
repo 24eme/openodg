@@ -646,7 +646,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getProblemPortentiel() {
-        $pot = PotentielProduction::cacheCreatePotentielProduction($this->parcellaire, $this, false);
+        $pot = PotentielProduction::cacheCreatePotentielProduction($this->getParcellaire(), $this, false);
         $ret = [];
         foreach($pot->getProduits() as $prod) {
             if (!$prod->getProduitHash() || !$this->exist($prod->getProduitHash())) {
@@ -660,7 +660,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getTheoriticalPotentielProduction() {
-        return PotentielProduction::cacheCreatePotentielProduction($this->parcellaire);
+        return PotentielProduction::cacheCreatePotentielProduction($this->getParcellaire());
     }
 
     public function getTheoriticalPotentielProductionProduit($hash) {

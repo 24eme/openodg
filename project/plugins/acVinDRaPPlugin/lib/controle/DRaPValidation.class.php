@@ -19,6 +19,7 @@ class DRaPValidation extends DocumentValidation {
         /*
          * Error
          */
+        $this->addControle(self::TYPE_ERROR, 'drap_no_destination', 'Cette parcelle n\'a pas de destination');
 
         /*
          * Engagements
@@ -31,6 +32,17 @@ class DRaPValidation extends DocumentValidation {
                 'drap_no_parcelles',
                 '<a href="' . $this->generateUrl('drap_parcelles', array('id' => $this->document->_id)) . "\" class='alert-link' >Séléctionner vos parcelles en renonciation à produire.</a>",
                     '');
+        }
+
+        foreach ($this->document->declaration->getParcelles() as $parcelle) {
+            if ($parcelle->getDestination() === null) {
+                $this->addPoint(
+                    self::TYPE_ERROR,
+                    'drap_no_destination',
+                    sprintf('La parcelle %s n\'a pas de destination renseignée', $parcelle->getParcelleId()),
+                    $this->generateUrl('drap_destinations', ['id' => $this->document->_id])
+                );
+            }
         }
     }
 }
