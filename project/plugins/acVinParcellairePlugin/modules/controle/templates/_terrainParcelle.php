@@ -92,7 +92,7 @@
 </div>
 <form class="form-horizontal" id="controlesList">
     <div class="form-group" v-for="(valPoint, keyPoint) in parcelleCourante.controle.points" :key="keyPoint">
-    <h4 class="col-sm-6 control-label" style="text-align:left">
+    <h4 :id="'controle_' + keyPoint" class="col-sm-6 control-label" style="text-align:left">
       {{ valPoint.libelle }}
   </h4>
 
@@ -135,7 +135,7 @@
     Les points de contrôle suivants sont non conformes mais sans manquement de sélectionné :
     <ul>
         <li v-for="point in warnings">
-            {{ point }}
+            <RouterLink :to="{ hash: '#controle_' + point.anchor }">{{ point.libelle }}</a>
         </li>
     </ul>
 </div>

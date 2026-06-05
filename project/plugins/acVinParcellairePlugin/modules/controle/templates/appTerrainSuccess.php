@@ -67,6 +67,11 @@
     const router = createRouter({
       history: createWebHashHistory(),
       routes,
+      scrollBehavior(to, from, savedPosition) {
+        if (to.hash) {
+          return { el: to.hash }
+        }
+      }
     })
 
     const app = createApp({
@@ -275,13 +280,13 @@
                 const point = this.parcelleCourante.controle.points[pointKey]
 
                 if (point.conformite === "NC") {
-                    NCPoints.push(point)
+                    NCPoints.push({key: pointKey, point: point})
                 }
             }
 
             for (const manquements in NCPoints) {
                 let atLeastOne = false;
-                const constats = NCPoints[manquements].constats
+                const constats = NCPoints[manquements].point.constats
                 for (const constat in constats) {
                     if (constats[constat].non_conforme) {
                         atLeastOne = true;
@@ -289,7 +294,7 @@
                 }
 
                 if (atLeastOne === false) {
-                    this.warnings.push(NCPoints[manquements].libelle)
+                    this.warnings.push({libelle: NCPoints[manquements].point.libelle, anchor: NCPoints[manquements].key})
                 }
             }
         },
