@@ -131,5 +131,14 @@
 
 <hr />
 
+<div v-if="showWarning" class="alert alert-warning">
+    Ces points de contrôle sont non conformes sans constat non conforme :
+    <ul>
+        <li v-for="point in warnings">
+            {{ point }}
+        </li>
+    </ul>
+</div>
+
 <RouterLink class="btn btn-default" :to="{ name: 'operateur', params: { id: controleCourant._id } }"><span class="glyphicon glyphicon-chevron-left"></span> Retour</RouterLink>
 <button class="btn btn-primary pull-right" @click="save()">Valider</button>

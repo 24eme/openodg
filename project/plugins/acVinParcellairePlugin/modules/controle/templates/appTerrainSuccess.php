@@ -220,7 +220,10 @@
                 return "color: #8da42a";
             }
             return "color: #aaaaaa";
-        }
+        },
+        showWarning() {
+            return this.warnings.length > 0
+        },
     }
     templates.parcelle.data = function() {
         const route = useRoute()
@@ -236,6 +239,7 @@
           pointsDeControle: points_de_controle,
           date_tournee: date_tournee,
           isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
+          warnings: [],
         }
     };
     templates.parcelle.methods = {
@@ -249,12 +253,41 @@
             }
         },
         save() {
+            this.checkPoints();
+
             this.parcelleCourante.controle.saisie = 1;
             this.parcelleCourante.needs_to_be_saved = true;
 
             this.cleanPoints();
 
             router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+        },
+        checkPoints() {
+            this.warnings = []
+            const NCPoints = []
+            const points = this.parcelleCourante.controle.points
+
+            for (const pointKey in this.parcelleCourante.controle.points) {
+                const point = this.parcelleCourante.controle.points[pointKey]
+
+                if (point.conformite === "NC") {
+                    NCPoints.push(point)
+                }
+            }
+
+            for (const manquements in NCPoints) {
+                let atLeastOne = false;
+                const constats = NCPoints[manquements].constats
+                for (const constat in constats) {
+                    if (constats[constat].non_conforme) {
+                        atLeastOne = true;
+                    }
+                }
+
+                if (atLeastOne === false) {
+                    this.warnings.push(NCPoints[manquements].libelle)
+                }
+            }
         },
         cleanPoints() {
             const points = this.parcelleCourante.controle.points;
