@@ -132,7 +132,7 @@
 <hr />
 
 <div v-if="showWarning" class="alert alert-warning">
-    Ces points de contrôle sont non conformes sans constat non conforme :
+    Les points de contrôle suivants sont non conformes mais sans manquement de sélectionné :
     <ul>
         <li v-for="point in warnings">
             {{ point }}

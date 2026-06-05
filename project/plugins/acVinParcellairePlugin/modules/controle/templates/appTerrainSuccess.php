@@ -255,6 +255,10 @@
         save() {
             this.checkPoints();
 
+            if (this.showWarning) {
+                return
+            }
+
             this.parcelleCourante.controle.saisie = 1;
             this.parcelleCourante.needs_to_be_saved = true;
 
