@@ -33,7 +33,7 @@
             </table>
         </td></tr></table>
 <br />
-<?php if (count($parcellesForDetail->acheteurs)): ?>
+<?php if ($parcellesForDetail !== null && count($parcellesForDetail->acheteurs)): ?>
     <br />
     <span class="h3Alt">&nbsp;Destination des raisins&nbsp;</span><br/>
     <table class="tableAlt"><tr><td>
