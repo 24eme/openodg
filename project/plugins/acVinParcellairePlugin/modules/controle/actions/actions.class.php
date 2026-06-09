@@ -362,13 +362,12 @@ class controleActions extends sfActions
 
     public function executeMailPrevisualisation(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
-
-        $this->date_tournee = $this->controle->date_tournee;
-        $this->agent_identifiant = $this->controle->agent_identifiant;
-        $this->controles = ControleClient::getInstance()->findAllByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant);
-
         $this->popup = true;
+        $this->preview_controle = ControleClient::getInstance()->find($request->getParameter('id'));
+
+        $this->date_tournee = $this->preview_controle->date_tournee;
+        $this->agent_identifiant = $this->preview_controle->agent_identifiant;
+        $this->controles = ControleClient::getInstance()->findAllByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant);
 
         $this->setTemplate('listeOperateursTournee');
     }
