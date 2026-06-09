@@ -5,7 +5,8 @@
         foreach ($produits as $hash => $produit):
     ?>
     <li role="presentation" class="<?php if($id.$hash == $destinataire.$hashproduit): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>">
-        <a class="onglet-presentation" data-form="validation-form" data-href="<?php echo url_for(ParcellaireAffectationEtapes::getInstance()->getRouteLink($etape), ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]) ?>" href='#'>
+        <?php $urlonglet =  url_for(ParcellaireAffectationEtapes::getInstance()->getRouteLink($etape), ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id, 'hashproduit' => $hash]); ?>
+        <a class="onglet-presentation" data-form="validation-form" data-href="<?php echo $urlonglet; ?>" href='<?php echo $urlonglet; ?>#'>
             <?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php
             echo ($d['libelle_etablissement'] != 'Cave particulière') ? $d['libelle_etablissement'].' - ' : '';
             echo $produit; ?>
