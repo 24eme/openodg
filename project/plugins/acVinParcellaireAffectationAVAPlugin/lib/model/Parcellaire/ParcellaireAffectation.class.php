@@ -833,47 +833,4 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
 
     /**** FIN DES PIECES ****/
 
-
-    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null, $filter_destination = null) {
-        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee, $filter_destination);
-    }
-
-
-    public function getSyntheseDestination() {
-        $synthese = [];
-        $types = [];
-        foreach($this->declaration->getProduitsCepageDetails() as $parcelle) {
-            foreach($parcelle->getAcheteursByCVI() as $destination) {
-                $types[$destination->getParent()->getKey()][] = $destination;
-                foreach($types as $type => $acheteurs) {
-                     $synthese[$type] += $parcelle->superficie;
-                }
-            }
-        }
-        return $synthese;
-    }
-
-    public function getParcelles($hashproduitFilter = null) {
-        $parcelles = array();
-        foreach($this->declaration as $keyProduit => $produit) {
-            if ($hashproduitFilter && strpos($hashproduitFilter, '/') !== false && strpos($keyProduit, $hashproduitFilter) === false) {
-                continue;
-            }
-
-            foreach ($produit->genre->getAppellations() as $appellation) {
-                foreach($appellation->getMentions() as $mention) {
-                  foreach($mention->getLieux() as $lieux) {
-                    foreach($lieux->getCouleurs() as $couleurs) {
-                        foreach($couleurs->getCepages() as $cepage) {
-                            foreach($cepage->detail as $parcelle){
-                                $parcelles[$parcelle->getHash()] = ParcellaireClient::getInstance()->findParcelle($this->getParcellaire(), $parcelle);
-                            }
-                        }
-                    }
-                  }
-                }
-            }
-        }
-        return $parcelles;
-    }
 }
