@@ -68,6 +68,12 @@ class parcellaireIrrigueActions extends sfActions {
         }
     }
 
+    protected function forwardSecure() {
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        throw new sfStopException();
+    }
+
     public function executePDF(sfWebRequest $request) {
         set_time_limit(180);
         $this->parcellaireIrrigue = $this->getRoute()->getParcellaireIrrigue(['allow_habilitation' => true, 'allow_stalker' => true]);
