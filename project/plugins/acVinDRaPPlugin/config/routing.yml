@@ -1,0 +1,109 @@
+drap_create:
+  url: /drap/creation/:identifiant
+  param: { module: drap, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drap_create_papier:
+  url: /drap/creation-papier/:identifiant
+  param: { module: drap, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drap_edit:
+  url: /drap/edition/:id
+  param: { module: drap, action: edit }
+  class: DRaPRoute
+  options:
+    model:    DRaP
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drap_delete:
+  url: /drap/suppression/:id
+  param: { module: drap, action: delete }
+  class: DRaPRoute
+  options:
+    model:    DRaP
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drap_devalidation:
+  url: /drap/devalidation/:id
+  param: { module: drap, action: devalidation }
+  class: DRaPRoute
+  options:
+    model:    DRaP
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drap_exploitation:
+  url: /drap/exploitation/:id
+  param: { module: drap, action: exploitation }
+  class: DRaPRoute
+  options:
+    model:    DRaP
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drap_parcelles:
+  url: /drap/parcelles/:id
+  param: { module: drap, action: parcelles }
+  class: DRaPRoute
+  options:
+    model:    DRaP
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drap_destinations:
+  url: /drap/destinations/:id
+  param: { module: drap, action: destinations }
+  class: DRaPRoute
+  options:
+    model:    DRaP
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drap_validation:
+  url: /drap/validation/:id
+  param: { module: drap, action: validation }
+  class: DRaPRoute
+  options:
+    model:    DRaP
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drap_visualisation:
+  url: /drap/visualisation/:id
+  param: { module: drap, action: visualisation }
+  class: DRaPRoute
+  options:
+    model:    DRaP
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drap_export_pdf:
+  url: /drap/pdf/:id
+  param: { module: drap, action: PDF }
+  class: DRaPRoute
+  options:
+    model:    DRaP
+    type:     object
+  requirements:
+    sf_method: [get]

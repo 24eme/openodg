@@ -79,9 +79,7 @@
             <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#ParcellaireManquant-confirmation-validation" <?php if (isset($validation) && $validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider votre déclaration</button>
         </div>
     </div>
-    <?php if (!isset($validation) || !$validation->hasErreurs()): ?>
-	<?php include_partial('parcellaireManquant/popupConfirmationValidation', array('form' => $form)); ?>
-	<?php endif; ?>
+
 </form>
 
 <?php if(isset($coop)): ?>
@@ -92,4 +90,8 @@
 <script type="text/javascript">
 $('#ParcellaireManquant-confirmation-validation').modal('show')
 </script>
+<?php endif; ?>
+
+<?php if (!isset($validation) || !$validation->hasErreurs()): ?>
+<?php include_partial('parcellaireManquant/popupConfirmationValidation', array('form' => $form)); ?>
 <?php endif; ?>

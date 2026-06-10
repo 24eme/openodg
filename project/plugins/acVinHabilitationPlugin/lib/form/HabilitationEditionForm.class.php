@@ -62,6 +62,7 @@ class HabilitationEditionForm extends acCouchdbForm
                 }
 
                 $hash = str_replace('-','/',$idWidgets);
+                $hash = str_replace('/SITE_', '-SITE_', $hash);
                 $values = $this->getValues();
                 $activite = $this->getDocument()->get($hash);
                 HabilitationClient::getInstance()->updateAndSaveHabilitation($this->getDocument()->identifiant,

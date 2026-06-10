@@ -10,7 +10,7 @@ class ParcellaireAffectationProduitAffecteForm extends acCouchdbObjectForm {
         parent::updateDefaultsFromObject();
         $superficie = $this->getObject()->getSuperficie($this->destinataire->identifiant);
         $this->setDefault('affectee', boolval($superficie));
-        $this->setDefault('superficie', ($superficie !== null) ? $superficie : $this->getObject()->getSuperficieParcellaireAffectable());
+        $this->setDefault('superficie', sprintf("%0.4f", ($superficie !== null) ? $superficie : $this->getObject()->getSuperficieParcellaireAffectable()));
     }
     public function configure() {
 

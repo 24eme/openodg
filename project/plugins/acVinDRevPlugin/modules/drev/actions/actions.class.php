@@ -768,6 +768,9 @@ class drevActions extends sfActions {
             $this->drev->validateOdg(null,$this->regionParam);
             $this->drev->save();
         }catch(sfException $s) {
+            if (sfConfig::get('sf_debug')){
+                throw $s;
+            }
             $this->getUser()->setFlash('error', $s->getMessage());
             return $this->redirect('drev_visualisation', $params);
         }

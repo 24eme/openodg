@@ -28,6 +28,7 @@ class DegustationCreationForm extends BaseForm
         $degustation = DegustationClient::getInstance()->createDoc($values['date']." ".$values['time'].":00", sfContext::getInstance()->getUser()->getRegion());
         $degustation->lieu = $values['lieu'];
         $degustation->max_lots = $values['max_lots'];
+        $degustation->add('externalisee', DegustationConfiguration::getInstance()->isDegustationExternalisee());
 
         $degustation->save();
 

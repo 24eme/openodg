@@ -86,4 +86,35 @@ class ControleParcelle extends BaseControleParcelle
     {
         return ParcellaireClient::getInstance()->getLast($this->getDocument()->identifiant);
     }
+
+    public function needsUpdateNoeudControle()
+    {
+        $pointsDeControle = ControleConfiguration::getInstance()->getAllPointsDeControle();
+        foreach ($pointsDeControle as $idPoint => $dataPoint) {
+            if (! $this->controle->points->exist($idPoint)) {
+                return true;
+            }
+            foreach ($dataPoint['constats'] as $idConstat => $dataConstat) {
+                if (! $this->controle->points[$idPoint]->constats->exist($idConstat)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function updateNoeudControle()
+    {
+        $pointsDeControle = ControleConfiguration::getInstance()->getAllPointsDeControle();
+        foreach ($pointsDeControle as $idPoint => $dataPoint) {
+            if (! $this->controle->points->exist($idPoint)) {
+                $this->controle->points->add($idPoint, array('libelle' => $dataPoint['libelle']));
+            }
+            foreach ($dataPoint['constats'] as $idConstat => $dataConstat) {
+                if (! $this->controle->points[$idPoint]->constats->exist($idConstat)) {
+                    $this->controle->points[$idPoint]->constats->add($idConstat, array('libelle' => $dataConstat['libelle'], 'observations' => null, 'non_conforme' => false));
+                }
+            }
+        }
+    }
 }

@@ -47,8 +47,7 @@
                           ->changement_cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
                              id="lien_prisedemousse_changement_cepages" data-toggle="modal"
                              data-target="#prisedemousse_changement_cepages" />
-                      <span class="checkboxtext_prisedemousse_changement_cepages"><?php echo (count($prisedemousse
-                          ->changement_cepages->toArray(true, false))) ? "Mention : " :  "Sans mention de cépage <a>(Changer)</a>" ?></span></label>
+                      </label>
                     </div>
                   </div>
               </div>
@@ -58,8 +57,22 @@
         <div class="row">
               <div class="col-md-8">
                   <div class="form-group">
+                      <?php echo $form['changement_numero_logement_operateur']->renderLabel("Nouveau logement", array('class' => "col-sm-4 control-label")); ?>
+                      <div class="col-sm-3">
+                          <span class="error text-danger"><?php echo $form['changement_numero_logement_operateur']->renderError() ?></span>
+                          <div class="input-group">
+                              <?php echo $form['changement_numero_logement_operateur']->render(array("placeholder" => "Nouveau logement")); ?>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+        </div>
+
+        <div class="row">
+              <div class="col-md-8">
+                  <div class="form-group">
                       <?php echo $form['changement_volume']->renderLabel("Volume final après prise de mousse", array('class' => "col-sm-4 control-label")); ?>
-                      <div class="col-sm-5">
+                      <div class="col-sm-3">
                           <span class="error text-danger"><?php echo $form['changement_volume']->renderError() ?></span>
                           <div class="input-group">
                               <?php echo $form['changement_volume']->render(array("placeholder" => "Précisez un volume")); ?>
@@ -156,3 +169,19 @@
         </div>
 
     </form>
+
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const form = document.querySelector("form");
+        const input = document.querySelector("#chgt_denom_changement_numero_logement_operateur");
+
+        form.addEventListener("submit", function (e) {
+            if (!input.value.trim()) {
+                input.value = "<?php echo addslashes($prisedemousse->changement_numero_logement_operateur); ?>";
+            }
+        });
+
+    });
+    </script>
