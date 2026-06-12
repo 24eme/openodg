@@ -44,7 +44,7 @@
   <tr>
     <td><?php echo $lot->numero_dossier ?> / <?php echo $lot->numero_archive ?></td>
     <td><?php echo $lot->numero_logement_operateur ?></td>
-    <td><?php echo showProduitCepagesLot($lot, false); ?></td>
+    <td><?php echo showProduitCepagesLot($lot, false); ?><br/><small style="color:gray;"><?php echo $lot->getDestinationShort().' - '.Date::francizeDate(DateTime::createFromFormat('Y-m-d', $lot->destination_date)->format('d/m/Y')); ?></small></td>
     <td><?php echo sprintf("%.2f", $lot->volume) ?></td>
   </tr>
 </table>

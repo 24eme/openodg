@@ -17,6 +17,7 @@ class ParcellaireAffectationValidation extends DocumentValidation {
         $this->addControle(self::TYPE_WARNING, 'probleme_densite', "Ecart Pieds");
         $this->addControle(self::TYPE_WARNING, 'cepage_non_autorise', "Cépage non autorisé");
         $this->addControle(self::TYPE_WARNING, 'probleme_parcellaire', "Non conformité parcellaire");
+        $this->addControle(self::TYPE_WARNING, 'sans_parcelle', "Pas de parcelle affectée");
 
         $this->addControle(self::TYPE_ERROR, 'sans_habilitation', "Erreur d'habilitation");
         $this->addControle(self::TYPE_ERROR, 'erreur_potentiel_production', "Potentiel de production non respecté");
@@ -27,7 +28,10 @@ class ParcellaireAffectationValidation extends DocumentValidation {
         $appellationGeree = false;
         $hasMouOrEff = false;
         $appellations = ConfigurationClient::getCurrent()->getProduits();
+        $nbparcelles = 0;
         foreach ($this->document->getParcelles() as $parcelle) {
+            $nbparcelles++;
+
             if ($parcelle->getConfig() && $parcelle->getConfig()->getAppellation()->getKey() != Configuration::DEFAULT_KEY) {
                 $appellationGeree = true;
             }
@@ -45,7 +49,11 @@ class ParcellaireAffectationValidation extends DocumentValidation {
             }
         }
 
-        if ($appellationGeree === false) {
+        if (!$nbparcelles) {
+            $this->addPoint(self::TYPE_WARNING, 'sans_parcelle', "Votre déclaration n'affecte aucune parcelle");
+        }
+
+        if ($nbparcelles && $appellationGeree === false) {
             $this->addPoint(self::TYPE_WARNING, 'sans_appellation_syndicat', "Aucune parcelle n'a de produit géré par le syndicat");
         }
 
@@ -62,7 +70,7 @@ class ParcellaireAffectationValidation extends DocumentValidation {
         }
 
         if ($hasMouOrEff && !in_array(HabilitationClient::ACTIVITE_ELABORATEUR, $this->document->getHabilitation()->getActivitesHabilites())) {
-            $this->addPoint(self::TYPE_ERROR, 'sans_habilitation', "Pas d'activité élaborateur trouvée");
+            $this->addPoint(self::TYPE_ERROR, 'sans_habilitation', "Pas d'activité élaborateur trouvée, alors que du mousseux ou effervescent est présent dans la déclaration.");
         }
 
         if ($this->document->hasProblemProduitCVI()) {
