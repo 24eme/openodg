@@ -602,9 +602,9 @@ class degustationActions extends sfActions {
 
       if($this->degustation->isAnonymized()) {
         if (DegustationConfiguration::getInstance()->isDegustationExternalisee()) {
-            return $this->redirect('degustation_commission_externe_etape', $degustation);
+            return $this->redirect('degustation_commission_externe_etape', $this->degustation);
         } else {
-            return $this->redirect('degustation_commission_interne_etape', $degustation);
+            return $this->redirect('degustation_commission_interne_etape', $this->degustation);
         }
       }
 
