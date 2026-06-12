@@ -70,7 +70,7 @@ class ParcellaireAffectationValidation extends DocumentValidation {
         }
 
         if ($hasMouOrEff && !in_array(HabilitationClient::ACTIVITE_ELABORATEUR, $this->document->getHabilitation()->getActivitesHabilites())) {
-            $this->addPoint(self::TYPE_ERROR, 'sans_habilitation', "Pas d'activité élaborateur trouvée");
+            $this->addPoint(self::TYPE_ERROR, 'sans_habilitation', "Pas d'activité élaborateur trouvée, alors que du mousseux ou effervescent est présent dans la déclaration.");
         }
 
         if ($this->document->hasProblemProduitCVI()) {
