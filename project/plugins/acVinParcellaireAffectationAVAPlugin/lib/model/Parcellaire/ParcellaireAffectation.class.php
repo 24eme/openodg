@@ -833,4 +833,30 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
 
     /**** FIN DES PIECES ****/
 
+
+    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null, $filter_destination = null) {
+        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee, $filter_destination);
+    }
+
+
+    public function getSyntheseDestination() {
+        $synthese = [];
+
+        foreach($this->declaration->getProduitsCepageDetails() as $parcelle) {
+            if (! $this->getAcheteursByCVI()) {
+                continue;
+            }
+
+            $nbAcheteurs = $parcelle->exist('acheteurs') ? $parcelle->acheteurs->count() : null;
+
+            foreach($parcelle->getAcheteursByCVI() as $type) {
+                if ($nbAcheteurs > 1) {
+                    $synthese[$type->getParent()->getKey()] += $parcelle->superficie / 2 ;
+                } elseif ($type->getParent()->getKey()) {
+                    $synthese[$type->getParent()->getKey()] += $parcelle->superficie;
+                }
+            }
+        }
+        return $synthese;
+    }
 }
