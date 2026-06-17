@@ -134,9 +134,19 @@ degustation_anonymats_etape:
   requirements:
     sf_method: [get, post]
 
-degustation_commission_etape:
+degustation_commission_interne_etape:
   url: /degustation/:id/commission
   param: { module: degustation, action: commissionEtape }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_commission_externe_etape:
+  url: /degustation/:id/commission-externe
+  param: { module: degustation, action: commissionExterneEtape }
   class: DegustationRoute
   options:
     model:    Degustation

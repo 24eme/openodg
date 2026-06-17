@@ -93,24 +93,24 @@ head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/pmc_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/pmcnc_lots.csv.part
 
 if [ -z $IS_NO_VINIF ]; then
-  grep "^DRev" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/drev_lots.csv.part
+  grep -a "^DRev" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/drev_lots.csv.part
   iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev_lots.csv.part > $EXPORTDIR/drev_lots.csv
   rm $EXPORTDIR/drev_lots.csv.part
 fi
 
-grep "^Conditionnement" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/conditionnement_lots.csv.part
+grep -a "^Conditionnement" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/conditionnement_lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/conditionnement_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv
 rm $EXPORTDIR/conditionnement_lots.csv.part
 
-grep "^Transaction" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/transaction_lots.csv.part
+grep -a "^Transaction" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/transaction_lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/transaction_lots.csv.part > $EXPORTDIR/transaction_lots.csv
 rm $EXPORTDIR/transaction_lots.csv.part
 
-grep "^PMCNC" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/pmcnc_lots.csv.part
+grep -a "^PMCNC" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/pmcnc_lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/pmcnc_lots.csv.part > $EXPORTDIR/pmcnc_lots.csv
 rm $EXPORTDIR/pmcnc_lots.csv.part
 
-grep "^PMC;" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/pmc_lots.csv.part
+grep -a "^PMC;" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/pmc_lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/pmc_lots.csv.part > $EXPORTDIR/pmc_lots.csv
 rm $EXPORTDIR/pmc_lots.csv.part
 
@@ -320,6 +320,8 @@ echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '[A-Z]' | while read subhab; 
         cat $EXPORTDIR/parcellaireirrigue.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/parcellaireirrigue.csv
         head -n 1 $EXPORTDIR/parcellaireirrigable.csv > $SUBDIR/parcellaireirrigable.csv
         cat $EXPORTDIR/parcellaireirrigable.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/parcellaireirrigable.csv
+        head -n 1 $EXPORTDIR/drap.csv > $SUBDIR/drap.csv
+        cat $EXPORTDIR/drap.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/drap.csv
     fi
     if test "$SUBMETABASE"; then
         python3 bin/csv2sql.py $SUBMETABASE".tmp" $SUBDIR

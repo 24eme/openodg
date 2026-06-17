@@ -41,7 +41,7 @@
             <?php endif; ?>
         </td>
         <td><?php echo count($controle->manquements); ?></td>
-        <td><a href="<?php echo url_for('controle_liste_manquements_operateur', ['id_controle' => $controle->_id]); ?>" class="btn btn-sm btn-primary">Gérer les manquements</a></td>
+        <td><a href="<?php echo url_for('controle_liste_manquements_operateur', ['id' => $controle->_id]); ?>" class="btn btn-sm btn-primary">Gérer les manquements</a></td>
     </tr>
 <?php endforeach; ?>
         </tbody>

@@ -8,6 +8,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   protected $previous_document = null;
   protected $etablissement = null;
   protected $habilitation = null;
+  protected $parcellesMultiProduits = null;
 
   public function isAdresseLogementDifferente() {
       return false;
@@ -209,19 +210,23 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getParcellesMultiProduits() {
-        $parcelles = [];
+        if(!is_null($this->parcellesMultiProduits)) {
+            return $this->parcellesMultiProduits;
+        }
+
+        $this->parcellesMultiProduits = [];
         foreach($this->declaration as $produit) {
             foreach($produit->detail as $parcelle) {
                 if(!$parcelle->isAffectee()) {
                     continue;
                 }
-                if(!isset($parcelles[$parcelle->getParcelleId()])) {
-                    $parcelles[$parcelle->getParcelleId()] = [];
+                if(!isset($this->parcellesMultiProduits[$parcelle->getParcelleId()])) {
+                    $this->parcellesMultiProduits[$parcelle->getParcelleId()] = [];
                 }
-                $parcelles[$parcelle->getParcelleId()][] = $parcelle;
+                $this->parcellesMultiProduits[$parcelle->getParcelleId()][] = $parcelle;
             }
         }
-        return $parcelles;
+        return $this->parcellesMultiProduits;
     }
 
     public function getParcellesMultiProduitsByParcelleId($parcelleId) {
@@ -641,7 +646,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getProblemPortentiel() {
-        $pot = PotentielProduction::cacheCreatePotentielProduction($this->parcellaire, $this, false);
+        $pot = PotentielProduction::cacheCreatePotentielProduction($this->getParcellaire(), $this, false);
         $ret = [];
         foreach($pot->getProduits() as $prod) {
             if (!$prod->getProduitHash() || !$this->exist($prod->getProduitHash())) {
@@ -655,7 +660,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getTheoriticalPotentielProduction() {
-        return PotentielProduction::cacheCreatePotentielProduction($this->parcellaire);
+        return PotentielProduction::cacheCreatePotentielProduction($this->getParcellaire());
     }
 
     public function getTheoriticalPotentielProductionProduit($hash) {
@@ -708,6 +713,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             foreach($parcelle->destinations as $d) {
                 $synthese[$d->nom] += $d->superficie;
             }
+        }
+        return $synthese;
+    }
+
+    public function getSyntheseProduits() {
+        $synthese = [];
+        foreach($this->declaration as $hash => $prod) {
+            $synthese[$prod->getLibelle()] = $prod->getSuperficieTotale();
         }
         return $synthese;
     }

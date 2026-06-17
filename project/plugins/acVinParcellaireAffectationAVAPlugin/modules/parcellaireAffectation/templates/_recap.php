@@ -29,7 +29,12 @@ if ($last) {
                             <th class="col-xs-4 text-center">Appellation</th>
                             <th class="col-xs-2 text-center">Commune</th>
                             <th class="col-xs-1 text-center">Section / Numéro</th>
-                            <th class="col-xs-2 text-center">Lieu-dit revendiqué</th>
+                            <th class="col-xs-2 text-center">Lieu-dit revendiqué
+                                <?php if(is_object($appellation) && (strpos($appellation->getHash(), 'CREMANT') === null || strpos($appellation->getHash(), 'CREMANT') === false)  && strpos($appellation->getHash(), 'LIEUDIT')): ?>
+                                    <p class="small text-muted" style="margin:0;">Lieu-dit cadastral</p>
+                                <?php endif; ?>
+                            </th>
+
                             <th class="col-xs-2 text-center">Cépage</th>
                             <th class="col-xs-1 text-center">Superficie</th>
                         </tr>
@@ -52,7 +57,10 @@ if ($last) {
                                     <?php echo $detail->getSection(); ?> <?php echo $detail->getNumeroParcelle(); ?>
                                 </td>
                                 <td>
-                                    <?php echo $detail->getLieuLibelle(); ?>
+                                    <?php echo $detail->getLieuLibelle() ? $detail->getLieuLibelle() : '<p style="margin:0;"> - </p>'; ?>
+                                    <?php if($detail->getLieuDitCadastral() && strpos($detail->getProduitHash(), 'LIEUDIT')) : ?>
+                                        <p class="small text-muted" style="margin:0;"><?php echo $detail->getLieuDitCadastral() ?></p>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <?php echo $detail->getCepageLibelle();  ?>
@@ -100,6 +108,41 @@ if ($last) {
                     }
                     ?>.</p>
     <?php endforeach; ?>
+    <div class="row">
+        <div class="col-sm-6">
+            <?php include_component('parcellaire', 'syntheseParCepages', array('parcellaire' => $parcellaire)); ?>
+        </div>
+        <div class="col-sm-6">
+            <?php $syntheseDestination = $parcellaire->getSyntheseDestination() ?>
+            <?php if (count($syntheseDestination)): ?>
+            <h3 class="mt-0">Synthèse par destinations</h3>
+
+            <table class="table table-bordered table-condensed table-striped tableParcellaire">
+              <thead>
+                <tr>
+                    <th class="col-xs-8">Destination</th>
+                    <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
+                </tr>
+              </thead>
+              <tbody>
+                  <?php       $libelledestination = array('SUR_PLACE' => 'Sur place', 'CAVE_COOPERATIVE' => 'Caves coopératives', 'NEGOCIANT' => 'Négociants'); ?>
+
+              <?php foreach($syntheseDestination as $destination => $s): ?>
+
+                <tr>
+                        <td><?php echo $libelledestination[$destination] ; ?></td>
+                        <td class="text-right"><?php echoSuperficie($s); ?></td>
+                </tr>
+              <?php endforeach;?>
+              <tr>
+                    <td><strong>Total</strong></td>
+                    <td class="text-right"><strong><?php echoSuperficie(array_sum($syntheseDestination->getRawValue())); ?></strong></td>
+                </tr>
+              </tbody>
+            </table>
+            <?php endif; ?>
+        </div>
+    </div>
 <?php else: ?>
     <p class="text-muted">
         Aucune parcelle n'a été déclarée pour cette année.

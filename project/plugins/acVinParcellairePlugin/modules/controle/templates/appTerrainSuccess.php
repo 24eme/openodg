@@ -22,7 +22,7 @@
     var aires = [];
     <?php
     $communes = [];
-    foreach ($controles as $controle) {
+    foreach ($obj_controles_for_aires as $controle) {
         $p = $controle->getParcellaire();
         if ( ! $p ) {
             continue;
@@ -67,6 +67,11 @@
     const router = createRouter({
       history: createWebHashHistory(),
       routes,
+      scrollBehavior(to, from, savedPosition) {
+        if (to.hash) {
+          return { el: to.hash }
+        }
+      }
     })
 
     const app = createApp({
@@ -102,7 +107,7 @@
         filteredControles() {
             return Object.values(this.controles).filter(c =>
                 c.agent_identifiant === this.agentIdentifiant
-            )
+            ).sort( (a,b) => { if (a.heure_tournee < b.heure_tournee) return -1; if (a.heure_tournee > b.heure_tournee) return 1; return 0;} );
         },
         savedClass() {
             if (this.isSaved) {
@@ -220,7 +225,10 @@
                 return "color: #8da42a";
             }
             return "color: #aaaaaa";
-        }
+        },
+        showWarning() {
+            return this.warnings.length > 0
+        },
     }
     templates.parcelle.data = function() {
         const route = useRoute()
@@ -236,6 +244,7 @@
           pointsDeControle: points_de_controle,
           date_tournee: date_tournee,
           isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
+          warnings: [],
         }
     };
     templates.parcelle.methods = {
@@ -249,12 +258,45 @@
             }
         },
         save() {
+            this.checkPoints();
+
+            if (this.showWarning) {
+                return
+            }
+
             this.parcelleCourante.controle.saisie = 1;
             this.parcelleCourante.needs_to_be_saved = true;
 
             this.cleanPoints();
 
             router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+        },
+        checkPoints() {
+            this.warnings = []
+            const NCPoints = []
+            const points = this.parcelleCourante.controle.points
+
+            for (const pointKey in this.parcelleCourante.controle.points) {
+                const point = this.parcelleCourante.controle.points[pointKey]
+
+                if (point.conformite === "NC") {
+                    NCPoints.push({key: pointKey, point: point})
+                }
+            }
+
+            for (const manquements in NCPoints) {
+                let atLeastOne = false;
+                const constats = NCPoints[manquements].point.constats
+                for (const constat in constats) {
+                    if (constats[constat].non_conforme) {
+                        atLeastOne = true;
+                    }
+                }
+
+                if (atLeastOne === false) {
+                    this.warnings.push({libelle: NCPoints[manquements].point.libelle, anchor: NCPoints[manquements].key})
+                }
+            }
         },
         cleanPoints() {
             const points = this.parcelleCourante.controle.points;
@@ -359,10 +401,9 @@
                       ret.nombreNC += 1;
                       for (const constatKey in point.constats) {
                           const constat = point.constats[constatKey];
-                          if (! constat.conformite) {
-                              continue ;
+                          if (constat.non_conforme) {
+                              ret.manquements.push(point.libelle + "\n" + constat.libelle + ' - ' + constatKey + "\n" + parcelleId + ' - '+ constat.observations);
                           }
-                          ret.manquements.push(point.libelle + "\n" + constat.libelle + ' - ' + constatKey + "\n" + parcelleId + ' - '+ constat.observations);
                       }
                   }
               }

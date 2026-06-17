@@ -16,10 +16,10 @@ class DeclarationParcellaire extends acCouchdbDocument {
     public function getParcelles($hashproduitFilter = null) {
         $parcelles = [];
         if ($this->declaration && count($this->declaration)) foreach ($this->declaration->getParcelles($hashproduitFilter) as $p) {
-            if (isset($parcelles[$p->getParcelleId()])) {
+            if (isset($parcelles[$p->getHash()])) {
                 throw new sfException('parcelleid '.$p->getParcelleId().' already exists');
             }
-            $parcelles[$p->getParcelleId()] = $p;
+            $parcelles[$p->getHash()] = $p;
         }
         return $parcelles;
     }
@@ -48,6 +48,9 @@ class DeclarationParcellaire extends acCouchdbDocument {
             }
             $date_end = $cm->getDateFinByDate($date);
             $this->parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $date_end);
+            if (! $this->parcellaire) {
+                $this->parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
+            }
             $this->parcellaire_origine = ($this->parcellaire) ? $this->parcellaire->_id : null;
         }
         return $this->parcellaire;

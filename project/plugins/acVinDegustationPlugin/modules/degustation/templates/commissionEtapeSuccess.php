@@ -1,7 +1,7 @@
 <?php use_helper('Float') ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
-<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_COMMISSION)); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_COMMISSION_INTERNE)); ?>
 
 <div class="page-header no-border">
     <h2>Commission</h2>
@@ -52,4 +52,4 @@
 
 <?php include_partial('degustation/convocationDegustateurs', array('degustation' => $degustation, 'infosDegustation' => $infosDegustation)) ?>
 
-<?php include_partial('degustation/pagination', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_COMMISSION, 'is_enabled' => true)); ?>
+<?php include_partial('degustation/pagination', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_COMMISSION_INTERNE, 'is_enabled' => true)); ?>

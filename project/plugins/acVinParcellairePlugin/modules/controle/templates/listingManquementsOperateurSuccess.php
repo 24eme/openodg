@@ -37,8 +37,8 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <li><a href="<?php echo url_for('controle_cloture_manquement', ['id_controle' => $controle->_id, 'id_manquement' => $numRtm, 'type' => ControleClient::CONTROLE_CLOTURE_OC]); ?>">Enregistrer une Transmission à l'OC</a></li>
-                        <li><a href="<?php echo url_for('controle_cloture_manquement', ['id_controle' => $controle->_id, 'id_manquement' => $numRtm, 'type' => ControleClient::CONTROLE_CLOTURE_LEVER]); ?>">Lever le manquements</a></li>
+                        <li><a href="<?php echo url_for('controle_cloture_manquement', ['id' => $controle->_id, 'id_manquement' => $numRtm, 'type' => ControleClient::CONTROLE_CLOTURE_OC]); ?>">Enregistrer une Transmission à l'OC</a></li>
+                        <li><a href="<?php echo url_for('controle_cloture_manquement', ['id' => $controle->_id, 'id_manquement' => $numRtm, 'type' => ControleClient::CONTROLE_CLOTURE_LEVER]); ?>">Lever le manquements</a></li>
                     </ul>
                 </div>
             <?php else: ?>

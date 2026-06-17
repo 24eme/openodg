@@ -13,7 +13,7 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
 
     public function configure() {
 		foreach ($this->getParcelles() as $key => $value) {
-			$this->embedForm($key, new ParcellaireAffectationProduitAffecteForm($value, $this->destinataire));
+			$this->embedForm($value->getParcelleId(), new ParcellaireAffectationProduitAffecteForm($value, $this->destinataire));
 		}
 
         $this->widgetSchema->setNameFormat('parcelles[%s]');
@@ -29,14 +29,15 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
         foreach($parcelles as $parcelle) {
             $parcelle->desaffecter($this->destinataire);
         }
-        foreach ($parcelles as $pid => $parcelle) {
+        foreach ($parcelles as $parcelle) {
+            $pid = $parcelle->getParcelleId();
             if (!isset($values[$pid])) {
                 continue;
             }
             $items = $values[$pid];
-            if (!isset($parcelles[$pid])){
-                continue;
-            }
+            /* if (!isset($parcelles[$pid])){ */
+            /*     continue; */
+            /* } */
             if (isset($values[$pid]['affectee']) && $values[$pid]['affectee']) {
                 $parcelle->affecter($items['superficie'], $this->destinataire);
             }
