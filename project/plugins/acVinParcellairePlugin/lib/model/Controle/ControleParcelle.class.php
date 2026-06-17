@@ -84,7 +84,7 @@ class ControleParcelle extends BaseControleParcelle
 
     public function getParcellaire()
     {
-        return ParcellaireClient::getInstance()->getLast($this->getDocument()->identifiant);
+        return $this->getDocument()->getParcellaire();
     }
 
     public function needsUpdateNoeudControle()
