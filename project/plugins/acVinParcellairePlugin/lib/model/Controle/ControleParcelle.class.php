@@ -12,9 +12,25 @@ class ControleParcelle extends BaseControleParcelle
             $data->irrigation['date_irrigation'] = $this->getInfoIrrigue();
             $data->affectation = $this->getInfoAffectation();
             $data->needs_to_be_saved = false;
-            $data->has_probleme_ecart_pieds = $this->getParcellaire()->parcelles[$this->parcelle_id]->hasProblemEcartPieds();
+            if ($this->isParcelleUpToDate()) {
+                $data->has_probleme_ecart_pieds = $this->getParcelleFromParcellaire()->hasProblemEcartPieds();
+                $data->isOutOfDate = false;
+            } else {
+                $data->has_probleme_ecart_pieds = null;
+                $data->isOutOfDate = true;
+            }
         }
         return $data;
+    }
+
+    public function isParcelleUpToDate()
+    {
+        return $this->getParcellaire()->parcelles->exist($this->parcelle_id);
+    }
+
+    public function getParcelleFromParcellaire()
+    {
+        return $this->getParcellaire()->parcelles[$this->parcelle_id];
     }
 
     public function getKMLPlacemark() {
