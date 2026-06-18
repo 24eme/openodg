@@ -2,7 +2,7 @@
 class Controle extends BaseControle implements InterfacePieceDocument
 {
     protected $config = null;
-    protected $parcellaire = null;
+    protected $parcellaire_obj = null;
     protected $declarant_document = null;
     protected $piece_document = null;
 
@@ -86,10 +86,15 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getParcellaire()
     {
-        if (!$this->parcellaire) {
-            $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant, acCouchdbClient::HYDRATE_JSON);
+        if (! isset($this->parcellaire_obj)) {
+            if (! $this->parcellaire_identifiant) {
+                $this->parcellaire_obj = ParcellaireClient::getInstance()->getLast($this->identifiant);
+                $this->parcellaire_identifiant = $this->parcellaire_obj->_id;
+            } else {
+                $this->parcellaire_obj = ParcellaireClient::getInstance()->find($this->parcellaire_identifiant);
+            }
         }
-        return $this->parcellaire;
+        return $this->parcellaire_obj;
     }
 
     public function getParcellaireParcelles()
@@ -330,8 +335,8 @@ class Controle extends BaseControle implements InterfacePieceDocument
     {
         foreach ($this->parcelles as $parcelleId => $parcelle) {
             foreach ($parcelle->controle->points as $pointId => $point) {
-                foreach($point->constats as $constat) {
-                    if ($constat->non_conforme == true) {
+                foreach($point->constats as $key => $constat) {
+                    if ($constat->non_conforme == true && ControleConfiguration::getInstance()->isTerrain($key)) {
                         return true;
                     }
                 }
@@ -600,7 +605,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
-    	return sfContext::getInstance()->getRouting()->generate('controle_liste_manquements_operateur', array('id_controle' => $id));
+        return sfContext::getInstance()->getRouting()->generate('controle_liste_manquements_operateur', array('id' => $id));
     }
 
     public static function getUrlGenerationCsvPiece($id, $admin = false) {

@@ -108,6 +108,33 @@
         <?php include_component('parcellaire', 'syntheseParCepages', array('parcellaire' => $parcellaireAffectation,  'coop' => $coop)); ?>
     </div>
     <div class="col-sm-6">
+        <?php $syntheseProduits = $parcellaireAffectation->getSyntheseProduits(); ?>
+        <?php if (count($syntheseProduits)): ?>
+        <h3 class="mt-0">Synthèse par produits</h3>
+
+        <table class="table table-bordered table-condensed table-striped tableParcellaire">
+          <thead>
+            <tr>
+                <th class="col-xs-8">Produit</th>
+                <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
+            </tr>
+          </thead>
+          <tbody>
+          <?php foreach($syntheseProduits as $libelle_produit => $s): ?>
+            <tr>
+                    <td><?php echo $libelle_produit ; ?></td>
+                    <td class="text-right"><?php echoSuperficie($s); ?></td>
+            </tr>
+          <?php endforeach;?>
+          <tr>
+                <td><strong>Total</strong></td>
+                <td class="text-right"><strong><?php echoSuperficie(array_sum($syntheseProduits->getRawValue())); ?></strong></td>
+            </tr>
+          </tbody>
+        </table>
+        <?php endif; ?>
+
+
         <?php $syntheseDestination = $parcellaireAffectation->getSyntheseDestination() ?>
         <?php if (count($syntheseDestination)): ?>
         <h3 class="mt-0">Synthèse par destinations</h3>

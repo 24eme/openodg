@@ -325,7 +325,6 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         if (strpos($hash_produit, '/genres/VDB') !== false) {
             $hash_produit = str_replace('/genres/VDB', '/genres/TRANQ', $hash_produit);
             $hash_produit = str_replace('/mentions/MA', '/mentions/DEFAUT', $hash_produit);
-            $hash_produit = str_replace('/couleurs/blanc/', '/couleurs/blanc_sec/', $hash_produit);
         }
 
         $prodconf = $this->getConfiguration($date)->get('/declaration/'.$hash_produit);

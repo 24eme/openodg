@@ -2003,4 +2003,23 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             }
             return false;
         }
+
+		public function simulateEtapes()
+		{
+            foreach ($this->lots as $lot) {
+
+                // simulation prélèvement
+
+                $lot->preleve = date('Y-m-d');
+                if (!$lot->_get('prelevement_datetime') && $lot->preleve && preg_match('/\d+-\d+-\d+/', $lot->preleve)) {
+                    $lot->prelevement_datetime = $lot->preleve.' 00:00';
+                }
+
+                // simulation attablé
+                $lot->setNumeroTable('1');
+
+                //simulation anonymisation
+                $lot->anonymizeForDegustationExternalisee();
+            }
+		}
 }

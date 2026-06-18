@@ -32,12 +32,7 @@ class importOperateursHabilitationsIGPAtlantiqueCsvTask extends sfBaseTask
         'P' => '',
     ];
 
-    private static $familles = [
-        'PVC' => EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR,
-        'VC' => EtablissementFamilles::FAMILLE_COOPERATIVE,
-        'C' => EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR,
-        'P' => EtablissementFamilles::FAMILLE_PRODUCTEUR,
-    ];
+    private $familles = [];
 
     private static $activites = [
         'PVC' => [HabilitationClient::ACTIVITE_PRODUCTEUR, HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_CONDITIONNEUR],
@@ -68,6 +63,13 @@ EOF;
 
     protected function execute($arguments = array(), $options = array())
     {
+        self::$familles = [
+            'PVC' => EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR,
+            'VC' => EtablissementFamilles::FAMILLE_COOPERATIVE,
+            'C' => EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR,
+            'P' => EtablissementFamilles::FAMILLE_PRODUCTEUR,
+        ];
+
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();

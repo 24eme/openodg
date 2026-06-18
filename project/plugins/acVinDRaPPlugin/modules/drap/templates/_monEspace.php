@@ -34,7 +34,7 @@ endif; ?>
       <div class="panel-body">
           <p class="explications">Les données de votre parcellaire ne sont pas présente sur la plateforme.<br/><br/>Il ne vous est donc pas possible de faire votre déclaration de renonciation à produire : <a href="<?php echo url_for("parcellaire_declarant", $etablissement) ?>">Voir le parcellaire</a></p>
       </div>
-      <?php else:  ?>
+      <?php else: ?>
     <div class="panel-body">
         <p class="explications">Identifier vos parcelles en renonciation à produire.</p>
         <div class="actions">

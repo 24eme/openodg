@@ -135,6 +135,9 @@ class controleActions extends sfActions
 
     public function executeAppOrga(sfWebRequest $request)
     {
+        ini_set('memory_limit', '512M');
+        set_time_limit(60);
+
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->json = json_encode($this->getDataControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
@@ -143,6 +146,9 @@ class controleActions extends sfActions
 
     public function executeAppTerrain(sfWebRequest $request)
     {
+        ini_set('memory_limit', '512M');
+        set_time_limit(60);
+
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->json = json_encode($this->getDataControlesByDateTourneeAndAgentAndSetControle($this->date_tournee, $this->agent_identifiant), JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
@@ -189,6 +195,7 @@ class controleActions extends sfActions
         $this->date_tournee = $request->getParameter('date');
         $this->agent_identifiant = $request->getParameter('agent_identifiant');
         $this->controles = ControleClient::getInstance()->findAllByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant);
+        $this->mail_to_identifiant = $request->getParameter('mail_to_identifiant');
     }
 
     public function executeListeManquementsControle(sfWebRequest $request)
@@ -267,19 +274,58 @@ class controleActions extends sfActions
 
     public function executeManquementPdf(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $this->controle = $this->getRoute()->getControle();
         $this->document = new ExportControleManquementPDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
         return $this->executePdf($request);
     }
 
     public function executeExportControlePdf(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
+        $this->controle = $this->getRoute()->getControle();
         $this->document = new ExportControlePDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
         return $this->executePdf($request);
     }
 
-    public function executePDF(sfWebRequest $request) {
+    public function executePdfAuth(sfWebRequest $request)
+    {
+        $this->controle = $this->getRoute()->getControle();
+        if (!UrlSecurity::verifyAuthKey($request->getParameter('auth'), $this->controle->_id)) {
+            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+        }
+        set_time_limit(180);
+
+        $this->document_controle = new ExportControlePDF($this->controle, $this->controle->identifiant);
+        $this->document_controle->setPartialFunction(array($this, 'getPartial'));
+        $this->document_controle->generate();
+        $this->document_controle->output();
+
+        $tmpfilecontrole = tempnam(sys_get_temp_dir(), "controle");
+        file_put_contents($tmpfilecontrole, $this->document_controle->output());
+
+        $this->document_manquements = new ExportControleManquementPDF($this->controle, $this->controle->identifiant);
+        $this->document_manquements->setPartialFunction(array($this, 'getPartial'));
+        $this->document_manquements->generate();
+        $this->document_manquements->output();
+
+        $tmpfilemanquements = tempnam(sys_get_temp_dir(), "manquement");
+        file_put_contents($tmpfilemanquements, $this->document_manquements->output());
+
+        $tmpfileconcat = tempnam(sys_get_temp_dir(), "concat");
+        shell_exec(sprintf("pdftk %s %s cat output %s", $tmpfilecontrole, $tmpfilemanquements, $tmpfileconcat));
+
+        $response = $this->getResponse();
+        $response->setHttpHeader('Content-Type', 'application/pdf');
+        $response->setHttpHeader('Content-disposition', 'attachment; filename="'.$this->contrat->_id.'rapport_controle.pdf"');
+        $response->setHttpHeader('Content-Transfer-Encoding', 'binary');
+        $response->setHttpHeader('Content-Length', filesize($tmpfileconcat));
+        $response->setHttpHeader('Pragma', '');
+        $response->setHttpHeader('Cache-Control', 'public');
+        $response->setHttpHeader('Expires', '0');
+
+        return $this->renderText(file_get_contents($tmpfileconcat));
+    }
+
+    protected function executePDF(sfWebRequest $request) {
         set_time_limit(180);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
@@ -301,35 +347,34 @@ class controleActions extends sfActions
 
     public function executeListingManquementsOperateur(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->sorted_manquements = $this->controle->getSortedManquementsActif();
     }
 
     public function executeClotureManquement(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $this->controle->manquements[$request->getParameter('id_manquement')]->cloture_date = date('Y-m-d');
         $this->controle->manquements[$request->getParameter('id_manquement')]->cloture_type = $request->getParameter('type', ControleClient::CONTROLE_CLOTURE_LEVER);
         $this->controle->save();
-        return $this->redirect('controle_liste_manquements_operateur', array('id_controle' => $this->controle->_id));
+        return $this->redirect('controle_liste_manquements_operateur', array('id' => $this->controle->_id));
     }
 
     public function executeMailPrevisualisation(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
-
-        $this->date_tournee = $this->controle->date_tournee;
-        $this->agent_identifiant = $this->controle->agent_identifiant;
-        $this->controles = ControleClient::getInstance()->findAllByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant);
-
         $this->popup = true;
+        $this->preview_controle = ControleClient::getInstance()->find($request->getParameter('id'));
+
+        $this->date_tournee = $this->preview_controle->date_tournee;
+        $this->agent_identifiant = $this->preview_controle->agent_identifiant;
+        $this->controles = ControleClient::getInstance()->findAllByDateTourneeAndAgent($this->date_tournee, $this->agent_identifiant);
 
         $this->setTemplate('listeOperateursTournee');
     }
 
     public function executeSetEnvoiMail(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $identifiant = $request->getParameter('identifiant');
         $mailto = $identifiant;
         $date = $request->getParameter('envoye', date('Y-m-d H:i:s'));
@@ -351,7 +396,7 @@ class controleActions extends sfActions
 
     public function executeMailToNotification(sfWebRequest $request)
     {
-        $this->controle = ControleClient::getInstance()->find($request->getParameter('id_controle'));
+        $this->controle = ControleClient::getInstance()->find($request->getParameter('id'));
         $identifiant = $request->getParameter('identifiant');
 
         sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date', 'Partial'));
@@ -368,7 +413,7 @@ class controleActions extends sfActions
         $body = html_entity_decode(str_replace("\n", "%0A", strip_tags(get_partial('controle/notificationEmail', [
             'controle' => $this->controle,
             'identifiant' => $identifiant,
-            'agent' => CompteClient::getInstance()->find($controle->agent_identifiant),
+            'agent' => CompteClient::getInstance()->find($this->controle->agent_identifiant),
         ]))), ENT_QUOTES | ENT_XML1, 'UTF-8');
 
         $mailto = "mailto:$email?".$cc."subject=$subject&body=$body";

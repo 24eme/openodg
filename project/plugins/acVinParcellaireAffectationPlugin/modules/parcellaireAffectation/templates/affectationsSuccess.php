@@ -1,7 +1,7 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Date') ?>
-
-<?php if(isset($coop)): ?>
+<?php $coop_id = (isset($coop)) ? explode('-', $coop)[1] : null; ?>
+<?php if($coop_id): ?>
     <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireAffectation]); ?>
 <?php else: ?>
     <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
@@ -27,11 +27,16 @@
     </div>
 <?php endif; ?>
 
-<?php include_partial('parcellaireAffectation/destinataires', ['destinataires' => $destinataires, 'produits' => $produits, 'parcellaireAffectation' => $parcellaireAffectation, 'destinataire' => $destinataire, 'etape' => $etape, 'coop' => $coop]); ?>
+<?php include_partial('parcellaireAffectation/destinataires', ['destinataires' => $destinataires, 'produits' => $produits, 'parcellaireAffectation' => $parcellaireAffectation, 'destinataire' => $destinataire, 'etape' => $etape, 'coop' => $coop, 'hashproduit' => $hashproduit]); ?>
 
 <form id="validation-form" action="" method="post" class="form-horizontal">
     <?php if (!$parcellaireAffectation->hasDgc() && $hashproduit): ?>
-        <h3>Affectation <?php echo $produits[$hashproduit]; ?></h3>
+        <h3>
+            Affectation <?php echo $produits[$hashproduit]; ?>
+            <?php if($coop_id): ?>
+            <span class="text-muted">destiné à la coop</span>
+            <?php endif; ?>
+        </h3>
     <?php endif; ?>
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
