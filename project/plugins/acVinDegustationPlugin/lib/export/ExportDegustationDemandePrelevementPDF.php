@@ -45,7 +45,7 @@ class ExportDegustationDemandePrelevementPDF extends ExportDeclarationLotsPDF {
             $filename .= '_' . $this->degustation->_rev;
         }
 
-        return $filename . '.pdf';;
+        return $filename . '.pdf';
     }
 
     protected function getFooterText() {
