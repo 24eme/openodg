@@ -1457,6 +1457,13 @@ class degustationActions extends sfActions {
       return $this->mutualExcecutePDF($request);
     }
 
+    public function executeDemandePrelevementPDF(sfWebRequest $request){
+      $this->degustation = $this->getRoute()->getDegustation();
+      $this->redirectIfIsNotAnonymized();
+      $this->document = new ExportDegustationDemandePrelevementPDF($this->degustation,$request->getParameter('output','pdf'),false);
+      return $this->mutualExcecutePDF($request);
+    }
+
     private function mutualExcecutePDF(sfWebRequest $request) {
         $this->document->setPartialFunction(array($this, 'getPartial'));
         if ($request->getParameter('force')) {

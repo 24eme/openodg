@@ -379,7 +379,10 @@ class ParcellaireClient extends acCouchdbClient {
         if (isset($filter_destination) && $filter_destination) {
             $coop_id = explode('-', $filter_destination)[1];
         }
-        foreach($parcellairedoc->getParcelles() as $p) {
+
+        $parcellairedocParcelles = method_exists($parcellairedoc, 'getParcelles') ? $parcellairedoc->getParcelles() : $parcellairedoc->declaration->getParcelles();
+
+        foreach($parcellairedocParcelles as $p) {
             if ($coop_id && $p->exist('destinations') && !$p->destinations->exist($coop_id)) {
                 continue;
             }
@@ -397,17 +400,34 @@ class ParcellaireClient extends acCouchdbClient {
             if ($filter_insee && !in_array($p->code_commune, $filter_insee)) {
                 continue;
             }
-            $cepage = $p->getCepage();
-            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && $p->isJeunesVignes()) {
+
+            if (! method_exists($parcellairedoc, 'getParcelles')) {
+                foreach ($parcellairedoc->getParcellaire()->declaration as $hash => $parcelleParcellaire) {
+                    foreach($parcelleParcellaire->detail as $detailParcelleParcellaire) {
+                        if (($detailParcelleParcellaire->section == $p->section) && ($detailParcelleParcellaire->numero_parcelle == $p->numero_parcelle)) {
+                            $parentParcelleFromParcellaire = $detailParcelleParcellaire;
+                            $p->parcelle_id = $parentParcelleFromParcellaire->getParcelleId();
+                        }
+                    }
+                }
+            }
+
+            $cepage = is_string($p->getCepage()) ? $p->getCepage() : $parentParcelleFromParcellaire->getCepage();
+
+            if ((ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && method_exists($p, 'isJeunesVignes')  && $p->isJeunesVignes() != null)  || (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && $p->getParcelleParcellaire() != null && $p->getParcelleParcellaire()->isJeunesVignes())) {
                 $cepage .= ' - jeunes vignes';
             }
+
             if (!isset($synthese[$cepage])) {
                 $synthese[$cepage] = array();
                 $synthese[$cepage]['superficie'] = 0;
                 $synthese[$cepage]['idus'] = [];
             }
+
+            $parcelleId = $p->getParcelleId() != null ? $p->getParcelleId() : $p->parcelle_id;
+
             $synthese[$cepage]['superficie'] = $synthese[$cepage]['superficie'] + $p->superficie;
-            $synthese[$cepage]['idus'][$p->getParcelleId()] = $p->superficie;
+            $synthese[$cepage]['idus'][$parcelleId] = $p->superficie;
         }
         ksort($synthese);
         return $synthese;

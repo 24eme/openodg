@@ -502,6 +502,16 @@ degustation_etiquette_csv:
   requirements:
     sf_method: [get]
 
+degustation_demande_prelevement_pdf:
+  url: /degustation/:id/demandePrelevement/pdf
+  param: { module: degustation, action: demandePrelevementPDF }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
 degustation_etiquettes_tables_echantillons_par_anonymat_pdf:
   url: /degustation/:id/etiquettesAnonymesParAnonymat/pdf
   param: { module: degustation, action: etiquettesTablesEchantillonsAnonymesPDF, tri: numero_anonymat }

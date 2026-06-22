@@ -15,7 +15,7 @@
         <h4>Tiers</h4>
         <ul class="list-group">
             <li class="list-group-item">
-                <a id="btn_csv_etiquette" href="<?php echo url_for('degustation_etiquette_csv', $degustation) ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Tableur des lots pour les prestataires</a>
+                <a id="btn_csv_etiquette" href="<?php echo url_for('degustation_demande_prelevement_pdf', $degustation) ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Document demande de prélèvement</a>
             </li>
         </ul>
     </div>
