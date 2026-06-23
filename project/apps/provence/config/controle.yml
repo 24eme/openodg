@@ -320,7 +320,7 @@ all:
               mesure_odg: Avertissement
               modalite_verif_retour_conformite: Contrôle supplémentaire à la campagne suivante
               mesure_odg_ou_avpi: Le rang et l'inter rang doivent être maintenus propres (désherbés, labourés, enherbement naturel maitrisé ou couvert végétal controlé, absence d'adventices concurrentiels)
-              delais: Au cours de l'année 2026
+              delais: NA
               terrain: true
               documentaire: false
         fiche_cvi:
