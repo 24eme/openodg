@@ -65,7 +65,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
             </div>
         <?php endif; ?>
         <div class="col-xs-12">
-			<p style="margin-top: -10px; margin-bottom: 5px;"><a href="javascript:void(0)" id="btn-switchactive-all" data-status="affecter" data-target="#listes_cepages" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Séléctionner toutes les parcelles" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Déséléctionner toutes les parcelles"><span class='glyphicon glyphicon-check'></span>&nbsp;Séléctionner toutes les parcelles</a></p>
+			<p style="margin-top: -10px; margin-bottom: 5px;"><a href="javascript:void(0)" id="btn-switchactive-all" data-status="affecter" data-target="#listes_cepages" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Sélectionner toutes les parcelles" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Déséléctionner toutes les parcelles"><span class='glyphicon glyphicon-check'></span>&nbsp;Sélectionner toutes les parcelles</a></p>
             <div id="listes_cepages" class="list-group">
                 <?php if (count($parcelles)) : ?>
                     <table class="table table-striped tableParcellaire">
