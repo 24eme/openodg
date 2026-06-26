@@ -65,7 +65,12 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
             </div>
         <?php endif; ?>
         <div class="col-xs-12">
-			<p style="margin-top: -10px; margin-bottom: 5px;"><a href="javascript:void(0)" id="btn-switchactive-all" data-status="affecter" data-target="#listes_cepages" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Sélectionner toutes les parcelles" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles"><span class='glyphicon glyphicon-check'></span>&nbsp;Sélectionner toutes les parcelles</a></p>
+			<p style="margin-top: -10px; margin-bottom: 5px;"><a href="javascript:void(0)" id="btn-switchactive-all" data-status="affecter" data-target="#listes_cepages" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Sélectionner toutes les parcelles (même celles filtrées)" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles (même celles filtrées)"><span class='glyphicon glyphicon-check'></span>&nbsp;Sélectionner toutes les parcelles (même celles filtrées)</a></p>
+
+            <div>
+                <input type="text" name="recherche" id="parcelles_filter" class="form-control" placeholder="Filtrer par cépage, commune, appellation, ..." aria-describedby="" value="" data-target="table.tableParcellaire" autocomplete="off">
+            </div>
+
             <div id="listes_cepages" class="list-group">
                 <?php if (count($parcelles)) : ?>
                     <table class="table table-striped tableParcellaire">
