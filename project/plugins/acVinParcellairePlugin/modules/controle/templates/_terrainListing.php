@@ -19,6 +19,8 @@
                         <label class="label label-primary ml-2" :class="{ 'label-success': controle.audit.saisie == 1 }">
                             Audit&nbsp;<span v-if="controle.audit.saisie == 1" class="glyphicon glyphicon-ok"></span><span v-else class="glyphicon glyphicon-remove"></span>
                         </label>
+                        <label v-if="nbParcellesOutOfDate(controle) > 0" class="label label-warning ml-1">{{ nbParcellesOutOfDate(controle) }} parcelles ne sont pas à jour&nbsp;<span class="glyphicon glyphicon-warning-sign"></span></label>
+
                     </div>
             </div>
             <div class="col-xs-2 text-right" :class="{ 'text-primary': controle.audit.saisie != 1 }">
