@@ -133,6 +133,9 @@
           const [y, m, d] = items[0].date_tournee.split('-');
           const agent = items[0].agent_libelle;
           return `Tournée du ${d}/${m}/${y} par ${agent}`;
+      },
+      nbParcellesOutOfDate(controleCible) {
+          return Object.values(controleCible.parcelles).filter(parcelle => parcelle.isOutOfDate === true).length;
       }
     };
 

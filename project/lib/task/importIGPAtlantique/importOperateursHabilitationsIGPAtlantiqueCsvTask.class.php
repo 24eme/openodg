@@ -7,17 +7,21 @@ class importOperateursHabilitationsIGPAtlantiqueCsvTask extends sfBaseTask
     const CSV_NUM_OPERATEUR = 1;
     const CSV_DATE_HABILITATION = 2;
     const CSV_NOM_OPERATEUR = 3;
-    const CSV_ADRESSE = 4;
-    const CSV_CP_COMMUNE = 5;
-    const CSV_EMAIL = 6;
-    const CSV_TEL = 7;
-    const CSV_FAX = 8;
-    const CSV_RESPONSABLE = 9;
-    const CSV_NOCVI = 10;
-    const CSV_SIRET = 11;
-    const CSV_AUTRE = 12;
-    const CSV_OBSERVATION = 13;
-    const CSV_EXTRA_TYPE_OPERATEUR = 14;
+    const CSV_CHAI = 4;
+    const CSV_ADRESSE = 5;
+    const CSV_CP = 6;
+    const CSV_COMMUNE = 7;
+    const CSV_EMAIL = 8;
+    const CSV_TEL = 9;
+    const CSV_MOBILE = 10;
+    const CSV_RESPONSABLE_NOM = 11;
+    const CSV_RESPONSABLE_PRENOM = 12;
+    const CSV_NOCVI = 13;
+    const CSV_SIRET = 14;
+    const CSV_AUTRE = 15;
+    const CSV_HABILITATION = 16;
+    const CSV_OBSERVATION = 17;
+    const CSV_EXTRA_TYPE_OPERATEUR = 18;
 
     const hash_produit = 'certifications/IGP/genres/TRANQ/appellations/ATL';
 
@@ -133,17 +137,10 @@ EOF;
             $societe = $newSociete;
             $societe->statut = SocieteClient::STATUT_ACTIF;
             $societe->siege->adresse = $data[self::CSV_ADRESSE] ?? null;
-            if (preg_match('/^(\d{5})\s+(.+)$/', $data[self::CSV_CP_COMMUNE], $matches)) {
-                $societe->siege->code_postal = $matches[1];
-                $societe->siege->commune = $matches[2];
-            }
-            $tel = Phone::format($data[self::CSV_TEL] ?? null);
-            if ($tel && (strpos($tel, '06') === 0||strpos($tel, '07') === 0)) {
-                $societe->telephone_mobile = $tel;
-            }else{
-                $societe->telephone_bureau = $tel;
-            }
-            $societe->fax = Phone::format($data[self::CSV_FAX] ?? null);
+            $societe->siege->code_postal = $data[self::CSV_CP] ?? null;
+            $societe->siege->commune = $data[self::CSV_COMMUNE] ?? null;
+            $societe->telephone_mobile = Phone::format($data[self::CSV_TEL] ?? null);
+            $societe->telephone_bureau = Phone::format($data[self::CSV_MOBILE] ?? null);
             $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
 
             $cvi = EtablissementClient::repairCVI($data[self::CSV_NOCVI]);
@@ -155,6 +152,7 @@ EOF;
                 return false;
             }
         }
+        $this->importContactAssocie($societe, $data);
 
         if(!isset(self::$familles[$data[self::CSV_EXTRA_TYPE_OPERATEUR]])) {
             echo "ERROR: Famille non reconnue : ".$data[self::CSV_EXTRA_TYPE_OPERATEUR]."\n";
@@ -171,6 +169,7 @@ EOF;
         }
 
         $etablissement->cvi = $cvi;
+        $etablissement->num_interne = trim($data[self::CSV_NUM_OPERATEUR]) ?? null;
         $etablissement->commentaire = trim($data[self::CSV_OBSERVATION]) ?? null;
         $societe->pushAdresseTo($etablissement);
         $societe->pushContactTo($etablissement);
@@ -187,9 +186,9 @@ EOF;
     private function importHabilitation($etablissement, $data, $suspendu = false)
     {
 
-        $date = DateTime::createFromFormat('d-m-y',$data[self::CSV_DATE_HABILITATION]);
+        $date = DateTime::createFromFormat('d/m/Y',$data[self::CSV_DATE_HABILITATION]);
         if (!$date) {
-            $date = DateTime::createFromFormat('d-m-y',$data[self::CSV_DATE_CREATION]);
+            $date = DateTime::createFromFormat('d/m/Y',$data[self::CSV_DATE_CREATION]);
         }
         if (!$date) {
             echo "ERROR: Aucune date pour habilitation : ".implode(';',$data)."\n";
@@ -198,10 +197,23 @@ EOF;
 
         $activites = self::$activites[$data[self::CSV_EXTRA_TYPE_OPERATEUR]] ?? [];
 
-        if($suspendu) {
+        $habilitation = KeyInflector::unaccent($data[self::CSV_HABILITATION]);
+        $hasRetrait = stripos($habilitation, 'retrait') !== false || stripos($habilitation, 'arret') !== false;
+        if($suspendu||$hasRetrait) {
             HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, date('Y-m-d'), $activites, [], HabilitationClient::STATUT_RETRAIT);
         } else {
             HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, $date->format('Y-m-d'), $activites, [], HabilitationClient::STATUT_HABILITE);
+        }
+    }
+
+    private function importContactAssocie($societe, $data)
+    {
+        if (trim($data[self::CSV_RESPONSABLE_NOM])||trim($data[self::CSV_RESPONSABLE_PRENOM])) {
+            $contact = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societe);
+            $contact->nom = trim($data[self::CSV_RESPONSABLE_NOM]);
+            $contact->prenom = trim($data[self::CSV_RESPONSABLE_PRENOM]);
+            $contact->fonction = 'Responsable';
+            $contact->save();
         }
     }
 }

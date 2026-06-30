@@ -67,10 +67,11 @@
 <script>
     document.querySelectorAll("input[class^=valeur-superficie]").forEach(function (input) {
         input.addEventListener("change", (event) => {
-            if (parseFloat(input.value || 0) < parseFloat(input.placeholder || 0)) {
+            if ( parseFloat(input.value || 0) > 0 && parseFloat(input.value || 0) < parseFloat(input.placeholder || 0)) {
                 input.parentNode.querySelector(".part-superficie").innerText = "Partielle";
             } else {
                 input.parentNode.querySelector(".part-superficie").innerText = "Totale";
+                input.value = input.placeholder;
             }
         })
         input.dispatchEvent(new Event("change"));
