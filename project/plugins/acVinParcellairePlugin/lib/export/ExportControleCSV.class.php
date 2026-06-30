@@ -8,7 +8,7 @@ class ExportControleCSV implements InterfaceDeclarationExportCsv
 
     public static function getHeaderCsv()
     {
-        return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Type tournée;Secteur;Point de contrôle;Manquement Code;Manquement Libelle;Observation;Délais;Date Constat;Date Notification;Cloture Date;Cloture type;Actif;Parcelle concernée;Agent identifiant;Agent Nom;Date;Date Tournée;Heure Tournée;Date de notification;doc id".PHP_EOL;
+        return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Type tournée;Secteur;Point de contrôle;Manquement Code;Manquement Libelle;Observation;Délais;Date Constat;Date Notification;Cloture Date;Cloture type;Actif;Parcelle concernée;Agent identifiant;Agent Nom;Date;Date Tournée;Heure Tournée;Date de notification;Statut;doc id".PHP_EOL;
     }
 
     public function __construct($doc, $header = true, $region = null) {
@@ -57,6 +57,7 @@ class ExportControleCSV implements InterfaceDeclarationExportCsv
             $this->doc->date_tournee,
             $this->doc->heure_tournee,
             $this->doc->notification_date,
+            $this->doc->mouvements_statuts[0][2],
             $this->doc->_id,
         ];
 
