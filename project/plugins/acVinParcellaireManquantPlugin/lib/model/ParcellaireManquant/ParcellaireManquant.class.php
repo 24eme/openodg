@@ -96,7 +96,7 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
       return true;
   }
 
-    public function setParcellesFromParcellaire(array $hashes) {
+    public function setParcellesFromParcellaire(array $hashes, $reset = true) {
         parent::setParcellesFromParcellaire($hashes);
         $parcellaireparcelles = $this->getParcellaire()->getParcelles();
         foreach($this->getDeclarationParcelles() as $pid => $p) {

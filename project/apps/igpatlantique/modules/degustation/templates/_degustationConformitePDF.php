@@ -78,10 +78,6 @@
 
 <table>
   <tr>
-    <td>Pour votre information, à titre expérimental le(s) lot(s) est/sont réputé(s) conforme(s) à la /les dénomination(s) revendiquée(s) pour 18 mois à compter de la date de la commission d'évaluation organoleptique.</td>
-  </tr>
-  <br/>
-  <tr>
     <td>Nous vous invitons à nous signaler toute modification ultérieure dans la constitution ou la destination finale de ces lots.</td>
   </tr>
   <br/>

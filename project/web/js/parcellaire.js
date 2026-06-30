@@ -177,4 +177,19 @@ $(document).ready(function()
       var event = new Event('change');
       el.dispatchEvent(event);
     });
+
+    const parcellaireFilter = document.querySelector('input#parcelles_filter')
+    if (parcellaireFilter) {
+        const parcellaireTable = document.querySelector(parcellaireFilter.dataset.target)
+        parcellaireFilter.addEventListener('input', function (e) {
+            const terms = document.getElementById(e.target.id).value
+            parcellaireTable.querySelectorAll('tbody tr').forEach(function (tr) {
+                if (tr.textContent.toLowerCase().includes(terms.toLowerCase())) {
+                    tr.classList.remove('hidden')
+                } else {
+                    tr.classList.add('hidden')
+                }
+            })
+        })
+    }
 });
