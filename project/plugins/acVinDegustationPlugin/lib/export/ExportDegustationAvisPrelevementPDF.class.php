@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationDemandePrelevementPDF extends ExportDeclarationLotsPDF {
+class ExportDegustationAvisPrelevementPDF extends ExportDeclarationLotsPDF {
 
     protected $degustation = null;
     protected $etablissement = null;
@@ -14,21 +14,9 @@ class ExportDegustationDemandePrelevementPDF extends ExportDeclarationLotsPDF {
 
     public function create() {
         $lots = array();
-        $lots = $this->degustation->getLotsByOperateursAndFamille();
-        foreach ($lots as $famille => &$operateurs) {
-            foreach ($operateurs as &$lotsOperateur) {
-                usort($lotsOperateur, function($a, $b) {
-                    $typeCompare = strcmp($a->destination_type, $b->destination_type);
-                    if ($typeCompare !== 0) {
-                        return $typeCompare;
-                    }
-                    return strcmp($a->destination_date, $b->destination_date);
-                });
-            }
-        }
-
+        $lots = $this->degustation->getLotsByOperateurs(EtablissementClient::getInstance()->find($this->etablissement)->identifiant);
         $footer= sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
-        $this->printable_document->addPage($this->getPartial('degustation/demandePrelevementPDF', array("footer" => $footer, 'degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lots' => $lots)));
+        $this->printable_document->addPage($this->getPartial('degustation/avisPrelevementPDF', array("footer" => $footer, 'degustation' => $this->degustation, 'etablissement' => EtablissementClient::getInstance()->find($this->etablissement)->raison_sociale, 'lots' => $lots)));
     }
 
     protected function getHeaderTitle() {
