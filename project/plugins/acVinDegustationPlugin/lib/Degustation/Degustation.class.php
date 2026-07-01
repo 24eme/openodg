@@ -645,15 +645,29 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return $lots;
     }
 
-    public function getLotsByOperateursAndFamille()
+	public function getLotsByOperateursAndActivite()
+	{
+		$lotsByOperateurs = $this->getLotsByOperateurs();
+		$lots = array();
+		foreach ($lotsByOperateurs as $operateur => $lotsOperateur) {
+			$habilitationDeclarant = HabilitationClient::getInstance()->getLastHabilitation($operateur);
+			$lots[$this->buildCleHabilitations($habilitationDeclarant->getActivitesHabilites())][$operateur] = $lotsOperateur;
+		}
+		return $lots;
+	}
+
+    public function buildCleHabilitations($habilitations)
     {
-        $lotsByOperateurs = $this->getLotsByOperateurs();
-        $lots = array();
-        foreach ($lotsByOperateurs as $operateur => $lotsOperateur) {
-            $declarant = EtablissementClient::getInstance()->findByIdentifiant($operateur);
-            $lots[$declarant->getFamille()][$operateur] = $lotsOperateur;
-        }
-        return $lots;
+        $normalise = array_intersect(['PRODUCTEUR', 'VINIFICATEUR', 'CONDITIONNEUR'], $habilitations);
+        $cle = implode(' ', $normalise);
+
+        $casAcceptes = [
+            'PRODUCTEUR VINIFICATEUR CONDITIONNEUR',
+            'VINIFICATEUR CONDITIONNEUR',
+            'CONDITIONNEUR',
+        ];
+
+        return in_array($cle, $casAcceptes, true) ? $cle : null;
     }
 
 	public function areAllLotsSaisis(){
