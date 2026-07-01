@@ -44,15 +44,15 @@ Dans ce schéma, nous vous demandons de bien vouloir procéder à cette opérati
 <br/>
 
 <ul>
-<?php foreach ($lots as $famille => $operateurs): ?>
+<?php foreach ($lots as $activite => $operateurs): ?>
     <br/>
     <li>
-        <?php echo EtablissementFamilles::$familles[$famille]; ?>
+        <u><b><?php echo $activite ?></b></u>
         <div>
             <?php foreach ($operateurs as $lots): ?>
                 <br/>
                 <br/>
-<b>» <?php echo $lots[0]->declarant_nom ?></b>
+                <b>» <?php echo $lots[0]->declarant_nom ?></b>
                 <br/>
                 Adresse entrepôt : <?php echo $lots[0]->adresse_logement ?>
                 <br/>
@@ -84,7 +84,9 @@ Dans ce schéma, nous vous demandons de bien vouloir procéder à cette opérati
                     </tbody>
                 </table>
                 <br/>
-                <small>Conformément au Plan de contrôle de l’ODG IGP ATLANTIQUE, les dégustations devront avoir lieu au plus tard <strong>12 jours ouvrés</strong> après la date d'envoi de l'avis de prélèvement.</small>
+                <?php if ($activite !== 'CONDITIONNEUR'): ?>
+                    <small>Conformément au Plan de contrôle de l’ODG IGP ATLANTIQUE, les dégustations devront avoir lieu au plus tard <strong>12 jours ouvrés</strong> après la date d'envoi de l'avis de prélèvement.</small>
+                <?php endif; ?>
             <?php endforeach; ?>
         </div>
     </li>
