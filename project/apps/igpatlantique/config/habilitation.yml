@@ -2,8 +2,28 @@ all:
   configuration:
     habilitation:
       activites:
-         PRODUCTEUR: "Producteur de raisins"
-         VINIFICATEUR: "Vinificateur"
-         CONDITIONNEUR: "Conditionneur"
-         NEGOCIANT: "Négociant"
-         VRAC: "Vrac export"
+        PRODUCTEUR: "Producteur de raisins"
+        VINIFICATEUR: "Vinificateur"
+        CONDITIONNEUR: "Conditionneur"
+        NEGOCIANT: "Négociant"
+        VRAC: "Vrac export"
+      demande:
+        statuts:
+          DEPOT: "Dépôt"
+          RELANCE_1: "Relance n°1"
+          RELANCE_2: "Relance n°2"
+          RELANCE_3: "Relance n°3"
+          COMPLET: "Complet"
+          ENREGISTREMENT: "Enregistrement"
+          TRANSMIS_CI: "Transmis au Contrôle Interne"
+          TRAITE_CI: "Traité par le Contrôle Interne"
+          TRANSMIS_ODG: "Transmis à une autre ODG"
+          VALIDE_ODG: "Validé par une autre ODG"
+          REFUSE_ODG: "Refusé par une autre ODG"
+          TRANSMIS_INAO: "Transmis à l'INAO"
+          VALIDE_INAO: "Validé par l'INAO"
+          REFUSE_INAO: "Refusé par l'INAO"
+          SUSPENDU_INAO: "Suspendu par l'INAO"
+          VALIDE: "Validé"
+          REFUSE: "Refusé"
+          ANNULE: "Annulé"

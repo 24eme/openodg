@@ -257,7 +257,7 @@
         const controleCourant = controles[route.params.id];
 
         const parcelles = [];
-        if (Object.keys(controleCourant.parcellaire_parcelles).length)
+        if (Object.keys(controleCourant.parcellaire_parcelles).length && controleCourant.parcellaire_geojson.hasOwnProperty("features"))
           for (const [idFeature, feature] of Object.entries(controleCourant.parcellaire_geojson.features)) {
             feature.properties.controleId = controleCourant._id;
             parcelles.push(feature);

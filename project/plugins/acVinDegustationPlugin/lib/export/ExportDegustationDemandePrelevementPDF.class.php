@@ -14,8 +14,8 @@ class ExportDegustationDemandePrelevementPDF extends ExportDeclarationLotsPDF {
 
     public function create() {
         $lots = array();
-        $lots = $this->degustation->getLotsByOperateursAndFamille();
-        foreach ($lots as $famille => &$operateurs) {
+        $lots = $this->degustation->getLotsByOperateursAndActivite();
+        foreach ($lots as $activite => &$operateurs) {
             foreach ($operateurs as &$lotsOperateur) {
                 usort($lotsOperateur, function($a, $b) {
                     $typeCompare = strcmp($a->destination_type, $b->destination_type);
@@ -27,7 +27,7 @@ class ExportDegustationDemandePrelevementPDF extends ExportDeclarationLotsPDF {
             }
         }
 
-        $footer= sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
+        $footer = sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
         $this->printable_document->addPage($this->getPartial('degustation/demandePrelevementPDF', array("footer" => $footer, 'degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lots' => $lots)));
     }
 
