@@ -63,7 +63,7 @@ EOF;
 
     protected function execute($arguments = array(), $options = array())
     {
-        self::$familles = [
+        $this->familles = [
             'PVC' => EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR,
             'VC' => EtablissementFamilles::FAMILLE_COOPERATIVE,
             'C' => EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR,
@@ -154,12 +154,12 @@ EOF;
         }
         $this->importContactAssocie($societe, $data);
 
-        if(!isset(self::$familles[$data[self::CSV_EXTRA_TYPE_OPERATEUR]])) {
+        if(!isset($this->familles[$data[self::CSV_EXTRA_TYPE_OPERATEUR]])) {
             echo "ERROR: Famille non reconnue : ".$data[self::CSV_EXTRA_TYPE_OPERATEUR]."\n";
             return false;
         }
 
-        $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, self::$familles[$data[self::CSV_EXTRA_TYPE_OPERATEUR]]);
+        $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $this->familles[$data[self::CSV_EXTRA_TYPE_OPERATEUR]]);
         $etablissement->nom = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
         $etablissement->region = 'IGPATLANTIQUE';
 
@@ -171,6 +171,15 @@ EOF;
         $etablissement->cvi = $cvi;
         $etablissement->num_interne = trim($data[self::CSV_NUM_OPERATEUR]) ?? null;
         $etablissement->commentaire = trim($data[self::CSV_OBSERVATION]) ?? null;
+
+        if ($data[self::CSV_EXTRA_TYPE_OPERATEUR] === 'P' && ($cavecoop = trim($data[self::CSV_AUTRE]))) {
+            if ($relation = EtablissementClient::getInstance()->findByRaisonSociale($cavecoop)) {
+                $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $relation, true);
+            } else {
+                echo "ERROR: relation non affectée, la raison sociale est inconnue : ".$data[self::CSV_AUTRE]."\n";
+            }
+        }
+
         $societe->pushAdresseTo($etablissement);
         $societe->pushContactTo($etablissement);
         $etablissement->save();
