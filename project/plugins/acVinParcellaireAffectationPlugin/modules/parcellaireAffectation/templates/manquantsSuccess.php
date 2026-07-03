@@ -9,7 +9,7 @@
 <?php include_partial('parcellaireAffectation/step', array('step' => $etape, 'parcellaireAffectation' => $parcellaireAffectation)) ?>
 <?php $manquants_by_commune = $parcellaireAffectation->declaration->getParcellesByCommune(); ?>
 <div>
-    <h2>Pieds morts ou manquants sur votre exploitation</h2>
+    <h2>Pieds morts ou manquants</h2>
     <?php if (count($manquants_by_commune ) == 0): ?>
     <p class="py-5 alert alert-warning">Aucune parcelle du parcellaire actuellement connu est éligible aux manquants.</p>
     <p class="pb-3"><i>Pas de parcelles éligibles</i></p>
@@ -26,7 +26,7 @@
     <?php endif; ?>
 </div>
 
-<?php include_partial('parcellaireAffectation/destinataires', ['destinataires' => $destinataires, 'produits' => $produits, 'parcellaireAffectation' => $parcellaireAffectation, 'destinataire' => $destinataire, 'etape' => $etape, 'coop' => $coop]); ?>
+<?php include_partial('parcellaireAffectation/destinataires', ['destinataires' => $destinataires, 'produits' => $produits, 'parcellaireAffectation' => $parcellaireAffectation, 'destinataire' => $destinataire, 'etape' => $etape, 'coop' => $coop, 'hashproduit' => $hashproduit]); ?>
 
 <form id="validation-form" action="" method="post" class="form-inline">
     <?php include_partial('parcellaireManquant/formManquants', ['form' => $form, 'manquants_by_commune' => $manquants_by_commune]); ?>

@@ -108,6 +108,41 @@ if ($last) {
                     }
                     ?>.</p>
     <?php endforeach; ?>
+    <div class="row">
+        <div class="col-sm-6">
+            <?php include_component('parcellaire', 'syntheseParCepages', array('parcellaire' => $parcellaire)); ?>
+        </div>
+        <div class="col-sm-6">
+            <?php $syntheseDestination = $parcellaire->getSyntheseDestination() ?>
+            <?php if (count($syntheseDestination)): ?>
+            <h3 class="mt-0">Synthèse par destinations</h3>
+
+            <table class="table table-bordered table-condensed table-striped tableParcellaire">
+              <thead>
+                <tr>
+                    <th class="col-xs-8">Destination</th>
+                    <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
+                </tr>
+              </thead>
+              <tbody>
+                  <?php       $libelledestination = array('SUR_PLACE' => 'Sur place', 'CAVE_COOPERATIVE' => 'Caves coopératives', 'NEGOCIANT' => 'Négociants'); ?>
+
+              <?php foreach($syntheseDestination as $destination => $s): ?>
+
+                <tr>
+                        <td><?php echo $libelledestination[$destination] ; ?></td>
+                        <td class="text-right"><?php echoSuperficie($s); ?></td>
+                </tr>
+              <?php endforeach;?>
+              <tr>
+                    <td><strong>Total</strong></td>
+                    <td class="text-right"><strong><?php echoSuperficie(array_sum($syntheseDestination->getRawValue())); ?></strong></td>
+                </tr>
+              </tbody>
+            </table>
+            <?php endif; ?>
+        </div>
+    </div>
 <?php else: ?>
     <p class="text-muted">
         Aucune parcelle n'a été déclarée pour cette année.

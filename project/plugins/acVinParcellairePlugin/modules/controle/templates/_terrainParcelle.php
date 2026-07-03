@@ -92,7 +92,7 @@
 </div>
 <form class="form-horizontal" id="controlesList">
     <div class="form-group" v-for="(valPoint, keyPoint) in parcelleCourante.controle.points" :key="keyPoint">
-    <h4 class="col-sm-6 control-label" style="text-align:left">
+    <h4 :id="'controle_' + keyPoint" class="col-sm-6 control-label" style="text-align:left">
       {{ valPoint.libelle }}
   </h4>
 
@@ -130,6 +130,15 @@
 </form>
 
 <hr />
+
+<div v-if="showWarning" class="alert alert-warning">
+    Les points de contrôle suivants sont non conformes mais sans manquement de sélectionné :
+    <ul>
+        <li v-for="point in warnings">
+            <RouterLink :to="{ hash: '#controle_' + point.anchor }">{{ point.libelle }}</a>
+        </li>
+    </ul>
+</div>
 
 <RouterLink class="btn btn-default" :to="{ name: 'operateur', params: { id: controleCourant._id } }"><span class="glyphicon glyphicon-chevron-left"></span> Retour</RouterLink>
 <button class="btn btn-primary pull-right" @click="save()">Valider</button>

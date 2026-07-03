@@ -717,6 +717,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $synthese;
     }
 
+    public function getSyntheseProduits() {
+        $synthese = [];
+        foreach($this->declaration as $hash => $prod) {
+            $synthese[$prod->getLibelle()] = $prod->getSuperficieTotale();
+        }
+        return $synthese;
+    }
+
     public function getProduits()
     {
         return $this->declaration->getProduits();

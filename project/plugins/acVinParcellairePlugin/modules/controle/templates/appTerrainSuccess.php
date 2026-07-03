@@ -67,6 +67,11 @@
     const router = createRouter({
       history: createWebHashHistory(),
       routes,
+      scrollBehavior(to, from, savedPosition) {
+        if (to.hash) {
+          return { el: to.hash }
+        }
+      }
     })
 
     const app = createApp({
@@ -128,6 +133,9 @@
           const [y, m, d] = items[0].date_tournee.split('-');
           const agent = items[0].agent_libelle;
           return `Tournée du ${d}/${m}/${y} par ${agent}`;
+      },
+      nbParcellesOutOfDate(controleCible) {
+          return Object.values(controleCible.parcelles).filter(parcelle => parcelle.isOutOfDate === true).length;
       }
     };
 
@@ -182,6 +190,9 @@
         return val ? Number(val).toFixed(nbDecimal) : '';
       },
       printableSiret() {
+          if (! this.controleCourant.declarant.siret) {
+            return "PAS DE SIRET"
+          }
           return this.controleCourant.declarant.siret.substring(0,3)+" "+
                  this.controleCourant.declarant.siret.substring(3,6) +" "+
                  this.controleCourant.declarant.siret.substring(6,9) +" "+
@@ -220,7 +231,10 @@
                 return "color: #8da42a";
             }
             return "color: #aaaaaa";
-        }
+        },
+        showWarning() {
+            return this.warnings.length > 0
+        },
     }
     templates.parcelle.data = function() {
         const route = useRoute()
@@ -236,6 +250,7 @@
           pointsDeControle: points_de_controle,
           date_tournee: date_tournee,
           isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
+          warnings: [],
         }
     };
     templates.parcelle.methods = {
@@ -249,12 +264,45 @@
             }
         },
         save() {
+            this.checkPoints();
+
+            if (this.showWarning) {
+                return
+            }
+
             this.parcelleCourante.controle.saisie = 1;
             this.parcelleCourante.needs_to_be_saved = true;
 
             this.cleanPoints();
 
             router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+        },
+        checkPoints() {
+            this.warnings = []
+            const NCPoints = []
+            const points = this.parcelleCourante.controle.points
+
+            for (const pointKey in this.parcelleCourante.controle.points) {
+                const point = this.parcelleCourante.controle.points[pointKey]
+
+                if (point.conformite === "NC") {
+                    NCPoints.push({key: pointKey, point: point})
+                }
+            }
+
+            for (const manquements in NCPoints) {
+                let atLeastOne = false;
+                const constats = NCPoints[manquements].point.constats
+                for (const constat in constats) {
+                    if (constats[constat].non_conforme) {
+                        atLeastOne = true;
+                    }
+                }
+
+                if (atLeastOne === false) {
+                    this.warnings.push({libelle: NCPoints[manquements].point.libelle, anchor: NCPoints[manquements].key})
+                }
+            }
         },
         cleanPoints() {
             const points = this.parcelleCourante.controle.points;
@@ -277,6 +325,9 @@
             return val ? Number(val).toFixed(nbDecimal) : '';
         },
         printableSiret() {
+            if (! this.controleCourant.declarant.siret) {
+              return "PAS DE SIRET"
+            }
             return this.controleCourant.declarant.siret.substring(0,3)+" "+
                    this.controleCourant.declarant.siret.substring(3,6) +" "+
                    this.controleCourant.declarant.siret.substring(6,9) +" "+
@@ -378,6 +429,9 @@
           this.controleCourant.audit.needs_to_be_saved = true;
       },
       printableSiret() {
+          if (! this.controleCourant.declarant.siret) {
+            return "PAS DE SIRET"
+          }
           return this.controleCourant.declarant.siret.substring(0,3)+" "+
                  this.controleCourant.declarant.siret.substring(3,6) +" "+
                  this.controleCourant.declarant.siret.substring(6,9) +" "+

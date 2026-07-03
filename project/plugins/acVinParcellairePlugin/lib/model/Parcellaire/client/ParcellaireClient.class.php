@@ -379,6 +379,13 @@ class ParcellaireClient extends acCouchdbClient {
         if (isset($filter_destination) && $filter_destination) {
             $coop_id = explode('-', $filter_destination)[1];
         }
+
+        if (! method_exists($parcellairedoc, 'getParcelles')) {
+            foreach($parcellairedoc->declaration->getProduitsCepageDetails() as $key => $details) {
+                $parcellairedoc = $details->getAppellation();
+            }
+        }
+
         foreach($parcellairedoc->getParcelles() as $p) {
             if ($coop_id && $p->exist('destinations') && !$p->destinations->exist($coop_id)) {
                 continue;
@@ -397,17 +404,24 @@ class ParcellaireClient extends acCouchdbClient {
             if ($filter_insee && !in_array($p->code_commune, $filter_insee)) {
                 continue;
             }
-            $cepage = $p->getCepage();
-            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && $p->isJeunesVignes()) {
+
+
+            $cepage = is_string($p->getCepage()) ? $p->getCepage() : $p->getCepage()->libelle;
+
+            if ((ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && method_exists($p, 'isJeunesVignes') && $p->isJeunesVignes() != null)  || (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && $p->getParcelleParcellaire() != null && $p->getParcelleParcellaire()->isJeunesVignes())) {
                 $cepage .= ' - jeunes vignes';
             }
+
             if (!isset($synthese[$cepage])) {
                 $synthese[$cepage] = array();
                 $synthese[$cepage]['superficie'] = 0;
                 $synthese[$cepage]['idus'] = [];
             }
+
+            $parcelleId = $p->getParcelleId() != null ? $p->getParcelleId() : $p->parcelle_id;
+
             $synthese[$cepage]['superficie'] = $synthese[$cepage]['superficie'] + $p->superficie;
-            $synthese[$cepage]['idus'][$p->getParcelleId()] = $p->superficie;
+            $synthese[$cepage]['idus'][$parcelleId] = $p->superficie;
         }
         ksort($synthese);
         return $synthese;

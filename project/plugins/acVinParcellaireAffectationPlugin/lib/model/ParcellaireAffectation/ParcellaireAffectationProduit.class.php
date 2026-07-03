@@ -11,4 +11,15 @@ class ParcellaireAffectationProduit extends BaseParcellaireAffectationProduit {
         return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
     }
 
+    public function getSuperficieTotale() {
+        $superficie = 0;
+        foreach($this->detail as $parcelle) {
+            if(!$parcelle->isAffectee()) {
+                continue;
+            }
+            $superficie += $parcelle->getSuperficie();
+        }
+        return $superficie;
+    }
+
 }

@@ -2,7 +2,7 @@
 class Controle extends BaseControle implements InterfacePieceDocument
 {
     protected $config = null;
-    protected $parcellaire = null;
+    protected $parcellaire_obj = null;
     protected $declarant_document = null;
     protected $piece_document = null;
 
@@ -86,10 +86,15 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getParcellaire()
     {
-        if (!$this->parcellaire) {
-            $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant, acCouchdbClient::HYDRATE_JSON);
+        if (! isset($this->parcellaire_obj)) {
+            if (! $this->parcellaire_identifiant) {
+                $this->parcellaire_obj = ParcellaireClient::getInstance()->getLast($this->identifiant);
+                $this->parcellaire_identifiant = $this->parcellaire_obj->_id;
+            } else {
+                $this->parcellaire_obj = ParcellaireClient::getInstance()->find($this->parcellaire_identifiant);
+            }
         }
-        return $this->parcellaire;
+        return $this->parcellaire_obj;
     }
 
     public function getParcellaireParcelles()
