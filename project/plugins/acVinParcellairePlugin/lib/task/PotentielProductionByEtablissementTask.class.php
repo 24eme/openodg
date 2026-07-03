@@ -2,6 +2,13 @@
 
 class PotentielProductionByEtablissementTask extends sfBaseTask
 {
+    const headers = [
+        'Identifiant', 'Parcellaire de référence', 'Produit', 'Désactivé ?', 'Condition', 'Sens', 'Valeur de condition',
+        'Cépages concernés', 'Valeur', 'Valeur %', 'Limite', 'Limite %', 'Résultat'
+    ];
+
+    public $verbose = false;
+
     protected function configure()
     {
         $this->addArguments(array(
@@ -12,6 +19,8 @@ class PotentielProductionByEtablissementTask extends sfBaseTask
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
             new sfCommandOption('separateur', null, sfCommandOption::PARAMETER_OPTIONAL, 'Le séparateur du csv', ';'),
+            new sfCommandOption('verbose', null, sfCommandOption::PARAMETER_OPTIONAL, 'Écris les messages d\'erreurs', false),
+            new sfCommandOption('headers', null, sfCommandOption::PARAMETER_OPTIONAL, 'Écris les headers', false),
         ));
         $this->namespace = 'potentiel-production';
         $this->name = 'etablissement';
@@ -25,15 +34,32 @@ class PotentielProductionByEtablissementTask extends sfBaseTask
         $this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
+        $this->verbose = $options['verbose'];
+        $separateur = $options['separateur'];
+
         $parcellaire = ParcellaireClient::getInstance()->getLast($arguments['identifiant']);
+
+        if ($parcellaire === null) {
+            $this->print(
+                sprintf('Pas de parcellaire pour : %s'.PHP_EOL, $arguments['identifiant'])
+            );
+            return false;
+        }
+
         $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($parcellaire);
 
         if ($potentiel === null) {
-            echo sprintf('Pas de potentiel pour : %s'.PHP_EOL, $arguments['identifiant']);
+            $this->print(
+                sprintf('Pas de potentiel pour : %s'.PHP_EOL, $arguments['identifiant'])
+            );
+            return false;
         }
 
         $out = fopen('php://output', 'w');
-        $separateur = $options['separateur'];
+
+        if ($options['headers']) {
+            fputcsv($out, self::headers, $separateur);
+        }
 
         foreach ($potentiel->getProduits() as $produit) {
             if ($produit->hasPotentiel() === null) {
@@ -48,8 +74,12 @@ class PotentielProductionByEtablissementTask extends sfBaseTask
                 $result = "NON";
                 if ($rule->getResult()) {
                     $result = "OK";
-                } elseif ($rule->isBlockingRule()) {
+                } elseif (! $rule->isBlockingRule()) {
                     $result = "LIMIT";
+                }
+
+                if (! $rule->getResult() && ! $disabled && $rule->isDisabling()) {
+                    $disabled = true;
                 }
 
                 fputcsv($out, [
@@ -68,5 +98,14 @@ class PotentielProductionByEtablissementTask extends sfBaseTask
         }
 
         fclose($out);
+    }
+
+    public function print($message)
+    {
+        if (! $this->verbose) {
+            return;
+        }
+
+        echo $message;
     }
 }
