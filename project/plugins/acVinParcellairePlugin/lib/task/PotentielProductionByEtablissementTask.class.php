@@ -43,14 +43,14 @@ class PotentielProductionByEtablissementTask extends sfBaseTask
             $this->print(
                 sprintf('Pas de parcellaire pour : %s'.PHP_EOL, $arguments['identifiant'])
             );
-            return false;
+            return -1;
         }
 
         if (count($parcellaire->getParcelles()) === 0) {
             $this->print(
                 sprintf('Pas de parcelles pour : %s'.PHP_EOL, $arguments['identifiant'])
             );
-            return false;
+            return -1;
         }
 
         $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($parcellaire);
@@ -59,7 +59,7 @@ class PotentielProductionByEtablissementTask extends sfBaseTask
             $this->print(
                 sprintf('Pas de potentiel pour : %s'.PHP_EOL, $arguments['identifiant'])
             );
-            return false;
+            return -1;
         }
 
         $out = fopen('php://output', 'w');
