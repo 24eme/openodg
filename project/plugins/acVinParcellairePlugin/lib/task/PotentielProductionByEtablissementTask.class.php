@@ -46,6 +46,13 @@ class PotentielProductionByEtablissementTask extends sfBaseTask
             return false;
         }
 
+        if (count($parcellaire->getParcelles()) === 0) {
+            $this->print(
+                sprintf('Pas de parcelles pour : %s'.PHP_EOL, $arguments['identifiant'])
+            );
+            return false;
+        }
+
         $potentiel = PotentielProduction::retrievePotentielProductionFromParcellaire($parcellaire);
 
         if ($potentiel === null) {
