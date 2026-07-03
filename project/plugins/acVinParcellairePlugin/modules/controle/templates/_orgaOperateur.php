@@ -1,4 +1,4 @@
-<h3 class="mt-0"><RouterLink class="btn btn-sm btn-default" :to="{ name: 'operateurs' }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ controleCourant.declarant.nom }} - Séléction des parcelles</h3>
+<h3 class="mt-0"><RouterLink class="btn btn-sm btn-default" :to="{ name: 'operateurs' }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ controleCourant.declarant.nom }} - Sélection des parcelles</h3>
 <hr class="mt-2 mb-4" />
 <div style="position: relative;">
     <div id="map" style="height: 700px;"></div>

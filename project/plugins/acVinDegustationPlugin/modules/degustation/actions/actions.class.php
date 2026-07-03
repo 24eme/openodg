@@ -522,6 +522,7 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsNotAnonymized();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
+        $this->operateursLots = $this->degustation->getLotsByOperateurs();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_COMMISSION_EXTERNE))) {
             $this->degustation->save(false);
           }
@@ -1454,6 +1455,21 @@ class degustationActions extends sfActions {
       $this->degustation = $this->getRoute()->getDegustation();
       $this->redirectIfIsNotAnonymized();
       $this->document = new ExportDegustationFicheProcesVerbalDegustationPDF($this->degustation,$request->getParameter('output','pdf'),false);
+      return $this->mutualExcecutePDF($request);
+    }
+
+    public function executeDemandePrelevementPDF(sfWebRequest $request){
+      $this->degustation = $this->getRoute()->getDegustation();
+      $this->redirectIfIsNotAnonymized();
+      $this->document = new ExportDegustationDemandePrelevementPDF($this->degustation,$request->getParameter('output','pdf'),false);
+      return $this->mutualExcecutePDF($request);
+    }
+
+    public function executeAvisPrelevementPDF(sfWebRequest $request){
+      $this->degustation = $this->getRoute()->getDegustation();
+      $this->etablissement = $request->getParameter('operateur');
+      $this->redirectIfIsNotAnonymized();
+      $this->document = new ExportDegustationAvisPrelevementPDF($this->degustation,$this->etablissement,$request->getParameter('output','pdf'),false);
       return $this->mutualExcecutePDF($request);
     }
 

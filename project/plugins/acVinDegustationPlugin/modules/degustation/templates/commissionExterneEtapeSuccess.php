@@ -15,7 +15,17 @@
         <h4>Tiers</h4>
         <ul class="list-group">
             <li class="list-group-item">
-                <a id="btn_csv_etiquette" href="<?php echo url_for('degustation_etiquette_csv', $degustation) ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Tableur des lots pour les prestataires</a>
+                <a id="btn_csv_etiquette" href="<?php echo url_for('degustation_demande_prelevement_pdf', $degustation) ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Document demande de prélèvement pour l'organisme de contrôle</a>
+            </li>
+            <li class="list-group-item">
+                <span class="glyphicon glyphicon-list"></span>&nbsp;Document avis de prélèvement par opérateur
+                <ul class="mt-2">
+                    <?php foreach ($operateursLots as $operateur => $lots): ?>
+                        <li class="">
+                            <a id="btn_csv_etiquette" href="<?php echo url_for('degustation_avis_prelevement_pdf', array('id' => $degustation->_id, 'operateur' => $operateur)) ?>"><?php echo EtablissementClient::getInstance()->find($operateur)->raison_sociale; ?></a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
             </li>
         </ul>
     </div>

@@ -96,7 +96,7 @@ class DRaP extends BaseDRaP implements InterfaceDeclaration {
       return true;
   }
 
-    public function setParcellesFromParcellaire(array $hashes) {
+    public function setParcellesFromParcellaire(array $hashes, $reset = true) {
         parent::setParcellesFromParcellaire($hashes);
 
         $last = DRaPClient::getInstance()->getLast($this->identifiant);

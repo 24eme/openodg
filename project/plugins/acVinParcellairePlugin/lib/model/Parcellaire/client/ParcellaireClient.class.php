@@ -380,9 +380,13 @@ class ParcellaireClient extends acCouchdbClient {
             $coop_id = explode('-', $filter_destination)[1];
         }
 
-        $parcellairedocParcelles = method_exists($parcellairedoc, 'getParcelles') ? $parcellairedoc->getParcelles() : $parcellairedoc->declaration->getParcelles();
+        if (! method_exists($parcellairedoc, 'getParcelles')) {
+            foreach($parcellairedoc->declaration->getProduitsCepageDetails() as $key => $details) {
+                $parcellairedoc = $details->getAppellation();
+            }
+        }
 
-        foreach($parcellairedocParcelles as $p) {
+        foreach($parcellairedoc->getParcelles() as $p) {
             if ($coop_id && $p->exist('destinations') && !$p->destinations->exist($coop_id)) {
                 continue;
             }
@@ -401,20 +405,10 @@ class ParcellaireClient extends acCouchdbClient {
                 continue;
             }
 
-            if (! method_exists($parcellairedoc, 'getParcelles')) {
-                foreach ($parcellairedoc->getParcellaire()->declaration as $hash => $parcelleParcellaire) {
-                    foreach($parcelleParcellaire->detail as $detailParcelleParcellaire) {
-                        if (($detailParcelleParcellaire->section == $p->section) && ($detailParcelleParcellaire->numero_parcelle == $p->numero_parcelle)) {
-                            $parentParcelleFromParcellaire = $detailParcelleParcellaire;
-                            $p->parcelle_id = $parentParcelleFromParcellaire->getParcelleId();
-                        }
-                    }
-                }
-            }
 
-            $cepage = is_string($p->getCepage()) ? $p->getCepage() : $parentParcelleFromParcellaire->getCepage();
+            $cepage = is_string($p->getCepage()) ? $p->getCepage() : $p->getCepage()->libelle;
 
-            if ((ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && method_exists($p, 'isJeunesVignes')  && $p->isJeunesVignes() != null)  || (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && $p->getParcelleParcellaire() != null && $p->getParcelleParcellaire()->isJeunesVignes())) {
+            if ((ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && method_exists($p, 'isJeunesVignes') && $p->isJeunesVignes() != null)  || (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && $p->getParcelleParcellaire() != null && $p->getParcelleParcellaire()->isJeunesVignes())) {
                 $cepage .= ' - jeunes vignes';
             }
 
