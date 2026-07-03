@@ -171,6 +171,15 @@ EOF;
         $etablissement->cvi = $cvi;
         $etablissement->num_interne = trim($data[self::CSV_NUM_OPERATEUR]) ?? null;
         $etablissement->commentaire = trim($data[self::CSV_OBSERVATION]) ?? null;
+
+        if ($data[self::CSV_EXTRA_TYPE_OPERATEUR] === 'P' && ($cavecoop = trim($data[self::CSV_AUTRE]))) {
+            if ($relation = EtablissementClient::getInstance()->findByRaisonSociale($cavecoop)) {
+                $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $relation, true);
+            } else {
+                echo "ERROR: relation non affectée, la raison sociale est inconnue : ".$data[self::CSV_AUTRE]."\n";
+            }
+        }
+
         $societe->pushAdresseTo($etablissement);
         $societe->pushContactTo($etablissement);
         $etablissement->save();
