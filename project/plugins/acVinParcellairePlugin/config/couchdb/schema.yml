@@ -178,6 +178,7 @@ Controle:
             fax: { }
             email: { }
       secteur: { }
+      parcellaire_identifiant:
       liaisons_operateurs:
          type: collection
          definition:

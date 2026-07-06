@@ -99,6 +99,7 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
             $libelle = str_replace(' RS', ' Rosé', $libelle);
             $libelle = str_replace([' GRENAT', ' ROUGE SEC'], ' ROUGE', $libelle);
             $libelle = str_replace('COTES GASCOGNE', 'COTES DE GASCOGNE', $libelle);
+            $libelle = str_replace('HERMITAGE OU ERMITAGE', 'CROZES HERMITAGE', $libelle);
 
             switch ($libelle) {
                 case "CREMANT D'ALS ROSE":
@@ -162,6 +163,10 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
             $libelle = preg_replace('/ SYL$/', ' SYLVANER', $libelle);
             $libelle = preg_replace('/COTES? TARN/', 'COTES DU TARN', $libelle);
             $libelle = preg_replace('/rougeE/i', 'rouge', $libelle);
+
+            if (strpos($libelle, 'KLEVENER') !== false && strpos($parcelle[self::CSV_FORMAT_CEPAGE], "PINOT NOIR") !== false) {
+                $libelle = "AOC ALSACE PINOT NOIR";
+            }
 
             $produit = $configuration->identifyProductByLibelle($libelle, $verbose);
             $nb_reconnaissance = 1;

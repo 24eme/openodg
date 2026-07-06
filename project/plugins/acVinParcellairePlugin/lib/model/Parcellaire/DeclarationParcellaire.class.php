@@ -113,11 +113,13 @@ class DeclarationParcellaire extends acCouchdbDocument {
         return $parcelles[$p->getParcelleId()];
     }
 
-    public function setParcellesFromParcellaire(array $hashes) {
+    public function setParcellesFromParcellaire(array $hashes, $reset = true) {
         $parcelles_orig = $this->getDeclarationParcelles();
 
-        $this->remove('declaration');
-        $this->add('declaration');
+        if ($reset) {
+            $this->remove('declaration');
+            $this->add('declaration');
+        }
 
       	$parcelles = $this->getParcellesFromReference();
         if (!$parcelles || !count($parcelles)) {

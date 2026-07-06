@@ -10,7 +10,7 @@ class DRaPProduitDestinationsForm extends acCouchdbObjectForm {
         ));
 
         $this->setValidators(array(
-            'superficie' => new sfValidatorNumber(array('required' => true)),
+            'superficie' => new sfValidatorNumber(array('required' => false)),
             'destination' => new sfValidatorString(array('required' => true)),
             ));
         $this->widgetSchema->setNameFormat('parcellaire_destinations[%s]');

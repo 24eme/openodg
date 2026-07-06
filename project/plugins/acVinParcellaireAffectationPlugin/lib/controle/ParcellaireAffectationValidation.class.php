@@ -26,7 +26,7 @@ class ParcellaireAffectationValidation extends DocumentValidation {
 
     public function controle() {
         $appellationGeree = false;
-        $hasMouOrEff = false;
+        $hasElabMouOrEff = false;
         $appellations = ConfigurationClient::getCurrent()->getProduits();
         $nbparcelles = 0;
         foreach ($this->document->getParcelles() as $parcelle) {
@@ -44,8 +44,8 @@ class ParcellaireAffectationValidation extends DocumentValidation {
                 $this->addPoint(self::TYPE_WARNING, 'superficie_douane_depassee', "La parcelle <strong>$parcelle->section / $parcelle->numero_parcelle</strong> ($parcelle->superficie ha) dépasse celle de votre parcellaire (".$parcelle->getSuperficieParcellaire()." ha)");
             }
 
-            if (strpos($parcelle->hash, "MOU") || strpos($parcelle->hash, "EFF")) {
-                $hasMouOrEff = true;
+            if ((strpos($parcelle->hash, "MOU") || strpos($parcelle->hash, "EFF")) && isset($parcelle->destinations[$this->document->identifiant])) {
+                $hasElabMouOrEff = true;
             }
         }
 
@@ -69,8 +69,8 @@ class ParcellaireAffectationValidation extends DocumentValidation {
             }
         }
 
-        if ($hasMouOrEff && !in_array(HabilitationClient::ACTIVITE_ELABORATEUR, $this->document->getHabilitation()->getActivitesHabilites())) {
-            $this->addPoint(self::TYPE_ERROR, 'sans_habilitation', "Pas d'activité élaborateur trouvée");
+        if ($hasElabMouOrEff && !in_array(HabilitationClient::ACTIVITE_ELABORATEUR, $this->document->getHabilitation()->getActivitesHabilites())) {
+            $this->addPoint(self::TYPE_ERROR, 'sans_habilitation', "Pas d'activité élaborateur trouvée, alors que du mousseux ou effervescent est présent dans la déclaration.");
         }
 
         if ($this->document->hasProblemProduitCVI()) {
