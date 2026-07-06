@@ -93,24 +93,24 @@ head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/pmc_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/pmcnc_lots.csv.part
 
 if [ -z $IS_NO_VINIF ]; then
-  grep "^DRev" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/drev_lots.csv.part
+  grep -a "^DRev" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/drev_lots.csv.part
   iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev_lots.csv.part > $EXPORTDIR/drev_lots.csv
   rm $EXPORTDIR/drev_lots.csv.part
 fi
 
-grep "^Conditionnement" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/conditionnement_lots.csv.part
+grep -a "^Conditionnement" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/conditionnement_lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/conditionnement_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv
 rm $EXPORTDIR/conditionnement_lots.csv.part
 
-grep "^Transaction" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/transaction_lots.csv.part
+grep -a "^Transaction" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/transaction_lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/transaction_lots.csv.part > $EXPORTDIR/transaction_lots.csv
 rm $EXPORTDIR/transaction_lots.csv.part
 
-grep "^PMCNC" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/pmcnc_lots.csv.part
+grep -a "^PMCNC" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/pmcnc_lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/pmcnc_lots.csv.part > $EXPORTDIR/pmcnc_lots.csv
 rm $EXPORTDIR/pmcnc_lots.csv.part
 
-grep "^PMC;" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/pmc_lots.csv.part
+grep -a "^PMC;" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/pmc_lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/pmc_lots.csv.part > $EXPORTDIR/pmc_lots.csv
 rm $EXPORTDIR/pmc_lots.csv.part
 
@@ -165,9 +165,22 @@ bash bin/export_docs.sh ParcellaireManquant $EXPORTSLEEP $1 > $EXPORTDIR/parcell
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellairemanquant.csv.part > $EXPORTDIR/parcellairemanquant.csv
 rm $EXPORTDIR/parcellairemanquant.csv.part
 
+bash bin/export_docs.sh DRaP $EXPORTSLEEP $1 > $EXPORTDIR/drap.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drap.csv.part > $EXPORTDIR/drap.csv
+rm $EXPORTDIR/drap.csv.part
+
+bash bin/export_docs.sh Controle $EXPORTSLEEP $1 > $EXPORTDIR/controle.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/controle.csv.part > $EXPORTDIR/controle.csv
+rm $EXPORTDIR/controle.csv.part
+
 curl -s "http://$COUCHHOST:$COUCHDBPORT/$COUCHDBBASE/_all_docs?startkey=\"PARCELLAIRE-\"&endkey=\"PARCELLAIRE-Z\"" | cut -d '"' -f 4 | grep "PARCELLAIRE" | sort -r | awk -F '-' 'BEGIN { } { if(!identifiant[$2]) { print $0 } identifiant[$2] = $0; }' | while read id;do php symfony declaration:export-csv --header=$(if ! test $header;then echo -n "1"; fi) $SYMFONYTASKOPTIONS $id; header=0; done > $EXPORTDIR/parcellaire.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaire.csv.part > $EXPORTDIR/parcellaire.csv
 rm $EXPORTDIR/parcellaire.csv.part
+
+headers_pp=1
+curl -sg "http://$COUCHHOST:$COUCHDBPORT/$COUCHDBBASE/_design/etablissement/_view/all?reduce=false&startkey=[%22INTERPRO-declaration%22,%22ACTIF%22]&endkey=[%22INTERPRO-declaration%22,%22ACTIF%22,[]]" | grep 'ETABLISSEMENT' | cut -d'"' -f 4 | cut -d'-' -f 2 | while read -r etab; do if php symfony "$SYMFONYTASKOPTIONS" potentiel-production:etablissement --headers="$headers_pp" "$etab"; then headers_pp=0; fi; done >> "$EXPORTDIR/potentielproduction.csv.part"
+iconv -f UTF8 -t ISO88591//TRANSLIT "$EXPORTDIR/potentielproduction.csv.part" > "$EXPORTDIR/potentielproduction.csv"
+rm "$EXPORTDIR/potentielproduction.csv.part"
 
 #sleep $EXPORTSLEEP
 
@@ -316,6 +329,8 @@ echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '[A-Z]' | while read subhab; 
         cat $EXPORTDIR/parcellaireirrigue.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/parcellaireirrigue.csv
         head -n 1 $EXPORTDIR/parcellaireirrigable.csv > $SUBDIR/parcellaireirrigable.csv
         cat $EXPORTDIR/parcellaireirrigable.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/parcellaireirrigable.csv
+        head -n 1 $EXPORTDIR/drap.csv > $SUBDIR/drap.csv
+        cat $EXPORTDIR/drap.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/drap.csv
     fi
     if test "$SUBMETABASE"; then
         python3 bin/csv2sql.py $SUBMETABASE".tmp" $SUBDIR

@@ -14,8 +14,9 @@ class ParcellaireManquantParcellesInfosForm extends acCouchdbObjectForm {
             if($this->destinataire && !$value->destinations->exist(str_replace("ETABLISSEMENT-", "", $this->destinataire))) {
                 continue;
             }
-            if($value->exist('manquant')) {
-                $value = $value->manquant;
+            $doc = $this->getObject()->getDocument();
+            if(method_exists($doc, 'isDeclarationLiee') && $doc->isDeclarationLiee()) {
+                $value = $value->add('manquant');
             }
             $this->embedForm($key, new ParcellaireManquantParcelleInfoForm($value));
 		}

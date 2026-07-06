@@ -1,7 +1,7 @@
 #! /bin/bash
 #
-# Title: Téléchargement des parcellaires
-# Description: Télécharge les parcellaires des établissements habilités depuis prodouane
+# Title: Mise à jour des parcellaires
+# Description: Met à jour les parcellaires des établissements habilités depuis leur CVI prodouane
 
 APPLICATION=$1
 

@@ -12,9 +12,25 @@ class ControleParcelle extends BaseControleParcelle
             $data->irrigation['date_irrigation'] = $this->getInfoIrrigue();
             $data->affectation = $this->getInfoAffectation();
             $data->needs_to_be_saved = false;
-            $data->has_probleme_ecart_pieds = $this->getParcellaire()->parcelles[$this->parcelle_id]->hasProblemEcartPieds();
+            if ($this->isParcelleUpToDate()) {
+                $data->has_probleme_ecart_pieds = $this->getParcelleFromParcellaire()->hasProblemEcartPieds();
+                $data->isOutOfDate = false;
+            } else {
+                $data->has_probleme_ecart_pieds = null;
+                $data->isOutOfDate = true;
+            }
         }
         return $data;
+    }
+
+    public function isParcelleUpToDate()
+    {
+        return $this->getParcellaire()->parcelles->exist($this->parcelle_id);
+    }
+
+    public function getParcelleFromParcellaire()
+    {
+        return $this->getParcellaire()->parcelles[$this->parcelle_id];
     }
 
     public function getKMLPlacemark() {
@@ -84,6 +100,37 @@ class ControleParcelle extends BaseControleParcelle
 
     public function getParcellaire()
     {
-        return ParcellaireClient::getInstance()->getLast($this->getDocument()->identifiant);
+        return $this->getDocument()->getParcellaire();
+    }
+
+    public function needsUpdateNoeudControle()
+    {
+        $pointsDeControle = ControleConfiguration::getInstance()->getAllPointsDeControle();
+        foreach ($pointsDeControle as $idPoint => $dataPoint) {
+            if (! $this->controle->points->exist($idPoint)) {
+                return true;
+            }
+            foreach ($dataPoint['constats'] as $idConstat => $dataConstat) {
+                if (! $this->controle->points[$idPoint]->constats->exist($idConstat)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function updateNoeudControle()
+    {
+        $pointsDeControle = ControleConfiguration::getInstance()->getAllPointsDeControle();
+        foreach ($pointsDeControle as $idPoint => $dataPoint) {
+            if (! $this->controle->points->exist($idPoint)) {
+                $this->controle->points->add($idPoint, array('libelle' => $dataPoint['libelle']));
+            }
+            foreach ($dataPoint['constats'] as $idConstat => $dataConstat) {
+                if (! $this->controle->points[$idPoint]->constats->exist($idConstat)) {
+                    $this->controle->points[$idPoint]->constats->add($idConstat, array('libelle' => $dataConstat['libelle'], 'observations' => null, 'non_conforme' => false));
+                }
+            }
+        }
     }
 }

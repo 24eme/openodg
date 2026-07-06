@@ -1,0 +1,11 @@
+all:
+  configuration:
+    degustation:
+      always_identifiant_table: true
+      conformite:
+        - CONFORME
+        - NONCONFORME_MINEUR
+        - NONCONFORME_MAJEUR
+      has_notification: true
+      is_externalisee: true
+      anonymisation_manuelle: false

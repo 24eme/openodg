@@ -1,7 +1,11 @@
 <?php use_helper('Date') ?>
 <?php use_helper('Float') ?>
 
-<?php include_partial('parcellaireIrrigue/breadcrumb', array('parcellaireIrrigue' => $parcellaireIrrigue)); ?>
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigue]); ?>
+<?php else: ?>
+    <?php include_partial('parcellaireIrrigue/breadcrumb', array('parcellaireIrrigue' => $parcellaireIrrigue)); ?>
+<?php endif; ?>
 
 <div class="page-header no-border">
     <h2>Identification des parcelles irriguées
@@ -124,18 +128,30 @@
         </div>
         <div class="col-xs-4 text-right"><button type="button" class="btn btn-primary btn-upper transparence-lg"  id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigue-confirmation-validation">Valider</button></div>
     </div>
-    <?php include_partial('parcellaireIrrigue/popupConfirmationValidation', array('form' => $form)); ?>
 </form>
 
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigue]); ?>
+<?php endif; ?>
+
 <?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
+    <?php exit; ?>
 <script type="text/javascript">
-$('#parcellaireirrigable-confirmation-validation').modal('show')
+$('#parcellaireirrigue-confirmation-validation').modal('show')
 </script>
 <?php endif; ?>
 <script>
+    const btnValidationDocument = document.querySelector('#btn-validation-document')
+    function removeValideTransparency() {
+        btnValidationDocument.classList.remove('transparence-lg');
+    }
+
+    (document.querySelectorAll('[id^=btn-switchactive-all]') || []).forEach(function (btn) {
+        btn.addEventListener('click', removeValideTransparency);
+    });
     document.querySelectorAll('form .switch').forEach(function(item) {
-        item.addEventListener('change-native', function(e) {
-            document.querySelector('#btn-validation-document').classList.remove('transparence-lg');
-        });
+        item.addEventListener('change-native', removeValideTransparency)
     });
 </script>
+
+<?php include_partial('parcellaireIrrigue/popupConfirmationValidation', array('form' => $form)); ?>

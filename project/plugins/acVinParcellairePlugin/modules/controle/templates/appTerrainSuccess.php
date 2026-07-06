@@ -22,8 +22,11 @@
     var aires = [];
     <?php
     $communes = [];
-    foreach ($controles as $controle) {
+    foreach ($obj_controles_for_aires as $controle) {
         $p = $controle->getParcellaire();
+        if ( ! $p ) {
+            continue;
+        }
         echo "//".$p->_id."\n";
         foreach ($p->getCommunes() as $com) {
             $communes[$com] = $com;
@@ -50,7 +53,7 @@
     let localstorage_updated = false;
 
     let isStartingup = true;
-    submitNeedsToBeSaved();
+    submitNeedsToBeSaved(null);
 
     const routes = [
       { path: '/', name: "listing", component: templates.listing },
@@ -64,6 +67,11 @@
     const router = createRouter({
       history: createWebHashHistory(),
       routes,
+      scrollBehavior(to, from, savedPosition) {
+        if (to.hash) {
+          return { el: to.hash }
+        }
+      }
     })
 
     const app = createApp({
@@ -72,52 +80,20 @@
               controles: controles,
             }
         },
-        computed: {
-          isSynchro() {
-            return this.checkNeedsToBeSaved(this.controles);
-          }
-        },
-
-        methods: {
-            checkNeedsToBeSaved(controles) {
-              for (const controle of Object.values(controles)) {
-                if (controle.audit.needs_to_be_saved === true) {
-                  return false;
-                }
-
-                for (const parcelle of Object.values(controle.parcelles)) {
-                  if (parcelle.needs_to_be_saved === true) {
-                    return false;
-                  }
-                }
-              }
-
-              return true;
-            }
-        },
         template: '<RouterView :key="$route.fullPath" />',
-        // watch: {
-        //   controles: {
-        //     handler(newControles) {
-        //       if (newControles) {
-        //           localStorage.setItem("controles_" + date_tournee, JSON.stringify(newControles));
-        //       }
-        //     },
-        //     deep: true
-        //   }
-        // },
       });
     app.use(router)
     app.mount('#content')
 
     templates.listing.mounted = function() {
-        submitNeedsToBeSaved();
+        submitNeedsToBeSaved(this);
     }
 
     templates.listing.data = function() {
         return {
             controles: controles,
-            date_tournee: date_tournee
+            date_tournee: date_tournee,
+            isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
         }
     };
 
@@ -131,7 +107,19 @@
         filteredControles() {
             return Object.values(this.controles).filter(c =>
                 c.agent_identifiant === this.agentIdentifiant
-            )
+            ).sort( (a,b) => { if (a.heure_tournee < b.heure_tournee) return -1; if (a.heure_tournee > b.heure_tournee) return 1; return 0;} );
+        },
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
         }
     }
 
@@ -145,17 +133,35 @@
           const [y, m, d] = items[0].date_tournee.split('-');
           const agent = items[0].agent_libelle;
           return `Tournée du ${d}/${m}/${y} par ${agent}`;
+      },
+      nbParcellesOutOfDate(controleCible) {
+          return Object.values(controleCible.parcelles).filter(parcelle => parcelle.isOutOfDate === true).length;
       }
     };
 
     templates.operateur.mounted = function() {
-        submitNeedsToBeSaved();
-    }
+        submitNeedsToBeSaved(this);
+    };
+    templates.operateur.computed = {
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
+        }
+    };
     templates.operateur.data = function() {
         const route = useRoute()
 
         return {
           controleCourant: controles[route.params.id],
+          isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
         }
     };
     templates.operateur.methods = {
@@ -167,7 +173,7 @@
               if (point.conformite != 'NC') {continue;}
               for (const constatKey in point.constats) {
                   const constat = point.constats[constatKey];
-                  if (constat.conformite == true) {
+                  if (constat.non_conforme == true) {
                       ret += 1;
                   }
               }
@@ -184,6 +190,9 @@
         return val ? Number(val).toFixed(nbDecimal) : '';
       },
       printableSiret() {
+          if (! this.controleCourant.declarant.siret) {
+            return "PAS DE SIRET"
+          }
           return this.controleCourant.declarant.siret.substring(0,3)+" "+
                  this.controleCourant.declarant.siret.substring(3,6) +" "+
                  this.controleCourant.declarant.siret.substring(6,9) +" "+
@@ -194,13 +203,39 @@
             const heure = this.controleCourant.heure_tournee;
             const agent = this.controleCourant.agent_libelle;
             return `Tournée du ${d}/${m}/${y} à ${heure} par ${agent}`;
-      }
+      },
+      parcellesSorted() {
+        const entries = Object.entries(this.controleCourant.parcelles)
+          .sort((a, b) => {
+            const posA = a[1].position ?? Infinity;
+            const posB = b[1].position ?? Infinity;
+            return posA - posB;
+          });
+
+        return Object.fromEntries(entries);
+    }
     };
 
     templates.parcelle.mounted = function() {
-        submitNeedsToBeSaved();
+        submitNeedsToBeSaved(this);
     }
-
+    templates.parcelle.computed = {
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
+        },
+        showWarning() {
+            return this.warnings.length > 0
+        },
+    }
     templates.parcelle.data = function() {
         const route = useRoute()
         for (const pointKey in controles[route.params.id].parcelles[route.params.parcelle].controle.points) {
@@ -213,7 +248,9 @@
           controleCourant: controles[route.params.id],
           parcelleCourante: controles[route.params.id].parcelles[route.params.parcelle],
           pointsDeControle: points_de_controle,
-          date_tournee: date_tournee
+          date_tournee: date_tournee,
+          isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
+          warnings: [],
         }
     };
     templates.parcelle.methods = {
@@ -227,21 +264,70 @@
             }
         },
         save() {
+            this.checkPoints();
+
+            if (this.showWarning) {
+                return
+            }
+
             this.parcelleCourante.controle.saisie = 1;
             this.parcelleCourante.needs_to_be_saved = true;
+
+            this.cleanPoints();
+
+            router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+        },
+        checkPoints() {
+            this.warnings = []
+            const NCPoints = []
+            const points = this.parcelleCourante.controle.points
+
             for (const pointKey in this.parcelleCourante.controle.points) {
-                if (this.parcelleCourante.controle.points[pointKey].conformite == 'NO') {
-                    no_by_default[pointKey] = 1;
-                } else {
-                    no_by_default[pointKey] = 0;
+                const point = this.parcelleCourante.controle.points[pointKey]
+
+                if (point.conformite === "NC") {
+                    NCPoints.push({key: pointKey, point: point})
                 }
             }
-            router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+
+            for (const manquements in NCPoints) {
+                let atLeastOne = false;
+                const constats = NCPoints[manquements].point.constats
+                for (const constat in constats) {
+                    if (constats[constat].non_conforme) {
+                        atLeastOne = true;
+                    }
+                }
+
+                if (atLeastOne === false) {
+                    this.warnings.push({libelle: NCPoints[manquements].point.libelle, anchor: NCPoints[manquements].key})
+                }
+            }
+        },
+        cleanPoints() {
+            const points = this.parcelleCourante.controle.points;
+
+            for (const pointKey in points) {
+                const point = points[pointKey];
+
+                no_by_default[pointKey] = (point.conformite === 'NO') ? 1 : 0;
+
+                if (point.conformite !== 'NC') {
+                    for (const constatKey in point.constats) {
+                        const constat = point.constats[constatKey];
+                        constat.non_conforme = false;
+                        constat.observations = null;
+                    }
+                }
+            }
         },
         echoFloat(val, nbDecimal = 5) {
             return val ? Number(val).toFixed(nbDecimal) : '';
         },
         printableSiret() {
+            if (! this.controleCourant.declarant.siret) {
+              return "PAS DE SIRET"
+            }
             return this.controleCourant.declarant.siret.substring(0,3)+" "+
                    this.controleCourant.declarant.siret.substring(3,6) +" "+
                    this.controleCourant.declarant.siret.substring(6,9) +" "+
@@ -256,7 +342,7 @@
         }
     };
     templates.audit.mounted = function() {
-        submitNeedsToBeSaved();
+        submitNeedsToBeSaved(this);
         let signatureBase64 = null;
         const controleCourant = this.controleCourant;
         const signaturePad = new SignaturePad(document.getElementById('signature'), {
@@ -277,14 +363,32 @@
             signaturePad.fromDataURL(controleCourant.audit.operateur_signature);
         }
     }
+    templates.audit.computed = {
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
+        }
+    }
     templates.audit.data = function() {
         const route = useRoute()
         if(!controles[route.params.id].audit) {
           controles[route.params.id].audit = {}
         }
-        return {
-          controleCourant: controles[route.params.id]
+        if (controles[route.params.id].audit.saisie != 1) {
+            copySignatureIfCaveCoopAlreadySigned(controles[route.params.id]);
+        }
 
+        return {
+          controleCourant: controles[route.params.id],
+          isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
         }
     };
     templates.audit.methods = {
@@ -306,10 +410,9 @@
                       ret.nombreNC += 1;
                       for (const constatKey in point.constats) {
                           const constat = point.constats[constatKey];
-                          if (! constat.conformite) {
-                              continue ;
+                          if (constat.non_conforme) {
+                              ret.manquements.push(point.libelle + "\n" + constat.libelle + ' - ' + constatKey + "\n" + parcelleId + ' - '+ constat.observations);
                           }
-                          ret.manquements.push(point.libelle + "\n" + constat.libelle + ' - ' + constatKey + "\n" + parcelleId + ' - '+ constat.observations);
                       }
                   }
               }
@@ -319,19 +422,21 @@
       save() {
         this.controleCourant.audit.saisie = 1;
         this.controleCourant.audit.needs_to_be_saved = true;
-        router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+        router.push({ name: 'listing' })
     },
       devalider() {
           this.controleCourant.audit.saisie = 0;
           this.controleCourant.audit.needs_to_be_saved = true;
       },
       printableSiret() {
+          if (! this.controleCourant.declarant.siret) {
+            return "PAS DE SIRET"
+          }
           return this.controleCourant.declarant.siret.substring(0,3)+" "+
                  this.controleCourant.declarant.siret.substring(3,6) +" "+
                  this.controleCourant.declarant.siret.substring(6,9) +" "+
                  this.controleCourant.declarant.siret.substring(9);
       }
-
     };
     templates.map.data = function() {
         const route = useRoute()
@@ -443,84 +548,74 @@
         if(!data.idu) {
             map.fitBounds(parcellesLayer.getBounds());
         }
-        /*let tilesUrl = []
-        for(layerIndex in parcellesLayer._layers) {
-            let layer = parcellesLayer._layers[layerIndex];
-            for(let zoom = 19; zoom >=8; zoom--) {
-                const area = L.bounds(map.project(layer.getBounds().getNorthWest(), zoom), map.project(layer.getBounds().getSouthEast(), zoom));
-                for(tile of getTileUrls(tileLayer, area, zoom)) {
-                    tilesUrl[tile.url] = tile.url
+    };
+
+    function copySignatureIfCaveCoopAlreadySigned(controleCourant) {
+        for (const controle of Object.values(controles)) {
+            if (controle._id === controleCourant._id) continue;
+            if (controle.audit.saisie != 1) continue;
+
+            const liaisonsCourantes = Object.values(controleCourant.liaisons_operateurs ?? {});
+
+            const liaisonsAutreControle = Object.values(controle.liaisons_operateurs ?? {});
+
+            const caveCommune = liaisonsCourantes.some(liaisonCourante =>
+                liaisonsAutreControle.some(liaison =>
+                    liaison.id_etablissement === liaisonCourante.id_etablissement
+                )
+            );
+
+            if (!caveCommune) continue;
+
+            controleCourant.audit.nom_prenom = controle.audit.nom_prenom;
+            controleCourant.audit.operateur_signature = controle.audit.operateur_signature;
+
+            return;
+        }
+    }
+
+    function updateDataSynchroStatusBasedOnNeedsToBeSaved()
+    {
+        for (const controle of Object.values(controles)) {
+            if (controle.audit.needs_to_be_saved === true) {
+                return false;
+            }
+            for (const parcelle of Object.values(controle.parcelles)) {
+                if (parcelle.needs_to_be_saved === true) {
+                    return false;
                 }
             }
         }
-        for(tileUrl in tilesUrl) {
-            fetch(tileUrl+'?'+tileUrl, { cache: "force-cache" })
-        }*/
-    };
-
-    function getTileUrls(tileLayer, bounds, zoom) {
-            var _a;
-            const tiles = [];
-            const tilePoints = getTilePoints(bounds, tileLayer.getTileSize());
-            for (let index = 0; index < tilePoints.length; index += 1) {
-                const tilePoint = tilePoints[index];
-                const data = Object.assign(Object.assign({}), { x: tilePoint.x, y: tilePoint.y, z: zoom });
-                tiles.push({
-                    key: getTileUrl(tileLayer._url, Object.assign(Object.assign({}, data), { s: (_a = tileLayer.options.subdomains) === null || _a === void 0 ? void 0 : _a[0] })),
-                    url: getTileUrl(tileLayer._url, Object.assign(Object.assign({}, data), {
-                        // @ts-ignore: Undefined
-                        s: tileLayer._getSubdomain(tilePoint) })),
-                    z: zoom,
-                    x: tilePoint.x,
-                    y: tilePoint.y,
-                    urlTemplate: L._url,
-                    createdAt: Date.now(),
-                });
-            }
-            return tiles;
+        return true;
     }
 
-    function getTilePoints(area, tileSize) {
-        const points = [];
-        if (!area.min || !area.max) {
-            return points;
-        }
-        const topLeftTile = area.min.divideBy(tileSize.x).floor();
-        const bottomRightTile = area.max.divideBy(tileSize.x).floor();
-        for (let j = topLeftTile.y; j <= bottomRightTile.y; j += 1) {
-            for (let i = topLeftTile.x; i <= bottomRightTile.x; i += 1) {
-                points.push(new L.Point(i, j));
-            }
-        }
-        return points;
-    }
-
-    function getTileUrl(urlTemplate, data) {
-        return L.Util.template(urlTemplate, Object.assign(Object.assign({}, data), { r: L.Browser.retina ? '@2x' : '' }));
-    }
-
-    async function submitNeedsToBeSaved() {
-
+    async function submitNeedsToBeSaved(context) {
       if (! isStartingup) {
           saveControlesInLocalStorage();
       }
-      needsaving = false;
+      let is_saved = true;
+      let need_reload = false;
       for (const controle of Object.values(controles)) {
         if (controle.audit.needs_to_be_saved === true) {
-          needsaving = true;
-          await submitElement(controle, null, controle.audit);
+          is_saved = await submitElement(controle, null, controle.audit) && is_saved;
         }
 
         for (const parcelle of Object.values(controle.parcelles)) {
           if (parcelle.needs_to_be_saved === true) {
-            needsaving = true;
-            await submitElement(controle, parcelle.parcelle_id, parcelle.controle);
+            is_saved = await submitElement(controle, parcelle.parcelle_id, parcelle.controle) && is_saved;
           }
         }
+        need_reload = need_reload || needReload(controle);
       }
-      if (! needsaving) {
-        loadFromServerIfNeeded();
+      if (context) {
+          context.isSaved = is_saved;
       }
+      if (need_reload) {
+          if (confirm("Un autre utilisateur utilise cette partie de l'app Terrain. Par sécurité, rechargez l'application. (pour ne pas recharger, annulez)")) {
+              return location.reload();
+          }
+      }
+      loadFromServerIfNeeded();
     }
 
     async function submitElement(controle, idParcelle, element)
@@ -544,8 +639,10 @@
         if (data && data.success === true) {
             controle._rev = data.revision;
             if (idParcelle) {
+                console.log(controle._id + ' parcelle ' + idParcelle + 'saved');
                 controle.parcelles[idParcelle].needs_to_be_saved = false;
             } else {
+                console.log(controle._id + ' audit saved');
                 controle.audit.needs_to_be_saved = false;
             }
             element.needs_to_be_saved = false;
@@ -553,11 +650,12 @@
                 reloadStatus = true;
             }
             saveControlesInLocalStorage();
+            return true;
         }
-        needReload(controle);
+        return false;
       } catch(exception) {
         console.log(['submitElement exception', exception]);
-        return ;
+        return false;
       }
     }
 
@@ -568,23 +666,20 @@
 
     function needReload(controle) {
         if (!reloadStatus) {
-            return ;
+            return false;
         }
         if (controle.audit.needs_to_be_saved === true) {
-            return ;
+            return false;
         }
         for (const parcelle of Object.values(controle.parcelles)) {
             if (parcelle.needs_to_be_saved === true) {
                 console.log("parcelle doit être sauvée : " + parcelle.parcelle_id);
-                return;
+                return false;
             }
         }
         controle._rev = "00-Needs Update";
         saveControlesInLocalStorage();
-        if (confirm("Un autre utilisateur utilise cette partie de l'app Terrain. Par sécurité, rechargez l'application. (pour ne pas recharger, annulez)")) {
-            location.reload();
-        }
-        loadFromServerIfNeeded();
+        return true;
     }
 
     function loadFromServerIfNeeded()

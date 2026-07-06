@@ -128,7 +128,9 @@
           ],
           "callback": "getVolumeFacturable",
           "callback_parameters": {
-            "appellations": "/appellations/MED NOT same AND NOT /millesime/courant"
+            "appellations": "/appellations/MED",
+            "origine": "NOT /origine/same",
+            "millesime": "NOT /millesime/courant"
           }
         }
       }

@@ -49,8 +49,8 @@
 </table><br/><br/>
 
 <table>
-<tr><td>Il en résulte que <strong>ce lot est non conforme en IGP Comté Tolosan mais ce lot étant déjà conditionné, il fait seulement l'objet d'un <u>avertissement</u>.</strong><br/></td></tr>
-<tr><td><strong>Il est donc possible de commercialiser votre lot en IGP Comté Tolosan mais une pression de contrôle supplémentaire sera appliquée sur les prochains lots qui seront revendiqués.</strong></td></tr><br/>
+<tr><td>Il en résulte que <strong>ce lot est non conforme mais ce lot étant déjà conditionné, il fait seulement l'objet d'un <u>avertissement</u>.</strong><br/></td></tr>
+<tr><td><strong>Il est donc possible de commercialiser votre lot en IGP mais une pression de contrôle supplémentaire sera appliquée sur les prochains lots qui seront revendiqués.</strong></td></tr><br/>
 <tr><td>Restant à votre disposition pour toutes demandes de renseignements complémentaires,</td></tr><br/>
 <tr><td>Veuillez accepter, Madame, Monsieur, nos plus sincères et cordiales salutations.</td></tr><br/>
 </table>
