@@ -177,6 +177,11 @@ curl -s "http://$COUCHHOST:$COUCHDBPORT/$COUCHDBBASE/_all_docs?startkey=\"PARCEL
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaire.csv.part > $EXPORTDIR/parcellaire.csv
 rm $EXPORTDIR/parcellaire.csv.part
 
+headers_pp=1
+curl -sg "http://$COUCHHOST:$COUCHDBPORT/$COUCHDBBASE/_design/etablissement/_view/all?reduce=false&startkey=[%22INTERPRO-declaration%22,%22ACTIF%22]&endkey=[%22INTERPRO-declaration%22,%22ACTIF%22,[]]" | grep 'ETABLISSEMENT' | cut -d'"' -f 4 | cut -d'-' -f 2 | while read -r etab; do if php symfony "$SYMFONYTASKOPTIONS" potentiel-production:etablissement --headers="$headers_pp" "$etab"; then headers_pp=0; fi; done >> "$EXPORTDIR/potentielproduction.csv.part"
+iconv -f UTF8 -t ISO88591//TRANSLIT "$EXPORTDIR/potentielproduction.csv.part" > "$EXPORTDIR/potentielproduction.csv"
+rm "$EXPORTDIR/potentielproduction.csv.part"
+
 #sleep $EXPORTSLEEP
 
 php symfony pieces:export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/pieces.csv.part
