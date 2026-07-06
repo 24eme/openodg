@@ -10,6 +10,7 @@ function(doc) {
          doc.type != "ParcellaireAffectation" &&
          doc.type != "ParcellaireIrrigable" &&
          doc.type != "ParcellaireIrrigue" &&
+         doc.type != "PriseDeMousse" &&
          doc.type != "RegistreVCI" &&
          doc.type != "Tirage" &&
          doc.type != "Transaction" &&

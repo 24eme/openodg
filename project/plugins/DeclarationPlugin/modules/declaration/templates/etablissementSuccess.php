@@ -86,6 +86,9 @@
     <?php if(class_exists("ChgtDenomConfiguration") && ChgtDenomConfiguration::getInstance()->isModuleEnabled()): ?>
     <?php include_component('chgtdenom', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ChgtDenomConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
+    <?php if(class_exists("ChgtDenomConfiguration") && ChgtDenomConfiguration::getInstance()->isPriseDeMousseEnabled()): ?>
+    <?php include_component('prisedemousse', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ChgtDenomConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php endif; ?>
     <?php if(in_array('parcellaireAffectationCoop', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_partial('parcellaireAffectationCoop/monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireAffectationConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
@@ -109,6 +112,9 @@
     <?php endif; ?>
     <?php if(class_exists("Adelphe") && in_array('adelphe', sfConfig::get('sf_enabled_modules')) && $etablissement->getMasterCompte()->hasDroit(AdelpheSecurity::DROIT_ADELPHE)): ?>
     <?php include_component('adelphe', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php endif; ?>
+    <?php if(class_exists("DRaPConfiguration") && DRaPConfiguration::getInstance()->isModuleEnabled()): ?>
+    <?php include_component('drap', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRaPConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
 </div>
 <?php if(in_array('facturation', sfConfig::get('sf_enabled_modules'))): ?>

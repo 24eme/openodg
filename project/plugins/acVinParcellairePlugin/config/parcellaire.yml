@@ -12,4 +12,5 @@ all:
         engagements: false
         nePasIrriguer: false
         vciIrrigation: false
-        hasIrrigableMaterielRessource: true
+        hasIrrigableMateriel: true
+        hasIrrigableRessource: true

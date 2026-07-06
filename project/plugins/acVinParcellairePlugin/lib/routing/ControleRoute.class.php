@@ -1,5 +1,5 @@
 <?php
-class ControleRoute extends EtablissementRoute implements InterfaceDeclarationRoute {
+class ControleRoute extends EtablissementRoute implements InterfaceControleRoute {
 
     protected $controle = null;
 

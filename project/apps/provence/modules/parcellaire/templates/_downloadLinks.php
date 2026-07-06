@@ -3,7 +3,6 @@
     <ul class="dropdown-menu">
 <?php if($sf_user->isAdmin()): ?>
         <li class="dropdown-header">Documents internes</li>
-        <li><a href="<?php echo url_for('parcellaire_export_pp_ods', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le tableur du potentiel de production</a></li>
         <li><a href="<?php echo url_for('parcellaire_export_ods', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le doc de contrôle</a></li>
         <li><a href="<?php echo url_for('parcellaire_export_geojson', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger les coordonnées géographiques en geojson</a></li>
         <li><a href="<?php echo url_for('parcellaire_export_kml_parcelles', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger les coordonnées géographiques en KML - Parcelles</a></li>

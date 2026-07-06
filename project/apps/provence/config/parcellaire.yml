@@ -45,11 +45,17 @@ all:
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT
           categories:
             cepages_principaux: ['GRENACHE N', 'SYRAH N', 'MOURVEDRE N', 'TIBOUREN N', 'CINSAUT N']
+            cepages_rouge: ['GRENACHE N', 'SYRAH N', 'MOURVEDRE N', 'TIBOUREN N', 'CINSAUT N', 'CALADOC N', 'AGIORGITIKO N', 'CALABRESE N', 'XINOMAVRO N']
             cepages_blancs: ['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B']
             cepages_blancs_sans_vermentino: ['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B']
             cepages_accessoires: ['ROUSSELI RS','CALADOC N']
             cepages_varietedinteret: ['AGIORGITIKO N','CALABRESE N','MOSCHOFILERO RS','XINOMAVRO N','VERDEJO B']
           regles:
+            -
+              fonction: "ActifSiNombre"
+              category: "cepages_rouge"
+              sens: ">="
+              limit: 1
             -
               fonction: "SAppliqueSiSomme"
               category: "cepages_toutes_couleurs"
@@ -101,11 +107,17 @@ all:
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose/cepages/DEFAUT
           categories:
             cepages_principaux: ['GRENACHE N', 'SYRAH N', 'MOURVEDRE N', 'TIBOUREN N', 'CINSAUT N']
+            cepages_rose: ['GRENACHE N', 'SYRAH N', 'MOURVEDRE N', 'TIBOUREN N', 'CINSAUT N', CALADOC N', AGIORGITIKO N','CALABRESE N','MOSCHOFILERO RS','XINOMAVRO N']
             cepages_blancs: ['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B']
             cepages_blancs_sans_vermentino: ['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B']
             cepages_accessoires: ['ROUSSELI RS','CALADOC N']
             cepages_varietedinteret: ['AGIORGITIKO N','CALABRESE N','MOSCHOFILERO RS','XINOMAVRO N','VERDEJO B']
           regles:
+            -
+              fonction: "ActifSiNombre"
+              category: "cepages_rose"
+              sens: ">="
+              limit: 1
             -
               fonction: "SAppliqueSiSomme"
               category: "cepages_toutes_couleurs"
@@ -161,9 +173,15 @@ all:
           filter_parcellaire_produit_hash: 'appellations/CDP'
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT
           categories:
+            cepages_blancs: ['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B', 'VERDEJO B']
             cepages_principaux: ['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B']
             cepages_varietedinteret: ['VERDEJO B']
           regles:
+            -
+              fonction: "ActifSiNombre"
+              category: "cepages_blancs"
+              sens: ">="
+              limit: 1
             -
               fonction: 'SAppliqueSiSomme'
               category: 'cepages_toutes_couleurs'
@@ -429,6 +447,7 @@ all:
         cdp_stevictoire_rouge:
           synthese_libelle: "Côtes de Provence Sainte Victoire - Rouge"
           filter_parcellaire_produit_hash: 'appellations/CDP'
+          filter_insee: ['13025', '13060', '13072', '13079', '13087', '13109', '13110', '83096', '83097']
           denomination_aire: "AOC CdP Sainte-Victoire"
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/SVI/couleurs/rouge/cepages/DEFAUT
           parcellaire2reference: 'ParcellaireAffectation'
@@ -488,6 +507,7 @@ all:
         cdp_stevictoire_rose:
           synthese_libelle: "Côtes de Provence Sainte Victoire - Rosé"
           filter_parcellaire_produit_hash: 'appellations/CDP'
+          filter_insee: ['13025', '13060', '13072', '13079', '13087', '13109', '13110', '83096', '83097']
           denomination_aire: "AOC CdP Sainte-Victoire"
           produit_hash: certifications/AOP/genres/TRANQ/appellations/CDP/mentions/DEFAUT/lieux/SVI/couleurs/rose/cepages/DEFAUT
           parcellaire2reference: 'ParcellaireAffectation'

@@ -8,7 +8,7 @@ class ExportControleManquementPDF extends ExportPDF {
     public function __construct($controle, $identifiant = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->controle = $controle;
         $this->identifiant = $identifiant;
-        $this->manquements = $this->controle->getManquementsListe();
+        $this->manquements = $this->controle->getManquementsActif();
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -22,7 +22,13 @@ class ExportControleManquementPDF extends ExportPDF {
     }
 
     public function create() {
-        $this->printable_document->addPage($this->getPartial('controle/manquementPdf', array('controle' => $this->controle, 'manquements' => $this->manquements)));
+        if (! count($this->manquements)) {
+            $this->printable_document->addPage($this->getPartial('controle/manquementPdf', array('controle' => $this->controle)));
+            return;
+        }
+        foreach ($this->manquements as $manquementId => $manquement) {
+            $this->printable_document->addPage($this->getPartial('controle/manquementPdf', array('controle' => $this->controle, 'manquementId' => $manquementId, 'manquement' => $manquement)));
+        }
     }
 
 

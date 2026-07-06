@@ -134,9 +134,19 @@ degustation_anonymats_etape:
   requirements:
     sf_method: [get, post]
 
-degustation_commission_etape:
+degustation_commission_interne_etape:
   url: /degustation/:id/commission
   param: { module: degustation, action: commissionEtape }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_commission_externe_etape:
+  url: /degustation/:id/commission-externe
+  param: { module: degustation, action: commissionExterneEtape }
   class: DegustationRoute
   options:
     model:    Degustation
@@ -485,6 +495,26 @@ degustation_etiquette_pdf:
 degustation_etiquette_csv:
   url: /degustation/:id/etiquettes/csv
   param: { module: degustation, action: etiquettesPrlvmtCsv }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_demande_prelevement_pdf:
+  url: /degustation/:id/demandePrelevement/pdf
+  param: { module: degustation, action: demandePrelevementPDF }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_avis_prelevement_pdf:
+  url: /degustation/:id/avisPrelevement/pdf/:operateur
+  param: { module: degustation, action: avisPrelevementPDF }
   class: DegustationRoute
   options:
     model:    Degustation

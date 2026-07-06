@@ -231,21 +231,20 @@ info.update = function (layer) {
   var ecartRang = "<th>Écart Rang</th>";
   var compagnes = "<th>Année plantat°</th>";
   var btnSelection = "<th>Sélectionner</th>";
-  props.parcellaires.forEach(function(parcelle, ordre) {
-    var parcelleId = parcelle.IDU+'-'+String(ordre).padStart(2, '0');
-    var parcelleSelected = document.querySelector('input[type="checkbox"][value="'+parcelleId+'"]').checked;
+  props.parcellaires.forEach(function(parcelle) {
+    var parcelleSelected = document.querySelector('input[type="checkbox"][value="'+parcelle.parcelle_id+'"]').checked;
     var isSuccess = parcelleSelected ? "success" : "";
-      Commune += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle['Commune']+'</td>';
-      numParcelles += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
-      Cepages += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'"><span class="text-muted">'+parcelle.Produit+'</span><br/>'+parcelle.Cepage+'</td>';
-      compagnes += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle.Campagne+'</td>';
-      Superficies += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle.Superficie+'</td>';
-      ecartPied += '<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle["Ecart pied"]+'</td>';
-      ecartRang +='<td class="colonneInput '+isSuccess+'" data-id="input-'+ordre+'">'+parcelle["Ecart rang"]+'</td>';
+      Commune += '<td class="colonneInput '+isSuccess+'" data-id="input-'+parcelle.parcelle_id+'">'+parcelle.commune+'</td>';
+      numParcelles += '<td class="colonneInput '+isSuccess+'" data-id="input-'+parcelle.parcelle_id+'">'+parcelle.section+" "+parcelle.numero_parcelle+'</td>';
+      Cepages += '<td class="colonneInput '+isSuccess+'" data-id="input-'+parcelle.parcelle_id+'"><span class="text-muted">'+parcelle.source_produit_libelle+'</span><br/>'+parcelle.cepage+'</td>';
+      compagnes += '<td class="colonneInput '+isSuccess+'" data-id="input-'+parcelle.parcelle_id+'">'+parcelle.campagne+'</td>';
+      Superficies += '<td class="colonneInput '+isSuccess+'" data-id="input-'+parcelle.parcelle_id+'">'+parcelle.superficie+'</td>';
+      ecartPied += '<td class="colonneInput '+isSuccess+'" data-id="input-'+parcelle.parcelle_id+'">'+parcelle.ecart_pieds+'</td>';
+      ecartRang +='<td class="colonneInput '+isSuccess+'" data-id="input-'+parcelle.parcelle_id+'">'+parcelle.ecart_rang+'</td>';
       if (parcelleSelected) {
-        btnSelection +='<td class="success" align="center"><label class="switch"><input id="input-'+ordre+'" class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" checked/><span class="slider round"></span></label></td>';
+        btnSelection +='<td class="success" align="center"><label class="switch"><input id="input-'+parcelle.parcelle_id+'" class="selectParcelle" type="checkbox" data-parcelleid="'+parcelle.parcelle_id+'" checked/><span class="slider round"></span></label></td>';
       } else {
-        btnSelection +='<td class="" align="center"><label class="switch"><input id="input-'+ordre+'" class="selectParcelle" type="checkbox" data-parcelleid="'+parcelleId+'" /><span class="slider round"></span></label></td>';
+        btnSelection +='<td class="" align="center"><label class="switch"><input id="input-'+parcelle.parcelle_id+'" class="selectParcelle" type="checkbox" data-parcelleid="'+parcelle.parcelle_id+'" /><span class="slider round"></span></label></td>';
       }
 
   });

@@ -78,7 +78,7 @@
     <div style="padding-top: 10px;" class="row row-margin row-button">
         <div class="col-xs-4">
             <a href=
-            <?php if(ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource() === false): ?>
+            <?php if(ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() === false && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() === false): ?>
                 "<?php echo url_for(ParcellaireIrrigableEtapes::getInstance()->getPreviousLink(ParcellaireIrrigableEtapes::ETAPE_VALIDATION), $parcellaireIrrigable); ?>"
             <?php else: ?>
                 "<?php echo url_for("parcellaireirrigable_irrigations", $parcellaireIrrigable) ?>"
@@ -92,10 +92,7 @@
         <div class="col-xs-4 text-right">
             <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigable-confirmation-validation" <?php if (isset($validation) && $validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider votre déclaration</button>
         </div>
-    </div>
-    <?php if (!isset($validation) || !$validation->hasErreurs()): ?>
-	<?php include_partial('parcellaireIrrigable/popupConfirmationValidation', array('form' => $form)); ?>
-	<?php endif; ?>
+    </div
 </form>
 
 <?php if(isset($coop)): ?>
@@ -106,4 +103,8 @@
 <script type="text/javascript">
 $('#parcellaireirrigable-confirmation-validation').modal('show')
 </script>
+<?php endif; ?>
+
+<?php if (!isset($validation) || !$validation->hasErreurs()): ?>
+<?php include_partial('parcellaireIrrigable/popupConfirmationValidation', array('form' => $form)); ?>
 <?php endif; ?>

@@ -15,7 +15,7 @@ class ParcellaireIrrigableClient extends acCouchdbClient {
               throw new sfException("La periode doit être une année et non " . $periode);
           $parcellaireIrrigable = $this->find($this->buildId($identifiant, $periode, $type));
           if (is_null($parcellaireIrrigable)) {
-              $parcellaireIrrigable = $this->createDoc($identifiant, $periode, $type);
+              $parcellaireIrrigable = $this->createDoc($identifiant, $periode, false, $type);
           }
 
           return $parcellaireIrrigable;

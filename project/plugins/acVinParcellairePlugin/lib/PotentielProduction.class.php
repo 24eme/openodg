@@ -71,7 +71,7 @@ class PotentielProduction {
         foreach($this->getLibellesPotentielProduits() as $l => $p) {
             $ppproduit = null;
             $ppproduit = new PotentielProductionProduit($this, $l, $p);
-            if ($ppproduit && $ppproduit->hasEncepagement()) {
+            if ($ppproduit && $ppproduit->hasEncepagement() && !$ppproduit->isActif()) {
                 $this->produits[$l] = $ppproduit;
             }
         }

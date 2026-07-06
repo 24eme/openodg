@@ -1,0 +1,490 @@
+{
+    "_id": "CONFIGURATION-20200801",
+    "type": "Configuration",
+    "campagne": null,
+    "labels": {},
+    "contenances": {},
+    "droits": {},
+    "mvts_favoris": {},
+    "correspondances": {},
+    "libelle_detail_ligne": {},
+    "alias": {},
+    "declaration": {
+        "certifications": {
+            "IGP": {
+                "libelle": "IGP",
+                "format_libelle": "%a% %m% %l% %co% %ce%",
+                "code": "",
+                "code_produit": null,
+                "code_comptable": null,
+                "code_douane": null,
+                "departements": [],
+                "cepages_autorises": [
+                    "ABONDANT B",
+                    "ABOURIOU N",
+                    "ALÉATICO N",
+                    "ALICANTE HENRI BOUSCHET N",
+                    "ALIGOTÉ B",
+                    "ALPHONSE LAVALLÉE N",
+                    "ALTESSE B",
+                    "ALVARINHO B",
+                    "ARAMON BLANC B",
+                    "ARAMON GRIS G ",
+                    "ARAMON N",
+                    "ARANEL B",
+                    "ARBANE B",
+                    "ARINARNOA N",
+                    "ARRILOBA B",
+                    "ARROUYA N",
+                    "ARRUFIAC B",
+                    "ARTABAN N",
+                    "AUBIN B",
+                    "AUBIN VERT B",
+                    "AUBUN N",
+                    "AUXERROIS B",
+                    "BACHET N",
+                    "BARBAROUX RS",
+                    "BAROQUE B",
+                    "BÉCLAN N",
+                    "BÉQUIGNOL N",
+                    "BIANCU GENTILE B",
+                    "BLANC DAME B",
+                    "BOUCHALÈS N",
+                    "BOUILLET N",
+                    "BOUQUETTRAUBE B",
+                    "BOURBOULENC B",
+                    "BOUTEILLAN B",
+                    "BRACHET N",
+                    "BRONNER B",
+                    "BRUN ARGENTÉ N",
+                    "BRUN FOURCA N",
+                    "CABERNET BLANC B ",
+                    "CABERNET CORTIS N",
+                    "CABERNET FRANC N",
+                    "CABERNET-SAUVIGNON N",
+                    "CALADOC N",
+                    "CALITOR N",
+                    "CAMARALET B",
+                    "CARCAJOLO BLANC B",
+                    "CARCAJOLO N",
+                    "CARIGNAN BLANC B",
+                    "CARIGNAN N",
+                    "CARMENÈRE N",
+                    "CASTETS N",
+                    "CÉSAR N",
+                    "CHARDONNAY B",
+                    "CHASAN B",
+                    "CHASSELAS B",
+                    "CHASSELAS ROSE RS",
+                    "CHATUS N",
+                    "CHENANSON N",
+                    "CHENIN B",
+                    "CINSAUT N",
+                    "CLAIRETTE B",
+                    "CLAIRETTE ROSE RS",
+                    "CLARIN B",
+                    "CLAVERIE B",
+                    "CODIVARTA B",
+                    "COLOMBARD B",
+                    "CORBEAU N",
+                    "COT N",
+                    "COUNOISE N",
+                    "COURBU B",
+                    "COURBU NOIR N",
+                    "CROUCHEN B",
+                    "DANLAS B",
+                    "DURAS N",
+                    "DURIF N",
+                    "EGIODOLA N",
+                    "EKIGAÏNA N",
+                    "ELBLING B",
+                    "ETRAIRE DE LA DUI N",
+                    "FER N",
+                    "FEUNATE N",
+                    "FLORÉAL B",
+                    "FOLIGNAN B",
+                    "FOLLE BLANCHE B",
+                    "FRANC NOIR DE HAUTE-SAÔNE N",
+                    "FUELLA NERA N",
+                    "FURMINT B",
+                    "GAMARET N",
+                    "GAMAY DE BOUZE N",
+                    "GAMAY DE CHAUDENAY N",
+                    "GAMAY FRÉAUX N",
+                    "GAMAY N",
+                    "GANSON N",
+                    "GASCON N",
+                    "GENOVÈSE B",
+                    "GOLDRIESLING B",
+                    "GOUGET N",
+                    "GRAISSE B",
+                    "GRAMON N",
+                    "GRASSEN N",
+                    "GRENACHE BLANC B",
+                    "GRENACHE GRIS G,GRENACHE N",
+                    "GRINGET B",
+                    "GROLLEAU GRIS G",
+                    "GROLLEAU N",
+                    "GROS MANSENG B",
+                    "GROS VERT B",
+                    "JACQUÈRE B",
+                    "JOHANNITER B",
+                    "JOUBERTIN N",
+                    "JURANÇON BLANC B",
+                    "JURANÇON NOIR N",
+                    "KNIPPERLÉ B",
+                    "LAUZET B",
+                    "LEN DE L'EL B",
+                    "LILIORILA B",
+                    "LISTAN B",
+                    "LIVAL N",
+                    "MACABEU B",
+                    "MANCIN N",
+                    "MANSENG NOIR N",
+                    "MARSANNE B",
+                    "MARSELAN N",
+                    "MAUZAC B",
+                    "MAUZAC ROSE RS",
+                    "MAYORQUIN B",
+                    "MELON B",
+                    "MÉRILLE N",
+                    "MERLOT BLANC B",
+                    "MERLOT N",
+                    "MESLIER SAINT-FRANÇOIS B",
+                    "MEUNIER N",
+                    "MILGRANET N",
+                    "MOLETTE B",
+                    "MOLLARD N",
+                    "MONARCH N",
+                    "MONDEUSE BLANCHE B",
+                    "MONDEUSE N",
+                    "MONERAC N",
+                    "MONTILS B",
+                    "MORRASTEL N",
+                    "MOURVAISON N",
+                    "MOURVÈDRE N",
+                    "MOUYSSAGUÈS N",
+                    "MÜLLER-THURGAU B",
+                    "MURESCONU N",
+                    "MUSCADELLE B",
+                    "MUSCARDIN N",
+                    "MUSCARIS B",
+                    "MUSCAT À PETITS GRAINS B",
+                    "MUSCAT À PETITS GRAINS RS",
+                    "MUSCAT CENDRÉ B",
+                    "MUSCAT D'ALEXANDRIE B",
+                    "MUSCAT DE HAMBOURG N",
+                    "MUSCAT OTTONEL B",
+                    "NÉGRET DE BANHARS N",
+                    "NÉGRETTE N",
+                    "NIELLUCCIO N",
+                    "NOIR FLEURIEN N",
+                    "ONDENC B",
+                    "ORBOIS B",
+                    "PAGADEBITI B",
+                    "PASCAL B",
+                    "PERDEA B",
+                    "PERSAN N",
+                    "PETIT COURBU B",
+                    "PETIT MANSENG B",
+                    "PETIT MESLIER B",
+                    "PETIT VERDOT N",
+                    "PICARDAN B",
+                    "PINEAU D'AUNIS N",
+                    "PINOT BLANC B",
+                    "PINOT GRIS G",
+                    "PINOT NOIR N",
+                    "PINOTIN N",
+                    "PIQUEPOUL BLANC B",
+                    "PIQUEPOUL GRIS G",
+                    "PIQUEPOUL NOIR N",
+                    "PLANT DROIT N",
+                    "PORTAN N",
+                    "POULSARD N",
+                    "PRÉCOCE BOUSQUET B",
+                    "PRÉCOCE DE MALINGRE B",
+                    "PRIOR N",
+                    "PRUNELARD N",
+                    "RAFFIAT DE MONCADE B",
+                    "RIBOL N",
+                    "RIMINÈSE B",
+                    "RIVAIRENC BLANC B",
+                    "RIVAIRENC GRIS G",
+                    "RIVAIRENC N",
+                    "ROMORANTIN B",
+                    "ROSÉ DU VAR RS",
+                    "ROUBLOT B",
+                    "ROUSSANNE B",
+                    "ROUSSETTE D'AYZE B",
+                    "SACY B",
+                    "SAINT CÔME B",
+                    "SAINT-MACAIRE N",
+                    "SAINT-PIERRE DORÉ B",
+                    "SAPHIRA B",
+                    "SAUVIGNAC B",
+                    "SAUVIGNON B",
+                    "SAUVIGNON GRIS G",
+                    "SAVAGNIN BLANC B",
+                    "SAVAGNIN ROSE RS",
+                    "SCIACCARELLO N",
+                    "SEGALIN N,SELECT B",
+                    "SEMEBAT N",
+                    "SÉMILLON B",
+                    "SERVANIN N",
+                    "SERVANT B",
+                    "SOLARIS B",
+                    "SORELI B",
+                    "SOUVIGNIER GRIS B",
+                    "SYRAH N",
+                    "TANNAT N",
+                    "TEMPRANILLO N",
+                    "TÉOULIER N",
+                    "TERRET BLANC B",
+                    "TERRET GRIS G",
+                    "TERRET NOIR N",
+                    "TIBOUREN N",
+                    "TOURBAT B",
+                    "TOURIGA NACIONAL N",
+                    "TRESSOT N",
+                    "TROUSSEAU N",
+                    "UGNI BLANC B",
+                    "VALDIGUIÉ N",
+                    "VELTELINER ROUGE PRÉCOCE RS",
+                    "VERDESSE B",
+                    "VERMENTINO B",
+                    "VIDOC N",
+                    "VIOGNIER B",
+                    "VOLTIS B"
+                ],
+                "interpro": {
+                    "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                            "douane": [],
+                            "cvo": []
+                        }
+                    }
+                },
+                "genres": {
+                    "TRANQ": {
+                        "libelle": "Tranquilles",
+                        "format_libelle": null,
+                        "code": "TRANQ",
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                            "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                    "douane": [],
+                                    "cvo": []
+                                }
+                            }
+                        },
+                        "departements": [],
+                        "appellations": {
+                            "ATL": {
+                                "libelle": "Atlantique",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": null,
+                                "code_comptable": null,
+                                "code_douane": null,
+                                "interpro": {
+                                    "INTERPRO-declaration": {
+                                        "labels": [],
+                                        "droits": {
+                                            "douane": [],
+                                            "cvo": []
+                                        }
+                                    }
+                                },
+                                "departements": [],
+                                "mentions": {
+                                    "DEFAUT": {
+                                        "libelle": null,
+                                        "format_libelle": null,
+                                        "code": null,
+                                        "code_produit": null,
+                                        "code_comptable": null,
+                                        "code_douane": null,
+                                        "interpro": {
+                                            "INTERPRO-declaration": {
+                                                "labels": [],
+                                                "droits": {
+                                                    "douane": [],
+                                                    "cvo": []
+                                                }
+                                            }
+                                        },
+                                        "departements": [],
+                                        "lieux": {
+                                            "DEFAUT": {
+                                                "libelle": "",
+                                                "format_libelle": null,
+                                                "code": "",
+                                                "code_produit": null,
+                                                "code_comptable": null,
+                                                "code_douane": null,
+                                                "interpro": {
+                                                    "INTERPRO-declaration": {
+                                                        "labels": [],
+                                                        "droits": {
+                                                            "douane": [],
+                                                            "cvo": []
+                                                        }
+                                                    }
+                                                },
+                                                "departements": [],
+                                                "couleurs": {
+                                                    "blanc": {
+                                                        "libelle": "Blanc",
+                                                        "format_libelle": null,
+                                                        "code": null,
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "interpro": {
+                                                            "INTERPRO-declaration": {
+                                                                "labels": [],
+                                                                "droits": {
+                                                                    "douane": [],
+                                                                    "cvo": []
+                                                                }
+                                                            }
+                                                        },
+                                                        "departements": [],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": "",
+                                                                "format_libelle": "",
+                                                                "code": "",
+                                                                "code_produit": "",
+                                                                "code_comptable": "",
+                                                                "code_douane": "3B008",
+                                                                "cepages_autorises": [],
+                                                                "interpro": {
+                                                                    "INTERPRO-declaration": {
+                                                                        "droits": {
+                                                                            "douane": [],
+                                                                            "cvo": []
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "attributs": {
+                                                                    "rendement": null,
+                                                                    "rendement_conseille": null,
+                                                                    "rendement_dr": null,
+                                                                    "rendement_vci": null,
+                                                                    "rendement_vci_total": null
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "rouge": {
+                                                        "libelle": "Rouge",
+                                                        "format_libelle": null,
+                                                        "code": null,
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "interpro": {
+                                                            "INTERPRO-declaration": {
+                                                                "labels": [],
+                                                                "droits": {
+                                                                    "douane": [],
+                                                                    "cvo": []
+                                                                }
+                                                            }
+                                                        },
+                                                        "departements": [],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": "",
+                                                                "format_libelle": null,
+                                                                "code": "",
+                                                                "code_produit": null,
+                                                                "code_comptable": null,
+                                                                "code_douane": "3R008",
+                                                                "cepages_autorises": [],
+                                                                "interpro": {
+                                                                    "INTERPRO-declaration": {
+                                                                        "droits": {
+                                                                            "douane": [],
+                                                                            "cvo": []
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "rose": {
+                                                        "libelle": "Rosé",
+                                                        "format_libelle": null,
+                                                        "code": null,
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "interpro": {
+                                                            "INTERPRO-declaration": {
+                                                                "labels": [],
+                                                                "droits": {
+                                                                    "douane": [],
+                                                                    "cvo": []
+                                                                }
+                                                            }
+                                                        },
+                                                        "departements": [],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": "",
+                                                                "format_libelle": "",
+                                                                "code": "",
+                                                                "code_produit": "",
+                                                                "code_comptable": "",
+                                                                "code_douane": "3S008",
+                                                                "cepages_autorises": [],
+                                                                "interpro": {
+                                                                    "INTERPRO-declaration": {
+                                                                        "droits": {
+                                                                            "douane": [],
+                                                                            "cvo": []
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "attributs": {
+                                                                    "rendement": null,
+                                                                    "rendement_conseille": null,
+                                                                    "rendement_dr": null,
+                                                                    "rendement_vci": null,
+                                                                    "rendement_vci_total": null
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "attributs": {
+                                    "rendement": null,
+                                    "rendement_conseille": null,
+                                    "rendement_dr": null,
+                                    "rendement_vci": null,
+                                    "rendement_vci_total": null
+                                }
+                            }
+                        }
+                    }
+                },
+                "attributs": {
+                    "rendement": 120,
+                    "rendement_dr_l5": 120,
+                    "rendement_dr_l15": 120
+                }
+            }
+        }
+    }
+}

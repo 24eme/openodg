@@ -63,15 +63,16 @@ EOF;
         $this->cpt_warning = 0;
         $this->cpt_error = 0;
         $pkey = null;
+        $pkeyid = 0;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ';');
-
 
             if (strpos(self::CSV_CAMPAGNE, '20') === false) {
                 continue;
             }
             if(!$this->currentEtablissementKey || $this->currentEtablissementKey != $data[self::CSV_CVI]) {
                 $parcellaire = null;
+                $pkeyid = 0;
                 $etablissement = $this->findEtablissement($data);
                 if(!$etablissement) {
                     $this->currentEtablissementKey = '';
@@ -80,13 +81,17 @@ EOF;
                 }
             }
             if (!$parcellaire) {
-                if (! $parcellaire = ParcellaireClient::getInstance()->getLastByCampagne($etablissement->identifiant, (self::CSV_CAMPAGNE - 1).'-'.self::CSV_CAMPAGNE)) {
-                    $parcellaire = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
-                }
+                $parcellaire = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
                 if (!$parcellaire) {
                     echo "Error: pas de parcellaire pour ".$data[self::CSV_CVI]."/".$etablissement->_id."\n";
                     continue;
                 }
+            }
+
+            $communes2insee = [];
+            foreach ($parcellaire->getParcelles() as $k => $p) {
+                $communes2insee[$p->commune] = $p->code_commune;
+                $communes2insee[KeyInflector::slugify($p->commune)] = $p->code_commune;
             }
 
             $p = new stdClass();
@@ -99,6 +104,14 @@ EOF;
             $p->cepage = trim(str_replace(['é', 'è'], 'E', strtoupper($data[self::CSV_CEPAGE])));
             $p->lieu = trim(strtoupper($data[self::CSV_LIEU_DIT])) ?? null;
             $p->commune = trim(strtoupper($data[self::CSV_VILLE]));
+            if (isset($communes2insee[$p->commune])) {
+                $p->code_commune = $communes2insee[$p->commune];
+            } elseif (isset($communes2insee[KeyInflector::slugify($p->commune)])) {
+                $p->code_commune = $communes2insee[KeyInflector::slugify(str_replace(['é', 'è', 'ê', 'ë', 'É', 'È', 'Ê', 'Ë'], 'E', $p->commune))];
+            }
+            if ($p->code_commune) {
+                $p->idu = Parcellaire::computeIDU($p->code_commune, $p->prefix, $p->section, $p->numero_parcelle);
+            }
             $this->cpt++;
             $pt = ParcellaireClient::getInstance()->findParcelle($parcellaire, $p, 1, true);
             if ($pt) {
@@ -141,15 +154,19 @@ EOF;
                 $produit_hash = str_replace('/declaration/', '', $pt->getProduitHash());
             }
             if ($pt) {
-                $pkey = $pt->getKey();
-                $pkeyid = 0;
+                $pkey = $pt->getParcelleId();
             } else {
                 if (!$pkey) {
                     continue;
                 }
-                $pkey = explode('-', $pkey)[0].'-X'.$pkeyid++;
                 $pt = ParcellaireParcelle::freeInstance($parcellaire);
-                $pt->idu = $data[self::CSV_CODE_COMMUNE]."0000".$p->section.sprintf("%04d",$p->numero_parcelle);
+                if (isset($p->idu) && $p->idu) {
+                    $pt->idu = $p->idu;
+                    $pkey = $p->idu.'-X'.$pkeyid++;
+                } else {
+                    $pt->idu = $data[self::CSV_CODE_COMMUNE]."0000".$p->section.sprintf("%04d",$p->numero_parcelle);
+                    $pkey = explode('-', $pkey)[0].'-X'.$pkeyid++;
+                }
                 $pt->campagne_plantation = $p->campagne_plantation;
                 $pt->section = $p->section;
                 $pt->numero_parcelle = $p->numero_parcelle;
@@ -157,19 +174,22 @@ EOF;
                 $pt->superficie = $p->superficie;
                 $pt->cepage = $p->cepage;
                 $pt->commune = $p->commune;
+                $pt->code_commune = $p->code_commune;
                 $pt->lieu = $p->lieu;
                 $pt->parcelle_id = $pkey;
             }
-
             $item = $this->irrigue->declaration->add($produit_hash);
             $pi = $item->detail->add($pkey);
             $pi->superficie_parcellaire = null;
             ParcellaireClient::CopyParcelle($pi, $pt);
-            $pi->materiel = $data[self::CSV_MECANISMES_DIRRIGATION];
+            if ($data[self::CSV_MECANISMES_DIRRIGATION] == 'A definir') {
+                $pi->materiel = '';
+            } else {
+                $pi->materiel = $data[self::CSV_MECANISMES_DIRRIGATION];
+            }
             $pi->superficie = $p->superficie;
             $pi->active = 1;
         }
-
         $this->saving();
     }
 

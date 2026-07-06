@@ -1,4 +1,9 @@
-<table class="table table-bordered table-condensed table-striped">
+<div class="input-group" style="margin-bottom: 0; position: relative;">
+    <span class="input-group-addon">Filtrer le tableau</span>
+    <input id="table_filtre" type="text" class="form-control" placeholder="par nom, logement, produit, volume, ..." autocomplete="off" autofocus="autofocus" />
+    <a href="" id="btn_annuler_filtre" tabindex="-1" class="small hidden" style="z-index: 3; right: 10px; top: 10px; position: absolute; color: grey;"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></a>
+</div>
+<table class="table table-bordered table-condensed table-striped table_filterable" style="border-width: 0;">
     <thead>
         <tr>
             <th class="col-xs-1">Degustation voulue<br/> à partir du</th>
@@ -15,13 +20,17 @@
         foreach ($form['lots'] as $key => $lotForm):
             $lot = $form->getLot($key);
     ?>
-      <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->declarant_identifiant ?>">
+      <tr class="vertical-center cursor-pointer searchable" data-adherent="<?php echo $lot->declarant_identifiant ?>">
         <td><?php echo DateTime::createFromFormat('Y-m-d', $dates[$lot->unique_id])->format('d/m/Y') ?></td>
-        <td><?php echo $lot->declarant_nom; ?></td>
+        <td><a href="<?php echo url_for("degustation_declarant_lots_liste", ['identifiant' => $lot->declarant_identifiant, 'campagne' => $lot->campagne]) ?>"><?php echo $lot->declarant_nom; ?></a></td>
         <td>
         <?php if ($lot instanceof stdClass): ?>
             <a href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));  ?>">
-                <?php echo (property_exists($lot, 'type_document')) ? $lot->type_document : $lot->initial_type ;?>
+                <?php if ($lot->initial_type === PriseDeMousseClient::TYPE_MODEL): ?>
+                    <?php echo PriseDeMousseClient::INITIAL_TYPE_PDM; ?>
+                <?php else: ?>
+                    <?php echo (property_exists($lot, 'type_document')) ? $lot->type_document : $lot->initial_type; ?>
+                <?php endif ?>
             </a>
         <?php else : ?>
           <?php if ($lot->getUniqueId()): ?>

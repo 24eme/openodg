@@ -844,9 +844,12 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getTypeProvenance()
     {
-        if ($this->id_document_provenance) {
+        if ($this->id_document_provenance && strpos($this->id_document_provenance, 'CHGT') === false) {
             return substr(strtok($this->id_document_provenance, '-'), 0, 4);
         } elseif ($this->initial_type) {
+            if($this->initial_type == PriseDeMousseClient::TYPE_MODEL) {
+                return PriseDeMousseClient::INITIAL_TYPE_PDM;
+            }
             return $this->initial_type;
         }
         return '';
