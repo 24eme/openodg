@@ -4,7 +4,7 @@
  *
  */
 
-class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument, InterfaceDeclaration {
+class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument {
 
 
     protected $mouvement_document = null;
@@ -61,6 +61,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     protected function initDocuments() {
         $this->historique = array();
+        $this->mouvement_document = new MouvementFacturesDocument($this);
     }
 
     private function getTheoriticalId() {
@@ -506,5 +507,120 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
         return $data;
     }
+
+    public function hasStatutDemandes(TemplateFactureCotisationCallbackParameters $filters) {
+        $parameters = $filters->getParameters();
+        if (!$parameters) return false;
+        if (!isset($parameters['statut'])) return false;
+        foreach($this->demandes as $key => $demande) {
+            if ($demande->statut === $parameters['statut']) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**** DEBUT DES MOUVEMENTS ****/
+
+    public function getPeriode() {
+        $date = new DateTime($this->date);
+        return $date->format('Y');
+    }
+
+    public function getTemplateFacture($region = null) {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getPeriode(), $region);
+    }
+
+    public function getMouvementsFactures() {
+        return $this->_get('mouvements');
+    }
+
+    public function getMouvementsFacturesCalcule($region = null) {
+      $templateFacture = $this->getTemplateFacture($region);
+      if(!$templateFacture) {
+          return array();
+      }
+
+
+      $cotisations = $templateFacture->generateCotisations($this);
+      $cotisationsPrec = $this->mouvement_document->getMothersCotisations();
+
+      $identifiantCompte = $this->getIdentifiant();
+
+      $mouvements = array();
+
+      $rienAFacturer = true;
+
+      foreach($cotisations as $cotisation) {
+          if (
+              (strpos($cotisation->getHash(), '%detail_identifiant%') !== false) &&
+              ($cotisation->getConfigCallback() == 'getVolumeLotsFacturables' || $cotisation->getConfigCallback() == 'getVolumeRevendiqueLots')
+             ) {
+              throw new sfException("getVolumeLotsFacturables/getVolumeRevendiqueLots incompatibles avec %detail_identifiant%");
+          }
+
+          $mouvement = DRevMouvementFactures::freeInstance($this);
+          $mouvement->detail_identifiant = $this->numero_archive;
+          $mouvement->createFromCotisationAndDoc($cotisation, $this);
+          $mouvement->detail_libelle = str_replace(array('%millesime_precedent%', '%millesime_courant%'), array($this->getPeriode() - 1, $this->getPeriode()), $mouvement->detail_libelle);
+
+          $cle = str_replace(['%detail_identifiant%', '%millesime%'], [$mouvement->detail_identifiant, $this->getPeriode()], $cotisation->getHash());
+          if(isset($cotisationsPrec[$cle]) && $cotisation->getConfigCallback() != 'getVolumeRevendiqueNumeroDossier') {
+              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cle];
+          }
+
+          if($this->hasVersion() && !$mouvement->quantite) {
+              continue;
+          }
+
+          if($mouvement->quantite) {
+              $rienAFacturer = false;
+          }
+
+          $mouvements[$mouvement->getMD5Key()] = $mouvement;
+      }
+
+      if($rienAFacturer) {
+          return array();
+
+      }
+
+      return array($identifiantCompte => $mouvements);
+    }
+
+    public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
+        return $this->mouvement_document->getMouvementsFacturesCalculeByIdentifiant($identifiant);
+    }
+
+
+    public function generateMouvementsFactures() {
+        return $this->mouvement_document->generateMouvementsFactures();
+    }
+
+    public function findMouvementFactures($cle, $id = null){
+      return $this->mouvement_document->findMouvementFactures($cle, $id);
+    }
+
+    public function facturerMouvements() {
+
+        return $this->mouvement_document->facturerMouvements();
+    }
+
+    public function isFactures() {
+
+        return $this->mouvement_document->isFactures();
+    }
+
+    public function isNonFactures() {
+
+        return $this->mouvement_document->isNonFactures();
+    }
+
+    public function clearMouvementsFactures(){
+        $this->remove('mouvements');
+        $this->add('mouvements');
+    }
+
+    /**** FIN DES MOUVEMENTS ****/
 
 }
