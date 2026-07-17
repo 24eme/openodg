@@ -151,7 +151,10 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
     public function getValidationOdg() {
+        if(!$this->exist('validation_odg')) {
 
+            return true;
+        }
         return $this->_get('validation_odg');
     }
 
