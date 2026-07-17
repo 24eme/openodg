@@ -548,50 +548,23 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
           return array();
       }
 
-
       $cotisations = $templateFacture->generateCotisations($this);
-      $cotisationsPrec = $this->mouvement_document->getMothersCotisations();
-
       $identifiantCompte = $this->getIdentifiant();
-
       $mouvements = array();
-
       $rienAFacturer = true;
-
       foreach($cotisations as $cotisation) {
-          if (
-              (strpos($cotisation->getHash(), '%detail_identifiant%') !== false) &&
-              ($cotisation->getConfigCallback() == 'getVolumeLotsFacturables' || $cotisation->getConfigCallback() == 'getVolumeRevendiqueLots')
-             ) {
-              throw new sfException("getVolumeLotsFacturables/getVolumeRevendiqueLots incompatibles avec %detail_identifiant%");
-          }
-
-          $mouvement = DRevMouvementFactures::freeInstance($this);
-          $mouvement->detail_identifiant = $this->numero_archive;
+          $mouvement = HabilitationMouvementFactures::freeInstance($this);
+          $mouvement->detail_identifiant = str_replace('HABILITATION-', '', $this->_id);
+          $mouvement->date = $this->date;
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
-          $mouvement->detail_libelle = str_replace(array('%millesime_precedent%', '%millesime_courant%'), array($this->getPeriode() - 1, $this->getPeriode()), $mouvement->detail_libelle);
-
-          $cle = str_replace(['%detail_identifiant%', '%millesime%'], [$mouvement->detail_identifiant, $this->getPeriode()], $cotisation->getHash());
-          if(isset($cotisationsPrec[$cle]) && $cotisation->getConfigCallback() != 'getVolumeRevendiqueNumeroDossier') {
-              $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cle];
-          }
-
-          if($this->hasVersion() && !$mouvement->quantite) {
-              continue;
-          }
-
           if($mouvement->quantite) {
               $rienAFacturer = false;
           }
-
           $mouvements[$mouvement->getMD5Key()] = $mouvement;
       }
-
       if($rienAFacturer) {
           return array();
-
       }
-
       return array($identifiantCompte => $mouvements);
     }
 
