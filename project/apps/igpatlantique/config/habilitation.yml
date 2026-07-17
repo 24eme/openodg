@@ -14,16 +14,28 @@ all:
           RELANCE_2: "Relance n°2"
           RELANCE_3: "Relance n°3"
           COMPLET: "Complet"
-          ENREGISTREMENT: "Enregistrement"
-          TRANSMIS_CI: "Transmis au Contrôle Interne"
-          TRAITE_CI: "Traité par le Contrôle Interne"
-          TRANSMIS_ODG: "Transmis à une autre ODG"
-          VALIDE_ODG: "Validé par une autre ODG"
-          REFUSE_ODG: "Refusé par une autre ODG"
-          TRANSMIS_INAO: "Transmis à l'INAO"
-          VALIDE_INAO: "Validé par l'INAO"
-          REFUSE_INAO: "Refusé par l'INAO"
-          SUSPENDU_INAO: "Suspendu par l'INAO"
+          TRANSMIS_OC: "Transmis à l'OC"
+          VALIDE_OC: "Validé par l'OC"
+          REFUSE_OC: "Refusé par l'OC"
           VALIDE: "Validé"
           REFUSE: "Refusé"
           ANNULE: "Annulé"
+        automatique:
+          VALIDE_OC: VALIDE
+          REFUSE_OC: REFUSE
+        habilitations:
+          HABILITATION:
+            COMPLET: DEMANDE_HABILITATION
+            VALIDE: HABILITE
+            REFUSE: REFUS
+            ANNULE: ANNULÉ
+          RETRAIT:
+            COMPLET: DEMANDE_RETRAIT
+            VALIDE: RETRAIT
+            REFUSE: HABILITE
+            ANNULE: HABILITE
+          RESILIATION:
+            COMPLET: DEMANDE_RESILIATION
+            VALIDE: RESILIE
+            REFUSE: HABILITE
+            ANNULE: HABILITE
