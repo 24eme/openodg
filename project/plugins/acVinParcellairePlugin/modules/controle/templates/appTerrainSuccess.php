@@ -133,6 +133,9 @@
           const [y, m, d] = items[0].date_tournee.split('-');
           const agent = items[0].agent_libelle;
           return `Tournée du ${d}/${m}/${y} par ${agent}`;
+      },
+      nbParcellesOutOfDate(controleCible) {
+          return Object.values(controleCible.parcelles).filter(parcelle => parcelle.isOutOfDate === true).length;
       }
     };
 
@@ -187,6 +190,9 @@
         return val ? Number(val).toFixed(nbDecimal) : '';
       },
       printableSiret() {
+          if (! this.controleCourant.declarant.siret) {
+            return "PAS DE SIRET"
+          }
           return this.controleCourant.declarant.siret.substring(0,3)+" "+
                  this.controleCourant.declarant.siret.substring(3,6) +" "+
                  this.controleCourant.declarant.siret.substring(6,9) +" "+
@@ -319,6 +325,9 @@
             return val ? Number(val).toFixed(nbDecimal) : '';
         },
         printableSiret() {
+            if (! this.controleCourant.declarant.siret) {
+              return "PAS DE SIRET"
+            }
             return this.controleCourant.declarant.siret.substring(0,3)+" "+
                    this.controleCourant.declarant.siret.substring(3,6) +" "+
                    this.controleCourant.declarant.siret.substring(6,9) +" "+
@@ -420,6 +429,9 @@
           this.controleCourant.audit.needs_to_be_saved = true;
       },
       printableSiret() {
+          if (! this.controleCourant.declarant.siret) {
+            return "PAS DE SIRET"
+          }
           return this.controleCourant.declarant.siret.substring(0,3)+" "+
                  this.controleCourant.declarant.siret.substring(3,6) +" "+
                  this.controleCourant.declarant.siret.substring(6,9) +" "+

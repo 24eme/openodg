@@ -118,6 +118,28 @@
           "callback": "getVolumeRevendiqueNumeroDossier"
         }
       }
+    },
+    "05_controle_habilitation": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Contrôle d'habilitation",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationFixe",
+          "prix": 74.52,
+          "tva": 0,
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "Habilitation"
+          ],
+          "callback": "hasStatutDemandes",
+          "callback_parameters": {
+            "statut": "TRANSMIS_OC"
+          }
+        }
+      }
     }
   }
 }
