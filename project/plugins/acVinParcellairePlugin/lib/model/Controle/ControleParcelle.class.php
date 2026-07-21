@@ -1,6 +1,11 @@
 <?php
 class ControleParcelle extends BaseControleParcelle
 {
+    private static $parcellaires_manquants = [];
+    private static $parcellaires_irrigues = [];
+    private static $parcellaires_irrigables = [];
+    private static $parcellaires_affectations = [];
+
     public function  getData() {
 
         $data = parent::getData();
@@ -70,22 +75,47 @@ class ControleParcelle extends BaseControleParcelle
 
     public function getInfoManquant()
     {
-        return ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant)->getPourcentageFromParcelleId($this->parcelle_id) : 0;
+        if (array_key_exists($this->getDocument()->identifiant, self::$parcellaires_manquants) === false) {
+            $manquant = ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant);
+            self::$parcellaires_manquants[$this->getDocument()->identifiant] = $manquant;
+        }
+
+        return self::$parcellaires_manquants[$this->getDocument()->identifiant]
+                ? self::$parcellaires_manquants[$this->getDocument()->identifiant]->getPourcentageFromParcelleId($this->parcelle_id)
+                : 0;
     }
 
     public function getInfoIrrigation()
     {
-        return ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant)->getInfoFromParcelleId($this->parcelle_id) : ['materiel' => '', 'ressource' => ''];
+        if (array_key_exists($this->getDocument()->identifiant, self::$parcellaires_irrigables) === false) {
+            $irrigable = ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant);
+            self::$parcellaires_irrigables[$this->getDocument()->identifiant] = $irrigable;
+        }
+
+        return self::$parcellaires_irrigables[$this->getDocument()->identifiant]
+                ? self::$parcellaires_irrigables[$this->getDocument()->identifiant]->getInfoFromParcelleId($this->parcelle_id)
+                : ['materiel' => '', 'ressource' => ''];
     }
 
     public function getInfoIrrigue()
     {
-        return ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant) ? date("d/m/Y", strtotime(ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant)->getDateIrrigationFromParcelleId($this->parcelle_id))) : null;
+        if (array_key_exists($this->getDocument()->identifiant, self::$parcellaires_irrigues) === false) {
+            $irrigue = ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant);
+            self::$parcellaires_irrigues[$this->getDocument()->identifiant] = $irrigue;
+        }
+
+        return self::$parcellaires_irrigues[$this->getDocument()->identifiant]
+                ? date("d/m/Y", strtotime(self::$parcellaires_irrigues[$this->getDocument()->identifiant]->getDateIrrigationFromParcelleId($this->parcelle_id)))
+                : null;
     }
 
     public function getInfoAffectation()
     {
-        $a = ParcellaireAffectationClient::getInstance()->getLast($this->getDocument()->identifiant);
+        if (array_key_exists($this->getDocument()->identifiant, self::$parcellaires_affectations) === false) {
+            self::$parcellaires_affectations[$this->getDocument()->identifiant] = ParcellaireAffectationClient::getInstance()->getLast($this->getDocument()->identifiant);
+        }
+
+        $a = self::$parcellaires_affectations[$this->getDocument()->identifiant];
         $res = ($a) ? $a->getInfoFromParcelleId($this->parcelle_id) : [];
         if (isset($res['affectation_date'])) {
             $res['affectation_date'] = date("d/m/Y", strtotime($res['affectation_date']));
