@@ -16,10 +16,10 @@ all:
         #   name: "AOC CdP Fréjus"
         #   color: "#52e536"
         #   denomination_id: "01739"
-        # communes-lalonde:
-        #   name: "AOC CdP la Londe"
-        #   color: "#52e536"
-        #   denomination_id: "01839"
+        communes-lalonde:
+          name: "AOC CdP la Londe"
+          color: "#52e536"
+          denomination_id: "01839"
         # communes-pierrefeu:
         #   name: "AOC CdP Pierrefeu"
         #   color: "#52e536"
