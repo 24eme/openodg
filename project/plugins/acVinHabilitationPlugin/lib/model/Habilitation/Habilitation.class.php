@@ -527,6 +527,15 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return false;
     }
 
+    public function getRegions()
+    {
+        $regions = [];
+        foreach ($this->declaration as $key => $value) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($value->getHash());
+        }
+        return array_filter(array_unique($regions));
+    }
+
     /**** DEBUT DES MOUVEMENTS ****/
 
     public function getPeriode() {
