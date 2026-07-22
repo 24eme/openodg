@@ -710,6 +710,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     public function getSyntheseDestination() {
         $synthese = [];
         foreach($this->getParcelles() as $parcelle) {
+            if (! $parcelle->exist('destinations')) {continue;}
             foreach($parcelle->destinations as $d) {
                 $synthese[$d->nom] += $d->superficie;
             }
