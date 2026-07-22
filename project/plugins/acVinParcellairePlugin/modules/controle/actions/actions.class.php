@@ -120,15 +120,13 @@ class controleActions extends sfActions
     {
         $controles = [];
         $this->obj_controles_for_aires = [];
-        foreach (ControleClient::getInstance()->findAll() as $controle) {
-            if ($dateTournee == $controle->date_tournee && $agentIdentifiant == $controle->agent_identifiant) {
-                if (! $controle->getParcellaire() || ! count($controle->getParcellaire()->getParcelles()) ) {
-                    continue;
-                }
-                $controle->updateParcellesNoeudControleIfNeeded();
-                $this->obj_controles_for_aires[] = $controle;
-                $controles[$controle->_id] = $controle->getDataToDump();
+        foreach (ControleClient::getInstance()->findAllByDateTourneeAndAgent($dateTournee, $agentIdentifiant) as $controle) {
+            if (! $controle->getParcellaire() || ! count($controle->getParcellaire()->getParcelles()) ) {
+                continue;
             }
+            $controle->updateParcellesNoeudControleIfNeeded();
+            $this->obj_controles_for_aires[] = $controle;
+            $controles[$controle->_id] = $controle->getDataToDump();
         }
         return $controles;
     }
