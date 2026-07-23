@@ -24,7 +24,10 @@
                    "docs": [
                        "Degustation"
                    ],
-                   "callback": "buildMouvementsNbLotsDegustes"
+                   "callback": "buildMouvementsNbLotsDegustes",
+                   "callback_parameters": {
+                       "provenance": "NOT CHGTDENOM"
+                   }
                },
                "presentation": {
                    "modele": "Cotisation",
