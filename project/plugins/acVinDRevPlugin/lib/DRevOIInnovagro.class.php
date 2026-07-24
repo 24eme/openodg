@@ -1,5 +1,5 @@
 <?php
-class DRevOI
+class DRevOIInnovagro
 {
 	public $drev;
 	public $context;
