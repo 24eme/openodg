@@ -9,10 +9,10 @@
 <?php include_partial('parcellaireAffectation/step', array('step' => $etape, 'parcellaireAffectation' => $parcellaireAffectation)) ?>
 
 <div class="page-header">
-    <h2>Parcelles irrigables sur votre exploitation <br/><small>Merci d'indiquer le type de matériel et de ressource utilisés sur chaque parcelle irrigable</small></h2>
+    <h2>Parcelles irrigables<br/><small>Merci d'indiquer le type de matériel et de ressource utilisés sur chaque parcelle irrigable</small></h2>
 </div>
 
-<?php include_partial('parcellaireAffectation/destinataires', ['destinataires' => $destinataires, 'produits' => $produits, 'parcellaireAffectation' => $parcellaireAffectation, 'destinataire' => $destinataire, 'etape' => $etape, 'coop' => $coop]); ?>
+<?php include_partial('parcellaireAffectation/destinataires', ['destinataires' => $destinataires, 'produits' => $produits, 'parcellaireAffectation' => $parcellaireAffectation, 'destinataire' => $destinataire, 'etape' => $etape, 'coop' => $coop, 'hashproduit' => $hashproduit]); ?>
 
 <form id="validation-form" action="" method="post" class="form-horizontal">
     <?php include_partial('parcellaireIrrigable/formIrrigations', ['parcellaireIrrigable' => $parcellaireAffectation, 'form' => $form]); ?>

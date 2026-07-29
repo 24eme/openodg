@@ -14,40 +14,43 @@
     <tr>
         <th class="col-xs-4">Opérateurs</th>
         <th class="col-xs-2">Type de tournée</th>
-        <th class="col-xs-2"></th>
-        <th class="col-xs-2"></th>
-        <th style="width: 0;"></th>
+        <th class="col-xs-6" colSpan="3">Documents</th>
     </tr>
     </thead>
     <tbody>
     <?php foreach ($controles as $controle): ?>
         <tr>
             <td>
-                <a href="<?php echo url_for("controle_liste_manquements_controle", array('id' => $controle->_id)) ?>"><?php echo $controle->declarant->raison_sociale ?></a>
+                <a href="<?php echo url_for("controle_operateur", array('identifiant' => $controle->identifiant)) ?>"><?php echo $controle->declarant->raison_sociale ?></a>
             </td>
             <td><?php echo $controle->type_tournee; ?></td>
-            <td><a href="<?php echo url_for('controle_pdf', array('id' => $controle->_id)); ?>">PDF du contrôle</a></td>
             <td>
-                <?php if ($controle->isTermine()): ?>
-                    <a href="<?php echo url_for('controle_pdf_manquements', array('id' => $controle->_id)); ?>">PDF des manquements</a>
-                <?php else: ?>
+                <a href="<?php echo url_for('controle_pdf', array('id' => $controle->_id)); ?>">PDF du contrôle</a>
+            </td>
+            <td>
+                <?php if ($controle->isANotifier() && $controle->needConstatsToBeCreated()): ?>
                     <a class="btn btn-xs btn-default" href="<?php echo url_for('controle_liste_manquements_controle', array('id' => $controle->_id)); ?>">Générer les manquements</a>
+                <?php else: ?>
+                    <a href="<?php echo url_for('controle_pdf_manquements', array('id' => $controle->_id)); ?>">PDF des manquements</a>
+                    <?php if ($controle->isANotifier()) :?>
+                    <a class="btn btn-xs btn-default" href="<?php echo url_for('controle_liste_manquements_controle', array('id' => $controle->_id)); ?>"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <?php endif; ?>
                 <?php endif;?>
             </td>
             <td>
-            <?php if ($controle->notification_date === null): ?>
+            <?php if ($controle->isANotifier()): ?>
                 <div class="btn-group pull-right">
-                  <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"<?php if (!$controle->manquements_valides):?> title="Les manquements doivent être générés afin de pouvoir notifier l'opérateur" disabled<?php endif;?>>
+                  <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"<?php if ($controle->needConstatsToBeCreated()):?> title="Des manquements doivent être générés afin de pouvoir notifier l'opérateur" disabled<?php endif;?>>
                     Notifier <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu text-left">
                     <li>
-                        <a class="btn link-mail-auto" href="<?php echo url_for('controle_envoi_mail_resultats', array('id_controle' => $controle->_id, 'identifiant' => $controle->identifiant)); ?>">
+                        <a class="btn link-mail-auto" href="<?php echo url_for('controle_envoi_mail_resultats', array('id' => $controle->_id, 'identifiant' => $controle->identifiant)); ?>">
                           <i class="glyphicon glyphicon-envelope"></i>&nbsp;Envoyer par mail
                         </a>
                     </li>
                     <li>
-                      <a href="<?php echo url_for('controle_mail_resultats_previsualisation', array('id_controle' => $controle->_id)); ?>" class="btn btn-mail-previsualisation">
+                      <a href="<?php echo url_for('controle_mail_resultats_previsualisation', array('id' => $controle->_id)); ?>" class="btn btn-mail-previsualisation">
                           <i class="glyphicon glyphicon-eye-open"></i>&nbsp;Prévisualiser
                       </a>
                     </li>
@@ -55,10 +58,10 @@
                 </div>
             <?php else: ?>
                 <div class="text-center">
-                    <a href="<?php echo url_for('controle_mail_resultats_previsualisation',array('id_controle' => $controle->_id)); ?>" class="btn btn-default btn-sm disabled">
+                    <a href="<?php echo url_for('controle_mail_resultats_previsualisation',array('id' => $controle->_id)); ?>" class="btn btn-default btn-sm disabled">
                         <i class="glyphicon glyphicon-send"></i>&nbsp;&nbsp;<?php echo format_date($controle->notification_date, "dd/MM/yyyy")." à ".format_date($controle->notification_date, "H")."h".format_date($controle->notification_date, "mm"); ?>
                     </a>
-                    <br/><a href="<?php echo url_for('controle_envoi_mail_resultats',array('id_controle' => $controle->_id, 'identifiant' => $controle->identifiant,'envoye' => 0)); ?>" ><small>Remettre en non envoyé</small></a>
+                    <br/><a href="<?php echo url_for('controle_envoi_mail_resultats',array('id' => $controle->_id, 'identifiant' => $controle->identifiant,'envoye' => 0)); ?>" ><small>Remettre en non envoyé</small></a>
                 </div>
             <?php endif ?>
           </td>
@@ -74,7 +77,7 @@
 
 <?php
 if(isset($popup)):
-  include_component('controle','previewMailPopup', array('controle' => $controle));
+  include_component('controle', 'previewMailPopup', array('controle' => $preview_controle));
 endif;
 ?>
 
@@ -87,17 +90,17 @@ endif;
            <h4 class="modal-title">Le mail n'a pas pu s'ouvrir automatiquement</h4>
          </div>
          <div class="modal-body">
-             <span class="glyphicon glyphicon-info-sign"></span> Vous devez autoriser le navigateur à ouvrir des popups pour activer l'ouverture automatique. (<a href="https://github.com/24eme/openodg/blob/master/doc/AutorisationPopup.md">Consulter l'aide</a>)</p>
+             <p><span class="glyphicon glyphicon-info-sign"></span> Vous devez autoriser le navigateur à ouvrir des popups pour activer l'ouverture automatique. (<a href="https://github.com/24eme/openodg/blob/master/doc/AutorisationPopup.md">Consulter l'aide</a>)</p>
          </div>
          <div class="modal-footer">
            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Annuler</button>
-           <a href="<?php echo url_for('controle_mail_to_resultats', array('id_controle' => $controle->_id, 'identifiant' => $controle->identifiant)); ?>" class="btn btn-primary">Ouvrir le mail manuellement</a>
+           <a href="<?php echo url_for('controle_mail_to_resultats', array('id' => $controles[$mail_to_identifiant]->_id, 'identifiant' => $mail_to_identifiant)); ?>" class="btn btn-primary">Ouvrir le mail manuellement</a>
          </div>
        </div>
      </div>
    </div>
 <script>
-    var newWin = window.open("<?php echo url_for('controle_mail_to_resultats', array('id_controle' => $controle->_id, 'identifiant' => $controle->identifiant)); ?>");
+    var newWin = window.open("<?php echo url_for('controle_mail_to_resultats', array('id' => $controles[$mail_to_identifiant]->_id, 'identifiant' => $mail_to_identifiant)); ?>");
     if(!newWin || newWin.closed || typeof newWin.closed=='undefined')
     {
        setTimeout(function() {$('#modal_mailto').modal('show')}, 1000);

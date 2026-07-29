@@ -113,6 +113,9 @@
     <?php if(class_exists("Adelphe") && in_array('adelphe', sfConfig::get('sf_enabled_modules')) && $etablissement->getMasterCompte()->hasDroit(AdelpheSecurity::DROIT_ADELPHE)): ?>
     <?php include_component('adelphe', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
+    <?php if(class_exists("DRaPConfiguration") && DRaPConfiguration::getInstance()->isModuleEnabled()): ?>
+    <?php include_component('drap', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRaPConfiguration::getInstance()->getCurrentPeriode())); ?>
+    <?php endif; ?>
 </div>
 <?php if(in_array('facturation', sfConfig::get('sf_enabled_modules'))): ?>
 <div class="page-header">

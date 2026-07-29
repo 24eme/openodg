@@ -4,6 +4,7 @@ class ParcellaireIrrigueClient extends acCouchdbClient {
 
       const TYPE_MODEL = "ParcellaireIrrigue";
       const TYPE_COUCHDB = "PARCELLAIREIRRIGUE";
+      const TYPE_LIBELLE = "Irrigué";
 
       public static function getInstance() {
           return acCouchdbManager::getClient("parcellaireIrrigue");

@@ -144,7 +144,7 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
     }
 
     public function isAffectee($lieu = null) {
-        if ($lieu && $this->lieu && KeyInflector::slugify(trim($lieu)) != KeyInflector::slugify(trim($this->lieu))) {
+        if (($lieu !== null || $this->lieu) && KeyInflector::slugify(trim($lieu)) != KeyInflector::slugify(trim($this->lieu))) {
 
     		return false;
     	}

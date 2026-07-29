@@ -1,4 +1,4 @@
-<h3 class="mt-0"><RouterLink :to="{ name: 'listing' }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ libelleTournee() }} <RouterLink :to="{ name: 'map' }" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink><span class="pull-right mr-3" :class="$root.isSynchro ? 'glyphicon glyphicon-floppy-saved' : 'glyphicon glyphicon-floppy-remove'" :style="$root.isSynchro ? 'color: #8da42a' : 'color: #aaaaaa'"></span></h3>
+<h3 class="mt-0"><RouterLink :to="{ name: 'listing' }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ libelleTournee() }} <RouterLink :to="{ name: 'map' }" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink><span class="pull-right mr-3" :class="savedClass" :style="savedStyle"></span></h3>
 <hr class="mt-2" />
 
 <?php include_partial('controle/terrainBlocDeclarant'); ?>
@@ -8,7 +8,7 @@
 <h2>Parcelles contrôlées <span class="badge">{{ nbParcellesControlees() }} / {{ Object.keys(controleCourant.parcelles).length }}</span></h2>
 
 <div class="list-group mt-4">
-    <RouterLink v-for="(parcelle, key, index) in controleCourant.parcelles" :to="{ name: 'parcelle', params: { id: controleCourant._id, parcelle: key }}" class="list-group-item" :class="{ 'list-group-item-success': parcelle.controle.saisie == 1 }">
+    <RouterLink v-for="(parcelle, key, index) in parcellesSorted()" :to="{ name: 'parcelle', params: { id: controleCourant._id, parcelle: key }}" class="list-group-item" :class="{ 'list-group-item-success': parcelle.controle.saisie == 1 }" :style="parcelle.isOutOfDate ? { backgroundColor: '#FFCCCB' } : {}">
         <div class="row">
             <div class="col-xs-2 col-md-1" style="font-size: 20px;">
                 <strong>N° {{ index + 1 }}</strong>
@@ -17,7 +17,8 @@
                 <h4 class="list-group-item-heading">{{ parcelle.cepage }} <small> {{ parcelle.parcelle_id }} <br />{{ parcelle.source_produit_libelle }} - {{ echoFloat(parcelle.superficie, 2) }} ha<br />{{ parcelle.campagne_plantation }}</small></h4>
                 <p class="list-group-item-text">{{ parcelle.commune }} {{ parcelle.lieu }}</p>
                 <div class="mt-2">
-                    <label class="label label-success" title="Nombre de constat" :class="{ 'label-warning': countConstatForThisParcelle(key) > 0 }">{{ countConstatForThisParcelle(key) }}<label>
+                    <label v-if="parcelle.isOutOfDate" class="label label-warning" title="Parcelle non à jour">Cette parcelle n'est pas à jour</label>
+                    <label v-else class="label label-success" title="Nombre de constat" :class="{ 'label-warning': countConstatForThisParcelle(key) > 0 }">{{ countConstatForThisParcelle(key) }}</label>
                 </div>
             </div>
             <div class="col-xs-2 text-right" :class="{ 'text-primary': parcelle.controle.saisie != 1 }">

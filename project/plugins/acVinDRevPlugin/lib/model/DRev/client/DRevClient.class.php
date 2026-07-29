@@ -301,6 +301,15 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
                     $e = $this->getCachedEtablissement($lot->declarant_identifiant);
                     $match = $match && $this->matchFilterFamille($e->famille, $filter);
                 }
+            } elseif ($type === 'provenance') {
+                $not = strpos($filter, 'NOT ') === 0;
+                $filter = str_replace('NOT ', '', $filter);
+
+                // ? si on doit pas le trouver : si on doit le trouver;
+                $res = $not ? strpos($lot->id_document_provenance, $filter) === false
+                            : strpos($lot->id_document_provenance, $filter) === 0
+                            ;
+                $match = $match && $res;
             }
         }
 

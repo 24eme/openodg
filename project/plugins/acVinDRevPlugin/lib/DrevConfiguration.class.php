@@ -197,6 +197,10 @@ class DRevConfiguration extends DeclarationConfiguration {
         return isset($this->configuration['send_to_innovagro']) && boolval($this->configuration['send_to_innovagro']);
     }
 
+    public function isSentToCertipaq() {
+        return CertipaqService::hasAppConfig();
+    }
+
     public function isSaisieSuperficieRevendique() {
 
         return isset($this->configuration['saisie_superficie_revendique']) && boolval($this->configuration['saisie_superficie_revendique']);

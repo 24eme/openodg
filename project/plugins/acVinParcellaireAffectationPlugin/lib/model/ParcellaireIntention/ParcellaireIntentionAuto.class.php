@@ -31,6 +31,9 @@ class ParcellaireIntentionAuto extends ParcellaireIntentionAffectation {
             $hashes = $this->getDenominationAireHash();
             $produitsCepagesAutorises = [];
             foreach($parcelles as $pid => $parcelle) {
+                if($this->getDenominationAire() && !in_array($parcelle->isInDenominationLibelle($this->getDenominationAire()), [AireClient::PARCELLAIRE_AIRE_TOTALEMENT, AireClient::PARCELLAIRE_AIRE_PARTIELLEMENT])) {
+                    continue;
+                }
                 foreach ($hashes as $hash) {
                     if (!isset($produitsCepagesAutorises[$hash])) {
                         $produitsCepagesAutorises[$hash] = [];

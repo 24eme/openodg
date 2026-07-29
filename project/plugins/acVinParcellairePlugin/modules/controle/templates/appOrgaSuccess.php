@@ -27,6 +27,7 @@
         let controle = controles[controleId]
         const parcellesIds = [];
         for(parcelleId in controle.parcelles) {
+            if (! controle.parcellaire_parcelles[parcelleId]) continue;
             parcellesIds.push(parcelleId)
         }
         parcellesSelectionneesControles[controle._id] = parcellesIds;
@@ -35,8 +36,11 @@
     var aires = [];
 <?php
     $communes = [];
-    foreach ($controles as $controle) {
+    foreach ($obj_controles_for_aires as $controle) {
         $p = $controle->getParcellaire();
+        if ( ! $p ) {
+            continue;
+        }
         echo "//".$p->_id."\n";
         foreach ($p->getCommunes() as $com) {
             $communes[$com] = $com;
@@ -76,6 +80,7 @@
     templates.operateurs.data = function() {
         return {
             controles: controles,
+            warningGeojson: [],
         }
     };
     templates.operateurs.computed = {
@@ -134,6 +139,9 @@
             const [y, m, d] = items[0].date_tournee.split('-');
             const agent = items[0].agent_libelle;
             return `Tournée du ${d}/${m}/${y} par ${agent}`;
+        },
+        hasWarningGeojson(controleId) {
+            return this.warningGeojson.includes(controleId)
         }
     }
     templates.operateurs.mounted = function() {
@@ -179,7 +187,13 @@
 
         const parcelles = [];
         for (const [idControle, controle] of Object.entries(controles)) {
-            for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
+            if (Object.keys(controle.parcellaire_parcelles).length)
+                if (controle.parcellaire_geojson.hasOwnProperty("features") === false) {
+                    this.warningGeojson.push(idControle)
+                    continue;
+                }
+
+              for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
                 feature.properties.controleId = idControle;
                 feature.properties.declarant = controle.declarant;
                 parcelles.push(feature);
@@ -252,7 +266,8 @@
         const controleCourant = controles[route.params.id];
 
         const parcelles = [];
-        for (const [idFeature, feature] of Object.entries(controleCourant.parcellaire_geojson.features)) {
+        if (Object.keys(controleCourant.parcellaire_parcelles).length && controleCourant.parcellaire_geojson.hasOwnProperty("features"))
+          for (const [idFeature, feature] of Object.entries(controleCourant.parcellaire_geojson.features)) {
             feature.properties.controleId = controleCourant._id;
             parcelles.push(feature);
         }
@@ -358,6 +373,9 @@
 
         const autresParcelles = [];
         for (const [idControle, controle] of Object.entries(controles)) {
+            if (controle.parcellaire_geojson.hasOwnProperty("features") === false) {
+                continue;
+            }
             for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
                 if (idControle != this.controleCourant._id) {
                     feature.properties.controleId = idControle;
@@ -473,14 +491,22 @@
         nbParcellesSelectionnees() {
             return this.parcellesSelectionnees.length;
         },
-        getParcellesSorted() {
+        getParcellesSorted(selection = true) {
             const parcellesSorted = [];
-            for(const parcelleId of this.parcellesSelectionnees) {
-                parcellesSorted.push(parcelleId);
-            }
-            for (const [parcelleId, parcelle] of Object.entries(this.controleCourant.parcellaire_parcelles)) {
-                if (!parcellesSorted.includes(parcelleId)) {
+            let parcelle_ordre = 0;
+            if (selection) {
+                for(const parcelleId of this.parcellesSelectionnees) {
+                    if (!this.controleCourant.parcellaire_parcelles[parcelleId]) continue;
+                    this.controleCourant.parcellaire_parcelles[parcelleId].position = parcelle_ordre++;
                     parcellesSorted.push(parcelleId);
+                }
+            } else {
+                for (const [parcelleId, parcelle] of Object.entries(this.controleCourant.parcellaire_parcelles)) {
+                    if (!this.parcellesSelectionnees.includes(parcelleId)) {
+                        if (!this.controleCourant.parcellaire_parcelles[parcelleId]) continue;
+                        this.controleCourant.parcellaire_parcelles[parcelleId].position = parcelle_ordre++;
+                        parcellesSorted.push(parcelleId);
+                    }
                 }
             }
             return parcellesSorted;

@@ -107,6 +107,28 @@
             </table>
         </td>
         <td>
+            <?php $syntheseProduits = $parcellaireAffectation->getSyntheseProduits(); ?>
+            <?php if (count($syntheseProduits)): ?>
+            <div><span class="h3">&nbsp;Synthèse par produits&nbsp;</span></div>
+            <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
+                <tr>
+                    <th class="th" style="text-align: left; width: 330px;">&nbsp;Produit</th>
+                    <th class="th" style="text-align: center; width: 130px;">Surface</th>
+                </tr>
+                <?php foreach($syntheseProduits as $produit_libelle => $s): ?>
+                    <tr>
+                        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit_libelle; ?>&nbsp;</td>
+                        <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.4f", $s); ?>&nbsp;<small>ha</small>&nbsp; &nbsp;</td>
+                    </tr>
+                <?php endforeach; ?>
+                <tr>
+                    <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<strong>Total</strong>&nbsp;</td>
+                    <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<strong><?php printf("%0.4f", array_sum($syntheseProduits->getRawValue())); ?>&nbsp;<small>ha</small></strong>&nbsp; &nbsp;</td>
+                </tr>
+            </table>
+            <br/>
+            <?php endif; ?>
+
             <?php $syntheseDestination = $parcellaireAffectation->getSyntheseDestination(); ?>
             <?php if (count($syntheseDestination)): ?>
             <div><span class="h3">&nbsp;Synthèse par destinations&nbsp;</span></div>

@@ -96,8 +96,8 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       return true;
   }
 
-    public function setParcellesFromParcellaire(array $hashes) {
-        parent::setParcellesFromParcellaire($hashes);
+    public function setParcellesFromParcellaire(array $hashes, $reset = true) {
+        parent::setParcellesFromParcellaire($hashes, $reset);
 
         $last = ParcellaireIrrigableClient::getInstance()->getLast($this->identifiant);
 
@@ -107,8 +107,7 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 
         $lastParcelles = $last->getParcelles();
         foreach ($this->getDeclarationParcelles() as $pid => $p) {
-            $parcelle = $lastParcelles[$pid];
-            if ($parcelle) {
+            if (isset($lastParcelles[$pid]) && ($parcelle = $lastParcelles[$pid]) ) {
                 $p->materiel = $parcelle->materiel;
                 $p->ressource = $parcelle->ressource;
             }

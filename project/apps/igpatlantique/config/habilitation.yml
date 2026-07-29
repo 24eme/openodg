@@ -1,0 +1,42 @@
+all:
+  configuration:
+    habilitation:
+      activites:
+        PRODUCTEUR: "Producteur de raisins"
+        VINIFICATEUR: "Vinificateur"
+        CONDITIONNEUR: "Conditionneur"
+        NEGOCIANT: "Négociant"
+        VRAC: "Vrac export"
+      demande:
+        statuts:
+          DEPOT: "Dépôt"
+          RELANCE_1: "Relance n°1"
+          RELANCE_2: "Relance n°2"
+          RELANCE_3: "Relance n°3"
+          COMPLET: "Complet"
+          CONTROLE_INTERNE_VALIDE: "Contrôle interne validé"
+          TRANSMIS_OC: "Transmis à l'OC (facturant)"
+          VALIDE_OC: "Validé par l'OC"
+          REFUSE_OC: "Refusé par l'OC"
+          VALIDE: "Validé"
+          REFUSE: "Refusé"
+          ANNULE: "Annulé"
+        automatique:
+          VALIDE_OC: VALIDE
+          REFUSE_OC: REFUSE
+        habilitations:
+          HABILITATION:
+            COMPLET: DEMANDE_HABILITATION
+            VALIDE: HABILITE
+            REFUSE: REFUS
+            ANNULE: ANNULÉ
+          RETRAIT:
+            COMPLET: DEMANDE_RETRAIT
+            VALIDE: RETRAIT
+            REFUSE: HABILITE
+            ANNULE: HABILITE
+          RESILIATION:
+            COMPLET: DEMANDE_RESILIATION
+            VALIDE: RESILIE
+            REFUSE: HABILITE
+            ANNULE: HABILITE

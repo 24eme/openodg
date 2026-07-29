@@ -1,6 +1,11 @@
 <?php
 class ControleParcelle extends BaseControleParcelle
 {
+    private static $parcellaires_manquants = [];
+    private static $parcellaires_irrigues = [];
+    private static $parcellaires_irrigables = [];
+    private static $parcellaires_affectations = [];
+
     public function  getData() {
 
         $data = parent::getData();
@@ -12,9 +17,25 @@ class ControleParcelle extends BaseControleParcelle
             $data->irrigation['date_irrigation'] = $this->getInfoIrrigue();
             $data->affectation = $this->getInfoAffectation();
             $data->needs_to_be_saved = false;
-            $data->has_probleme_ecart_pieds = $this->getParcellaire()->parcelles[$this->parcelle_id]->hasProblemEcartPieds();
+            if ($this->isParcelleUpToDate()) {
+                $data->has_probleme_ecart_pieds = $this->getParcelleFromParcellaire()->hasProblemEcartPieds();
+                $data->isOutOfDate = false;
+            } else {
+                $data->has_probleme_ecart_pieds = null;
+                $data->isOutOfDate = true;
+            }
         }
         return $data;
+    }
+
+    public function isParcelleUpToDate()
+    {
+        return $this->getParcellaire()->parcelles->exist($this->parcelle_id);
+    }
+
+    public function getParcelleFromParcellaire()
+    {
+        return $this->getParcellaire()->parcelles[$this->parcelle_id];
     }
 
     public function getKMLPlacemark() {
@@ -36,10 +57,12 @@ class ControleParcelle extends BaseControleParcelle
             $url .= '://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'#/'.$this->getDocument()->_id.'/parcelle/'.$this->getKey();
             $kml .= '<p><a href="'.$url.'">Controle la parcelle '.$this->getKey().'</a></p>';
             foreach (["Commune","Lieu dit","Produit","Cepage","Superficie"] as $prop) {
-                if ($prop == "Lieu dit" && ! $parcellaire_detail->{$prop}) {
+                if ($prop == "Lieu dit" && ! (isset($parcellaire_detail->{$prop}) && $parcellaire_detail->{$prop})) {
                     continue;
                 }
-                $kml .= '<p>' . $prop . ' : ' . $parcellaire_detail->{$prop} . '</p>';
+                if (isset($parcellaire_detail->{$prop})) {
+                    $kml .= '<p>' . $prop . ' : ' . $parcellaire_detail->{$prop} . '</p>';
+                }
             }
             $kml .= "<p>-----------------</p>";
         }
@@ -52,22 +75,47 @@ class ControleParcelle extends BaseControleParcelle
 
     public function getInfoManquant()
     {
-        return ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant)->getPourcentageFromParcelleId($this->parcelle_id) : 0;
+        if (array_key_exists($this->getDocument()->identifiant, self::$parcellaires_manquants) === false) {
+            $manquant = ParcellaireManquantClient::getInstance()->getLast($this->getDocument()->identifiant);
+            self::$parcellaires_manquants[$this->getDocument()->identifiant] = $manquant;
+        }
+
+        return self::$parcellaires_manquants[$this->getDocument()->identifiant]
+                ? self::$parcellaires_manquants[$this->getDocument()->identifiant]->getPourcentageFromParcelleId($this->parcelle_id)
+                : 0;
     }
 
     public function getInfoIrrigation()
     {
-        return ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant) ? ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant)->getInfoFromParcelleId($this->parcelle_id) : ['materiel' => '', 'ressource' => ''];
+        if (array_key_exists($this->getDocument()->identifiant, self::$parcellaires_irrigables) === false) {
+            $irrigable = ParcellaireIrrigableClient::getInstance()->getLast($this->getDocument()->identifiant);
+            self::$parcellaires_irrigables[$this->getDocument()->identifiant] = $irrigable;
+        }
+
+        return self::$parcellaires_irrigables[$this->getDocument()->identifiant]
+                ? self::$parcellaires_irrigables[$this->getDocument()->identifiant]->getInfoFromParcelleId($this->parcelle_id)
+                : ['materiel' => '', 'ressource' => ''];
     }
 
     public function getInfoIrrigue()
     {
-        return ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant) ? date("d/m/Y", strtotime(ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant)->getDateIrrigationFromParcelleId($this->parcelle_id))) : null;
+        if (array_key_exists($this->getDocument()->identifiant, self::$parcellaires_irrigues) === false) {
+            $irrigue = ParcellaireIrrigueClient::getInstance()->getLast($this->getDocument()->identifiant);
+            self::$parcellaires_irrigues[$this->getDocument()->identifiant] = $irrigue;
+        }
+
+        return self::$parcellaires_irrigues[$this->getDocument()->identifiant]
+                ? date("d/m/Y", strtotime(self::$parcellaires_irrigues[$this->getDocument()->identifiant]->getDateIrrigationFromParcelleId($this->parcelle_id)))
+                : null;
     }
 
     public function getInfoAffectation()
     {
-        $a = ParcellaireAffectationClient::getInstance()->getLast($this->getDocument()->identifiant);
+        if (array_key_exists($this->getDocument()->identifiant, self::$parcellaires_affectations) === false) {
+            self::$parcellaires_affectations[$this->getDocument()->identifiant] = ParcellaireAffectationClient::getInstance()->getLast($this->getDocument()->identifiant);
+        }
+
+        $a = self::$parcellaires_affectations[$this->getDocument()->identifiant];
         $res = ($a) ? $a->getInfoFromParcelleId($this->parcelle_id) : [];
         if (isset($res['affectation_date'])) {
             $res['affectation_date'] = date("d/m/Y", strtotime($res['affectation_date']));
@@ -82,6 +130,37 @@ class ControleParcelle extends BaseControleParcelle
 
     public function getParcellaire()
     {
-        return ParcellaireClient::getInstance()->getLast($this->getDocument()->identifiant);
+        return $this->getDocument()->getParcellaire();
+    }
+
+    public function needsUpdateNoeudControle()
+    {
+        $pointsDeControle = ControleConfiguration::getInstance()->getAllPointsDeControle();
+        foreach ($pointsDeControle as $idPoint => $dataPoint) {
+            if (! $this->controle->points->exist($idPoint)) {
+                return true;
+            }
+            foreach ($dataPoint['constats'] as $idConstat => $dataConstat) {
+                if (! $this->controle->points[$idPoint]->constats->exist($idConstat)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function updateNoeudControle()
+    {
+        $pointsDeControle = ControleConfiguration::getInstance()->getAllPointsDeControle();
+        foreach ($pointsDeControle as $idPoint => $dataPoint) {
+            if (! $this->controle->points->exist($idPoint)) {
+                $this->controle->points->add($idPoint, array('libelle' => $dataPoint['libelle']));
+            }
+            foreach ($dataPoint['constats'] as $idConstat => $dataConstat) {
+                if (! $this->controle->points[$idPoint]->constats->exist($idConstat)) {
+                    $this->controle->points[$idPoint]->constats->add($idConstat, array('libelle' => $dataConstat['libelle'], 'observations' => null, 'non_conforme' => false));
+                }
+            }
+        }
     }
 }
