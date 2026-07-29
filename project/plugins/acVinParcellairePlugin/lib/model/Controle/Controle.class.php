@@ -6,6 +6,8 @@ class Controle extends BaseControle implements InterfacePieceDocument
     protected $declarant_document = null;
     protected $piece_document = null;
 
+    protected static $agents = [];
+
     public function getConfig()
     {
         if (!$this->config) {
@@ -549,7 +551,12 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getAgent()
     {
-        return CompteClient::getInstance()->find($this->agent_identifiant);
+        if (array_key_exists($this->agent_identifiant, self::$agents)) {
+            return self::$agents[$this->agent_identifiant];
+        }
+
+        self::$agents[$this->agent_identifiant] = CompteClient::getInstance()->find($this->agent_identifiant);
+        return self::$agents[$this->agent_identifiant];
     }
 
     public function getSortedManquementsActif()
