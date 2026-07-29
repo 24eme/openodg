@@ -4,7 +4,7 @@
  *
  */
 
-class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument, InterfaceDeclaration {
+class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument {
 
 
     protected $mouvement_document = null;
@@ -61,6 +61,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     protected function initDocuments() {
         $this->historique = array();
+        $this->mouvement_document = new MouvementFacturesDocument($this);
     }
 
     private function getTheoriticalId() {
@@ -150,7 +151,10 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
     public function getValidationOdg() {
+        if(!$this->exist('validation_odg')) {
 
+            return true;
+        }
         return $this->_get('validation_odg');
     }
 
@@ -439,6 +443,10 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $this->constructId();
         $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant);
         $this->add('lecture_seule', ($last && $last->_id > $this->_id));
+        if(!$this->isFactures()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
         parent::save();
 
         if($last && $last->_id != $this->_id && ($last->lecture_seule != !$this->lecture_seule)) {
@@ -506,5 +514,102 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
         return $data;
     }
+
+    public function hasStatutDemandes(TemplateFactureCotisationCallbackParameters $filters) {
+        $parameters = $filters->getParameters();
+        if (!$parameters) return false;
+        if (!isset($parameters['statut'])) return false;
+        foreach($this->demandes as $key => $demande) {
+            if ($demande->statut === $parameters['statut']) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getRegions()
+    {
+        $regions = [];
+        foreach ($this->declaration as $key => $value) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($value->getHash());
+        }
+        return array_filter(array_unique($regions));
+    }
+
+    /**** DEBUT DES MOUVEMENTS ****/
+
+    public function getPeriode() {
+        $date = new DateTime($this->date);
+        return $date->format('Y');
+    }
+
+    public function getTemplateFacture($region = null) {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getPeriode(), $region);
+    }
+
+    public function getMouvementsFactures() {
+        return $this->_get('mouvements');
+    }
+
+    public function getMouvementsFacturesCalcule($region = null) {
+      $templateFacture = $this->getTemplateFacture($region);
+      if(!$templateFacture) {
+          return array();
+      }
+
+      $cotisations = $templateFacture->generateCotisations($this);
+      $identifiantCompte = $this->getIdentifiant();
+      $mouvements = array();
+      $rienAFacturer = true;
+      foreach($cotisations as $cotisation) {
+          $mouvement = HabilitationMouvementFactures::freeInstance($this);
+          $mouvement->detail_identifiant = str_replace('HABILITATION-', '', $this->_id);
+          $mouvement->date = $this->date;
+          $mouvement->createFromCotisationAndDoc($cotisation, $this);
+          if($mouvement->quantite) {
+              $rienAFacturer = false;
+          }
+          $mouvements[$mouvement->getMD5Key()] = $mouvement;
+      }
+      if($rienAFacturer) {
+          return array();
+      }
+      return array($identifiantCompte => $mouvements);
+    }
+
+    public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
+        return $this->mouvement_document->getMouvementsFacturesCalculeByIdentifiant($identifiant);
+    }
+
+
+    public function generateMouvementsFactures() {
+        return $this->mouvement_document->generateMouvementsFactures();
+    }
+
+    public function findMouvementFactures($cle, $id = null){
+      return $this->mouvement_document->findMouvementFactures($cle, $id);
+    }
+
+    public function facturerMouvements() {
+
+        return $this->mouvement_document->facturerMouvements();
+    }
+
+    public function isFactures() {
+
+        return $this->mouvement_document->isFactures();
+    }
+
+    public function isNonFactures() {
+
+        return $this->mouvement_document->isNonFactures();
+    }
+
+    public function clearMouvementsFactures(){
+        $this->remove('mouvements');
+        $this->add('mouvements');
+    }
+
+    /**** FIN DES MOUVEMENTS ****/
 
 }
