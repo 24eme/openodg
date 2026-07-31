@@ -232,7 +232,7 @@
       "details": {
         "revendication": {
           "modele": "CotisationVariable",
-          "prix": 0.15,
+          "prix": 0.25,
           "tva": 0.2,
           "libelle": "",
           "unite": "hl",
@@ -247,7 +247,7 @@
         },
         "changement": {
           "modele": "CotisationVariable",
-          "prix": 0.15,
+          "prix": 0.25,
           "tva": 0.2,
           "unite": "hl",
           "libelle": "",
