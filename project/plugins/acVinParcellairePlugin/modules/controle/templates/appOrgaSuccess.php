@@ -80,6 +80,7 @@
     templates.operateurs.data = function() {
         return {
             controles: controles,
+            warningGeojson: [],
         }
     };
     templates.operateurs.computed = {
@@ -138,6 +139,9 @@
             const [y, m, d] = items[0].date_tournee.split('-');
             const agent = items[0].agent_libelle;
             return `Tournée du ${d}/${m}/${y} par ${agent}`;
+        },
+        hasWarningGeojson(controleId) {
+            return this.warningGeojson.includes(controleId)
         }
     }
     templates.operateurs.mounted = function() {
@@ -184,6 +188,11 @@
         const parcelles = [];
         for (const [idControle, controle] of Object.entries(controles)) {
             if (Object.keys(controle.parcellaire_parcelles).length)
+                if (controle.parcellaire_geojson.hasOwnProperty("features") === false) {
+                    this.warningGeojson.push(idControle)
+                    continue;
+                }
+
               for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
                 feature.properties.controleId = idControle;
                 feature.properties.declarant = controle.declarant;
@@ -364,6 +373,9 @@
 
         const autresParcelles = [];
         for (const [idControle, controle] of Object.entries(controles)) {
+            if (controle.parcellaire_geojson.hasOwnProperty("features") === false) {
+                continue;
+            }
             for (const [idFeature, feature] of Object.entries(controle.parcellaire_geojson.features)) {
                 if (idControle != this.controleCourant._id) {
                     feature.properties.controleId = idControle;
