@@ -119,4 +119,8 @@ class CommunesConfiguration {
         return false;
     }
 
+    public function hasCommunes()
+    {
+        return count($this->communes);
+    }
 }
