@@ -73,12 +73,20 @@ class CommunesConfiguration {
             $commune_simplified = strtoupper($commune_simplified);
             $commune_simplified = preg_replace('/^ST(E?) /', 'SAINT\1 ', $commune_simplified);
             $commune_simplified = preg_replace('/[^A-Z]/', '', $commune_simplified);
+            $selected = [];
             foreach($this->communes_reverse as $c => $v) {
                 $c = preg_replace('/[^A-Z]/', '', strtoupper($c));
-                if ( (strpos($c, $commune_simplified) !== false) || (strpos($commune_simplified, $c) !== false) ) {
+                if ($c == $commune_simplified) {
                     $this->communes_reverse[$commune] = $v;
                     return $v;
                 }
+                if ( (strpos($c, $commune_simplified) !== false) || (strpos($commune_simplified, $c) !== false) ) {
+                    $selected[] = $v;
+                }
+            }
+            if (count($selected)) {
+                $this->communes_reverse[$commune] = $selected[0];
+                return $selected[0];
             }
             return null;
         }
