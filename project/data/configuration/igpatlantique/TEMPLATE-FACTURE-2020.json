@@ -141,8 +141,8 @@
       "details": {
         "cotisation": {
           "modele": "CotisationFixe",
-          "prix": 74.52,
-          "tva": 0,
+          "prix": 62.10,
+          "tva": 0.2,
           "libelle": "",
           "complement_libelle": "",
           "docs": [
