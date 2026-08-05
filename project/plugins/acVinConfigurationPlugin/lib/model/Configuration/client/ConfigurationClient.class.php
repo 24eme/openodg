@@ -58,6 +58,9 @@ class ConfigurationClient extends acCouchdbClient {
         }
 
         $current = CurrentClient::getCurrent();
+        if (! $current) {
+            throw new sfException("Pas de CurrentClient");
+        }
         $id = $current->getConfigurationId($date);
 
         if(array_key_exists($id, $this->configurations)) {
@@ -92,7 +95,13 @@ class ConfigurationClient extends acCouchdbClient {
 	}
 
     public function getCampagneParcellaire($format = CampagneManager::FORMAT_COMPLET) {
-        return new CampagneManager('03-01', $format);
+        if(class_exists('ParcellaireAffectationConfiguration') && ParcellaireAffectationConfiguration::getInstance()->isModuleEnabled()) {
+            return new CampagneManager('03-01', $format);
+        }
+        if(class_exists('ParcellaireIrrigableConfiguration') && ParcellaireIrrigableConfiguration::getInstance()->isModuleEnabled()) {
+            return new CampagneManager('03-01', $format);
+        }
+        return $this->getCampagneVinicole($format);
     }
 
     public function getCampagneVinicole($format = CampagneManager::FORMAT_COMPLET) {

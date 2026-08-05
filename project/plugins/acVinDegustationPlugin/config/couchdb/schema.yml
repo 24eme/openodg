@@ -9,6 +9,7 @@ Degustation:
       campagne: { }
       lieu: {  }
       max_lots: {  }
+      externalisee: { required: false }
       etape: {  }
       validation: { required: false }
       tri : { }

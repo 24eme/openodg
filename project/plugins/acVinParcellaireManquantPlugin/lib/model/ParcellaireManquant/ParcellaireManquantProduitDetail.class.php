@@ -60,7 +60,7 @@ class ParcellaireManquantProduitDetail extends BaseParcellaireManquantProduitDet
         }
         $p = $this->getParcelleParcellaire();
         if (!$p) {
-            return null;
+            return $this->getKey();
         }
         $id = $p->getParcelleId();
         $this->set('parcelle_id', $id);

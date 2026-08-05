@@ -4,7 +4,7 @@ Une nouvelle facture est disponible, vous pouvez la télécharger directement en
 
 Si vous souhaitez opter pour le prélèvement automatique vous pouvez compléter et nous renvoyer ce mandat de prélèvement SEPA : https://declaration.vinsdenantes.com/docs/Demande_prelevement_Mandat_SEPA.pdf
 
-Vous pouvez également consulter le courrier d'information des cotisations de la récolte 2024 : https://declaration.vinsdenantes.com/docs/Cotisations_FVN_recolte_2024.pdf
+Vous pouvez également consulter le courrier d'information des cotisations de la récolte 2025 : https://declaration.vinsdenantes.com/docs/Cotisations_FVN_recolte_2025.pdf
 
 Bien cordialement,
 

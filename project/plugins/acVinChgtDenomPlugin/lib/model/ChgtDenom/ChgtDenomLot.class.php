@@ -4,7 +4,7 @@ class ChgtDenomLot extends BaseChgtDenomLot
 {
     public function getDocumentType() {
 
-        return ChgtDenomClient::TYPE_MODEL;
+        return $this->getDocument()->getDocumentType();
     }
 
     public function getDocumentOrdre() {

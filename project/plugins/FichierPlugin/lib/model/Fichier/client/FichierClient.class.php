@@ -42,9 +42,12 @@ class FichierClient extends acCouchdbClient {
     *
     * @return false|Un document
     */
-    public function scrapeAndSaveFiles($etablissement, $type, $annee, $scrap = true, $context = null)
+    public function scrapeAndSaveFiles($etablissement, $type, $annee, $scrap = true, $context = null, $withmetayer = true)
     {
-        $etablissements = $etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
+        $etablissements = [$etablissement];
+        if ($withmetayer) {
+            $etablissements = $etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
+        }
         $fichiers = array();
         foreach($etablissements as $etblmt) {
             if($scrap) {

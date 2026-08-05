@@ -11,7 +11,8 @@ class DegustationEtapes extends Etapes {
     const ETAPE_ANONYMISATION_MANUELLE = 'ANONYMISATION_MANUELLE';
     const ETAPE_TABLES = 'TABLES';
     const ETAPE_ANONYMATS = 'ANONYMATS';
-    const ETAPE_COMMISSION = 'COMMISSION';
+    const ETAPE_COMMISSION_INTERNE = 'COMMISSION_INTERNE';
+    const ETAPE_COMMISSION_EXTERNE = 'COMMISSION_EXTERNE';
     const ETAPE_RESULTATS = 'RESULTATS';
     const ETAPE_NOTIFICATIONS = 'NOTIFICATIONS';
     const ETAPE_VISUALISATION = 'VISUALISATION';
@@ -28,7 +29,8 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_ANONYMISATION_MANUELLE => 5,
         self::ETAPE_TABLES => 6,
         self::ETAPE_ANONYMATS => 7,
-        self::ETAPE_COMMISSION => 8,
+        self::ETAPE_COMMISSION_INTERNE => 8,
+        self::ETAPE_COMMISSION_EXTERNE => 8,
         self::ETAPE_RESULTATS => 9,
         self::ETAPE_NOTIFICATIONS => 10,
         self::ETAPE_VISUALISATION => 11,
@@ -44,7 +46,8 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_ANONYMISATION_MANUELLE => 'Anonymats',
         self::ETAPE_TABLES => 'Tables',
         self::ETAPE_ANONYMATS => 'Anonymats',
-        self::ETAPE_COMMISSION => 'Commission',
+        self::ETAPE_COMMISSION_INTERNE => 'Commission',
+        self::ETAPE_COMMISSION_EXTERNE => 'Commission',
         self::ETAPE_RESULTATS => 'Résultats',
         self::ETAPE_NOTIFICATIONS => 'Notifications',
         self::ETAPE_VISUALISATION => 'Visualisation',
@@ -60,7 +63,8 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_ANONYMISATION_MANUELLE => 'Anonymats',
         self::ETAPE_TABLES => 'Tables',
         self::ETAPE_ANONYMATS => 'Anonymats',
-        self::ETAPE_COMMISSION => 'Commission',
+        self::ETAPE_COMMISSION_INTERNE => 'Commission',
+        self::ETAPE_COMMISSION_EXTERNE => 'Commission externe',
         self::ETAPE_RESULTATS => 'Résultats',
         self::ETAPE_NOTIFICATIONS => 'Notifications',
         self::ETAPE_VISUALISATION => 'Visualisation',
@@ -76,7 +80,8 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_ANONYMISATION_MANUELLE => 'degustation_anonymats_etape',
         self::ETAPE_TABLES => 'degustation_tables_etape',
         self::ETAPE_ANONYMATS => 'degustation_anonymats_etape',
-        self::ETAPE_COMMISSION => 'degustation_commission_etape',
+        self::ETAPE_COMMISSION_INTERNE => 'degustation_commission_interne_etape',
+        self::ETAPE_COMMISSION_EXTERNE => 'degustation_commission_externe_etape',
         self::ETAPE_RESULTATS => 'degustation_resultats_etape',
         self::ETAPE_NOTIFICATIONS => 'degustation_notifications_etape',
         self::ETAPE_VISUALISATION => 'degustation_visualisation',
@@ -130,6 +135,12 @@ class DegustationEtapes extends Etapes {
             unset($items[self::ETAPE_ORGANISATION]);
             unset($items[self::ETAPE_TOURNEES]);
             unset($items[self::ETAPE_PRELEVEMENTS]);
+        }
+
+        if (DegustationConfiguration::getInstance()->isDegustationExternalisee()) {
+            unset($items[self::ETAPE_COMMISSION_INTERNE]);
+        } else {
+            unset($items[self::ETAPE_COMMISSION_EXTERNE]);
         }
 
         return $items;

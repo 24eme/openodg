@@ -16,10 +16,10 @@ class DeclarationParcellaire extends acCouchdbDocument {
     public function getParcelles($hashproduitFilter = null) {
         $parcelles = [];
         if ($this->declaration && count($this->declaration)) foreach ($this->declaration->getParcelles($hashproduitFilter) as $p) {
-            if (isset($parcelles[$p->getParcelleId()])) {
+            if (isset($parcelles[$p->getHash()])) {
                 throw new sfException('parcelleid '.$p->getParcelleId().' already exists');
             }
-            $parcelles[$p->getParcelleId()] = $p;
+            $parcelles[$p->getHash()] = $p;
         }
         return $parcelles;
     }
@@ -42,19 +42,22 @@ class DeclarationParcellaire extends acCouchdbDocument {
     public function getParcellaire() {
         if (!$this->parcellaire) {
             $cm = new CampagneManager('08-01');
-            $date = ($this->periode + 1).'-07-31';
+            $date = $this->periode.'-07-31';
             if ($this->exist('date')) {
                 $date = $this->date;
             }
             $date_end = $cm->getDateFinByDate($date);
             $this->parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $date_end);
+            if (! $this->parcellaire) {
+                $this->parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
+            }
             $this->parcellaire_origine = ($this->parcellaire) ? $this->parcellaire->_id : null;
         }
         return $this->parcellaire;
     }
 
     public function getParcellaireAffectation() {
-        return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, ($this->periode + 1).'-07-31');
+        return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode.'-07-31');
     }
 
     protected $parcelles_idu = null;
@@ -110,11 +113,13 @@ class DeclarationParcellaire extends acCouchdbDocument {
         return $parcelles[$p->getParcelleId()];
     }
 
-    public function setParcellesFromParcellaire(array $hashes) {
+    public function setParcellesFromParcellaire(array $hashes, $reset = true) {
         $parcelles_orig = $this->getDeclarationParcelles();
 
-        $this->remove('declaration');
-        $this->add('declaration');
+        if ($reset) {
+            $this->remove('declaration');
+            $this->add('declaration');
+        }
 
       	$parcelles = $this->getParcellesFromReference();
         if (!$parcelles || !count($parcelles)) {

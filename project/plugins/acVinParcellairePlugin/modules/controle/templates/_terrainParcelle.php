@@ -1,4 +1,5 @@
-<h3 class="mt-0"><RouterLink :to="{ name: 'operateur', params: { id: controleCourant._id } }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ parcelleCourante.parcelle_id }} <RouterLink :to="{ name: 'map_parcelle', params: { idu: parcelleCourante.idu }}" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink></h3>
+<h3 class="mt-0">
+    <RouterLink :to="{ name: 'operateur', params: { id: controleCourant._id } }"><span class="glyphicon glyphicon-chevron-left"></span></RouterLink> {{ libelleTournee() }} <RouterLink :to="{ name: 'map_parcelle', params: { idu: parcelleCourante.idu }}" class="pull-right"><span class="glyphicon glyphicon-map-marker"></span></RouterLink><span class="pull-right mr-3" :class="savedClass" :style="savedStyle"></span></h3>
 <hr class="mt-2" />
 
 <?php include_partial('controle/terrainBlocDeclarant'); ?>
@@ -42,7 +43,7 @@
             </tr>
             <tr>
                 <td><strong>Écart Pieds/Rang</strong></td>
-                <td>{{ parcelleCourante.ecart_pieds }} / {{ parcelleCourante.ecart_rang }}</td>
+                <td :class="{'danger': parcelleCourante.has_probleme_ecart_pieds }">{{ parcelleCourante.ecart_pieds }} / {{ parcelleCourante.ecart_rang }}</td>
             </tr>
             <tr>
                 <td><strong>Manquants</strong></td>
@@ -50,51 +51,63 @@
             </tr>
 
             <tr v-if="parcelleCourante.irrigation.materiel.length">
-                <td><strong>Irrigation</strong></td>
+                <td><strong>Irrigabilité</strong></td>
                 <td>
                     <div><strong>Matériel :</strong> {{ parcelleCourante.irrigation.materiel }}</div>
                     <div><strong>Ressource :</strong> {{ parcelleCourante.irrigation.ressource }}</div>
+                    <div><strong>Date d'irrigation :</strong>
+                        <span v-if="parcelleCourante.irrigation.date_irrigation">{{ parcelleCourante.irrigation.date_irrigation }}</span>
+                        <span class="text-muted" v-else>Pas irrigée</span>
+                    </div>
+
+
                 </td>
             </tr>
             <tr v-else>
-                <td><strong>Irrigation</strong></td>
+                <td><strong>Irrigabilité</strong></td>
                 <td class="text-muted">Pas d'irrigation</td>
             </tr>
 
-            <tr>
-                <td><strong>Date d'irrigation</strong></td>
-                <td v-if="parcelleCourante.irrigation.date_irrigation">{{ parcelleCourante.irrigation.date_irrigation }}</td>
-                <td v-else>Pas de donnée</td>
+            <tr v-if="parcelleCourante.affectation.length">
+                <td><strong>Affectation</strong></td>
+                <td>
+                    <div><strong>Date :</strong> {{ parcelleCourante.affectation.affectation_date }}</div>
+                    <div><strong>Produit :</strong> {{ parcelleCourante.affectation.produit_libelle }}</div>
+                </td>
             </tr>
+            <tr v-else>
+                <td><strong>Affectation</strong></td>
+                <td class="text-muted">Parcelle pas affectatée</td>
+            </tr>
+
         </tbody>
     </table>
 </div>
 
 <a href="" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-road" /> Ouvrir sur le GPS</a>
 <hr />
-
 <h2>Points de contrôle</h2>
-<div class="text-right">
-    <a style="cursor: pointer;" @click="allConforme()">Tous les points sont conformes</a>
+<div class="text-right mb-4">
+    <a style="cursor: pointer;" @click="allOtherConforme()">Tous les points non saisis sont conformes</a>
 </div>
-<form class="form-horizontal">
+<form class="form-horizontal" id="controlesList">
     <div class="form-group" v-for="(valPoint, keyPoint) in parcelleCourante.controle.points" :key="keyPoint">
-    <h4 class="col-sm-6 control-label" style="text-align:left">
+    <h4 :id="'controle_' + keyPoint" class="col-sm-6 control-label" style="text-align:left">
       {{ valPoint.libelle }}
   </h4>
 
     <div class="col-sm-6 text-right">
-      <label class="radio-inline">
+      <label class="radio-inline" style="padding-top: 0px;">
         <input type="radio" :name="'controle_' + keyPoint" value="C" v-model="valPoint.conformite" />
         Conforme
       </label>
 
-      <label class="radio-inline">
+      <label class="radio-inline" style="padding-top: 0px;">
         <input type="radio" :name="'controle_' + keyPoint" value="NC" v-model="valPoint.conformite" />
         Non Conforme
       </label>
 
-      <label class="radio-inline">
+      <label class="radio-inline" style="padding-top: 0px;">
         <input type="radio" :name="'controle_' + keyPoint" value="NO" v-model="valPoint.conformite" />
         Non Observable
       </label>
@@ -103,11 +116,11 @@
     <div class="col-sm-12" v-show="valPoint.conformite === 'NC'">
       <div class="" style="margin-top:10px;">
         <div class="panel-body">
-            <div class="manquement" v-for="(infos, codeManquement) in valPoint.constats">
-                <input :id="'checkbox_' + codeManquement" type="checkbox" v-model="infos.conformite" style="font-weight: normal;"/>
-                <label :for="'checkbox_' + codeManquement" style="margin-top: 5px;">&nbsp; {{ infos.libelle }}<span class="text-muted"> - {{ codeManquement }}</span> </label>
+            <div class="manquement" v-for="(constat, codeManquement) in valPoint.constats">
+                <input :id="'checkbox_' + codeManquement" type="checkbox" v-model="constat.non_conforme" style="font-weight: normal;"/>
+                <label :for="'checkbox_' + codeManquement" style="margin-top: 5px;">&nbsp; {{ constat.libelle }}<span class="text-muted"> - {{ codeManquement }}</span> </label>
                 <div class="col-sm-12" style="margin-top: 5px;">
-                    <textarea rows="2" class="form-control" :name="'obs_' + codeManquement" :id="'obs_' + codeManquement" v-model="infos.observations" placeholder="Observations"></textarea>
+                    <textarea rows="2" class="form-control" :name="'obs_' + codeManquement" :id="'obs_' + codeManquement" v-model="constat.observations" placeholder="Observations"></textarea>
                 </div>
             </div>
         </div>
@@ -117,6 +130,15 @@
 </form>
 
 <hr />
+
+<div v-if="showWarning" class="alert alert-warning">
+    Les points de contrôle suivants sont non conformes mais sans manquement de sélectionné :
+    <ul>
+        <li v-for="point in warnings">
+            <RouterLink :to="{ hash: '#controle_' + point.anchor }">{{ point.libelle }}</a>
+        </li>
+    </ul>
+</div>
 
 <RouterLink class="btn btn-default" :to="{ name: 'operateur', params: { id: controleCourant._id } }"><span class="glyphicon glyphicon-chevron-left"></span> Retour</RouterLink>
 <button class="btn btn-primary pull-right" @click="save()">Valider</button>

@@ -15,7 +15,7 @@
 				            <?php endif; ?>
 				            <?php echo $form["signataire"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
 				            <div class="col-xs-7">
-								<?php echo $form["signataire"]->render(array("class" => "form-control", "placeholder" => "Votre prénom et votre nom")); ?>
+								<?php echo $form["signataire"]->render(array("form" => "validation-form", "class" => "form-control", "placeholder" => "Votre prénom et votre nom")); ?>
 				            </div>
 				        </div>
 				    </div>

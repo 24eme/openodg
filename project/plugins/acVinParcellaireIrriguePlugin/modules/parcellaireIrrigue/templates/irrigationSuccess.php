@@ -1,7 +1,11 @@
 <?php use_helper('Date') ?>
 <?php use_helper('Float') ?>
 
-<?php include_partial('parcellaireIrrigue/breadcrumb', array('parcellaireIrrigue' => $parcellaireIrrigue)); ?>
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigue]); ?>
+<?php else: ?>
+    <?php include_partial('parcellaireIrrigue/breadcrumb', array('parcellaireIrrigue' => $parcellaireIrrigue)); ?>
+<?php endif; ?>
 
 <div class="page-header no-border">
     <h2>Identification des parcelles irriguées
@@ -54,8 +58,12 @@
                 <th class="col-xs-2">Cépage</th>
                 <th class="col-xs-1">Année plantat°</th>
                 <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
-                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource()): ?>
+                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() && ParcellaireConfiguration::getInstance()->hasIrrigableRessource()): ?>
                     <th class="col-xs-1">Type de matériel</th>
+                    <th class="col-xs-1">Type de ressource</th>
+                <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == true && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == false): ?>
+                    <th class="col-xs-1">Type de matériel</th>
+                <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == false && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == true): ?>
                     <th class="col-xs-1">Type de ressource</th>
                 <?php endif; ?>
                 <th class="col-xs-1">Irrigation?</th>
@@ -79,8 +87,12 @@
                 <?php else: ?>
                     <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie()); ?></td>
                 <?php endif ?>
-                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource() ): ?>
+                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() && ParcellaireConfiguration::getInstance()->hasIrrigableRessource()): ?>
                     <td><?php echo $parcelle->materiel; ?></td>
+                    <td><?php echo $parcelle->ressource; ?></td>
+                <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == true && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == false): ?>
+                    <td><?php echo $parcelle->materiel; ?></td>
+                <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == false && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == true): ?>
                     <td><?php echo $parcelle->ressource; ?></td>
                 <?php endif; ?>
             	<?php if($parcelle->irrigation && (!$parcellaireIrrigue->exist('papier') || !$parcellaireIrrigue->papier)): ?>
@@ -116,18 +128,30 @@
         </div>
         <div class="col-xs-4 text-right"><button type="button" class="btn btn-primary btn-upper transparence-lg"  id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigue-confirmation-validation">Valider</button></div>
     </div>
-    <?php include_partial('parcellaireIrrigue/popupConfirmationValidation', array('form' => $form)); ?>
 </form>
 
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigue]); ?>
+<?php endif; ?>
+
 <?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
+    <?php exit; ?>
 <script type="text/javascript">
-$('#parcellaireirrigable-confirmation-validation').modal('show')
+$('#parcellaireirrigue-confirmation-validation').modal('show')
 </script>
 <?php endif; ?>
 <script>
+    const btnValidationDocument = document.querySelector('#btn-validation-document')
+    function removeValideTransparency() {
+        btnValidationDocument.classList.remove('transparence-lg');
+    }
+
+    (document.querySelectorAll('[id^=btn-switchactive-all]') || []).forEach(function (btn) {
+        btn.addEventListener('click', removeValideTransparency);
+    });
     document.querySelectorAll('form .switch').forEach(function(item) {
-        item.addEventListener('change-native', function(e) {
-            document.querySelector('#btn-validation-document').classList.remove('transparence-lg');
-        });
+        item.addEventListener('change-native', removeValideTransparency)
     });
 </script>
+
+<?php include_partial('parcellaireIrrigue/popupConfirmationValidation', array('form' => $form)); ?>

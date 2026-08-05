@@ -1,8 +1,6 @@
 
   $(document).ready(function(){
 
-    $('#mailPreviewModal').modal('show');
-
     var originPrelev = document.querySelector('#btn-preleve-all');
     if (originPrelev) {
       if (document.querySelectorAll('.switch').length === document.querySelectorAll('.switch:checked').length) {
@@ -138,8 +136,8 @@
         }
       }
 
-      $('tr strong#nbLotsSelectionnes').html(""+nbLotsSelectionnes);
-      $('tr strong#nbAdherentsAPrelever').html(""+nbAdherentsLots);
+      $('#nbLotsSelectionnes').html(""+nbLotsSelectionnes);
+      $('#nbAdherentsAPrelever').html(""+nbAdherentsLots);
        });
     }
     updateSynthesePrelevementLots();

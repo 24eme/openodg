@@ -8,7 +8,8 @@ all:
       export_sage_width_txt: false
       paiements: false
       delais_paiement: null
-      exercice: "civil"
+      exercice: "civil"   # viticole ou civil => sur quelle periode se deroule l'exercice comptable
       liste_dernier_exercice: false
       display_types_document_on_massive: false
       numerocompte_maxlength: 6
+      export_type: null   # null ou format de l'export recu par le logiciel comptable

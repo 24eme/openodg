@@ -263,10 +263,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	public function getInfosDegustation(){
 		$infos = array();
 		$infos["nbLots"] = count($this->getLots());
-		$infos["nbLotsLeurre"] = count($this->getLots()) - count($this->getLotsWithoutLeurre());;
+		$infos["nbLotsLeurre"] = count($this->getLeurres());
 		$infos["nbLotsSansLeurre"] = count($this->getLotsWithoutLeurre());
-		$infos['nbLotsRestantAPrelever'] = $this->getNbLotsRestantAPreleve();
-		$infos['nbLotsPreleves'] = $this->getNbLotsPreleves();
+		$infos['nbLotsRestantAPrelever'] = count($this->getLotsPrelevables()) - count($this->getLotsPreleves());
+		$infos['nbLotsPreleves'] = count($this->getLotsPreleves());
 		$infos['nbLotsPrelevesSansLeurre'] = $this->getNbLotsPreleves() - $infos["nbLotsLeurre"];
 		$infos["nbAdherents"] = count($this->getAdherentsPreleves());
   	$infos["nbAdherentsLotsRestantAPrelever"] = count($this->getAdherentsByLotsWithoutStatut(Lot::STATUT_PRELEVE));
@@ -643,6 +643,31 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 
         return $lots;
+    }
+
+	public function getLotsByOperateursAndActivite()
+	{
+		$lotsByOperateurs = $this->getLotsByOperateurs();
+		$lots = array();
+		foreach ($lotsByOperateurs as $operateur => $lotsOperateur) {
+			$habilitationDeclarant = HabilitationClient::getInstance()->getLastHabilitation($operateur);
+			$lots[$this->buildCleHabilitations($habilitationDeclarant->getActivitesHabilites())][$operateur] = $lotsOperateur;
+		}
+		return $lots;
+	}
+
+    public function buildCleHabilitations($habilitations)
+    {
+        $normalise = array_intersect(['PRODUCTEUR', 'VINIFICATEUR', 'CONDITIONNEUR'], $habilitations);
+        $cle = implode(' ', $normalise);
+
+        $casAcceptes = [
+            'PRODUCTEUR VINIFICATEUR CONDITIONNEUR',
+            'VINIFICATEUR CONDITIONNEUR',
+            'CONDITIONNEUR',
+        ];
+
+        return in_array($cle, $casAcceptes, true) ? $cle : null;
     }
 
 	public function areAllLotsSaisis(){
@@ -2003,4 +2028,23 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             }
             return false;
         }
+
+		public function simulateEtapes()
+		{
+            foreach ($this->lots as $lot) {
+
+                // simulation prélèvement
+
+                $lot->preleve = date('Y-m-d');
+                if (!$lot->_get('prelevement_datetime') && $lot->preleve && preg_match('/\d+-\d+-\d+/', $lot->preleve)) {
+                    $lot->prelevement_datetime = $lot->preleve.' 00:00';
+                }
+
+                // simulation attablé
+                $lot->setNumeroTable('1');
+
+                //simulation anonymisation
+                $lot->anonymizeForDegustationExternalisee();
+            }
+		}
 }

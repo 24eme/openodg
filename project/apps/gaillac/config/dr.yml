@@ -1,4 +1,4 @@
 all:
   configuration:
     dr:
-      validation: true
+      validation: false

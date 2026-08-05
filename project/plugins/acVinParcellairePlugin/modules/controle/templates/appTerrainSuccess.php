@@ -16,20 +16,44 @@
 
     const date_tournee = "<?php echo $date_tournee ?>"
     let controles = JSON.parse(localStorage.getItem("controles_" + date_tournee)) || {}
+    let no_by_default = {}
+    let reloadStatus = false;
+
+    var aires = [];
+    <?php
+    $communes = [];
+    foreach ($obj_controles_for_aires as $controle) {
+        $p = $controle->getParcellaire();
+        if ( ! $p ) {
+            continue;
+        }
+        echo "//".$p->_id."\n";
+        foreach ($p->getCommunes() as $com) {
+            $communes[$com] = $com;
+        }
+    }
+    foreach(array_keys($communes) as $commune):
+    $aires =  AireClient::getInstance()->getMergedAiresForInseeCommunes(array($commune));
+    foreach($aires as $aire): ?>
+    aires.push({'color': '<?php echo $aire->getColor(); ?>', 'name': '<?php echo $aire->getName() ?> commune <?php echo $commune; ?>', 'geojson': '<?php echo addslashes($aire->geojson); ?>'});
+    <?php endforeach; endforeach; ?>
+
+    function addDelimitation(map) {
+        layers = [];
+        for(i in aires) {
+            name = '<span style="background-color: '+aires[i]['color']+'; width: 25px; display:inline-block;"> &nbsp; </span> ' + aires[i]['name'];
+            console.log(['load', aires[i]['name']]);
+            layers[name] = L.geoJSON(JSON.parse(aires[i]['geojson']), { style: {  fillColor: aires[i]['color'],  weight: 0,  opacity: 0.5,  dashArray: '5',  color: 'black',  fillOpacity: 0.4 } });
+            layers[name].addTo(map);
+        };
+    }
+
     const server_controle = JSON.parse(document.getElementById("dataJson").textContent);
     const points_de_controle = JSON.parse(document.getElementById("dataConf").textContent);
     let localstorage_updated = false;
-    for (let i in server_controle) {
-        if (controles[server_controle[i]._id]) {
-            console.log(['ignore controle exists', controles[server_controle[i]._id]]);
-            continue;
-        }
-        controles[server_controle[i]._id] = server_controle[i];
-        localstorage_updated = true;
-    }
-    if (localstorage_updated) {
-        localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
-    }
+
+    let isStartingup = true;
+    submitNeedsToBeSaved(null);
 
     const routes = [
       { path: '/', name: "listing", component: templates.listing },
@@ -43,6 +67,11 @@
     const router = createRouter({
       history: createWebHashHistory(),
       routes,
+      scrollBehavior(to, from, savedPosition) {
+        if (to.hash) {
+          return { el: to.hash }
+        }
+      }
     })
 
     const app = createApp({
@@ -52,37 +81,105 @@
             }
         },
         template: '<RouterView :key="$route.fullPath" />',
-        watch: {
-          controles: {
-            handler(newControles) {
-              if (newControles) {
-                  localStorage.setItem("controles_" + date_tournee, JSON.stringify(newControles));
-              }
-            },
-            deep: true
-          }
-        },
       });
     app.use(router)
     app.mount('#content')
 
+    templates.listing.mounted = function() {
+        submitNeedsToBeSaved(this);
+    }
+
     templates.listing.data = function() {
         return {
-          controles: controles
+            controles: controles,
+            date_tournee: date_tournee,
+            isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
         }
     };
 
+    templates.listing.computed = {
+        agentIdentifiant() {
+            const path = window.location.pathname
+            const parts = path.split('/').filter(Boolean)
+            return parts[parts.length - 1]
+        },
+
+        filteredControles() {
+            return Object.values(this.controles).filter(c =>
+                c.agent_identifiant === this.agentIdentifiant
+            ).sort( (a,b) => { if (a.heure_tournee < b.heure_tournee) return -1; if (a.heure_tournee > b.heure_tournee) return 1; return 0;} );
+        },
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
+        }
+    }
+
     templates.listing.methods = {
+        nbParcellesControlees(controleCible) {
+          return (Object.keys(controleCible.parcelles || {}).filter(k => controleCible.parcelles[k].controle.saisie == 1)).length;
+      },
+      libelleTournee() {
+          const items = Object.values(controles);
+          if (!items.length) return '';
+          const [y, m, d] = items[0].date_tournee.split('-');
+          const agent = items[0].agent_libelle;
+          return `Tournée du ${d}/${m}/${y} par ${agent}`;
+      },
+      nbParcellesOutOfDate(controleCible) {
+          return Object.values(controleCible.parcelles).filter(parcelle => parcelle.isOutOfDate === true).length;
+      }
     };
 
+    templates.operateur.mounted = function() {
+        submitNeedsToBeSaved(this);
+    };
+    templates.operateur.computed = {
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
+        }
+    };
     templates.operateur.data = function() {
         const route = useRoute()
 
         return {
           controleCourant: controles[route.params.id],
+          isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
         }
     };
     templates.operateur.methods = {
+      countConstatForThisParcelle(parcelleCouranteId) {
+          let ret = 0;
+          const parcelleCourante = this.controleCourant.parcelles[parcelleCouranteId];
+          for (const pointKey in parcelleCourante.controle.points) {
+              const point = parcelleCourante.controle.points[pointKey];
+              if (point.conformite != 'NC') {continue;}
+              for (const constatKey in point.constats) {
+                  const constat = point.constats[constatKey];
+                  if (constat.non_conforme == true) {
+                      ret += 1;
+                  }
+              }
+          }
+          return ret;
+      },
       nbParcellesControlees() {
         return (Object.keys(this.controleCourant.parcelles || {}).filter(k => this.controleCourant.parcelles[k].controle.saisie == 1)).length;
       },
@@ -92,67 +189,206 @@
       echoFloat(val, nbDecimal = 5) {
         return val ? Number(val).toFixed(nbDecimal) : '';
       },
-      transmitDataControle() {
-        fetch('<?php echo url_for('controle_transmission_data'); ?>', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              controle: this.controleCourant
-            })
-        })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Erreur HTTP ' + response.status);
+      printableSiret() {
+          if (! this.controleCourant.declarant.siret) {
+            return "PAS DE SIRET"
           }
-          this.controleCourant.validation = true;
-        })
-        .catch(error => {
-          console.error('Transmission error:', error);
-        });
-      }
+          return this.controleCourant.declarant.siret.substring(0,3)+" "+
+                 this.controleCourant.declarant.siret.substring(3,6) +" "+
+                 this.controleCourant.declarant.siret.substring(6,9) +" "+
+                 this.controleCourant.declarant.siret.substring(9);
+      },
+      libelleTournee() {
+            const [y, m, d] = this.controleCourant.date_tournee.split('-');
+            const heure = this.controleCourant.heure_tournee;
+            const agent = this.controleCourant.agent_libelle;
+            return `Tournée du ${d}/${m}/${y} à ${heure} par ${agent}`;
+      },
+      parcellesSorted() {
+        const entries = Object.entries(this.controleCourant.parcelles)
+          .sort((a, b) => {
+            const posA = a[1].position ?? Infinity;
+            const posB = b[1].position ?? Infinity;
+            return posA - posB;
+          });
+
+        return Object.fromEntries(entries);
+    }
     };
 
+    templates.parcelle.mounted = function() {
+        submitNeedsToBeSaved(this);
+    }
+    templates.parcelle.computed = {
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
+        },
+        showWarning() {
+            return this.warnings.length > 0
+        },
+    }
     templates.parcelle.data = function() {
         const route = useRoute()
-
+        for (const pointKey in controles[route.params.id].parcelles[route.params.parcelle].controle.points) {
+            const point = controles[route.params.id].parcelles[route.params.parcelle].controle.points[pointKey];
+            if (no_by_default[pointKey]) {
+                point.conformite = 'NO';
+            }
+        }
         return {
           controleCourant: controles[route.params.id],
           parcelleCourante: controles[route.params.id].parcelles[route.params.parcelle],
-          pointsDeControle: points_de_controle
+          pointsDeControle: points_de_controle,
+          date_tournee: date_tournee,
+          isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
+          warnings: [],
         }
     };
     templates.parcelle.methods = {
-        allConforme() {
+        allOtherConforme() {
             for (const pointKey in this.parcelleCourante.controle.points) {
                 const point = this.parcelleCourante.controle.points[pointKey];
+                if (point.conformite) {
+                    continue;
+                }
                 point.conformite = 'C';
             }
         },
         save() {
+            this.checkPoints();
+
+            if (this.showWarning) {
+                return
+            }
+
             this.parcelleCourante.controle.saisie = 1;
-            this.controleCourant.validation = false;
+            this.parcelleCourante.needs_to_be_saved = true;
+
+            this.cleanPoints();
+
             router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+        },
+        checkPoints() {
+            this.warnings = []
+            const NCPoints = []
+            const points = this.parcelleCourante.controle.points
+
+            for (const pointKey in this.parcelleCourante.controle.points) {
+                const point = this.parcelleCourante.controle.points[pointKey]
+
+                if (point.conformite === "NC") {
+                    NCPoints.push({key: pointKey, point: point})
+                }
+            }
+
+            for (const manquements in NCPoints) {
+                let atLeastOne = false;
+                const constats = NCPoints[manquements].point.constats
+                for (const constat in constats) {
+                    if (constats[constat].non_conforme) {
+                        atLeastOne = true;
+                    }
+                }
+
+                if (atLeastOne === false) {
+                    this.warnings.push({libelle: NCPoints[manquements].point.libelle, anchor: NCPoints[manquements].key})
+                }
+            }
+        },
+        cleanPoints() {
+            const points = this.parcelleCourante.controle.points;
+
+            for (const pointKey in points) {
+                const point = points[pointKey];
+
+                no_by_default[pointKey] = (point.conformite === 'NO') ? 1 : 0;
+
+                if (point.conformite !== 'NC') {
+                    for (const constatKey in point.constats) {
+                        const constat = point.constats[constatKey];
+                        constat.non_conforme = false;
+                        constat.observations = null;
+                    }
+                }
+            }
         },
         echoFloat(val, nbDecimal = 5) {
             return val ? Number(val).toFixed(nbDecimal) : '';
+        },
+        printableSiret() {
+            if (! this.controleCourant.declarant.siret) {
+              return "PAS DE SIRET"
+            }
+            return this.controleCourant.declarant.siret.substring(0,3)+" "+
+                   this.controleCourant.declarant.siret.substring(3,6) +" "+
+                   this.controleCourant.declarant.siret.substring(6,9) +" "+
+                   this.controleCourant.declarant.siret.substring(9);
+        },
+        libelleTournee() {
+            const [y, m, d] = this.controleCourant.date_tournee.split('-');
+            const heure = this.controleCourant.heure_tournee;
+            const agent = this.controleCourant.agent_libelle;
+            const parcelle = this.parcelleCourante.parcelle_id;
+            return `Tournée du ${d}/${m}/${y} à ${heure} par ${agent} parcelle ${parcelle} `;
         }
     };
     templates.audit.mounted = function() {
-        let signaturePad = new SignaturePad(document.getElementById('signature'), {
-            backgroundColor: 'rgba(255, 255, 255, 0)',
-            penColor: 'rgb(0, 0, 0)'
+        submitNeedsToBeSaved(this);
+        let signatureBase64 = null;
+        const controleCourant = this.controleCourant;
+        const signaturePad = new SignaturePad(document.getElementById('signature'), {
+            penColor: 'rgb(0, 0, 0)',
+            minWidth: 1,
+            maxWidth: 2,
+            onEnd: function () {
+                if (!signaturePad.isEmpty()) {
+                    controleCourant.audit.operateur_signature = signaturePad.toDataURL();
+                }
+            }
         });
+        document.getElementById('signature-pad-reset').addEventListener('click', function () {
+            signaturePad.clear();
+            controleCourant.audit.operateur_signature = null;
+        });
+        if (controleCourant.audit.operateur_signature) {
+            signaturePad.fromDataURL(controleCourant.audit.operateur_signature);
+        }
+    }
+    templates.audit.computed = {
+        savedClass() {
+            if (this.isSaved) {
+                return "glyphicon glyphicon-floppy-saved";
+            }
+            return "glyphicon glyphicon-floppy-remove";
+        },
+        savedStyle() {
+            if (this.isSaved) {
+                return "color: #8da42a";
+            }
+            return "color: #aaaaaa";
+        }
     }
     templates.audit.data = function() {
         const route = useRoute()
         if(!controles[route.params.id].audit) {
           controles[route.params.id].audit = {}
         }
-        return {
-          controleCourant: controles[route.params.id]
+        if (controles[route.params.id].audit.saisie != 1) {
+            copySignatureIfCaveCoopAlreadySigned(controles[route.params.id]);
+        }
 
+        return {
+          controleCourant: controles[route.params.id],
+          isSaved: updateDataSynchroStatusBasedOnNeedsToBeSaved(),
         }
     };
     templates.audit.methods = {
@@ -174,10 +410,9 @@
                       ret.nombreNC += 1;
                       for (const constatKey in point.constats) {
                           const constat = point.constats[constatKey];
-                          if (! constat.conformite) {
-                              continue ;
+                          if (constat.non_conforme) {
+                              ret.manquements.push(point.libelle + "\n" + constat.libelle + ' - ' + constatKey + "\n" + parcelleId + ' - '+ constat.observations);
                           }
-                          ret.manquements.push(point.libelle + "\n" + constat.libelle + ' - ' + constatKey + "\n" + parcelleId + ' - '+ constat.observations);
                       }
                   }
               }
@@ -186,8 +421,21 @@
       },
       save() {
         this.controleCourant.audit.saisie = 1;
-        this.controleCourant.validation = false;
-        router.push({ name: 'operateur', params: { id: this.controleCourant._id } })
+        this.controleCourant.audit.needs_to_be_saved = true;
+        router.push({ name: 'listing' })
+    },
+      devalider() {
+          this.controleCourant.audit.saisie = 0;
+          this.controleCourant.audit.needs_to_be_saved = true;
+      },
+      printableSiret() {
+          if (! this.controleCourant.declarant.siret) {
+            return "PAS DE SIRET"
+          }
+          return this.controleCourant.declarant.siret.substring(0,3)+" "+
+                 this.controleCourant.declarant.siret.substring(3,6) +" "+
+                 this.controleCourant.declarant.siret.substring(6,9) +" "+
+                 this.controleCourant.declarant.siret.substring(9);
       }
     };
     templates.map.data = function() {
@@ -272,12 +520,13 @@
             }
             parcellesGeojson.features.push(feature)
         }
+        addDelimitation(map);
         const parcellesLayer = L.geoJSON(parcellesGeojson, { style: {
             fillColor: 'red',
             weight: 3,
             opacity: 1,
             color: 'red',
-            fillOpacity: 0.3
+            fillOpacity: 0.15
         }, onEachFeature: function (feature, layer) {
             layer.on({
                 click: function(e) {
@@ -299,59 +548,161 @@
         if(!data.idu) {
             map.fitBounds(parcellesLayer.getBounds());
         }
-        /*let tilesUrl = []
-        for(layerIndex in parcellesLayer._layers) {
-            let layer = parcellesLayer._layers[layerIndex];
-            for(let zoom = 19; zoom >=8; zoom--) {
-                const area = L.bounds(map.project(layer.getBounds().getNorthWest(), zoom), map.project(layer.getBounds().getSouthEast(), zoom));
-                for(tile of getTileUrls(tileLayer, area, zoom)) {
-                    tilesUrl[tile.url] = tile.url
+    };
+
+    function copySignatureIfCaveCoopAlreadySigned(controleCourant) {
+        for (const controle of Object.values(controles)) {
+            if (controle._id === controleCourant._id) continue;
+            if (controle.audit.saisie != 1) continue;
+
+            const liaisonsCourantes = Object.values(controleCourant.liaisons_operateurs ?? {});
+
+            const liaisonsAutreControle = Object.values(controle.liaisons_operateurs ?? {});
+
+            const caveCommune = liaisonsCourantes.some(liaisonCourante =>
+                liaisonsAutreControle.some(liaison =>
+                    liaison.id_etablissement === liaisonCourante.id_etablissement
+                )
+            );
+
+            if (!caveCommune) continue;
+
+            controleCourant.audit.nom_prenom = controle.audit.nom_prenom;
+            controleCourant.audit.operateur_signature = controle.audit.operateur_signature;
+
+            return;
+        }
+    }
+
+    function updateDataSynchroStatusBasedOnNeedsToBeSaved()
+    {
+        for (const controle of Object.values(controles)) {
+            if (controle.audit.needs_to_be_saved === true) {
+                return false;
+            }
+            for (const parcelle of Object.values(controle.parcelles)) {
+                if (parcelle.needs_to_be_saved === true) {
+                    return false;
                 }
             }
         }
-        for(tileUrl in tilesUrl) {
-            fetch(tileUrl+'?'+tileUrl, { cache: "force-cache" })
-        }*/
-    };
-
-    function getTileUrls(tileLayer, bounds, zoom) {
-            var _a;
-            const tiles = [];
-            const tilePoints = getTilePoints(bounds, tileLayer.getTileSize());
-            for (let index = 0; index < tilePoints.length; index += 1) {
-                const tilePoint = tilePoints[index];
-                const data = Object.assign(Object.assign({}), { x: tilePoint.x, y: tilePoint.y, z: zoom });
-                tiles.push({
-                    key: getTileUrl(tileLayer._url, Object.assign(Object.assign({}, data), { s: (_a = tileLayer.options.subdomains) === null || _a === void 0 ? void 0 : _a[0] })),
-                    url: getTileUrl(tileLayer._url, Object.assign(Object.assign({}, data), {
-                        // @ts-ignore: Undefined
-                        s: tileLayer._getSubdomain(tilePoint) })),
-                    z: zoom,
-                    x: tilePoint.x,
-                    y: tilePoint.y,
-                    urlTemplate: L._url,
-                    createdAt: Date.now(),
-                });
-            }
-            return tiles;
+        return true;
     }
 
-    function getTilePoints(area, tileSize) {
-        const points = [];
-        if (!area.min || !area.max) {
-            return points;
+    async function submitNeedsToBeSaved(context) {
+      if (! isStartingup) {
+          saveControlesInLocalStorage();
+      }
+      let is_saved = true;
+      let need_reload = false;
+      for (const controle of Object.values(controles)) {
+        if (controle.audit.needs_to_be_saved === true) {
+          is_saved = await submitElement(controle, null, controle.audit) && is_saved;
         }
-        const topLeftTile = area.min.divideBy(tileSize.x).floor();
-        const bottomRightTile = area.max.divideBy(tileSize.x).floor();
-        for (let j = topLeftTile.y; j <= bottomRightTile.y; j += 1) {
-            for (let i = topLeftTile.x; i <= bottomRightTile.x; i += 1) {
-                points.push(new L.Point(i, j));
-            }
+
+        for (const parcelle of Object.values(controle.parcelles)) {
+          if (parcelle.needs_to_be_saved === true) {
+            is_saved = await submitElement(controle, parcelle.parcelle_id, parcelle.controle) && is_saved;
+          }
         }
-        return points;
+        need_reload = need_reload || needReload(controle);
+      }
+      if (context) {
+          context.isSaved = is_saved;
+      }
+      if (need_reload) {
+          if (confirm("Un autre utilisateur utilise cette partie de l'app Terrain. Par sécurité, rechargez l'application. (pour ne pas recharger, annulez)")) {
+              return location.reload();
+          }
+      }
+      loadFromServerIfNeeded();
     }
 
-    function getTileUrl(urlTemplate, data) {
-        return L.Util.template(urlTemplate, Object.assign(Object.assign({}, data), { r: L.Browser.retina ? '@2x' : '' }));
+    async function submitElement(controle, idParcelle, element)
+    {
+      try {
+        const revision = controle._rev;
+        const idControle = controle._id;
+        const response = await fetch('<?php echo url_for('controle_transmission_data'); ?>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                revision,
+                idControle,
+                idParcelle,
+                element
+            })
+        });
+        data = await response.json();
+        if (data && data.success === true) {
+            controle._rev = data.revision;
+            if (idParcelle) {
+                console.log(controle._id + ' parcelle ' + idParcelle + 'saved');
+                controle.parcelles[idParcelle].needs_to_be_saved = false;
+            } else {
+                console.log(controle._id + ' audit saved');
+                controle.audit.needs_to_be_saved = false;
+            }
+            element.needs_to_be_saved = false;
+            if (data.reloadStatus) {
+                reloadStatus = true;
+            }
+            saveControlesInLocalStorage();
+            return true;
+        }
+        return false;
+      } catch(exception) {
+        console.log(['submitElement exception', exception]);
+        return false;
+      }
     }
+
+    function saveControlesInLocalStorage()
+    {
+        localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
+    }
+
+    function needReload(controle) {
+        if (!reloadStatus) {
+            return false;
+        }
+        if (controle.audit.needs_to_be_saved === true) {
+            return false;
+        }
+        for (const parcelle of Object.values(controle.parcelles)) {
+            if (parcelle.needs_to_be_saved === true) {
+                console.log("parcelle doit être sauvée : " + parcelle.parcelle_id);
+                return false;
+            }
+        }
+        controle._rev = "00-Needs Update";
+        saveControlesInLocalStorage();
+        return true;
+    }
+
+    function loadFromServerIfNeeded()
+    {
+        if (!isStartingup) {
+            return;
+        }
+        for (let i in server_controle) {
+            if (controles[server_controle[i]._id]) {
+                server_rev = server_controle[i]._rev.split('-')[0];
+                local_rev = (controles[server_controle[i]._id]._rev) ? controles[server_controle[i]._id]._rev.split('-')[0] : 0;
+                if (local_rev >= server_rev) {
+                    continue;
+                }
+            }
+            controles[server_controle[i]._id] = server_controle[i];
+            localstorage_updated = true;
+        }
+        if (localstorage_updated) {
+            localStorage.setItem("controles_" + date_tournee, JSON.stringify(controles));
+        }
+        isStartingup = false;
+        console.log(['End of starting up', isStartingup]);
+    }
+
 </script>

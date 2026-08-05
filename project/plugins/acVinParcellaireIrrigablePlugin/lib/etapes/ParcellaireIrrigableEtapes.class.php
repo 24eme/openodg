@@ -37,7 +37,7 @@ class ParcellaireIrrigableEtapes extends Etapes {
     }
 
     protected function filterItems($items) {
-        if(ParcellaireConfiguration::getInstance()->hasIrrigableMaterielRessource() == false ) {
+        if(ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == false && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == false) {
             unset($items[self::ETAPE_IRRIGATIONS]);
         }
         return $items;
