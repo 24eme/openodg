@@ -18,13 +18,14 @@ class HabilitationValidation extends DocumentValidation
 
     public function controle()
     {
-        if (CommunesConfiguration::getInstance()->hasCommunes()) {
-            $notifie = false;
-            foreach ($this->document->getActivitesHabilitesByProduits() as $produit => $activitesHabilites) {
-                if ($notifie == false && in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $activitesHabilites)) {
-                    $this->controleLocalisation($this->document->declarant);
-                    $notifie = true;
-                }
+        if (!CommunesConfiguration::getInstance()->hasCommunes()) {
+            return;
+        }
+
+        foreach ($this->document->getActivitesHabilitesByProduits() as $activitesHabilites) {
+            if (in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $activitesHabilites)) {
+                $this->controleLocalisation($this->document->declarant);
+                break;
             }
         }
     }
