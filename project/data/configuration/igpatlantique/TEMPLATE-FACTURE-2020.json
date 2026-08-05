@@ -93,7 +93,7 @@
         }
       }
     },
-    "04_communication_valorisation_produit": {
+    "04_communication_valorisation_produit_drev": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "",
@@ -113,7 +113,27 @@
         }
       }
     },
-    "05_controle_habilitation": {
+    "05_communication_valorisation_produit_condi": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "05_communication": {
+          "modele": "CotisationVariable",
+          "prix": 0.5,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Communication et valorisation du produit  - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "Conditionnement"
+          ],
+          "callback": "getVolumeRevendiqueLots"
+        }
+      }
+    },
+    "06_controle_habilitation": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Contrôle d'habilitation",
