@@ -45,7 +45,10 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables"
+          "callback": "getVolumeLotsFacturables",
+          "callback_parameters": {
+            "famille": "NOT CONDITIONNEUR"
+          }
         }
       }
     },
