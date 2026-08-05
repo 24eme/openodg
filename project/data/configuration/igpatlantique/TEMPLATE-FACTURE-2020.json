@@ -25,10 +25,7 @@
             "DRev"
           ],
           "date": "%periode+1%-07-31",
-          "callback": "getVolumeRevendiqueLots",
-          "callback_parameters": {
-            "millesime": "/millesime/courant"
-          }
+          "callback": "getVolumeRevendiqueNumeroDossier"
         }
       }
     },
