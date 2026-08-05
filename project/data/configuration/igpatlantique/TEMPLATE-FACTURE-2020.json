@@ -45,10 +45,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables",
-          "callback_parameters": {
-            "famille": "NOT NEGOCIANT_VINIFICATEUR"
-          }
+          "callback": "getVolumeLotsFacturables"
         }
       }
     },
