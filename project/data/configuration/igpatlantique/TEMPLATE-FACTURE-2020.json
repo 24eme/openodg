@@ -52,7 +52,7 @@
         }
       }
     },
-    "02_cotisation_obligatoire": {
+    "02_cotisation_obligatoire_prod_vinif": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation annuelle obligatoire d'adhésion",
@@ -74,7 +74,7 @@
         }
       }
     },
-    "03_cotisation_obligatoire": {
+    "03_cotisation_obligatoire_nego_vinif_cave_coop": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation annuelle obligatoire d'adhésion",
@@ -96,7 +96,29 @@
         }
       }
     },
-    "04_communication_valorisation_produit_drev": {
+    "04_cotisation_obligatoire_nego_pur": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation annuelle obligatoire d'adhésion",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationFixe",
+          "prix": 150,
+          "tva": 0,
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+              "Conditionnement"
+          ],
+          "callback": "getVolumeRevendiqueLots",
+          "callback_parameters": {
+            "famille": "NEGOCIANT"
+          }
+        }
+      }
+    },
+    "06_communication_valorisation_produit_drev": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "",
@@ -116,7 +138,7 @@
         }
       }
     },
-    "05_communication_valorisation_produit_condi": {
+    "07_communication_valorisation_produit_condi": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "",
@@ -136,7 +158,7 @@
         }
       }
     },
-    "06_controle_habilitation": {
+    "08_controle_habilitation": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Contrôle d'habilitation",
