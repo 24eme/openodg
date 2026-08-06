@@ -237,7 +237,7 @@
             Commentaire interne
             <small>(seulement visible par l'ODG<?php if ($dr->isValideeOdg()): ?> - <a href="#" data-toggle="modal" data-target="#dr-edit-comment"><?php echo ($dr->commentaire) ? 'Éditer' : 'Ajouter' ?></a><?php endif ?>)</small>
         </h4>
-        <?php if ($dr->isValideenOdg() && $dr->commentaire): ?>
+        <?php if ($dr->isValideeOdg() && $dr->commentaire): ?>
             <pre><?php echo $dr->commentaire; ?></pre>
         <?php endif ?>
 
