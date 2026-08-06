@@ -230,18 +230,18 @@
         </p>
     <?php endif ?>
 
-    <?php if($dr->exist('commentaire') && $sf_user->isAdminODG()) : ?>
+    <?php if(DRConfiguration::getInstance()->hasValidationDR() && $sf_user->isAdminODG()) : ?>
         <?php $hasmodal = false; ?>
         <hr/>
         <h4>
             Commentaire interne
-            <small>(seulement visible par l'ODG<?php if ($dr->getValidationOdg()): ?> - <a href="#" data-toggle="modal" data-target="#dr-edit-comment"><?php echo ($dr->commentaire) ? 'Éditer' : 'Ajouter' ?></a><?php endif ?>)</small>
+            <small>(seulement visible par l'ODG<?php if ($dr->isValideeOdg()): ?> - <a href="#" data-toggle="modal" data-target="#dr-edit-comment"><?php echo ($dr->commentaire) ? 'Éditer' : 'Ajouter' ?></a><?php endif ?>)</small>
         </h4>
-        <?php if ($dr->getValidationOdg() && $dr->commentaire): ?>
+        <?php if ($dr->isValideenOdg() && $dr->commentaire): ?>
             <pre><?php echo $dr->commentaire; ?></pre>
         <?php endif ?>
 
-        <?php if ($dr->getValidationOdg()): ?>
+        <?php if ($dr->isValideeOdg()): ?>
             <div class="modal fade" id="dr-edit-comment" role="dialog" aria-labelledby="Edition du commentaire" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
