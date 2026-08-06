@@ -241,7 +241,9 @@
             <pre><?php echo $dr->commentaire; ?></pre>
         <?php endif ?>
 
+        <?php // on conditionne l'affichage de la modale à la validation de la DR ?>
         <?php if ($dr->isValideeOdg()): ?>
+            <?php $hasmodal = true; ?>
             <div class="modal fade" id="dr-edit-comment" role="dialog" aria-labelledby="Edition du commentaire" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -250,21 +252,23 @@
                             <h4 class="modal-title" id="myModalLabel">Edition du commentaire</h4>
                         </div>
                         <div class="modal-body">
-                            <?php $hasmodal = true; ?>
-                            <?php endif; ?>
-                            <?php if($drCommentaireValidationForm): ?>
-                                <form id="formUpdateCommentaire" action="<?php echo url_for('dr_update_commentaire', $dr) ?>" method="post">
-                                    <?php echo $drCommentaireValidationForm->renderHiddenFields(); ?>
-                                    <?php echo $drCommentaireValidationForm->renderGlobalErrors(); ?>
-                                    <?php echo $drCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
-                                    <div class="form-group text-right" style="margin-top: 10px">
-                                        <button type="submit" form="formUpdateCommentaire" class="btn btn-default">
-                                            <i class="glyphicon glyphicon-floppy-disk"></i> Enregistrer le commentaire
-                                        </button>
-                                    </div>
-                                </form>
-                            <?php endif; ?>
-                            <?php if($hasmodal): ?>
+        <?php endif; ?>
+
+        <?php // formulaire intégré dans la modale si validée, sinon juste dans la page normale ?>
+        <?php if($drCommentaireValidationForm): ?>
+            <form id="formUpdateCommentaire" action="<?php echo url_for('dr_update_commentaire', $dr) ?>" method="post">
+                <?php echo $drCommentaireValidationForm->renderHiddenFields(); ?>
+                <?php echo $drCommentaireValidationForm->renderGlobalErrors(); ?>
+                <?php echo $drCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
+                <div class="form-group text-right" style="margin-top: 10px">
+                    <button type="submit" form="formUpdateCommentaire" class="btn btn-default">
+                        <i class="glyphicon glyphicon-floppy-disk"></i> Enregistrer le commentaire
+                    </button>
+                </div>
+            </form>
+        <?php endif; ?>
+
+        <?php if($hasmodal): ?>
                         </div>
                     </div>
                 </div>
