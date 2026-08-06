@@ -398,6 +398,14 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return $activites;
     }
 
+    public function getActivitesHabilitesByProduits() {
+        $activites = [];
+        foreach($this->getProduits() as $key => $p) {
+            $activites[$key] = array_merge($activites, array_keys($p->getActivitesHabilites()));
+        }
+        return $activites;
+    }
+
     public function getActivitesWrongHabilitation() {
         $activites = [];
         foreach($this->getProduits() as $p) {

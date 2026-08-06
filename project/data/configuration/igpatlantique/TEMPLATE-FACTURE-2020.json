@@ -25,10 +25,7 @@
             "DRev"
           ],
           "date": "%periode+1%-07-31",
-          "callback": "getVolumeRevendiqueLots",
-          "callback_parameters": {
-            "millesime": "/millesime/courant"
-          }
+          "callback": "getVolumeRevendiqueNumeroDossier"
         }
       }
     },
@@ -50,12 +47,12 @@
           ],
           "callback": "getVolumeLotsFacturables",
           "callback_parameters": {
-            "famille": "NOT NEGOCIANT_VINIFICATEUR"
+            "famille": "NOT CONDITIONNEUR"
           }
         }
       }
     },
-    "02_cotisation_obligatoire": {
+    "02_cotisation_obligatoire_prod_vinif": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation annuelle obligatoire d'adhésion",
@@ -77,7 +74,7 @@
         }
       }
     },
-    "03_cotisation_obligatoire": {
+    "03_cotisation_obligatoire_nego_vinif_cave_coop": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation annuelle obligatoire d'adhésion",
@@ -99,7 +96,29 @@
         }
       }
     },
-    "04_communication_valorisation_produit": {
+    "04_cotisation_obligatoire_nego_pur": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation annuelle obligatoire d'adhésion",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationFixe",
+          "prix": 150,
+          "tva": 0,
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+              "Conditionnement"
+          ],
+          "callback": "getVolumeRevendiqueLots",
+          "callback_parameters": {
+            "famille": "NEGOCIANT"
+          }
+        }
+      }
+    },
+    "06_communication_valorisation_produit_drev": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "",
@@ -119,7 +138,27 @@
         }
       }
     },
-    "05_controle_habilitation": {
+    "07_communication_valorisation_produit_condi": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "05_communication": {
+          "modele": "CotisationVariable",
+          "prix": 0.5,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Communication et valorisation du produit  - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "Conditionnement"
+          ],
+          "callback": "getVolumeRevendiqueLots"
+        }
+      }
+    },
+    "08_controle_habilitation": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Contrôle d'habilitation",
@@ -127,8 +166,8 @@
       "details": {
         "cotisation": {
           "modele": "CotisationFixe",
-          "prix": 74.52,
-          "tva": 0,
+          "prix": 62.10,
+          "tva": 0.2,
           "libelle": "",
           "complement_libelle": "",
           "docs": [

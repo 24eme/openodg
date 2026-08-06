@@ -230,6 +230,48 @@
         </p>
     <?php endif ?>
 
+    <?php if($dr->exist('commentaire') && $sf_user->isAdminODG()) : ?>
+        <?php $hasmodal = false; ?>
+        <hr/>
+        <h4>
+            Commentaire interne
+            <small>(seulement visible par l'ODG<?php if ($dr->getValidationOdg()): ?> - <a href="#" data-toggle="modal" data-target="#dr-edit-comment"><?php echo ($dr->commentaire) ? 'Éditer' : 'Ajouter' ?></a><?php endif ?>)</small>
+        </h4>
+        <?php if ($dr->getValidationOdg() && $dr->commentaire): ?>
+            <pre><?php echo $dr->commentaire; ?></pre>
+        <?php endif ?>
+
+        <?php if ($dr->getValidationOdg()): ?>
+            <div class="modal fade" id="dr-edit-comment" role="dialog" aria-labelledby="Edition du commentaire" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel">Edition du commentaire</h4>
+                        </div>
+                        <div class="modal-body">
+                            <?php $hasmodal = true; ?>
+                            <?php endif; ?>
+                            <?php if($drCommentaireValidationForm): ?>
+                                <form id="formUpdateCommentaire" action="<?php echo url_for('dr_update_commentaire', $dr) ?>" method="post">
+                                    <?php echo $drCommentaireValidationForm->renderHiddenFields(); ?>
+                                    <?php echo $drCommentaireValidationForm->renderGlobalErrors(); ?>
+                                    <?php echo $drCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
+                                    <div class="form-group text-right" style="margin-top: 10px">
+                                        <button type="submit" form="formUpdateCommentaire" class="btn btn-default">
+                                            <i class="glyphicon glyphicon-floppy-disk"></i> Enregistrer le commentaire
+                                        </button>
+                                    </div>
+                                </form>
+                            <?php endif; ?>
+                            <?php if($hasmodal): ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?>
+
             <div class="row row-margin row-button">
                 <div class="col-xs-4">
                     <a href="<?= (isset($service) && $service) ?: url_for('declaration_etablissement', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne]) ?>"
