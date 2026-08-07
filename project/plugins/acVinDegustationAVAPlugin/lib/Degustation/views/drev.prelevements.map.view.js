@@ -14,7 +14,7 @@ function(doc) {
         return;
     }
 
-    for(key in doc.prelevements) {
+    for (var key in doc.prelevements) {
         var prelevement = doc.prelevements[key];
         chai = doc.chais['cuve_'];
         if(prelevement.date) {
