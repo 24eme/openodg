@@ -88,3 +88,13 @@ diff_verify:
     type: object
   requirements:
     sf_method: [get]
+
+dr_update_commentaire:
+  url: /dr/update-commentaire/:id
+  param: { module: dr, action: updateCommentaire }
+  class: DRRoute
+  options:
+    model: DR
+    type: object
+  requirements:
+    sf_method: [post]
