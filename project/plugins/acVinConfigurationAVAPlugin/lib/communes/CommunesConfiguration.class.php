@@ -36,4 +36,8 @@ class CommunesConfiguration {
         return $this->communes_reverse[$commune];
     }
 
+    public function hasCommunes() {
+        return false;
+    }
+
 }
