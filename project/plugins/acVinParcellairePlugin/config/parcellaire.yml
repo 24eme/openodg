@@ -1,6 +1,7 @@
 all:
   configuration:
     parcellaire:
+      allow_stalker: false
       show_filter_produits_configuration: true
       troisieme_feuille: true
       unit: "hectares"

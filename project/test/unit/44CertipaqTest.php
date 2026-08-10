@@ -70,14 +70,16 @@ $op = CertipaqOperateur::getInstance()->findByEtablissement($etablissement);
 $t->is($op->id, $infos_operateur->id, "Récupère les infos d'un opérateur depuis établissement");
 $t->ok($op->sites, "Les infos de l'opérateur depuis établissement contienne les infos de leurs sites");
 try {
-    $res = CertipaqDRev::getInstance()->createUneLigne($etablissement, $produit_conf, $millesime, 0, 650);
+    $data = array('millesime' => $millesime, 'superficie' => 0, 'volume' => 650);
+    $res = CertipaqDRev::getInstance()->createUneLigne($etablissement, $produit_conf, $data);
     throw new sfException("Erreur DR non détectée");
 } catch (Exception $e) {
     $t->is($e->getMessage(), 'HTTP Error 400 : {"errors":["Le param\u00e8tre surface_ha est manquant"]}', "La création d'une ligne de DR impossible car la superficie 0");
 }
 
 try {
-    $res = CertipaqDRev::getInstance()->createUneLigne($etablissement, $produit_conf, 0, 50, 650);
+    $data = array('millesime' =>  0, 'superficie' => 50, 'volume' => 650);
+    $res = CertipaqDRev::getInstance()->createUneLigne($etablissement, $produit_conf,$data);
     throw new sfException("Erreur millesime non détectée");
 } catch (Exception $e) {
     $t->is($e->getMessage(), 'HTTP Error 400 : {"errors":["Le param\\u00e8tre millesime est invalide"]}', "La création d'une ligne de DR impossible avec un millesime à 0");
@@ -85,7 +87,8 @@ try {
 
 if (!$readonly) {
   try {
-    $res = CertipaqDRev::getInstance()->createUneLigne($etablissement, $produit_conf, $millesime, 50, 650);
+      $data = array('millesime' => $millesime, 'superficie' => 50, 'volume' => 650);
+    $res = CertipaqDRev::getInstance()->createUneLigne($etablissement, $produit_conf, $data);
     $t->ok($res->id, "La création d'une ligne de DR ne provoque pas d'erreur");
   } catch (Exception $e) {
     $t->fail($e->getMessage(), "La création d'une ligne de DR ne provoque pas d'erreur");

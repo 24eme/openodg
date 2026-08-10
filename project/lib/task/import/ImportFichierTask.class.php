@@ -14,13 +14,13 @@ class ImportFichierTask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
-
-        	new sfCommandOption('libelle', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', null),
-        	new sfCommandOption('visibilite', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', 1),
-        	new sfCommandOption('papier', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', false),
-        	new sfCommandOption('type', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', null),
-        	new sfCommandOption('annee', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', null),
-        	new sfCommandOption('lien_symbolique', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', false),
+            new sfCommandOption('libelle', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', null),
+            new sfCommandOption('visibilite', null, sfCommandOption::PARAMETER_OPTIONAL, 'Visibilité pour les opérateurs', 1),
+            new sfCommandOption('papier', null, sfCommandOption::PARAMETER_OPTIONAL, 'Papier (true) / Télédéclaration (false)', false),
+            new sfCommandOption('type', null, sfCommandOption::PARAMETER_OPTIONAL, 'Type de fichier', null),
+            new sfCommandOption('annee', null, sfCommandOption::PARAMETER_OPTIONAL, 'Année', null),
+            new sfCommandOption('date', null, sfCommandOption::PARAMETER_OPTIONAL, "date d'import", null),
+            new sfCommandOption('lien_symbolique', null, sfCommandOption::PARAMETER_OPTIONAL, 'lien symbolique', false),
         ));
 
         $this->namespace = 'import';
@@ -77,6 +77,9 @@ EOF;
         }
         if ($fichier->isNew() && $options['visibilite']) {
         	$fichier->setVisibilite($options['visibilite']);
+        }
+        if ($fichier->isNew() && $options['date']) {
+            $fichier->date_depot = $options['date'];
         }
         try {
         	if ($fichier->isNew()) {

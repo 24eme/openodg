@@ -6,8 +6,8 @@ class controleActions extends sfActions
         $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
         $allControles = ControleClient::getInstance()->findAllByStatus();
         $this->tournees = [];
-        $this->nb_operateurs_a_planifier = count($allControles[ControleClient::CONTROLE_STATUT_A_PLANIFIER]);
-        $this->nb_operateurs_en_manquement = count($allControles[ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER]);
+        $this->nb_operateurs_a_planifier = count(ControleAllView::getInstance()->findByStatut(ControleClient::CONTROLE_STATUT_A_PLANIFIER));
+        $this->nb_operateurs_en_manquement = count(ControleAllView::getInstance()->findByStatut(ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER));
         foreach ($allControles as $statut => $controles) {
             /*
             if(!in_array($statut, [ControleClient::CONTROLE_STATUT_A_ORGANISER, ControleClient::CONTROLE_STATUT_ORGANISE, ControleClient::CONTROLE_STATUT_A_NOTIFIER, ControleClient::CONTROLE_STATUT_TOURNEE_TERMINEE_AVEC_MANQUEMENTS_A_TRAITER])) {
@@ -120,15 +120,13 @@ class controleActions extends sfActions
     {
         $controles = [];
         $this->obj_controles_for_aires = [];
-        foreach (ControleClient::getInstance()->findAll() as $controle) {
-            if ($dateTournee == $controle->date_tournee && $agentIdentifiant == $controle->agent_identifiant) {
-                if (! $controle->getParcellaire() || ! count($controle->getParcellaire()->getParcelles()) ) {
-                    continue;
-                }
-                $controle->updateParcellesNoeudControleIfNeeded();
-                $this->obj_controles_for_aires[] = $controle;
-                $controles[$controle->_id] = $controle->getDataToDump();
+        foreach (ControleClient::getInstance()->findAllByDateTourneeAndAgent($dateTournee, $agentIdentifiant) as $controle) {
+            if (! $controle->getParcellaire() || ! count($controle->getParcellaire()->getParcelles()) ) {
+                continue;
             }
+            $controle->updateParcellesNoeudControleIfNeeded();
+            $this->obj_controles_for_aires[] = $controle;
+            $controles[$controle->_id] = $controle->getDataToDump();
         }
         return $controles;
     }

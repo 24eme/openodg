@@ -99,7 +99,10 @@ class ParcellaireScrappedCsvFile extends ParcellaireCsvFile
             $libelle = str_replace(' RS', ' Rosé', $libelle);
             $libelle = str_replace([' GRENAT', ' ROUGE SEC'], ' ROUGE', $libelle);
             $libelle = str_replace('COTES GASCOGNE', 'COTES DE GASCOGNE', $libelle);
-            $libelle = str_replace('HERMITAGE OU ERMITAGE', 'CROZES HERMITAGE', $libelle);
+            $libelle = str_replace('HERMITAGE OU ERMITAGE', 'HERMITAGE', $libelle);
+            $libelle = str_replace('ST', 'SAINT', $libelle);
+            $libelle = str_replace('LES-VIG', 'LES-VIGNES', $libelle);
+            $libelle = str_replace('VIGVIGNES', 'VIGNES', $libelle);
 
             switch ($libelle) {
                 case "CREMANT D'ALS ROSE":

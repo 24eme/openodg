@@ -14,6 +14,8 @@ all:
           DEPOT: "Dépôt"
           COMPLET: "Complet"
           TRANSMIS_OC: "Transmis à l'OC"
+          CONTROLE_DOCUMENTAIRE: "À contrôler doc"
+          CONTROLE_DOCUMENTAIRE_TERRAIN: "À contrôler doc et terrain"
           RECUS_OC: "Reçu par l'OC"
           VALIDE_OC: "Validé par l'OC"
           VALIDE: "Validé"
