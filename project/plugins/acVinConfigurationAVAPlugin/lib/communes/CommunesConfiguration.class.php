@@ -15,7 +15,7 @@ class CommunesConfiguration {
 
     public function __construct() {
         $this->config = sfConfig::get('configuration_communes', array());
-        $this->communes = []
+        $this->communes = [];
         if (isset($this->config['insee2commune'])) {
             $this->communes = $this->config['insee2commune'];
         }
