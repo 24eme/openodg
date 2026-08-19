@@ -53,7 +53,6 @@
                         ><span class="glyphicon glyphicon-<?= ($lot->isManquement()) ? 'remove' : 'ok' ?>"></span></a>&nbsp;
                         <?php endforeach; ?>
                       </td>
-                        <?php ?>
                         <td>
                           <a class="pull-right" title="Ouvrir le mail" style="color: white;" href="<?php echo url_for('degustation_mail_to_resultats', array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>"><span class="glyphicon glyphicon-envelope"></span></a>
                         <?php if ($lot->email_envoye === null): ?>
@@ -115,7 +114,7 @@
             <h4 class="modal-title">Le mail n'a pas pu s'ouvrir automatiquement</h4>
           </div>
           <div class="modal-body">
-              <span class="glyphicon glyphicon-info-sign"></span> Vous devez autoriser le navigateur à ouvrir des popups pour activer l'ouverture automatique. (<a href="https://github.com/24eme/openodg/blob/master/doc/AutorisationPopup.md">Consulter l'aide</a>)</p>
+              <p><span class="glyphicon glyphicon-info-sign"></span> Vous devez autoriser le navigateur à ouvrir des popups pour activer l'ouverture automatique. (<a href="https://github.com/24eme/openodg/blob/master/doc/AutorisationPopup.md">Consulter l'aide</a>)</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Annuler</button>

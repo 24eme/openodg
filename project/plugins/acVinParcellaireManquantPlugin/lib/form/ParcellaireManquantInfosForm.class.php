@@ -2,9 +2,16 @@
 
 class ParcellaireManquantInfosForm extends acCouchdbObjectForm {
 
+    protected $destinataire = null;
+
+    public function __construct(acCouchdbJson $object, $destinataire = null) {
+        $this->destinataire = $destinataire;
+        parent::__construct($object);
+    }
+
     public function configure() {
 		foreach ($this->getObject()->declaration as $key => $value) {
-			$this->embedForm($key, new ParcellaireManquantParcellesInfosForm($value));
+            $this->embedForm($key, new ParcellaireManquantParcellesInfosForm($value, $this->destinataire));
 		}
 
         $this->widgetSchema->setNameFormat('parcelles[%s]');
@@ -16,9 +23,15 @@ class ParcellaireManquantInfosForm extends acCouchdbObjectForm {
     		foreach ($value as $detail => $items) {
     			$node = $this->getObject()->declaration->get($produit);
     			$node = $node->detail->get($detail);
-    			foreach ($items as $k => $v) {
-    				$node->add($k, $v);
-    			}
+                if($items['pourcentage'] > 0 && $node->getDefinition()->exist('manquant')) {
+                    $node = $node->add('manquant');
+                } elseif($node->getDefinition()->exist('manquant')) {
+                    $node->remove('manquant');
+                }
+                if($items['pourcentage'] > 0) {
+                    $node->add('pourcentage', $items['pourcentage']);
+                    $node->add('densite', $items['densite']);
+                }
     		}
     	}
     }

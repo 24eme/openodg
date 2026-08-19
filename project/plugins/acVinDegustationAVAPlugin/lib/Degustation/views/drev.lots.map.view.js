@@ -15,10 +15,10 @@ function(doc) {
         return;
     }
 
-    for(key in doc.prelevements) {
+    for (var key in doc.prelevements) {
         var prelevement = doc.prelevements[key];
         chai = doc.chais['cuve_'];
-    	for(lotKey in prelevement.lots) {
+    	for (var lotKey in prelevement.lots) {
     		var lot = prelevement.lots[lotKey];
                 	emit([doc.campagne, key, lot.hash_produit, lot.vtsgn, doc.identifiant], { raison_sociale: doc.declarant.raison_sociale, adresse: chai.adresse, code_postal: chai.code_postal, commune: chai.commune, produit_libelle: lot.libelle});
     	}

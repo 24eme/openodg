@@ -74,7 +74,6 @@ $list_idu = [];
 
 <?php include_partial('parcellaire/tableauCommune', array('parcellesByCommune' => $parcellesByCommune, 'import' => $import, 'addCheckbox' => false)); ?>
 
-
 <?php include_component('parcellaire', 'syntheseParCepages', array('parcellaire' => $parcellaire)); ?>
 <?php
     $potentiel = null;

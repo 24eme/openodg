@@ -10,6 +10,7 @@ function(doc) {
          doc.type != "ParcellaireAffectation" &&
          doc.type != "ParcellaireIrrigable" &&
          doc.type != "ParcellaireIrrigue" &&
+         doc.type != "PriseDeMousse" &&
          doc.type != "RegistreVCI" &&
          doc.type != "Tirage" &&
          doc.type != "Transaction" &&
@@ -56,7 +57,7 @@ function(doc) {
      var nb_doc_en_attente = 0;
 
      if(doc.documents) {
-         for(key in doc.documents) {
+         for (var key in doc.documents) {
              if(doc.documents[key].statut != "RECU") {
                  nb_doc_en_attente++;
              }
@@ -185,12 +186,12 @@ function(doc) {
      var statutProduit = statut;
      var nb_emits = 0;
      if(doc.type == "DRev" && !doc.declaration.certification){
-            for (key in doc.declaration) {
+            for (var key in doc.declaration) {
 
-              if (key.toLowerCase().includes("igp")) {
+              if (key.toLowerCase().indexOf("igp") !== -1) {
                 continue;
               }
-               for(detailKey in doc.declaration[key]){
+               for (var detailKey in doc.declaration[key]){
                  if(doc.declaration[key][detailKey].validation_odg){
                    statutProduit = "Approuvé";
                  }
@@ -198,8 +199,8 @@ function(doc) {
                     statutProduit = doc.declaration[key][detailKey].statut_odg;
                  }
                  emit(['', type, campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
-                 for (regionid in regions) {
-                     if (regions[regionid].toLowerCase().includes("igp")) {
+                 for (var regionid in regions) {
+                     if (regions[regionid].toLowerCase().indexOf("igp") !== -1) {
                        continue;
                      }
                     emit([regions[regionid], type, campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
@@ -213,7 +214,7 @@ function(doc) {
       statutProduit = statut;
       var produitsHash = [];
 
-      for(lotKey in doc.lots) {
+      for (var lotKey in doc.lots) {
         var lot = doc.lots[lotKey];
         if(lot.produit_hash) {
           var pHash = lot.produit_hash.replace('/declaration/', '');
@@ -221,11 +222,11 @@ function(doc) {
         }
       }
 
-      for(produitHash in produitsHash) {
+      for (var produitHash in produitsHash) {
         statutProduit = statut;
 
         if (doc.declaration && doc.declaration[produitHash]) {
-          for(detailKey in doc.declaration[produitHash]) {
+          for (var detailKey in doc.declaration[produitHash]) {
             if(doc.declaration[produitHash][detailKey].validation_odg){
               statutProduit = "Approuvé";
             }
@@ -236,8 +237,8 @@ function(doc) {
         }
 
         emit(['', type, campagne, doc.identifiant, mode, statutProduit, produitHash, date, infos, raison_sociale, commune, email, cvi], 1);
-        for (regionid in regions) {
-          if (regions[regionid].toLowerCase().includes("aop")) {
+        for (var regionid in regions) {
+          if (regions[regionid].toLowerCase().indexOf("aop") !== -1) {
             continue;
           }
           emit([regions[regionid], type, campagne, doc.identifiant, mode, statutProduit, produitHash, date, infos, raison_sociale, commune, email, cvi], 1);
@@ -249,7 +250,7 @@ function(doc) {
 
      if(!nb_emits){
          emit(['', type, campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
-         for (regionid in regions) {
+         for (var regionid in regions) {
              emit([regions[regionid], type, campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
          }
      }

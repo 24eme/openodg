@@ -19,7 +19,7 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée ou dédiée;Acheteur CVI;Acheteur Nom;Autorisation de transmission;Date de validation / récéption;Type de transmission;VTSGN\n";
+        return "Campagne;Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Lieu-dit cadastral;Cépage;Superficie;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée ou dédiée;Acheteur CVI;Acheteur Nom;Autorisation de transmission;Date de validation / récéption;Type de transmission;VTSGN;parcelle id;doc id\n";
     }
 
     public function __construct($parcellaire, $header = true, $region = null) {
@@ -119,6 +119,12 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
         $export .= $parcelle->numero_parcelle . ";";
         $export .= $parcelle->getAppellation()->getLibelle() . ";";
         $export .= str_replace(array('"',';'),array('',''),$parcelle->getLieuLibelle()) . ";";
+        if($parcelle->getLieuDitCadastral() && strpos($parcelle->getProduitHash(), 'LIEUDIT') ) {
+            $export .= $parcelle->getLieuDitCadastral() . ";";
+        }else {
+            $export .=";";
+        }
+
         $export .= $parcelle->getCepageLibelle() . ";";
         $export .= $parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE) . ";";
         $export .= $this->parcellaire->declarant->cvi . ";";
@@ -137,6 +143,8 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
         $export .= $this->parcellaire->getDateDepot().";";
         $export .= ($this->parcellaire->isPapier()) ? "PAPIER" : "TÉLÉDECLARATION";
         $export .= ";".(($parcelle->vtsgn) ? "VTSGN" : "");
+        $export .= ";".(($parcelle->exist('parcelle_id')) ? $parcelle->get('parcelle_id') : "");
+        $export .= ";".$this->parcellaire->_id;
         $export .="\n";
 
         return $export;

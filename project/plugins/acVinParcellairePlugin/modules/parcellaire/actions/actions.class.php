@@ -38,7 +38,9 @@ class parcellaireActions extends sfActions {
 
     public function executeDeclarant(sfWebRequest $request) {
         $this->secureTeledeclarant();
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(
+            ParcellaireConfiguration::getInstance()->isStalkerAllowed()
+        );
         $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->etablissement->identifiant);
         if(class_exists("EtablissementChoiceForm")) {
             $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
@@ -63,7 +65,9 @@ class parcellaireActions extends sfActions {
     public function executeScrape(sfWebRequest $request)
     {
         $this->secureTeledeclarant();
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(
+            ParcellaireConfiguration::getInstance()->isStalkerAllowed()
+        );
         $this->noscrape = $request->getParameter('noscrape', false);
 
         if($request->getParameter('url')) {
@@ -74,7 +78,9 @@ class parcellaireActions extends sfActions {
     public function executeImport(sfWebRequest $request)
     {
         $this->secureTeledeclarant();
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(
+            ParcellaireConfiguration::getInstance()->isStalkerAllowed()
+        );
         $this->noscrape = $request->getParameter('noscrape', false);
 
         $parcellaire = null;

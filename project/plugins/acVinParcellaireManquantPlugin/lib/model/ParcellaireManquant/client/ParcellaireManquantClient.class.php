@@ -15,7 +15,7 @@ class ParcellaireManquantClient extends acCouchdbClient {
               throw new sfException("La periode doit être une année et non " . $periode);
           $parcellaireManquant = $this->find($this->buildId($identifiant, $periode, $type));
           if (is_null($parcellaireManquant)) {
-              $parcellaireManquant = $this->createDoc($identifiant, $periode, $type);
+              $parcellaireManquant = $this->createDoc($identifiant, $periode, false, $type);
           }
 
           return $parcellaireManquant;

@@ -34,9 +34,9 @@
                         <th class="col-xs-1" style="text-align: center;">Année plantat°</th>
                         <th class="col-xs-1" style="text-align: right;">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
                         <th class="col-xs-1">Écart Pieds/Rang</th>
-                        <?php if(!empty($import) && !$addCheckbox): ?>
+                        <?php if(!empty($import) && !$listForControle): ?>
                             <th class="col-xs-1" style="text-align: center;">Carte</th>
-                        <?php elseif ($addCheckbox): ?>
+                        <?php elseif ($listForControle): ?>
                             <th class="col-xs-1" style="text-align: center;">Ajout</th>
                         <?php endif; ?>
                         </tr>
@@ -71,7 +71,12 @@
                             $ecart_pieds = ($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds'):'&nbsp;';
                             $ecart_rang = ($detail->exist('ecart_rang')) ? $detail->get('ecart_rang'):'&nbsp;';
                             $cepage = $detail->cepage;
+<<<<<<< HEAD
                             if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && $detail->isJeunesVignes()) {
+=======
+                            $is_jeunes_vignes = ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && $detail->isJeunesVignes();
+                            if ($is_jeunes_vignes) {
+>>>>>>> 56b56209bca5fd3e438790970bdc54fb10fb89ac
                                 $cepage .= ' - jeunes vignes';
                             }
                             ?>
@@ -117,6 +122,7 @@
                                     </td>
                                     <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?> / <?php echo $ecart_rang; ?></td>
 
+<<<<<<< HEAD
                                     <?php if(!empty($import) && !$addCheckbox): ?>
                                         <td style="text-align: center;">
                                             <div id="<?php echo $detail->idu; ?>">
@@ -124,6 +130,17 @@
                                             </div>
                                         </td>
                                     <?php elseif ($addCheckbox): ?>
+=======
+                                    <?php if(!empty($import) && !$listForControle): ?>
+                                        <td style="text-align: center;">
+                                            <div id="<?php echo $detail->idu; ?>">
+                                                <button class="btn btn-link" onclick="showParcelle('<?php echo $detail->idu; ?>')"><i class="glyphicon glyphicon-map-marker"></i></button>
+                                                <br/>
+                                                <small class='text-muted'>(<a onclick="showGeoPortail('<?php echo $detail->idu; ?>')" href="#geoportail" class="disabled text-muted">GeoP.</a>)</small>
+                                            </div>
+                                        </td>
+                                    <?php elseif ($listForControle): ?>
+>>>>>>> 56b56209bca5fd3e438790970bdc54fb10fb89ac
                                         <td style="text-align: center;"><input type="checkbox" name="parcelles_id[]" value="<?php echo $detail->parcelle_id; ?>"/></td>
                                     <?php endif; ?>
                                 </tr>

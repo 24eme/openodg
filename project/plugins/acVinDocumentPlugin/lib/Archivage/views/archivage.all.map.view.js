@@ -1,6 +1,6 @@
 function(doc) {
   if (doc.lots) {
-    for(lot_key in doc.lots) {
+    for (var lot_key in doc.lots) {
       var lot = doc.lots[lot_key];
       emit(["Lot", lot.campagne, lot.numero_archive], 1);
     }

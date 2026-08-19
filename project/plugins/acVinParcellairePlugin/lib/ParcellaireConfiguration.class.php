@@ -213,10 +213,13 @@ class ParcellaireConfiguration {
         return isset($this->configuration['irrigable']['engagements']) && boolval($this->configuration['irrigable']['engagements']);
     }
 
-    public function hasIrrigableMaterielRessource() {
-        return isset($this->configuration['irrigable']['hasIrrigableMaterielRessource']) && boolval($this->configuration['irrigable']['hasIrrigableMaterielRessource']);
+    public function hasIrrigableMateriel() {
+        return isset($this->configuration['irrigable']['hasIrrigableMateriel']) && boolval($this->configuration['irrigable']['hasIrrigableMateriel']);
     }
 
+    public function hasIrrigableRessource() {
+        return isset($this->configuration['irrigable']['hasIrrigableRessource']) && boolval($this->configuration['irrigable']['hasIrrigableRessource']);
+    }
 
     public function hasJeunesVignes() {
         return isset($this->configuration['jeunesVignes']);
@@ -241,5 +244,26 @@ class ParcellaireConfiguration {
 
     public function getAnneeJeunesVignesCremant() {
         return $this->configuration['jeunesVignes']['alsace_cremant'];
+    }
+
+    public function hasEngagementANePasIrriguer() {
+        return $this->configuration['irrigable']['nePasIrriguer'];
+    }
+
+    public function hasEngagementVciIrrigation() {
+        return $this->configuration['irrigable']['vciIrrigation'];
+    }
+
+    public function hasDRaP() {
+        return isset($this->configuration['drap']);
+    }
+
+    public function isStalkerAllowed($parameters = [])
+    {
+        if (isset($this->configuration['allow_stalker']) && $this->configuration['allow_stalker']) {
+            return $parameters + ['allow_stalker' => true];
+        }
+
+        $parameters;
     }
 }

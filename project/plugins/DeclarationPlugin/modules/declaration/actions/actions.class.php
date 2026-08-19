@@ -109,6 +109,11 @@ class declarationActions extends sfActions {
             return $this->redirect("parcellaireirrigable_visualisation", array("id" => $doc_id));
         }
 
+        if($doc_type == "CHGTDENOM" && DeclarationClient::getInstance()->find($doc_id)->type == "PriseDeMousse") {
+
+            return $this->redirect("prisedemousse_visualisation", array("id" => $doc_id));
+        }
+
         if($doc_type == "CHGTDENOM") {
 
             return $this->redirect("chgtdenom_visualisation", array("id" => $doc_id));
@@ -156,6 +161,10 @@ class declarationActions extends sfActions {
 
         if($doc_type == "ADELPHE") {
             return $this->redirect('adelphe_visualisation', array('id' => $doc_id));
+        }
+
+        if($doc_type == "DRAP") {
+            return $this->redirect('drap_visualisation', array('id' => $doc_id));
         }
 
         return $this->forward404();

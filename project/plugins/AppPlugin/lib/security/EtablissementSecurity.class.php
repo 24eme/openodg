@@ -27,7 +27,13 @@ class EtablissementSecurity implements SecurityInterface {
         }
 
         /*** DECLARANT ***/
-        if(!$this->user->isAdmin() && $this->user->getCompte() && $this->user->getCompte()->identifiant != $this->etablissement->getSociete()->getMasterCompte()->identifiant && !$this->user->hasDrevAdmin()) {
+        if (
+            !$this->user->isAdmin()
+            && $this->user->getCompte()
+            && $this->user->getCompte()->identifiant != $this->etablissement->getSociete()->getMasterCompte()->identifiant
+            && !$this->user->hasDrevAdmin()
+            && $this->user->getEtablissement()->hasCooperateur($this->etablissement->cvi) === false
+        ) {
 
             return false;
         }

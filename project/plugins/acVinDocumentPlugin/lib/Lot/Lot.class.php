@@ -317,7 +317,7 @@ abstract class Lot extends acCouchdbDocumentTree
          if (!$this->getConfig()||$type == DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT) {
            $numero = (string) $this->numero_anonymat;
            if ((string) intval($numero) !== $numero) {
-               $numero = intval(substr($numero, 1));
+               $numero = intval(preg_replace("/^[^0-9]+/", "", $numero));
            }
            return $numero;
          }
@@ -844,9 +844,12 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getTypeProvenance()
     {
-        if ($this->id_document_provenance) {
+        if ($this->id_document_provenance && strpos($this->id_document_provenance, 'CHGT') === false) {
             return substr(strtok($this->id_document_provenance, '-'), 0, 4);
         } elseif ($this->initial_type) {
+            if($this->initial_type == PriseDeMousseClient::TYPE_MODEL) {
+                return PriseDeMousseClient::INITIAL_TYPE_PDM;
+            }
             return $this->initial_type;
         }
         return '';

@@ -185,5 +185,6 @@ function substrUtf8($str, $offset, $length) {
 function clarifieTypeDocumentLibelle($type) {
     $result = str_replace('Transaction', 'VracExport', $type);
     $result = str_replace('TRANSACTION', 'VRAC_EXPORT', $result);
+    $result = str_replace('PRISEDEMOUSSE', 'PRISE_DE_MOUSSE', $result);
     return $result;
 }

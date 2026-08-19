@@ -48,12 +48,17 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
         }
 
         foreach ($this->parcellesForDetails as $pageid => $parcellesForDetail) {
-            $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array('parcellaire' => $this->parcellaire, 'parcellesForDetail' => $parcellesForDetail, 'cviFilter' => $this->cviFilter)));
+            $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array('parcellaire' => $this->parcellaire, 'parcellesForDetail' => $parcellesForDetail, 'cviFilter' => $this->cviFilter, 'lastPage' => false)));
         }
         if ((count($this->parcellesForDetails) == 1) && (count($this->parcellesForDetails[$pageid]->parcelles) < count($this->parcellesForRecap))) {
-            $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdfRecap', array('parcellaire' => $this->parcellaire, 'parcellesForRecap' => $this->parcellesForRecap, 'engagement' => !$this->cviFilter)));
+            $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdfRecap', array('parcellaire' => $this->parcellaire, 'parcellesForRecap' => $this->parcellesForRecap, 'engagement' => !$this->cviFilter, 'lastPage' => false)));
         }
 
+        $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array(
+            'parcellaire' => $this->parcellaire,
+            'parcellesForDetail' => null,
+            'lastPage' => true
+        )));
     }
 
     protected function getHeaderTitle() {
