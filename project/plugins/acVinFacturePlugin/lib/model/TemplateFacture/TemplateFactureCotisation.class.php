@@ -6,10 +6,9 @@
 
 class TemplateFactureCotisation extends BaseTemplateFactureCotisation {
 
-	public function generateCotisations($document) {
+	public function generateCotisations($document, $check_required_now_not_later = true) {
 		$cotisationsCollection = $this->getInstanceCotisation($document);
-
-		return $cotisationsCollection->getCotisations();
+		return $cotisationsCollection->getCotisations($check_required_now_not_later);
 	}
 
 	public function getInstanceCotisation($document) {
