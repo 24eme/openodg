@@ -63,7 +63,7 @@
         },
         "cotisation_vinsigp": {
           "modele": "CotisationVariable",
-          "prix": 0.0425,
+          "prix": 0.0525,
           "tva": 0,
           "unite": "hl",
           "libelle": "Cotisation VinIGP - N° %detail_identifiant%",
