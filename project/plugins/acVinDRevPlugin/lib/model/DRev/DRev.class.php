@@ -2012,7 +2012,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
 
 
-      $cotisations = $templateFacture->generateCotisations($this);
+      $cotisations = $templateFacture->generateCotisations($this, false);
       $cotisationsPrec = $this->mouvement_document->getMothersCotisations();
 
       $identifiantCompte = $this->getIdentifiant();
@@ -2040,6 +2040,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           }
 
           if($this->hasVersion() && !$mouvement->quantite) {
+              continue;
+          }
+          if(!$cotisation->isConfigRequired() && !$mouvement->quantite) {
               continue;
           }
 
