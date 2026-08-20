@@ -3,6 +3,7 @@
 class HabilitationValidation extends DocumentValidation
 {
     private $configuration;
+    private $habilitation;
 
     public function __construct($document, $options = null)
     {
@@ -17,9 +18,15 @@ class HabilitationValidation extends DocumentValidation
 
     public function controle()
     {
-        // print_r(EtablissementClient::getInstance()->findByCvi($this->document->declarant->cvi)->);exit;
-        if (array_key_exists('PRODUCTEUR', HabilitationClient::getInstance()->getActivites())) {
-            $this->controleLocalisation($this->document->declarant);
+        if (!CommunesConfiguration::getInstance()->hasCommunes()) {
+            return;
+        }
+
+        foreach ($this->document->getActivitesHabilitesByProduits() as $activitesHabilites) {
+            if (in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $activitesHabilites)) {
+                $this->controleLocalisation($this->document->declarant);
+                break;
+            }
         }
     }
 
@@ -30,8 +37,9 @@ class HabilitationValidation extends DocumentValidation
         $configurationCommunes = CommunesConfiguration::getInstance();
 
         if ($configurationCommunes->getCommuneByCode($code_insee) != $commune && $configurationCommunes->findCodeCommune($commune) != $code_insee) {
-            $this->addPoint(self::TYPE_ERROR, 'commune_hors_de_l_aire', "La commune [". $code_insee .'] '. $commune ." n'est pas dans la liste des communes IGP Atlantique");
+            $this->addPoint(self::TYPE_ERROR, 'commune_hors_de_l_aire', "La commune [". $code_insee .'] '. $commune ." n'est pas dans la liste des communes reconnues");
             return 0;
         }
     }
+
 }
