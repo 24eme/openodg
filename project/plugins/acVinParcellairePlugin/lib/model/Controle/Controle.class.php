@@ -270,6 +270,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $geojson = $this->getParcellaire()->getGeoJson();
         $features = [];
         $parcelles = array_keys($this->getParcellaireParcelles());
+        if (! $geojson->features) { return $geojson; }
         foreach ($geojson->features as $feature) {
             $tmp = $feature;
             foreach ($feature->properties->parcellaires as $i => $parcelle) {
