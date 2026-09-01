@@ -453,7 +453,8 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getActiviteClient()
     {
-        return HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->date)->getActivitesHabilites();
+        $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->date);
+        return $habilitation ? $habilitation->getActivitesHabilites() : [];
     }
 
     public function getManquementsActif()
