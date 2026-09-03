@@ -159,14 +159,20 @@ EOF;
             return false;
         }
 
-        $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $this->familles[$data[self::CSV_EXTRA_TYPE_OPERATEUR]]);
-        $etablissement->nom = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
-        $etablissement->region = 'IGPATLANTIQUE';
-
         $cvi = null;
         if (isset($data[self::CSV_NOCVI])){
             $cvi = EtablissementClient::repairCVI($data[self::CSV_NOCVI]);
         }
+
+        $famille = $this->familles[$data[self::CSV_EXTRA_TYPE_OPERATEUR]];
+
+        if ($data[self::CSV_EXTRA_TYPE_OPERATEUR] == 'C' && !$cvi) {
+            $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
+        }
+
+        $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
+        $etablissement->nom = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
+        $etablissement->region = 'IGPATLANTIQUE';
 
         $etablissement->cvi = $cvi;
         $etablissement->num_interne = trim($data[self::CSV_NUM_OPERATEUR]) ?? null;
