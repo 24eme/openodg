@@ -35,7 +35,9 @@ class HabilitationValidation extends DocumentValidation
         $code_insee = substr($declarant->cvi, 0, 5);
         $commune = ucfirst(strtolower($declarant->commune));
         $configurationCommunes = CommunesConfiguration::getInstance();
-
+        if (!$configurationCommunes->hasCommunes()) {
+            return;
+        }
         if ($configurationCommunes->getCommuneByCode($code_insee) != $commune && $configurationCommunes->findCodeCommune($commune) != $code_insee) {
             $this->addPoint(self::TYPE_ERROR, 'commune_hors_de_l_aire', "La commune [". $code_insee .'] '. $commune ." n'est pas dans la liste des communes reconnues");
             return 0;
