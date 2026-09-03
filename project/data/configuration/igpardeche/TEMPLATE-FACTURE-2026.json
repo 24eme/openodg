@@ -174,7 +174,7 @@
            "details": {
                "frais": {
                    "modele": "CotisationVariable",
-                   "prix": 0.15,
+                   "prix": 0.25,
                    "tva": 0.2,
                    "libelle": "Volume changé - N° %detail_identifiant%",
                    "complement_libelle": "",

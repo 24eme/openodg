@@ -172,6 +172,9 @@ class habilitationActions extends sfActions {
             $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => $this->etablissement->identifiant), true);
         }
 
+        $this->configuration = ConfigurationClient::getInstance()->getCurrent();
+        $this->validation = new HabilitationValidation($this->habilitation, ['configuration' => $this->configuration]);
+
         $this->setTemplate('habilitation');
     }
 

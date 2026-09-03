@@ -8,7 +8,7 @@
 <?php if ($group): ?>
     <h3><?php if ($parcellaireAffectation->hasDgc()): ?>Dénomination <?php endif; ?><?php echo $group; ?></h3>
 <?php endif; ?>
-<table id="parcelles_<?php echo $dgc; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
+<table id="parcelles_<?php echo str_replace(' ', '_', $group); ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
     <thead>
         <tr>
             <?php if(!$parcellaireAffectation->isDeclarationLiee()): ?>
