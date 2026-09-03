@@ -270,6 +270,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $geojson = $this->getParcellaire()->getGeoJson();
         $features = [];
         $parcelles = array_keys($this->getParcellaireParcelles());
+        if (! $geojson->features) { return $geojson; }
         foreach ($geojson->features as $feature) {
             $tmp = $feature;
             foreach ($feature->properties->parcellaires as $i => $parcelle) {
@@ -452,7 +453,8 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getActiviteClient()
     {
-        return HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->date)->getActivitesHabilites();
+        $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->date);
+        return $habilitation ? $habilitation->getActivitesHabilites() : [];
     }
 
     public function getManquementsActif()

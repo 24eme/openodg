@@ -3,7 +3,7 @@ function(doc) {
         return;
     }
 
-    for(key in doc.pieces) {
+    for (var key in doc.pieces) {
     	var piece = doc.pieces[key];
         var categorie = piece.categorie;
         if(!categorie && doc.type == 'PriseDeMousse') {
