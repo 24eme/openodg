@@ -39,7 +39,7 @@ class CertipaqDRev extends CertipaqService
         return $this->keys2obj($line);
     }
 
-    public function createUneLigne($etablissement, $produit_conf, $millesime, $superficie, $volume) {
+    public function createUneLigne($etablissement, $produit_conf, $data) {
         $operateur = CertipaqOperateur::getInstance()->findByEtablissement($etablissement);
         if (!$operateur) {
             throw new sfException('Opérateur non reconnu pour '.$etablissement->cvi." / ".$etablissement->siret);
@@ -50,14 +50,33 @@ class CertipaqDRev extends CertipaqService
         }
         $habilitation = CertipaqOperateur::getInstance()->getHabilitationFromOperateurProduitAndActivite($operateur, $produit, CertipaqDeroulant::ACTIVITE_PRODUCTEUR);
 
+        if (!isset($data['millesime']) || !isset($data['volume']) || !isset($data['superficie'])) {
+            throw new sfException('millesime, volume et superficie manquand dans l'argument $data');
+        }
+
         $params = array();
         $params['operateur_id'] = $operateur->id;
         $params['operateurs_sites_id'] = $habilitation->site_id;
         $params['dr_cdc_famille_id'] = $habilitation->dr_cdc_famille_id;
         $params['dr_cdc_id'] = $habilitation->dr_cdc->id;
-        $params['millesime'] = "$millesime";
-        $params['volume_hl'] = floatval($volume);
-        $params['surface_ha'] = floatval($superficie);
+        $params['millesime'] = ""+$data['millesime']+"";
+        $params['volume_hl'] = floatval($data['volume']);
+        $params['surface_ha'] = floatval($data['superficie']);
+        if (isset($data['observations'])) {
+            $params['observations'] = $data['observations'];
+        }
+        if (isset($data['volume_complementaire_individuel_hl'])) {
+            $params['volume_complementaire_individuel_hl'] = $data['volume_complementaire_individuel_hl'];
+        }
+        if (isset($data['logement'])){
+            $params['logement'] = $data['logement'];
+        }
+        if (isset($data['autre_site_stockage'])){
+            $params['autre_site_stockage'] = $data['autre_site_stockage'];
+        }
+        if (isset($data['cepages'])){
+            throw new sfException('pas implémenté');
+        }
         $params['dr_cdc_produit_id'] = $habilitation->dr_cdc_produit_id;
         $params['entrepot_operateurs_sites_id'] = $habilitation->site_id;
 

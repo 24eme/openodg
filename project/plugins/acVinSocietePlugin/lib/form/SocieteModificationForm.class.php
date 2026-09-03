@@ -76,7 +76,7 @@ class SocieteModificationForm extends CompteGeneriqueForm {
     }
 
     public function doUpdateObject($values) {
-        if($values['code_comptable_client'] === "" || is_null($values['code_comptable_client'])) {
+        if(!$values['code_comptable_client'] && is_int($this->getObject()->getIdentifiant())) {
             $values['code_comptable_client'] = ($this->getObject()->getIdentifiant()*1)."";
         }
         parent::doUpdateObject($values);
