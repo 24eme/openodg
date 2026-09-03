@@ -212,9 +212,7 @@ EOF;
 
         $activites = self::$activites[$data[self::CSV_EXTRA_TYPE_OPERATEUR]] ?? [];
 
-        $habilitation = KeyInflector::unaccent($data[self::CSV_HABILITATION]);
-        $hasRetrait = stripos($habilitation, 'retrait') !== false || stripos($habilitation, 'arret') !== false;
-        if($suspendu||$hasRetrait) {
+        if($suspendu) {
             HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, date('Y-m-d'), $activites, [], HabilitationClient::STATUT_RETRAIT);
         } else {
             HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, $date->format('Y-m-d'), $activites, [], HabilitationClient::STATUT_HABILITE);
