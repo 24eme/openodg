@@ -37,10 +37,8 @@
 Madame, Monsieur,
 <br/>
 <br/>
-Pour la campagne <strong><?php echo $degustation->campagne ?></strong>, dans le cadre de l’organisation mise en place, vous avez accepté de réaliser dans le cadre d’une prestation de service pour le compte de l’ODG de vins IGP Atlantique, une partie du contrôle interne à savoir, prélèvements et dégustations.
+Voici une demande de prélèvement et de dégustation pour la campagne <strong><?php echo $degustation->campagne ?></strong>. Les opérateurs sont les suivants :
 <br/>
-<br/>
-Dans ce schéma, nous vous demandons de bien vouloir procéder à cette opération suivante :
 <br/>
 
 <ul>
@@ -83,21 +81,19 @@ Dans ce schéma, nous vous demandons de bien vouloir procéder à cette opérati
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <br/>
-                <?php if ($activite !== 'CONDITIONNEUR'): ?>
-                    <small>Conformément au Plan de contrôle de l’ODG IGP ATLANTIQUE, les dégustations devront avoir lieu au plus tard <strong>12 jours ouvrés</strong> après la date d'envoi de l'avis de prélèvement.</small>
-                <?php endif; ?>
             <?php endforeach; ?>
         </div>
     </li>
 <?php endforeach; ?>
 </ul>
+<?php if ($activite !== 'CONDITIONNEUR'): ?>
 <br/>
 <br/>
-Vous trouverez ci-joint, les déclarations de revendication de vins IGP Atlantique, ainsi que les bulletins d’analyse des lots.
+Conformément au Plan de contrôle de l’ODG IGP ATLANTIQUE, les dégustations devront avoir lieu au plus tard <strong>12 jours ouvrés</strong> après la date d'envoi de l'avis de prélèvement.
+<?php endif; ?>
 <br/>
 <br/>
-Nous vous demandons de bien vouloir nous tenir informés des résultats des dégustations.
+Vous trouverez ci-joint, la déclaration de revendication, ainsi que le bulletin d’analyse du lot. Nous vous demandons de bien vouloir nous tenir informés du résultat de la dégustation.
 <br/>
 <br/>
 Meilleures salutations,
