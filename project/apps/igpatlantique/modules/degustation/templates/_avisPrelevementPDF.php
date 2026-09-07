@@ -60,19 +60,23 @@ Nous avons bien reçu votre déclaration de conditionnement datée du 21/04/2026
 <?php foreach ($lots as $lot): ?>
 <table class="table-operateur">
     <thead>
-        <th>Fournisseur</th>
-        <th>Désignation</th>
-        <th>Millésime</th>
-        <th>Volume (hl)</th>
-        <th>Dates de mises</th>
+        <tr>
+            <th>Fournisseur</th>
+            <th>Désignation</th>
+            <th>Millésime</th>
+            <th>Volume (hl)</th>
+            <th>Dates de mises</th>
+        </tr>
     </thead>
     <tbody>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tobdy>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
 </table>
 <?php endforeach; ?>
 <br/>

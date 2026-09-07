@@ -100,10 +100,7 @@ Vous trouverez ci-joint, les déclarations de revendication de vins IGP Atlantiq
 Nous vous demandons de bien vouloir nous tenir informés des résultats des dégustations.
 <br/>
 <br/>
-Nous restons à votre entière disposition pour vous aider dans cette démarche et travailler ensemble à l’amélioration de la procédure.
-<br/>
-<br/>
-Cordiales salutations,
+Meilleures salutations,
 <br/>
 <br/>
 P/o
