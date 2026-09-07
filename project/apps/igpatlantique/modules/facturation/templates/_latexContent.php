@@ -126,7 +126,7 @@
 \arrayrulecolor{vertclair}
 \begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|}
 \hhline{|-|-|-|-|}
- \cellcolor{verttresclair} \textbf{N° :} & \NUMFACTURE & \cellcolor{verttresclair} \textbf{Date :} & <?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>  \tabularnewline
+ \cellcolor{verttresclair} \textbf{N°} & \NUMFACTURE & \cellcolor{verttresclair} \textbf{Date} & <?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>  \tabularnewline
  \hhline{|-|-|-|-|}
 \end{tabular}
 
@@ -134,17 +134,10 @@
 
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
-<?php if($facture->getCvi()): ?>
-\begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|}
+\begin{tabular}{|>{\raggedleft}m{1cm}|>{\centering}m{2.8cm}|>{\raggedleft}m{1cm}|>{\centering}m{2.8cm}|}
 \hhline{|-|-|-|-|}
-\cellcolor{verttresclair} \textbf{ID :} & \FACTUREDECLARANTIDENTIFIANT & \cellcolor{verttresclair} \textbf{CVI :} & \FACTUREDECLARANTCVI \tabularnewline
+\cellcolor{verttresclair} \textbf{ID} & \FACTUREDECLARANTIDENTIFIANT & \cellcolor{verttresclair} \textbf{SIRET} & \SIRET \tabularnewline
 \hhline{|-|-|-|-|}
-<?php else: ?>
-\begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\raggedright}m{7.5cm}|}
-\hhline{|-|-|}
-\cellcolor{verttresclair} \textbf{ID :} & \FACTUREDECLARANTIDENTIFIANT \tabularnewline
-\hhline{|-|-|}
-<?php endif; ?>
 \end{tabular}
 
 \\\vspace{2mm}
