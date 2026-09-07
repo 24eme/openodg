@@ -64,3 +64,5 @@ php symfony import:operateur-habilitation-igpatlantique $TMPDIR/C.csv  --applica
 echo "Import des Opérateurs et Habilitations P"
 
 php symfony import:operateur-habilitation-igpatlantique $TMPDIR/P.csv  --application="$ODG" --trace
+
+php symfony import:documents-douaniers --application="$ODG" --dateimport=2026-07-31 2025
