@@ -255,7 +255,7 @@
         <?php endif; ?>
 
         <?php // formulaire intégré dans la modale si validée, sinon juste dans la page normale ?>
-        <?php if($drCommentaireValidationForm): ?>
+        <?php if($drCommentaireValidationForm && isset($drCommentaireValidationForm['commentaire'])): ?>
             <form id="formUpdateCommentaire" action="<?php echo url_for('dr_update_commentaire', $dr) ?>" method="post">
                 <?php echo $drCommentaireValidationForm->renderHiddenFields(); ?>
                 <?php echo $drCommentaireValidationForm->renderGlobalErrors(); ?>
