@@ -97,7 +97,9 @@ class LotForm extends acCouchdbObjectForm
         }
         if (!empty($values['elevage'])) {
           $this->getObject()->statut = Lot::STATUT_ELEVAGE;
-        }
+      } else {
+          $this->getObject()->statut = null;
+      }
         $this->getObject()->set("affectable",true);
     }
 
