@@ -308,7 +308,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
                 $region = str_replace('/region/', '', $filter);
                 $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->getProduitHash());
             } elseif($type === 'famille') {
-                if (isset($lot->declarant_identifiant)) {
+                if ($lot->exist('declarant_identifiant') && $lot->declarant_identifiant) {
                     $e = $this->getCachedEtablissement($lot->declarant_identifiant);
                     $match = $match && $this->matchFilterFamille($e->famille, $filter);
                 }
