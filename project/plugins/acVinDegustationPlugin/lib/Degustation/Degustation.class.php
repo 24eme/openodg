@@ -1880,6 +1880,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $this->buildMouvementsFacturesVolume($cotisation, $filters, true);
 		}
 
+
+
+        public function getFacturationVolumeDeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters = null){
+            return $this->buildMouvementsFacturesVolume($cotisation, $filters);
+        }
         public function buildMouvementsFacturesVolumeDeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesVolume($cotisation, $filters);
         }
