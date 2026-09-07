@@ -65,8 +65,12 @@
               <?php continue; ?>
           <?php endif ?>
           <li>
-            <a href="<?php echo url_for('chgtdenom_create_from_production', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne, 'hash_produit' => $produit['hash'], 'complement' => isset($produit['complement'])? $produit['complement']:null]) ?>">
+            <a href="<?php echo url_for('chgtdenom_create_from_production', ['type' => ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT, 'identifiant' => $dr->identifiant, 'campagne' => $dr->campagne, 'hash_produit' => $produit['hash'], 'complement' => isset($produit['complement'])? $produit['complement']:null]) ?>">
               Déclassement <?php echo $dr->type ?> <?php echo $produit['libelle'] ?>
+            </a>
+          </li><li>
+            <a href="<?php echo url_for('chgtdenom_create_from_production', ['type' => ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT, 'identifiant' => $dr->identifiant, 'campagne' => $dr->campagne, 'hash_produit' => $produit['hash'], 'complement' => isset($produit['complement'])? $produit['complement']:null]) ?>">
+              Changement de segment <?php echo $dr->type ?> <?php echo $produit['libelle'] ?>
             </a>
           </li>
         <?php endforeach ?>
@@ -102,8 +106,8 @@
     </thead>
     <tbody>
         <?php foreach ($produits['produits']->getRawValue() as $hash => $produit): ?>
-        <?php $isDeclasse = isset($produit['complement']) && strpos($produit['complement'], 'déclassé') !== false; ?>
-            <tr <?php if ($isDeclasse): ?>class="bg-warning" style="opacity: 0.6"<?php endif ?>>
+        <?php $isChgtFromProd = isset($produit['complement']) && (strpos($produit['complement'], 'déclassé') !== false || strpos($produit['complement'], ' de seg') !== false) ; ?>
+            <tr <?php if ($isChgtFromProd): ?>class="bg-warning" style="opacity: 0.6"<?php endif ?>>
                 <td>
                     <strong><?= $produit['libelle'] ?></strong>
                     <?php if ($dr->isBailleur()): ?>
@@ -115,7 +119,7 @@
                         </small>
                     <?php endif; ?>
                     <br />
-                    <?php if ($isDeclasse === false): ?>
+                    <?php if ($isChgtFromProd === false): ?>
                     <small class="pull-right text-muted">
                         <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
                             <span title="Rendement L5" style="cursor: help">
@@ -217,17 +221,31 @@
                 </p>
             <?php endif; ?>
 
-    <?php if (count($chgtsProd)): ?>
-        <p style="margin-top: -10px; margin-bottom: 20px;">
-            Ce document à <?php echo count($chgtsProd) ?> <?php if (count($chgtsProd) > 1): ?> déclassements <?php else: ?> déclassement <?php endif ?>sans revendication :
+    <?php $nbDRDeclassements = count($chgtsProd[ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT]); ?>
+    <?php if ($nbDRDeclassements): ?>
+        <div style="margin-top: -10px; margin-bottom: 20px;">
+            <p>Ce document à <?php echo $nbDRDeclassements ?> <?php if ($nbDRDeclassements > 1): ?> déclassements <?php else: ?> déclassement <?php endif ?>sans revendication :</p>
             <ul>
-                <?php foreach ($chgtsProd as $c): ?>
+                <?php foreach ($chgtsProd[ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT] as $c): ?>
                 <li><a href="<?php echo url_for('chgtdenom_visualisation', ['id' => $c->_id]) ?>"><?php echo $c->origine_produit_libelle ?><?php echo $c->origine_specificite ? " ".str_replace('déclassé', '', $c->origine_specificite) : null ?></a>
                     (<span style="text-decoration: underline dotted;cursor: help;" title="Volume imputé sur la L15">- <?php echo $c->origine_volume ?> hl</span>)
                 </li>
                 <?php endforeach ?>
             </ul>
-        </p>
+        </div>
+    <?php endif ?>
+    <?php $nbDRSegments = count($chgtsProd[ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT]); ?>
+    <?php if ($nbDRSegments): ?>
+        <div style="margin-top: -10px; margin-bottom: 20px;">
+            <p>Ce document à <?php echo $nbDRSegments ?> <?php if ($nbDRSegments > 1): ?> changements de segment <?php else: ?> changement de segment <?php endif ?>sans revendication :</p>
+            <ul>
+                <?php foreach ($chgtsProd[ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT] as $c): ?>
+                <li><a href="<?php echo url_for('chgtdenom_visualisation', ['id' => $c->_id]) ?>"><?php echo $c->changement_produit_libelle ?><?php echo $c->changement_specificite ? " ".str_replace('déclassé', '', $c->origine_specificite) : null ?></a>
+                    (<span style="text-decoration: underline dotted;cursor: help;" title="Volume imputé sur la L15">+ <?php echo $c->changement_volume ?> hl</span>)
+                </li>
+                <?php endforeach ?>
+            </ul>
+        </div>
     <?php endif ?>
 
     <?php if(DRConfiguration::getInstance()->hasValidationDR() && $sf_user->isAdminODG()) : ?>
@@ -255,7 +273,7 @@
         <?php endif; ?>
 
         <?php // formulaire intégré dans la modale si validée, sinon juste dans la page normale ?>
-        <?php if($drCommentaireValidationForm): ?>
+        <?php if($drCommentaireValidationForm && isset($drCommentaireValidationForm['commentaire'])): ?>
             <form id="formUpdateCommentaire" action="<?php echo url_for('dr_update_commentaire', $dr) ?>" method="post">
                 <?php echo $drCommentaireValidationForm->renderHiddenFields(); ?>
                 <?php echo $drCommentaireValidationForm->renderGlobalErrors(); ?>

@@ -94,6 +94,9 @@ class ChgtDenomValidation extends DocumentValidation
 
     public function controleProduction()
     {
+        if (!$this->document->isDeclassement()) {
+            return;
+        }
         if ($this->document->origine_volume !== $this->document->changement_volume) {
             $this->addPoint(self::TYPE_ERROR, 'production_volume_mismatch', "Volume origine (".$this->document->origine_volume." hl) n'est pas égal au volume changé (".$this->document->changement_volume." hl)");
         }
@@ -107,7 +110,7 @@ class ChgtDenomValidation extends DocumentValidation
             return;
         }
 
-        if (array_key_exists(15, $produits[$hash]["lignes"]) === false) {
+        if ($produits[$hash] && array_key_exists(15, $produits[$hash]["lignes"]) === false) {
             $this->addPoint(self::TYPE_ERROR, 'production_no_L15', $this->document->origine_produit_libelle);
         }
 
