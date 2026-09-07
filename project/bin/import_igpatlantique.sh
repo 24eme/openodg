@@ -65,6 +65,10 @@ echo "Import des Opérateurs et Habilitations P"
 
 php symfony import:operateur-habilitation-igpatlantique $TMPDIR/P.csv  --application="$ODG" --trace
 
+echo "Import des documents douaniers 2025"
+
+php symfony import:documents-douaniers --application="$ODG" --dateimport=2026-07-31 2025
+
 echo "Parcellaire"
 
 php symfony parcellaire:update-aire --application="$ODG" --trace
