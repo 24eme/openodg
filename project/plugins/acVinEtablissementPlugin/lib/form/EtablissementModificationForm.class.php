@@ -89,6 +89,9 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
         if (!$this->getObject()->nom) {
         	$this->setDefault('nom', $this->getObject()->getSociete()->getRaisonSociale());
         }
+        if ($this->getObject()->nature_inao) {
+            $this->setDefault('nature_inao', array_search($this->getObject()->nature_inao, EtablissementClient::$natures_inao_libelles));
+        }
     }
 
     public function getFamilles()
@@ -113,6 +116,9 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
     }
 
     public function doUpdateObject($values) {
+        if (isset($values['nature_inao']) && $values['nature_inao']) {
+            $values['nature_inao'] = EtablissementClient::$natures_inao_libelles[$values['nature_inao']];
+        }
         parent::doUpdateObject($values);
 
         if (!$this->etablissement->isCourtier()) {

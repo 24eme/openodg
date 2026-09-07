@@ -55,6 +55,10 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                 <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Famille :</div>
                                 <div style="margin-bottom: 5px;" class="col-xs-8"><?php if(isset(EtablissementFamilles::$familles[$etablissement->famille])):?><?php echo EtablissementFamilles::$familles[$etablissement->famille]; ?><?php else: ?><?php echo $etablissement->famille ?><?php endif; ?></div>
                             <?php endif; ?>
+                            <?php if ($etablissement->nature_inao) : ?>
+                                <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Nature :</div>
+                                <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->nature_inao ?></div>
+                            <?php endif; ?>
                             <?php if ($etablissement->recette_locale && $etablissement->recette_locale->nom) : ?>
                                 <div style="font-weight: bold; margin-bottom: 5px;" class="col-xs-4 text-muted">Recette locale :</div>
                                 <div style="margin-bottom: 5px;" class="col-xs-8"><a href="<?php echo url_for('societe_visualisation', SocieteClient::getInstance()->find($etablissement->recette_locale->id_douane)); ?>">
