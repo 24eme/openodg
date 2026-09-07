@@ -241,8 +241,10 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
         $this->generateDonnees();
 
-        foreach (ChgtDenomClient::getInstance()->getChgtDenomProduction($this->identifiant, $this->campagne) as $chgt) {
-            $chgt->addDonneesForProduction($this);
+        foreach([ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT, ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT] as $t) {
+            foreach (ChgtDenomClient::getInstance()->getChgtDenomProduction($this->identifiant, $this->campagne)[$t] as $chgt) {
+                $chgt->addDonneesForProduction($this);
+            }
         }
 
         $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->date_depot);
