@@ -18,3 +18,4 @@ all:
       send_email_operateur: true
       send_to_innovagro: false
       specificites:
+      destination_bib: false

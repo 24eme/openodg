@@ -14,3 +14,4 @@ all:
         HVE: "HVE"
         autre: "Autre"
         TerraVitis: "Terra Vitis"
+      destination_bib: true
