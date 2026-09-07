@@ -8,6 +8,10 @@ class drActions extends sfActions
         $this->configuration = ConfigurationClient::getInstance()->getCurrent();
         $this->validation = new DRValidation($this->dr, ['configuration' => $this->configuration]);
 
+        if($this->getUser()->isAdminODG()) {
+            $this->drCommentaireValidationForm = new DRCommentaireValidationForm($this->dr);
+        }
+
         $this->chgtsProd = ChgtDenomClient::getInstance()->getChgtDenomProduction($this->dr->identifiant, $this->dr->campagne);
     }
 
@@ -129,6 +133,25 @@ class drActions extends sfActions
         $this->new = [];
         $this->diff = DouaneCsvFile::getDiffWithScrapyFile($this->dr, $this->old, $this->new, $request->getParameter('full'));
         $this->keys = array_unique(array_merge(array_keys($this->old), array_keys($this->new)));
+    }
+
+    public function executeUpdateCommentaire(sfWebRequest $request)
+    {
+        $this->dr = $this->getRoute()->getDR();
+
+        $this->drCommentaireValidationForm = new DRCommentaireValidationForm($this->dr);
+        $this->drCommentaireValidationForm->bind($request->getParameter($this->drCommentaireValidationForm->getName()));
+
+        if (! $this->drCommentaireValidationForm->isValid()) {
+            return $this->redirect('dr_visualisation', $this->dr);
+        }
+
+        if($this->drCommentaireValidationForm->getValue("commentaire")) {
+            $this->dr->commentaire = $this->drCommentaireValidationForm->getValue("commentaire");
+        }
+
+        $this->dr->save();
+        return $this->redirect('dr_visualisation', $this->dr);
     }
 
 }

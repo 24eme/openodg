@@ -5,6 +5,7 @@ DR:
     fields:
       campagne: { }
       has_metayers: { required: false }
+      commentaire: { }
       donnees:
         required: false
         type: array_collection

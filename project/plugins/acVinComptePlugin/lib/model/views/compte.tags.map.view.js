@@ -26,8 +26,8 @@ function(doc) {
     return libelle;
   }
 
-  for (type in doc.tags) {
-    for(idtag in doc.tags[type]) {
+  for (var type in doc.tags) {
+    for (var idtag in doc.tags[type]) {
       var libelle = getLibelleWithAdresse(doc);
 	    emit([type, doc.tags[type][idtag], libelle], doc.origines);
     }

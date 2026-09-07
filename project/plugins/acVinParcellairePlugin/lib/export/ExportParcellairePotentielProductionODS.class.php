@@ -14,7 +14,7 @@ class ExportParcellairePotentielProductionODS extends ExportCalculPPODS {
         if (!$this->identificationParcellaire) {
             $this->identificationParcellaire = ParcellaireIntentionClient::getInstance()->getLast($this->etablissement->identifiant);
         }
-        if(isset($this->identificationParcellaire)) {
+        if(false && isset($this->identificationParcellaire)) {
             $dgc = array_keys($this->identificationParcellaire->getDgc())[0];
         }
         else {

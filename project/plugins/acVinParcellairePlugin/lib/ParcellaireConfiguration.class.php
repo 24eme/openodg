@@ -257,4 +257,13 @@ class ParcellaireConfiguration {
     public function hasDRaP() {
         return isset($this->configuration['drap']);
     }
+
+    public function isStalkerAllowed($parameters = [])
+    {
+        if (isset($this->configuration['allow_stalker']) && $this->configuration['allow_stalker']) {
+            return $parameters + ['allow_stalker' => true];
+        }
+
+        $parameters;
+    }
 }

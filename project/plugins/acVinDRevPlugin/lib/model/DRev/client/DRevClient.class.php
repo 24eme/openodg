@@ -22,6 +22,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const LOT_DESTINATION_VRAC_EXPORT = 'VRAC_EXPORT';
     const LOT_DESTINATION_CONDITIONNEMENT_ENCOURS = 'CONDITIONNEMENT_ENCOURS';
     const LOT_DESTINATION_CONDITIONNEMENT = 'CONDITIONNEMENT';
+    const LOT_DESTINATION_CONDITIONNEMENT_BOUTEILLE = 'CONDITIONNEMENT_BOUTEILLE';
+    const LOT_DESTINATION_CONDITIONNEMENT_BIB = 'CONDITIONNEMENT_BIB';
     const LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE = 'CONDITIONNEMENT_CONSERVATOIRE';
     const LOT_DESTINATION_TRANSACTION = 'VRAC_EXPORT';
     const LOT_DESTINATION_VRAC_FRANCE_ET_VRAC_EXPORT = "VRAC_FRANCE_VRAC_EXPORT";
@@ -63,6 +65,15 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         if (Organisme::getInstance()->isOC()) {
             return array_merge([DRevClient::LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE => "Conditionnement sur conservatoire"], self::$lotDestinationsType);
         }
+
+        if (DrevConfiguration::getInstance()->hasDestinationBib()) {
+            $array = self::$lotDestinationsType;
+            unset($array['CONDITIONNEMENT']);
+            $prepend = [self::LOT_DESTINATION_CONDITIONNEMENT_BOUTEILLE => "Conditionnement Bouteille", self::LOT_DESTINATION_CONDITIONNEMENT_BIB => "Conditionnement BiB"];
+
+            return array_merge($prepend, $array);
+        }
+
         return self::$lotDestinationsType;
     }
     public static function getLotDestinationsType($t) {
@@ -301,6 +312,15 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
                     $e = $this->getCachedEtablissement($lot->declarant_identifiant);
                     $match = $match && $this->matchFilterFamille($e->famille, $filter);
                 }
+            } elseif ($type === 'provenance') {
+                $not = strpos($filter, 'NOT ') === 0;
+                $filter = str_replace('NOT ', '', $filter);
+
+                // ? si on doit pas le trouver : si on doit le trouver;
+                $res = $not ? strpos($lot->id_document_provenance, $filter) === false
+                            : strpos($lot->id_document_provenance, $filter) === 0
+                            ;
+                $match = $match && $res;
             }
         }
 

@@ -38,13 +38,16 @@ class ParcellaireAffectationAcheteursForm extends acCouchdbForm {
         ksort($produits);
 
         foreach($produits as $hash => $cepage) {
-            $lieu_affecte = null;
+
+            $lieu_affecte = "";
             if($cepage->getConfig()->hasLieuEditable()) {
                 $lieu_affecte = self::buildLieuLibelle($cepage, $hash);
             }
             if(!$cepage->isAffectee($lieu_affecte)) {
             	continue;
             }
+
+
             $this->setWidget($hash, new sfWidgetFormChoice(array('choices' => $this->getAcheteurs(), 'multiple' => true, 'expanded' => true)));
             $this->setValidator($hash, new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));
             $this->getWidget($hash)->setLabel(self::buildLibelle($cepage, $hash));

@@ -994,15 +994,26 @@ class drevActions extends sfActions {
         return $this->renderText($xml);
     }
 
-    public function executeSendoi(sfWebRequest $request) {
+    public function executeSendInnovagro(sfWebRequest $request) {
 
     	$drev = $this->getRoute()->getDRev();
     	$this->secure(DRevSecurity::VISUALISATION, $drev);
-      $drevOi = new DRevOI($drev, null);
-      $drevOi->send();
+        $drevOi = new DRevOIInnovagro($drev, null);
+        $drevOi->send();
 
     	return $this->redirect('drev_visualisation', $drev);
     }
+
+    public function executeSendCertipaq(sfWebRequest $request) {
+
+    	$drev = $this->getRoute()->getDRev();
+    	$this->secure(DRevSecurity::VISUALISATION, $drev);
+        $drevOi = new DRevOICertipaq($drev, null);
+        $drevOi->send();
+
+    	return $this->redirect('drev_visualisation', $drev);
+    }
+
 
     public function executeDocumentDouanier(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();

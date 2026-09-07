@@ -1,0 +1,56 @@
+{
+   "_id": "TEMPLATE-FACTURE-2022",
+   "type": "TemplateFacture",
+   "campagne": "2022",
+   "template": "IGP",
+   "libelle": "2022 - IGP Méditerrannée",
+   "docs": [
+       "Degustation"
+   ],
+   "cotisations": {
+       "cotisationODG": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation Fédération",
+           "code_comptable": "",
+           "details": {
+               "analyse": {
+                   "modele": "Cotisation",
+                   "prix": 25,
+                   "tva": 0.2,
+                   "libelle": "Analyse de lot",
+                   "complement_libelle": "",
+                   "docs": [
+                       "Degustation"
+                   ],
+                   "callback": "buildMouvementsNbLotsDegustes"
+               },
+               "presentation": {
+                   "modele": "Cotisation",
+                   "prix": 60,
+                   "tva": 0.2,
+                   "libelle": "Présentation de lot",
+                   "complement_libelle": "",
+                   "docs": [
+                       "Degustation"
+                   ],
+                   "callback": "buildMouvementsNbLotsDegustes"
+               },
+               "chgtDenomVariable": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.15,
+                   "tva": 0.2,
+                   "libelle": "Changement de dénomination",
+                   "complement_libelle": "",
+                   "docs": [
+                       "ChgtDenom"
+                   ],
+                   "callback": "getVolumeFacturable",
+                   "callback_parameters": {
+                       "appellations": "/appellations/MED"
+                   }
+               }
+           }
+       }
+   }
+}

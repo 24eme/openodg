@@ -637,7 +637,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             foreach ($parcelle as $parcelleDetail) {
                 $total_superficie_affecte += $parcelleDetail->superficie;
                 if (round($total_superficie_affecte, 4) > round($parcelleDetail->getSuperficieParcellaire(), 4)) {
-                    $ret[$parcelleDetail->idu] = ['section' => $parcelleDetail->section, 'numero_parcelle' => $parcelleDetail->numero_parcelle, 'total_superficie_affecte' => $total_superficie_affecte, 'superficie_parcellaire' => $parcelleDetail->getSuperficieParcellaire()];
+                    $ret[$parcelleDetail->idu] = ['section' => $parcelleDetail->section, 'numero_parcelle' => $parcelleDetail->numero_parcelle, 'cepage' => $parcelleDetail->cepage, 'campagne_plantation' => $parcelleDetail->campagne_plantation,'parcelle_id' => $parcelleDetail->parcelle_id, 'total_superficie_affecte' => $total_superficie_affecte, 'superficie_parcellaire' => $parcelleDetail->getSuperficieParcellaire()];
                     break;
                 }
             }
@@ -710,6 +710,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     public function getSyntheseDestination() {
         $synthese = [];
         foreach($this->getParcelles() as $parcelle) {
+            if (! $parcelle->exist('destinations')) {continue;}
             foreach($parcelle->destinations as $d) {
                 $synthese[$d->nom] += $d->superficie;
             }

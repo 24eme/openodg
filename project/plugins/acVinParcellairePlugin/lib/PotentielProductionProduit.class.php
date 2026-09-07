@@ -9,6 +9,7 @@ class PotentielProductionProduit {
     private $superficie_encepagement;
     private $superficie_max = null;
     private $cepages_superficie = [];
+    private $produit_actif;
 
     private $potentiel_production;
     private $synthese = null;
@@ -18,6 +19,7 @@ class PotentielProductionProduit {
         $this->libelle = $parcellaire_produit_libelle;
         $this->produit = $produit_configuration;
         $this->key = ParcellaireConfiguration::getInstance()->getGroupeKeyByProduitConf($produit_configuration);
+        $this->produit_actif = true;
 
         if (isset($_GET['verbose'])) {
             echo "<pre>";
@@ -130,6 +132,9 @@ class PotentielProductionProduit {
             }
             if ($pprule->isBlockingRule()) {
                 $potentiel_sans_blocant = $potentiel_sans_blocant && $pprule->getResult();
+            }
+            if ($pprule->isRemovingRule()) {
+                $this->produit_actif = $this->produit_actif && !$pprule->getResult();
             }
         }
         foreach(array_keys($this->cepages_superficie) as $c) {
@@ -381,6 +386,10 @@ class PotentielProductionProduit {
             return null;
         }
         return $this->produit->getHash();
+    }
+
+    public function isActif() {
+        return $this->produit_actif;
     }
 
 }

@@ -264,6 +264,9 @@ class CertipaqDeroulant extends CertipaqService
         }
         foreach($produits as $p) {
             $c = $this->getConfigurationProduitFromProduitId($p->id);
+            if (! $c) {
+                continue;
+            }
             if ($c->getLibelleComplet() == $conf->getLibelleComplet()) {
                 return $p;
             }

@@ -64,3 +64,9 @@ php symfony import:operateur-habilitation-igpatlantique $TMPDIR/C.csv  --applica
 echo "Import des Opérateurs et Habilitations P"
 
 php symfony import:operateur-habilitation-igpatlantique $TMPDIR/P.csv  --application="$ODG" --trace
+
+echo "Parcellaire"
+
+php symfony parcellaire:update-aire --application="$ODG" --trace
+
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?reduce=false | cut -d '"' -f 4 | while read id; do php symfony import:parcellaire-douanier $id --application="$ODG" --noscrapping=1; done

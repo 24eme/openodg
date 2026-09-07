@@ -118,10 +118,9 @@ class ControleClient extends acCouchdbClient
     public function findAllByDateTourneeAndAgent($date_tournee, $agent_identifiant)
     {
         $ret = array();
-        foreach ($this->findAll() as $c) {
-            if ($c->date_tournee === $date_tournee && $c->agent_identifiant === $agent_identifiant) {
-                $ret[$c->identifiant] = $c;
-            }
+        foreach (ControleAllView::getInstance()->findByDateAndAgent($date_tournee, $agent_identifiant) as $c) {
+            $controle = ControleClient::getInstance()->find($c->id);
+            $ret[$controle->identifiant] = $controle;
         }
         return $ret;
     }

@@ -53,22 +53,22 @@
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <?php if ((ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() === false) && (ParcellaireConfiguration::getInstance()->hasIrrigableRessource() === false)): ?>
-            <th class="th" style="text-align: center; width: 230px;">Lieu-dit</th>
+            <th class="th" style="text-align: center; width: 220px;">Lieu-dit</th>
             <th class="th" style="text-align: center; width: 90px;">Section</th>
             <th class="th" style="text-align: center; width: 90px;">N° p<sup>lle</sup></th>
             <th class="th" style="text-align: center; width: 200px;">Cépage</th>
             <th class="th" style="text-align: center; width: 110px;">Année de plantation</th>
-            <th class="th" style="text-align: center; width: 110px;">Surface</th>
-            <th class="th" style="text-align: center; width: 110px;">Date irrigation</th>
+            <th class="th" style="text-align: center; width: 100px;">Surface</th>
+            <th class="th" style="text-align: center; width: 130px;">Date déclarat° irrigat°</th>
         <?php else: ?>
-            <th class="th" style="text-align: center; width: 180px;">Lieu-dit</th>
+            <th class="th" style="text-align: center; width: 170px;">Lieu-dit</th>
             <th class="th" style="text-align: center; width: 70px;">Section</th>
             <th class="th" style="text-align: center; width: 70px;">N° p<sup>lle</sup></th>
             <th class="th" style="text-align: center; width: 150px;">Cépage</th>
             <th class="th" style="text-align: center; width: 80px;">Année de plantation</th>
             <th class="th" style="text-align: center; width: 80px;">Surface</th>
-            <th class="th" style="text-align: center; width: 230px;">Type de matériel/ressource</th>
-            <th class="th" style="text-align: center; width: 80px;">Date irrigation</th>
+            <th class="th" style="text-align: center; width: 220px;">Type de matériel/ressource</th>
+            <th class="th" style="text-align: center; width: 100px;">Date déclarat° irrigat°</th>
         <?php endif; ?>
     </tr>
     <?php foreach ($parcelles as $parcelle):

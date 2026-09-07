@@ -43,6 +43,8 @@ class PotentielProductionRule {
                 }
                 $this->rule_type = 'disabling';
                 break;
+            case 'ActifSiNombre':
+                $this->rule_type = 'remover';
             case 'Nombre':
                 $this->somme = count($this->cepages_superficie);
                 $this->limit = $this->regle['limit'];
@@ -51,7 +53,9 @@ class PotentielProductionRule {
                 }elseif ($this->regle['sens'] == '<=') {
                     $this->res = ($this->somme <= $this->regle['limit']);
                 }
-                $this->rule_type = 'blocker';
+                if (!$this->rule_type) {
+                    $this->rule_type = 'blocker';
+                }
                 break;
             case 'SAppliqueSiProportionSomme':
                 $this->somme = array_sum($this->cepages_superficie);
@@ -130,6 +134,10 @@ class PotentielProductionRule {
     }
     public function isBlockingRule() {
         return ($this->rule_type == 'blocker');
+    }
+
+    public function isRemovingRule() {
+        return ($this->rule_type == 'remover');
     }
 
     public function getImpact() {

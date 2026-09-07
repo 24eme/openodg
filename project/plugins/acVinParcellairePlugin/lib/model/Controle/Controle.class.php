@@ -6,6 +6,8 @@ class Controle extends BaseControle implements InterfacePieceDocument
     protected $declarant_document = null;
     protected $piece_document = null;
 
+    protected static $agents = [];
+
     public function getConfig()
     {
         if (!$this->config) {
@@ -268,6 +270,7 @@ class Controle extends BaseControle implements InterfacePieceDocument
         $geojson = $this->getParcellaire()->getGeoJson();
         $features = [];
         $parcelles = array_keys($this->getParcellaireParcelles());
+        if (! $geojson->features) { return $geojson; }
         foreach ($geojson->features as $feature) {
             $tmp = $feature;
             foreach ($feature->properties->parcellaires as $i => $parcelle) {
@@ -450,7 +453,8 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getActiviteClient()
     {
-        return HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->date)->getActivitesHabilites();
+        $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->date);
+        return $habilitation ? $habilitation->getActivitesHabilites() : [];
     }
 
     public function getManquementsActif()
@@ -549,7 +553,12 @@ class Controle extends BaseControle implements InterfacePieceDocument
 
     public function getAgent()
     {
-        return CompteClient::getInstance()->find($this->agent_identifiant);
+        if (array_key_exists($this->agent_identifiant, self::$agents)) {
+            return self::$agents[$this->agent_identifiant];
+        }
+
+        self::$agents[$this->agent_identifiant] = CompteClient::getInstance()->find($this->agent_identifiant);
+        return self::$agents[$this->agent_identifiant];
     }
 
     public function getSortedManquementsActif()

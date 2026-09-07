@@ -317,7 +317,7 @@ abstract class Lot extends acCouchdbDocumentTree
          if (!$this->getConfig()||$type == DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT) {
            $numero = (string) $this->numero_anonymat;
            if ((string) intval($numero) !== $numero) {
-               $numero = intval(substr($numero, 1));
+               $numero = intval(preg_replace("/^[^0-9]+/", "", $numero));
            }
            return $numero;
          }
