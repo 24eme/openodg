@@ -969,8 +969,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function getTri() {
             $tri = $this->_get('tri');
+            $tri_array = array(DegustationClient::DEGUSTATION_TRI_GENRE, DegustationClient::DEGUSTATION_TRI_COULEUR, DegustationClient::DEGUSTATION_TRI_APPELLATION, DegustationClient::DEGUSTATION_TRI_MILLESIME, DegustationClient::DEGUSTATION_TRI_CEPAGE);
+
             if (!$tri) {
-                $tri = 'Genre|Couleur|Appellation|Millesime|Cépage';
+                $tri = implode("|", $tri_array);
                 $this->_set('tri', $tri);
             }
             return $tri;
