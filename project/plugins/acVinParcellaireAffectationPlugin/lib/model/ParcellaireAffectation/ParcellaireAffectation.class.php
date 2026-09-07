@@ -63,6 +63,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       $this->storeDeclarant();
       $this->updateParcellesAffectation();
       $this->recoverPreviousParcelles();
+      $this->cleanNonAffectee();
   }
 
   public function getPeriode() {
