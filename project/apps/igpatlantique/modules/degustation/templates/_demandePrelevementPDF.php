@@ -95,5 +95,5 @@ Meilleures salutations,
 <br/>
 P/o
 <br/>
-Elisabeth GALINEAU
+<p><?php echo Organisme::getInstance(null, 'degustation')->getResponsable(); ?></p>
 <br/>
