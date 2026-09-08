@@ -1,12 +1,14 @@
 {
    "_id": "TEMPLATE-FACTURE-2020",
-   "_rev": "18-0fedeb8bd750b2558c3aa18b69e874c0",
    "type": "TemplateFacture",
    "campagne": 2020,
    "template": "IGP",
    "libelle": "2020 - IGP Atlantique",
    "docs": [
-       "DRev"
+       "DRev",
+       "Conditionnement",
+       "Habilitation",
+       "Degustation"
    ],
    "cotisations": {
        "00_cotisationSyndicale": {
@@ -155,7 +157,10 @@
                    "docs": [
                        "Conditionnement"
                    ],
-                   "callback": "getVolumeRevendiqueLots"
+                   "callback": "getVolumeRevendiqueLots",
+                   "callback_parameters": {
+                       "famille": "NEGOCIANT"
+                   }
                }
            }
        },
@@ -216,7 +221,7 @@
                    "prix": 0.9,
                    "tva": 0,
                    "unite": "hl",
-                   "libelle": "",
+                   "libelle": "Cotisation Controle volume revendiqué",
                    "complement_libelle": "",
                    "docs": [
                        "Degustation"
@@ -224,6 +229,52 @@
                    "callback": "getFacturationVolumeDeguste",
                    "callback_parameters": {
                        "provenance": "CONDITIONNEMENT"
+                   }
+               }
+           }
+       },
+       "10_cotisationSyndicale": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "",
+           "code_comptable": "",
+           "details": {
+               "volumeRevendiqueMillesimeCourant": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.045,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "Cotisation Syndicale",
+                   "complement_libelle": "",
+                   "docs": [
+                       "Conditionnement"
+                   ],
+                   "callback": "getVolumeRevendiqueLots",
+                   "callback_parameters": {
+                       "famille": "NEGOCIANT"
+                   }
+               }
+           }
+       },
+       "11_cotisationControle": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "",
+           "code_comptable": "",
+           "details": {
+               "volumeRevendiqueMillesimeCourant": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.9,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "Cotisation Controle",
+                   "complement_libelle": "",
+                   "docs": [
+                       "Conditionnement"
+                   ],
+                   "callback": "getVolumeRevendiqueLots",
+                   "callback_parameters": {
+                       "famille": "NEGOCIANT"
                    }
                }
            }
