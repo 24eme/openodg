@@ -645,16 +645,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return $lots;
     }
 
-	public function getLotsByOperateursAndActivite()
-	{
-		$lotsByOperateurs = $this->getLotsByOperateurs();
-		$lots = array();
-		foreach ($lotsByOperateurs as $operateur => $lotsOperateur) {
-			$habilitationDeclarant = HabilitationClient::getInstance()->getLastHabilitation($operateur);
-			$lots[$this->buildCleHabilitations($habilitationDeclarant->getActivitesHabilites())][$operateur] = $lotsOperateur;
-		}
-		return $lots;
-	}
+    public function getLotsByOperateursAndActivite()
+    {
+        $lotsByOperateurs = $this->getLotsByOperateurs();
+        $lots = array();
+        foreach ($lotsByOperateurs as $operateur => $lotsOperateur) {
+            $l = $lotsOperateur[0];
+            $lots[$l->getEtablissement()->famille.' '.$l->getEtablissement()->nature_inao][$operateur] = $lotsOperateur;
+        }
+        return $lots;
+    }
 
     public function buildCleHabilitations($habilitations)
     {
@@ -935,7 +935,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					$lots[] = $lot;
 				}
 			}
-			$this->array_tri = [DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT];
+            if ($this->exist('externalisee') && $this->externalisee) {
+                $this->array_tri = [DegustationClient::DEGUSTATION_TRI_OPERATEUR];
+            } else {
+			    $this->array_tri = [DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT];
+            }
 			usort($lots, array($this, "sortLotsByThisTri"));
  		 	return $lots;
 		}
