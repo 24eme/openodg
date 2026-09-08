@@ -38,7 +38,7 @@
 <table>
   <tr><td>Madame, Monsieur,</td></tr>
   <br/>
-  <tr><td>Nous  vous  prions  de  bien  vouloir  trouver  ci-dessous  extrait  du  procès  verbal  de  la  séance  de  dégustation  du  :<br/><strong><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")); ?></strong></td></tr><br/>
+  <tr><td>Nous  vous  prions  de  bien  vouloir  trouver  ci-dessous  extrait  du  procès  verbal  de <?php if ($degustation->externalisee): ?>la dernière séance de dégustation :<?php else: ?>la  séance  de  dégustation  du  :<br/><strong><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")); ?></strong><?php endif;?></td></tr><br/>
   <tr><td>Au vu des documents fournis, et des résultats du contrôle documentaire, analytique et organoleptique, nous vous confirmons que <strong><?php if (count($lots) > 1): ?>LES LOTS<?php else: ?>LE LOT<?php endif ?></strong> listés dans le tableau suivant <strong><?php if (count($lots) > 1): ?>SONT CONFORMES<?php else: ?>EST CONFORME<?php endif ?></strong> et apte<?php if (count($lots) > 1): ?>s<?php endif ?> à la commercialisation</td></tr>
 </table><br/><br/>
 

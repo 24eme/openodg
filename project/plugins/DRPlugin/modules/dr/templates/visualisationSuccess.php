@@ -150,12 +150,13 @@
             <tr>
                 <th class="text-right"><strong>Total</strong></th>
                 <?php foreach ($produit['lignes'] as $l => $p): ?>
-                    <th class="text-right"><strong>
+                    <th class="text-right">
                         <?php if ($dr->isBailleur()): ?>
-                            <?php echoFloat($dr->getTotalValeur($l, null, null, null, array(), false)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span></th>
+                            <strong><?php echoFloat($dr->getTotalValeur($l, null, null, null, array(), false)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span>
                         <?php else: ?>
-                            <?php echoFloat($dr->getTotalValeur($l)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span></th>
+                            <strong><?php echoFloat($dr->getTotalValeur($l)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span>
                         <?php endif; ?>
+                    </th>
                     <?php endforeach ?>
                 </tr>
             <?php endif; ?>
@@ -196,13 +197,13 @@
 
         <?php
         $tiers = array();
-        if ($dr->isApporteur()):
-            $tiers = $dr->getTiers()->getRawValue();
+        if ($dr->isApporteur(true)):
+            $tiers = $dr->getTiers(true)->getRawValue();
             $tiers_type = 'tiers (négociants et coopératives)';
-            elseif ($dr->hasApporteurs(true)):
-                $tiers = $dr->getApporteurs(true)->getRawValue();
-                $tiers_type = 'apporteurs';
-            endif;
+        elseif ($dr->hasApporteurs(true)):
+            $tiers = $dr->getApporteurs(true)->getRawValue();
+            $tiers_type = 'apporteurs';
+        endif;
             ?>
             <?php if(count($tiers)): ?>
                 <p style="margin-top: -10px; margin-bottom: 20px;">
@@ -253,9 +254,9 @@
         <hr/>
         <h4>
             Commentaire interne
-            <small>(seulement visible par l'ODG<?php if ($dr->isValideeOdg()): ?> - <a href="#" data-toggle="modal" data-target="#dr-edit-comment"><?php echo ($dr->commentaire) ? 'Éditer' : 'Ajouter' ?></a><?php endif ?>)</small>
+            <small>(seulement visible par l'ODG<?php if ($dr->isValideeOdg()): ?> - <a href="#" data-toggle="modal" data-target="#dr-edit-comment"><?php echo ($dr->exist('commentaire') && $dr->commentaire) ? 'Éditer' : 'Ajouter' ?></a><?php endif ?>)</small>
         </h4>
-        <?php if ($dr->isValideeOdg() && $dr->commentaire): ?>
+        <?php if ($dr->isValideeOdg() && $dr->exist('commentaire') && $dr->commentaire): ?>
             <pre><?php echo $dr->commentaire; ?></pre>
         <?php endif ?>
 

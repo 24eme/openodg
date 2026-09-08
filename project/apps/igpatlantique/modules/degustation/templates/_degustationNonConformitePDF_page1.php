@@ -38,7 +38,7 @@
 <table>
   <tr><td>Madame, Monsieur,</td></tr>
   <br/>
-  <tr><td>Lors de la séance de dégustation du <strong><?php echo format_date($degustation->date, "P", "fr_FR"); ?></strong>, le lot dont les informations figurent dans la fiche de non conformité ci-jointe a été ajourné<?php echo ($lot->isSecondPassage()) ? ' pour la 2ème fois' : '' ?>.<br/></td></tr>
+  <tr><td>Lors de la <?php if($degustation->externalisee): ?>dernière séance<?php else: ?>séance de dégustation du <strong><?php echo format_date($degustation->date, "P", "fr_FR"); ?></strong><?php endif; ?>, le lot dont les informations figurent dans la fiche de non conformité ci-jointe a été ajourné<?php echo ($lot->isSecondPassage()) ? ' pour la 2ème fois' : '' ?>.<br/></td></tr>
   <?php if ($lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR): ?>
       <tr><td>Compte tenu de ce résultat, votre dossier sera transmis à l'OC Qualisud.</td></tr>
   <?php else: ?>
@@ -46,7 +46,7 @@
       <tr><td>
         <ul>
           <li>
-    <?php $url = 'https://'.$_SERVER['HTTP_HOST'].url_for('chgtdenom_create', array('identifiant' => $lot->declarant_identifiant, 'campagne' => $lot->campagne)); ?>
+<?php $url = 'https://'.$_SERVER['HTTP_HOST'].url_for('chgtdenom_create_from_lot', array('identifiant' => $lot->declarant_identifiant, 'campagne' => $lot->campagne, 'lot' => $lot->id_document.":".$lot->unique_id)); ?>
                 <strong>Soit d’abandonner volontairement la dénomination correspondante</strong>.
                 Pour ce faire, vous pouvez nous communiquer par mail ou courrier une déclaration de déclassement au moyen de la fiche jointe,
                 ou de le faire en ligne depuis l'adresse : <a href="<?php echo $url ; ?>"><?php echo $url; ?></a>.
