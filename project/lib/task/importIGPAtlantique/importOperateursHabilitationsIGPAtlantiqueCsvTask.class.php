@@ -139,8 +139,8 @@ EOF;
             $societe->siege->adresse = $data[self::CSV_ADRESSE] ?? null;
             $societe->siege->code_postal = $data[self::CSV_CP] ?? null;
             $societe->siege->commune = $data[self::CSV_COMMUNE] ?? null;
-            $societe->telephone_mobile = Phone::format($data[self::CSV_TEL] ?? null);
-            $societe->telephone_bureau = Phone::format($data[self::CSV_MOBILE] ?? null);
+            $societe->telephone_mobile = Phone::format($data[self::CSV_MOBILE] ?? null);
+            $societe->telephone_bureau = Phone::format($data[self::CSV_TEL] ?? null);
             $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
 
             $cvi = EtablissementClient::repairCVI($data[self::CSV_NOCVI]);
