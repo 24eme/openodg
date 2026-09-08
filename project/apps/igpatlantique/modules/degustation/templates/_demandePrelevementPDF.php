@@ -29,32 +29,25 @@
     font-weight: bold;
 }
 </style>
-<br/>
-<h2><strong>NOTIFICATION DE L'ODG IGP ATLANTIQUE : </strong>demande de prélèvement et de dégustation de vins IGP Atlantique : contrôle interne produit</h2>
+<br/><br/>
+<h1 style="text-align: center">NOTIFICATION DE L'ODG IGP ATLANTIQUE</h1>
+<h2 style="text-align: center">Demande de prélèvement et de dégustation de vins IGP Atlantique</h2>
+<h2 style="text-align: center">Contrôle interne produit</h2>
 <p>&nbsp;</p>
-<br/>
-<br/>
+<p>&nbsp;</p>
 Madame, Monsieur,
 <br/>
 <br/>
-Voici une demande de prélèvement et de dégustation pour la campagne <strong><?php echo $degustation->campagne ?></strong>. Les opérateurs sont les suivants :
-<br/>
-<br/>
+Voici une demande de prélèvement et de dégustation <?php echo $degustation->lieu ?> pour la campagne <strong><?php echo $degustation->campagne ?></strong>. Les opérateurs sont les suivants :
 
 <ul>
-<?php foreach ($lots as $activite => $operateurs): ?>
-    <br/>
+<?php foreach ($lots as $famille => $operateurs): ?>
     <li>
-        <u><b><?php echo $activite ?></b></u>
-        <div>
+        <u><b><?php echo $famille ?></b></u>
+        <ul>
             <?php foreach ($operateurs as $lots): ?>
-                <br/>
-                <br/>
-                <b>» <?php echo $lots[0]->declarant_nom ?></b>
-                <br/>
-                Adresse entrepôt : <?php echo $lots[0]->adresse_logement ?>
-                <br/>
-                <br/>
+                <li> <?php echo $lots[0]->declarant_nom ?> <span style="color: gray;"><?php echo $lots[0]->getEtablissement()->cvi. ' '.$lots[0]->getEtablissement()->siret; ?></span><br/>
+                <span style="color: gray;">(<?php echo $lots[0]->adresse_logement ?>)</span><br/>
                 <table class="table-operateur">
                     <thead>
                         <tr>
@@ -81,8 +74,9 @@ Voici une demande de prélèvement et de dégustation pour la campagne <strong><
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                </li>
             <?php endforeach; ?>
-        </div>
+        </ul>
     </li>
 <?php endforeach; ?>
 </ul>
