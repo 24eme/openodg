@@ -102,6 +102,8 @@ class DRevValidation extends DeclarationLotsValidation
         }
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
 
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_BULLETIN_ANALYSE, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_BULLETIN_ANALYSE));
+
         /* Lots */
 
         $this->configureLots();
@@ -164,6 +166,7 @@ class DRevValidation extends DeclarationLotsValidation
         $this->controleBailleurs();
         $this->controleLots();
         $this->controleVsi();
+        $this->controleDocBulletinAnalyse();
     }
 
     protected function controleNeant()
@@ -557,5 +560,12 @@ class DRevValidation extends DeclarationLotsValidation
             return;
         }
         $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VSI_DESTRUCTION, '');
+    }
+
+    public function controleDocBulletinAnalyse()
+    {
+        if (DRevConfiguration::getInstance()->getEngagementBulletinAnalyse()) {
+            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_BULLETIN_ANALYSE, '');
+        }
     }
 }

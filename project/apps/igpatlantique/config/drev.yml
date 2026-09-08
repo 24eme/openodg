@@ -9,6 +9,7 @@ all:
       degustation: true
       specificite_lot: true
       engagement_pdf: true
+      engagement_bulletin_analyse: true
       specificites:
         bio: "bio"
         HVE: "HVE"
