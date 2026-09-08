@@ -645,16 +645,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return $lots;
     }
 
-	public function getLotsByOperateursAndActivite()
-	{
-		$lotsByOperateurs = $this->getLotsByOperateurs();
-		$lots = array();
-		foreach ($lotsByOperateurs as $operateur => $lotsOperateur) {
-			$habilitationDeclarant = HabilitationClient::getInstance()->getLastHabilitation($operateur);
-			$lots[$this->buildCleHabilitations($habilitationDeclarant->getActivitesHabilites())][$operateur] = $lotsOperateur;
-		}
-		return $lots;
-	}
+    public function getLotsByOperateursAndActivite()
+    {
+        $lotsByOperateurs = $this->getLotsByOperateurs();
+        $lots = array();
+        foreach ($lotsByOperateurs as $operateur => $lotsOperateur) {
+            $l = $lotsOperateur[0];
+            $lots[$l->getEtablissement()->famille.' '.$l->getEtablissement()->nature_inao][$operateur] = $lotsOperateur;
+        }
+        return $lots;
+    }
 
     public function buildCleHabilitations($habilitations)
     {

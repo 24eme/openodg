@@ -24,6 +24,8 @@ class DRevDocuments extends BaseDRevDocuments
     const DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC_SUITE = "DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC_SUITE";
     const DOC_VIP2C_OU_PAS_INFORMATION= "DOC_VIP2C_OU_PAS_INFORMATION";
 
+    const DOC_BULLETIN_ANALYSE = "DOC_BULLETIN_ANALYSE";
+
 	const STATUT_EN_ATTENTE = 'EN ATTENTE';
 	const STATUT_RECU = 'RECU';
 
@@ -37,6 +39,7 @@ class DRevDocuments extends BaseDRevDocuments
 		self::DOC_MUTAGE_DECLARATION => 'Déclaration de mutage',
 		self::DOC_REVENDICATION_SUPERFICIE_DAE => 'DAE justificatif du transfert de récolte',
         self::DOC_VSI_DESTRUCTION => 'Justificatif de destruction millésime antérieur',
+        self::DOC_BULLETIN_ANALYSE => "Bulletin d'analyses laboratoires",
 	);
 
 	private static $_document_statuts_initiaux = array(
@@ -68,6 +71,7 @@ class DRevDocuments extends BaseDRevDocuments
         DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT => "<strong>J'atteste de conditionnements,</strong> en revendiquant au-delà de mon Volume Individuel de Production Commercialisable Certifiée (VIP2C), je m'engage à fournir à Intervins Sud Est <strong>une copie du registre de conditionnement</strong> pour les lots en dépassement sur cette revendication.",
         DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC => "<strong>J'ai un contrat de commercialisation (vrac),</strong> en revendiquant au-delà de mon Volume Individuel de Production Commercialisable Certifiée (VIP2C), je certifie que le(s) lots de cette revendication sont commercialisés via le Contrat Declarvins n° ",
         DRevDocuments::DOC_VSI_DESTRUCTION => 'Je m\'engage à détruire un millésime anterieur de la même AOC et de la même couleur que le produit où j\'ai déclaré du VSI avant le 31 juillet qui suit la récolte et à transmettre l\'exemplaire 3 de la liasse VSI signé par le distillateur à l\'ODG',
+        DrevDocuments::DOC_BULLETIN_ANALYSE => "Je m'engage à envoyer par courrier ou par mail le bulletin d'analyse de mes lots revendiqués à mon ODG.",
     );
 
 	private static $_statut_libelles = array(
