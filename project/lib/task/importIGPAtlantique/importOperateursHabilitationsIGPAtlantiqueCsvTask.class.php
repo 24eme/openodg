@@ -159,14 +159,20 @@ EOF;
             return false;
         }
 
-        $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $this->familles[$data[self::CSV_EXTRA_TYPE_OPERATEUR]]);
-        $etablissement->nom = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
-        $etablissement->region = 'IGPATLANTIQUE';
-
         $cvi = null;
         if (isset($data[self::CSV_NOCVI])){
             $cvi = EtablissementClient::repairCVI($data[self::CSV_NOCVI]);
         }
+
+        $famille = $this->familles[$data[self::CSV_EXTRA_TYPE_OPERATEUR]];
+
+        if ($data[self::CSV_EXTRA_TYPE_OPERATEUR] == 'C' && !$cvi) {
+            $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
+        }
+
+        $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
+        $etablissement->nom = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
+        $etablissement->region = 'IGPATLANTIQUE';
 
         $etablissement->cvi = $cvi;
         $etablissement->num_interne = trim($data[self::CSV_NUM_OPERATEUR]) ?? null;
@@ -206,9 +212,7 @@ EOF;
 
         $activites = self::$activites[$data[self::CSV_EXTRA_TYPE_OPERATEUR]] ?? [];
 
-        $habilitation = KeyInflector::unaccent($data[self::CSV_HABILITATION]);
-        $hasRetrait = stripos($habilitation, 'retrait') !== false || stripos($habilitation, 'arret') !== false;
-        if($suspendu||$hasRetrait) {
+        if($suspendu) {
             HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, date('Y-m-d'), $activites, [], HabilitationClient::STATUT_RETRAIT);
         } else {
             HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, $date->format('Y-m-d'), $activites, [], HabilitationClient::STATUT_HABILITE);

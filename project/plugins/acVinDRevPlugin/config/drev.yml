@@ -13,8 +13,10 @@ all:
       dr_douane_required: true
       degustation: false
       engagement_pdf: false
+      engagement_bulletin_analyse: false
       logement_adresse: true
       logement_chais: false
       send_email_operateur: true
       send_to_innovagro: false
       specificites:
+      destination_bib: false

@@ -29,34 +29,25 @@
     font-weight: bold;
 }
 </style>
-<br/>
-<h2><strong>NOTIFICATION DE L'ODG IGP ATLANTIQUE : </strong>demande de prélèvement et de dégustation de vins IGP Atlantique : contrôle interne produit</h2>
+<br/><br/>
+<h1 style="text-align: center">NOTIFICATION DE L'ODG IGP ATLANTIQUE</h1>
+<h2 style="text-align: center">Demande de prélèvement et de dégustation de vins IGP Atlantique</h2>
+<h2 style="text-align: center">Contrôle interne produit</h2>
 <p>&nbsp;</p>
-<br/>
-<br/>
+<p>&nbsp;</p>
 Madame, Monsieur,
 <br/>
 <br/>
-Pour la campagne <strong><?php echo $degustation->campagne ?></strong>, dans le cadre de l’organisation mise en place, vous avez accepté de réaliser dans le cadre d’une prestation de service pour le compte de l’ODG de vins IGP Atlantique, une partie du contrôle interne à savoir, prélèvements et dégustations.
-<br/>
-<br/>
-Dans ce schéma, nous vous demandons de bien vouloir procéder à cette opération suivante :
-<br/>
+Voici une demande de prélèvement et de dégustation <?php echo $degustation->lieu ?> pour la campagne <strong><?php echo $degustation->campagne ?></strong>. Les opérateurs sont les suivants :
 
 <ul>
-<?php foreach ($lots as $activite => $operateurs): ?>
-    <br/>
+<?php foreach ($lots as $famille => $operateurs): ?>
     <li>
-        <u><b><?php echo $activite ?></b></u>
-        <div>
+        <u><b><?php echo $famille ?></b></u>
+        <ul>
             <?php foreach ($operateurs as $lots): ?>
-                <br/>
-                <br/>
-                <b>» <?php echo $lots[0]->declarant_nom ?></b>
-                <br/>
-                Adresse entrepôt : <?php echo $lots[0]->adresse_logement ?>
-                <br/>
-                <br/>
+                <li> <?php echo $lots[0]->declarant_nom ?> <span style="color: gray;"><?php echo $lots[0]->getEtablissement()->cvi. ' '.$lots[0]->getEtablissement()->siret; ?></span><br/>
+                <span style="color: gray;">(<?php echo $lots[0]->adresse_logement ?>)</span><br/>
                 <table class="table-operateur">
                     <thead>
                         <tr>
@@ -83,27 +74,23 @@ Dans ce schéma, nous vous demandons de bien vouloir procéder à cette opérati
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <br/>
-                <?php if ($activite !== 'CONDITIONNEUR'): ?>
-                    <small>Conformément au Plan de contrôle de l’ODG IGP ATLANTIQUE, les dégustations devront avoir lieu au plus tard <strong>12 jours ouvrés</strong> après la date d'envoi de l'avis de prélèvement.</small>
-                <?php endif; ?>
+                </li>
             <?php endforeach; ?>
-        </div>
+        </ul>
     </li>
 <?php endforeach; ?>
 </ul>
+<?php if ($activite !== 'CONDITIONNEUR'): ?>
 <br/>
 <br/>
-Vous trouverez ci-joint, les déclarations de revendication de vins IGP Atlantique, ainsi que les bulletins d’analyse des lots.
+Conformément au Plan de contrôle de l’ODG IGP ATLANTIQUE, les dégustations devront avoir lieu au plus tard <strong>12 jours ouvrés</strong> après la date d'envoi de l'avis de prélèvement.
+<?php endif; ?>
 <br/>
 <br/>
-Nous vous demandons de bien vouloir nous tenir informés des résultats des dégustations.
+Vous trouverez ci-joint, la déclaration de revendication, ainsi que le bulletin d’analyse du lot. Nous vous demandons de bien vouloir nous tenir informés du résultat de la dégustation.
 <br/>
 <br/>
-Nous restons à votre entière disposition pour vous aider dans cette démarche et travailler ensemble à l’amélioration de la procédure.
-<br/>
-<br/>
-Cordiales salutations,
+Meilleures salutations,
 <br/>
 <br/>
 P/o

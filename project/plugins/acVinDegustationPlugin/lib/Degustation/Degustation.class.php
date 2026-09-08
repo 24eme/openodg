@@ -645,16 +645,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return $lots;
     }
 
-	public function getLotsByOperateursAndActivite()
-	{
-		$lotsByOperateurs = $this->getLotsByOperateurs();
-		$lots = array();
-		foreach ($lotsByOperateurs as $operateur => $lotsOperateur) {
-			$habilitationDeclarant = HabilitationClient::getInstance()->getLastHabilitation($operateur);
-			$lots[$this->buildCleHabilitations($habilitationDeclarant->getActivitesHabilites())][$operateur] = $lotsOperateur;
-		}
-		return $lots;
-	}
+    public function getLotsByOperateursAndActivite()
+    {
+        $lotsByOperateurs = $this->getLotsByOperateurs();
+        $lots = array();
+        foreach ($lotsByOperateurs as $operateur => $lotsOperateur) {
+            $l = $lotsOperateur[0];
+            $lots[$l->getEtablissement()->famille.' '.$l->getEtablissement()->nature_inao][$operateur] = $lotsOperateur;
+        }
+        return $lots;
+    }
 
     public function buildCleHabilitations($habilitations)
     {
@@ -935,7 +935,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					$lots[] = $lot;
 				}
 			}
-			$this->array_tri = [DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT];
+            if ($this->exist('externalisee') && $this->externalisee) {
+                $this->array_tri = [DegustationClient::DEGUSTATION_TRI_OPERATEUR];
+            } else {
+			    $this->array_tri = [DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT];
+            }
 			usort($lots, array($this, "sortLotsByThisTri"));
  		 	return $lots;
 		}
@@ -969,8 +973,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function getTri() {
             $tri = $this->_get('tri');
+            $tri_array = array(DegustationClient::DEGUSTATION_TRI_GENRE, DegustationClient::DEGUSTATION_TRI_COULEUR, DegustationClient::DEGUSTATION_TRI_APPELLATION, DegustationClient::DEGUSTATION_TRI_MILLESIME, DegustationClient::DEGUSTATION_TRI_CEPAGE);
+
             if (!$tri) {
-                $tri = 'Genre|Couleur|Appellation|Millesime|Cépage';
+                $tri = implode("|", $tri_array);
                 $this->_set('tri', $tri);
             }
             return $tri;
@@ -1880,6 +1886,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $this->buildMouvementsFacturesVolume($cotisation, $filters, true);
 		}
 
+
+
+        public function getFacturationVolumeDeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters = null){
+            return $this->buildMouvementsFacturesVolume($cotisation, $filters);
+        }
         public function buildMouvementsFacturesVolumeDeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesVolume($cotisation, $filters);
         }
