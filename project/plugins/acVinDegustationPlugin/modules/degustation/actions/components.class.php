@@ -18,7 +18,7 @@ class degustationComponents extends sfComponents {
             }
         }
 
-        $this->subject = sprintf("%s - Résultat de dégustation du %s",Organisme::getInstance(null, 'degustation')->getNom(), ucfirst(format_date($this->degustation->date, "P", "fr_FR")));
+        $this->subject = $this->degustation->externalisee ? sprintf("%s - Résultat de dégustation", Organisme::getInstance(null, 'degustation')->getNom()) : sprintf("%s - Résultat de dégustation du %s",Organisme::getInstance(null, 'degustation')->getNom(), ucfirst(format_date($this->degustation->date, "P", "fr_FR")));
         $this->email = EtablissementClient::getInstance()->find($this->identifiant)->getEmail();
         $this->cc = Organisme::getInstance(null, 'degustation')->getEmail();
     }
