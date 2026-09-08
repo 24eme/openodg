@@ -196,13 +196,13 @@
 
         <?php
         $tiers = array();
-        if ($dr->isApporteur()):
-            $tiers = $dr->getTiers()->getRawValue();
+        if ($dr->isApporteur(true)):
+            $tiers = $dr->getTiers(true)->getRawValue();
             $tiers_type = 'tiers (négociants et coopératives)';
-            elseif ($dr->hasApporteurs(true)):
-                $tiers = $dr->getApporteurs(true)->getRawValue();
-                $tiers_type = 'apporteurs';
-            endif;
+        elseif ($dr->hasApporteurs(true)):
+            $tiers = $dr->getApporteurs(true)->getRawValue();
+            $tiers_type = 'apporteurs';
+        endif;
             ?>
             <?php if(count($tiers)): ?>
                 <p style="margin-top: -10px; margin-bottom: 20px;">
