@@ -935,7 +935,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					$lots[] = $lot;
 				}
 			}
-			$this->array_tri = [DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT];
+            if ($this->exist('externalisee') && $this->externalisee) {
+                $this->array_tri = [DegustationClient::DEGUSTATION_TRI_OPERATEUR];
+            } else {
+			    $this->array_tri = [DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT];
+            }
 			usort($lots, array($this, "sortLotsByThisTri"));
  		 	return $lots;
 		}
@@ -1882,6 +1886,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $this->buildMouvementsFacturesVolume($cotisation, $filters, true);
 		}
 
+
+
+        public function getFacturationVolumeDeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters = null){
+            return $this->buildMouvementsFacturesVolume($cotisation, $filters);
+        }
         public function buildMouvementsFacturesVolumeDeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesVolume($cotisation, $filters);
         }
