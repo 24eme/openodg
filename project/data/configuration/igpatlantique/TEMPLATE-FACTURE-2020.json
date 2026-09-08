@@ -35,7 +35,7 @@
        "01_inao": {
            "modele": "CotisationsCollection",
            "callback": "",
-           "libelle": "Droits INAO - N° %detail_identifiant%",
+           "libelle": "Droits INAO",
            "code_comptable": "",
            "details": {
                "cotisation": {
@@ -51,8 +51,6 @@
                    "callback": "getVolumeLotsFacturables",
                    "callback_parameters": {
                        "famille": "NOT CONDITIONNEUR"
-                   }
-               }
            }
        },
        "02_cotisation_obligatoire_prod_vinif": {
@@ -132,7 +130,7 @@
                    "prix": 0.5,
                    "tva": 0.2,
                    "unite": "hl",
-                   "libelle": "Communication et valorisation du produit  - %detail_identifiant%",
+                   "libelle": "Communication et valorisation du produit",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
@@ -152,7 +150,7 @@
                    "prix": 0.5,
                    "tva": 0.2,
                    "unite": "hl",
-                   "libelle": "Communication et valorisation du produit  - %detail_identifiant%",
+                   "libelle": "Communication et valorisation du produit",
                    "complement_libelle": "",
                    "docs": [
                        "Conditionnement"
@@ -210,7 +208,7 @@
                }
            }
        },
-       "091_cotisation_controle": {
+    "091_cotisation_controle": {
            "modele": "CotisationsCollection",
            "callback": "",
            "libelle": "",
