@@ -150,12 +150,13 @@
             <tr>
                 <th class="text-right"><strong>Total</strong></th>
                 <?php foreach ($produit['lignes'] as $l => $p): ?>
-                    <th class="text-right"><strong>
+                    <th class="text-right">
                         <?php if ($dr->isBailleur()): ?>
-                            <?php echoFloat($dr->getTotalValeur($l, null, null, null, array(), false)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span></th>
+                            <strong><?php echoFloat($dr->getTotalValeur($l, null, null, null, array(), false)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span>
                         <?php else: ?>
-                            <?php echoFloat($dr->getTotalValeur($l)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span></th>
+                            <strong><?php echoFloat($dr->getTotalValeur($l)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span>
                         <?php endif; ?>
+                    </th>
                     <?php endforeach ?>
                 </tr>
             <?php endif; ?>
