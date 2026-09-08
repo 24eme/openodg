@@ -191,7 +191,7 @@
           "prix": 0.9,
           "tva": 0,
           "unite": "hl",
-          "libelle": "Cotisation Controle volume revendiqué",
+          "libelle": "Cotisation Contrôle volume revendiqué",
           "complement_libelle": "",
           "docs": [
             "DRev"
