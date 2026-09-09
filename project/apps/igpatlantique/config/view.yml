@@ -7,9 +7,9 @@ default:
     X-UA-Compatible: IE=edge
 
   metas:
-    title:            "Plateforme de télédéclaration du syndicat des Vins IGP Bouches-du-Rhône - Bureau Aix"
+    title:            "Plateforme de télédéclaration du syndicat des Vins IGP Atlantique"
     charset:          "utf-8"
-    description:      "Plateforme de télédéclaration du syndicat des Vins IGP Bouches-du-Rhône - Bureau Aix"
+    description:      "La plateforme de télédéclaration du syndicat des Vins IGP Atlantique vous permet de faire vos déclaration viticoles"
     robots:           "index,follow"
     content-language: "fr-FR"
     viewport:         "width=device-width, initial-scale=1"

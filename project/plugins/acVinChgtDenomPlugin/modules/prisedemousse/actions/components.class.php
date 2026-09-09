@@ -10,7 +10,7 @@ class prisedemousseComponents extends sfComponents {
         $pdms = PriseDeMousseClient::getInstance()->getHistory($this->etablissement->identifiant);
 
         foreach($pdms as $pdm) {
-            if (!$pdm->isValide() && $pdm->campagne == $this->campagne) {
+            if (!$pdm->isValide() && $pdm->type == "PriseDeMousse" && $pdm->campagne == $this->campagne) {
                 $this->enCours = $pdm;
                 break;
             }

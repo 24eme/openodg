@@ -42,10 +42,11 @@
     <?php echo $form->renderGlobalErrors(); ?>
     <?php $has_parcelles = false; $tablei = 0; ?>
     <?php foreach ($parcellaireAffectation->getGroupedParcelles(false, $hashproduit) as $group => $parcelles): $tablei++;?>
+        <?php $group = str_replace(' ', '_', $group); ?>
     <?php if ($group && $parcellaireAffectation->hasDgc()): ?>
         <div style="margin-bottom: 1em;" class="row">
             <div class="col-xs-6">
-                <h3>Dénomination <?php echo $group; ?></h3>
+                <h3>Dénomination <?php echo str_replace('_', ' ', $group); ?></h3>
             </div>
             <div class="col-xs-6">
                <p class="text-right" style="margin-top: 30px;"><a href="javascript:void(0)" id="btn-switchactive-all" data-status="affecter" onclick="triggerAffectation(this);" data-hasDgc="<?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>" data-target="#parcelles_<?php echo $group; ?>" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
@@ -72,7 +73,7 @@
             <th class="col-xs-12" colSpan="8">
                 <div class="row mt-2">
                     <div class="col-xs-6">
-                        <?php echo $group;?>
+                        <?php echo str_replace('_', ' ', $group);?>
                     </div>
                     <div class="col-xs-6">
                        <p class="text-right"><a href="javascript:void(0)" id="btn-switchactive-all" data-status="affecter" onclick="triggerAffectation(this.dataset.status);" data-hasDgc="<?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>" data-target="#parcelles_<?php echo $group; ?>" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
@@ -119,7 +120,7 @@
             </tr>
         <?php  endif; endforeach; ?>
         <tr class="commune-total">
-            <td colspan="5" class="text-right"><strong>Total <?php echo $group ?></strong></td>
+            <td colspan="5" class="text-right"><strong>Total <?php echo str_replace('_', ' ', $group); ?></strong></td>
             <td class="text-right"></td>
             <td class="text-right"></td>
             <td></td>

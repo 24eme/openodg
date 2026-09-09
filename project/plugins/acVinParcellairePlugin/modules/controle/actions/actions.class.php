@@ -274,14 +274,14 @@ class controleActions extends sfActions
     {
         $this->controle = $this->getRoute()->getControle();
         $this->document = new ExportControleManquementPDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
-        return $this->executePdf($request);
+        return $this->executePDF($request);
     }
 
     public function executeExportControlePdf(sfWebRequest $request)
     {
         $this->controle = $this->getRoute()->getControle();
         $this->document = new ExportControlePDF($this->controle, $this->controle->identifiant, $request->getParameter('output', 'pdf'), false);
-        return $this->executePdf($request);
+        return $this->executePDF($request);
     }
 
     public function executePdfAuth(sfWebRequest $request)

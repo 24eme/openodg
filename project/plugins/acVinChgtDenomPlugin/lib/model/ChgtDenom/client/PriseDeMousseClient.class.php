@@ -43,7 +43,7 @@ class PriseDeMousseClient extends ChgtDenomClient {
         $lots = array();
         $lots_filtre = array();
             foreach (MouvementLotView::getInstance()->getByIdentifiant($identifiant, Lot::STATUT_CHANGEABLE)->rows as $row_lot) {
-            if ($row_lot->value->statut == Lot::STATUT_CONFORME) {
+            if ($row_lot->value->statut == Lot::STATUT_CONFORME || $row_lot->value->statut == Lot::STATUT_NONAFFECTABLE) {
                 if (strpos($row_lot->value->produit_hash, '/VDB/') === false) {
                     continue;
                 }

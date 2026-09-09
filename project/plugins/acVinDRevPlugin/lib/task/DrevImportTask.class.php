@@ -311,6 +311,6 @@ EOF;
 
     protected function formatFloat($value) {
 
-        return str_replace(',', '.', $value)*1.0;
+        return floatval(str_replace(',', '.', $value));
     }
 }
