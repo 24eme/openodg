@@ -87,23 +87,27 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_VISUALISATION => 'degustation_visualisation',
     );
 
+    private $degustation = null;
 
     public static function getInstance(Degustation $degustation = null) {
         if (is_null(self::$_instance)) {
             if (is_null($degustation)) {
                 throw new Exception("Degustation ne doit pas être nul lors de la 1ere instanciation");
             }
-
             switch (get_class($degustation)) {
                 case "Tournee":
-                    self::$_instance = new TourneeDegustationEtapes();
+                    self::$_instance = new TourneeDegustationEtapes($degustation);
                     break;
                 case "Degustation":
                 default:
-                    self::$_instance = new DegustationEtapes();
+                    self::$_instance = new DegustationEtapes($degustation);
             }
         }
         return self::$_instance;
+    }
+
+    public function __construct($degustation) {
+        $this->degustation = $degustation;
     }
 
     public function getEtapesHash()
@@ -112,7 +116,11 @@ class DegustationEtapes extends Etapes {
     }
 
     public function getRouteLinksHash() {
-        return $this->filter(self::$links);
+        $links = self::$links;
+        if ($this->degustation->isDegustationExternalisee()) {
+            $links[self::ETAPE_RESULTATS] = 'degustation_resultats';
+        }
+        return $this->filter($links);
     }
 
     public function getLibellesHash() {
