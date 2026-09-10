@@ -4,7 +4,7 @@ function(doc) {
         return;
     }
     var r = RegExp("^([A-Z0-9\-]+)\:\/demandes\/([0-9\-]+)$");
-    for(historiqueKey in doc.historique) {
+    for (var historiqueKey in doc.historique) {
         var historique = doc.historique[historiqueKey];
         var m = (historique.iddoc).match(r);
         if (m) {

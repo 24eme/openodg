@@ -65,8 +65,12 @@
               <?php continue; ?>
           <?php endif ?>
           <li>
-            <a href="<?php echo url_for('chgtdenom_create_from_production', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne, 'hash_produit' => $produit['hash'], 'complement' => isset($produit['complement'])? $produit['complement']:null]) ?>">
+            <a href="<?php echo url_for('chgtdenom_create_from_production', ['type' => ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT, 'identifiant' => $dr->identifiant, 'campagne' => $dr->campagne, 'hash_produit' => $produit['hash'], 'complement' => isset($produit['complement'])? $produit['complement']:null]) ?>">
               Déclassement <?php echo $dr->type ?> <?php echo $produit['libelle'] ?>
+            </a>
+          </li><li>
+            <a href="<?php echo url_for('chgtdenom_create_from_production', ['type' => ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT, 'identifiant' => $dr->identifiant, 'campagne' => $dr->campagne, 'hash_produit' => $produit['hash'], 'complement' => isset($produit['complement'])? $produit['complement']:null]) ?>">
+              Changement de segment <?php echo $dr->type ?> <?php echo $produit['libelle'] ?>
             </a>
           </li>
         <?php endforeach ?>
@@ -102,8 +106,8 @@
     </thead>
     <tbody>
         <?php foreach ($produits['produits']->getRawValue() as $hash => $produit): ?>
-        <?php $isDeclasse = isset($produit['complement']) && strpos($produit['complement'], 'déclassé') !== false; ?>
-            <tr <?php if ($isDeclasse): ?>class="bg-warning" style="opacity: 0.6"<?php endif ?>>
+        <?php $isChgtFromProd = isset($produit['complement']) && (strpos($produit['complement'], 'déclassé') !== false || strpos($produit['complement'], ' de seg') !== false) ; ?>
+            <tr <?php if ($isChgtFromProd): ?>class="bg-warning" style="opacity: 0.6"<?php endif ?>>
                 <td>
                     <strong><?= $produit['libelle'] ?></strong>
                     <?php if ($dr->isBailleur()): ?>
@@ -115,7 +119,7 @@
                         </small>
                     <?php endif; ?>
                     <br />
-                    <?php if ($isDeclasse === false): ?>
+                    <?php if ($isChgtFromProd === false): ?>
                     <small class="pull-right text-muted">
                         <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
                             <span title="Rendement L5" style="cursor: help">
@@ -146,12 +150,13 @@
             <tr>
                 <th class="text-right"><strong>Total</strong></th>
                 <?php foreach ($produit['lignes'] as $l => $p): ?>
-                    <th class="text-right"><strong>
+                    <th class="text-right">
                         <?php if ($dr->isBailleur()): ?>
-                            <?php echoFloat($dr->getTotalValeur($l, null, null, null, array(), false)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span></th>
+                            <strong><?php echoFloat($dr->getTotalValeur($l, null, null, null, array(), false)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span>
                         <?php else: ?>
-                            <?php echoFloat($dr->getTotalValeur($l)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span></th>
+                            <strong><?php echoFloat($dr->getTotalValeur($l)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span>
                         <?php endif; ?>
+                    </th>
                     <?php endforeach ?>
                 </tr>
             <?php endif; ?>
@@ -192,13 +197,13 @@
 
         <?php
         $tiers = array();
-        if ($dr->isApporteur()):
-            $tiers = $dr->getTiers()->getRawValue();
+        if ($dr->isApporteur(true)):
+            $tiers = $dr->getTiers(true)->getRawValue();
             $tiers_type = 'tiers (négociants et coopératives)';
-            elseif ($dr->hasApporteurs(true)):
-                $tiers = $dr->getApporteurs(true)->getRawValue();
-                $tiers_type = 'apporteurs';
-            endif;
+        elseif ($dr->hasApporteurs(true)):
+            $tiers = $dr->getApporteurs(true)->getRawValue();
+            $tiers_type = 'apporteurs';
+        endif;
             ?>
             <?php if(count($tiers)): ?>
                 <p style="margin-top: -10px; margin-bottom: 20px;">
@@ -217,31 +222,47 @@
                 </p>
             <?php endif; ?>
 
-    <?php if (count($chgtsProd)): ?>
-        <p style="margin-top: -10px; margin-bottom: 20px;">
-            Ce document à <?php echo count($chgtsProd) ?> <?php if (count($chgtsProd) > 1): ?> déclassements <?php else: ?> déclassement <?php endif ?>sans revendication :
+    <?php $nbDRDeclassements = count($chgtsProd[ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT]); ?>
+    <?php if ($nbDRDeclassements): ?>
+        <div style="margin-top: -10px; margin-bottom: 20px;">
+            <p>Ce document à <?php echo $nbDRDeclassements ?> <?php if ($nbDRDeclassements > 1): ?> déclassements <?php else: ?> déclassement <?php endif ?>sans revendication :</p>
             <ul>
-                <?php foreach ($chgtsProd as $c): ?>
+                <?php foreach ($chgtsProd[ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT] as $c): ?>
                 <li><a href="<?php echo url_for('chgtdenom_visualisation', ['id' => $c->_id]) ?>"><?php echo $c->origine_produit_libelle ?><?php echo $c->origine_specificite ? " ".str_replace('déclassé', '', $c->origine_specificite) : null ?></a>
                     (<span style="text-decoration: underline dotted;cursor: help;" title="Volume imputé sur la L15">- <?php echo $c->origine_volume ?> hl</span>)
                 </li>
                 <?php endforeach ?>
             </ul>
-        </p>
+        </div>
+    <?php endif ?>
+    <?php $nbDRSegments = count($chgtsProd[ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT]); ?>
+    <?php if ($nbDRSegments): ?>
+        <div style="margin-top: -10px; margin-bottom: 20px;">
+            <p>Ce document à <?php echo $nbDRSegments ?> <?php if ($nbDRSegments > 1): ?> changements de segment <?php else: ?> changement de segment <?php endif ?>sans revendication :</p>
+            <ul>
+                <?php foreach ($chgtsProd[ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT] as $c): ?>
+                <li><a href="<?php echo url_for('chgtdenom_visualisation', ['id' => $c->_id]) ?>"><?php echo $c->changement_produit_libelle ?><?php echo $c->changement_specificite ? " ".str_replace('déclassé', '', $c->origine_specificite) : null ?></a>
+                    (<span style="text-decoration: underline dotted;cursor: help;" title="Volume imputé sur la L15">+ <?php echo $c->changement_volume ?> hl</span>)
+                </li>
+                <?php endforeach ?>
+            </ul>
+        </div>
     <?php endif ?>
 
-    <?php if($dr->exist('commentaire') && $sf_user->isAdminODG()) : ?>
+    <?php if(DRConfiguration::getInstance()->hasValidationDR() && $sf_user->isAdminODG()) : ?>
         <?php $hasmodal = false; ?>
         <hr/>
         <h4>
             Commentaire interne
-            <small>(seulement visible par l'ODG<?php if ($dr->getValidationOdg()): ?> - <a href="#" data-toggle="modal" data-target="#dr-edit-comment"><?php echo ($dr->commentaire) ? 'Éditer' : 'Ajouter' ?></a><?php endif ?>)</small>
+            <small>(seulement visible par l'ODG<?php if ($dr->isValideeOdg()): ?> - <a href="#" data-toggle="modal" data-target="#dr-edit-comment"><?php echo ($dr->exist('commentaire') && $dr->commentaire) ? 'Éditer' : 'Ajouter' ?></a><?php endif ?>)</small>
         </h4>
-        <?php if ($dr->getValidationOdg() && $dr->commentaire): ?>
+        <?php if ($dr->isValideeOdg() && $dr->exist('commentaire') && $dr->commentaire): ?>
             <pre><?php echo $dr->commentaire; ?></pre>
         <?php endif ?>
 
-        <?php if ($dr->getValidationOdg()): ?>
+        <?php // on conditionne l'affichage de la modale à la validation de la DR ?>
+        <?php if ($dr->isValideeOdg()): ?>
+            <?php $hasmodal = true; ?>
             <div class="modal fade" id="dr-edit-comment" role="dialog" aria-labelledby="Edition du commentaire" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -250,21 +271,23 @@
                             <h4 class="modal-title" id="myModalLabel">Edition du commentaire</h4>
                         </div>
                         <div class="modal-body">
-                            <?php $hasmodal = true; ?>
-                            <?php endif; ?>
-                            <?php if($drCommentaireValidationForm): ?>
-                                <form id="formUpdateCommentaire" action="<?php echo url_for('dr_update_commentaire', $dr) ?>" method="post">
-                                    <?php echo $drCommentaireValidationForm->renderHiddenFields(); ?>
-                                    <?php echo $drCommentaireValidationForm->renderGlobalErrors(); ?>
-                                    <?php echo $drCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
-                                    <div class="form-group text-right" style="margin-top: 10px">
-                                        <button type="submit" form="formUpdateCommentaire" class="btn btn-default">
-                                            <i class="glyphicon glyphicon-floppy-disk"></i> Enregistrer le commentaire
-                                        </button>
-                                    </div>
-                                </form>
-                            <?php endif; ?>
-                            <?php if($hasmodal): ?>
+        <?php endif; ?>
+
+        <?php // formulaire intégré dans la modale si validée, sinon juste dans la page normale ?>
+        <?php if($drCommentaireValidationForm && isset($drCommentaireValidationForm['commentaire'])): ?>
+            <form id="formUpdateCommentaire" action="<?php echo url_for('dr_update_commentaire', $dr) ?>" method="post">
+                <?php echo $drCommentaireValidationForm->renderHiddenFields(); ?>
+                <?php echo $drCommentaireValidationForm->renderGlobalErrors(); ?>
+                <?php echo $drCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
+                <div class="form-group text-right" style="margin-top: 10px">
+                    <button type="submit" form="formUpdateCommentaire" class="btn btn-default">
+                        <i class="glyphicon glyphicon-floppy-disk"></i> Enregistrer le commentaire
+                    </button>
+                </div>
+            </form>
+        <?php endif; ?>
+
+        <?php if($hasmodal): ?>
                         </div>
                     </div>
                 </div>

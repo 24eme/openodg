@@ -7,7 +7,7 @@
 class TemplateFacture extends BaseTemplateFacture
 {
 
-	public function generateCotisations($document)
+	public function generateCotisations($document, $check_required_now_not_later = true)
 	{
 		$cotisations = array();
         if (method_exists($document, 'getEtablissementObject') && $e = $document->getEtablissementObject()) {
@@ -22,7 +22,7 @@ class TemplateFacture extends BaseTemplateFacture
 			if($config->isDisabled()) {
 				continue;
 			}
-			foreach ($config->generateCotisations($document) as $cotisation) {
+			foreach ($config->generateCotisations($document, $check_required_now_not_later) as $cotisation) {
 				if($config->exist('fallback') && $config->fallback){
 					continue;
 				}

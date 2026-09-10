@@ -61,7 +61,11 @@ class TemplateFactureClient extends acCouchdbClient {
     }
 
     public function findByCampagne($campagne, $region = null, $hydrate = self::HYDRATE_DOCUMENT){
-        $id = $this->getTemplateIdFromCampagne($campagne * 1, $region);
+        try {
+            $id = $this->getTemplateIdFromCampagne($campagne * 1, $region);
+        } catch(sfException $e) {
+            return null;
+        }
 
         if(!$id) {
 

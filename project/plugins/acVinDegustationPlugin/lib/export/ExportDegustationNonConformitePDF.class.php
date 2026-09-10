@@ -36,7 +36,7 @@ class ExportDegustationNonConformitePDF extends ExportDeclarationLotsPDF {
 
     protected function getHeaderSubtitle() {
         $header_subtitle = sprintf("%s\n\n", $this->etablissement->nom);
-        $header_subtitle .= sprintf("Dégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
+        $header_subtitle .= $this->degustation->externalisee ? '' : sprintf("Dégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
         return $header_subtitle;
     }
 

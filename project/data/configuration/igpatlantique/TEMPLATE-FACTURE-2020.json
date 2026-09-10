@@ -5,10 +5,13 @@
   "template": "IGP",
   "libelle": "2020 - IGP Atlantique",
   "docs": [
-    "DRev"
+    "DRev",
+    "Habilitation",
+    "Conditionnement",
+    "Degustation"
   ],
   "cotisations": {
-    "00_cotisationSyndicale": {
+    "000_cotisationSyndicale": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "",
@@ -25,9 +28,29 @@
             "DRev"
           ],
           "date": "%periode+1%-07-31",
-          "callback": "getVolumeRevendiqueLots",
+          "callback": "getVolumeRevendiqueNumeroDossier"
+        }
+      }
+    },
+    "001_cotisation_syndicale_conditionnement": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "volumeDegute_conditionnement": {
+          "modele": "Cotisation",
+          "prix": 0.045,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "Cotisation Syndicale volume - conditionnement",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getFacturationVolumeDeguste",
           "callback_parameters": {
-            "millesime": "/millesime/courant"
+            "provenance": "CONDITIONNEMENT"
           }
         }
       }
@@ -35,7 +58,7 @@
     "01_inao": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Droits INAO - N° %detail_identifiant%",
+      "libelle": "Droits INAO",
       "code_comptable": "",
       "details": {
         "cotisation": {
@@ -50,12 +73,12 @@
           ],
           "callback": "getVolumeLotsFacturables",
           "callback_parameters": {
-            "famille": "NOT NEGOCIANT_VINIFICATEUR"
+            "famille": "NOT CONDITIONNEUR"
           }
         }
       }
     },
-    "02_cotisation_obligatoire": {
+    "02_cotisation_obligatoire_prod_vinif": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation annuelle obligatoire d'adhésion",
@@ -77,7 +100,7 @@
         }
       }
     },
-    "03_cotisation_obligatoire": {
+    "03_cotisation_obligatoire_nego_vinif_cave_coop": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation annuelle obligatoire d'adhésion",
@@ -99,7 +122,26 @@
         }
       }
     },
-    "04_communication_valorisation_produit": {
+    "04_cotisation_obligatoire_nego_pur": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation annuelle obligatoire d'adhésion",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationFixe",
+          "prix": 150,
+          "tva": 0,
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "Conditionnement"
+          ],
+          "callback": "getVolumeRevendiqueLots"
+        }
+      }
+    },
+    "06_communication_valorisation_produit_drev": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "",
@@ -110,7 +152,7 @@
           "prix": 0.5,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Communication et valorisation du produit  - %detail_identifiant%",
+          "libelle": "Communication et valorisation du produit",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -119,7 +161,30 @@
         }
       }
     },
-    "05_controle_habilitation": {
+    "07_communication_valorisation_produit_condi": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "05_communication": {
+          "modele": "Cotisation",
+          "prix": 0.5,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "Communication et valorisation du produit - conditionnement",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getFacturationVolumeDeguste",
+          "callback_parameters": {
+            "provenance": "CONDITIONNEMENT"
+          }
+        }
+      }
+    },
+    "08_controle_habilitation": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Contrôle d'habilitation",
@@ -127,8 +192,8 @@
       "details": {
         "cotisation": {
           "modele": "CotisationFixe",
-          "prix": 74.52,
-          "tva": 0,
+          "prix": 62.1,
+          "tva": 0.2,
           "libelle": "",
           "complement_libelle": "",
           "docs": [
@@ -137,6 +202,53 @@
           "callback": "hasStatutDemandes",
           "callback_parameters": {
             "statut": "TRANSMIS_OC"
+          }
+        }
+      }
+    },
+    "09_cotisation_controle": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.9,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "Cotisation Contrôle volume revendiqué",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "date": "%periode+1%-07-31",
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": {
+            "famille": "NOT CONDITIONNEURS"
+          }
+        }
+      }
+    },
+    "091_cotisation_controle": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "Cotisation",
+          "prix": 0.9,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "Cotisation Contrôle volume revendiqué",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getFacturationVolumeDeguste",
+          "callback_parameters": {
+            "provenance": "CONDITIONNEMENT"
           }
         }
       }

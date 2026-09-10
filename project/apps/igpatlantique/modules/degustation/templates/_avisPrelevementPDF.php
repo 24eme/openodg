@@ -12,7 +12,7 @@
     }
 
     .no-border, .no-border td {
-        border: 1px solid lightgrey;
+        border: 0px solid lightgrey;
     }
 
     h2 {
@@ -30,68 +30,52 @@
 }
 </style>
 <br/>
-<h2><strong>NOTIFICATION DE L'ODG IGP ATLANTIQUE : </strong>avis de prélèvement et de dégustation de vins IGP Atlantique</h2>
+<h1 style="text-align: center;">NOTIFICATION DE L'ODG IGP ATLANTIQUE</h1>
+<h2 style="text-align: center;">Avis de prélèvement et de dégustation de vins IGP Atlantique</h2>
+<p>Le : <?php echo date('d/m/Y'); ?></p>
+<p>A: <?php echo $etablissement?></p>
 <p>&nbsp;</p>
-<div style="margin-left:50px; margin-right:50px;">
-    <table class="no-border">
-        <tbody>
-            <tr>
-                <td style="width:60%;">A: <?php echo $etablissement?><br/>
-                    Email: declarationvin@qualibordeaux.fr
-                </td>
-                <td style="width:40%;">
-                    Le : <?php echo date('d/m/Y'); ?>
-                </td>
-            </tr>
-            <tr>
-                <td>DE L'ODG IGP ATLANTIQUE : Elisabeth GALINEAU<br/></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<br/>
-<br/>
-Madame, Monsieur,
-<br/>
-<br/>
-Nous avons bien reçu votre déclaration de conditionnement datée du 21/04/2026. Conformément à la nouvelle procédure d’agrément, nous vous informons que nous allons effectuer un prélèvement de votre pour un contrôle produit dans le cadre du contrôle interne :
-<br/>
-<br/>
-<?php foreach ($lots as $lot): ?>
+<p>&nbsp;</p>
+<p>Madame, Monsieur,</p>
+<p>Nous avons bien reçu votre déclaration de lots. Conformément au plan de contrôle, nous vous informons que nous allons effectuer un prélèvement des lots suivants pour une dégustation dans le cadre du contrôle interne.</p>
+<?php $is_conditionneur = false; ?>
 <table class="table-operateur">
     <thead>
-        <th>Fournisseur</th>
-        <th>Désignation</th>
-        <th>Millésime</th>
-        <th>Volume (hl)</th>
-        <th>Dates de mises</th>
+        <tr>
+            <th style="width:10%;text-align: center;">N° lgmt</th>
+            <th style="width:40%;text-align: center;">Désignation - Cépage</th>
+            <th style="width:7%;text-align: right;">Mill.</th>
+            <th style="width:13%;text-align: right;">Volume (hl)</th>
+            <th style="width:15%;text-align: center;">Destination</th>
+            <th style="width:15%;text-align: center;">Date condi.</th>
+        </tr>
     </thead>
     <tbody>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tobdy>
+        <?php foreach ($lots as $operateurlots): ?>
+            <?php foreach ($operateurlots as $lot): ?>
+                <?php if (strpos('Conditionnement', $lot->initial_type) !== false) $is_conditionneur = true; ?>
+        <tr>
+            <td style="width:10%;text-align: center;"><?php echo $lot->numero_logement_operateur ?></td>
+            <td style="width:40%;text-align: center;">
+                <?php echo $lot->produit_libelle ?>
+                <?php foreach ($lot->cepages as $cepage => $val) {echo ' - '.$cepage;} ?>
+            </td>
+            <td style="width:7%;text-align: right;"><?php echo $lot->millesime ?></td>
+            <td style="width:13%;text-align: right;"><?php echo $lot->volume ?></td>
+            <td style="width:15%;text-align: center;"><?php echo $lot->destination_type ?></td>
+            <td style="width:15%;text-align: center;"><?php echo format_date($lot->destination_date, "dd/MM/yyyy") ?></td>
+        </tr>
+            <?php endforeach; ?>
+        <?php endforeach; ?>
+    </tbody>
 </table>
-<?php endforeach; ?>
+
+<p>Nous avons confié la réalisation des prélèvements et de la dégustation des vins IGP Atlantique à <strong><?php echo $degustation->lieu; ?></strong>.</p>
+<p>Vous serez contacté prochainement  pour convenir d’une date de prélèvement pour vos lots.</p>
+<?php if ($is_conditionneur): ?>
+<p>Si vous avez réalisé plus de 4 mises l'année dernière, vous ne serez prélevés que 2 fois cette année.</p>
+<?php endif; ?>
+<p>Restant à votre disposition,</p>
+<p>Bien cordialement,</p>
 <br/>
-Nous avons confié la réalisation des prises d’échantillon et la dégustation à <strong>QUALI-BORDEAUX</strong>.
-<br/>
-<br/>
-Cet organisme va prendre contact avec vous pour convenir d’une date de prélèvement pour ce lot.
-<br/>
-<br/>
-Nous reviendrons vers vous dès que nous aurons le résultat de ce contrôle, pour vous indiquer si ce lot est apte à être commercialisé sous la mention IGP Atlantique.
-<br/>
-<br/>
-Restant à votre disposition,
-<br/>
-<br/>
-Bien cordialement,
-<br/>
-<br/>
-P/o
-<br/>
-Elisabeth GALINEAU
-<br/>
+<p>le Syndicat des producteurs de vins IGP Atlantique</p>

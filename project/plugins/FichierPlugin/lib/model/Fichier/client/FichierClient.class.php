@@ -11,7 +11,10 @@ class FichierClient extends acCouchdbClient {
     const CATEGORIE_FACTURE = "Facture";
     const CATEGORIE_CHGTDENOM = "ChgtDenom";
     const CATEGORIE_OI = "OI";
-    const CATEGORIE_FICHIER = 'fichier';
+    const CATEGORIE_DI = "DI";
+    const CATEGORIE_PLAN_DE_CAVE = "Plan de cave";
+    const CATEGORIE_BULLETIN_DANALYSE = "Bulletin d'Analyse";
+    const CATEGORIE_FICHIER = 'Autre fichier';
 
     public static function getInstance()
     {
@@ -141,15 +144,11 @@ class FichierClient extends acCouchdbClient {
     public function getCategories() {
 
         return array(
-            self::CATEGORIE_DR => "DR",
-            self::CATEGORIE_SV11 => "SV11",
-            self::CATEGORIE_SV12 => "SV12",
-            self::CATEGORIE_DREV => "DRev",
             self::CATEGORIE_IDENTIFICATION => "Habilitation / Identification",
-            self::CATEGORIE_DEGUSTATION => "Dégustation",
-            self::CATEGORIE_FACTURE => "Facture",
-            self::CATEGORIE_CHGTDENOM => "Changement de dénomination",
             self::CATEGORIE_OI => "OI",
+            self::CATEGORIE_BULLETIN_DANALYSE => "Bulletin d'Analyse",
+            self::CATEGORIE_DI => "DI",
+            self::CATEGORIE_PLAN_DE_CAVE => "Plan de cave",
         );
     }
 }

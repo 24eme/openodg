@@ -62,6 +62,10 @@ class Cotisation
         return new TemplateFactureCotisationCallbackParameters($this->getConfigDocument(), $params);
     }
 
+    public function isConfigRequired() {
+        return $this->getConfig()->getParent()->getParent()->isRequired();
+    }
+
     public function getConfigDate() {
 		if(!$this->getConfig()->exist('date')) {
 			return null;

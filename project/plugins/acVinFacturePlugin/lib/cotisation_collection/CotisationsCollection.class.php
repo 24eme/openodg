@@ -15,7 +15,7 @@ class CotisationsCollection
 		return $this->config->isRequired();
 	}
 
-	public function getCotisations() {
+	public function getCotisations($check_required_now_not_later = true) {
 		$cotisations = array();
 		$total = 0;
 		foreach($this->getDetails() as $detail) {
@@ -39,7 +39,7 @@ class CotisationsCollection
                 return $minimum_fallback->generateCotisations($this->getDoc());
             }
         }
-		if(!$total && !$this->isConfigRequired()) {
+		if($check_required_now_not_later && !$total && !$this->isConfigRequired()) {
 			return array();
 		}
 

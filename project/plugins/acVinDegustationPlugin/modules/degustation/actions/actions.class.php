@@ -828,6 +828,10 @@ class degustationActions extends sfActions {
           return $this->redirect('degustation_resultats', array('id' => $this->degustation->_id, 'numero_table' => $this->numero_table+1));
         }
 
+        $etape = $this->getRouteEtape($this->degustation->etape);
+        if($etape && $this->degustation->isDegustationExternalisee()){
+            return $this->redirect($etape, $this->degustation);
+        }
         return $this->redirect('degustation_resultats_etape', $this->degustation);
     }
 

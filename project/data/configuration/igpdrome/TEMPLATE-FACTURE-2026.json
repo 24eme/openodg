@@ -57,7 +57,7 @@
         "volumeRevendiqueMillesimeAnterieur": {
           "modele": "CotisationVariable",
           "prix": 0.25,
-          "tva": 0,
+          "tva": 0.2,
           "unite": "hl",
           "libelle": "Cotisation Méditerranée volume revendiqué millésime %millesime_precedent%",
           "complement_libelle": "",
@@ -74,7 +74,7 @@
         "volumeRevendiqueMillesimeCourant": {
           "modele": "CotisationVariable",
           "prix": 0.25,
-          "tva": 0,
+          "tva": 0.2,
           "unite": "hl",
           "libelle": "Cotisation Méditerranée volume revendiqué millésime %millesime_courant%",
           "complement_libelle": "",
@@ -183,7 +183,7 @@
         "volumeChange": {
           "modele": "CotisationVariable",
           "prix": 0.25,
-          "tva": 0,
+          "tva": 0.2,
           "unite": "hl",
           "libelle": "Cotisation Méditerranée changement de dénomination",
           "complement_libelle": "",
@@ -217,15 +217,15 @@
               "variable": 0
             },
             "1001": {
-              "prix": 50,
+              "prix": 75,
               "variable": 0
             },
             "5001": {
-              "prix": 100,
+              "prix": 125,
               "variable": 0
             },
             "9999999999": {
-              "prix": 150,
+              "prix": 175,
               "variable": 0
             }
           },
@@ -261,7 +261,7 @@
       "details": {
         "03_controleinterne": {
           "modele": "CotisationVariable",
-          "prix": 0.16,
+          "prix": 0.21,
           "tva": 0.2,
           "unite": "hl",
           "libelle": "- %detail_identifiant%",

@@ -223,6 +223,9 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             if ($this->getEtablissement()->region) {
                 $this->add('region', $this->getEtablissement()->region);
             }
+            if ($this->getEtablissement()->nature_inao == EtablissementClient::NATURE_INAO_CONDITIONNEUR_CONTINU) {
+                $this->addTag('automatique', EtablissementClient::NATURE_INAO_CONDITIONNEUR_CONTINU);
+            }
         } elseif ($this->isSocieteContact()) {
             $cvis = array();
             $ppms = array();

@@ -3,13 +3,13 @@ function(doc)
     if (doc.type != "Configuration")
         return ;
     var nb = 0;
-    for (certification in doc.declaration.certifications) 
+    for (var certification in doc.declaration.certifications) 
     {
         var certificationLibelle = doc.declaration.certifications[certification].libelle;
         var departementsCertification = doc.declaration.certifications[certification].departements;
         var detailCertification = doc.declaration.certifications[certification].detail;
         var interprosCertification = new Array();
-        for (i in doc.declaration.certifications[certification].interpro)
+        for (var i in doc.declaration.certifications[certification].interpro)
         {
             interprosCertification[i] = new Array();
             interprosCertification[i]["label"] = doc.declaration.certifications[certification].interpro[i].labels;
@@ -17,7 +17,7 @@ function(doc)
             interprosCertification[i]["cvo"] = doc.declaration.certifications[certification].interpro[i].droits.cvo.pop();
         }
         
-        for (genre in doc.declaration.certifications[certification].genres)
+        for (var genre in doc.declaration.certifications[certification].genres)
         {
             var genreLibelle = doc.declaration.certifications[certification].genres[genre].libelle;
             var departementsGenre = doc.declaration.certifications[certification].genres[genre].departements;
@@ -26,12 +26,12 @@ function(doc)
             if (doc.declaration.certifications[certification].genres[genre].hasOwnProperty("interpro"))
             {
                 nb = 0;
-                for (item in doc.declaration.certifications[certification].genres[genre].interpro) {
+                for (var item in doc.declaration.certifications[certification].genres[genre].interpro) {
                     nb = nb + 1;
                 }
                 if (nb > 0) {
                     interprosGenre = new Array();
-                    for (i in doc.declaration.certifications[certification].genres[genre].interpro)
+                    for (var i in doc.declaration.certifications[certification].genres[genre].interpro)
                     {
                         interprosGenre[i] = new Array();
                         interprosGenre[i]["label"] = new Array();
@@ -65,7 +65,7 @@ function(doc)
             {
                 detailGenre = doc.declaration.certifications[certification].genres[genre].detail;
             }
-            for (appellation in doc.declaration.certifications[certification].genres[genre].appellations) 
+            for (var appellation in doc.declaration.certifications[certification].genres[genre].appellations) 
             {
                 var appellationLibelle = doc.declaration.certifications[certification].genres[genre].appellations[appellation].libelle;
                 var departementsAppellation = doc.declaration.certifications[certification].genres[genre].appellations[appellation].departements;
@@ -74,12 +74,12 @@ function(doc)
                 if (doc.declaration.certifications[certification].genres[genre].appellations[appellation].hasOwnProperty("interpro"))
                 {
                     nb = 0;
-                    for (item in doc.declaration.certifications[certification].genres[genre].appellations[appellation].interpro) {
+                    for (var item in doc.declaration.certifications[certification].genres[genre].appellations[appellation].interpro) {
                         nb = nb + 1;
                     }
                     if (nb > 0) {
                         interprosAppellation = new Array();
-                        for (i in doc.declaration.certifications[certification].genres[genre].appellations[appellation].interpro)
+                        for (var i in doc.declaration.certifications[certification].genres[genre].appellations[appellation].interpro)
                         {
                             interprosAppellation[i] = new Array();
                             interprosAppellation[i]["label"] = new Array();
@@ -113,7 +113,7 @@ function(doc)
                 {
                     detailAppellation = doc.declaration.certifications[certification].genres[genre].appellations[appellation].detail;
                 }
-                for(mention in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions) 
+                for (var mention in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions) 
                 {
                     var mentionLibelle = doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].libelle;
                     var departementsMention = doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].departements;
@@ -122,13 +122,13 @@ function(doc)
                     if (doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].hasOwnProperty("interpro"))
                     {
                         nb = 0;
-                        for (item in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].interpro) {
+                        for (var item in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].interpro) {
                             nb = nb + 1;
                         }
                         if (nb > 0)
                         {
                             interprosMention = new Array();
-                            for (i in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].interpro)
+                            for (var i in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].interpro)
                             {
                                 interprosMention[i] = new Array();
                                 interprosMention[i]["label"] = new Array();
@@ -162,7 +162,7 @@ function(doc)
                     {
                         detailLieu = doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].detail;
                     } // END
-                    for(lieu in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux) 
+                    for (var lieu in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux) 
                     {
                         var lieuLibelle = doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux[lieu].libelle;
                         var departementsLieu = doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux[lieu].departements;
@@ -171,13 +171,13 @@ function(doc)
                         if (doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux[lieu].hasOwnProperty("interpro"))
                         {
                             nb = 0;
-                            for (item in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux[lieu].interpro) {
+                            for (var item in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux[lieu].interpro) {
                                 nb = nb + 1;
                             }
                             if (nb > 0)
                             {
                                 interprosLieu = new Array();
-                                for (i in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux[lieu].interpro)
+                                for (var i in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux[lieu].interpro)
                                 {
                                     interprosLieu[i] = new Array();
                                     interprosLieu[i]["label"] = new Array();
@@ -212,16 +212,16 @@ function(doc)
                             detailLieu = doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux[lieu].detail;
                         }
                         
-                        for(couleur in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux[lieu].couleurs) 
+                        for (var couleur in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux[lieu].couleurs) 
                         {
                             var couleurLibelle = doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux[lieu].couleurs[couleur].libelle;
                             
-                            for(cepage in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux[lieu].couleurs[couleur].cepages) 
+                            for (var cepage in doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux[lieu].couleurs[couleur].cepages) 
                             {    
                                 var cepageLibelle = doc.declaration.certifications[certification].genres[genre].appellations[appellation].mentions[mention].lieux[lieu].couleurs[couleur].cepages[cepage].libelle;
                                 var hash = "/declaration/certifications/"+certification+"/genres/"+genre+"/appellations/"+appellation+"/mentions/"+mention+"/lieux/"+lieu+"/couleurs/"+couleur+"/cepages/"+cepage;
                                 
-                                for(i in interprosLieu)
+                                for (var i in interprosLieu)
                                 {
                                     emit([i, certificationLibelle, genreLibelle, appellationLibelle, mentionLibelle, lieuLibelle, couleurLibelle, cepageLibelle, hash], {"departements": departementsLieu, "douane": interprosLieu[i]["douane"], "cvo": interprosLieu[i]["cvo"], "labels": interprosLieu[i]["label"], "entrees": {"repli": detailLieu.entrees.repli.readable, "declassement": detailLieu.entrees.declassement.readable}, "sorties": {"repli": detailLieu.sorties.repli.readable, "declassement": detailLieu.sorties.declassement.readable}});
                                 }

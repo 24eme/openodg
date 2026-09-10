@@ -19,7 +19,7 @@
             <td>
                 <RouterLink :to="{ name: 'operateur', params: { id: controle._id } }">{{ controle.declarant.nom }}</RouterLink>
                 <span class="pull-right" v-if="hasWarningGeojson(controle._id)">
-                    <i class="glyphicon glyphicon-warning-sign text-warning" style="cursor:help" title="Données Geojson manquantes"></i>
+                    <i class="glyphicon glyphicon-warning-sign text-warning" style="cursor:help" title="Données géographiques manquantes"></i>
                 </span>
             </td>
             <td class="text-center">{{ nbParcellesSelectionnees(controle._id) }} / {{ nbParcelles(controle._id) }} <small>parcelle(s)</small></td>

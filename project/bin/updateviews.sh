@@ -1,17 +1,19 @@
 #!/bin/bash
 
+configdir=$(dirname $0)
+
 # Mode multi app
-if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
-    ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
+if ! test -f $configdir"/"config.inc && ! test $1 ; then
+    ls $configdir"/" | grep "config_" | grep ".inc$" | grep -v extra.inc | sed 's/config_//' | sed 's/\.inc//' | while read app; do
         bash $(echo $0 | sed 's/[^\/]*$//')updateviews.sh $app;
     done
     exit 0;
 fi
 
 if ! test $1 ; then
-    . $(echo $0 | sed 's/[^\/]*$//')config.inc
+    . $configdir"/"config.inc
 else
-    . $(echo $0 | sed 's/[^\/]*$//')config_"$1".inc
+    . $configdir"/"config_"$1".inc
 fi
 
 if test -e $TMPDIR/$COUCHBASE".updateviews.pid"; then

@@ -462,6 +462,50 @@
                                                                 }
                                                             }
                                                         }
+                                                    },
+                                                    "orange": {
+                                                        "libelle": "Orange",
+                                                        "format_libelle": null,
+                                                        "code": null,
+                                                        "code_produit": null,
+                                                        "code_comptable": null,
+                                                        "code_douane": null,
+                                                        "interpro": {
+                                                            "INTERPRO-declaration": {
+                                                                "labels": [],
+                                                                "droits": {
+                                                                    "douane": [],
+                                                                    "cvo": []
+                                                                }
+                                                            }
+                                                        },
+                                                        "departements": [],
+                                                        "cepages": {
+                                                            "DEFAUT": {
+                                                                "libelle": "",
+                                                                "format_libelle": "",
+                                                                "code": "",
+                                                                "code_produit": "",
+                                                                "code_comptable": "",
+                                                                "code_douane": "3O008",
+                                                                "cepages_autorises": [],
+                                                                "interpro": {
+                                                                    "INTERPRO-declaration": {
+                                                                        "droits": {
+                                                                            "douane": [],
+                                                                            "cvo": []
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "attributs": {
+                                                                    "rendement": null,
+                                                                    "rendement_conseille": null,
+                                                                    "rendement_dr": null,
+                                                                    "rendement_vci": null,
+                                                                    "rendement_vci_total": null
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
