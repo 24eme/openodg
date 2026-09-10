@@ -208,7 +208,6 @@
         }
         if (strpos($ligne->libelle, 'INAO') !== false) {
             $mention_inao = true;
-            echo '\textbf{**} ';
         }
         ?>&
         {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} &
@@ -275,13 +274,13 @@ le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?>
     \item[-] Conditions de règlement : A réception de la facture
     \item[-] En cas de retard de paiement, seront exigibles, conformément à l'article L 441-10 du code de commerce, une indemnité calculée sur la base de trois fois le taux de l'intérêt légal en vigueur ainsi qu'une indemnité forfaitaire pour frais de recouvrement de 40 euros
 \end{itemize}
+<?php if (isset($mention_inao) && $mention_inao): ?>
+\\ \\
+\textbf{Les droits INAO sont dus au titre de l’article L642-13 du code rural et de la pêché maritime.}
+<?php endif ?>
 <?php if (isset($exoneration) && $exoneration === true): ?>
 \\ \\
 \textbf{ * : Exonération de TVA en vertu du 9° du 4. de l'article 261 du Code général des impôts}
-<?php endif ?>
-<?php if (isset($mention_inao) && $mention_inao): ?>
-\\ \\
-\textbf{ ** : Droit INAO dû au titre de l'article L642-13 du code rural et de la pêché maritime}
 <?php endif ?>
 
 
