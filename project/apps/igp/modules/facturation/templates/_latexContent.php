@@ -206,6 +206,10 @@
             $exoneration = true;
             echo '\textbf{*} ';
         }
+        if (strpos($ligne->libelle, 'INAO') !== false) {
+            $mention_inao = true;
+            echo '\textbf{**} ';
+        }
         ?>&
         {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} &
         {<?php echo formatFloat($detail->quantite, ','); ?> \texttt{<?php if($detail->exist('unite')): ?><?php echo ($detail->unite); ?><?php else: ?>~~~<?php endif; ?>} &
@@ -274,6 +278,10 @@ le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?>
 <?php if (isset($exoneration) && $exoneration === true): ?>
 \\ \\
 \textbf{ * : Exonération de TVA en vertu du 9° du 4. de l'article 261 du Code général des impôts}
+<?php endif ?>
+<?php if (isset($mention_inao) && $mention_inao): ?>
+\\ \\
+\textbf{ ** : Droit INAO dû au titre de l'article L642-13 du code rural et de la pêché maritime}
 <?php endif ?>
 
 
