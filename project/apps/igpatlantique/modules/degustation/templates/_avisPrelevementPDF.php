@@ -78,5 +78,4 @@
 <p>Restant à votre disposition,</p>
 <p>Bien cordialement,</p>
 <br/>
-<p>P/o</p>
-<p><?php echo Organisme::getInstance(null, 'degustation')->getResponsable(); ?></p>
+<p>le Syndicat des producteurs de vins IGP Atlantique</p>
