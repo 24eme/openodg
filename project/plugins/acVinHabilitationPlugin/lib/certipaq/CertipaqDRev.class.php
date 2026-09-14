@@ -51,7 +51,7 @@ class CertipaqDRev extends CertipaqService
         $habilitation = CertipaqOperateur::getInstance()->getHabilitationFromOperateurProduitAndActivite($operateur, $produit, CertipaqDeroulant::ACTIVITE_PRODUCTEUR);
 
         if (!isset($data['millesime']) || !isset($data['volume']) || !isset($data['superficie'])) {
-            throw new sfException('millesime, volume et superficie manquand dans l'argument $data');
+            throw new sfException("millesime, volume et superficie manquand dans l'argument $data");
         }
 
         $params = array();
