@@ -48,9 +48,15 @@ $t->is($infos_operateur->cvi, $operateur_test->cvi, "C'est le bon cvi");
 $t->ok(count($infos_operateur->sites), "Il a des sites");
 $t->ok(count($infos_operateur->sites[0]->habilitations), "Il a des habilitations");
 
-$t->ok($infos_operateur->sites[0]->habilitations[0]->dr_statut_habilitation->cle, "On récupère le statut de l'habilitation ".$infos_operateur->sites[0]->dr_statut_habilitation->libelle);
-
-$certipaq_produit = array_shift(CertipaqDeroulant::getInstance()->getListeProduitsCahiersDesCharges());
+$hab = $infos_operateur->sites[0]->habilitations[0];
+$t->ok($hab->dr_statut_habilitation->cle, "On récupère le statut de l'habilitation ".$hab->dr_statut_habilitation->libelle);
+$certipaq_produit = null;
+foreach(CertipaqDeroulant::getInstance()->getListeProduitsCahiersDesCharges() as $prod) {
+    if ($prod->dr_cdc_id == $hab->dr_cdc_id) {
+        $certipaq_produit = $prod;
+        break;
+    }
+}
 $produit_conf = CertipaqDeroulant::getInstance()->getConfigurationProduitFromProduitId($certipaq_produit->id);
 $t->ok($produit_conf, "retrouve la conf du produit depuis le premier id de la liste renvoyée par l'API (".$certipaq_produit->libelle.")");
 $certipaq_produit_res = CertipaqDeroulant::getInstance()->getCertipaqProduitFromConfigurationProduit($produit_conf);
