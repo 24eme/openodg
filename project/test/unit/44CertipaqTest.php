@@ -74,15 +74,15 @@ try {
     $res = CertipaqDRev::getInstance()->createUneLigne($etablissement, $produit_conf, $data);
     throw new sfException("Erreur DR non détectée");
 } catch (Exception $e) {
-    $t->is($e->getMessage(), 'HTTP Error 400 : {"errors":["Le param\u00e8tre surface_ha est manquant"]}', "La création d'une ligne de DR impossible car la superficie 0");
+    $t->is($e->getMessage(), 'HTTP Error 400 (https://democertipaq.jeteste.dev/api/declaration/revendication) : {"errors":["Le param\u00e8tre surface_ha est manquant"]}', "La création d'une ligne de DR impossible car la superficie 0");
 }
 
 try {
-    $data = array('millesime' =>  0, 'superficie' => 50, 'volume' => 650);
+    $data = array('millesime' =>  1900, 'superficie' => 50, 'volume' => 650);
     $res = CertipaqDRev::getInstance()->createUneLigne($etablissement, $produit_conf,$data);
     throw new sfException("Erreur millesime non détectée");
 } catch (Exception $e) {
-    $t->is($e->getMessage(), 'HTTP Error 400 : {"errors":["Le param\\u00e8tre millesime est invalide"]}', "La création d'une ligne de DR impossible avec un millesime à 0");
+    $t->is($e->getMessage(), 'HTTP Error 400 (https://democertipaq.jeteste.dev/api/declaration/revendication) : {"errors":["Le param\\u00e8tre millesime est invalide"]}', "La création d'une ligne de DR impossible avec un millesime à 0");
 }
 
 if (!$readonly) {
@@ -106,6 +106,7 @@ if (!$readonly) {
 }
 $res = CertipaqDRev::getInstance()->findbyOperateurAndMillesime($infos_operateur->id, $millesime);
 $drev = array_pop($res);
+$t->ok($drev, "a une première drev");
 $t->is($drev->dr_cdc_produit->libelle, $certipaq_produit->libelle, "la première drev contient bien  une résolution du produit choisi : ".$certipaq_produit->libelle);
 $t->ok($drev->dr_cdc->libelle, "la première drev contient bien une résolution du cdc");
 $t->ok($drev->dr_cdc_famille->libelle, "la première drev contient bien une résolution de la famille");

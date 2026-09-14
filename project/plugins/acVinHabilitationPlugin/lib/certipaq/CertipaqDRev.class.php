@@ -59,7 +59,8 @@ class CertipaqDRev extends CertipaqService
         $params['operateurs_sites_id'] = $habilitation->site_id;
         $params['dr_cdc_famille_id'] = $habilitation->dr_cdc_famille_id;
         $params['dr_cdc_id'] = $habilitation->dr_cdc->id;
-        $params['millesime'] = ""+$data['millesime']+"";
+        $params['dr_cdc_produit_id'] = $produit->id;
+        $params['millesime'] = sprintf("%d", $data['millesime']);
         $params['volume_hl'] = floatval($data['volume']);
         $params['surface_ha'] = floatval($data['superficie']);
         if (isset($data['observations'])) {
