@@ -6,6 +6,8 @@ class CertipaqDeroulant extends CertipaqService
     public const ACTIVITE_VINIFICATEUR = "Vinificateur";
     public const ACTIVITE_VENTE_VRAC = "Vente de vin en vrac";
 
+    private $cacheFamille = [];
+
     private function res2hashid($res) {
         $objs = array();
         foreach($res as $k => $o) {
@@ -144,9 +146,6 @@ class CertipaqDeroulant extends CertipaqService
     }
 
     public function getCdcFamilleIdFromCdcId($id) {
-        if (!isset($this->cacheFamille)) {
-            $this->cacheFamille = array();
-        }
         if (isset($this->cacheFamille[$id])) {
             return $this->cacheFamille[$id];
         }
