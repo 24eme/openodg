@@ -7,6 +7,8 @@ class CertipaqDeroulant extends CertipaqService
     public const ACTIVITE_VENTE_VRAC = "Vente de vin en vrac";
 
     private $cacheFamille = [];
+    private $cacheProduits = [];
+    private $cacheCdCProduits = [];
 
     private function res2hashid($res) {
         $objs = array();
@@ -138,11 +140,14 @@ class CertipaqDeroulant extends CertipaqService
             )
             ///
         */
-        $produits = $this->queryAndRes2hashid('dr/cdc_produit');
-        foreach($produits as $k => $v) {
-            $v->dr_cdc_famille_id = $this->getCdcFamilleIdFromCdcId($v->dr_cdc_id);
+        if (!$this->cacheProduits) {
+            $produits = $this->queryAndRes2hashid('dr/cdc_produit');
+            foreach($produits as $k => $v) {
+                $v->dr_cdc_famille_id = $this->getCdcFamilleIdFromCdcId($v->dr_cdc_id);
+            }
+            $this->cacheProduits = $produits;
         }
-        return $produits;
+        return $this->cacheProduits;
     }
 
     public function getCdcFamilleIdFromCdcId($id) {
@@ -282,5 +287,21 @@ class CertipaqDeroulant extends CertipaqService
             return null;
         }
         return ConfigurationClient::getCurrent()->identifyProductByLibelle($produits[$pid]->libelle);
+    }
+
+    public function getCertipaqProduitsFromCdcId($cdc_id) {
+        if (!$this->cacheCdCProduits) {
+            $this->cacheCdCProduits = array();
+            foreach(CertipaqDeroulant::getInstance()->getListeProduitsCahiersDesCharges() as $prod) {
+                if (!isset($this->cacheCdCProduits[$prod->dr_cdc_id])) {
+                    $this->cacheCdCProduits[$prod->dr_cdc_id] = array();
+                }
+                $this->cacheCdCProduits[$prod->dr_cdc_id][$prod->id] = $prod;
+            }
+        }
+        if (!isset($this->cacheCdCProduits[$cdc_id])) {
+            return [];
+        }
+        return $this->cacheCdCProduits[$cdc_id];
     }
 }
