@@ -70,7 +70,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                 <?php endif; ?>
                                 <?php if ($etablissement->cvi): ?>
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">CVI :</div>
-                                    <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->cvi; ?></div>
+                                    <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->cvi; ?>&nbsp;&nbsp;<a href="<?php echo url_for("cvi_check", array('cvi' => $etablissement->cvi)); ?>" class="text-muted" style="text-decoration: none;" target="_blank" title="Voir l'extrait du CVI"><small class="glyphicon glyphicon-eye-open"></small></a></div>
                                 <?php endif; ?>
                                 <?php if ($etablissement->num_interne): ?>
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">N° interne:</div>
@@ -86,7 +86,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                 <?php endif; ?>
                                 <?php if ($etablissement->siret): ?>
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">SIRET :</div>
-                                    <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo formatSIRET($etablissement->siret); ?></div>
+                                    <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo formatSIRET($etablissement->siret); ?>&nbsp;&nbsp;<a href="https://annuaire-entreprises.data.gouv.fr/entreprise/<?php echo substr($etablissement->siret, 0, 9) ?>" class="text-muted" style="text-decoration: none;" target="_blank" title="Voir sur l'annuaire des entreprise (annuaire-entreprises.data.gouv.fr)"><small class="glyphicon glyphicon-eye-open"></small></a></div>
                                 <?php endif; ?>
                                 <?php if ($etablissement->carte_pro && $etablissement->isCourtier()) : ?>
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Carte professionnelle : </div>

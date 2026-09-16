@@ -11,11 +11,14 @@
   <h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?> <small><?php echo $degustation->getLieuNom(); ?></small></h3>
 </div>
 <p>Nombre total d'échantillons : <?php echo count($degustation->getLotsWithoutLeurre()); ?></p>
+<?php if ($nb_tables > 1): ?>
 <p>Cocher les échantillons conformes à chaque tables</p>
-
+<?php endif; ?>
 <ul class="nav nav-pills">
   <?php for ($i= 0; $i < $nb_tables; $i++): ?>
+  <?php if ($nb_tables > 1): ?>
     <li role="presentation" class="<?php if($numero_table == ($i + 1)): echo "active"; endif; ?>"><a href="<?php echo url_for("degustation_resultats", array('id' => $degustation->_id, 'numero_table' => ($i + 1))) ?>">Table <?php echo DegustationClient::getNumeroTableStr($i + 1); ?></a></li>
+  <?php endif; ?>
   <?php endfor;?>
 </ul>
 
@@ -36,7 +39,9 @@
               <table class="table table-bordered table-condensed">
                 <thead>
                   <tr>
+                  <?php if (!$degustation->isDegustationExternalisee()): ?>
                     <th class="col-xs-1 text-left">N°&nbsp;Ano.</th>
+                  <?php endif ?>
                     <th class="col-xs-3 text-left">Opérateur</th>
                     <th class="col-xs-1 text-left">Provenance</th>
                     <th class="col-xs-5 text-left">Produit (millésime, spécificité)</th>
@@ -49,7 +54,9 @@
                     $name = $form->getWidgetNameFromLot($lot);
                     if (isset($form["conformite_".$name])): ?>
                       <tr class="vertical-center <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs() || $lot->isConformeAvecDefaut()): ?>list-group-item-warning<?php  endif; ?>">
+                      <?php if (!$degustation->isDegustationExternalisee()): ?>
                         <td class="text-right"><?php echo $lot->getNumeroAnonymat(); ?></td>
+                      <?php endif; ?>
                         <td class="text-left"><?php echo $lot->declarant_nom ?></td>
                         <td><?= $lot->getTypeProvenance() ?></td>
                         <td class="text-left">

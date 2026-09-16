@@ -56,7 +56,7 @@
         </h4>
       </div>
       <div class="col-xs-4 text-right">
-      <?php if ($chgtDenom->isChgtDenomination() && !$chgtDenom->validation_odg && $sf_user->isAdmin() && $lot->isLogementEditable() && !$lot->numero_archive): ?>
+      <?php if ($chgtDenom->isChgtDenomination() && !$chgtDenom->isFromProduction() && !$chgtDenom->validation_odg && $sf_user->isAdmin() && $lot->isLogementEditable() && !$lot->numero_archive): ?>
         <div style="margin-bottom: 0;" class="<?php if($form->hasErrors()): ?>has-error<?php endif; ?>">
           <?php echo $form['affectable']->renderError() ?>
           <div class="">
@@ -68,7 +68,7 @@
           </div>
         </div>
       <?php else: ?>
-        <?php if($chgtDenom->isChgtDenomination()): ?>
+        <?php if($chgtDenom->isChgtDenomination() && !$chgtDenom->isFromProduction()): ?>
           <span>Contrôle :</span>
           <?php echo pictoDegustable($lot); ?>
         <?php endif; ?>

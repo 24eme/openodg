@@ -2,7 +2,7 @@
 
 class ChgtDenomForm extends acCouchdbObjectForm
 {
-    public static $types = array(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT => "Changement de dénomination", ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT  => "Déclassement");
+    public static $types = array(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT => "Changement de dénomination", ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT  => "Déclassement", ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT  => "Déclassement", ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT  => "Changement de segment");
 
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
@@ -103,6 +103,20 @@ class ChgtDenomForm extends acCouchdbObjectForm
 
     public function getTypes()
     {
-        return $this->getObject()->isFromProduction() ? [ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT  => "Déclassement"] : self::$types;
+        $my_types = self::$types;
+        if ($this->getObject()->isFromProduction()) {
+            unset($my_types[ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT]);
+            unset($my_types[ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT]);
+            if ($this->getObject()->isDeclassement()) {
+                unset($my_types[ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT]);
+            } else {
+                unset($my_types[ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT]);
+                $my_types[ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT] .= " vers ".$this->getObject()->changement_produit_libelle;
+            }
+        } else {
+            unset($my_types[ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT]);
+            unset($my_types[ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT]);
+        }
+        return $my_types;
     }
 }

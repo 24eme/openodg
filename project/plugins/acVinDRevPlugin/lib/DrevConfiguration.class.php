@@ -211,4 +211,9 @@ class DRevConfiguration extends DeclarationConfiguration {
         return isset($this->configuration['destination_bib']) && boolval($this->configuration['destination_bib']);
     }
 
+    public function getEngagementBulletinAnalyse()
+    {
+        return isset($this->configuration['engagement_bulletin_analyse']) && boolval($this->configuration['engagement_bulletin_analyse']);
+    }
+
 }
