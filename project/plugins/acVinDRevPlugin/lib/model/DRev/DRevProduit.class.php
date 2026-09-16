@@ -403,6 +403,9 @@ class DRevProduit extends BaseDRevProduit
     }
 
     protected function getVolumeReserveInterproByConfig() {
+        if (!VCR::hasCsv() && !$this->getConfig()->hasRendementReserveInterpro()) {
+            return 0;
+        }
         if (VCR::hasCsv() && !$this->getConfig()->hasRendementReserveInterpro()) {
             return $this->getVolumeReserveInterproVCR();
         } elseif (!VCR::hasCsv() && $this->getConfig()->hasRendementReserveInterpro()) {
