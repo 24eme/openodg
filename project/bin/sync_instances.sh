@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Mode multi app
-if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
-    ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
-        bash $(echo $0 | sed 's/[^\/]*$//')sync_instances.sh $app;
+if ! test -f "$(echo "$0" | sed 's/[^\/]*$//')config.inc" && ! test "$1" ; then
+    find . "$( dirname -- "$0" )" -maxdepth 1 -name "config_*.inc" -not -path "*config_extra.inc" -exec basename {} \; | while read -r app; do
+        bash "$( dirname -- "$0" )/sync_instances.sh" "${app:7:-4}" # suppr substring offset 7 (config_) et length -4 (.inc)
     done
+
     exit 0
 fi
 
