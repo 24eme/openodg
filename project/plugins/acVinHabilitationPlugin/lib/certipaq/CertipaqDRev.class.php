@@ -105,7 +105,7 @@ class CertipaqDRev extends CertipaqService
         }
         if ($drev_produit->volume_revendique_issu_vci) {
             //Dont VCI
-            $data['volume_complementaire_individuel_hl'] = $drev_produit->volume_revendique_issu_vci;
+            $data['volume_complementaire_individuel_hl'] = floatval($drev_produit->volume_revendique_issu_vci);
         }
         return $this->createUneLigne($drev_produit->getDocument()->declarant, $drev_produit->getConfig(), $data);
     }

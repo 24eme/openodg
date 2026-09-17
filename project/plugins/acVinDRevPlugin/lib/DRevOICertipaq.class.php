@@ -56,9 +56,30 @@ class DRevOICertipaq
 
     public function storeResultInDrev() {
         $this->drev->add('_attachments');
-        $tmpfname = tempnam("/tmp", "CertipaDREV_".date('c').'_');
+        $tmpfname = tempnam("/tmp", "CertipaDREV_".date('c').'_').'.json';
         file_put_contents($tmpfname, json_encode($this->res));
         $this->drev->storeAttachment($tmpfname, "text/json");
+    }
+
+    public function getDebugInfo() {
+        if (!$this->drev->exist('_attachments')) {
+            return array();
+        }
+        $debug_id = '00';
+        $debug_info = null;
+        foreach($this->drev->_attachments as $id => $a) {
+            if (strpos($id, 'CertipaDREV_2') === false) {
+                continue;
+            }
+            if ($debug_id > $id) {
+                continue;
+            }
+            $debug_id = $id;
+            $debug_info = $a;
+        }
+        $json = file_get_contents($this->drev->getAttachmentUri($debug_id));
+        return json_decode($json);
+;
     }
 
 }
