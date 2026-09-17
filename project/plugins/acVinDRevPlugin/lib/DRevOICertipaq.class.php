@@ -79,7 +79,6 @@ class DRevOICertipaq
         }
         $json = file_get_contents($this->drev->getAttachmentUri($debug_id));
         return json_decode($json);
-;
     }
 
 }

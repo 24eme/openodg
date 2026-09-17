@@ -1023,9 +1023,10 @@ class drevActions extends sfActions {
     }
 
     public function executeDebugCertipaq(sfWebRequest $request) {
-        $drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::VISUALISATION, $drev);
-        $this->drevOi = new DRevOICertipaq($drev, null);
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VISUALISATION, $this->drev);
+        $this->regionParam = $request->getParameter('region', null);
+        $this->drevOi = new DRevOICertipaq($this->drev, null);
     }
 
     public function executeDocumentDouanier(sfWebRequest $request) {
