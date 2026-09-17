@@ -2,6 +2,8 @@
 
 class CertipaqDRev extends CertipaqService
 {
+    private $last_params = [];
+
     public function list($params = [])
     {
         return $this->query('declaration/revendication', 'GET', $params);
@@ -89,18 +91,11 @@ class CertipaqDRev extends CertipaqService
         $params['entrepot_operateurs_sites_id'] = $site_id;
         $params['operateurs_sites_id'] = $site_id;
 
+        $this->last_params = $params;
         return $this->query('declaration/revendication', 'POST', $params);
     }
 
-    public function createDRev($drev) {
-        $res = [];
-        foreach($drev->getProduits() as $prod) {
-            $res[] = $this->createDRevLigne($prod);
-        }
-        return $res;
-    }
-
-    protected function createDRevLigne($drev_produit) {
+    public function createDRevLigne($drev_produit) {
         $data = [];
         $data['volume'] = $drev_produit->volume_revendique_total;
         $data['superficie'] = $drev_produit->superficie_revendique;
@@ -114,4 +109,9 @@ class CertipaqDRev extends CertipaqService
         }
         return $this->createUneLigne($drev_produit->getDocument()->declarant, $drev_produit->getConfig(), $data);
     }
+
+    public function getLastQuery() {
+        return ['url' => 'declaration/revendication', 'method' => 'POST', 'params' => $this->last_params, 'date' => date('c')];
+    }
+
 }
