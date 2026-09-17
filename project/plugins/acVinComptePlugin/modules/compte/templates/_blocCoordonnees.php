@@ -31,10 +31,10 @@
         <?php if($compte->getTeledeclarationEmail()): ?>
             <div class="row">
                 <div class="col-xs-3 text-muted">
-                    ETelecl.&nbsp;:
+                    E.&nbsp;Telecl.&nbsp;:
                 </div>
                 <div class="col-xs-9">
-                    <small><a href="mailto:<?php echo $compte->getTeledeclarationEmail(); ?>"><?php echo $compte->getTeledeclarationEmail(); ?></a></small>
+                    <small><a href="mailto:<?php echo $compte->getTeledeclarationEmail(); ?>"><?php echo str_replace(';', ' ', $compte->getTeledeclarationEmail()) ?></a></small>
                 </div>
             </div>
         <?php endif; ?>
@@ -91,14 +91,14 @@
 <?php elseif ($compte->isSameContactThanSociete() && !isset($forceCoordonnee)): ?>
     <?php if($compte->getTeledeclarationEmail()): ?>
         <div style="margin-top: 10px;" class="col-xs-12">
-        <div class="row">
-            <div class="col-xs-3 text-muted">
-                Em.Telecl.&nbsp;:
+            <div class="row">
+                <div class="col-xs-3 text-muted">
+                    E.&nbsp;Telecl.&nbsp;:
+                </div>
+                <div class="col-xs-9">
+                    <small><a href="mailto:<?php echo $compte->getTeledeclarationEmail(); ?>"><?php echo str_replace(';', ' ', $compte->getTeledeclarationEmail()) ?></a></small>
+                </div>
             </div>
-            <div class="col-xs-9">
-                <small><a href="mailto:<?php echo $compte->getTeledeclarationEmail(); ?>"><?php echo $compte->getTeledeclarationEmail(); ?></a></small>
-            </div>
-        </div>
         </div>
     <?php endif; ?>
 <?php endif; ?>

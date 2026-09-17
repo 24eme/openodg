@@ -6,16 +6,18 @@
 
 
         <?php if($conditionnement->exist('lots')): ?>
-            <?php if(!$conditionnement->validation_odg && $sf_user->isAdmin()): ?>
-              <div class="pull-right">
-                <span>Tout dégustable : <label class="switch-xl"><input checked type="checkbox" id="btn-degustable-all" class="switch"></input><span class="slider-xl round"></span></label>
-              </span>
-              </div>
-            <?php endif; ?>
           <h3 id="table_igp_title">Déclaration des lots</h3>
           <?php $lots = $conditionnement->getLotsByCouleur(); ?>
-          <div class="mb-2">
-              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" class="hamzastyle" style="width: 100%;">
+          <div class="row mb-2">
+              <div class="<?php if(!$conditionnement->validation_odg && $sf_user->isAdmin()): ?>col-xs-9<?php else: ?>col-xs-12<?php endif; ?>">
+                  <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" class="hamzastyle" style="width: 100%;">
+              </div>
+              <?php if(!$conditionnement->validation_odg && $sf_user->isAdmin()): ?>
+                <div class="col-xs-3 text-right pr-5">
+                  <span>Tout dégustable : <label class="switch-xl"><input checked type="checkbox" id="btn-degustable-all" class="switch"></input><span class="slider-xl round"></span></label>
+                </span>
+                </div>
+              <?php endif; ?>
           </div>
           <table class="table table-bordered table-striped table_igp">
             <thead>

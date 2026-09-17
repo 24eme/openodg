@@ -4,6 +4,7 @@ class ConditionnementConfiguration extends DeclarationConfiguration {
 
     private static $_instance = null;
     protected $configuration;
+    const DEFAUT = 'Bouteille 75 cl';
 
     public static function getInstance() {
         if (is_null(self::$_instance)) {

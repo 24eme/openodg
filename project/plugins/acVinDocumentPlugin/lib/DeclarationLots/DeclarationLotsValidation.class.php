@@ -14,6 +14,8 @@ abstract class DeclarationLotsValidation extends DocumentValidation
          * Engagement
          */
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT));
+
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_BULLETIN_ANALYSE, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_BULLETIN_ANALYSE));
     }
 
     protected function controleLotsGenerique($routeName){
@@ -97,6 +99,10 @@ abstract class DeclarationLotsValidation extends DocumentValidation
             }
 
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, implode(', ', $msg));
+        }
+
+        if (DRevConfiguration::getInstance()->getEngagementBulletinAnalyse()) {
+            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_BULLETIN_ANALYSE, '');
         }
     }
 

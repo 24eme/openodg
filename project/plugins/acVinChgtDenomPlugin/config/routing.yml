@@ -8,26 +8,6 @@ chgtdenom_create_from_lot:
   requirements:
     sf_method: [get]
 
-chgtdenom_create:
-  url: /changement-denomination/creation/:identifiant/:campagne
-  param: { module: chgtdenom, action: create }
-  class: EtablissementRoute
-  options:
-    model:    Etablissement
-    type:     object
-  requirements:
-    sf_method: [get]
-
-chgtdenom_create_papier:
-  url: /changement-denomination/creation-papier/:identifiant/:campagne
-  param: { module: chgtdenom, action: createPapier }
-  class: EtablissementRoute
-  options:
-    model:    Etablissement
-    type:     object
-  requirements:
-    sf_method: [get]
-
 chgtdenom_lots:
   url: /changement-denomination/lots/:identifiant/:campagne
   param: { module: chgtdenom, action: lots }
