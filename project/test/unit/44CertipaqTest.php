@@ -121,7 +121,6 @@ $t->is($certi_drev->operateurs_sites->id, $certi_drev->entrepot_operateurs_sites
 
 $multi_operateur = null;
 foreach($operateurs as $o) {
-    if (count($o->dr_cdc_id) > 1) {
         $multi_operateur = $o;
         $multi_operateur_certi_produits = array();
         $multi_operateur_config_produits = array();
