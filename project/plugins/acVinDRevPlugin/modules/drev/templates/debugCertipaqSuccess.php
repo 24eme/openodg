@@ -7,7 +7,7 @@
     <?php if ($res->success): ?>
         <span class="text-success">OK - <?php echo $res->res->id; ?></span>
     <?php else: ?>
-        <span class="text-danger">ERROR - <?php echo $res->erreor; ?></span>
+        <span class="text-danger">ERROR - <?php echo $res->erreors; ?></span>
     <?php endif; ?>
 </li>
 <?php endforeach; ?>
