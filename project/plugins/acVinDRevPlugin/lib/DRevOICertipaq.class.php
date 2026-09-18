@@ -21,20 +21,30 @@ class DRevOICertipaq
         $sended = array();
         $produits = array();
         $api_res = array();
+        $drev_cepages = array();
         if($this->regions){
             $regionSended = array();
             foreach ($this->regions as $region => $regionOpt) {
                 foreach($this->drev->declaration->getProduits($region) as $produit) {
-                    $api_res[$produit->getHash()] = $this->sendProduit($produit);
+                    $hash = $produit->getCepage()->getHash();
+                    if (!isset($drev_cepages[$hash])) {
+                        $drev_cepages[$hash] = $produit->getCepage();
+                    }
                 }
                 $sended[] = $region;
             }
         }else{
             $sended[] = null;
             foreach($this->drev->declaration->getProduits() as $produit) {
-                $api_res[$produit->getHash()] = $this->sendProduit($produit);
+                $hash = $produit->getCepage()->getHash();
+                if (!isset($drev_cepages[$hash])) {
+                    $drev_cepages[$hash] = $produit->getCepage();
+                }
             }
-		}
+        }
+        foreach($drev_cepages as $has => $drev_cepage) {
+            $api_res[$drev_cepage->getHash()] = $this->sendProduit($drev_cepage);
+        }
         if(count($api_res)){
             if (!$this->drev->exist('envoi_oi') || ! $this->drev->envoi_oi) {
                 $this->drev->add('envoi_oi', date('c'));

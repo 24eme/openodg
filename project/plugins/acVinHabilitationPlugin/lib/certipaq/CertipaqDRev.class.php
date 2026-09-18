@@ -95,17 +95,19 @@ class CertipaqDRev extends CertipaqService
         return $this->query('declaration/revendication', 'POST', $params);
     }
 
-    public function createDRevLigne($drev_produit) {
-        $data = [];
-        $data['volume'] = $drev_produit->volume_revendique_total;
-        $data['superficie'] = $drev_produit->superficie_revendique;
-        $data['millesime'] = $drev_produit->getDocument()->periode;
-        if ($drev_produit->denomination_complementaire) {
-            $data['observations'] = $drev_produit->denomination_complementaire;
+    public function createDRevLigne(DRevDeclarationCepage $drev_cepage) {
+        $data = ['volume' => 0, 'superficie' => 0, 'volume_complementaire_individuel_hl' => 0];
+        $data['millesime'] += $drev_cepage->getDocument()->periode;
+        foreach($drev_cepage as $drev_produit ) {
+            $data['volume'] += $drev_produit->volume_revendique_total;
+            $data['superficie'] += $drev_produit->superficie_revendique;
+            if ($drev_produit->volume_revendique_issu_vci) {
+                //Dont VCI
+                $data['volume_complementaire_individuel_hl'] += floatval($drev_produit->volume_revendique_issu_vci);
+            }
         }
-        if ($drev_produit->volume_revendique_issu_vci) {
-            //Dont VCI
-            $data['volume_complementaire_individuel_hl'] = floatval($drev_produit->volume_revendique_issu_vci);
+        if (!$data['volume_complementaire_individuel_hl']) {
+            unset($data['volume_complementaire_individuel_hl']);
         }
         return $this->createUneLigne($drev_produit->getDocument()->declarant, $drev_produit->getConfig(), $data);
     }
