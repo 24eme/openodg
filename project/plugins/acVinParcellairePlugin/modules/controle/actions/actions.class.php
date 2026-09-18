@@ -21,7 +21,7 @@ class controleActions extends sfActions
                 $index = $c->date_tournee.'-'.$c->agent_identifiant;
                 if (!isset($this->tournees[$index])) {
                     $this->tournees[$index] = [
-                        'parcelles' => [],
+                        'nb_parcelles' => 0,
                         'operateurs' => [],
                         'secteurs' => [],
                         'cooperatives' => [],
@@ -33,7 +33,7 @@ class controleActions extends sfActions
                     ];
                 }
                 if ($c->type_tournee != "Contrôle Importé") {
-                    $this->tournees[$index]['parcelles'] += $c->parcelles->toArray(true,false);
+                    $this->tournees[$index]['nb_parcelles'] += count($c->parcelles->toArray(true,false));
                 }
                 $this->tournees[$index]['operateurs'][$c->identifiant] = $c->declarant->nom;
                 $this->tournees[$index]['ids'][$c->_id] = $c->_id;
