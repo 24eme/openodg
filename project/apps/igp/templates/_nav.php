@@ -1,4 +1,4 @@
-<?php $route = $route->getRawValue(); ?>
+<?php $route = !is_null($route) ? $route->getRawValue() : null; ?>
 <nav id="menu_navigation" class="navbar navbar-default container">
     <div class="navbar-header hidden-lg hidden-md pull-right">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">

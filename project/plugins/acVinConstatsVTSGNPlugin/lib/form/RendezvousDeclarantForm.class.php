@@ -27,7 +27,7 @@ class RendezvousDeclarantForm extends acCouchdbObjectForm {
             $this->setDefault('date', format_date($this->rendezvous->date, 'dd/MM/yyyy'));
         }
         if ($this->rendezvous->heure) {
-            $this->setDefault('heure', format_date($this->rendezvous->heure, 'HH:mm'));
+            $this->setDefault('heure', $this->rendezvous->heure, 'H:i');
         }
         if ($this->rendezvous->commentaire) {
             $this->setDefault('commentaire', $this->rendezvous->commentaire);

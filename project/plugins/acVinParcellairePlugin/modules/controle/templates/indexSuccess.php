@@ -42,9 +42,7 @@
             <?php endif; ?>
         </td>
         <td class="text-center" data-toggle="tooltip" title="<?php echo implode("\n", $tournee['operateurs']->getRawValue()) ?>">
-            <?php echo count($tournee['operateurs']); ?> op.
-            /
-            <?php echo count($tournee['parcelles']); ?> p.
+            <?php echo count($tournee['operateurs']); ?>&nbsp;op.&nbsp;/&nbsp;<?php echo count($tournee['parcelles']); ?>&nbsp;p.
         </td>
         <td class="text-right">
             <a href="<?php echo url_for('controle_apporga', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_A_ORGANISER): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-th-list"></span> Préparer    </a>

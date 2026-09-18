@@ -4,12 +4,17 @@
 <h4>
 <?php if ($compte->exist('en_alerte') && $compte->en_alerte): ?><span class="pull-right">⛔</span><?php endif; ?>
     <span class="glyphicon glyphicon-home"></span> <?php  echo $etablissement->getNom() ?>
-    <span class="text-muted"> -
-    <?php echo EtablissementFamilles::getFamilleLibelle($etablissement->famille); ?> -
+    <span class="text-muted">
+    - <?php echo EtablissementFamilles::getFamilleLibelle($etablissement->famille); ?>
+    <?php if ($etablissement->nature_inao): ?>
+    -    <?php echo $etablissement->nature_inao; ?>
+    <?php endif; ?>
+    </span>
+    <p class="text-muted">
     <?php echo $etablissement->getIdentifiant(); ?>
     <?php  if($etablissement->getCvi()){ echo ' - CVI : '.$etablissement->getCvi(); } elseif($etablissement->ppm){ echo ' - PPM : '.$etablissement->ppm; } ?>
     <?php  if($etablissement->getSiret()){ echo ' - SIRET : '.formatSIRET($etablissement->getSiret()); } ?>
-    </span>
+    </p>
 </h4>
 <div class="row">
     <div class="col-xs-12">

@@ -32,14 +32,19 @@ class HabilitationValidation extends DocumentValidation
 
     public function controleLocalisation($declarant)
     {
-        $code_insee = substr($declarant->cvi, 0, 5);
+        $code_insee_cvi = substr($declarant->cvi, 0, 5);
         $commune = ucfirst(strtolower($declarant->commune));
         $configurationCommunes = CommunesConfiguration::getInstance();
+        $code_insee = $configurationCommunes->findCodeCommune($commune);
 
-        if ($configurationCommunes->getCommuneByCode($code_insee) != $commune && $configurationCommunes->findCodeCommune($commune) != $code_insee) {
-            $this->addPoint(self::TYPE_ERROR, 'commune_hors_de_l_aire', "La commune [". $code_insee .'] '. $commune ." n'est pas dans la liste des communes reconnues");
-            return 0;
+        if ($code_insee && $configurationCommunes->getCommuneByCode($code_insee)) {
+            return true;
         }
+        if ($configurationCommunes->getCommuneByCode($code_insee_cvi)) {
+            return true;
+        }
+        $this->addPoint(self::TYPE_ERROR, 'commune_hors_de_l_aire', "La commune [". $code_insee .' - '.$code_insee_cvi.'] '. $commune ." n'est pas dans la liste des communes reconnues");
+        return false;
     }
 
 }

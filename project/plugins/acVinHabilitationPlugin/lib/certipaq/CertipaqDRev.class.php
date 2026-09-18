@@ -2,12 +2,14 @@
 
 class CertipaqDRev extends CertipaqService
 {
+    private $last_params = [];
+
     public function list($params = [])
     {
         return $this->query('declaration/revendication', 'GET', $params);
     }
 
-    public function findbyOperateurAndMillesime($operateur_certipaq_id, $millesime) {
+    public function findbyOperateurIdAndMillesime($operateur_certipaq_id, $millesime) {
         $param = array();
         $param['operateur_id'] = $operateur_certipaq_id;
         $param['millesime'] = array("$millesime");
@@ -31,7 +33,7 @@ class CertipaqDRev extends CertipaqService
     }
 
 
-    public function find($id)
+    public function findLigne($id)
     {
         $endpoint = 'declaration/revendication/{id_declaration}';
         $endpoint = str_replace('{id_declaration}', $id, $endpoint);
@@ -39,10 +41,10 @@ class CertipaqDRev extends CertipaqService
         return $this->keys2obj($line);
     }
 
-    public function createUneLigne($etablissement, $produit_conf, $data) {
-        $operateur = CertipaqOperateur::getInstance()->findByEtablissement($etablissement);
+    public function createUneLigne($declarant, $produit_conf, $data) {
+        $operateur = CertipaqOperateur::getInstance()->findByEtablissement($declarant);
         if (!$operateur) {
-            throw new sfException('Opérateur non reconnu pour '.$etablissement->cvi." / ".$etablissement->siret);
+            throw new sfException('Opérateur non reconnu pour '.$declarant->cvi." / ".$declarant->siret);
         }
         $produit = CertipaqDeroulant::getInstance()->getCertipaqProduitFromConfigurationProduit($produit_conf);
         if (!$produit) {
@@ -51,15 +53,24 @@ class CertipaqDRev extends CertipaqService
         $habilitation = CertipaqOperateur::getInstance()->getHabilitationFromOperateurProduitAndActivite($operateur, $produit, CertipaqDeroulant::ACTIVITE_PRODUCTEUR);
 
         if (!isset($data['millesime']) || !isset($data['volume']) || !isset($data['superficie'])) {
-            throw new sfException('millesime, volume et superficie manquand dans l'argument $data');
+            throw new sfException("millesime, volume et superficie manquand dans l'argument $data");
+        }
+
+        $site_id = null;
+        foreach($operateur->sites as $sid => $s) {
+            foreach($s->habilitations as $hid => $a) {
+                if ($a->site_id) {
+                    $site_id = $a->site_id;
+                }
+            }
         }
 
         $params = array();
-        $params['operateur_id'] = $operateur->id;
-        $params['operateurs_sites_id'] = $habilitation->site_id;
-        $params['dr_cdc_famille_id'] = $habilitation->dr_cdc_famille_id;
-        $params['dr_cdc_id'] = $habilitation->dr_cdc->id;
-        $params['millesime'] = ""+$data['millesime']+"";
+        $params['operateur_id'] = intval($operateur->id);
+        $params['dr_cdc_famille_id'] = $produit->dr_cdc_famille_id;
+        $params['dr_cdc_id'] = $produit->dr_cdc_id;
+        $params['dr_cdc_produit_id'] = $produit->id;
+        $params['millesime'] = sprintf("%d", $data['millesime']);
         $params['volume_hl'] = floatval($data['volume']);
         $params['surface_ha'] = floatval($data['superficie']);
         if (isset($data['observations'])) {
@@ -77,9 +88,32 @@ class CertipaqDRev extends CertipaqService
         if (isset($data['cepages'])){
             throw new sfException('pas implémenté');
         }
-        $params['dr_cdc_produit_id'] = $habilitation->dr_cdc_produit_id;
-        $params['entrepot_operateurs_sites_id'] = $habilitation->site_id;
+        $params['entrepot_operateurs_sites_id'] = $site_id;
+        $params['operateurs_sites_id'] = $site_id;
 
+        $this->last_params = $params;
         return $this->query('declaration/revendication', 'POST', $params);
     }
+
+    public function createDRevLigne(DRevDeclarationCepage $drev_cepage) {
+        $data = ['volume' => 0, 'superficie' => 0, 'volume_complementaire_individuel_hl' => 0];
+        $data['millesime'] += $drev_cepage->getDocument()->periode;
+        foreach($drev_cepage as $drev_produit ) {
+            $data['volume'] += $drev_produit->volume_revendique_total;
+            $data['superficie'] += $drev_produit->superficie_revendique;
+            if ($drev_produit->volume_revendique_issu_vci) {
+                //Dont VCI
+                $data['volume_complementaire_individuel_hl'] += floatval($drev_produit->volume_revendique_issu_vci);
+            }
+        }
+        if (!$data['volume_complementaire_individuel_hl']) {
+            unset($data['volume_complementaire_individuel_hl']);
+        }
+        return $this->createUneLigne($drev_produit->getDocument()->declarant, $drev_produit->getConfig(), $data);
+    }
+
+    public function getLastQuery() {
+        return ['url' => 'declaration/revendication', 'method' => 'POST', 'params' => $this->last_params, 'date' => date('c')];
+    }
+
 }
