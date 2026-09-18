@@ -167,7 +167,13 @@ class facturationActions extends sfActions
                 $this->mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($this->mouvements, $this->getCurrentRegion());
             }
 
-            usort($this->mouvements, function ($a, $b) { return $a->value->date < $b->value->date; });
+            usort($this->mouvements, function ($a, $b) {
+                $cmp = strcmp($a->value->type, $b->value->type);
+                if ($cmp !== 0) {
+                    return $cmp;
+                }
+                return strcmp($a->value->date, $b->value->date);
+            });
 
             $this->setTemplate('declarant');
 

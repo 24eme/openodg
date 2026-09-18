@@ -46,7 +46,7 @@ fi
 
 XMLFILE=$XMLTESTDIR/"$DATE"_"$APPLICATION"_"$LASTCOMMIT"-"$AUTHOR"_"$BRANCH".xml
 
-bash $(dirname $0)/run_test.sh -x $XMLFILE $APPLICATION
+bash $(dirname $0)/run_test.sh -x $XMLFILE $APPLICATION 2> >(grep -iv GEOSGeometry >&2)
 
 sed -i "s|$WORKINGDIR/||" $XMLFILE
 
