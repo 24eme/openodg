@@ -44,7 +44,7 @@ $resultat = CertipaqOperateur::getInstance()->findByCviOrSiret($operateur_test->
 $t->ok($resultat, "On récupère les infos du viti sur la base du siret");
 $t->is($resultat->siret, $operateur_test->siret, "C'est le siret qu'on a demandé");
 
-$t->comment("Identifiant opérateur: ".$operateur_test->id);
+$t->comment("Identifiant de l'opérateur ".$operateur_test->raison_sociale." : ".$operateur_test->id);
 $infos_operateur = CertipaqOperateur::getInstance()->recuperation($operateur_test->id);
 $t->is(array_keys((array) $infos_operateur), array('id','dr_type_entreprise_id','raison_sociale','nom_entreprise','siret','cvi','adresse','complement_adresse','cp','ville','pays','canton','localisation','latitude','longitude','telephone','portable','fax','email','observations','sites','organismes_rattachement'), "On a bien les infos attentues pour la requete opérateur par id");
 $t->is($infos_operateur->id, $operateur_test->id, "On récupère les infos opérateurs (".$operateur_test->raison_sociale.")");
@@ -100,7 +100,7 @@ if (!$readonly) {
   } catch (Exception $e) {
     $t->fail($e->getMessage(), "La création d'une ligne de DR ne provoque pas d'erreur");
   }
-  $certi_drev = CertipaqDRev::getInstance()->find($res->id);
+  $certi_drev = CertipaqDRev::getInstance()->findLigne($res->id);
   $t->is($certi_drev->dr_cdc_produit->libelle, $certipaq_produit->libelle, "la drev contient bien  une résolution du produit choisi : ".$certipaq_produit->libelle);
   $t->ok($certi_drev->dr_cdc->libelle, "la drev contient bien une résolution du cdc");
   $t->ok($certi_drev->dr_cdc_famille->libelle, "la drev contient bien une résolution de la famille");
@@ -121,7 +121,6 @@ $t->is($certi_drev->operateurs_sites->id, $certi_drev->entrepot_operateurs_sites
 
 $multi_operateur = null;
 foreach($operateurs as $o) {
-    if (count($o->dr_cdc_id) > 1) {
         $multi_operateur = $o;
         $multi_operateur_certi_produits = array();
         $multi_operateur_config_produits = array();
@@ -147,14 +146,21 @@ foreach($operateurs as $o) {
     }
 }
 
+$t->comment("DRev complete pour l'opérateur ".$multi_operateur->raison_sociale." - ".$multi_operateur->id);
+
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $millesime);
 $drev->declarant->cvi = $multi_operateur->cvi;
 $drev->declarant->siret = $multi_operateur->siret;
 
-$madenomination = "Denomination de test";
-$i = 1;
+$denomination2test = "Denomination de test";
+$madenomination = $denomination2test;
+$i = 0;
+$hashes = [];
 foreach($multi_operateur_config_produits as $id => $produit_conf) {
-    $produit_rev = $drev->addProduit($produit_conf->getHash(), $madenomination);
+    $i++;
+    $hash = $produit_conf->getHash();
+    $produit_rev = $drev->addProduit($hash, $madenomination);
+    $hashes[$hash] = $hash;
     $produit_rev->superficie_revendique = $i * 1.1;
     $produit_rev->volume_revendique_issu_recolte = $i * 50;
     if ($i == 1) {
@@ -162,14 +168,35 @@ foreach($multi_operateur_config_produits as $id => $produit_conf) {
         $produit_rev->volume_revendique_issu_vci = 20;
     }
     $madenomination = '';
-    $i++;
+    if ($i < 3) {
+        break;
+    }
 }
 $drev->save();
+$i = count($hashes);
+$t->comment($drev->_id);
 
-$nb_lignes_orig = CertipaqDRev::getInstance()->findbyOperateurIdAndMillesime($multi_operateur->id, $millesime);
+$lignes_orig = CertipaqDRev::getInstance()->findbyOperateurIdAndMillesime($multi_operateur->id, $millesime);
+if (!$readonly) {
 $res = CertipaqDRev::getInstance()->createDRev($drev);
-$nb_lignes_post = CertipaqDRev::getInstance()->findbyOperateurIdAndMillesime($multi_operateur->id, $millesime);
-$t->is(count($nb_lignes_post), count($nb_lignes_orig) + $i, 'la creation de la DREV certipaq a bien créé '.$i.' lignes');
+$lignes_post = CertipaqDRev::getInstance()->findbyOperateurIdAndMillesime($multi_operateur->id, $millesime);
+$t->is(count($lignes_post), count($lignes_orig) + $i, 'la creation de la DREV certipaq a bien créé '.$i.' lignes');
+$t->is($res[$i - 1]->id, $lignes_post[count($lignes_post) - 1]->id, "La recherche retourne bien la dernière ligne créé");
+$t->is($res[0]->id, $lignes_post[count($lignes_post) - 1 * count($res)]->id, "La recherche retourne bien la première ligne créé");
+}else{
+    $lignes_post = $lignes_orig;
+    $res = array_slice($lignes_post, count($lignes_post) - $i);
+}
+$ligne_id = $res[count($res) - 1]->id;
+$certi_drev = CertipaqDRev::getInstance()->findLigne($ligne_id);
+$t->is($certi_drev->volume_hl, $produit_rev->volume_revendique_issu_recolte, 'la dernière ligne ('.$ligne_id.') a le bon volume');
+$t->is($certi_drev->surface_ha, $produit_rev->superficie_revendique, 'la dernière ligne a la bonne superficie');
+$ligne_id = $res[0]->id;
+$certi_drev = CertipaqDRev::getInstance()->findLigne($ligne_id);
+$t->is($certi_drev->volume_hl, 50, 'la première ligne ('.$ligne_id.') a le bon volume');
+$t->is($certi_drev->surface_ha, 1.1, 'la première ligne a la bonne superficie');
+$t->is($certi_drev->volume_complementaire_individuel_hl, 20, 'la première ligne a le bon vci');
+$t->is($certi_drev->observations, $denomination2test, 'la première ligne a la dénomination en observation "'.$denomination2test.'"');
 
 $res = CertipaqDI::getInstance()->getAll();
 $res = CertipaqDI::getInstance()->findByOperateurId($infos_operateur->id);
