@@ -57,14 +57,17 @@ class CertipaqDRev extends CertipaqService
         }
 
         $site_id = null;
-        foreach($operateur->sites as $sid => $s) {
-            foreach($s->habilitations as $hid => $a) {
-                if ($a->site_id) {
-                    $site_id = $a->site_id;
-                }
+        $cdcs_nb = 0;
+        foreach($operateur->sites as $id => $s) {
+            if ($s->nom_site == 'Site Principal') {
+                $site_id = $s->id;
+                break;
+            }
+            if ($cdcs_nb < count($s->cdcs)) {
+                $cdcs_nb = count($s->cdcs);
+                $site_id = $s->id;
             }
         }
-
         $params = array();
         $params['operateur_id'] = intval($operateur->id);
         $params['dr_cdc_famille_id'] = $produit->dr_cdc_famille_id;
