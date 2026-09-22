@@ -100,7 +100,7 @@ class CertipaqDRev extends CertipaqService
 
     public function createDRevLigne(DRevDeclarationCepage $drev_cepage) {
         $data = ['volume' => 0, 'superficie' => 0, 'volume_complementaire_individuel_hl' => 0];
-        $data['millesime'] += $drev_cepage->getDocument()->periode;
+        $data['millesime'] = $drev_cepage->getDocument()->periode;
         foreach($drev_cepage as $drev_produit ) {
             $data['volume'] += $drev_produit->volume_revendique_total;
             $data['superficie'] += $drev_produit->superficie_revendique;
