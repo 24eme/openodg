@@ -2,7 +2,7 @@
 
 ODG=igpatlantique
 
-. bin/config.inc
+. bin/config_igpatlantique.inc
 
 echo "Using database http://$COUCHHOST:$COUCHPORT/$COUCHBASE"
 
@@ -36,10 +36,10 @@ do
     curl -s -X POST -d @data/configuration/$ODG/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 done
 
-xlsx2csv -s 4 -d ';' $DATA_DIR/FICHIER_IGP_ATLANTIQUE_2025-2026.xlsx $TMPDIR/f4.csv
-xlsx2csv -s 5 -d ';' $DATA_DIR/FICHIER_IGP_ATLANTIQUE_2025-2026.xlsx $TMPDIR/f5.csv
-xlsx2csv -s 6 -d ';' $DATA_DIR/FICHIER_IGP_ATLANTIQUE_2025-2026.xlsx $TMPDIR/f6.csv
-xlsx2csv -s 7 -d ';' $DATA_DIR/FICHIER_IGP_ATLANTIQUE_2025-2026.xlsx $TMPDIR/f7.csv
+xlsx2csv -s 4 -d ';' $DATA_DIR/FICHIER_IGP_ATLANTIQUE_2025-2026_21.09.2026.xlsx $TMPDIR/f4.csv
+xlsx2csv -s 5 -d ';' $DATA_DIR/FICHIER_IGP_ATLANTIQUE_2025-2026_21.09.2026.xlsx $TMPDIR/f5.csv
+xlsx2csv -s 6 -d ';' $DATA_DIR/FICHIER_IGP_ATLANTIQUE_2025-2026_21.09.2026.xlsx $TMPDIR/f6.csv
+xlsx2csv -s 7 -d ';' $DATA_DIR/FICHIER_IGP_ATLANTIQUE_2025-2026_21.09.2026.xlsx $TMPDIR/f7.csv
 grep -E '^[0-9]{2}/[0-9]{2}/[0-9]{4}' $TMPDIR/f4.csv > $TMPDIR/PVC.csv
 grep -E '^[0-9]{2}/[0-9]{2}/[0-9]{4}' $TMPDIR/f5.csv > $TMPDIR/VC.csv
 grep -E '^[0-9]{2}/[0-9]{2}/[0-9]{4}' $TMPDIR/f6.csv > $TMPDIR/C.csv
