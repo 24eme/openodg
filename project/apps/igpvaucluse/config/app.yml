@@ -15,3 +15,5 @@ all:
     regions:
       IGPVAUCLUSE: "IGPVAUCLUSE"
   etiquettes: "70x35" #Impression ajusté à la page
+  documents:
+    url_officiels: "https://igp.vins.24eme.fr/plus.php?odg=vaucluse"
