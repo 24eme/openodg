@@ -61,5 +61,13 @@
                 <li class="<?php if($route instanceof InterfaceParcellaireRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('parcellaire_declarant', $etablissement); ?>">Parcellaire</a></li>
             </ul>
         <?php endif; ?>
+        <ul class="nav navbar-nav navbar-right">
+            <?php if (($sf_user->isAdminODG()) && $compte && $route instanceof InterfaceUsurpationRoute && !$sf_user->isUsurpationCompte()) : ?>
+                 <li><a tabindex="-1" href="<?php echo url_for('auth_usurpation', array('identifiant' => $compte->identifiant)) ?>" title="Connexion mode déclarant"><span class="glyphicon glyphicon-cloud-upload"></span></a></li>
+            <?php endif; ?>
+            <?php if ($sf_user->isUsurpationCompte()): ?>
+                <li><a tabindex="-1" href="<?php echo url_for('auth_deconnexion_usurpation') ?>" title="Déconnexion du mode déclarant"><span class="glyphicon glyphicon-cloud-download"></span></a></li>
+            <?php endif; ?>
+        </ul>
     </div>
 </nav>
