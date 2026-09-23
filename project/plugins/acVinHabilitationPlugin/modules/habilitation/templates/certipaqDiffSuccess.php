@@ -5,7 +5,7 @@
     <h1>Comparatif Certipaq</h1>
 </div>
 
-<p>Comparatif des données issues de la base de données et celles trouvées vias l'API Certipaq <small class="text-muted">(via <?php echo CertipaqService::getInstance()->getConfigurationValue('username'); ?>)</small></p>
+<p>Comparatif des données issues de la base de données et celles trouvées vias l'API Certipaq <small class="text-muted">(via <?php echo CertipaqService::getInstance()->getConfigurationValue('host')." / ".CertipaqService::getInstance()->getConfigurationValue('username'); ?>)</small></p>
 
 <?php if (isset($error) && $error): ?>
 
