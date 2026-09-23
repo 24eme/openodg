@@ -14,3 +14,5 @@ all:
   donnees_viticoles:
     regions:
       IGPALPES: "IGPALPES"
+  documents:
+    url_officiels: "https://igp.vins.24eme.fr/plus.php?odg=alpes"
