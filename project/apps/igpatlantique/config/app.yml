@@ -16,4 +16,4 @@ all:
       IGPATLANTIQUE: "IGPATLANTIQUE"
   etiquettes: "70x36" #Impression en taille rélle
   documents:
-    url_officiels: "https://www.igp-atlantique.fr/espace-pro/"
+    url_officiels: "https://igp.vins.24eme.fr/plus.php?odg=atlantique"
