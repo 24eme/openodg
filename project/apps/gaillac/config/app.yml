@@ -18,3 +18,5 @@ all:
       IGPTARN : "IGPTARN"
       AOCGAILLAC: "AOCGAILLAC"
   email_plugin_all_copy: true
+  documents:
+    url_officiels: "https://documents.vins-gaillac.com/"
