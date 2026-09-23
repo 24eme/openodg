@@ -29,7 +29,7 @@ th {
         </td>
     </tr>
     <tr><td style="width: 100%">Lot non conforme à la dégustation, <strong><?php echo $lot->getTextPassage(); ?></strong></td></tr>
-    <tr><td>Commission de Dégustation réunie le : <?php echo format_date($degustation->date, "P", "fr_FR"); ?></td></tr>
+    <?php if (! $degustation->externalisee): ?><tr><td>Commission de Dégustation réunie le : <?php echo format_date($degustation->date, "P", "fr_FR"); ?></td></tr><?php endif;?>
 </table>
 
 <p style="text-align: center"><strong>Lot concerné par la non-conformité : <?php echo showProduitCepagesLot($lot, false) ?></strong></p>

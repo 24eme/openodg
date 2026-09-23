@@ -935,14 +935,18 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					$lots[] = $lot;
 				}
 			}
-            if ($this->exist('externalisee') && $this->externalisee) {
+            if ($this->isDegustationExternalisee()) {
                 $this->array_tri = [DegustationClient::DEGUSTATION_TRI_OPERATEUR];
             } else {
-			    $this->array_tri = [DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT];
+                $this->array_tri = [DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT];
             }
 			usort($lots, array($this, "sortLotsByThisTri"));
  		 	return $lots;
 		}
+
+        public function isDegustationExternalisee() {
+            return ($this->exist('externalisee') && $this->externalisee);
+        }
 
         public function cleanLotsNonAnonymisable(){
 			$this->fillDocToSaveFromLots();

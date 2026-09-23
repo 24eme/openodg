@@ -402,6 +402,27 @@ class DRevProduit extends BaseDRevProduit
         return ($this->getVolumeReserveInterpro());
     }
 
+    protected function getVolumeReserveInterproByConfig() {
+        if (!VCR::hasCsv() && !$this->getConfig()->hasRendementReserveInterpro()) {
+            return 0;
+        }
+        if (VCR::hasCsv() && !$this->getConfig()->hasRendementReserveInterpro()) {
+            return $this->getVolumeReserveInterproVCR();
+        } elseif (!VCR::hasCsv() && $this->getConfig()->hasRendementReserveInterpro()) {
+            return $this->getVolumeReserveInterproAndButoir();
+        }
+        throw new sfException("Erreur : plusieurs modes de calcul de la reserve interpro implémentés");
+    }
+
+    protected function getVolumeReserveInterproVCR()
+    {
+        if ($vcr = VCR::getFromCSV($this->getDocument()->getDefaultMillesime(), $this->getDocument()->declarant->cvi, $this->getProduitHash())) {
+            $volumeEnReserve = $this->volume_revendique_total - $vcr;
+            return ($volumeEnReserve >= 0)?  $volumeEnReserve : 0;
+        }
+        return 0;
+    }
+
 	protected function getVolumeReserveInterproAndButoir() {
 		if (!$this->getConfig()->hasRendementReserveInterpro()) {
 			return 0;
@@ -414,19 +435,19 @@ class DRevProduit extends BaseDRevProduit
 	}
 
     public function getVolumeReserveInterpro() {
-        if (!$this->getConfig()->hasRendementReserveInterpro()) {
-            return 0;
+        if ($this->exist('dont_volume_revendique_reserve_interpro') && $this->dont_volume_revendique_reserve_interpro > 0) {
+            return $this->dont_volume_revendique_reserve_interpro;
         }
-        $diff = $this->getVolumeReserveInterproAndButoir();
+        $diff = $this->getVolumeReserveInterproByConfig();
 		$diff_butoir = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendement());
-		if ($diff_butoir > 0) {
+		if ($diff > 0 && $diff_butoir > 0) {
 			return $diff - $diff_butoir;
 		}
 		return $diff;
     }
 
 	public function getVolumeRevendiqueCommecialisable() {
-		return $this->volume_revendique_total - $this->getVolumeReserveInterproAndButoir();
+		return $this->volume_revendique_total - $this->getVolumeReserveInterproByConfig();
 	}
 
 	public function getSommeProduitsCepage($hash) {
