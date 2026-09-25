@@ -234,4 +234,8 @@ class CertipaqService
     public function hasConfiguration() {
         return ($this->configuration) && (count($this->configuration));
     }
+
+    public function getConfigurationValue($key) {
+        return $this->configuration[$key];
+    }
 }

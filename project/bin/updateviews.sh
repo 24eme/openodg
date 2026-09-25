@@ -16,6 +16,8 @@ else
     . $configdir"/"config_"$1".inc
 fi
 
+mkdir -p $TMPDIR
+
 if test -e $TMPDIR/$COUCHBASE".updateviews.pid"; then
 exit 2;
 fi
