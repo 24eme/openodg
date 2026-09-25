@@ -37,7 +37,7 @@ class globalComponents extends sfComponents {
                 }
             }
         endif;
-        if ($this->compte) {
+        if (!$this->compte) {
             throw new sfException('"'.$this->getUser()->getUsedLogin().'" non reconnu');
         }
     }
