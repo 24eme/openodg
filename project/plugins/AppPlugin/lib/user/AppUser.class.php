@@ -265,4 +265,8 @@ class AppUser extends sfBasicSecurityUser {
       return null;
     }
 
+    public function getUsedLogin() {
+       return $this->getAttribute(self::SESSION_COMPTE_LOGIN, null, self::NAMESPACE_COMPTE);
+    }
+
 }

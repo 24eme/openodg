@@ -30,7 +30,7 @@ class authActions extends sfActions
     }
 
     public function executeLogout(sfWebRequest $request) {
-        $this->getUser()->signOut();
+        $this->getUser()->signOutOrigin();
 
         $urlBack = $this->generateUrl('accueil', array(), true);
 
@@ -48,4 +48,28 @@ class authActions extends sfActions
 
         return $this->renderText(json_encode(array("authenticated" => $this->getUser()->isAuthenticated())));
     }
+
+    public function executeUsurpation(sfWebRequest $request) {
+        if(!$this->getUser()->isAdminODG()) {
+            throw new sfError403Exception();
+        }
+
+        $compte = CompteClient::getInstance()->find("COMPTE-".$request->getParameter('identifiant'));
+
+        $this->getUser()->usurpationOn($compte->identifiant, $request->getReferer());
+
+       return $this->redirect('accueil');
+    }
+
+    public function executeDeconnexionUsurpation(sfWebRequest $request) {
+        $url_back = $this->getUser()->usurpationOff();
+
+        if ($url_back) {
+
+            return $this->redirect($url_back);
+        }
+
+        $this->redirect('accueil');
+    }
+
 }
