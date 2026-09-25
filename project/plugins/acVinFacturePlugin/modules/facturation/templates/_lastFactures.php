@@ -23,9 +23,9 @@
             <td><?php if($facture->doc->total_ht < 0.0): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></td>
             <td>
                 <?php if(FactureConfiguration::getInstance()->isListeDernierExercice()): ?>
-                    <a href="<?php echo url_for('facturation_declarant', array('identifiant' => $facture->doc->identifiant, "campagne" => $facture->doc->campagne)); ?>"><?php echo $facture->doc->declarant->nom ?></a>
+                    <a href="<?php echo url_for('facturation_declarant', array('identifiant' => $facture->doc->identifiant, "campagne" => $facture->doc->campagne)); ?>"><?php echo Anonymization::hideIfNeeded($facture->doc->declarant->nom) ?></a>
                 <?php else: ?>
-                    <a href="<?php echo url_for('facturation_declarant', array('identifiant' => $facture->doc->identifiant)); ?>"><?php echo $facture->doc->declarant->nom ?></a>
+                    <a href="<?php echo url_for('facturation_declarant', array('identifiant' => $facture->doc->identifiant)); ?>"><?php echo Anonymization::hideIfNeeded($facture->doc->declarant->nom) ?></a>
                 <?php endif; ?>
             </td>
             <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->doc->total_ttc)); ?>&nbsp;€</td>

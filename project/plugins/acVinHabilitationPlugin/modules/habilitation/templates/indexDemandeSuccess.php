@@ -27,7 +27,7 @@
                     <tr class="<?php if(in_array($doc->key[HabilitationDemandeView::KEY_STATUT], HabilitationClient::getInstance()->getStatutsFerme())): ?>transparence-sm<?php endif; ?>">
                         <td class="text-left"><?php echo $date->format('d/m/Y') ?></td>
                         <td class="text-center"><?php echo $doc->key[HabilitationDemandeView::KEY_NBJOURS]; ?></td>
-                        <td><a href="<?php echo url_for("habilitation_declarant", array("identifiant" => $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT])); ?>"><?php echo $declarant->raison_sociale; ?> <small>(<?php echo $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT]; echo ($declarant->cvi)? "/".$declarant->cvi : ""; ?>)</small></a></td>
+                        <td><a href="<?php echo url_for("habilitation_declarant", array("identifiant" => $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT])); ?>"><?php echo Anonymization::hideIfNeeded($declarant->raison_sociale); ?> <small>(<?php echo $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT]; echo ($declarant->cvi)? "/".$declarant->cvi : ""; ?>)</small></a></td>
                         <td><?php echo HabilitationClient::$demande_libelles[$doc->key[HabilitationDemandeView::KEY_DEMANDE]]; ?></td>
                         <td><?php echo $doc->key[HabilitationDemandeView::KEY_LIBELLE]; ?></td>
                         <td><a href="<?php echo url_for('habilitation_demande_edition', array('identifiant' => $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT], 'demande' => $doc->key[HabilitationDemandeView::KEY_DEMANDE_KEY], 'retour' => $sf_request->getUri())) ?>"><?php echo HabilitationClient::getInstance()->getDemandeStatutLibelle($doc->key[HabilitationDemandeView::KEY_STATUT]) ; ?></a></td>
