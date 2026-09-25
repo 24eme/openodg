@@ -27,9 +27,19 @@ class globalComponents extends sfComponents {
 
         if($this->getUser()->isAuthenticated() && !$this->getUser()->isAdminODG() && !$this->getUser()->isStalker() && !$this->getUser()->hasDrevAdmin() && !$this->getUser()->hasHabilitation() && (!$this->compte || !$this->etablissement)):
             $this->compte = $this->getUser()->getCompte();
-            $this->societe = $this->compte->getSociete() ; if ($this->societe) $this->etablissement = $this->societe->getEtablissementPrincipal();
-            if(!$this->etablissement) $this->etablissement = $this->compte->getEtablissement();
+            if ($this->compte) {
+                $this->societe = $this->compte->getSociete() ;
+                if ($this->societe) {
+                    $this->etablissement = $this->societe->getEtablissementPrincipal();
+                }
+                if(!$this->etablissement) {
+                    $this->etablissement = $this->compte->getEtablissement();
+                }
+            }
         endif;
+        if ($this->compte) {
+            throw new sfException('"'.$this->getUser()->getUsedLogin().'" non reconnu');
+        }
     }
 
 }
