@@ -49,13 +49,26 @@ rm $TMPDIR/f5.csv
 rm $TMPDIR/f6.csv
 rm $TMPDIR/f7.csv
 
-echo "Import des Opérateurs et Habilitations PVC"
-
-php symfony import:operateur-habilitation-igpatlantique $TMPDIR/PVC.csv  --application="$ODG" --trace
-
 echo "Import des Opérateurs et Habilitations VC"
 
 php symfony import:operateur-habilitation-igpatlantique $TMPDIR/VC.csv  --application="$ODG" --trace
+
+echo "changer les familles"
+
+php symfony document:setvalue --application=igpatlantique ETABLISSEMENT-ATLXXX famille NEGOCIANT
+php symfony document:setvalue --application=igpatlantique ETABLISSEMENT-ATLXXX famille NEGOCIANT
+php symfony document:setvalue --application=igpatlantique ETABLISSEMENT-ATLXXX famille NEGOCIANT
+php symfony document:setvalue --application=igpatlantique ETABLISSEMENT-ATLXXX famille NEGOCIANT
+php symfony document:setvalue --application=igpatlantique ETABLISSEMENT-ATLXXX famille NEGOCIANT
+php symfony document:setvalue --application=igpatlantique ETABLISSEMENT-ATLXXX famille NEGOCIANT
+php symfony document:setvalue --application=igpatlantique ETABLISSEMENT-ATLXXX famille NEGOCIANT
+
+
+echo "Import des Opérateurs et Habilitations PVC"
+
+
+php symfony import:operateur-habilitation-igpatlantique $TMPDIR/PVC.csv  --application="$ODG" --trace
+
 
 echo "Import des Opérateurs et Habilitations C"
 
