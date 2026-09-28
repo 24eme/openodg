@@ -74,3 +74,7 @@ echo "Parcellaire"
 php symfony parcellaire:update-aire --application="$ODG" --trace
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?reduce=false | cut -d '"' -f 4 | while read id; do php symfony import:parcellaire-douanier $id --application="$ODG" --noscrapping=1; done
+
+echo "Creation des comptes admin"
+
+bash $WORKINGDIR/data/comptes/load.sh | bash
