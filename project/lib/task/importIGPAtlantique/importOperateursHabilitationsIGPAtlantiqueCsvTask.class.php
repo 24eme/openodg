@@ -180,7 +180,11 @@ EOF;
 
         if ($data[self::CSV_EXTRA_TYPE_OPERATEUR] === 'P' && ($cavecoop = trim($data[self::CSV_AUTRE]))) {
             if ($relation = EtablissementClient::getInstance()->findByRaisonSociale($cavecoop)) {
-                $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $relation, true);
+                if ($relation->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) {
+                    $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $relation, true);
+                } else {
+                    $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT, $relation, true);
+                }
             } else {
                 echo "ERROR: relation non affectée, la raison sociale est inconnue : ".$data[self::CSV_AUTRE]."\n";
             }
