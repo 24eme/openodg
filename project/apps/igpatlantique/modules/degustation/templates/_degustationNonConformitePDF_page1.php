@@ -67,8 +67,6 @@
       <tr><td>Pour toutes informations, merci de nous contacter.</td></tr><br/>
     </table>
     <?php endif; ?>
-    <br/>
-    <p>Le Syndicat des producteurs de vins IGP Atlantique</p>
 
 <br/><br/>
 <br/><br/>
