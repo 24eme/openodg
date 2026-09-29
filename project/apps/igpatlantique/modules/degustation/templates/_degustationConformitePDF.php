@@ -84,8 +84,6 @@
   <tr>
     <td>Veuillez accepter, Madame, Monsieur, nos plus sincères et cordiales salutations.</td>
   </tr>
-  <br/>
-  <p>Le Syndicat des producteurs de vins IGP Atlantique</p>
 </table>
 <br/><br/>
 <br/><br/>

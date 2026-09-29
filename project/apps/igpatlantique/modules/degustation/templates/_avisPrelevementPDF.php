@@ -78,4 +78,4 @@
 <p>Restant à votre disposition,</p>
 <p>Bien cordialement,</p>
 <br/>
-<p>Le Syndicat des producteurs de vins IGP Atlantique</p>
+<p>le Syndicat des producteurs de vins IGP Atlantique</p>
