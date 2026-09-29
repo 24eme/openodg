@@ -50,6 +50,9 @@ class ParcellaireIrrigueProduitsForm extends acCouchdbObjectForm {
             if ($items['irrigation'] && !$node->date_irrigation) {
                 $node->add('irrigation', $items['irrigation']);
                 $node->date_irrigation = date('Y-m-d');
+            }elseif(!$items['irrigation'] && $node->date_irrigation){
+                $node->add('irrigation', $items['irrigation']);
+                $node->date_irrigation = null;
             }
         }
     }

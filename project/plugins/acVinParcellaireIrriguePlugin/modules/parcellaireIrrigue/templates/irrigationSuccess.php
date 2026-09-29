@@ -110,7 +110,11 @@
                         </div>
                     </div>
             	</td>
-            	<td></td>
+                <?php if ($papier): ?>
+                <td class="text-center"><?php echo format_date($parcelle->date_irrigation, "dd/MM/yyyy", "fr_FR"); ?></td>
+                <?php else: ?>
+                <td></td>
+                <?php endif; ?>
             	<?php endif; ?>
             </tr>
         <?php  endif; endforeach; ?>
@@ -126,7 +130,12 @@
                 </a>
             <?php endif; ?>
         </div>
-        <div class="col-xs-4 text-right"><button type="button" class="btn btn-primary btn-upper transparence-lg"  id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigue-confirmation-validation">Valider</button></div>
+        <div class="col-xs-4 text-right">
+            <?php if (!$papier && $sf_user->isAdminODG()): ?>
+            <a href="?papier=1">Accès Admin</a>
+            <?php endif; ?>
+            <button type="button" class="btn btn-primary btn-upper transparence-lg"  id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigue-confirmation-validation">Valider</button>
+        </div>
     </div>
 </form>
 
