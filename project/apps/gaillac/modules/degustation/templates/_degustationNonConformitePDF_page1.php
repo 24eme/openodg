@@ -55,7 +55,10 @@
 </table><br/><br/>
 
 <table>
-<tr><td>Dans tous les cas, il vous appartient de nous retourner par mail la fiche de non <?php $lot->isLibelleAcceptable() ? 'acceptabilité' : 'conformité'; ?> ci-jointe, datée et signée avec la mention de votre décision :&nbsp;<strong>Demande de déclassement</strong> ou <strong><?php echo ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE || $lot->conformite == Lot::CONFORMITE_NONCONFORME_ETAT || $lot->conformite == Lot::CONFORMITE_NONCONFORME) ? 'Demande contrôle externe' : 'Nouvelle présentation' ?></strong>, ou en ligne via la plateforme de télédéclaration.<br/><br/></td></tr><br/>
+<tr><td>Dans tous les cas, il vous appartient de nous retourner par mail la fiche de non <?php $lot->isLibelleAcceptable() ? 'acceptabilité' : 'conformité'; ?> ci-jointe, datée et signée avec la mention de votre décision :&nbsp;<strong>Demande de déclassement</strong> ou <strong><?php echo ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE || $lot->conformite == Lot::CONFORMITE_NONCONFORME_ETAT || $lot->conformite == Lot::CONFORMITE_NONCONFORME) ? 'Demande contrôle externe' : 'Nouvelle présentation' ?></strong>, ou en ligne via la plateforme de télédéclaration.<br/></td></tr>
+<tr>
+    <td>Vous disposez d’un délai de 15 jours à compter de la réception de la présente notification pour nous proposer une mesure corrective. À défaut, nous transmettrons votre dossier aux services de Qualisud.<br/><br/></td>
+</tr>
   <tr><td>Nous vous prions de croire, Madame, Monsieur, en l’expression de nos sentiments les meilleurs.</td></tr><br/>
   <tr><td>Pour toute information supplémentaire, merci de nous contacter.</td></tr><br/>
 </table>
