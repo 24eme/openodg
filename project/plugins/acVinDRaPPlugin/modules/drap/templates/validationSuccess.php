@@ -96,9 +96,3 @@
 <?php if(isset($coop)): ?>
     <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $drap]); ?>
 <?php endif; ?>
-
-<?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
-<script type="text/javascript">
-$('#drap-confirmation-validation').modal('show')
-</script>
-<?php endif; ?>

@@ -105,7 +105,7 @@ class ExportParcellaireManquantPDF extends ExportPDF {
             if ($this->parcellaireManquant->validation) {
                 $date = new DateTime($this->parcellaireManquant->validation);
 
-                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'), $this->parcellaireManquant->signataire);
+                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
                 if($this->parcellaireManquant->exist('signataire') && $this->parcellaireManquant->signataire) {
                     $header_subtitle .= " par " . $this->parcellaireManquant->signataire;
                 }
