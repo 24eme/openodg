@@ -120,15 +120,9 @@ class myUser extends sfBasicSecurityUser
     }
 
     public function signOutOrigin() {
-        $this->signOut();
         $this->setAuthenticated(false);
         $this->clearCredentials();
         $this->getAttributeHolder()->removeNamespace(self::NAMESPACE_AUTH_ORIGIN);
-    }
-
-    public function signOut()
-    {
-        $this->clearCredentials();
         $this->getAttributeHolder()->removeNamespace(self::NAMESPACE_AUTH);
     }
 
