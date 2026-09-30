@@ -40,7 +40,7 @@
 <table>
   <tr><td>Madame, Monsieur,</td></tr>
   <br/>
-  <tr><td>Lors de la séance de dégustation du <strong><?php echo format_date($degustation->date, "P", "fr_FR"); ?></strong>, le lot dont les informations figurent dans la fiche de non <?php $lot->isLibelleAcceptable() ? 'acceptabilité' : 'conformité'; ?> ci-jointe a été ajourné<?php echo ($lot->isSecondPassage()) ? ' pour la 2ème fois' : '' ?>.<br/></td></tr>
+  <tr><td>Lors de la séance de dégustation du <strong><?php echo format_date($degustation->date, "P", "fr_FR"); ?></strong>, le lot dont les informations figurent dans la fiche de non <?php echo $lot->isLibelleAcceptable() ? 'acceptabilité' : 'conformité'; ?> ci-jointe a été ajourné<?php echo ($lot->isSecondPassage()) ? ' pour la 2ème fois' : '' ?>.<br/></td></tr>
   <tr><td>Compte tenu de ce résultat, <?php if ($lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE){echo "il en résulte que <strong>ce lot est bloqué et ne peut être expédié ou conditionné en vin IGP.</strong> Vous";}else{echo "vous";}?> pouvez décider :</td></tr><br/>
   <tr><td>
     <ul>
