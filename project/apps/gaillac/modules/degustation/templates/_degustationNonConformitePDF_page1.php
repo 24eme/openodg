@@ -45,10 +45,14 @@
   <tr><td>
     <ul>
       <li>Soit d’abandonner volontairement la dénomination correspondante, en nous adressant une déclaration de déclassement par mail ou par courrier à l’aide de la fiche jointe, ou en effectuant cette démarche en ligne via votre plateforme de télédéclaration</li><br/>
-      <?php if ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE): ?>
-      <li>Soit de vous opposer aux conclusions de ce contrôle. Dans ce cas, ainsi que le prévoit le plan de contrôle de l'IGP, vous êtes dans l'obligation de transmettre le dossier à l'organisme de contrôle/d'inspection qui diligentera un nouveau contrôle entièrement à votre charge. <?php if (Organisme::getInstance(null, 'degustation')->getOi()): ?><strong>(<?php echo Organisme::getInstance(null, 'degustation')->getOi() ?>)</strong><?php endif ?></li>
-      <?php elseif ($lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE || $lot->conformite == Lot::CONFORMITE_NONCONFORME_ETAT || $lot->conformite == Lot::CONFORMITE_NONCONFORME): ?>
-          <li>Soit de mener un <strong>ultime contrôle qui peut être effectué en externe par l'organisme certificateur QUALISUD.</strong></li>
+      <?php if ($lot->isSecondPassage()): ?>
+          <?php if ($lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE): ?>
+            <li>Soit de vous opposer aux conclusions de ce contrôle. Dans ce cas, ainsi que le prévoit le plan de contrôle de l'IGP, vous êtes dans l'obligation de transmettre le dossier à l'organisme de contrôle/d'inspection qui diligentera un nouveau contrôle entièrement à votre charge.</li>
+          <?php else: ?>
+              <li>Soit de mener un <strong>ultime contrôle qui peut être effectué en externe par l'organisme certificateur QUALISUD.</strong></li>
+          <?php endif; ?>
+      <?php else: ?>
+          <li>Soit de représenter votre vin en second passage interne.</li>
       <?php endif ?>
     </ul>
   </td></tr>
