@@ -44,16 +44,16 @@
   <tr><td>Compte tenu de ce résultat, <?php if ($lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE){echo "il en résulte que <strong>ce lot est bloqué et ne peut être expédié ou conditionné en vin IGP.</strong> Vous";}else{echo "vous";}?> pouvez décider :</td></tr><br/>
   <tr><td>
     <ul>
-      <li>Soit d’abandonner volontairement la dénomination correspondante, en nous adressant une déclaration de déclassement par mail ou par courrier à l’aide de la fiche jointe, ou en effectuant cette démarche en ligne via votre plateforme de télédéclaration</li><br/>
-      <?php if ($lot->isSecondPassage()): ?>
-          <?php if ($lot->conformite == Lot::CONFORMITE_NONCONFORME_GRAVE): ?>
-            <li>Soit de vous opposer aux conclusions de ce contrôle. Dans ce cas, ainsi que le prévoit le plan de contrôle de l'IGP, vous êtes dans l'obligation de transmettre le dossier à l'organisme de contrôle/d'inspection qui diligentera un nouveau contrôle entièrement à votre charge.</li>
-          <?php else: ?>
+        <?php if ($lot->conformite != Lot::CONFORMITE_NONCONFORME_GRAVE): ?>
+            <li>Soit d’abandonner volontairement la dénomination correspondante, en nous adressant une déclaration de déclassement par mail ou par courrier à l’aide de la fiche jointe, ou en effectuant cette démarche en ligne via votre plateforme de télédéclaration</li><br/>
+        <?php else: ?>
+            <li>De vous opposer aux conclusions de ce contrôle. Dans ce cas, ainsi que le prévoit le plan de contrôle de l'IGP, vous êtes dans l'obligation de transmettre le dossier à l'organisme de contrôle/d'inspection qui diligentera un nouveau contrôle entièrement à votre charge.</li>
+        <?php endif; ?>
+        <?php if ($lot->isSecondPassage() && $lot->conformite != Lot::CONFORMITE_NONCONFORME_GRAVE): ?>
               <li>Soit de mener un <strong>ultime contrôle qui peut être effectué en externe par l'organisme certificateur QUALISUD.</strong></li>
-          <?php endif; ?>
-      <?php else: ?>
-          <li>Soit de représenter votre vin en second passage interne.</li>
-      <?php endif ?>
+        <?php elseif ($lot->conformite != Lot::CONFORMITE_NONCONFORME_GRAVE): ?>
+            <li>Soit de représenter votre vin en second passage interne.</li>
+        <?php endif; ?>
     </ul>
   </td></tr>
 </table><br/><br/>
