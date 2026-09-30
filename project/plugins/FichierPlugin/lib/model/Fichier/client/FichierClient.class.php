@@ -151,4 +151,8 @@ class FichierClient extends acCouchdbClient {
             self::CATEGORIE_PLAN_DE_CAVE => "Plan de cave",
         );
     }
+
+    public function getAppConfigUrlDocumentsOfficiels() {
+        return sfConfig::get('app_documents_url_officiels', null);
+    }
 }

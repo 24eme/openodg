@@ -17,8 +17,12 @@
     <?php elseif($drev->validation): ?>
     Télédéclaration<?php if($drev->getDateDepot()): ?> signée le <?php echo format_date($drev->getDateDepot(), "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->validation_odg): ?> et approuvée le <?php echo format_date($drev->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?>
     <?php endif; ?>
-    <?php if ($sf_user->hasDrevAdmin() && $drev->exist('envoi_oi') && $drev->envoi_oi) { echo ", envoyée à l'OC le ".format_date($drev->envoi_oi, 'dd/MM') ; } ?>
-    <?php if ($sf_user->isAdminODG() && $drev->validation_odg && DrevConfiguration::getInstance()->isSentToCertipaq()): ?><a href="<?php echo url_for('drev_send_certipaq', $drev); echo ($regionParam)? '?region='.$regionParam : ''; ?>" onclick="return confirm('Êtes vous sûr de vouloir envoyer la DRev à Certipaq ?');"  class="btn btn-default btn-xs btn-warning"><span class="glyphicon glyphicon-copy"></span> Envoyer à certipaq</a>&nbsp;<small><a href="<?php  echo url_for('drev_export_xml', $drev) ?>" class=""></a></small><?php endif; ?>
+    <?php if ($sf_user->hasDrevAdmin() && $drev->exist('envoi_oi') && $drev->envoi_oi) : ?>
+        , envoyée à l'OC le <?php echo format_date($drev->envoi_oi, 'dd/MM') ; ?>
+        <small><a href="<?php  echo url_for('drev_debug_certipaq', $drev) ?>" class="">info</a></small>
+    <?php elseif ($sf_user->isAdminODG() && $drev->validation_odg && DrevConfiguration::getInstance()->isSentToCertipaq()): ?>
+        <a href="<?php echo url_for('drev_send_certipaq', $drev); echo ($regionParam)? '?region='.$regionParam : ''; ?>" onclick="return confirm('Êtes vous sûr de vouloir envoyer la DRev à Certipaq ?');"  class="btn btn-default btn-xs btn-warning"><span class="glyphicon glyphicon-copy"></span> Envoyer à certipaq</a>
+    <?php endif; ?>
     </small>
     </h2>
     <?php if ($drev->isFactures()): ?><div style="margin-top: -20px;" class="pull-right"><span class="text-muted">DRev facturée</span></div><?php endif; ?>

@@ -2,6 +2,8 @@
 
 class CertipaqDRev extends CertipaqService
 {
+    private $last_params = [];
+
     public function list($params = [])
     {
         return $this->query('declaration/revendication', 'GET', $params);
@@ -55,14 +57,17 @@ class CertipaqDRev extends CertipaqService
         }
 
         $site_id = null;
-        foreach($operateur->sites as $sid => $s) {
-            foreach($s->habilitations as $hid => $a) {
-                if ($a->site_id) {
-                    $site_id = $a->site_id;
-                }
+        $cdcs_nb = 0;
+        foreach($operateur->sites as $id => $s) {
+            if ($s->nom_site == 'Site Principal') {
+                $site_id = $s->id;
+                break;
+            }
+            if ($cdcs_nb < count($s->cdcs)) {
+                $cdcs_nb = count($s->cdcs);
+                $site_id = $s->id;
             }
         }
-
         $params = array();
         $params['operateur_id'] = intval($operateur->id);
         $params['dr_cdc_famille_id'] = $produit->dr_cdc_famille_id;
@@ -89,29 +94,29 @@ class CertipaqDRev extends CertipaqService
         $params['entrepot_operateurs_sites_id'] = $site_id;
         $params['operateurs_sites_id'] = $site_id;
 
+        $this->last_params = $params;
         return $this->query('declaration/revendication', 'POST', $params);
     }
 
-    public function createDRev($drev) {
-        $res = [];
-        foreach($drev->getProduits() as $prod) {
-            $res[] = $this->createDRevLigne($prod);
+    public function createDRevLigne(DRevDeclarationCepage $drev_cepage) {
+        $data = ['volume' => 0, 'superficie' => 0, 'volume_complementaire_individuel_hl' => 0];
+        $data['millesime'] = $drev_cepage->getDocument()->periode;
+        foreach($drev_cepage as $drev_produit ) {
+            $data['volume'] += $drev_produit->volume_revendique_total;
+            $data['superficie'] += $drev_produit->superficie_revendique;
+            if ($drev_produit->volume_revendique_issu_vci) {
+                //Dont VCI
+                $data['volume_complementaire_individuel_hl'] += floatval($drev_produit->volume_revendique_issu_vci);
+            }
         }
-        return $res;
-    }
-
-    protected function createDRevLigne($drev_produit) {
-        $data = [];
-        $data['volume'] = $drev_produit->volume_revendique_total;
-        $data['superficie'] = $drev_produit->superficie_revendique;
-        $data['millesime'] = $drev_produit->getDocument()->periode;
-        if ($drev_produit->denomination_complementaire) {
-            $data['observations'] = $drev_produit->denomination_complementaire;
-        }
-        if ($drev_produit->volume_revendique_issu_vci) {
-            //Dont VCI
-            $data['volume_complementaire_individuel_hl'] = $drev_produit->volume_revendique_issu_vci;
+        if (!$data['volume_complementaire_individuel_hl']) {
+            unset($data['volume_complementaire_individuel_hl']);
         }
         return $this->createUneLigne($drev_produit->getDocument()->declarant, $drev_produit->getConfig(), $data);
     }
+
+    public function getLastQuery() {
+        return ['url' => 'declaration/revendication', 'method' => 'POST', 'params' => $this->last_params, 'date' => date('c')];
+    }
+
 }

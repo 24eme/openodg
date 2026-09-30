@@ -121,7 +121,6 @@ $t->is($certi_drev->operateurs_sites->id, $certi_drev->entrepot_operateurs_sites
 
 $multi_operateur = null;
 foreach($operateurs as $o) {
-    if (count($o->dr_cdc_id) > 1) {
         $multi_operateur = $o;
         $multi_operateur_certi_produits = array();
         $multi_operateur_config_produits = array();
@@ -156,9 +155,12 @@ $drev->declarant->siret = $multi_operateur->siret;
 $denomination2test = "Denomination de test";
 $madenomination = $denomination2test;
 $i = 0;
+$hashes = [];
 foreach($multi_operateur_config_produits as $id => $produit_conf) {
     $i++;
-    $produit_rev = $drev->addProduit($produit_conf->getHash(), $madenomination);
+    $hash = $produit_conf->getHash();
+    $produit_rev = $drev->addProduit($hash, $madenomination);
+    $hashes[$hash] = $hash;
     $produit_rev->superficie_revendique = $i * 1.1;
     $produit_rev->volume_revendique_issu_recolte = $i * 50;
     if ($i == 1) {
@@ -171,6 +173,7 @@ foreach($multi_operateur_config_produits as $id => $produit_conf) {
     }
 }
 $drev->save();
+$i = count($hashes);
 $t->comment($drev->_id);
 
 $lignes_orig = CertipaqDRev::getInstance()->findbyOperateurIdAndMillesime($multi_operateur->id, $millesime);

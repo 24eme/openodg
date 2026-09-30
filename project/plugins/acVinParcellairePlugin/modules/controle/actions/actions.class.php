@@ -21,7 +21,6 @@ class controleActions extends sfActions
                 $index = $c->date_tournee.'-'.$c->agent_identifiant;
                 if (!isset($this->tournees[$index])) {
                     $this->tournees[$index] = [
-                        'parcelles' => [],
                         'operateurs' => [],
                         'secteurs' => [],
                         'cooperatives' => [],
@@ -31,9 +30,6 @@ class controleActions extends sfActions
                         'statut' => $statut,
                         'ids' => []
                     ];
-                }
-                if (array_values($c->parcelles->toArray(false))[0]->parcelle_id) {
-                    $this->tournees[$index]['parcelles'] += $c->parcelles->toArray(true,false);
                 }
                 $this->tournees[$index]['operateurs'][$c->identifiant] = $c->declarant->nom;
                 $this->tournees[$index]['ids'][$c->_id] = $c->_id;
