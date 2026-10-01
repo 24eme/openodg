@@ -80,12 +80,6 @@
     <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireAffectation]); ?>
 <?php endif; ?>
 
-<?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
-<script type="text/javascript">
-$('#parcellaireaffectation-confirmation-validation').modal('show')
-</script>
-<?php endif; ?>
-
 <?php if(count($destinatairesIncomplete)): ?>
     <div class="modal fade" id="parcellaireaffectation-information-incomplete" role="dialog" aria-labelledby="Confirmation de validation" aria-hidden="true">
         <div class="modal-dialog">

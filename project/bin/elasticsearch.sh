@@ -2,6 +2,8 @@
 
 . bin/config.inc
 
+mkdir -p $TMPDIR
+
 #creation du filtre couchdb
 
 echo '{
