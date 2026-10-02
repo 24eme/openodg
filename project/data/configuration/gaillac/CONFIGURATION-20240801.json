@@ -91,6 +91,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -121,10 +122,10 @@
                             "departements": [],
                             "cepages": {
                               "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
                                 "code_comptable": "70800300",
                                 "code_douane": "1S128S",
                                 "cepages_autorises": [
@@ -135,7 +136,8 @@
                                   "GAMAY N",
                                   "MERLOT N",
                                   "PRUNELARD N",
-                                  "SYRAH N"
+                                  "SYRAH N",
+                                  "JURANCON NOIR N"
                                 ],
                                 "interpro": {
                                   "INTERPRO-declaration": {
@@ -144,6 +146,15 @@
                                       "cvo": []
                                     }
                                   }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
                                 }
                               }
                             },
@@ -176,10 +187,10 @@
                             "departements": [],
                             "cepages": {
                               "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
                                 "code_comptable": "70800300",
                                 "code_douane": "1R128S",
                                 "cepages_autorises": [
@@ -190,7 +201,8 @@
                                   "GAMAY N",
                                   "MERLOT N",
                                   "PRUNELARD N",
-                                  "SYRAH N"
+                                  "SYRAH N",
+                                  "JURANCON NOIR N"
                                 ],
                                 "interpro": {
                                   "INTERPRO-declaration": {
@@ -199,6 +211,15 @@
                                       "cvo": []
                                     }
                                   }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
                                 }
                               }
                             },
@@ -231,10 +252,10 @@
                             "departements": [],
                             "cepages": {
                               "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
                                 "code_comptable": "70800300",
                                 "code_douane": "1B128S",
                                 "cepages_autorises": [
@@ -243,7 +264,11 @@
                                   "MAUZAC ROSE RS",
                                   "MUSCADELLE B",
                                   "ONDENC B",
-                                  "SAUVIGNON B"
+                                  "SAUVIGNON B",
+                                  "VERDANEL B",
+                                  "FELEN B",
+                                  "ALVARINHO B",
+                                  "FURMINT B"
                                 ],
                                 "interpro": {
                                   "INTERPRO-declaration": {
@@ -252,6 +277,15 @@
                                       "cvo": []
                                     }
                                   }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
                                 }
                               }
                             },
@@ -284,10 +318,10 @@
                             "departements": [],
                             "cepages": {
                               "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
                                 "code_comptable": "70800300",
                                 "code_douane": "1B128D",
                                 "cepages_autorises": [
@@ -296,7 +330,11 @@
                                   "MAUZAC ROSE RS",
                                   "MUSCADELLE B",
                                   "ONDENC B",
-                                  "SAUVIGNON B"
+                                  "SAUVIGNON B",
+                                  "VERDANEL B",
+                                  "FELEN B",
+                                  "ALVARINHO B",
+                                  "FURMINT B"
                                 ],
                                 "interpro": {
                                   "INTERPRO-declaration": {
@@ -305,6 +343,15 @@
                                       "cvo": []
                                     }
                                   }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
                                 }
                               }
                             },
@@ -347,6 +394,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -377,19 +425,23 @@
                             "departements": [],
                             "cepages": {
                               "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
                                 "code_comptable": "70800300",
-                                "code_douane": "1B128DVT",
+                                "code_douane": "1B128DVT|1B128DVA",
                                 "cepages_autorises": [
                                   "LEN DE L'EL B",
                                   "MAUZAC B",
                                   "MAUZAC ROSE RS",
                                   "MUSCADELLE B",
                                   "ONDENC B",
-                                  "SAUVIGNON B"
+                                  "SAUVIGNON B",
+                                  "VERDANEL B",
+                                  "FELEN B",
+                                  "ALVARINHO B",
+                                  "FURMINT B"
                                 ],
                                 "interpro": {
                                   "INTERPRO-declaration": {
@@ -398,12 +450,30 @@
                                       "cvo": []
                                     }
                                   }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
                                 }
                               }
                             }
                           }
                         }
                       }
+                    },
+                    "attributs": {
+                      "rendement": 25,
+                      "rendement_dr_l5": null,
+                      "rendement_dr_l15": 25,
+                      "rendement_conseille": null,
+                      "rendement_dr": null,
+                      "rendement_vci": null,
+                      "rendement_vci_total": null
                     }
                   },
                   "PM": {
@@ -431,6 +501,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -461,21 +532,15 @@
                             "departements": [],
                             "cepages": {
                               "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
                                 "code_comptable": "70800300",
                                 "code_douane": "1R128S 2",
                                 "cepages_autorises": [
-                                  "CABERNET FRANC N",
-                                  "CABERNET SAUVIGNON N",
                                   "DURAS N",
-                                  "FER N",
-                                  "GAMAY N",
-                                  "MERLOT N",
-                                  "PRUNELARD N",
-                                  "SYRAH N"
+                                  "GAMAY N"
                                 ],
                                 "interpro": {
                                   "INTERPRO-declaration": {
@@ -484,6 +549,15 @@
                                       "cvo": []
                                     }
                                   }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
                                 }
                               }
                             },
@@ -600,6 +674,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -734,6 +809,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -745,10 +821,10 @@
                         },
                         "departements": [],
                         "couleurs": {
-                          "blanc": {
+                          "blanc_sec": {
                             "libelle": "Blanc",
                             "format_libelle": null,
-                            "code": "blanc",
+                            "code": "blanc_sec",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
@@ -789,69 +865,15 @@
                               }
                             },
                             "attributs": {
-                              "rendement": 71,
+                              "rendement": 0,
                               "rendement_dr_l5": null,
-                              "rendement_dr_l15": 71,
-                              "rendement_conseille": null,
-                              "rendement_dr": null,
-                              "rendement_vci": null,
-                              "rendement_vci_total": null
-                            }
-                          },
-                          "blanc_doux": {
-                            "libelle": "Blanc doux",
-                            "format_libelle": null,
-                            "code": null,
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
-                                "code_comptable": "70800300",
-                                "code_douane": "1B128M03",
-                                "cepages_autorises": [
-                                  "LEN DE L'EL B",
-                                  "MAUZAC B",
-                                  "MAUZAC ROSE RS",
-                                  "MUSCADELLE B",
-                                  "ONDENC B",
-                                  "SAUVIGNON B"
-                                ],
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                }
-                              }
-                            },
-                            "attributs": {
-                              "rendement": 71,
-                              "rendement_dr_l5": null,
-                              "rendement_dr_l15": 71,
+                              "rendement_dr_l15": 0,
                               "rendement_conseille": null,
                               "rendement_dr": null,
                               "rendement_vci": null,
                               "rendement_vci_total": null
                             }
                           }
-
                         }
                       }
                     }
@@ -881,6 +903,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -892,10 +915,10 @@
                         },
                         "departements": [],
                         "couleurs": {
-                          "blanc": {
+                          "blanc_sec": {
                             "libelle": "Blanc",
                             "format_libelle": null,
-                            "code": "blanc",
+                            "code": "blanc_sec",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
@@ -917,7 +940,10 @@
                                 "code_produit": null,
                                 "code_comptable": "70800300",
                                 "code_douane": "1B128M01",
-                                "cepages_autorises": [],
+                                "cepages_autorises": [
+                                  "MAUZAC B",
+                                  "MAUZAC ROSE RS"
+                                ],
                                 "interpro": {
                                   "INTERPRO-declaration": {
                                     "droits": {
@@ -925,13 +951,22 @@
                                       "cvo": []
                                     }
                                   }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
                                 }
                               }
                             },
                             "attributs": {
-                              "rendement": 71,
+                              "rendement": 0,
                               "rendement_dr_l5": null,
-                              "rendement_dr_l15": 71,
+                              "rendement_dr_l15": 0,
                               "rendement_conseille": null,
                               "rendement_dr": null,
                               "rendement_vci": null,
@@ -963,7 +998,10 @@
                                 "code_produit": null,
                                 "code_comptable": "70800300",
                                 "code_douane": "1B128M02",
-                                "cepages_autorises": [],
+                                "cepages_autorises": [
+                                  "MAUZAC B",
+                                  "MAUZAC ROSE RS"
+                                ],
                                 "interpro": {
                                   "INTERPRO-declaration": {
                                     "droits": {
@@ -971,13 +1009,22 @@
                                       "cvo": []
                                     }
                                   }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
                                 }
                               }
                             },
                             "attributs": {
-                              "rendement": 48,
+                              "rendement": 0,
                               "rendement_dr_l5": null,
-                              "rendement_dr_l15": 48,
+                              "rendement_dr_l15": 0,
                               "rendement_conseille": null,
                               "rendement_dr": null,
                               "rendement_vci": null,
@@ -1054,6 +1101,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -1065,10 +1113,10 @@
                         },
                         "departements": [],
                         "couleurs": {
-                          "blanc": {
+                          "blanc_sec": {
                             "libelle": "Blanc",
                             "format_libelle": null,
-                            "code": "blanc",
+                            "code": "blanc_sec",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
@@ -1109,9 +1157,9 @@
                               }
                             },
                             "attributs": {
-                              "rendement": 48,
+                              "rendement": 71,
                               "rendement_dr_l5": null,
-                              "rendement_dr_l15": 48,
+                              "rendement_dr_l15": 71,
                               "rendement_conseille": null,
                               "rendement_dr": null,
                               "rendement_vci": null,
@@ -1147,6 +1195,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -1158,10 +1207,10 @@
                         },
                         "departements": [],
                         "couleurs": {
-                          "blanc": {
+                          "blanc_sec": {
                             "libelle": "Blanc",
                             "format_libelle": null,
-                            "code": "blanc",
+                            "code": "blanc_sec",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
@@ -1183,7 +1232,10 @@
                                 "code_produit": null,
                                 "code_comptable": "70800300",
                                 "code_douane": "1B128M 1",
-                                "cepages_autorises": [],
+                                "cepages_autorises": [
+                                  "MAUZAC B",
+                                  "MAUZAC ROSE RS"
+                                ],
                                 "interpro": {
                                   "INTERPRO-declaration": {
                                     "droits": {
@@ -1193,6 +1245,15 @@
                                   }
                                 }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 71,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": 71,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "blanc_doux": {
@@ -1220,7 +1281,10 @@
                                 "code_produit": null,
                                 "code_comptable": "70800300",
                                 "code_douane": "1B128M 2",
-                                "cepages_autorises": [],
+                                "cepages_autorises": [
+                                  "MAUZAC B",
+                                  "MAUZAC ROSE RS"
+                                ],
                                 "interpro": {
                                   "INTERPRO-declaration": {
                                     "droits": {
@@ -1296,10 +1360,10 @@
             },
             "departements": [],
             "appellations": {
-              "CMT": {
+              "COT": {
                 "libelle": "Comté Tolosan",
                 "format_libelle": null,
-                "code": "CMT",
+                "code": "COT",
                 "code_produit": null,
                 "code_comptable": null,
                 "code_douane": null,
@@ -1340,6 +1404,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -1752,6 +1817,7 @@
                                   "LISTAN B",
                                   "LIVAL N",
                                   "LLEDONER PELUT N",
+                                  "LOIN DE L'OEIL B",
                                   "LUCIEN BALTET N",
                                   "MACABEU B",
                                   "MAD.ANGE.OBERLIN B",
@@ -2862,8 +2928,8 @@
                             }
                           },
                           "blanc_sec": {
-                            "libelle": "Blanc sec",
-                            "format_libelle": null,
+                            "libelle": "Blanc",
+                            "format_libelle": "",
                             "code": "blanc_sec",
                             "code_produit": null,
                             "code_comptable": null,
@@ -3261,6 +3327,7 @@
                                   "LIMNIO N",
                                   "LISTAN B",
                                   "LIVAL N",
+                                  "LOIN DE L'OEIL B",
                                   "LLEDONER PELUT N",
                                   "LUCIEN BALTET N",
                                   "MACABEU B",
@@ -3603,27 +3670,9 @@
                                   "XYNOMAVRO N",
                                   "YORK MADEIRA N",
                                   "ZINFANDEL N PRIMIT",
-                                  "ZWEIGELTREBE",
-                                  "101-14 MGT.",
-                                  "110 RICHTER",
-                                  "1103 PAULSEN",
-                                  "140 RUGGERI",
-                                  "1447 PAULSEN",
-                                  "161-49 COUDERC",
-                                  "1616 COUDERC",
-                                  "196-17 CASTEL",
-                                  "216-3 CASTEL",
-                                  "3 RUDELIN B",
-                                  "3309 COUDERC",
-                                  "333 E.M.",
-                                  "34 E.M.",
-                                  "4010 CASTEL",
-                                  "41 B MGT.",
-                                  "420 A MGT.",
-                                  "44-53 MALEGUE",
-                                  "5 B B.",
-                                  "99 RICHTER",
-                                  "COLOMBARD-SAUVIGNON"
+                                  "ZWEIGELTREBE N",
+                                  "LOIN DE L'OEIL B",
+                                  "COLOMBARD-SAUVIGNON B"
                                 ],
                                 "interpro": {
                                   "INTERPRO-declaration": {
@@ -3634,11 +3683,20 @@
                                   }
                                 }
                               }
+                            },
+                            "attributs": {
+                              "rendement": null,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "blanc_doux": {
-                            "libelle": "Blanc doux",
-                            "format_libelle": null,
+                            "libelle": "Blanc surmuris",
+                            "format_libelle": "",
                             "code": "blanc_doux",
                             "code_produit": null,
                             "code_comptable": null,
@@ -3671,6 +3729,15 @@
                                   }
                                 }
                               }
+                            },
+                            "attributs": {
+                              "rendement": null,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           }
                         }
@@ -3682,6 +3749,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -3731,8 +3799,8 @@
                             }
                           },
                           "blanc_sec": {
-                            "libelle": "Blanc sec",
-                            "format_libelle": null,
+                            "libelle": "Blanc",
+                            "format_libelle": "",
                             "code": "blanc_sec",
                             "code_produit": null,
                             "code_comptable": null,
@@ -3765,6 +3833,15 @@
                                   }
                                 }
                               }
+                            },
+                            "attributs": {
+                              "rendement": null,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rose": {
@@ -3813,6 +3890,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -3862,8 +3940,8 @@
                             }
                           },
                           "blanc_sec": {
-                            "libelle": "Blanc sec",
-                            "format_libelle": null,
+                            "libelle": "Blanc",
+                            "format_libelle": "",
                             "code": "blanc_sec",
                             "code_produit": null,
                             "code_comptable": null,
@@ -3896,6 +3974,15 @@
                                   }
                                 }
                               }
+                            },
+                            "attributs": {
+                              "rendement": null,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rose": {
@@ -3944,6 +4031,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -3993,8 +4081,8 @@
                             }
                           },
                           "blanc_sec": {
-                            "libelle": "Blanc sec",
-                            "format_libelle": null,
+                            "libelle": "Blanc",
+                            "format_libelle": "",
                             "code": "blanc_sec",
                             "code_produit": null,
                             "code_comptable": null,
@@ -4027,6 +4115,15 @@
                                   }
                                 }
                               }
+                            },
+                            "attributs": {
+                              "rendement": null,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rose": {
@@ -4075,6 +4172,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -4124,8 +4222,8 @@
                             }
                           },
                           "blanc_sec": {
-                            "libelle": "Blanc sec",
-                            "format_libelle": null,
+                            "libelle": "Blanc",
+                            "format_libelle": "",
                             "code": "blanc_sec",
                             "code_produit": null,
                             "code_comptable": null,
@@ -4158,6 +4256,15 @@
                                   }
                                 }
                               }
+                            },
+                            "attributs": {
+                              "rendement": null,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rose": {
@@ -4206,6 +4313,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -4255,8 +4363,8 @@
                             }
                           },
                           "blanc_sec": {
-                            "libelle": "Blanc sec",
-                            "format_libelle": null,
+                            "libelle": "Blanc",
+                            "format_libelle": "",
                             "code": "blanc_sec",
                             "code_produit": null,
                             "code_comptable": null,
@@ -4289,6 +4397,15 @@
                                   }
                                 }
                               }
+                            },
+                            "attributs": {
+                              "rendement": null,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rose": {
@@ -4378,6 +4495,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -4442,7 +4560,7 @@
                             },
                             "attributs": {
                               "rendement": 70,
-                              "rendement_dr_l5": null,
+                              "rendement_dr_l5": 80,
                               "rendement_dr_l15": 70,
                               "rendement_conseille": null,
                               "rendement_dr": null,
@@ -4571,7 +4689,7 @@
                             }
                           },
                           "blanc_sec": {
-                            "libelle": "Blanc sec",
+                            "libelle": "Blanc",
                             "format_libelle": null,
                             "code": "blanc_sec",
                             "code_produit": null,
@@ -4631,6 +4749,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -4694,9 +4813,9 @@
                               }
                             },
                             "attributs": {
-                              "rendement": 71,
-                              "rendement_dr_l5": null,
-                              "rendement_dr_l15": 71,
+                              "rendement": 70,
+                              "rendement_dr_l5": 80,
+                              "rendement_dr_l15": 70,
                               "rendement_conseille": null,
                               "rendement_dr": null,
                               "rendement_vci": null,
@@ -4728,23 +4847,6 @@
                                 "code_produit": "",
                                 "code_comptable": "70801000",
                                 "code_douane": "3S020",
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                },
-                                "attributs": {
-                                  "rendement": null,
-                                  "rendement_dr_l5": null,
-                                  "rendement_dr_l15": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
-                                },
                                 "cepages_autorises": [
                                   "ALICANTE BOUSCHET N",
                                   "CABERNET FRANC N",
@@ -4768,7 +4870,24 @@
                                   "PRUNELARD N",
                                   "SYRAH N",
                                   "TANNAT N"
-                                ]
+                                ],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
+                                }
                               }
                             }
                           },
@@ -4833,7 +4952,7 @@
                             }
                           },
                           "blanc_sec": {
-                            "libelle": "Blanc sec",
+                            "libelle": "Blanc",
                             "format_libelle": null,
                             "code": "blanc_sec",
                             "code_produit": null,
@@ -4902,6 +5021,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -5086,7 +5206,7 @@
                             }
                           },
                           "blanc_sec": {
-                            "libelle": "Blanc sec",
+                            "libelle": "Blanc",
                             "format_libelle": null,
                             "code": "blanc_sec",
                             "code_produit": null,
@@ -5137,6 +5257,573 @@
                               }
                             }
                           }
+                        },
+                        "attributs": {
+                          "rendement": 90,
+                          "rendement_dr_l5": 100,
+                          "rendement_dr_l15": 90,
+                          "rendement_conseille": null,
+                          "rendement_dr": null,
+                          "rendement_vci": null,
+                          "rendement_vci_total": null
+                        }
+                      }
+                    }
+                  },
+                  "NOUVEAU": {
+                    "libelle": "Nouveau",
+                    "format_libelle": null,
+                    "code": null,
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": null,
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "cepages_autorises": [],
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "blanc_doux": {
+                            "libelle": "Surmûris Blanc",
+                            "format_libelle": null,
+                            "code": "blanc_doux",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": null,
+                                "format_libelle": null,
+                                "code": null,
+                                "code_produit": null,
+                                "code_comptable": "70801000",
+                                "code_douane": "3B812U nouveau",
+                                "cepages_autorises": [
+                                  "CHARDONNAY B",
+                                  "CHASAN B",
+                                  "COLOMBARD B",
+                                  "GROS MANSENG B",
+                                  "LEN DE L'EL B",
+                                  "LISTAN B",
+                                  "MAUZAC B",
+                                  "MAUZAC ROSE RS",
+                                  "MUSCADELLE B",
+                                  "ONDENC B",
+                                  "PETIT MANSENG B",
+                                  "SAUVIGNON B",
+                                  "SÉMILLON B",
+                                  "UGNI BLANC B"
+                                ],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "attributs": {
+                              "rendement": 70,
+                              "rendement_dr_l5": 80,
+                              "rendement_dr_l15": 70,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
+                            }
+                          },
+                          "rose": {
+                            "libelle": "Rosé",
+                            "format_libelle": null,
+                            "code": "rose",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": null,
+                                "format_libelle": null,
+                                "code": null,
+                                "code_produit": null,
+                                "code_comptable": "70801000",
+                                "code_douane": "3S812 nouveau",
+                                "cepages_autorises": [
+                                  "ALICANTE BOUSCHET N",
+                                  "CABERNET FRANC N",
+                                  "CABERNET SAUVIGNON N",
+                                  "CARIGNAN N",
+                                  "CINSAUT N",
+                                  "DURAS N",
+                                  "EGIODOLA N",
+                                  "FER SERVADOU N",
+                                  "GAMARET N",
+                                  "GAMAY DE BOUZE N",
+                                  "GAMAY DE CHAUDENAY N",
+                                  "GAMAY N",
+                                  "JURANÇON N",
+                                  "MALBEC N",
+                                  "MARSELAN N",
+                                  "MERILLE N",
+                                  "MERLOT N",
+                                  "NÉGRETTE N",
+                                  "PORTUGAIS BLEU N",
+                                  "PRUNELARD N",
+                                  "SYRAH N",
+                                  "TANNAT N"
+                                ],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "rouge": {
+                            "libelle": "Rouge",
+                            "format_libelle": null,
+                            "code": "rouge",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": null,
+                                "format_libelle": null,
+                                "code": null,
+                                "code_produit": null,
+                                "code_comptable": "70801000",
+                                "code_douane": "3R812 nouveau",
+                                "cepages_autorises": [
+                                  "ALICANTE BOUSCHET N",
+                                  "CABERNET FRANC N",
+                                  "CABERNET SAUVIGNON N",
+                                  "CARIGNAN N",
+                                  "CINSAUT N",
+                                  "DURAS N",
+                                  "EGIODOLA N",
+                                  "FER SERVADOU N",
+                                  "GAMARET N",
+                                  "GAMAY DE BOUZE N",
+                                  "GAMAY DE CHAUDENAY N",
+                                  "GAMAY N",
+                                  "JURANÇON N",
+                                  "MALBEC N",
+                                  "MARSELAN N",
+                                  "MERILLE N",
+                                  "MERLOT N",
+                                  "NÉGRETTE N",
+                                  "PORTUGAIS BLEU N",
+                                  "PRUNELARD N",
+                                  "SYRAH N",
+                                  "TANNAT N"
+                                ],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "blanc_sec": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "blanc_sec",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": null,
+                                "format_libelle": null,
+                                "code": null,
+                                "code_produit": null,
+                                "code_comptable": "70801000",
+                                "code_douane": "3B812 nouveau",
+                                "cepages_autorises": [
+                                  "CHARDONNAY B",
+                                  "CHASAN B",
+                                  "COLOMBARD B",
+                                  "GROS MANSENG B",
+                                  "LEN DE L'EL B",
+                                  "LISTAN B",
+                                  "MAUZAC B",
+                                  "MAUZAC ROSE RS",
+                                  "MUSCADELLE B",
+                                  "ONDENC B",
+                                  "PETIT MANSENG B",
+                                  "SAUVIGNON B",
+                                  "SÉMILLON B",
+                                  "UGNI BLANC B"
+                                ],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "CABANES": {
+                        "libelle": "Cabanes",
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "cepages_autorises": [],
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "rouge": {
+                            "libelle": "Rouge",
+                            "format_libelle": null,
+                            "code": "rouge",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": null,
+                                "format_libelle": null,
+                                "code": null,
+                                "code_produit": null,
+                                "code_comptable": "70801000",
+                                "code_douane": "3R020 nouveau",
+                                "cepages_autorises": [
+                                  "ALICANTE BOUSCHET N",
+                                  "CABERNET FRANC N",
+                                  "CABERNET SAUVIGNON N",
+                                  "CARIGNAN N",
+                                  "CINSAUT N",
+                                  "DURAS N",
+                                  "EGIODOLA N",
+                                  "FER SERVADOU N",
+                                  "GAMARET N",
+                                  "GAMAY DE BOUZE N",
+                                  "GAMAY DE CHAUDENAY N",
+                                  "GAMAY N",
+                                  "JURANÇON N",
+                                  "MALBEC N",
+                                  "MARSELAN N",
+                                  "MERILLE N",
+                                  "MERLOT N",
+                                  "NÉGRETTE N",
+                                  "PORTUGAIS BLEU N",
+                                  "PRUNELARD N",
+                                  "SYRAH N",
+                                  "TANNAT N"
+                                ],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "blanc_sec": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "blanc_sec",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "70801000",
+                                "code_douane": "3B020 nouveau",
+                                "cepages_autorises": [
+                                  "CHARDONNAY B",
+                                  "CHASAN B",
+                                  "COLOMBARD B",
+                                  "GROS MANSENG B",
+                                  "LEN DE L'EL B",
+                                  "LISTAN B",
+                                  "MAUZAC B",
+                                  "MAUZAC ROSE RS",
+                                  "MUSCADELLE B",
+                                  "ONDENC B",
+                                  "PETIT MANSENG B",
+                                  "SAUVIGNON B",
+                                  "SÉMILLON B",
+                                  "UGNI BLANC B"
+                                ],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_dr_l5": null,
+                                  "rendement_dr_l15": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "CUNAC": {
+                        "libelle": "Cunac",
+                        "format_libelle": null,
+                        "code": null,
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "cepages_autorises": [],
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "rouge": {
+                            "libelle": "Rouge",
+                            "format_libelle": null,
+                            "code": "rouge",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": null,
+                                "format_libelle": null,
+                                "code": null,
+                                "code_produit": null,
+                                "code_comptable": "70801000",
+                                "code_douane": "3R030 nouveau",
+                                "cepages_autorises": [
+                                  "ALICANTE BOUSCHET N",
+                                  "CABERNET FRANC N",
+                                  "CABERNET SAUVIGNON N",
+                                  "CARIGNAN N",
+                                  "CINSAUT N",
+                                  "DURAS N",
+                                  "EGIODOLA N",
+                                  "FER SERVADOU N",
+                                  "GAMARET N",
+                                  "GAMAY DE BOUZE N",
+                                  "GAMAY DE CHAUDENAY N",
+                                  "GAMAY N",
+                                  "JURANÇON N",
+                                  "MALBEC N",
+                                  "MARSELAN N",
+                                  "MERILLE N",
+                                  "MERLOT N",
+                                  "NÉGRETTE N",
+                                  "PORTUGAIS BLEU N",
+                                  "PRUNELARD N",
+                                  "SYRAH N",
+                                  "TANNAT N"
+                                ],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "blanc_sec": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": "blanc_sec",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": null,
+                                "format_libelle": null,
+                                "code": null,
+                                "code_produit": null,
+                                "code_comptable": "70801000",
+                                "code_douane": "3B030 nouveau",
+                                "cepages_autorises": [
+                                  "CHARDONNAY B",
+                                  "CHASAN B",
+                                  "COLOMBARD B",
+                                  "GROS MANSENG B",
+                                  "LEN DE L'EL B",
+                                  "LISTAN B",
+                                  "MAUZAC B",
+                                  "MAUZAC ROSE RS",
+                                  "MUSCADELLE B",
+                                  "ONDENC B",
+                                  "PETIT MANSENG B",
+                                  "SAUVIGNON B",
+                                  "SÉMILLON B",
+                                  "UGNI BLANC B"
+                                ],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "attributs": {
+                          "rendement": 90,
+                          "rendement_dr_l5": 100,
+                          "rendement_dr_l15": 90,
+                          "rendement_conseille": null,
+                          "rendement_dr": null,
+                          "rendement_vci": null,
+                          "rendement_vci_total": null
                         }
                       }
                     }
@@ -5145,10 +5832,10 @@
               }
             }
           },
-          "MOU": {
+          "VMQ": {
             "libelle": "Mousseux",
             "format_libelle": "%c% %a% %l% %m% %co%",
-            "code": "MOU",
+            "code": "VMQ",
             "code_produit": null,
             "code_comptable": null,
             "code_douane": null,
@@ -5163,10 +5850,10 @@
             },
             "departements": [],
             "appellations": {
-              "CMT": {
+              "COT": {
                 "libelle": "Comté Tolosan",
                 "format_libelle": null,
-                "code": "CMT",
+                "code": "COT",
                 "code_produit": null,
                 "code_comptable": null,
                 "code_douane": null,
@@ -5207,6 +5894,7 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "cepages_autorises": [],
                         "interpro": {
                           "INTERPRO-declaration": {
                             "labels": [],
@@ -5255,10 +5943,10 @@
                               }
                             }
                           },
-                          "blanc": {
+                          "blanc_sec": {
                             "libelle": "Blanc",
                             "format_libelle": null,
-                            "code": "blanc",
+                            "code": "blanc_sec",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
