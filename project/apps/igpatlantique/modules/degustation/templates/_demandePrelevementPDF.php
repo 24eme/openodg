@@ -33,8 +33,10 @@
 <h1 style="text-align: center">NOTIFICATION DE L'ODG IGP ATLANTIQUE</h1>
 <h3 style="text-align: center; font-weight: normal;">Demande de prélèvement et de dégustation - <?php echo $degustation->lieu; ?></h3>
 <h3 style="text-align: center; font-weight: normal;">Contrôle interne produit</h3>
+
+<p>Le : <?php echo date('d/m/Y'); ?></p>
 <p>Madame, Monsieur,</p>
-<p>Voici une demande de prélèvement et de dégustation pour la campagne <strong><?php echo $degustation->campagne ?></strong>. Les opérateurs sont les suivants avec le détail des lots à prélever :</p>
+<p>Voici une demande de prélèvement pour la dégustation du <?php $date = date_create($degustation->date); echo $date->format("d/m/Y"); ?> sur la campagne <strong><?php echo $degustation->campagne ?></strong>. Les opérateurs sont les suivants avec le détail des lots à prélever :</p>
 
 <ul>
 <?php foreach ($lots as $famille => $operateurs): ?>
