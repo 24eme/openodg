@@ -39,71 +39,85 @@
         </div>
       </div>
       <?php endif; ?>
-      <?php foreach ($compte->tags as $type_tag => $tags) :
-        if ($type_tag == 'groupes') {continue;}
-        ?>
-        <div class="row" style="margin-bottom: 10px;">
-          <div class="col-xs-2 text-muted"><?php echo ucfirst($type_tag) ?>&nbsp;:</div>
-          <div class="col-xs-10">
-            <?php if($modifiable): ?>
-            <?php foreach ($tags as $t): ?>
-                <div class="btn-group">
-                    <a class="btn btn-sm <?php if($type_tag == "automatique"): ?>btn-link<?php endif; ?> <?php if($type_tag == "manuel"): ?>btn-default<?php endif; ?>"
-                      href="<?php echo url_for('compte_search', array('tags' => implode(',', array($type_tag . ':' . $t)))); ?>">
-                      <?php echo ucfirst(str_replace('_', ' ', $t)) ?>
-                    </a>
-                    <?php if ($type_tag == 'manuel'): ?><a class="btn btn-sm btn-default" href="<?php echo url_for('compte_removetag', array('q' => "doc.identifiant:".$compte->identifiant, 'tag' => $t, 'retour'=>url_for('compte_visualisation', $compte))) ?>"><span class="glyphicon glyphicon-trash"></span></a><?php endif; ?></span>
-                </div>
-            <?php endforeach; ?>
-            <?php else: ?>
-                <?php foreach ($tags as $t): ?>
-                    <small style="margin-right: 5px"><?php echo ucfirst(str_replace('_', ' ', $t)) ?></small>
-                <?php endforeach; ?>
-            <?php endif; ?>
-            <?php if($type_tag == 'manuel' && $modifiable): ?>
-              <?php $hasManuel = true; ?>
-                <div class="btn-group">
-                  <?php if ($compte->isSuspendu() || $compte->getSociete()->isSuspendu()):
-                    echo "<span class='text-muted'> Ajout de tag impossible pour un contact archivé</span>";
-                  else: ?>
-                  <form class="form_ajout_tag" action="<?php echo url_for('compte_addtag', array("q" => "doc.identifiant:".$compte->identifiant)); ?>" method="GET">
-                    <div class="input-group input-group-sm col-xs-12">
-                      <input id="creer_tag" name="tag" class="tags form-control select2 select2permissifNoAjax" placeholder="Ajouter un tag (liste permissive)" data-choices='<?php echo json_encode(CompteClient::getInstance()->getAllTagsManuel()); ?>'    type="text">
 
-                      <input type="hidden" name="q" value="doc.identifiant:<?php echo $compte->identifiant;?>"/>
-                      <input type="hidden" name="retour" value="<?php echo url_for('compte_visualisation', $compte) ?>"/>
-                      <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit">&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
-                      </span>
-                    </div>
-                  </form>
-                <?php endif; ?>
-                </div>
-            <?php endif; ?>&nbsp;
-        </div>
-      </div>
-      <?php endforeach; ?>
-      <?php if(!$hasManuel && $modifiable): ?>
-      <div class="row" style="margin-bottom: 5px;">
-        <div class="col-xs-2 text-muted">Manuel&nbsp;:</div>
-        <div class="col-xs-10">
-            <div class="btn-group">
-              <?php if ($compte->isSuspendu() || $compte->getSociete()->isSuspendu()):
-                echo "<span class='text-muted'> Ajout de tag impossible pour un contact archivé</span>";
-              else: ?>
-              <form class="form_ajout_tag" action="<?php echo url_for('compte_addtag', array("q" => "doc.identifiant:".$compte->identifiant)); ?>" method="GET">
-                <div class="input-group input-group-sm col-xs-12">
-                  <input id="creer_tag" required="required" name="tag" class="tags form-control select2 select2permissifNoAjax" placeholder="Ajouter un tag (liste permissive)" data-choices='<?php echo json_encode(CompteClient::getInstance()->getAllTagsManuel()); ?>'  type="text">
-                  <input type="hidden" name="q" value="doc.identifiant:<?php echo $compte->identifiant;?>"/>
-                  <input type="hidden" name="retour" value="<?php echo url_for('compte_visualisation', $compte) ?>"/>
-                  <span class="input-group-btn">
-                    <button class="btn btn-default" type="submit">&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
-                  </span>
-                </div>
-              </form>
-            <?php endif; ?>
+      <?php foreach ($compte->tags as $type_tag => $tags) : ?>
+          <?php if ($type_tag === "groupes" || $type_tag === "manuel"): ?>
+            <?php continue; ?>
+          <?php endif ?>
+
+          <div class="row" style="margin-bottom: 10px;">
+            <div class="col-xs-2 text-muted">
+              <?php echo ucfirst($type_tag) ?> :
             </div>
+            <div class="col-xs-10">
+              <?php foreach ($tags as $t): ?>
+                <?php if (! $modifiable): ?>
+                  <small style="margin-right: 5px"><?php echo ucfirst(str_replace('_', ' ', $t)) ?></small>
+                  <?php continue ?>
+                <?php endif ?>
+
+                <div class="btn-group">
+                  <?php $tagClasses = ["btn", "btn-sm"]; ?>
+                  <?php if ($type_tag === "automatique") { $tagClasses[] = "btn-link"; } ?>
+
+                  <a class="<?php echo implode(" ", $tagClasses) ?>"
+                     href="<?php echo url_for('compte_search', ['tags' => implode(',', array($type_tag . ':' . $t))]); ?>"
+                  >
+                    <?php echo ucfirst(str_replace('_', ' ', $t)) ?>
+                  </a>
+                </div>
+              <?php endforeach // tags => t ?>
+            </div>
+          </div>
+      <?php endforeach // type_tag => tags ?>
+
+      <div class="row" style="margin-bottom: 10px">
+        <div class="col-xs-2 text-muted">Manuel :</div>
+        <div class="col-xs-10">
+          <?php $tagsManuels = array_key_exists("manuel", $compte->tags->getRawValue()->toArray(true, false)) ? $compte->tags["manuel"] : []; ?>
+          <?php foreach ($tagsManuels as $t): ?>
+            <?php if (! $modifiable): ?>
+              <small style="margin-right: 5px"><?php echo ucfirst(str_replace('_', ' ', $t)) ?></small>
+              <?php continue; ?>
+            <?php endif ?>
+
+            <div class="btn-group">
+              <a class="btn btn-sm btn-default"
+                 href="<?php echo url_for('compte_search', ['tags' => implode(',', array($type_tag . ':' . $t))]); ?>"
+              >
+                <?php echo ucfirst(str_replace('_', ' ', $t)) ?>
+              </a>
+              <a class="btn btn-sm btn-default"
+                 href="<?php echo url_for('compte_removetag', [
+                   'q' => "doc.identifiant:".$compte->identifiant,
+                   'tag' => $t,
+                   'retour'=>url_for('compte_visualisation', $compte)
+                 ]) ?>"
+              >
+                <span class="glyphicon glyphicon-trash"></span>
+              </a>
+            </div>
+          <?php endforeach ?>
+
+          <?php if ($modifiable): ?>
+            <div class="btn-group">
+              <?php if ($compte->isSuspendu() || $compte->getSociete()->isSuspendu()): ?>
+                <span class='text-muted'>Ajout de tag impossible pour un contact archivé</span>
+              <?php else: ?>
+                <form class="form-inline form_ajout_tag" action="<?php echo url_for('compte_addtag', ["q" => "doc.identifiant:".$compte->identifiant]); ?>" method="GET">
+                  <div class="input-group-sm">
+                    <input id="creer_tag" name="tag" class="p-0 tags select2 form-control select2permissifNoAjax" placeholder="Ajouter un tag (liste permissive)"
+                           data-choices='<?php echo json_encode(CompteClient::getInstance()->getAllTagsManuel()); ?>'
+                           type="text" required="required" />
+                    <button class="btn btn-sm btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
+                  </div>
+                  <input type="hidden" name="q" value="doc.identifiant:<?php echo $compte->identifiant;?>" />
+                  <input type="hidden" name="retour" value="<?php echo url_for('compte_visualisation', $compte) ?>" />
+                </form>
+              <?php endif; ?>
+            </div>
+          <?php endif ?>
         </div>
       </div>
-      <?php endif; ?>
+
     </div>
