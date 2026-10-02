@@ -31,13 +31,9 @@
 </style>
 <br/><br/>
 <h1 style="text-align: center">NOTIFICATION DE L'ODG IGP ATLANTIQUE</h1>
-<h2 style="text-align: center">Demande de prélèvement et de dégustation - <?php echo $degustation->lieu; ?></h2>
-<h2 style="text-align: center">Contrôle interne produit</h2>
-<p>&nbsp;</p>
-<p>Le syndicat des producteurs de vins IGP Atlantique</p>
-<p>&nbsp;</p>
+<h3 style="text-align: center; font-weight: normal;">Demande de prélèvement et de dégustation - <?php echo $degustation->lieu; ?></h3>
+<h3 style="text-align: center; font-weight: normal;">Contrôle interne produit</h3>
 <p>Madame, Monsieur,</p>
-<p>&nbsp;</p>
 <p>Voici une demande de prélèvement et de dégustation pour la campagne <strong><?php echo $degustation->campagne ?></strong>. Les opérateurs sont les suivants avec le détail des lots à prélever :</p>
 
 <ul>
@@ -83,8 +79,4 @@
 </ul>
 <p>Nous vous remercions de bien vouloir nous tenir informés du résultat de la dégustation.
 <p>Cordialement,</p>
-<p>&nbsp;</p>
-<p></p>
-<br/>
-<p>Le syndicat des producteurs de vins IGP Altlantique</p>
-<br/>
+<p>Le Syndicat des Producteurs de vins IGP Altlantique</p>
