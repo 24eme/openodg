@@ -29,13 +29,12 @@
     font-weight: bold;
 }
 </style>
-<br/>
-<h1 style="text-align: center;">NOTIFICATION DE L'ODG IGP ATLANTIQUE</h1>
-<h2 style="text-align: center;">Avis de prélèvement et de dégustation de vins IGP Atlantique</h2>
+<br/><br/>
+<h1 style="text-align: center">NOTIFICATION DE L'ODG IGP ATLANTIQUE</h1>
+<h3 style="text-align: center; font-weight: normal;">Avis de prélèvement et de dégustation - <?php echo $degustation->lieu; ?></h3>
+<p>&nbsp;</p>
 <p>Le : <?php echo date('d/m/Y'); ?></p>
 <p>A: <?php echo $etablissement?></p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
 <p>Madame, Monsieur,</p>
 <p>Nous avons bien reçu votre déclaration de lots. Conformément au plan de contrôle, nous vous informons que nous allons effectuer un prélèvement des lots suivants pour une dégustation dans le cadre du contrôle interne.</p>
 <?php $is_conditionneur = false; ?>
@@ -78,4 +77,4 @@
 <p>Restant à votre disposition,</p>
 <p>Bien cordialement,</p>
 <br/>
-<p>Le Syndicat des producteurs de vins IGP Atlantique</p>
+<p>Le Syndicat des Producteurs de vins IGP Atlantique</p>
