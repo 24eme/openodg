@@ -58,9 +58,9 @@ class DRevOICertipaq
     public function sendProduit($produit){
         try {
             $res = CertipaqDRev::getInstance()->createDRevLigne($produit);
-            return ['success' => true, 'res' => $res, 'erreor' => null, 'debug' => CertipaqDRev::getInstance()->getLastQuery()];
+            return ['success' => true, 'res' => $res, 'erreor' => null, 'debug' => CertipaqDRev::getInstance()->getLastQuery(), 'config_username' => CertipaqDRev::getInstance()->getConfigurationValue('username')];
         }catch(sfException $e) {
-            return ['success' => false, 'error' => $e->getMessage(), 'res' => null, 'debug' => CertipaqDRev::getInstance()->getLastQuery()];
+            return ['success' => false, 'error' => $e->getMessage(), 'res' => null, 'debug' => CertipaqDRev::getInstance()->getLastQuery(), 'config_username' => CertipaqDRev::getInstance()->getConfigurationValue('username')];
         }
     }
 
