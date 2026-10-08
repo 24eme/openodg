@@ -36,7 +36,9 @@ class HabilitationValidation extends DocumentValidation
         $commune = ucfirst(strtolower($declarant->commune));
         $configurationCommunes = CommunesConfiguration::getInstance();
         $code_insee = $configurationCommunes->findCodeCommune($commune);
-
+        if (!$configurationCommunes->hasCommunes()) {
+            return false;
+        }
         if ($code_insee && $configurationCommunes->getCommuneByCode($code_insee)) {
             return true;
         }
