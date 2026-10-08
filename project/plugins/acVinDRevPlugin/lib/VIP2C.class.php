@@ -133,7 +133,7 @@ class VIP2C
             try{
             $volumes[] = [
                 "hash_regex"  => $line[self::VIP2C_COLONNE_PRODUIT],
-                "volume_max"  => str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME]),
+                "volume_max"  => floatval(str_replace([",", " "],"",$line[self::VIP2C_COLONNE_VOLUME])),
                 "libelle" => $doc->getConfiguration()->declaration->get($defautHash)->getLibelleComplet()
             ];
             }catch(sfException $e){

@@ -2,26 +2,26 @@
 
 class importEtablissementsAssvasTask extends sfBaseTask
 {
-    const CSV_IDENTIFIANT           = 0;
-    const CSV_NOUVEL_IDENTIFIANT    = 1;
-    const CSV_SIRET                 = 3;
-    const CSV_CVI                   = 4;
-    const CSV_OBSERVATION           = 5;
-    const CSV_INTITULE              = 6;
-    const CSV_RAISON_SOCIALE        = 7;
-    const CSV_NOM_INTERLOCUTEUR     = 8;
-    const CSV_ADRESSE               = 9;
-    const CSV_CODE_POSTAL           = 10;
-    const CSV_COMMUNE               = 11;
-    const CSV_TEL                   = 13;
-    const CSV_PORTABLE_1            = 14;
-    const CSV_PORTABLE_2            = 15;
-    const CSV_EMAIL_1               = 16;
-    const CSV_EMAIL_2               = 17;
-    const CSV_HABILITATION_ANJOU_SAUMUR = 20;
-    const CSV_HABILITATION_IGP = 24;
-    const CSV_HABILITATION_HAUT_POITOU = 28;
-    const CSV_HABILITATION_FIEFS_VENDEENS = 32;
+    const CSV_IDENTIFIANT           = 0; //A
+    const CSV_NOUVEL_IDENTIFIANT    = 1; //B
+    const CSV_SIRET                 = 3; //C
+    const CSV_CVI                   = 4; //D
+    const CSV_OBSERVATION           = 5; //E
+    const CSV_INTITULE              = 6; //F
+    const CSV_RAISON_SOCIALE        = 7; //G
+    const CSV_NOM_INTERLOCUTEUR     = 8; //H
+    const CSV_ADRESSE               = 9; //I
+    const CSV_CODE_POSTAL           = 10; //J
+    const CSV_COMMUNE               = 11; //K
+    const CSV_TEL                   = 13; //L
+    const CSV_PORTABLE_1            = 14; //M
+    const CSV_PORTABLE_2            = 15; //N
+    const CSV_EMAIL_1               = 16; //O
+    const CSV_EMAIL_2               = 17; //P
+    const CSV_HABILITATION_ANJOU_SAUMUR = 20; //U
+    const CSV_HABILITATION_IGP = 24; //Y
+    const CSV_HABILITATION_HAUT_POITOU = 28; //AC
+    const CSV_HABILITATION_FIEFS_VENDEENS = 32; //AG
     public static $tags = [self::CSV_HABILITATION_ANJOU_SAUMUR => 'Habilitation Anjou Saumur',
              self::CSV_HABILITATION_IGP => 'Habilitation IGP',
              self::CSV_HABILITATION_HAUT_POITOU => 'Habilitation Haut-Poitou', self::CSV_HABILITATION_FIEFS_VENDEENS => 'Habilitation Fiefs Vendeens'];

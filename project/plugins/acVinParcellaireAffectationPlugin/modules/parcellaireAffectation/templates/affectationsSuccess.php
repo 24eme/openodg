@@ -295,6 +295,14 @@
                 } else {
                     ligne.childNodes[15].innerText = 'Partielle';
                 }
+
+                let valeurActuelle = ligne.childNodes[11].childNodes[1].value;
+                let [partieEntiere, partieDecimale = ""] = valeurActuelle.split(".");
+                if (partieDecimale.length < 4) {
+                    partieDecimale = partieDecimale.padEnd(4, "0");
+                }
+                ligne.childNodes[11].childNodes[1].value = `${partieEntiere}.${partieDecimale}`;
+
             };
 
             (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {

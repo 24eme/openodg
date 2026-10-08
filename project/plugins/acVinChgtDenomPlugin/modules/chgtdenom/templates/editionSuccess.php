@@ -6,7 +6,13 @@
 
 
     <div class="page-header no-border">
-      <h2>Changement de dénomination / Déclassement <?php echo $periode; ?></h2>
+      <?php if ($chgtDenom->isChgtSegment()) : ?>
+      <h2>Changement de segment <?php echo $periode; ?></h2>
+      <?php elseif ($chgtDenom->isDeclassement()): ?>
+      <h2>Déclassement <?php echo $periode; ?></h2>
+      <?php else: ?>
+      <h2>Changement de dénomination <?php echo $periode; ?></h2>
+      <?php endif; ?>
       <h3><small></small></h3>
     </div>
 

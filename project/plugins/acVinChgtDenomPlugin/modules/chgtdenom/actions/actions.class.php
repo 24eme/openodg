@@ -61,7 +61,11 @@ class chgtdenomActions extends sfActions
             return $this->forward404("Le produit n'a pas été trouvé dans le document douanier");
         }
 
-        $this->chgtDenom = ChgtDenomClient::getInstance()->createDocFromProduction($docProduction, $this->hash, $this->complement);
+        if (!in_array($request->getParameter('type'), [ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT, ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT])) {
+            throw new sfException("Type de chgt douanier ne peut être que CHANGEMENT_TYPE_DR_DECLASSEMENT ou CHANGEMENT_TYPE_DR_CHGT_SEGMENT");
+        }
+
+        $this->chgtDenom = ChgtDenomClient::getInstance()->createDocFromProduction($docProduction, $request->getParameter('type'), $this->hash, $this->complement);
         $this->chgtDenom->save();
 
         return $this->redirect('chgtdenom_edition', ['id' => $this->chgtDenom->_id]);

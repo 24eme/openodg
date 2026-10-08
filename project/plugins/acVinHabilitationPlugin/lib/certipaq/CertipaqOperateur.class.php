@@ -118,13 +118,13 @@ class CertipaqOperateur extends CertipaqService
         return $res[0];
     }
 
-    public function findByEtablissement($etablissement) {
+    public function findByEtablissement($declarant) {
         $op = null;
-        if ($etablissement->cvi) {
-            $op = $this->findByCviOrSiret($etablissement->cvi);
+        if ($declarant->exist('cvi') && $declarant->cvi) {
+            $op = $this->findByCviOrSiret($declarant->cvi);
         }
-        if (!$op && $etablissement->siret) {
-            $op = $this->findByCviOrSiret($etablissement->siret);
+        if (!$op && $declarant->exist('siret') && $declarant->siret) {
+            $op = $this->findByCviOrSiret($declarant->siret);
         }
         if ($op) {
             $op = $this->recuperation($op->id);

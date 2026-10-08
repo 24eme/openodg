@@ -1005,15 +1005,29 @@ class drevActions extends sfActions {
     }
 
     public function executeSendCertipaq(sfWebRequest $request) {
-
-    	$drev = $this->getRoute()->getDRev();
-    	$this->secure(DRevSecurity::VISUALISATION, $drev);
-        $drevOi = new DRevOICertipaq($drev, null);
-        $drevOi->send();
-
-    	return $this->redirect('drev_visualisation', $drev);
+        $drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VISUALISATION, $drev);
+        $this->drevOi = new DRevOICertipaq($drev, null);
+        $api_res = $this->drevOi->send();
+        $nb_success = 0;
+        foreach($api_res as $k => $r) {
+            if ($r['success']) {
+                $nb_success++;
+            }
+        }
+        $this->drevOi->storeResultInDrev();
+        $url = $this->generateUrl('drev_debug_certipaq', $drev);
+        $msg = "Envoi Certipaq : ".$nb_success.'/'.count($api_res).' envoyé avec succès (<a href="'.$url.'">detail</a>)';
+        $this->getUser()->setFlash("notice", $msg);
+        return $this->redirect('drev_visualisation', $drev);
     }
 
+    public function executeDebugCertipaq(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VISUALISATION, $this->drev);
+        $this->regionParam = $request->getParameter('region', null);
+        $this->drevOi = new DRevOICertipaq($this->drev, null);
+    }
 
     public function executeDocumentDouanier(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();

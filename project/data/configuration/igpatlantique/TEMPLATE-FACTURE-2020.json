@@ -5,10 +5,13 @@
   "template": "IGP",
   "libelle": "2020 - IGP Atlantique",
   "docs": [
-    "DRev"
+    "DRev",
+    "Habilitation",
+    "Conditionnement",
+    "Degustation"
   ],
   "cotisations": {
-    "00_cotisationSyndicale": {
+    "000_cotisationSyndicale": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "",
@@ -29,10 +32,33 @@
         }
       }
     },
+    "001_cotisation_syndicale_conditionnement": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "volumeDegute_conditionnement": {
+          "modele": "Cotisation",
+          "prix": 0.045,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "Cotisation Syndicale volume - conditionnement",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getFacturationVolumeDeguste",
+          "callback_parameters": {
+            "provenance": "CONDITIONNEMENT"
+          }
+        }
+      }
+    },
     "01_inao": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Droits INAO - N° %detail_identifiant%",
+      "libelle": "Droits INAO",
       "code_comptable": "",
       "details": {
         "cotisation": {
@@ -109,12 +135,9 @@
           "libelle": "",
           "complement_libelle": "",
           "docs": [
-              "Conditionnement"
+            "Conditionnement"
           ],
-          "callback": "getVolumeRevendiqueLots",
-          "callback_parameters": {
-            "famille": "NEGOCIANT"
-          }
+          "callback": "getVolumeRevendiqueLots"
         }
       }
     },
@@ -129,7 +152,7 @@
           "prix": 0.5,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Communication et valorisation du produit  - %detail_identifiant%",
+          "libelle": "Communication et valorisation du produit",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -145,16 +168,19 @@
       "code_comptable": "",
       "details": {
         "05_communication": {
-          "modele": "CotisationVariable",
+          "modele": "Cotisation",
           "prix": 0.5,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Communication et valorisation du produit  - %detail_identifiant%",
+          "libelle": "Communication et valorisation du produit - conditionnement",
           "complement_libelle": "",
           "docs": [
-            "Conditionnement"
+            "Degustation"
           ],
-          "callback": "getVolumeRevendiqueLots"
+          "callback": "getFacturationVolumeDeguste",
+          "callback_parameters": {
+            "provenance": "CONDITIONNEMENT"
+          }
         }
       }
     },
@@ -166,7 +192,7 @@
       "details": {
         "cotisation": {
           "modele": "CotisationFixe",
-          "prix": 62.10,
+          "prix": 62.1,
           "tva": 0.2,
           "libelle": "",
           "complement_libelle": "",
@@ -176,6 +202,53 @@
           "callback": "hasStatutDemandes",
           "callback_parameters": {
             "statut": "TRANSMIS_OC"
+          }
+        }
+      }
+    },
+    "09_cotisation_controle": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.9,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "Cotisation Contrôle volume revendiqué",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "date": "%periode+1%-07-31",
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": {
+            "famille": "NOT CONDITIONNEURS"
+          }
+        }
+      }
+    },
+    "091_cotisation_controle": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "cotisation": {
+          "modele": "Cotisation",
+          "prix": 0.9,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "Cotisation Contrôle volume revendiqué",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getFacturationVolumeDeguste",
+          "callback_parameters": {
+            "provenance": "CONDITIONNEMENT"
           }
         }
       }

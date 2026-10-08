@@ -27,5 +27,12 @@ class ConditionnementLotForm extends LotForm
       return $contnenance_displaying;
     }
 
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        if (!$this->getObject()->centilisation) {
+            $this->setDefault('centilisation', ConditionnementConfiguration::DEFAUT);
+        }
+    }
+
 
 }

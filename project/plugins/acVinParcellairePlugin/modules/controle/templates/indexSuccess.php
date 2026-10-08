@@ -22,8 +22,8 @@
         <th class="col-xs-1">Date de la tournée</th>
         <th class="col-xs-1">Agent</th>
         <th class="col-xs-1">Type du controle</th>
-        <th class="col-xs-3">Secteurs / Opérateurs</th>
-        <th class="col-xs-1 text-center">Nb opérateurs / parcelles</th>
+        <th class="col-xs-3">Secteurs / Coopérateurs</th>
+        <th class="col-xs-1 text-center">Nb opérateurs</th>
         <th class="col-xs-4"></th>
     </tr>
     </thead>
@@ -42,9 +42,7 @@
             <?php endif; ?>
         </td>
         <td class="text-center" data-toggle="tooltip" title="<?php echo implode("\n", $tournee['operateurs']->getRawValue()) ?>">
-            <?php echo count($tournee['operateurs']); ?> op.
-            /
-            <?php echo count($tournee['parcelles']); ?> p.
+            <?php echo count($tournee['operateurs']); ?>&nbsp;op.
         </td>
         <td class="text-right">
             <a href="<?php echo url_for('controle_apporga', array('date' => $tournee['date_tournee'], 'agent_identifiant' => ($tournee['agent'])? $tournee['agent']->identifiant : '')); ?>" class="btn btn-sm <?php if($tournee['statut'] == ControleClient::CONTROLE_STATUT_A_ORGANISER): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>"><span class="glyphicon glyphicon-th-list"></span> Préparer    </a>
@@ -68,7 +66,7 @@
                 </div>
                 <div class="col-xs-6">
                     <?php echo ($tournee['agent'])? $tournee['agent']->getNomAAfficher() : '' ?><br />
-                    <?php echo count($tournee['operateurs']); ?> op. - <?php echo count($tournee['parcelles']); ?> parcelles
+                    <?php echo count($tournee['operateurs']); ?> op.
                 </div>
                 <div class="col-xs-2 text-right text-primary">
                     <span class="glyphicon glyphicon-chevron-right h1"></span>

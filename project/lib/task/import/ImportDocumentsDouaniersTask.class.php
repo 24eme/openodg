@@ -21,6 +21,7 @@ class ImportDocumentsDouaniersTask extends sfBaseTask
             new sfCommandOption('dateimport', null, sfCommandOption::PARAMETER_OPTIONAL, "Date d'import", null),
             new sfCommandOption('diff', null, sfCommandOption::PARAMETER_OPTIONAL, "Diff", false),
             new sfCommandOption('debug', null, sfCommandOption::PARAMETER_OPTIONAL, "Debug", false),
+            new sfCommandOption('dateapprouvee', null, sfCommandOption::PARAMETER_OPTIONAL, "Date d'approbation", false)
         ));
 
         $this->namespace = 'import';
@@ -143,8 +144,11 @@ EOF;
                     if(isset($options['dateimport']) && $options['dateimport']) {
                         $fichier->date_import = $options['dateimport'];
                         $fichier->date_depot = $options['dateimport'];
-                        if (DRConfiguration::getInstance()->hasValidationDR()) {
-                            $fichier->add('validation_odg', $options['dateimport']);
+                        if (!$options['dateapprouvee'] && $options['dateimport']) {
+                            $options['dateapprouvee'] = $options['dateimport'];
+                        }
+                        if (DRConfiguration::getInstance()->hasValidationDR() && $options['dateapprouvee']) {
+                            $fichier->add('validation_odg', $options['dateapprouvee']);
                         }
                         $fichier->save();
                     }

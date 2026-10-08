@@ -12,7 +12,7 @@ class FactureMouvementEtablissementEditionLigneForm extends acCouchdbObjectForm 
     }
 
     public function configure() {
-        $this->setWidget('identifiant', new WidgetEtablissement(array('interpro_id' => 'INTERPRO-declaration'), $this->isreadonly));
+        $this->setWidget('identifiant', new WidgetSociete(array('interpro_id' => 'INTERPRO-declaration'), $this->isreadonly));
         $this->setWidget("identifiant_analytique", new sfWidgetFormChoice(array('choices' => $this->getIdentifiantsAnalytiques()), $this->isreadonly));
         $this->setWidget("type_libelle", new bsWidgetFormInput(array(), $this->isreadonly));
         $this->setWidget("detail_libelle", new bsWidgetFormInput(array(), array_merge(
@@ -22,7 +22,7 @@ class FactureMouvementEtablissementEditionLigneForm extends acCouchdbObjectForm 
         $this->setWidget("quantite", new bsWidgetFormInputFloat(array(), $this->isreadonly));
         $this->setWidget("prix_unitaire", new bsWidgetFormInputFloat(array(), $this->isreadonly));
 
-        $this->setValidator('identifiant', new ValidatorEtablissement(array('required' => false)));
+        $this->setValidator('identifiant', new ValidatorSociete(array('required' => false)));
         $this->setValidator("identifiant_analytique", new sfValidatorChoice(array('choices' => array_keys($this->getIdentifiantsAnalytiques()))));
         $this->setValidator("type_libelle", new sfValidatorString(array('required' => false)));
         $this->setValidator("detail_libelle", new sfValidatorString(array('required' => false)));

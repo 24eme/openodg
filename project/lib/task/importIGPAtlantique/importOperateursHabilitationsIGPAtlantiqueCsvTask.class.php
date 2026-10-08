@@ -139,8 +139,8 @@ EOF;
             $societe->siege->adresse = $data[self::CSV_ADRESSE] ?? null;
             $societe->siege->code_postal = $data[self::CSV_CP] ?? null;
             $societe->siege->commune = $data[self::CSV_COMMUNE] ?? null;
-            $societe->telephone_mobile = Phone::format($data[self::CSV_TEL] ?? null);
-            $societe->telephone_bureau = Phone::format($data[self::CSV_MOBILE] ?? null);
+            $societe->telephone_mobile = Phone::format($data[self::CSV_MOBILE] ?? null);
+            $societe->telephone_bureau = Phone::format($data[self::CSV_TEL] ?? null);
             $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
 
             $cvi = EtablissementClient::repairCVI($data[self::CSV_NOCVI]);
@@ -180,7 +180,11 @@ EOF;
 
         if ($data[self::CSV_EXTRA_TYPE_OPERATEUR] === 'P' && ($cavecoop = trim($data[self::CSV_AUTRE]))) {
             if ($relation = EtablissementClient::getInstance()->findByRaisonSociale($cavecoop)) {
-                $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $relation, true);
+                if ($relation->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) {
+                    $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $relation, true);
+                } else {
+                    $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT, $relation, true);
+                }
             } else {
                 echo "ERROR: relation non affectée, la raison sociale est inconnue : ".$data[self::CSV_AUTRE]."\n";
             }

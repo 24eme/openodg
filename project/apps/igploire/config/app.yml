@@ -14,3 +14,5 @@ all:
   donnees_viticoles:
     regions:
       IGPLOIRE: "IGPLOIRE"
+  documents:
+    url_officiels: "https://igp.vins.24eme.fr/plus.php?odg=loire"
