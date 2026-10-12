@@ -303,6 +303,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
         $this->updateNomAAfficher();
 
+        $societe = $this->getSociete();
         $this->societe_informations->type = $societe->type_societe;
         $this->societe_informations->raison_sociale = $societe->raison_sociale;
         $this->societe_informations->adresse = $societe->siege->adresse;
