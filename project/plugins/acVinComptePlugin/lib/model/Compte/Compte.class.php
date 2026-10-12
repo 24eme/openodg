@@ -207,12 +207,20 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
                 $this->addTag('automatique', 'teledeclaration_active');
             }
         }
-        if ($this->identifiant == $this->getLogin()) {
-            if ($this->isMotDePasseOublie()) {
+        $compte_with_motdepasse = false;
+        if (($this->compte_type == CompteClient::TYPE_COMPTE_ETABLISSEMENT) && ($this->getSociete()->identifiant == $this->getLogin())) {
+            $compte_with_motdepasse = $this->getSociete()->getMasterCompte();
+        } elseif (($this->compte_type == CompteClient::TYPE_COMPTE_SOCIETE) && !count($this->getSociete()->etablissements)) {
+            $compte_with_motdepasse = $this;
+        } elseif (($this->compte_type == CompteClient::TYPE_COMPTE_INTERLOCUTEUR) && $this->identifiant == $this->getLogin()) {
+            $compte_with_motdepasse = $this;
+        }
+        if ($compte_with_motdepasse) {
+            if ($compte_with_motdepasse->isMotDePasseOublie()) {
                 $this->addTag('automatique', 'compte_motdepasse_oublie');
                 $this->addTag('automatique', 'compte_motdepasse_actif');
             }
-            if ($this->isMotDePasseCree()) {
+            if ($compte_with_motdepasse->isMotDePasseCree()) {
                 $this->addTag('automatique', 'compte_motdepasse_actif');
             }
         }
