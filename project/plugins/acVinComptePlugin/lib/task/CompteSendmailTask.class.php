@@ -14,6 +14,7 @@ class CompteSendmailTask extends sfBaseTask
 			    new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
 			    new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
 			    new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+                new sfCommandOption('test', null, sfCommandOption::PARAMETER_REQUIRED, 'Email de test', ''),
       // add your own options here
     ));
 
@@ -46,6 +47,10 @@ EOF;
     if(!$email){
         echo "ERROR;$compte->_id;L'opérateur n'a pas de mail\n";
         return null;
+    }
+
+    if ($options['test']) {
+        $email = $options['test'];
     }
 
     $message = Email::getInstance()->newMailInstance();
