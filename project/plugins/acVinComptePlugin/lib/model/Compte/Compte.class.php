@@ -178,12 +178,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return false;
     }
 
-    public function save() {
-        if(SocieteConfiguration::getInstance()->isDisableSave()) {
-
-            throw new Exception("L'enregistrement des sociétés, des établissements et des comptes sont désactivés");
-        }
-
+    public function updateTags() {
         $this->tags->remove('automatique');
         $this->tags->add('automatique');
         if ($this->exist('teledeclaration_active') && $this->teledeclaration_active) {
@@ -194,8 +189,6 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         if ($this->exist('region') && $this->region && (ConfigurationClient::getInstance()->isGiilda() || $this->region == EtablissementClient::REGION_HORS_REGION)) {
             $this->addTag('automatique', 'region_'.$this->region);
         }
-
-        $this->compte_type = CompteClient::getInstance()->createTypeFromOrigines($this->origines);
 
         $societe = $this->getSociete();
         if ($this->isSocieteContact()) {
@@ -212,6 +205,14 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         if ($this->exist('teledeclaration_active') && $this->teledeclaration_active) {
             if ($this->hasDroit(Roles::TELEDECLARATION_VRAC)) {
                 $this->addTag('automatique', 'teledeclaration_active');
+            }
+        }
+        if ($this->identifiant == $this->getLogin()) {
+            if ($this->isMotDePasseOublie()) {
+                $this->addTag('automatique', 'compte_motdepasse_oublie');
+            }
+            if ($this->isMotDePasseCree()) {
+                $this->addTag('automatique', 'compte_motdepasse_actif');
             }
         }
 
@@ -252,32 +253,6 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $this->addTag('automatique', 'Interlocuteur');
         }
 
-        $this->compte_type = CompteClient::getInstance()->createTypeFromOrigines($this->origines);
-        $this->interpro = "INTERPRO-declaration";
-
-        $this->updateNomAAfficher();
-
-        $this->societe_informations->type = $societe->type_societe;
-        $this->societe_informations->raison_sociale = $societe->raison_sociale;
-        $this->societe_informations->adresse = $societe->siege->adresse;
-        $this->societe_informations->adresse_complementaire = $societe->siege->adresse_complementaire;
-        $this->societe_informations->code_postal = $societe->siege->code_postal;
-        $this->societe_informations->commune = $societe->siege->commune;
-        $this->societe_informations->email = $societe->email;
-        $this->societe_informations->siret = $societe->siret;
-
-        $this->societe_informations->fax = $societe->fax;
-
-        $new = $this->isNew();
-
-        if($this->compte_type == CompteClient::TYPE_COMPTE_INTERLOCUTEUR && $this->isSameAdresseThanSociete()) {
-            CompteGenerique::pullAdresse($this, $societe->getMasterCompte());
-        }
-
-        if($this->compte_type == CompteClient::TYPE_COMPTE_INTERLOCUTEUR && $this->isSameContactThanSociete()) {
-            CompteGenerique::pullContact($this, $societe->getMasterCompte());
-        }
-
         if($this->exist('en_alerte') && $this->en_alerte){
             $this->addTag('automatique', 'en_alerte');
         }
@@ -302,6 +277,44 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         }
 
         $this->updateTagsGroupes();
+
+    }
+
+    public function save() {
+        if(SocieteConfiguration::getInstance()->isDisableSave()) {
+
+            throw new Exception("L'enregistrement des sociétés, des établissements et des comptes sont désactivés");
+        }
+
+        $this->updateTags();
+
+        $this->compte_type = CompteClient::getInstance()->createTypeFromOrigines($this->origines);
+
+        if($this->compte_type == CompteClient::TYPE_COMPTE_INTERLOCUTEUR && $this->isSameAdresseThanSociete()) {
+            CompteGenerique::pullAdresse($this, $societe->getMasterCompte());
+        }
+
+        if($this->compte_type == CompteClient::TYPE_COMPTE_INTERLOCUTEUR && $this->isSameContactThanSociete()) {
+            CompteGenerique::pullContact($this, $societe->getMasterCompte());
+        }
+
+        $this->compte_type = CompteClient::getInstance()->createTypeFromOrigines($this->origines);
+        $this->interpro = "INTERPRO-declaration";
+
+        $this->updateNomAAfficher();
+
+        $this->societe_informations->type = $societe->type_societe;
+        $this->societe_informations->raison_sociale = $societe->raison_sociale;
+        $this->societe_informations->adresse = $societe->siege->adresse;
+        $this->societe_informations->adresse_complementaire = $societe->siege->adresse_complementaire;
+        $this->societe_informations->code_postal = $societe->siege->code_postal;
+        $this->societe_informations->commune = $societe->siege->commune;
+        $this->societe_informations->email = $societe->email;
+        $this->societe_informations->siret = $societe->siret;
+
+        $this->societe_informations->fax = $societe->fax;
+
+        $new = $this->isNew();
 
         parent::save();
 
@@ -412,6 +425,22 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     public function getCompteType() {
         return CompteClient::getInstance()->createTypeFromOrigines($this->origines);
+    }
+
+    public function isMotDePasseOublie() {
+        return ($this->getStatutTeledeclarant() == CompteClient::STATUT_TELEDECLARANT_OUBLIE);
+    }
+
+    public function isMotDePasseCree() {
+        return ($this->getStatutTeledeclarant() == CompteClient::STATUT_TELEDECLARANT_INSCRIT);
+    }
+
+    public function isMotDePasseACreer() {
+        return ($this->getStatutTeledeclarant() == CompteClient::STATUT_TELEDECLARANT_NOUVEAU);
+    }
+
+    public function isMotDePasseInactif() {
+        return ($this->getStatutTeledeclarant() == CompteClient::STATUT_TELEDECLARANT_INACTIF);
     }
 
     public function getStatutTeledeclarant() {
