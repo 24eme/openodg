@@ -15,6 +15,7 @@ class CompteSendmailTask extends sfBaseTask
 			    new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
 			    new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
                 new sfCommandOption('test', null, sfCommandOption::PARAMETER_REQUIRED, 'Email de test', ''),
+                new sfCommandOption('check', null, sfCommandOption::PARAMETER_REQUIRED, "Pas d'envoi, il y a juste un dump des parametres de mails", false),
       // add your own options here
     ));
 
@@ -56,6 +57,16 @@ EOF;
     $message = Email::getInstance()->newMailInstance();
 
     $regions = HabilitationClient::getInstance()->getRegionsHabilites($compte->getSociete()->getEtablissementPrincipal()->getIdentifiant());
+
+    if ($options['check']) {
+        print_r([
+            "subject" => $this->parseTemplate($arguments['subject'], $compte),
+            "body" => $this->parseTemplate(file_get_contents($arguments['body_template']), $compte),
+            "replyto" => array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name')),
+            "email" => $email,
+        ]);
+        exit;
+    }
 
     $message->setSubject($this->parseTemplate($arguments['subject'], $compte));
     $message->setBody($this->parseTemplate(file_get_contents($arguments['body_template']), $compte));
