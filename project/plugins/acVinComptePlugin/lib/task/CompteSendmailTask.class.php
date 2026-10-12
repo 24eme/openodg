@@ -16,6 +16,7 @@ class CompteSendmailTask extends sfBaseTask
 			    new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
                 new sfCommandOption('test', null, sfCommandOption::PARAMETER_REQUIRED, 'Email de test', ''),
                 new sfCommandOption('check', null, sfCommandOption::PARAMETER_REQUIRED, "Pas d'envoi, il y a juste un dump des parametres de mails", false),
+                new sfCommandOption('replyto', null, sfCommandOption::PARAMETER_REQUIRED, "Email utilisé pour le reply to", false),
       // add your own options here
     ));
 
@@ -53,25 +54,32 @@ EOF;
     if ($options['test']) {
         $email = $options['test'];
     }
+    $replyto = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
+    if ($options['replyto']) {
+        $replyto = array($options['replyto'] => $options['replyto']);
+    }
 
     $message = Email::getInstance()->newMailInstance();
 
     $regions = HabilitationClient::getInstance()->getRegionsHabilites($compte->getSociete()->getEtablissementPrincipal()->getIdentifiant());
 
+    $message->setSubject($this->parseTemplate($arguments['subject'], $compte));
+    $message->setBody($this->parseTemplate(file_get_contents($arguments['body_template']), $compte));
+    $message->setReplyTo($replyto);
+    $message->setTo($email);
+
     if ($options['check']) {
         print_r([
-            "subject" => $this->parseTemplate($arguments['subject'], $compte),
-            "body" => $this->parseTemplate(file_get_contents($arguments['body_template']), $compte),
-            "replyto" => array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name')),
-            "email" => $email,
+            "subject" => $message->getSubject(),
+            "body" => $message->getBody(),
+            "replyto" => $message->getReplyTo(),
+            "to" => $message->getTo(),
+            "from" => $message->getFrom(),
+            "cc" => $message->getCc(),
         ]);
         exit;
     }
 
-    $message->setSubject($this->parseTemplate($arguments['subject'], $compte));
-    $message->setBody($this->parseTemplate(file_get_contents($arguments['body_template']), $compte));
-    $message->setReplyTo(array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name')));
-    $message->setTo($email);
 
     $resultSend = $this->getMailer()->send($message);
 
