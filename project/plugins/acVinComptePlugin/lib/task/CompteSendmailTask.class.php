@@ -63,20 +63,23 @@ EOF;
 
     $regions = HabilitationClient::getInstance()->getRegionsHabilites($compte->getSociete()->getEtablissementPrincipal()->getIdentifiant());
 
+    $message->setSubject($this->parseTemplate($arguments['subject'], $compte));
+    $message->setBody($this->parseTemplate(file_get_contents($arguments['body_template']), $compte));
+    $message->setReplyTo($replyto);
+    $message->setTo($email);
+
     if ($options['check']) {
         print_r([
-            "subject" => $this->parseTemplate($arguments['subject'], $compte),
-            "body" => $this->parseTemplate(file_get_contents($arguments['body_template']), $compte),
-            "replyto" => array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name')),
-            "email" => $email,
+            "subject" => $message->getSubject(),
+            "body" => $message->getBody(),
+            "replyto" => $message->getReplyTo(),
+            "to" => $message->getTo(),
+            "from" => $message->getFrom(),
+            "cc" => $message->getCc(),
         ]);
         exit;
     }
 
-    $message->setSubject($this->parseTemplate($arguments['subject'], $compte));
-    $message->setBody($this->parseTemplate(file_get_contents($arguments['body_template']), $compte));
-    $message->setReplyTo(array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name')));
-    $message->setTo($email);
 
     $resultSend = $this->getMailer()->send($message);
 
