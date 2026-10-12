@@ -111,7 +111,7 @@ class ExportParcellaireIrriguePDF extends ExportPDF {
             if ($this->parcellaireIrrigue->validation) {
                 $date = new DateTime($this->parcellaireIrrigue->validation);
 
-                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'), $this->parcellaireIrrigue->signataire);
+                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
                 if($this->parcellaireIrrigue->exist('signataire') && $this->parcellaireIrrigue->signataire) {
                     $header_subtitle .= " par " . $this->parcellaireIrrigue->signataire;
                 }

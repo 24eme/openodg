@@ -115,7 +115,7 @@ class ExportDRaPPDF extends ExportPDF {
                 $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
             }else {
                  $date = new DateTime($this->drap->validation);
-                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'), $this->drap->signataire);
+                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
                 if($this->drap->exist('signataire') && $this->drap->signataire) {
                     $header_subtitle .= " par " . $this->drap->signataire;
                 }

@@ -49,13 +49,26 @@ rm $TMPDIR/f5.csv
 rm $TMPDIR/f6.csv
 rm $TMPDIR/f7.csv
 
-echo "Import des Opérateurs et Habilitations PVC"
-
-php symfony import:operateur-habilitation-igpatlantique $TMPDIR/PVC.csv  --application="$ODG" --trace
-
 echo "Import des Opérateurs et Habilitations VC"
 
 php symfony import:operateur-habilitation-igpatlantique $TMPDIR/VC.csv  --application="$ODG" --trace
+
+echo "changer les familles"
+
+php symfony document:setvalue --application=igpatlantique ETABLISSEMENT-ATLXXX famille NEGOCIANT
+php symfony document:setvalue --application=igpatlantique ETABLISSEMENT-ATLXXX famille NEGOCIANT
+php symfony document:setvalue --application=igpatlantique ETABLISSEMENT-ATLXXX famille NEGOCIANT
+php symfony document:setvalue --application=igpatlantique ETABLISSEMENT-ATLXXX famille NEGOCIANT
+php symfony document:setvalue --application=igpatlantique ETABLISSEMENT-ATLXXX famille NEGOCIANT
+php symfony document:setvalue --application=igpatlantique ETABLISSEMENT-ATLXXX famille NEGOCIANT
+php symfony document:setvalue --application=igpatlantique ETABLISSEMENT-ATLXXX famille NEGOCIANT
+
+
+echo "Import des Opérateurs et Habilitations PVC"
+
+
+php symfony import:operateur-habilitation-igpatlantique $TMPDIR/PVC.csv  --application="$ODG" --trace
+
 
 echo "Import des Opérateurs et Habilitations C"
 
@@ -74,3 +87,7 @@ echo "Parcellaire"
 php symfony parcellaire:update-aire --application="$ODG" --trace
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?reduce=false | cut -d '"' -f 4 | while read id; do php symfony import:parcellaire-douanier $id --application="$ODG" --noscrapping=1; done
+
+echo "Creation des comptes admin"
+
+bash $WORKINGDIR/data/comptes/load.sh | bash

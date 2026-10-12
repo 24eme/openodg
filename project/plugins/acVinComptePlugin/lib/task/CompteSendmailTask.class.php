@@ -19,8 +19,16 @@ class CompteSendmailTask extends sfBaseTask
 
     $this->namespace        = 'compte';
     $this->name             = 'sendmail';
-    $this->briefDescription = '';
-    $this->detailedDescription = '';
+    $this->briefDescription = 'Envoi le mail de création de compte';
+    $this->detailedDescription = <<<'EOF'
+Envoi un mail avec les informations de création de compte (login + code creation)
+Il faut passer en paramètre : l'identifiant (XXX001001), le sujet du mail, et le
+fichier avec le corps du mail
+
+  [php symfony compte:sendmail XXX001001 "Création de compte" mail.txt|INFO]
+
+Le fichier doit contenir les placeholders %login% et %code_creation%
+EOF;
   }
 
   protected function execute($arguments = array(), $options = array())

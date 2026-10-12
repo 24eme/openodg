@@ -99,12 +99,6 @@
     <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigable]); ?>
 <?php endif; ?>
 
-<?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
-<script type="text/javascript">
-$('#parcellaireirrigable-confirmation-validation').modal('show')
-</script>
-<?php endif; ?>
-
 <?php if (!isset($validation) || !$validation->hasErreurs()): ?>
 <?php include_partial('parcellaireIrrigable/popupConfirmationValidation', array('form' => $form)); ?>
 <?php endif; ?>

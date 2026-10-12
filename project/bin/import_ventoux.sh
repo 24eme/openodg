@@ -115,3 +115,7 @@ curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/declaration/_view/export
 echo "Mise à jour des tags de compte"
 
 bash bin/update_comptes_tags.sh
+
+echo "Mise à jour des tags"
+
+bash bin/update_comptes_tags.sh
