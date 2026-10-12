@@ -210,6 +210,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         if ($this->identifiant == $this->getLogin()) {
             if ($this->isMotDePasseOublie()) {
                 $this->addTag('automatique', 'compte_motdepasse_oublie');
+                $this->addTag('automatique', 'compte_motdepasse_actif');
             }
             if ($this->isMotDePasseCree()) {
                 $this->addTag('automatique', 'compte_motdepasse_actif');
