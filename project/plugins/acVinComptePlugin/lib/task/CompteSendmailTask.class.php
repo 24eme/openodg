@@ -16,7 +16,8 @@ class CompteSendmailTask extends sfBaseTask
 			    new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
                 new sfCommandOption('test', null, sfCommandOption::PARAMETER_REQUIRED, 'Email de test', ''),
                 new sfCommandOption('check', null, sfCommandOption::PARAMETER_REQUIRED, "Pas d'envoi, il y a juste un dump des parametres de mails", false),
-                new sfCommandOption('replyto', null, sfCommandOption::PARAMETER_REQUIRED, "Email utilisé pour le reply to", false),
+                new sfCommandOption('replyto_email', null, sfCommandOption::PARAMETER_REQUIRED, "Email utilisé pour le reply to", false),
+                new sfCommandOption('replyto_name', null, sfCommandOption::PARAMETER_REQUIRED, "Nom utilisé pour le reply to", false),
       // add your own options here
     ));
 
@@ -55,8 +56,11 @@ EOF;
         $email = $options['test'];
     }
     $replyto = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
-    if ($options['replyto']) {
-        $replyto = array($options['replyto'] => $options['replyto']);
+    if ($options['replyto_email']) {
+        $replyto = array($options['replyto_email'] => $options['replyto_email']);
+        if ($options['replyto_name']) {
+            $replyto[$options['replyto_email']] = $options['replyto_name'];
+        }
     }
 
     $message = Email::getInstance()->newMailInstance();
