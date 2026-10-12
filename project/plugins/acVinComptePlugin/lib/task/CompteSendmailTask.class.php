@@ -67,32 +67,35 @@ EOF;
 
     $regions = HabilitationClient::getInstance()->getRegionsHabilites($compte->getSociete()->getEtablissementPrincipal()->getIdentifiant());
 
-    $message->setSubject($this->parseTemplate($arguments['subject'], $compte));
-    $message->setBody($this->parseTemplate(file_get_contents($arguments['body_template']), $compte));
-    $message->setReplyTo($replyto);
-    $message->setTo($email);
+    foreach (explode(';', $email) as $an_email) {
+        try {
+            $message->setSubject($this->parseTemplate($arguments['subject'], $compte));
+            $message->setBody($this->parseTemplate(file_get_contents($arguments['body_template']), $compte));
+            $message->setReplyTo($replyto);
+            $message->setTo($an_email);
 
-    if ($options['check']) {
-        print_r([
-            "subject" => $message->getSubject(),
-            "body" => $message->getBody(),
-            "replyto" => $message->getReplyTo(),
-            "to" => $message->getTo(),
-            "from" => $message->getFrom(),
-            "cc" => $message->getCc(),
-        ]);
-        exit;
+            if ($options['check']) {
+                print_r([
+                    "subject" => $message->getSubject(),
+                    "body" => $message->getBody(),
+                    "replyto" => $message->getReplyTo(),
+                    "to" => $message->getTo(),
+                    "from" => $message->getFrom(),
+                    "cc" => $message->getCc(),
+                ]);
+                continue;
+            }
+            $resultSend = $this->getMailer()->send($message);
+        }catch(Exception $e) {
+            echo "ERROR;$compte->_id ($email);Mail error : ".$e->getMessage()."\n";
+            continue;
+        }
+        if(!$resultSend) {
+            echo "ERROR;$compte->_id ($email);Mail non envoyé\n";
+            continue;
+        }
+        echo "SUCCESS;$compte->_id : " . $compte->nom_a_afficher . " ($email);Mail envoyé à ".date('Y-m-d H:i:s')."\n";
     }
-
-
-    $resultSend = $this->getMailer()->send($message);
-
-    if(!$resultSend) {
-        echo "ERROR;$compte->_id ($email);Mail non envoyé\n";
-        return;
-    }
-
-    echo "SUCCESS;$compte->_id : " . $compte->nom_a_afficher . " ($email);Mail envoyé à ".date('Y-m-d H:i:s')."\n";
   }
 
     protected function parseTemplate($body, $compte){
