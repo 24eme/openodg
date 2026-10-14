@@ -11,7 +11,7 @@
 <?php if ($compte_login->isMotDePasseACreer()) : ?>
 <div class="col-xs-2"> &nbsp; </div>
 <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">Code de création&nbsp;:</div>
-<div style="margin-bottom: 5px;" class="col-xs-3"><?php echo $m[1]; ?></div>
+<div style="margin-bottom: 5px;" class="col-xs-3"><?php echo $compte->getCodeCreation(); ?></div>
 <?php elseif ($compte_login->isMotDePasseOublie()) : ?>
     <div style="margin-bottom: 5px;" class="col-xs-8"><span class="text-muted">Mot de passe oublié&nbsp;:</span> <input id="input-share-link" type="text" size=35 value="<?php echo "https://".$_SERVER['HTTP_HOST'].url_for("compte_teledeclarant_mot_de_passe_oublie_login", array("login" =>  $compte_login->identifiant, "mdp" => $m[1])); ?>" disabled="disabled"/> <a href="#" onclick="navigator.clipboard.writeText(document.getElementById('input-share-link').value); console.log([this, this.getElementsByTagName('i')]); const icon_message = this.getElementsByTagName('i')[0]; icon_message.classList.remove('glyphicon-duplicate');icon_message.classList.add('glyphicon-ok');setTimeout(function() { icon_message.classList.remove('glyphicon-ok');icon_message.classList.add('glyphicon-duplicate');}, 750);return false;"><i class="glyphicon glyphicon-duplicate"></i></a></div>
 <?php elseif($compte_login->isMotDePasseCree()): ?>
