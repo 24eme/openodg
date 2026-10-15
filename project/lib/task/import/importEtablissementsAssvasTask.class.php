@@ -19,9 +19,9 @@ class importEtablissementsAssvasTask extends sfBaseTask
     const CSV_EMAIL_1               = 16; //O
     const CSV_EMAIL_2               = 17; //P
     const CSV_HABILITATION_ANJOU_SAUMUR = 20; //U
-    const CSV_HABILITATION_IGP = 24; //Y
-    const CSV_HABILITATION_HAUT_POITOU = 28; //AC
-    const CSV_HABILITATION_FIEFS_VENDEENS = 32; //AG
+    const CSV_HABILITATION_IGP = 25; //Z
+    const CSV_HABILITATION_HAUT_POITOU = 30; //AE
+    const CSV_HABILITATION_FIEFS_VENDEENS = 35; //AJ
     public static $tags = [self::CSV_HABILITATION_ANJOU_SAUMUR => 'Habilitation Anjou Saumur',
              self::CSV_HABILITATION_IGP => 'Habilitation IGP',
              self::CSV_HABILITATION_HAUT_POITOU => 'Habilitation Haut-Poitou', self::CSV_HABILITATION_FIEFS_VENDEENS => 'Habilitation Fiefs Vendeens'];
