@@ -8,6 +8,7 @@ all:
          CONDITIONNEUR: "Conditionneur"
          NEGOCIANT: "Négociant"
          VRAC: "Vrac export"
+         VRAC_PUR: "Vrac"
          ELABORATEUR: "Élaboration de Mousseux"
          ELEVEUR: "Élevage"
       demande:

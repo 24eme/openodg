@@ -121,6 +121,6 @@ class CommunesConfiguration {
 
     public function hasCommunes()
     {
-        return count($this->communes);
+        return count($this->config);
     }
 }
