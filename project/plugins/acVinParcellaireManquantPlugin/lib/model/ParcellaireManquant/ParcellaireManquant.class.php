@@ -165,7 +165,7 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
             $region = RegionConfiguration::getInstance()->getOdgRegion($value->getHash());
             $regions[$region] = $region;
         }
-        return array_value($regions);
+        return array_values($regions);
     }
 
     public function getRegion() {
