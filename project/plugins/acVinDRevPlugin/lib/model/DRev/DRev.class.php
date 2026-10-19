@@ -2545,10 +2545,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->version_document->generateRectificative();
     }
 
-    public function generateModificative() {
+    public function generateModificative($allow_modificatrice = true) {
 
-        if (!DRevConfiguration::getInstance()->isModificativeEnabled()) {
-            throw new sfException('Drev Modificative non permise');
+        if ($allow_modificatrice) {
+            if (!DRevConfiguration::getInstance()->isModificativeEnabled()) {
+                throw new sfException('Drev Modificative non permise');
+            }
         }
 
         $drev = $this->version_document->generateModificative();

@@ -70,7 +70,7 @@
             Ces volumes seront directement revendiqués par ce<?php if(count($bailleurs) > 1): ?>s<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s<?php endif; ?>.
           </p>
         <?php endif; ?>
-<?php if (DRevConfiguration::getInstance()->hasEtapesAOC()): ?>
+<?php if (DRevConfiguration::getInstance()->hasEtapesAOC() || ($sf_user->isAdmin() && $drev->isFactures())): ?>
 <?php if($drev->isValideeOdg() && $drev->isModifiable()): ?>
     <div class="text-right" style="margin-bottom: 20px;">
           <a onclick="return confirm('Êtes vous sûr de vouloir modifier la DREV ?')" class="btn btn-primary" href="<?php echo url_for('drev_modificative', $drev) ?>">Modifier la revendication</a>
