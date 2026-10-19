@@ -480,6 +480,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         if ($this->isDeclassement() || $this->isChgtSegment()) {
             return false;
         }
+        if (!$this->origine_produit_hash) {
+            return false;
+        }
         $produitOrigineAplHash = $this->getConfigProduitOrigine()->getAppellation()->getHash();
         $produitChgtAplHash = $this->getConfigProduitChangement()->getAppellation()->getHash();
         return $produitOrigineAplHash == $produitChgtAplHash;
