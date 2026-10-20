@@ -944,7 +944,7 @@ class drevActions extends sfActions {
     public function executeModificative(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
 
-        $drev_modificative = $drev->generateModificative(! $this->getUser()->isAdminOdg());
+        $drev_modificative = $drev->generateModificative(! $this->getUser()->isAdmin());
         $drev_modificative->save();
         if(ConfigurationClient::getCurrent()->declaration->isRevendicationParLots()){
           return $this->redirect('drev_exploitation', $drev_modificative);
