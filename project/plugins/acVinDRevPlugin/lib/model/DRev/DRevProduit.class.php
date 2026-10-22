@@ -434,7 +434,14 @@ class DRevProduit extends BaseDRevProduit
     {
         if ($vcr = $this->getVCR()) {
             $volumeEnReserve = $this->volume_revendique_total - $vcr;
-            return ($volumeEnReserve >= 0)?  $volumeEnReserve : 0;
+            if ($volumeEnReserve <= 0) {
+                $volumeRevendiqueTotal = $this->getDocument()->getSumFieldByHashRegex('volume_revendique_total', str_replace('/lieux/DEFAUT/', '/lieux/[^/]*/', $this->getProduitHash()));
+                if ($volumeRevendiqueTotal > $this->volume_revendique_total) {
+                    $vcr = $this->getVCRWithRules($vcr, $volumeRevendiqueTotal);
+                    return round($vcr - $volumeRevendiqueTotal, 5);
+                }
+            }
+            return ($volumeEnReserve >= 0)? round($volumeEnReserve, 5) : 0;
         }
         return 0;
     }
