@@ -447,7 +447,11 @@ class DRevProduit extends BaseDRevProduit
     }
 
 	public function getVolumeRevendiqueCommecialisable() {
-		return $this->volume_revendique_total - $this->getVolumeReserveInterproByConfig();
+        $reserve = $this->getVolumeReserveInterproByConfig();
+        if ($reserve < 0) {
+            $reserve = 0;
+        }
+		return $this->volume_revendique_total - $reserve;
 	}
 
 	public function getSommeProduitsCepage($hash) {
