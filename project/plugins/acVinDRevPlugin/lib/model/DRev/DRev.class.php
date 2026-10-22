@@ -2823,4 +2823,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getDefaultMillesime() {
         return substr($this->campagne, 0, 4);
     }
+
+    public function getSumFieldByHashRegex($field, $hashRegex)
+    {
+        $sum = 0;
+        foreach($this->getProduits() as $hash => $p) {
+            if (preg_match("~^$hashRegex~", $hash, $m)) {
+                $sum += ($p->exist($field))? $p->get($field) : 0;
+            }
+        }
+        return $sum;
+    }
 }
