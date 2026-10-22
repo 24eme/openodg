@@ -414,9 +414,25 @@ class DRevProduit extends BaseDRevProduit
         throw new sfException("Erreur : plusieurs modes de calcul de la reserve interpro implémentés");
     }
 
-    protected function getVolumeReserveInterproVCR()
+    private function getVCRWithRules($vcr, $volume_revendique_total)
+    {
+        if ($vcr < round(0.8*$volume_revendique_total)) {
+            $vcr = round(0.8*$volume_revendique_total);
+        }
+        return $vcr;
+    }
+
+    public function getVCR()
     {
         if ($vcr = VCR::getFromCSV($this->getDocument()->getDefaultMillesime(), $this->getDocument()->declarant->cvi, $this->getProduitHash())) {
+            return $this->getVCRWithRules($vcr, $this->volume_revendique_total);
+        }
+        return 0;
+    }
+
+    protected function getVolumeReserveInterproVCR()
+    {
+        if ($vcr = $this->getVCR()) {
             $volumeEnReserve = $this->volume_revendique_total - $vcr;
             return ($volumeEnReserve >= 0)?  $volumeEnReserve : 0;
         }
