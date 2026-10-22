@@ -399,7 +399,7 @@ class DRevProduit extends BaseDRevProduit
 	}
 
     public function hasReserveInterpro() {
-        return ($this->getVolumeReserveInterpro());
+        return ($this->getVolumeReserveInterpro()||$this->getVCR());
     }
 
     protected function getVolumeReserveInterproByConfig() {
