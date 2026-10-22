@@ -1367,6 +1367,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return false;
     }
 
+    public function getVCIConstitue()
+    {
+        $volume = 0;
+        foreach ($this->declaration->getProduits() as $produit) {
+            if($produit->recolte->vci_constitue > 0) {
+                $volume += $produit->recolte->vci_constitue;
+            }
+        }
+        return $volume;
+    }
+
     public function hasVCIConstitue()
     {
         foreach ($this->declaration->getProduits() as $produit) {
@@ -2545,12 +2556,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->version_document->generateRectificative();
     }
 
-    public function generateModificative($allow_modificatrice = true) {
+    public function generateModificative() {
 
-        if ($allow_modificatrice) {
-            if (!DRevConfiguration::getInstance()->isModificativeEnabled()) {
-                throw new sfException('Drev Modificative non permise');
-            }
+        if (!DRevConfiguration::getInstance()->isModificativeEnabled()) {
+            throw new sfException('Drev Modificative non permise');
         }
 
         $drev = $this->version_document->generateModificative();
