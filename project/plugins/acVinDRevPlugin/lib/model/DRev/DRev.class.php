@@ -1367,6 +1367,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return false;
     }
 
+    public function getVCIConstitue()
+    {
+        $volume = 0;
+        foreach ($this->declaration->getProduits() as $produit) {
+            if($produit->recolte->vci_constitue > 0) {
+                $volume += $produit->recolte->vci_constitue;
+            }
+        }
+        return $volume;
+    }
+
     public function hasVCIConstitue()
     {
         foreach ($this->declaration->getProduits() as $produit) {
