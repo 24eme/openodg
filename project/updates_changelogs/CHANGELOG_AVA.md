@@ -3,7 +3,7 @@
 ## Du 28 mai au 25 septembre 2026
 
 ### Affectation parcellaire
-- Feat: ajout du lieu-dit castral dans la visualisation
+- Feat: ajout du lieu-dit cadastral dans la visualisation
 - Feat: ajout d'une colonne lieu-dit cadastral dans l'export .csv
 - Feat : ajouter tableaux de synthèse (cépage + destination) dans la visualisation
 - ajouter tableaux de synthèse (cépage + destination) dans le pdf
