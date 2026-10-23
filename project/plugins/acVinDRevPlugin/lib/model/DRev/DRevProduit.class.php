@@ -402,12 +402,12 @@ class DRevProduit extends BaseDRevProduit
         return ($this->getVolumeReserveInterpro()||$this->getVCR());
     }
 
-    protected function getVolumeReserveInterproByConfig() {
+    protected function getVolumeReserveInterproByConfig($includeReserveNegative = false) {
         if (!VCR::hasCsv() && !$this->getConfig()->hasRendementReserveInterpro()) {
             return 0;
         }
         if (VCR::hasCsv() && !$this->getConfig()->hasRendementReserveInterpro()) {
-            return $this->getVolumeReserveInterproVCR();
+            return (!$includeReserveNegative && $this->getVolumeReserveInterproVCR() < 0)? 0 : $this->getVolumeReserveInterproVCR();
         } elseif (!VCR::hasCsv() && $this->getConfig()->hasRendementReserveInterpro()) {
             return $this->getVolumeReserveInterproAndButoir();
         }
@@ -457,11 +457,11 @@ class DRevProduit extends BaseDRevProduit
 		return $diff;
 	}
 
-    public function getVolumeReserveInterpro() {
-        if ($this->exist('dont_volume_revendique_reserve_interpro') && $this->dont_volume_revendique_reserve_interpro > 0) {
+    public function getVolumeReserveInterpro($includeReserveNegative = false) {
+        if (!$includeReserveNegative && $this->exist('dont_volume_revendique_reserve_interpro') && $this->dont_volume_revendique_reserve_interpro > 0) {
             return $this->dont_volume_revendique_reserve_interpro;
         }
-        $diff = $this->getVolumeReserveInterproByConfig();
+        $diff = $this->getVolumeReserveInterproByConfig($includeReserveNegative);
 		$diff_butoir = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendement());
 		if ($diff > 0 && $diff_butoir > 0) {
 			return $diff - $diff_butoir;
