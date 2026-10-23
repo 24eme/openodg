@@ -399,7 +399,7 @@ class DRevProduit extends BaseDRevProduit
 	}
 
     public function hasReserveInterpro() {
-        return ($this->getVolumeReserveInterpro());
+        return ($this->getVolumeReserveInterpro()||$this->getVCR());
     }
 
     protected function getVolumeReserveInterproByConfig() {
@@ -414,11 +414,34 @@ class DRevProduit extends BaseDRevProduit
         throw new sfException("Erreur : plusieurs modes de calcul de la reserve interpro implémentés");
     }
 
-    protected function getVolumeReserveInterproVCR()
+    private function getVCRWithRules($vcr, $volume_revendique_total)
+    {
+        if ($vcr < round(0.8*$volume_revendique_total)) {
+            $vcr = round(0.8*$volume_revendique_total);
+        }
+        return $vcr;
+    }
+
+    public function getVCR()
     {
         if ($vcr = VCR::getFromCSV($this->getDocument()->getDefaultMillesime(), $this->getDocument()->declarant->cvi, $this->getProduitHash())) {
+            return $this->getVCRWithRules($vcr, $this->volume_revendique_total);
+        }
+        return 0;
+    }
+
+    protected function getVolumeReserveInterproVCR()
+    {
+        if ($vcr = $this->getVCR()) {
             $volumeEnReserve = $this->volume_revendique_total - $vcr;
-            return ($volumeEnReserve >= 0)?  $volumeEnReserve : 0;
+            if ($volumeEnReserve <= 0) {
+                $volumeRevendiqueTotal = $this->getDocument()->getSumFieldByHashRegex('volume_revendique_total', str_replace('/lieux/DEFAUT/', '/lieux/[^/]*/', $this->getProduitHash()));
+                if ($volumeRevendiqueTotal > $this->volume_revendique_total) {
+                    $vcr = $this->getVCRWithRules($vcr, $volumeRevendiqueTotal);
+                    return round($vcr - $volumeRevendiqueTotal, 5);
+                }
+            }
+            return ($volumeEnReserve >= 0)? round($volumeEnReserve, 5) : 0;
         }
         return 0;
     }
@@ -447,7 +470,11 @@ class DRevProduit extends BaseDRevProduit
     }
 
 	public function getVolumeRevendiqueCommecialisable() {
-		return $this->volume_revendique_total - $this->getVolumeReserveInterproByConfig();
+        $reserve = $this->getVolumeReserveInterproByConfig();
+        if ($reserve < 0) {
+            $reserve = 0;
+        }
+		return $this->volume_revendique_total - $reserve;
 	}
 
 	public function getSommeProduitsCepage($hash) {

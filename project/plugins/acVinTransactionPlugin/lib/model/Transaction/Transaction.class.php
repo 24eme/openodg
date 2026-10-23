@@ -70,6 +70,17 @@ class Transaction extends BaseTransaction
     }
 
     public function getRegions() {
+        $regions = array();
+        if ($this->mouvements_lots->exist($this->identifiant)) {
+            foreach($this->mouvements_lots[$this->identifiant] as $id => $lot) {
+                if ($lot->exist('region')) {
+                    $regions[$lot->region] = $lot->region;
+                }
+            }
+        }
+        if (count($regions)) {
+            return array_keys($regions);
+        }
         if (TransactionConfiguration::getInstance()->hasStaticRegion()) {
             return array(TransactionConfiguration::getInstance()->getStaticRegion());
         }
