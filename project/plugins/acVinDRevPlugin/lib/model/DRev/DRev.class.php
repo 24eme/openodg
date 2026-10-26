@@ -1492,6 +1492,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function save($saveDependants = true) {
         $this->archiver();
 
+        $this->update();
+
         $this->piece_document->generatePieces();
 
         $this->getDateDepot();
