@@ -8,7 +8,7 @@
     </div>
     <div class="col-xs-6">
         <span class="text-danger"><?php echo $form['demande']->renderError() ?></span>
-        <?php echo $form['demande']->render(array("data-placeholder" => "Séléctionnez une demande", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+        <?php echo $form['demande']->render(array("data-placeholder" => "Sélectionnez une demande", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
     </div>
 </div>
     <hr />
@@ -20,7 +20,7 @@
 <?php if(isset($form['site'])): ?>
     <div class="col-xs-6">
         <span class="text-danger"><?php echo $form['site']->renderError() ?></span>
-        <?php echo $form['site']->render(array("data-placeholder" => "Séléctionnez un site", "class" => "form-control", "required" => true)) ?>
+        <?php echo $form['site']->render(array("data-placeholder" => "Sélectionnez un site", "class" => "form-control", "required" => true)) ?>
     </div>
 <?php else: ?>
     <div class="col-xs-6 form-control-static">
@@ -37,7 +37,7 @@
     </div>
     <div class="col-xs-6">
         <span class="text-danger"><?php echo $form['produit']->renderError() ?></span>
-        <?php echo $form['produit']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+        <?php echo $form['produit']->render(array("data-placeholder" => "Sélectionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
     </div>
 </div>
 <div class="row form-group">
@@ -149,7 +149,7 @@
     </div>
     <div class="col-xs-6">
         <span class="text-danger"><?php echo $form['statut']->renderError() ?></span>
-        <?php echo $form['statut']->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "form-control select2 select2-offscreen select2autocomplete select2-statut", "required" => true)) ?>
+        <?php echo $form['statut']->render(array("data-placeholder" => "Sélectionnez un statut", "class" => "form-control select2 select2-offscreen select2autocomplete select2-statut", "required" => true)) ?>
     </div>
 </div>
 <div class="row form-group">

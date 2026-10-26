@@ -82,12 +82,12 @@ class ExportReserveInterproCSV {
             $denominationComplementaire = $produit->denomination_complementaire;
 
             $csv .= $ligneBase;
-            
+
             $csv .= sprintf(";%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                 $certification,$certificationLibelle,$genre,$genreLibelle,$appellation,$appellationLibelle,$lieu,$lieuLibelle,$couleur,$couleurLibelle,$cepage,$cepageLibelle,$inao,$denominationComplementaire,
                 $libelle_complet = $produit->getLibelleComplet(),
                 $this->formatFloat($produit->superficie_revendique),
-                $this->formatFloat($produit->getVolumeReserveInterpro()),
+                $this->formatFloat($produit->getVolumeReserveInterpro(true)),
                 $this->formatFloat($produit->getVolumeRevendiqueCommecialisable()),
                 );
         }
