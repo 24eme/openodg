@@ -25,7 +25,7 @@
 <br/>
 <table><tr><td style="width: 324px;"><?php echo 'Le ' . format_date(date('Y-m-d'), "P", "fr_FR"); ?></td></tr></table>
 <br/><br/>
-<?php if ($changement === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT): ?>
+<?php if ($chgtdenom->isDeclassement()): ?>
     <table><tr><td><strong>Objet :</strong> Déclassement d'un lot</td></tr></table>
 <?php elseif ($chgtdenom->isRepli()):?>
     <table><tr><td><strong>Objet :</strong> Repli d'un lot</td></tr></table>
