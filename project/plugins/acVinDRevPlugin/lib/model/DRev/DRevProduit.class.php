@@ -156,6 +156,9 @@ class DRevProduit extends BaseDRevProduit
 		if ($this->hasReserveInterpro()) {
 			$this->add('dont_volume_revendique_reserve_interpro', $this->getVolumeReserveInterpro());
 		}
+        if ($this->exist('validation_odg') && $this->validation_odg) {
+            $this->setStatutOdg(DRevClient::STATUT_VALIDATION_ODG);
+        }
 
 	}
 
