@@ -28,7 +28,6 @@ class HabilitationClient extends acCouchdbClient {
     const STATUT_ATTENTE_HABILITATION = "ATTENTE_HABILITATION";
     const STATUT_DEMANDE_RETRAIT = "DEMANDE_RETRAIT";
     const STATUT_DEMANDE_RESILIATION = "DEMANDE_RESILIATION";
-    const STATUT_DEMANDE_SUSPENDUE = "DEMANDE_SUSPENDUE";
     const STATUT_HABILITE = "HABILITE";
     const STATUT_SUSPENDU = "SUSPENDU";
     const STATUT_REFUS = "REFUS";
@@ -56,7 +55,6 @@ class HabilitationClient extends acCouchdbClient {
                                              self::STATUT_ATTENTE_HABILITATION => "En attente d'habilitation",
                                              self::STATUT_DEMANDE_RETRAIT => "Demande de retrait",
                                              self::STATUT_DEMANDE_RESILIATION => "Demande de résiliation",
-                                             self::STATUT_DEMANDE_SUSPENDUE => "Demande suspendue",
                                              self::STATUT_HABILITE => "Habilité",
                                              self::STATUT_SUSPENDU => "Suspendu",
                                              self::STATUT_REFUS => "Refus",
