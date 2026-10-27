@@ -473,9 +473,6 @@ class DRevProduit extends BaseDRevProduit
 	}
 
     public function getVolumeReserveInterpro($includeReserveNegative = false) {
-        if (!$includeReserveNegative && $this->exist('dont_volume_revendique_reserve_interpro') && $this->dont_volume_revendique_reserve_interpro > 0) {
-            return $this->dont_volume_revendique_reserve_interpro;
-        }
         $diff = $this->getVolumeReserveInterproByConfig($includeReserveNegative);
 		$diff_butoir = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendement());
 		if ($diff > 0 && $diff_butoir > 0) {
