@@ -36,7 +36,7 @@
 
 <table><tr><td>Madame, Monsieur,</td></tr></table>
 
-<table><tr><td>Nous vous prions de bien vouloir trouver ci-dessous la confirmation du <?php if ($changement === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT): ?>déclassement<?php elseif ($chgtdenom->isRepli()): ?>repli<?php else: ?>changement de dénomination<?php endif ?> de votre lot :</td></tr></table>
+<table><tr><td>Nous vous prions de bien vouloir trouver ci-dessous la confirmation du <?php if ($chgtdenom->isDeclassement()): ?>déclassement<?php elseif ($chgtdenom->isRepli()): ?>repli<?php else: ?>changement de dénomination<?php endif ?> de votre lot :</td></tr></table>
 
 <br/><br/>
 
