@@ -143,12 +143,6 @@
     <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigue]); ?>
 <?php endif; ?>
 
-<?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
-    <?php exit; ?>
-<script type="text/javascript">
-$('#parcellaireirrigue-confirmation-validation').modal('show')
-</script>
-<?php endif; ?>
 <script>
     const btnValidationDocument = document.querySelector('#btn-validation-document')
     function removeValideTransparency() {

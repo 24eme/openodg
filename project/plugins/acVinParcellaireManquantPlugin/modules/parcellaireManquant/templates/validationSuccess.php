@@ -86,12 +86,6 @@
     <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireManquant]); ?>
 <?php endif; ?>
 
-<?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
-<script type="text/javascript">
-$('#ParcellaireManquant-confirmation-validation').modal('show')
-</script>
-<?php endif; ?>
-
 <?php if (!isset($validation) || !$validation->hasErreurs()): ?>
 <?php include_partial('parcellaireManquant/popupConfirmationValidation', array('form' => $form)); ?>
 <?php endif; ?>

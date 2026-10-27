@@ -40,7 +40,7 @@
 
     <?php if (ParcellaireConfiguration::getInstance()->hasEngagements() && count($validation->getEngagements()) > 0) : ?>
     <br/>
-        <h3>Engagements</h3>
+    <h2 class="h3">Je m'engage à :</h2>
         <div class="alert" role="alert" id="engagements"  style="padding-top:0;">
             <div class="form-group">
                 <?php foreach ($validation->getEngagements() as $engagement): ?>
@@ -97,12 +97,6 @@
 
 <?php if(isset($coop)): ?>
     <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigable]); ?>
-<?php endif; ?>
-
-<?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
-<script type="text/javascript">
-$('#parcellaireirrigable-confirmation-validation').modal('show')
-</script>
 <?php endif; ?>
 
 <?php if (!isset($validation) || !$validation->hasErreurs()): ?>
