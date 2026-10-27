@@ -24,7 +24,7 @@ class DRaPValidation extends DocumentValidation {
         /*
          * Engagements
          */
-         $this->addControle(self::TYPE_ENGAGEMENT, 'engagement_transmission', "À envoyer ce document à mes unités de vinification pour les coopérateurs et les vendeurs de vendange fraîche");
+         $this->addControle(self::TYPE_ENGAGEMENT, 'engagement_transmission', "Envoyer ce document à mes unités de vinification pour les coopérateurs et les vendeurs de vendange fraîche");
     }
 
     public function controle() {
