@@ -15,7 +15,7 @@
 						</div>
 						<div class="col-xs-6">
 							<span class="error"><?php echo $form['hashref']->renderError() ?></span>
-							<?php echo $form['hashref']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+							<?php echo $form['hashref']->render(array("data-placeholder" => "Sélectionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
 						</div>
 					</div>
 					<div class="row form-group">
@@ -54,7 +54,7 @@
 						</div>
 						<div class="col-xs-6">
 							<span class="error"><?php echo $form['statut']->renderError() ?></span>
-							<?php echo $form['statut']->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+							<?php echo $form['statut']->render(array("data-placeholder" => "Sélectionnez un statut", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
 						</div>
 					</div>
 				</div>
