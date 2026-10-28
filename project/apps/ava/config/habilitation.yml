@@ -38,6 +38,7 @@ all:
           VALIDE: "Validé"
           REFUSE: "Refusé"
           ANNULE: "Annulé"
+          SUSPENDU: "Suspendu"
         automatique:
           VALIDE_QUALISUD: VALIDE
           REFUSE_QUALISUD: REFUSE
@@ -61,3 +62,5 @@ all:
             VALIDE: RESILIE
             REFUSE: HABILITE
             ANNULE: HABILITE
+          SUSPENSION:
+            COMPLET: DEMANDE_SUSPENSION
