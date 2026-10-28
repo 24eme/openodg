@@ -254,6 +254,10 @@ class ParcellaireConfiguration {
         return $this->configuration['irrigable']['vciIrrigation'];
     }
 
+    public function hasEngagementTransmission() {
+        return $this->configuration['irrigable']['transmission'];
+    }
+
     public function hasDRaP() {
         return isset($this->configuration['drap']);
     }

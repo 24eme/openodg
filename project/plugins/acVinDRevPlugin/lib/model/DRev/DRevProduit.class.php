@@ -425,12 +425,27 @@ class DRevProduit extends BaseDRevProduit
         return $vcr;
     }
 
-    public function getVCR()
+    public function getVCR($rulesIncluded = true)
     {
         if ($vcr = VCR::getFromCSV($this->getDocument()->getDefaultMillesime(), $this->getDocument()->declarant->cvi, $this->getProduitHash())) {
-            return $this->getVCRWithRules($vcr, $this->volume_revendique_total);
+            return ($rulesIncluded)? $this->getVCRWithRules($vcr, $this->volume_revendique_total) : $vcr;
         }
         return 0;
+    }
+
+    public function hasRulesOnVCR()
+    {
+        $vcrBrut = $this->getVCR(false);
+        $vcr = $this->getVCR();
+        if ($this->getVolumeRevendiqueTotalWithLieux() > $this->volume_revendique_total) {
+            $vcr = $this->getVCRWithRules($vcr, $this->getVolumeRevendiqueTotalWithLieux());
+        }
+        return $vcr != $vcrBrut;
+    }
+
+    public function getVolumeRevendiqueTotalWithLieux()
+    {
+        return $this->getDocument()->getSumFieldByHashRegex('volume_revendique_total', str_replace('/lieux/DEFAUT/', '/lieux/[^/]*/', $this->getProduitHash()));
     }
 
     protected function getVolumeReserveInterproVCR()
@@ -438,10 +453,10 @@ class DRevProduit extends BaseDRevProduit
         if ($vcr = $this->getVCR()) {
             $volumeEnReserve = $this->volume_revendique_total - $vcr;
             if ($volumeEnReserve < 0) {
-                $volumeRevendiqueTotal = $this->getDocument()->getSumFieldByHashRegex('volume_revendique_total', str_replace('/lieux/DEFAUT/', '/lieux/[^/]*/', $this->getProduitHash()));
-                if ($volumeRevendiqueTotal > $this->volume_revendique_total) {
-                    $vcr = $this->getVCRWithRules($vcr, $volumeRevendiqueTotal);
-                    return ($volumeRevendiqueTotal > $vcr)? round($this->volume_revendique_total - $vcr, 5) : 0;
+                $volumeRevendiqueTotalWithLieux = $this->getVolumeRevendiqueTotalWithLieux();
+                if ($volumeRevendiqueTotalWithLieux > $this->volume_revendique_total) {
+                    $vcr = $this->getVCRWithRules($vcr, $volumeRevendiqueTotalWithLieux);
+                    return ($volumeRevendiqueTotalWithLieux > $vcr)? round($this->volume_revendique_total - $vcr, 5) : 0;
                 }
             }
             return ($volumeEnReserve >= 0)? round($volumeEnReserve, 5) : 0;
@@ -461,9 +476,6 @@ class DRevProduit extends BaseDRevProduit
 	}
 
     public function getVolumeReserveInterpro($includeReserveNegative = false) {
-        if (!$includeReserveNegative && $this->exist('dont_volume_revendique_reserve_interpro') && $this->dont_volume_revendique_reserve_interpro > 0) {
-            return $this->dont_volume_revendique_reserve_interpro;
-        }
         $diff = $this->getVolumeReserveInterproByConfig($includeReserveNegative);
 		$diff_butoir = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendement());
 		if ($diff > 0 && $diff_butoir > 0) {
