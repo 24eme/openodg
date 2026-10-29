@@ -477,9 +477,11 @@ class DRevProduit extends BaseDRevProduit
 
     public function getVolumeReserveInterpro($includeReserveNegative = false) {
         $diff = $this->getVolumeReserveInterproByConfig($includeReserveNegative);
-		$diff_butoir = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendement());
-		if ($diff > 0 && $diff_butoir > 0) {
-			return $diff - $diff_butoir;
+		if (!VCR::hasCsv() && $this->getConfig()->hasRendementReserveInterpro()) {
+			$diff_butoir = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendement());
+			if ($diff > 0 && $diff_butoir > 0) {
+				return $diff - $diff_butoir;
+			}
 		}
 		return $diff;
     }

@@ -214,6 +214,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->origine_produit_libelle = $lot->produit_libelle;
         $this->origine_numero_logement_operateur = $lot->numero_logement_operateur;
         $this->origine_affectable = $lot->affectable;
+        $this->origine_elevage = $lot->elevage;
+        $this->origine_eleve = $lot->eleve;
         $this->origine_statut = $lot->statut;
     }
 
@@ -347,6 +349,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
            $lot->produit_libelle = $this->origine_produit_libelle;
            $lot->numero_logement_operateur = $this->origine_numero_logement_operateur;
            $lot->affectable = $this->origine_affectable;
+           $lot->elevage = $this->origine_elevage;
+           $lot->eleve = $this->origine_eleve;
            $lot->statut = $this->origine_statut;
            return $lot ;
         }
@@ -544,6 +548,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lot->declarant_nom = $this->declarant->raison_sociale;
         $lot->declarant_identifiant = $this->identifiant;
         $lot->statut = $this->origine_statut;
+        $lot->elevage = $this->origine_elevage;
+        $lot->eleve = $this->origine_eleve;
         if($lot->statut) {
             $lot->affectable = false;
         }
@@ -603,11 +609,17 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                 $lot->cepages = $this->changement_cepages->toArray();
             }
             $lot->affectable = $this->changement_affectable;
+            $lot->elevage = $this->origine_elevage;
+            $lot->eleve = $this->origine_eleve;
             $lot->statut = null;
-            if($lot->affectable === false) {
+            if($lot->affectable === false && $lot->elevage === true) {
+                $lot->statut = $this->origine_statut;
+            } elseif ($lot->affectable === false) {
                 $lot->statut = Lot::STATUT_NONAFFECTABLE;
+            } elseif ($lot->affectable == true) {
+                $lot->elevage = false;
+                $lot->eleve = null;
             }
-
             if ($this->exist('changement_numero_logement_operateur') && $this->changement_numero_logement_operateur) {
                 $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
             }
