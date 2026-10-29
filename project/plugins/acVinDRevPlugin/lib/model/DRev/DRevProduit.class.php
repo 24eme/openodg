@@ -437,7 +437,7 @@ class DRevProduit extends BaseDRevProduit
     {
         $vcrBrut = $this->getVCR(false);
         $vcr = $this->getVCR();
-        if ($this->getVolumeRevendiqueTotalWithLieux() > $this->volume_revendique_total) {
+        if ($vcr > $this->volume_revendique_total && $this->getVolumeRevendiqueTotalWithLieux() > $this->volume_revendique_total) {
             $vcr = $this->getVCRWithRules($vcr, $this->getVolumeRevendiqueTotalWithLieux());
         }
         return $vcr != $vcrBrut;
@@ -484,9 +484,9 @@ class DRevProduit extends BaseDRevProduit
 		return $diff;
     }
 
-	public function getVolumeRevendiqueCommecialisable() {
-        $reserve = $this->getVolumeReserveInterproByConfig();
-        if ($reserve < 0) {
+	public function getVolumeRevendiqueCommecialisable($includeReserveNegative = false) {
+        $reserve = $this->getVolumeReserveInterproByConfig($includeReserveNegative);
+        if (!$includeReserveNegative && $reserve < 0) {
             $reserve = 0;
         }
 		return $this->volume_revendique_total - $reserve;
