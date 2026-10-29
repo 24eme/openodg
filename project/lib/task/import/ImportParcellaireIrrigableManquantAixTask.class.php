@@ -172,7 +172,7 @@ EOF;
             $pi->active = 1;
 
             $pc_manquants = floatval(str_replace([' ', ' '], '', str_replace(',', '.', str_replace('%', '', $data[self::CSV_POURCENTAGE_MANQUANT]))));
-            if ($pc_manquants >= 20) {
+            if (true || $pc_manquants >= 20) {
                 if (!$this->manquant || $this->manquant->identifiant != $etablissement->identifiant) {
                     $this->manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, $this->periode);
                     $this->manquant->observations .= "Import Aix";

@@ -175,6 +175,7 @@ EOF;
                     continue;
                 }
                 $pkey = explode('-', $pkey)[0].'-X'.$pkeyid++;
+                $pt = $ptold;
                 $pt = ParcellaireParcelle::freeInstance($parcellaire);
                 $pt->idu = ($data[self::CSV_IDU]) ? $data[self::CSV_IDU] : $data[self::CSV_CODE_COMMUNE]."0000".$p->section.sprintf("%04d",$p->numero_parcelle);
                 $pt->campagne_plantation = $p->campagne_plantation;
@@ -188,6 +189,7 @@ EOF;
                 $pt->lieu = $p->lieu;
                 $pt->parcelle_id = $pkey;
             }
+            $ptold = $pt;
 
             $item = $this->irrigable->declaration->add($produit_hash);
             $pi = $item->detail->add($pkey);
@@ -197,7 +199,6 @@ EOF;
             $pi->superficie = $p->superficie;
             $pi->active = 1;
         }
-
         $this->saving();
     }
 
