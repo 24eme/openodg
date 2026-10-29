@@ -1,6 +1,7 @@
 all:
   configuration:
     communes:
+      controle_communes: true
       insee2commune:
         16001: "Abzac"
         16002: "Les Adjots"
