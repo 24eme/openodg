@@ -1,6 +1,7 @@
 all:
   configuration:
     communes:
+      controle_communes: false
       insee2commune:
         06158: "VILLARS-SUR-VAR"
         13002: "ALLAUCH"

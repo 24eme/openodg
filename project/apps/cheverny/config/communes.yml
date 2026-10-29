@@ -1,6 +1,7 @@
 all:
   configuration:
     communes:
+      controle_communes: false
       insee2commune:
         "41204": "Saint-Claude-de-Diray"
         "41034": "CHAMBORD"

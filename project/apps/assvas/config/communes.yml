@@ -1,6 +1,7 @@
 all:
   configuration:
     communes:
+      controle_communes: false
       insee2commune:
         "03053": "CHANTELLE",
         "03115": "FLEURIEL",
