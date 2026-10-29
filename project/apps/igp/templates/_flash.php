@@ -1,0 +1,1 @@
+../../../plugins/AppPlugin/modules/global/templates/_flash.php

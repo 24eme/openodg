@@ -28,7 +28,7 @@ EOF;
     {
         
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $isCremant = isset($options['cremant']) && $options['cremant'];
         $type = ($isCremant)? ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT : ParcellaireClient::TYPE_COUCHDB;

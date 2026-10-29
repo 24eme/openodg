@@ -11,15 +11,19 @@ class ParcellaireIrrigableValidationForm extends acCouchdbObjectForm {
             $this->getValidator('date')->setMessage("required", "La date de réception du document est requise");
         }
 
-        if (sfConfig::get('app_document_validation_signataire')) {
-        	$this->setWidget('signataire', new sfWidgetFormInput());
-    		$this->setValidator('signataire', new sfValidatorString(array('required' => true)));
-    		$this->getWidget('signataire')->setLabel("Nom et prénom :");
-            $this->getValidator('signataire')->setMessage("required", "Le nom et prénom du signataire est requise");
-        }
-
         $this->setWidget('observations',new bsWidgetFormTextarea(array(), array('style' => 'width: 100%;resize:none;')));
         $this->setValidator('observations',new sfValidatorString(array('required' => false)));
+
+
+        if(ParcellaireConfiguration::getInstance()->hasEngagements()) {
+            $engagements = $this->getOption('engagements');
+
+            foreach ($engagements as $engagement) {
+                $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
+                $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => true)));
+                $this->getValidator('engagement_'.$engagement->getCode())->setMessage("required", "Veuillez prendre connaissances de tous les engagements");
+            }
+        }
 
         $this->widgetSchema->setNameFormat('parcellaire_validation[%s]');
     }

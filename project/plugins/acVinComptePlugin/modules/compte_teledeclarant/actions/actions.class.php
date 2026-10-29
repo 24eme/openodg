@@ -93,7 +93,7 @@ class compte_teledeclarantActions extends sfActions {
 
                 $message = $this->getMailer()->composeAndSend(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $emailCible, "Confirmation de création de votre compte", $this->getPartial('compte_teledeclarant/creationEmail', array('compte' => $this->compte)));
 
-                if ($this->form->hasUpdatedValues()) {
+                if ($this->form->hasUpdatedValues() && $this->compte->getSociete()->getEtablissementPrincipal()) {
                     Email::getInstance()->sendNotificationModificationsExploitation($this->compte->getSociete()->getEtablissementPrincipal(), $this->form->getUpdatedValues());
                 }
 
@@ -113,6 +113,7 @@ class compte_teledeclarantActions extends sfActions {
         $this->compte = $this->getUser()->getCompte();
         $this->etablissementPrincipal = null;
         $societe = $this->compte->getSociete();
+        $this->mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($societe);
         if($societe->isTransaction()){
             $this->etablissementPrincipal = $societe->getEtablissementPrincipal();
         }
@@ -134,6 +135,25 @@ class compte_teledeclarantActions extends sfActions {
         }
     }
 
+    public function executeCoordonneesBancaires(sfWebRequest $request) {
+          $this->compte = $this->getUser()->getCompte();
+          $this->societe = $this->compte->getSociete();
+          $mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($this->societe);
+          if (!$mandatSepa) {
+            $mandatSepa = MandatSepaClient::getInstance()->createDoc($this->societe);
+          }
+          $this->form = new MandatSepaDebiteurForm($mandatSepa->debiteur);
+
+          if ($request->isMethod(sfWebRequest::POST)) {
+              $this->form->bind($request->getParameter($this->form->getName()));
+              if ($this->form->isValid()) {
+                  $this->form->save();
+                  $this->getUser()->setFlash('maj', 'Vos coordonnées bancaires ont bien été mises à jour.');
+                  $this->redirect('compte_teledeclarant_modification');
+              }
+          }
+    }
+
     public function executeMotDePasseOublie(sfWebRequest $request) {
         $this->form = new CompteMotDePasseOublieForm();
         if ($request->isMethod(sfWebRequest::POST)) {
@@ -142,13 +162,10 @@ class compte_teledeclarantActions extends sfActions {
                 $compte = $this->form->save();
 
                 $societe = $compte->getSociete();
-                $lien = $this->generateUrl("compte_teledeclarant_mot_de_passe_oublie_login", array("login" => $societe->identifiant, "mdp" => str_replace("{OUBLIE}", "", $compte->mot_de_passe)), true);
-                $emailCible = null;
-
-                if (!$societe->isTransaction()) {
-                    $emailCible = $societe->getEmailTeledeclaration();
-                }else{
-                    $emailCible = $societe->getEtablissementPrincipal()->getEmailTeledeclaration();
+                $lien = $this->generateUrl("compte_teledeclarant_mot_de_passe_oublie_login", array("login" => $compte->login, "mdp" => str_replace("{OUBLIE}", "", $compte->mot_de_passe)), true);
+                $emailCible = $compte->getTeledeclarationEmail();
+                if (!$emailCible) {
+                    $emailCible = $compte->getEmail();
                 }
 
                 $message = $this->getMailer()->composeAndSend(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $emailCible, "Demande de mot de passe oublié", $this->getPartial('motDePasseOublieEmail', array('compte' => $compte, 'lien' => $lien)));
@@ -211,6 +228,78 @@ class compte_teledeclarantActions extends sfActions {
         $this->getResponse()->setHttpHeader('Cache-Control', 'public');
         $this->getResponse()->setHttpHeader('Expires', '0');
         return $this->renderText(file_get_contents($path));
+    }
+
+    private function checkApiAccess(sfWebRequest $request) {
+        $secret = sfConfig::get('app_viticonnect_secret');
+        $login = $request->getParameter('login');
+
+        $epoch = $request->getParameter('epoch');
+        if(empty($secret)) {
+            http_response_code(403);
+            die('Forbidden');
+        }
+        if(abs(time() - $epoch) > 30) {
+            http_response_code(403);
+            die('Forbidden');
+        }
+
+        $md5 = $request->getParameter('md5');
+
+        if ($md5 != md5($secret."/".$login."/".$epoch)) {
+            http_response_code(401);
+            die("Unauthorized");
+        }
+    }
+
+    public function executeViticonnectApi(sfWebRequest $request)
+    {
+        $this->checkApiAccess($request);
+        $login = $request->getParameter('login');
+        $compte = acCouchdbManager::getClient('Compte')->retrieveByLogin($login);
+        if (!$compte) {
+            $compte = acCouchdbManager::getClient('Compte')->retrieveByLogin(strtolower($login));
+        }
+        if (!$compte) {
+            http_response_code(401);
+            die("Unauthorized $login");
+        }
+        $this->entities = array('raison_sociale' => [], 'cvi' => [], 'siret' => [], 'ppm' => [], 'accise' => [], 'tva' => []);
+        $this->entities_number = 0;
+        $entities = array();
+        foreach($compte->getSociete()->getEtablissementsObj() as $e) {
+            $k = $e->etablissement->cvi.$e->etablissement->no_accises;
+            if ($k) {
+                $entities[$k] = $e;
+            }
+        }
+        foreach($entities as $k => $e) {
+            $this->entities['raison_sociale'][] = htmlspecialchars($e->etablissement->raison_sociale, ENT_XML1, 'UTF-8');
+            $this->entities['cvi'][] = str_replace(' ', '', $e->etablissement->cvi);
+            $this->entities['siret'][] = str_replace(' ', '', $compte->societe_informations->siret);
+            $this->entities['ppm'][] = str_replace(' ', '', $e->etablissement->ppm);
+            $this->entities['accises'][] = str_replace(' ', '', $e->etablissement->no_accises);
+            $this->entities['tva'][] = str_replace(' ', '', $compte->getSociete()->no_tva_intracommunautaire);
+            $this->entities_number++;
+        }
+
+        $this->setLayout(false);
+        $this->getResponse()->setHttpHeader('Content-Type', 'text/plain');
+
+    }
+
+    public function executeViticonnectCheck(sfWebRequest $request)
+    {
+        $this->checkApiAccess($request);
+        $login = $request->getParameter('login');
+        $comptes = EtablissementAllView::getInstance()->findByInterproAndStatut('INTERPRO-declaration', EtablissementClient::STATUT_ACTIF, $login);
+        if(count($comptes) == 1) {
+            echo "Found";
+            exit;
+        }
+        http_response_code(404);
+        die('Not found');
+
     }
 
 }

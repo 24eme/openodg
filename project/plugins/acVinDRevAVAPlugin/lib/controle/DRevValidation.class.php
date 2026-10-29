@@ -24,6 +24,7 @@ class DRevValidation extends DocumentValidation {
 
         //$this->addControle(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', 'Vous avez déclaré des lots VT/SGN sans spécifier de période de prélèvement.');
         $this->addControle(self::TYPE_WARNING, 'declaration_lots', 'Vous devez déclarer vos lots.');
+        $this->addControle(self::TYPE_ERROR, 'declaration_lots_inferieur', 'Vous devez déclarer au moins autant de lots de cepages revendiqués.');
 
         $this->addControle(self::TYPE_WARNING, 'revendication_cepage_sans_lot', 'Vous ne déclarez aucun lot pour un cépage que vous avez revendiqué. Si c\'est un lot qui a été replié en assemblage, ne tenez pas compte de ce point de vigilance.');
 
@@ -47,21 +48,23 @@ class DRevValidation extends DocumentValidation {
 
 
         $this->addControle(self::TYPE_ERROR, 'controle_externe_vtsgn', 'Vous devez renseigner une semaine et le nombre total de lots pour le VT/SGN');
-        $this->addControle(self::TYPE_ERROR, 'periodes_cuves', '15 jours doivent séparer au minimum la semaine de prélèvement du contrôle externe de celle de la dégustation conseil');
+        $this->addControle(self::TYPE_ERROR, 'periodes_cuves', '13 jours doivent séparer au minimum la semaine de prélèvement du contrôle externe de celle de la dégustation conseil');
+        $this->addControle(self::TYPE_ERROR, 'periode_prelevement_controle_ext', 'La date de prélèvement du contrôle externe doit être inférieure à 2 ans');
+        $this->addControle(self::TYPE_ERROR, 'periode_prelevement_degust_conseil', 'La date de prélèvement de la dégustation conseil doit être inférieure à 1 an');
 
         $this->addControle(self::TYPE_ERROR, 'repartition_vci', 'Vous devez répartir la totalité de votre stock VCI');
         $this->addControle(self::TYPE_ERROR, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé : vous devrez impérativement détruire Stock final - Plafond VCI Hls");
         $this->addControle(self::TYPE_ERROR, 'vci_rendement', "Le complément de récolte par du vci dépasse le rendement autorisé");
         $this->addControle(self::TYPE_ERROR, 'vci_complement', "Vous ne complétez pas votre volume malgré votre stock VCI disponible");
 
+        $this->addControle(self::TYPE_ERROR, 'chai_manquant', "Les informations liées à votre chai de vinification sont manquantes");
+
         /*
          * Engagement
          */
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, 'Joindre une copie de votre Déclaration de Récolte');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, 'Joindre une copie de votre SV11');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV11 ou SV12');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, 'Joindre une copie de votre Carnet de Pressoir');
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre Déclaration de Production');
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, 'Une <strong>copie</strong> du Carnet de Pressoir');
     }
 
     public function controle() {
@@ -71,20 +74,19 @@ class DRevValidation extends DocumentValidation {
         }
         foreach ($revendicationProduits as $hash => $revendicationProduit) {
             $this->controleWarningDrSurface($revendicationProduit);
+            $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
             $this->controleWarningDrVolume($revendicationProduit);
             $this->controleErrorRevendicationIncomplete($revendicationProduit);
             if($revendicationProduit->exist('superficie_revendique_vtsgn')) {
                 $this->controleErrorRevendicationIncomplete($revendicationProduit, '_vtsgn', " VTSGN");
             }
-            $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
             $this->controleEngagementPressoir($revendicationProduit);
 
             $stockVCIFinal = 0;
             foreach ($revendicationProduit->getProduitsVCI() as $produitVCI) {
                 $stockVCIFinal += $produitVCI->getStockFinalCalcule();
             }
-
-            if ($stockVCIFinal != 0) {
+            if (round($stockVCIFinal, 2) != 0) {
                 $this->addPoint(self::TYPE_ERROR, 'repartition_vci', sprintf("%s", $revendicationProduit->getLibelleComplet()), $this->generateUrl('drev_revendication_vci', array('sf_subject' => $this->document)));
             }
         }
@@ -107,6 +109,8 @@ class DRevValidation extends DocumentValidation {
 
         $this->controleErrorRevendicationSansLot(DRev::CUVE_ALSACE);
         $this->controleErrorRevendicationSansLot(DRev::CUVE_GRDCRU);
+
+        $this->controleErrorChaiManquant();
 
         $this->controleEngagementDr();
         $this->controleEngagementSv();
@@ -178,9 +182,11 @@ class DRevValidation extends DocumentValidation {
             return;
         }
 
-        if (!$this->document->isNonRecoltant() && !$this->document->hasDR()) {
-            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, '');
+        if ($this->document->isNonRecoltant()) {
+            return;
         }
+
+        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, '');
     }
 
     protected function controleEngagementPressoir($produit) {
@@ -220,7 +226,7 @@ class DRevValidation extends DocumentValidation {
                 $produit->superficie_revendique != $produit->detail->superficie_total
         ) {
             $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-surface';
-            $this->addPoint(self::TYPE_WARNING, 'dr_surface', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
+            $this->addPoint(self::TYPE_WARNING, 'dr_surface', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficies', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
         }
 
         if (
@@ -230,13 +236,18 @@ class DRevValidation extends DocumentValidation {
                 $produit->superficie_revendique_vtsgn != $produit->detail_vtsgn->superficie_total
         ) {
             $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-surface';
-            $this->addPoint(self::TYPE_WARNING, 'dr_surface', $produit->getLibelleComplet()." VT/SGN", $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
+            $this->addPoint(self::TYPE_WARNING, 'dr_surface', $produit->getLibelleComplet()." VT/SGN", $this->generateUrl('drev_revendication_superficies', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
         }
     }
 
     protected function controleWarningDrVolume($produit) {
+        $alreadyWarned = false;
+        $vigi = array_values($this->getVigilances());
+        if (count($vigi)>0) {
+          if ($vigi[0]->getCode() == 'volume_revendique_superieur_sur_place'){ $alreadyWarned = true; }
+        }
 
-        if (!$this->document->hasDR()) {
+        if (!$this->document->hasDR() || $alreadyWarned == true) {
 
             return;
         }
@@ -244,38 +255,49 @@ class DRevValidation extends DocumentValidation {
         if (
                 $produit->volume_revendique !== null &&
                 $produit->detail->volume_sur_place_revendique !== null &&
-                $produit->volume_revendique != $produit->detail->volume_sur_place_revendique
+                round($produit->volume_revendique, 2) != round($produit->detail->volume_sur_place_revendique, 2)
         ) {
             $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
-            $this->addPoint(self::TYPE_WARNING, 'dr_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
+            $this->addPoint(self::TYPE_WARNING, 'dr_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_volumes', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
         }
 
         if (
                 $produit->canHaveVtsgn() &&
                 $produit->volume_revendique_vtsgn !== null &&
                 $produit->detail_vtsgn->volume_sur_place_revendique !== null &&
-                $produit->volume_revendique_vtsgn != $produit->detail_vtsgn->volume_sur_place_revendique
+                round($produit->volume_revendique_vtsgn, 2) != round($produit->detail_vtsgn->volume_sur_place_revendique, 2)
         ) {
             $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
-            $this->addPoint(self::TYPE_WARNING, 'dr_volume', $produit->getLibelleComplet()." VT/SGN", $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
+            $this->addPoint(self::TYPE_WARNING, 'dr_volume', $produit->getLibelleComplet()." VT/SGN", $this->generateUrl('drev_revendication_volumes', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
         }
     }
 
     protected function controleWarningRevendicationLot() {
+      $nb_total_lots_cepages = [];
         foreach ($this->document->declaration->getProduitsCepage() as $hash => $produitCepage) {
+
             if ($produitCepage->volume_revendique) {
                 $correspondance = $this->document->getConfiguration()->get($produitCepage->getCepage()->getHash())->getHashRelation('lots');
                 $correspondanceLot = str_replace('/', '_', $correspondance);
                 $cuve = Drev::CUVE . $this->document->getPrelevementsKeyByHash($correspondance);
                 if ($this->document->prelevements->exist($cuve)) {
-                    if ($this->document->prelevements->get($cuve)->lots->exist($correspondanceLot)) {
-                        if (!$this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->nb_hors_vtsgn) {
-                            $this->addPoint(self::TYPE_WARNING, 'declaration_lots', $this->document->prelevements->get($cuve)->libelle_produit . ' ' . $this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->libelle, $this->generateUrl('drev_lots', array('sf_subject' => $this->document->prelevements->get($cuve))));
-                        }
+                  if ($this->document->prelevements->get($cuve)->lots->exist($correspondanceLot)) {
+                    $nb_total_lots_cepages[$cuve] =$this->document->prelevements->get($cuve)->total_lots;
+                    if (!$this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->nb_hors_vtsgn) {
+                      $this->addPoint(self::TYPE_WARNING, 'declaration_lots', $this->document->prelevements->get($cuve)->libelle_produit . ' ' . $this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->libelle, $this->generateUrl('drev_lots', array('sf_subject' => $this->document->prelevements->get($cuve))));
                     }
+                  }
                 }
             }
         }
+        foreach ($nb_total_lots_cepages as $key => $value) {
+          $nbmin = $this->document->prelevements->get($key)->getNbLotsMinimum();
+          if($value < $nbmin) {
+            $this->addPoint(self::TYPE_ERROR, 'declaration_lots_inferieur', "Dégustation conseil - vos $value lot(s) / $nbmin de ".$this->document->prelevements->get($key)->libelle_produit, $this->generateUrl('drev_lots', $this->document->prelevements->get($key)));
+            break;
+          }
+        }
+
     }
 
     protected function controleErrorRevendicationIncomplete($produit, $suffix = null, $suffixLibelle = null) {
@@ -308,27 +330,17 @@ class DRevValidation extends DocumentValidation {
             return;
         }
 
-        if ($this->etablissement->hasFamille(EtablissementClient::FAMILLE_CAVE_COOPERATIVE)) {
-            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, '');
-
-            return;
-        }
-
-        if ($this->etablissement->hasFamille(EtablissementClient::FAMILLE_NEGOCIANT)) {
-            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, '');
-
-            return;
-        }
-
         $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, '');
     }
 
     protected function controleErrorVolumeRevendiqueIncorrect($produit) {
+
+
         if (
                 $produit->volume_revendique !== null &&
                 $produit->detail->volume_sur_place !== null &&
                 $produit->detail->usages_industriels_total !== null &&
-                round($produit->detail->volume_sur_place - $produit->detail->usages_industriels_total - $produit->detail->vci_total, 2) > $produit->volume_revendique
+                round($produit->detail->volume_sur_place - $produit->detail->usages_industriels_total - $produit->detail->vci_total, 2) > round($produit->volume_revendique, 2)
         ) {
 	    $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
             $this->addPoint(self::TYPE_WARNING, 'volume_revendique_usages_inferieur_sur_place', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
@@ -342,6 +354,7 @@ class DRevValidation extends DocumentValidation {
             $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
             $this->addPoint(self::TYPE_WARNING, 'volume_revendique_superieur_sur_place', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
         }
+
     }
 
     protected function controleErrorPeriodes() {
@@ -350,14 +363,48 @@ class DRevValidation extends DocumentValidation {
             return;
         }
 
-        $prelevement = $this->document->prelevements->get(DRev::CUVE_ALSACE);
-        $degustation = $this->document->prelevements->get(DRev::BOUTEILLE_ALSACE);
+        $drevDate = new DateTimeImmutable($this->document->getDate());
 
-        $dateDegustationExterneMinimum = new DateTime($prelevement->date);
-        $dateDegustationExterneMinimum->modify('+ 15 day');
+        $prelevementBouteilleAlsace = $this->document->prelevements->get(DRev::BOUTEILLE_ALSACE);
+        $controleExtBouteilleAlsace = new DateTimeImmutable($prelevementBouteilleAlsace->date);
 
-        if ($prelevement->date && $degustation->date && $degustation->date < $dateDegustationExterneMinimum->format('Y-m-d')) {
-            $this->addPoint(self::TYPE_ERROR, 'periodes_cuves', sprintf("%s - %s", $degustation->libelle, $degustation->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
+        if($this->document->prelevements->exist(DRev::CUVE_ALSACE)) {
+            $prelevementCuveAlsace = $this->document->prelevements->get(DRev::CUVE_ALSACE);
+            $degustConseilCuveAlsace = new DateTimeImmutable($prelevementCuveAlsace->date);
+            if ($prelevementCuveAlsace->date && $prelevementBouteilleAlsace->date && $prelevementBouteilleAlsace->date < $degustConseilCuveAlsace->modify('+ 13 day')->format('Y-m-d')) {
+                $this->addPoint(self::TYPE_ERROR, 'periodes_cuves', sprintf("%s - %s", $prelevementBouteilleAlsace->libelle, $prelevementBouteilleAlsace->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
+            }
+            if ($degustConseilCuveAlsace->format('Y-m-d') >= $drevDate->modify('+ 1 year')->format('Y-m-d')) {
+                $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_degust_conseil', sprintf("%s - %s", $prelevementCuveAlsace->libelle, $prelevementCuveAlsace->libelle_produit), $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
+            }
+        }
+
+        if($this->document->prelevements->exist(DRev::CUVE_CREMANT)) {
+            $prelevementCuveCremant = $this->document->prelevements->get(DRev::CUVE_CREMANT);
+            $degustConseilCuveCremant = new DateTimeImmutable($prelevementCuveCremant->date);
+            if ($degustConseilCuveCremant->format('Y-m-d') >= $drevDate->modify('+ 1 year')->format('Y-m-d')) {
+                $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_degust_conseil', sprintf("%s - %s", $prelevementCuveCremant->libelle, $prelevementCuveCremant->libelle_produit), $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)) . "?focus=aoc_cremant");
+            }
+        }
+
+        if($this->document->prelevements->exist(DRev::CUVE_GRDCRU)) {
+            $prelevementCuveGrandCru = $this->document->prelevements->get(DRev::CUVE_GRDCRU);
+            $degustConseilCuveGrandCru = new DateTimeImmutable($prelevementCuveGrandCru->date);
+            if ($degustConseilCuveGrandCru->format('Y-m-d') >= $drevDate->modify('+ 1 year')->format('Y-m-d')) {
+                $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_degust_conseil', sprintf("%s - %s", $prelevementCuveGrandCru->libelle, $prelevementCuveGrandCru->libelle_produit), $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)) . "?focus=aoc_grdcru");
+            }
+        }
+
+        if ($controleExtBouteilleAlsace->format('Y-m-d') >= $drevDate->modify('+ 2 years')->format('Y-m-d')) {
+            $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_controle_ext', sprintf("%s - %s", $prelevementBouteilleAlsace->libelle, $prelevementBouteilleAlsace->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_alsace");
+        }
+
+        if($this->document->prelevements->exist(DRev::BOUTEILLE_GRDCRU)) {
+            $prelevementBouteilleGrdCru = $this->document->prelevements->get(DRev::BOUTEILLE_GRDCRU);
+            $controleExtBouteilleGrdCru = new DateTimeImmutable($prelevementBouteilleGrdCru->date);
+            if ($controleExtBouteilleGrdCru->format('Y-m-d') >= $drevDate->modify('+ 2 years')->format('Y-m-d')){
+                $this->addPoint(self::TYPE_ERROR, 'periode_prelevement_controle_ext', sprintf("%s - %s", $prelevementBouteilleGrdCru->libelle, $prelevementBouteilleGrdCru->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)) . "?focus=aoc_grdcru");
+            }
         }
     }
 
@@ -394,6 +441,19 @@ class DRevValidation extends DocumentValidation {
     protected function controleWarningLotVtsgnSansPrelevement() {
         if (!$this->document->addPrelevement(DRev::CUVE_VTSGN) && $this->document->hasLots(true)) {
             $this->addPoint(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', '', $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)));
+        }
+    }
+
+    protected function controleErrorChaiManquant() {
+        $hasChai = false;
+        foreach ($this->document->chais as $values) {
+          if ($values->adresse||$values->commune||$values->code_postal) {
+            $hasChai = true;
+            break;
+          }
+        }
+        if (!$hasChai && (!$this->document->exist('non_vinificateur') || !$this->document->non_vinificateur)) {
+            $this->addPoint(self::TYPE_ERROR, 'chai_manquant', "Exploitation", $this->generateUrl('drev_exploitation', array('sf_subject' => $this->document)));
         }
     }
 

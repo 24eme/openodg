@@ -55,9 +55,6 @@ class ConfigurationProduit
     public function getAppellations() {
     	return $this->appellations;
     }
-		public function getNodeCahierDesCharges() {
-				return $this->getAppellation();
-		}
     public function getLieux() {
     	return $this->lieux;
     }

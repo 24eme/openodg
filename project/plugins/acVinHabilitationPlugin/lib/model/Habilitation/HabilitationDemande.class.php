@@ -14,7 +14,7 @@ class HabilitationDemande extends BaseHabilitationDemande {
 
     public function setProduit($hash) {
         $this->_set('produit', $hash);
-        $this->produit_libelle = $this->getConfig()->getLibelleComplet();
+        $this->produit_libelle = preg_replace('/ Tranquilles?$/', '', $this->getConfig()->getLibelleComplet());
     }
 
     public function getLibelle() {
@@ -23,7 +23,10 @@ class HabilitationDemande extends BaseHabilitationDemande {
             return $this->_get('libelle');
         }
 
-        $this->libelle = $this->getProduitLibelle().": ".implode(", ", $this->getActivitesLibelle())    ;
+        $this->libelle = $this->getProduitLibelle().": ".implode(", ", $this->getActivitesLibelle());
+        if ($this->exist('sites')) {
+            $this->libelle .= ' (Site '.implode(', ', array_values($this->sites->toArray())).')';
+        }
 
         return $this->_get('libelle');
     }
@@ -65,6 +68,15 @@ class HabilitationDemande extends BaseHabilitationDemande {
         return $historiques;
     }
 
+    public function getExtractHistoriqueFromStatut($statut) {
+        foreach($this->getFullHistorique() as $h) {
+            if ($h->statut == $statut) {
+                return $h;
+            }
+        }
+        return $h;
+    }
+
     public function getHistoriquePrecedent($statut, $date) {
         $prev = null;
         $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($this->getDocument()->identifiant);
@@ -103,6 +115,11 @@ class HabilitationDemande extends BaseHabilitationDemande {
         }
 
         return null;
+    }
+
+    public function isLatest() {
+        $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($this->getDocument()->identifiant);
+        return ($this->getHistoriqueSuivant($this->statut, $this->date) == null);
     }
 
 }

@@ -2,6 +2,8 @@
 
 class AbonnementClient extends acCouchdbClient implements FacturableClient {
 
+    const TYPE_MODEL = "Abonnement";
+    const TYPE_COUCHDB = "ABONNEMENT";
     const TARIF_MEMBRE = 'MEMBRE';
     const TARIF_PLEIN = 'PLEIN';
     const TARIF_GRATUIT = 'GRATUIT';

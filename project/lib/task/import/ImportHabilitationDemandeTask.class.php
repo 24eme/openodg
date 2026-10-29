@@ -25,7 +25,7 @@ EOF;
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         $doc = null;
@@ -104,7 +104,7 @@ EOF;
             }
 
             try {
-                $demande = HabilitationClient::getInstance()->createDemandeAndSave($identifiant, $typeDemande, $produit, $activites, "COMPLET", $dateCompletude, $commentaire, "import", false);
+                $demande = HabilitationClient::getInstance()->createDemandeAndSave($identifiant, $typeDemande, $produit, $activites, null, "COMPLET", $dateCompletude, $commentaire, "import", false);
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateEnregistrement, "ENREGISTREMENT", null, "import", false);
 
                 if($pourqui) {
@@ -150,7 +150,8 @@ EOF;
         if($produitLibelle == "SAINT PERAY") {
             $produitLibelle = "Saint Peray Tranquilles";
         }
-        foreach(ConfigurationClient::getCurrent()->getProduitsCahierDesCharges() as $produit) {
+
+        foreach(HabilitationClient::getInstance()->getProduitsConfig(ConfigurationClient::getCurrent()) as $produit) {
             if(KeyInflector::slugify($produitLibelle) == KeyInflector::slugify($produit->getLibelleComplet())) {
 
                 return $produit->getHash();

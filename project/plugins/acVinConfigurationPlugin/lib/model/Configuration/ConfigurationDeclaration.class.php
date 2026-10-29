@@ -123,6 +123,17 @@ class ConfigurationDeclaration extends BaseConfigurationDeclaration {
         return 0;
     }
 
+    public function getRendementReserveInterpro()  {
+
+        return 0;
+    }
+
+    public function getRendementReserveInterproMin() {
+
+        return 0;
+    }
+
+
     public function hasMout() {
 
         return false;
@@ -143,5 +154,8 @@ class ConfigurationDeclaration extends BaseConfigurationDeclaration {
         return false;
     }
 
-    /* FIN DR */
+    public function getAttribut($name, $default = null) {
+
+        return $default;
+    }
 }

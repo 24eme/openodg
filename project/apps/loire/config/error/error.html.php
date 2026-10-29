@@ -21,7 +21,7 @@
         <link rel="icon" type="image/x-icon" href="/favico.ico" />
         <link rel="icon" type="image/png" href="/favico.png" />
 
-        <link rel="stylesheet" type="text/css" media="all" href="/css/compile.css?201706281900" />
+        <link rel="stylesheet" type="text/css" media="all" href="/css/compile_loire.css?201706281900" />
 <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
 <link rel="stylesheet" type="text/css" media="all" href="/css/../components/vins/vins.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="/js/lib/leaflet/leaflet.css" />
@@ -171,7 +171,7 @@
 <script type="text/javascript" src="/js/lib/leaflet/leaflet.js"></script>
 <script type="text/javascript" src="/js/global.js?201711052339"></script>
 <script type="text/javascript" src="/js/compte.js"></script>
-<script type="text/javascript" src="/js/drev.js?201709251013"></script>
+<script type="text/javascript" src="/js/drev.js?202105041230"></script>
 <script type="text/javascript" src="/js/drevmarc.js"></script>
 <script type="text/javascript" src="/js/form.js"></script>
 <script type="text/javascript" src="/js/parcellaire.js"></script>

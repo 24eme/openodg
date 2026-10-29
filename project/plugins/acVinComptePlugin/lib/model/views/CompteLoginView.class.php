@@ -21,6 +21,16 @@ class CompteLoginView extends acCouchdbView {
                       ->getView($this->design, $this->view)->rows;
     }
 
+    public function getAllLogins() {
+        $logins = array();
+        $rows = $this->client->getView($this->design, $this->view)->rows;
+        foreach($rows as $row) {
+            $logins[$row->key[0]] = $row->value;
+        }
+
+        return $logins;
+    }
+
     public function findOneCompteByLogin($login, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
       $compte = null;
       foreach ($this->findComptesByLogin($login) as $k => $v) {

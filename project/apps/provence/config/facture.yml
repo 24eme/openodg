@@ -1,27 +1,26 @@
 all:
   configuration:
     facture:
-      aggregateLignes: true
-      ligneMsg: "Cotisation incluant les droits INAO, la cotisation O.D.G, la cotisation de défense du nom et la cotisation pour l’O.I"
+      ligne_unique: true
       echeances:
         1ertiers:
           libelle_date: "A réception"
           field: "date_facturation"
-          date_jour_mois: ""
           libelle: '(1\up{er} tiers)'
           montant_division: 3.0
         2ndtiers:
           libelle_date: ""
-          field: "date_facturation"
+          field: "date_recolte"
+          field_increment: 1
           date_jour_mois: "31.03"
           libelle: '(2\up{ème} tiers)'
           montant_division: 3.0
         3emetiers:
           libelle_date: ""
-          field: "date_facturation"
+          field: "date_recolte"
+          field_increment: 1
           date_jour_mois: "30.06"
           libelle: '(3\up{ème} tiers)'
           montant_division: 3.0
-      all_etablissements: true
       uniq_template_prefix: "TEMPLATE-FACTURE-AOC"
-      export_sage_width_txt: false
+      export_type: "custom"

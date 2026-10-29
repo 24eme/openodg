@@ -9,11 +9,12 @@ class VersionDocument
 
     public function __construct(acCouchdbDocument $document) {
         $this->document = $document;
+        $this->diff_with_mother = array();
     }
 
     public static function buildVersion($rectificative, $modificative) {
         if ($rectificative && $modificative) {
-        
+
             return sprintf('R%02dM%02d', $rectificative, $modificative);
         }
 
@@ -31,7 +32,7 @@ class VersionDocument
     }
 
     public static function buildRectificative($version) {
-        if (preg_match('/^R([0-9]{2})/', $version, $matches)) {
+        if ($version && preg_match('/^R([0-9]{2})/', $version, $matches)) {
 
             return (int) $matches[1];
         }
@@ -40,7 +41,7 @@ class VersionDocument
     }
 
     public static function buildModificative($version) {
-        if (preg_match('/M([0-9]{2})$/', $version, $matches)) {
+        if ($version && preg_match('/M([0-9]{2})$/', $version, $matches)) {
 
             return (int) $matches[1];
         }
@@ -105,31 +106,35 @@ class VersionDocument
         return $this->document->getMother()->exist($hash);
     }
 
-    public function getMother() {
+    public function getMother($force = false) {
         if (!$this->document->hasVersion()) {
             return null;
         }
 
-        if(is_null($this->mother)) {
+        if(is_null($this->mother) || $force) {
             $this->mother = $this->document->findDocumentByVersion($this->document->getPreviousVersion());
         }
 
-        return $this->mother;    
+        return $this->mother;
     }
 
-    public function getDiffWithMother() {
-        if (is_null($this->diff_with_mother)) {
+    public function getDiffWithMother($both_directions = false) {
+        if (!$this->document->isModificative()) {
+            return array();
+        }
+        if (!isset($this->diff_with_mother[$both_directions]) || is_null($this->diff_with_mother[$both_directions])) {
             $mother = $this->getMother();
             if (!$this->getMother()) {
-                $mother = new DRM();
+                $type = $this->document->getDocumentDefinitionModel();
+                $mother = new $type();
             }
-            $this->diff_with_mother = $this->getDiffWithAnotherDocument($mother->getData());
+            $this->diff_with_mother[$both_directions] = $this->getDiffWithAnotherDocument($mother->getData(), $both_directions);
         }
 
-        return $this->diff_with_mother;
+        return $this->diff_with_mother[$both_directions];
     }
 
-    public function isModifiedMother($hash_or_object, $key = null) {
+    public function isModifiedMother($hash_or_object, $key = null, $both_directions = false) {
         if(!$this->document->hasVersion()) {
 
             return false;
@@ -137,14 +142,16 @@ class VersionDocument
         $hash = ($hash_or_object instanceof acCouchdbJson) ? $hash_or_object->getHash() : $hash_or_object;
         $hash .= ($key) ? "/".$key : null;
 
-        return array_key_exists($hash, $this->document->getDiffWithMother());
+        return array_key_exists($hash, $this->document->getDiffWithMother($both_directions));
     }
 
-    protected function getDiffWithAnotherDocument(stdClass $document) {
+    protected function getDiffWithAnotherDocument(stdClass $document, $both_directions = false) {
 
         $other_json = new acCouchdbJsonNative($document);
         $current_json = new acCouchdbJsonNative($this->document->getData());
-
+        if ($both_directions) {
+            return array_merge($current_json->diff($other_json), $other_json->diff($current_json));
+        }
         return $current_json->diff($other_json);
     }
 
@@ -194,12 +201,12 @@ class VersionDocument
             return $this->needNextRectificative();
         }
 
-        return false;      
+        return false;
     }
 
     protected function needNextRectificative() {
         if (!$this->document->isRectificative()) {
-           
+
            return false;
         }
 
@@ -239,8 +246,18 @@ class VersionDocument
 
         $document_modificative->version = $this->buildVersionDocument($this->getRectificative(), $this->getModificative() + 1);
         $this->document->listenerGenerateVersion($document_modificative);
+        $document_modificative->numero_archive = null;
 
         return $document_modificative;
+    }
+
+    public function verifyGenerateModificative() {
+        try {
+            $this->generateModificative();
+        }catch(sfException $e){
+            return false;
+        }
+        return true;
     }
 
     public function generateNextVersion()

@@ -15,10 +15,7 @@ class DRevImportDRTask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
-            new sfCommandOption('forcecreate', null, sfCommandOption::PARAMETER_REQUIRED, "Force la création", false),
-        	new sfCommandOption('forceupdate', null, sfCommandOption::PARAMETER_REQUIRED, "Force la mise à jour de la DR", false),
-        	new sfCommandOption('updaterevendique', null, sfCommandOption::PARAMETER_REQUIRED, "Force la mise à jour du volume revendique", false),
-        	new sfCommandOption('removerevendique', null, sfCommandOption::PARAMETER_REQUIRED, "Supprime les volumes revendiquées", false),
+            new sfCommandOption('forcecreate', null, sfCommandOption::PARAMETER_REQUIRED, 'Force la création', false),
         ));
 
         $this->namespace = 'drev';
@@ -31,7 +28,7 @@ EOF;
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         if(!file_exists($arguments['csv'])) {
@@ -46,25 +43,15 @@ EOF;
             return;
         }
 
-
         $drev = DRevClient::getInstance()->find($arguments['doc_id']);
 
-        if($drev && $drev->isNonRecoltant()) {
-            echo sprintf("ERROR;Le DREV est une DREV négoce ou cave coopérative;%s\n", $drev->_id);
+        if ($drev && $drev->isLectureSeule()) {
 
             return;
         }
 
-        if($drev && !$drev->isAutomatique() && !$drev->isPapier() && !$drev->hasDR()) {
-            echo sprintf("WARNING;La DREV est télédéclaré;%s\n", $drev->_id);
-
-            if(!$options['forceupdate']) {
-                return;
-            }
-        }
-
-        if($drev && $drev->hasDR() && !$options['forceupdate']) {
-            echo sprintf("ERROR;La DR a déjà été importée;%s\n", $drev->_id);
+        if($drev && $drev->isNonRecoltant()) {
+            echo sprintf("ERROR;C'est une DREV négoce ou cave coopérative;%s\n", $drev->_id);
 
             return;
         }
@@ -75,11 +62,30 @@ EOF;
             return;
         }
 
-        if ($drev && $drev->isLectureSeule()) {
+        if($drev && !$drev->isAutomatique()) {
+            return;
+        }
+
+        if($drev && $drev->getLastRegistreVCI() && !$drev->getLastRegistreVCI()->isStockUtiliseEntierement()) {
+            echo sprintf("ERROR;Le stock VCI de la précédente campagne n'est pas complétement utilisée;%s\n", $drev->_id);
 
             return;
         }
 
+        $needUpdate = ($drev && $drev->hasDR() && !$drev->isAttachmentSameFile('DR.csv', $arguments['csv']));
+
+        if($drev && !$needUpdate) {
+            return;
+        }
+
+        if($drev && $drev->isFactures() && $needUpdate) {
+            echo sprintf("WARNING;La DR de cette DRev Facturé nécéssiterais une mise à jour;%s\n", $drev->_id);
+            return;
+        }
+
+        if($drev && $drev->isFactures()) {
+            return;
+        }
 
         if(!$drev) {
             $etablisement_id = preg_replace("/^DREV-([0-9]+)-[0-9]+$/", 'ETABLISSEMENT-\1', $arguments['doc_id']);
@@ -98,7 +104,7 @@ EOF;
             $csv = new DRCIVACsvFile($arguments['csv']);
 
             //Juste pour contrôler qu'il n'y a pas volume à revendiquer
-            $drev->updateFromCSV(true, false, $csv->getCsvAcheteur($drev->identifiant));
+            $drev->updateFromCIVACsvFile(true, false, $csv);
 
             $drev->add('automatique', 1);
             $drev->add('non_vinificateur', 1);
@@ -130,39 +136,19 @@ EOF;
             $drev->add('declaration');
 
             $drev->storeDeclarant();
-
             $drev->validate(true);
-            $drev->validateOdg(true);
-
             $drev->save();
         }
 
         $drev->storeAttachment($arguments['csv'], "text/csv", "DR.csv");
         $drev->storeAttachment($arguments['pdf'], "application/pdf", "DR.pdf");
 
-        $updateRevendique = $drev->isAutomatique() || $options['updaterevendique'];
-
-    	$drev->updateFromCSV($updateRevendique);
-
-        if($options['removerevendique']) {
-            $drev->declaration->removeVolumeRevendique();
-        }
+        $drev->updateFromCIVACsvFile(true);
 
         $drev->declaration->cleanNode();
+        $drev->validateOdg(true);
         $drev->save();
 
-        if(!$drev->isNonVinificateur()) {
-            foreach($drev->getProduits() as $produit) {
-                if(($produit->superficie_revendique && is_null($produit->superficie_vinifiee)) || ($produit->exist('superficie_revendique_vtsgn') && $produit->superficie_revendique_vtsgn && is_null($produit->superficie_vinifiee_vtsgn))) {
-                    echo sprintf("WARNING;Les informations de superficie_vinifiee ne sont pas complètes;%s\n", $drev->_id);
-                }
-
-                if(($produit->superficie_revendique && is_null($produit->volume_revendique)) || ($produit->exist('superficie_revendique_vtsgn') && $produit->superficie_revendique_vtsgn && is_null($produit->volume_revendique_vtsgn))) {
-                    echo sprintf("WARNING;Les informations de volume_vinifiee ne sont pas complètes;%s\n", $drev->_id);
-                }
-            }
-        }
-
-        echo sprintf("SUCCESS;La DR a bien été importée %s;%s\n", ($updateRevendique) ? "(le volume revendiqué a été mise à jour)" : null, $drev->_id);
+        echo sprintf("SUCCESS;La DR a été %s;%s\n", ($needUpdate) ? "mise à jour" : "importée", $drev->_id);
     }
 }

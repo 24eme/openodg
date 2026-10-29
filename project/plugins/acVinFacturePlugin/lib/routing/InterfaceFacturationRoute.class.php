@@ -1,6 +1,6 @@
 <?php
 
-interface InterfaceFacturationRoute
+interface InterfaceFacturationRoute extends InterfaceUsurpationRoute
 {
 
 }

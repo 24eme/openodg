@@ -38,7 +38,7 @@ class AutoAdminFilter extends sfBasicSecurityFilter
     $compte->identifiant = $identifiant;
     $compte->add('login', $identifiant);
 
-    $compte->add("droits", sfConfig::get('app_auth_rights', array($right, 'ADMIN', 'habilitation')));
+    $compte->add("droits", sfConfig::get('app_auth_rights', array($right, 'habilitation')));
 
     return $compte;
   }

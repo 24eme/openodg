@@ -5,23 +5,29 @@ $dbconfig = shift();
 $tmpfile = "/tmp/$$.json";
 use JSON -support_by_pp;
 
-open(CONF, $dbconfig);
-while (<CONF>) {
-	chomp;
-	if (/dsn:\s*([^ ]*)/ && ! /#/) {
-		$db = $1;
-		print "db: $db\n" if ($verbose);
-	}
-	if (/dbname:\s*([^ ]*)/ && !/#/) {
-		$dbname = $1;
-		print "dbname: $dbname\n" if ($verbose);
-	}
-	if ($db && $dbname) {
-		$couchurl = $db.$dbname;
-		last;
-	}
+if ($dbconfig =~ /^http/) {
+	$couchurl = $dbconfig;
 }
-close(CONF);
+
+if(!$couchurl) {
+	open(CONF, $dbconfig);
+	while (<CONF>) {
+		chomp;
+		if (/dsn:\s*([^ ]*)/ && ! /#/) {
+			$db = $1;
+			print "db: $db\n" if ($verbose);
+		}
+		if (/dbname:\s*([^ ]*)/ && !/#/) {
+			$dbname = $1;
+			print "dbname: $dbname\n" if ($verbose);
+		}
+		if ($db && $dbname) {
+			$couchurl = $db.$dbname;
+			last;
+		}
+	}
+	close(CONF);
+}
 
 print "couchurl: $couchurl\n" if($verbose);
 

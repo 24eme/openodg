@@ -24,15 +24,15 @@ EOF;
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $routing = clone ProjectConfiguration::getAppRouting();
         $context = sfContext::createInstance($this->configuration);
         $context->set('routing', $routing);
 
         $this->rows = acCouchdbManager::getClient()
-                    ->startkey(array('DRev', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), array()))
-                    ->endkey(array('DRev', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()))
+                    ->startkey(array(DeclarationTousView::FILTER_KEY_DEFAULT_REGION, 'DRev', ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent(), array()))
+                    ->endkey(array(DeclarationTousView::FILTER_KEY_DEFAULT_REGION, 'DRev', ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent()))
                     ->descending(true)
                     ->reduce(false)
                     ->getView('declaration', 'tous')->rows;
@@ -43,7 +43,7 @@ EOF;
                 continue;
             }
 
-            if($row->key[DeclarationTousView::KEY_STATUT] != DeclarationTousView::STATUT_EN_ATTENTE) {
+            if($row->key[DeclarationTousView::KEY_STATUT] != DeclarationTousView::STATUT_A_APPROUVER) {
 
                 continue;
             }

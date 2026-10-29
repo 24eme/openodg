@@ -35,22 +35,36 @@ class SocieteClient extends acCouchdbClient {
         return $identifiant = str_replace('SOCIETE-', '', $id_or_identifiant);
     }
 
+    public function findBySiretOrTVA($siret) {
+        $s = $this->findBySiret($siret);
+        if ($s) {
+            return $s;
+        }
+        return $this->findByField('no_tva_intracommunautaire', $siret);
+    }
+
     public function findBySiret($siret) {
-        $index = acElasticaManager::getType('SOCIETE');
-        $elasticaQueryString = new acElasticaQueryQueryString();
-        $elasticaQueryString->setDefaultOperator('AND');
-        $elasticaQueryString->setQuery(sprintf("doc.siret:%s", $siret));
+        return $this->findByField('siret', $siret);
+    }
 
-        $q = new acElasticaQuery();
-        $q->setQuery($elasticaQueryString);
-        $q->setLimit(1);
+    private function findByField($field, $siret) {
+        try {
+            $index = acElasticaManager::getType('SOCIETE');
+            $elasticaQueryString = new acElasticaQueryQueryString();
+            $elasticaQueryString->setDefaultOperator('AND');
+            $elasticaQueryString->setQuery(sprintf("doc.$field:%s", $siret));
+            $q = new acElasticaQuery();
+            $q->setQuery($elasticaQueryString);
+            $q->setLimit(1);
 
-        $res = $index->search($q);
+            $res = $index->search($q);
 
-        foreach ($res->getResults() as $er) {
-            $r = $er->getData();
+            foreach ($res->getResults() as $er) {
+                $r = $er->getData();
+                return $this->find($r['id']);
+            }
+        } catch(Exception $e) {
 
-            return $this->find($r['_id']);
         }
 
         return null;
@@ -60,9 +74,9 @@ class SocieteClient extends acCouchdbClient {
         return array_reverse(SocieteAllView::getInstance()->findByInterproAndStatut('INTERPRO-declaration', $statut));
     }
 
-    public function getSocietesWithTypeAndRaisonSociale($type, $raison_sociale) {
-        return array_merge(SocieteAllView::getInstance()->findByInterproAndStatut('INTERPRO-declaration', CompteClient::STATUT_ACTIF, array($type), $raison_sociale),
-                SocieteAllView::getInstance()->findByInterproAndStatut('INTERPRO-declaration', CompteClient::STATUT_SUSPENDU, array($type), $raison_sociale));
+    public function getSocietesWithRaisonSociale($raison_sociale) {
+        return array_merge(SocieteAllView::getInstance()->findByInterproAndStatut('INTERPRO-declaration', CompteClient::STATUT_ACTIF, $raison_sociale),
+                SocieteAllView::getInstance()->findByInterproAndStatut('INTERPRO-declaration', CompteClient::STATUT_SUSPENDU, $raison_sociale));
     }
 
     public function getSocieteFormatIdentifiant() {
@@ -75,13 +89,16 @@ class SocieteClient extends acCouchdbClient {
         return preg_replace('/(.*)%0([0-9]{1})d/', '(\1)([0-9]{\2})', $this->getSocieteFormatIdentifiant());
     }
 
-    public function createSociete($raison_sociale, $type = SocieteClient::TYPE_AUTRE) {
+    public function createSociete($raison_sociale, $type = SocieteClient::TYPE_AUTRE, $identifiant = null) {
+        if(is_null($identifiant)) {
+            $identifiant = $this->getNumeroSuivant();
+        }
 
         $societe = new Societe();
         $societe->raison_sociale = $raison_sociale;
         $societe->type_societe = $type;
         $societe->interpro = 'INTERPRO-declaration';
-        $societe->identifiant = sprintf($this->getSocieteFormatIdentifiant(), $this->getNumeroSuivant());
+        $societe->identifiant = sprintf($this->getSocieteFormatIdentifiant(), $identifiant);
         $societe->statut = SocieteClient::STATUT_ACTIF;
         $societe->cooperative = 0;
         $societe->setPays('FR');
@@ -89,6 +106,24 @@ class SocieteClient extends acCouchdbClient {
         $societe->constructId();
 
         return $societe;
+    }
+
+    public function fetchFromInseeApi($societe, $sirenOrSiret) {
+        $json = InseeSirene::getJson($sirenOrSiret);
+
+        if(!$json) {
+            return;
+        }
+
+        $societe->adresse_complementaire = ($json->adresseEtablissement->complementAdresseEtablissement) ? $json->adresseEtablissement->complementAdresseEtablissement : null;
+        $societe->siret = $json->siret;
+        if(isset($json->tva)) {
+            $societe->no_tva_intracommunautaire = $json->tva;
+        }
+        $societe->adresse = preg_replace("/[ ]+/", " ", trim(sprintf("%s%s %s %s", $json->adresseEtablissement->numeroVoieEtablissement, $json->adresseEtablissement->indiceRepetitionEtablissement, $json->adresseEtablissement->typeVoieEtablissement, $json->adresseEtablissement->libelleVoieEtablissement)));
+        $societe->code_postal = $json->adresseEtablissement->codePostalEtablissement;
+        $societe->commune = $json->adresseEtablissement->libelleCommuneEtablissement;
+        $societe->insee = $json->adresseEtablissement->codeCommuneEtablissement;
     }
 
     public function find($id_or_identifiant, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
@@ -159,23 +194,6 @@ class SocieteClient extends acCouchdbClient {
 
     public function findByIdentifiantSociete($identifiant) {
         return $this->find($this->getId($identifiant));
-    }
-
-    public function getInterlocuteursWithOrdre($identifiant, $withSuspendus) {
-        $contactsArr = $this->findByIdentifiantSociete($identifiant)->getInterlocuteursWithOrdre();
-        $result = array();
-        foreach ($contactsArr as $id => $value) {
-            $compte = CompteClient::getInstance()->find($id);
-            if ($withSuspendus) {
-                $result[] = $compte;
-            } else {
-
-                if ($compte->statut != SocieteClient::STATUT_SUSPENDU) {
-                    $result[] = $compte;
-                }
-            }
-        }
-        return $result;
     }
 
     public static function getSocieteTypes() {
@@ -252,6 +270,22 @@ class SocieteClient extends acCouchdbClient {
         }
         fclose($file);
         return $resultArr;
+    }
+
+    public static function matchSociete($view_res, $term, $limit) {
+        $json = array();
+        foreach ($view_res as $key => $one_row) {
+            $text = SocieteAllView::getInstance()->makeLibelle($one_row->key);
+
+            if (Search::matchTerm($term, $text)) {
+                $json[$one_row->id] = $text;
+            }
+
+            if (count($json) >= $limit) {
+                break;
+            }
+        }
+        return $json;
     }
 
 }

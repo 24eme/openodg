@@ -19,6 +19,7 @@ class DeclarationsExportCsvTask extends sfBaseTask
             new sfCommandOption('sleep_second', null, sfCommandOption::PARAMETER_REQUIRED, 'secont to wait', false),
             new sfCommandOption('sleep_step', null, sfCommandOption::PARAMETER_REQUIRED, 'nb doc before wait', 1000),
             new sfCommandOption('region', null, sfCommandOption::PARAMETER_REQUIRED, "region de l'ODG (si non renseignée toutes les régions sont utilisées)", null),
+            new sfCommandOption('filter-produit', null, sfCommandOption::PARAMETER_REQUIRED, "Produit de destination de l'export (pour les DR/SV11/SV12 de med)", ''),
         ));
 
         $this->namespace = 'declarations';
@@ -31,7 +32,7 @@ EOF;
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         if($options["header"]) {
@@ -64,6 +65,9 @@ EOF;
                       continue 2;
                     }
                     $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false, $region);
+                    if ($options['filter-produit']) {
+                        $export->setExtraArgs(array('drev_produit_filter' => $options['filter-produit']));
+                    }
 
                     if($arguments['validation'] && $doc->exist('validation') && !$doc->validation) {
                         continue 2;
@@ -78,6 +82,8 @@ EOF;
                 }catch(InvalidArgumentException $e) {
                     sleep(60);
                     continue;
+                }catch(sfException $e){
+                    echo "ERROR;$id;".$e->getMessage()."\n";
                 }
 
                 $tobeexported = false;

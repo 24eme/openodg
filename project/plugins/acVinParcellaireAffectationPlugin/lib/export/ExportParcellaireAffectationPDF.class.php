@@ -30,7 +30,7 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
 
       $dgcs = $this->parcellaireAffectation->getDgc(true);
 
-      $parcellesByDgc = $this->parcellaireAffectation->declaration->getParcellesByDgc(true);
+      $parcellesByDgc = (count($this->parcellaireAffectation->getProduits()) > 1)? $this->parcellaireAffectation->declaration->getParcellesByProduit(true) : $this->parcellaireAffectation->getGroupedParcelles(true);
 
       if(count($parcellesByDgc) == 0) {
          $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array('parcellaireAffectation' =>    $this->parcellaireAffectation, 'parcellesByCommune' => false)));
@@ -40,10 +40,8 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
 
       $unite = 0;
       $uniteParPage = 23;
-      $uniteTableau = 3;
+      $uniteTableau = 5;
       $uniteLigne = 1;
-      $uniteTableauCommentaire = 2;
-      $uniteTableauLigne = 0.75;
       $uniteMentionBasDePage = 1;
       $parcellesByPage = array();
       $page = 0;
@@ -66,7 +64,7 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
                $parcellesByPage[] = $currentPage;
                $currentPage = array();
                $unite = 0;
-               $libelleTableau = $commune . " (suite)";
+               $libelleTableau = str_replace(" (suite)", "", $libelleTableau)." (suite)";
                $currentPage[$libelleTableau] = array();
                $unite += $uniteTableau;
            }
@@ -76,28 +74,31 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
 
         if($unite > 0) {
           $parcellesByPage[] = $currentPage;
-        }
-
-        if($this->parcellaireAffectation->observations) {
-          $unite += $uniteTableauLigne + count(explode("\n", $this->parcellaireAffectation->observations));
+          $unite = 0;
         }
 
         foreach($parcellesByPage as $nbPage => $parcelles) {
             $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array(
                 'parcellaireAffectation' => $this->parcellaireAffectation,
                 'parcellesByCommune' => $parcelles,
-                'lastPage' => (($nbPage == count($parcellesByPage) - 1) && (($this->parcellaireAffectation->observations && $unite <= $uniteParPage) || !$this->parcellaireAffectation->observations)),
+                'lastPage' => false,
             )));
         }
 
-        if ($this->parcellaireAffectation->observations && $unite > $uniteParPage) {
+        if ($unite > $uniteParPage) {
             $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array(
                 'parcellaireAffectation' => $this->parcellaireAffectation,
                 'parcellesByCommune' => $parcellesByPage,
-                'lastPage' => true,
+                'lastPage' => false,
             )));
         }
       }
+
+      $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array(
+          'parcellaireAffectation' => $this->parcellaireAffectation,
+          'parcellesByCommune' => [],
+          'lastPage' => true,
+      )));
     }
 
     protected function getHeaderTitle() {
@@ -108,22 +109,22 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
         $header_subtitle = sprintf("%s", $this->parcellaireAffectation->declarant->nom);
         $header_subtitle .= "\n\n";
 
-        if (!$this->parcellaireAffectation->isPapier()) {
-            if ($this->parcellaireAffectation->validation) {
+        if (!$this->parcellaireAffectation->validation) {
+            $header_subtitle .= sprintf("Exemplaire brouilllon");
+        }else{
+            if ($this->parcellaireAffectation->isAuto()) {
                 $date = new DateTime($this->parcellaireAffectation->validation);
-
-                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'), $this->parcellaireAffectation->signataire);
+                $header_subtitle .= sprintf("Générée automatiquement %s", $date->format('d/m/Y'));
+            } elseif ($this->parcellaireAffectation->isPapier()) {
+                $date = new DateTime($this->parcellaireAffectation->validation);
+                $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
+            } else {
+                $date = new DateTime($this->parcellaireAffectation->validation);
+                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
                 if($this->parcellaireAffectation->exist('signataire') && $this->parcellaireAffectation->signataire) {
                     $header_subtitle .= " par " . $this->parcellaireAffectation->signataire;
                 }
-            }else{
-                $header_subtitle .= sprintf("Exemplaire brouilllon");
             }
-        }
-
-        if ($this->parcellaireAffectation->isPapier() && $this->parcellaireAffectation->validation && $this->parcellaireAffectation->validation !== true) {
-            $date = new DateTime($this->parcellaireAffectation->validation);
-            $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
         }
 
         return $header_subtitle;

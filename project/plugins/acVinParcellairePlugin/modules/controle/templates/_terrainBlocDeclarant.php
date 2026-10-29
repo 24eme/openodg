@@ -1,0 +1,25 @@
+<h3 style="color: black">{{ controleCourant.declarant.nom }}</h3>
+<p>{{ controleCourant.identifiant }} / {{ printableSiret() }} / {{ controleCourant.declarant.cvi }}</p>
+<p>
+<a href="mailto:{{ controleCourant.declarant.email }}">{{ controleCourant.declarant.email }}</a><br />
+<a href="callto:{{ controleCourant.declarant.telephone_bureau }}">{{ controleCourant.declarant.telephone_bureau }}</a>
+<a href="callto:{{ controleCourant.declarant.telephone_mobile }}">{{ controleCourant.declarant.telephone_mobile }}</a>
+</p>
+<p>Potentiel de production : </p>
+
+<ul style="list-style-type:none;">
+  <li v-for="(pp, produit) in controleCourant.surface_de_production">{{ produit }} : {{ pp }} ha</li>
+</ul>
+<p>Surface de production : {{ controleCourant.superficie_totale }} ha</p>
+<br/>
+<div v-if="controleCourant.liaisons_operateurs[0]">
+    <p>Cave(s) coopérative affectée(s) à cet opérateur :</p>
+    <ul>
+        <li v-for="liaison in controleCourant.liaisons_operateurs" style="list-style-type: none">
+            {{ liaison.libelle_etablissement }} - <span class="text-muted"> CVI: {{ liaison.cvi }}</span>
+        </li>
+    </ul>
+</div>
+<div v-else>
+    <p>Cet opérateur n'apporte pas à une cave coopérative</p>
+</div>

@@ -2,6 +2,10 @@
 
 . bin/config.inc
 
+if ! test "$SYMFONYTASKOPTIONS" ; then
+    exit
+fi
+
 if ! test "$URL_EXPORT_REMOTE_OPENDOG"
 then
     echo "Aucune instance distante d'openodg définie, set URL_EXPORT_REMOTE_OPENDOG in config_extra.inc"

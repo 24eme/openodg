@@ -13,6 +13,8 @@ class CompteClient extends acCouchdbClient {
     const STATUT_TELEDECLARANT_OUBLIE = "OUBLIE";
     const STATUT_TELEDECLARANT_INACTIF = "INACTIF";
 
+    const API_ADRESSE_URL = "https://api-adresse.data.gouv.fr/search/";
+
     public static $statutsLibelles = array( self::STATUT_ACTIF => "Actif",
                                            self::STATUT_SUSPENDU => "Archivé");
 
@@ -107,7 +109,7 @@ class CompteClient extends acCouchdbClient {
           } catch(Exception $e) {
               return array();
           }
-          
+
           $results = $resset->getResults();
           $this->facets = $resset->getFacets();
 
@@ -133,6 +135,7 @@ class CompteClient extends acCouchdbClient {
       $q->addFacet($elasticaFacet);
       try {
           $index = acElasticaManager::getType('COMPTE');
+          $resset = $index->search($q);
       } catch(Exception $e) {
           return array();
       }
@@ -287,6 +290,26 @@ class CompteClient extends acCouchdbClient {
         return strcmp($a['nom'], $b['nom']);
       }
       return strcmp($a->id, $b->id);
+    }
+
+    public function calculCoordonnees($adresse, $commune, $code_postal, $type = "housenumber") {
+        if (!$adresse) {
+		$adresse = '';
+	}
+        $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
+        $url = CompteClient::API_ADRESSE_URL.'?q='.urlencode($adresse." ".$commune."&postcode=".$code_postal."&type=".$type);
+
+        $file = @file_get_contents($url, false, stream_context_create(["http"=>["timeout"=>1]]));
+        $result = json_decode($file);
+        if((!$result || !count($result->features)) && $type == "housenumber"){
+
+            return $this->calculCoordonnees($adresse, $commune, $code_postal, "street");
+        } elseif(!$result || !count($result->features)) {
+
+            return false;
+        }
+
+        return array("lat" => $result->features[0]->geometry->coordinates[1], "lon" => $result->features[0]->geometry->coordinates[0]);
     }
 
 }

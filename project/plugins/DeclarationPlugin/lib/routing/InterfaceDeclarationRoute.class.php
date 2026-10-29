@@ -1,6 +1,6 @@
 <?php
 
-interface InterfaceDeclarationRoute
+interface InterfaceDeclarationRoute extends InterfaceUsurpationRoute
 {
-    
+
 }

@@ -6,8 +6,15 @@ class societeActions extends sfCredentialActions {
         $interpro = $request->getParameter('interpro_id');
         $q = $request->getParameter('q');
         $limit = $request->getParameter('limit', 100);
+        $with_inactif = $request->getParameter('inactif', false);
+        $q4el = $q;
+        $statut = null;
+        if (!$with_inactif) {
+            $q4el .= "* AND doc.statut:ACTIF";
+            $statut = CompteClient::STATUT_ACTIF;
+        }
 
-        $qs = new acElasticaQueryQueryString($q);
+        $qs = new acElasticaQueryQueryString($q4el);
         $elkquery = new acElasticaQuery();
         $elkquery->setQuery($qs);
         $elkquery->setLimit($limit);
@@ -17,16 +24,9 @@ class societeActions extends sfCredentialActions {
         $this->resultsElk = $resset->getResults();
 
         $jsonElastic = $this->matchCompteElastic($this->resultsElk, $limit);
-        $json = array_merge($jsonElastic,$this->matchCompte(CompteAllView::getInstance()->findByInterpro($interpro, $q, $limit), $q, $limit));
 
-        return $this->renderText(json_encode($json));
-    }
+        $json = array_merge($jsonElastic,$this->matchCompte(CompteAllView::getInstance()->findByInterproAndStatut($interpro, $q, $limit, $statut), $q, $limit));
 
-    public function executeActifautocomplete(sfWebRequest $request) {
-        $interpro = $request->getParameter('interpro_id');
-        $q = $request->getParameter('q');
-        $limit = $request->getParameter('limit', 100);
-        $json = $this->matchCompte(CompteAllView::getInstance()->findByInterproAndStatut($interpro, $q, $limit, SocieteClient::STATUT_ACTIF), $q, $limit);
         return $this->renderText(json_encode($json));
     }
 
@@ -72,23 +72,27 @@ class societeActions extends sfCredentialActions {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {
                 $values = $this->form->getValues();
-                $this->redirect('societe_creation_doublon', array('raison_sociale' => $values['raison_sociale']));
+                $this->redirect('societe_creation_doublon', array('raison_sociale' => $values['raison_sociale'], 'siret' => $values['siret']));
             }
         }
     }
 
     public function executeCreationSocieteDoublon(sfWebRequest $request) {
         $this->raison_sociale = $request->getParameter('raison_sociale', false);
-        $this->societesDoublons = SocieteClient::getInstance()->getSocietesWithTypeAndRaisonSociale($this->type, $this->raison_sociale);
+        $this->siret = $request->getParameter('siret', false);
+        $this->societesDoublons = SocieteClient::getInstance()->getSocietesWithRaisonSociale($this->raison_sociale);
 
         if (!count($this->societesDoublons)) {
-            $this->redirect('societe_nouvelle', array('type' => $this->type, 'raison_sociale' => $this->raison_sociale));
+            $this->redirect('societe_nouvelle', array('type' => $this->type, 'raison_sociale' => $this->raison_sociale, 'siret' => $this->siret));
         }
     }
 
     public function executeSocieteNew(sfWebRequest $request) {
-        $this->raison_sociale = $request->getParameter('raison_sociale', false);
-        $societe = SocieteClient::getInstance()->createSociete($this->raison_sociale);
+        $raisonRociale = $request->getParameter('raison_sociale', false);
+        $siretOrSiren = $request->getParameter('siret', false);
+
+        $societe = SocieteClient::getInstance()->createSociete($raisonRociale);
+        SocieteClient::getInstance()->fetchFromInseeApi($societe, $siretOrSiren);
         $societe->save();
         $this->redirect('societe_modification', array('identifiant' => $societe->identifiant));
     }
@@ -140,20 +144,23 @@ class societeActions extends sfCredentialActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasContact() && !$this->getUser()->isStalker()) {
             return $this->forwardSecure();
         }
 
         $this->societe = $this->getRoute()->getSociete();
+        $this->mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($this->societe);
         $this->applyRights();
         $this->societe_compte = $this->societe->getMasterCompte();
         if(!$this->societe_compte->lat && !$this->societe_compte->lon){
           $compte = CompteClient::getInstance()->find($this->societe_compte->_id);
-          $compte->updateCoordonneesLongLat();
-          $compte->save();
+          if ($compte) {
+              $compte->updateCoordonneesLongLat();
+              $compte->save();
+          }
         }
 
-        $this->modifiable = $this->getUser()->hasCredential('contacts');
+        $this->modifiable = $this->getUser()->hasContact();
     }
 
     public function executeAnnulation(sfWebRequest $request) {
@@ -197,6 +204,28 @@ class societeActions extends sfCredentialActions {
 
             return $this->redirect('societe');
         }
+    }
+
+    public function executeMandatSepaSwitchSigne(sfWebRequest $request) {
+          if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasContact() && !$this->getUser()->isStalker()) {
+              return $this->forwardSecure();
+          }
+          $societe = $this->getRoute()->getSociete();
+          $mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($societe);
+          $mandatSepa->switchIsSigne();
+          $mandatSepa->save();
+          return $this->redirect('societe_visualisation', array('identifiant' => $societe->identifiant));
+    }
+
+    public function executeMandatSepaSwitchActif(sfWebRequest $request) {
+          if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasContact() && !$this->getUser()->isStalker()) {
+              return $this->forwardSecure();
+          }
+          $societe = $this->getRoute()->getSociete();
+          $mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($societe);
+          $mandatSepa->switchIsActif();
+          $mandatSepa->save();
+          return $this->redirect('societe_visualisation', array('identifiant' => $societe->identifiant));
     }
 
     public function executeExport(sfWebRequest $request) {
@@ -273,8 +302,19 @@ class societeActions extends sfCredentialActions {
       $json = array();
       foreach ($res as $key => $one_row) {
         $data = $one_row->getData();
-
-        $text = $data['doc']['nom_a_afficher'];
+        $text = '';
+        switch ($data['doc']['compte_type']) {
+            case 'INTERLOCUTEUR':
+                $text = '👤 ';
+                break;
+            case 'SOCIETE':
+                $text = '🏢 ';
+                break;
+            case 'ETABLISSEMENT':
+                $text = '🏠 ';
+                break;
+        }
+        $text .= $data['doc']['nom_a_afficher'];
         $text .= ' ('.$data['doc']['adresse'];
         $text .= ($data['doc']['adresse_complementaire'])? ' - '.$data['doc']['adresse_complementaire'] : "";
         $text .= ' / '.$data['doc']['commune'].' / '.$data['doc']['code_postal'].') ' ;
@@ -292,19 +332,8 @@ class societeActions extends sfCredentialActions {
     }
 
     protected function matchSociete($view_res, $term, $limit) {
-        $json = array();
-        foreach ($view_res as $key => $one_row) {
-            $text = SocieteAllView::getInstance()->makeLibelle($one_row->key);
 
-            if (Search::matchTerm($term, $text)) {
-                $json[$one_row->id] = $text;
-            }
-
-            if (count($json) >= $limit) {
-                break;
-            }
-        }
-        return $json;
+        return SocieteClient::matchSociete($view_res, $term, $limit);
     }
 
 }

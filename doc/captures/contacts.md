@@ -13,3 +13,9 @@ Des fonctionnalités d'exports sont dispnibles pour le partage de l'information 
 ## Fiche d'un contact
 
 ![Fiche Contact](contact_fiche.png)
+
+Avec des relations :
+
+![Relation Cooperateur](contact_relation_cooperateur.png)
+
+![Relation Cooperative](contact_relation_cooperative.png)

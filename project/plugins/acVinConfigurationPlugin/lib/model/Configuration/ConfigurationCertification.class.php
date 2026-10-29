@@ -13,6 +13,11 @@ class ConfigurationCertification extends BaseConfigurationCertification {
       return $this->genres;
     }
 
+    public function getCertification() {
+
+        return null;
+    }
+
     public function getLibelles() {
 
         return array($this->libelle);
@@ -42,6 +47,9 @@ class ConfigurationCertification extends BaseConfigurationCertification {
 	}
 
 	public function getCodesDouanes() {
+		if (!$this->_get('code_douane')) {
+			return array();
+		}
 		return explode(',', $this->_get('code_douane'));
 	}
 

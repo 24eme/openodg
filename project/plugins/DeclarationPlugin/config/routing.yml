@@ -15,6 +15,11 @@ declaration_etablissement_selection:
   url: /declarations-etablissement-selection
   param: { module: declaration, action: etablissementSelection }
 
+degustation_etablissement_selection:
+  url: /degustation-etablissement-selection
+  param: { module: declaration, action: etablissementSelection, redirect_url: degustation_declarant_lots_liste }
+
+
 declaration_etablissement:
   url: /declarations/:identifiant
   param: { module: declaration, action: etablissement }

@@ -14,11 +14,12 @@ class TirageValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ERROR, 'composition_incomplete', "Vous n'avez pas saisie d'information relative à la composition de votre lot");
         $this->addControle(self::TYPE_ERROR, 'couleur_cepage', "Le crémant rosé ne peut se faire qu’à partir du seul cépage Pinot noir");
         $this->addControle(self::TYPE_ERROR, 'assemblage_no_ventilation', "Pour les millésimes assemblés, il est nécessaire d'indiquer la ventilation");
-        $this->addControle(self::TYPE_ERROR, 'date_mise_en_bouteille_debut', "La date de début de mise en bouteille ne peut pas être inférieure au 1er décembre de l'année de récolte (millésime)");
+        $this->addControle(self::TYPE_WARNING, 'date_mise_en_bouteille_debut', "La date de début de mise en bouteille ne peut pas être inférieure au 1er décembre de l'année de récolte (millésime)");
         $this->addControle(self::TYPE_ERROR, 'date_mise_en_bouteille_fin', "La date de fin de tirage ne peut précéder la date de début du tirage");
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_PRODUCTEUR, "Joindre une copie de votre Déclaration de Récolte");
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_SV11, 'Joindre une copie de votre SV11');
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
+        $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::AUTORISATION_PARTAGE_CIVA, 'J\'accepte que mes données soient transmises au CIVA à des fins statistiques');
         // $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_ACHETEUR, "Joindre une copie de votre Certificat de Fabrication visé par les douanes ou une copie de la DRM visé par les Douanes");
         $this->addControle(self::TYPE_WARNING, 'famille_elaborateur', "Vous n’êtes pas identifié(e) en tant qu’élaborateur");
     }
@@ -28,7 +29,7 @@ class TirageValidation extends DocumentValidation {
         $isRoseCepageNonPN = false;
         if ($this->document->couleur == TirageClient::COULEUR_ROSE) {
             foreach ($this->document->getCepagesSelectionnes() as $cepage) {
-                if ($cepage->libelle != 'Pinot noir') {
+                if ($cepage->libelle != 'Pinot Noir') {
                     $isRoseCepageNonPN = true;
                     break;
                 }
@@ -48,6 +49,7 @@ class TirageValidation extends DocumentValidation {
         } else {
             $this->addPoint(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_PRODUCTEUR, null);
         }
+        $this->addPoint(self::TYPE_ENGAGEMENT, TirageDocuments::AUTORISATION_PARTAGE_CIVA, null);
 
         $composition_incomplete = true;
         if (count($this->document->composition)) {
@@ -67,11 +69,11 @@ class TirageValidation extends DocumentValidation {
         }
 
         if ($this->document->isMillesimeAnnee() && $this->document->date_mise_en_bouteille_debut < $this->document->millesime . '-12-01') {
-            $this->addPoint(self::TYPE_ERROR, 'date_mise_en_bouteille_debut', '', $this->generateUrl('tirage_lots', $this->document));
+            $this->addPoint(self::TYPE_WARNING, 'date_mise_en_bouteille_debut', '', $this->generateUrl('tirage_lots', $this->document));
         }
 
         if(!$this->document->isMillesimeAnnee() && $this->document->date_mise_en_bouteille_debut < $this->document->campagne . '-12-01')  {
-            $this->addPoint(self::TYPE_ERROR, 'date_mise_en_bouteille_debut', '', $this->generateUrl('tirage_lots', $this->document));
+            $this->addPoint(self::TYPE_WARNING, 'date_mise_en_bouteille_debut', '', $this->generateUrl('tirage_lots', $this->document));
         }
 
         if ($this->document->date_mise_en_bouteille_fin < $this->document->date_mise_en_bouteille_debut) {

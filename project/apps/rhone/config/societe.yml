@@ -7,6 +7,11 @@ all:
         "habilitation:inao": "Habilitation INAO"
         "habilitation:oivr": "Habilitation OIVR"
         "habilitation:odg": "Habilitation ODG"
+        "habilitation:certipaq": "Habilitation CERTIPAQ"
         "api": "API"
         "timbre": "Timbre"
+        "stalker": "Stalker"
+        "teledeclaration_drev_admin": "ODG Région"
+        "adelphe": "Adelphe"
       visualisation_teledeclaration: true
+      enable_groupes: true

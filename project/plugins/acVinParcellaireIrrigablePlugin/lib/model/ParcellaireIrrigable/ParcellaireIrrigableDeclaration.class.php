@@ -13,7 +13,7 @@ class ParcellaireIrrigableDeclaration extends BaseParcellaireIrrigableDeclaratio
             if(!isset($parcelles[$parcelle->commune])) {
                 $parcelles[$parcelle->commune] = array();
             }
-            $parcelles[$parcelle->commune][$parcelle->getHash()] = $parcelle;
+            $parcelles[$parcelle->commune][$parcelle->getParcelleId()] = $parcelle;
         }
 
         ksort($parcelles);
@@ -24,7 +24,7 @@ class ParcellaireIrrigableDeclaration extends BaseParcellaireIrrigableDeclaratio
         $parcelles = array();
         foreach($this as $produit) {
             foreach ($produit->detail as $parcelle) {
-                $parcelles[$parcelle->getHash()] = $parcelle;
+                $parcelles[$parcelle->getParcelleId()] = $parcelle;
             }
         }
 

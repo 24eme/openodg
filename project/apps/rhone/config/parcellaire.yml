@@ -1,0 +1,306 @@
+all:
+  configuration:
+    parcellaire:
+      manquant:
+        pc_min: 20
+      affectation:
+        needs_intention: false
+      aires:
+        CotesduRhone:
+          name: "Côtes du Rhône"
+          color: "#E53935"
+          denomination_id: "01344"
+        CotesduRhoneVillages:
+          name: "Côtes du Rhône Villages"
+          color: "#FDD835"
+          denomination_id: "01345"
+        BeaumesdeVenise:
+          name: "Beaumes de Venise"
+          color: "#D81B60"
+          denomination_id: "02642"
+        Cairanne:
+          name: "Cairanne"
+          color: "#8E24AA"
+          denomination_id: "01996"
+        ChateauGrillet:
+          name: "Chateau Grillet"
+          color: "#43A047"
+          denomination_id: "01335"
+        ChateauneufduPape:
+          name: "Chateauneuf du Pape"
+          color: "#6D4C41"
+          denomination_id: "01336"
+        Condrieu:
+          name: "Condrieu"
+          color: "#1E88E5"
+          denomination_id: "01339"
+        Cornas:
+          name: "Cornas"
+          color: "#00ACC1"
+          denomination_id: "01340"
+        CoteRotie:
+          name: "Côte Rotie"
+          color: "#7CB342"
+          denomination_id: "01341"
+        CotesduRhoneVillagesChusclan:
+          name: "Côtes du Rhône Villages Chusclan"
+          color: "#C0CA33"
+          denomination_id: "01348"
+        CotesduRhoneVillagesGadagne:
+          name: "Côtes du Rhône Villages Gadagne"
+          color: "#FFB300"
+          denomination_id: "02527"
+        CotesduRhoneVillagesLaudun:
+          name: "Côtes du Rhône Villages Laudun"
+          color: "#FB8C00"
+          denomination_id: "01349"
+        CotesduRhoneVillagesMassifd'Uchaux:
+          name: "Côtes du Rhône Villages Massif d'Uchaux"
+          color: "#5E35B1"
+          denomination_id: "01708"
+#        CotesduRhoneVillagesNyons:
+#          name: "Côtes du Rhône Villages Nyons"
+#          color: "#00897B"
+#          denomination_id: 
+        CotesduRhoneVillagesPlandeDieu:
+          name: "Côtes du Rhône Villages Plan de Dieu"
+          color: "#F4511E"
+          denomination_id: "01709"
+        CotesduRhoneVillagesPuymeras:
+          name: "Côtes du Rhône Villages Puymeras"
+          color: "#3949AB"
+          denomination_id: "01710"
+        CotesduRhoneVillagesRoaix:
+          name: "Côtes du Rhône Villages Roaix"
+          color: "#039BE5"
+          denomination_id: "01351"
+        CotesduRhoneVillagesRochegude:
+          name: "Côtes du Rhône Villages Rochegude"
+          color: "#757575"
+          denomination_id: "01352"
+        CotesduRhoneVillagesRoussetlesVignes:
+          name: "Côtes du Rhône Villages Rousset les Vignes"
+          color: "#546E7A"
+          denomination_id: "01353"
+        CotesduRhoneVillagesSablet:
+          name: "Côtes du Rhône Villages Sablet"
+          color: "#C62828"
+          denomination_id: "01354"
+#        CotesduRhoneVillagesSaintAndeol:
+#          name: "Côtes du Rhône Villages Saint-Andéol"
+#          color: "#F9A825"
+#          denomination_id: 
+        CotesduRhoneVillagesSainte-Cecile:
+          name: "Côtes du Rhône Villages Sainte-Cecile"
+          color: "#AD1457"
+          denomination_id: "02826"
+        CotesduRhoneVillagesSaintGervais:
+          name: "Côtes du Rhône Villages Saint Gervais"
+          color: "#6A1B9A"
+          denomination_id: "01355"
+        CotesduRhoneVillagesSaintMaurice:
+          name: "Côtes du Rhône Villages Saint Maurice"
+          color: "#2E7D32"
+          denomination_id: "01356"
+        CotesduRhoneVillagesSaintPantaleonlesVignes:
+          name: "Côtes du Rhône Villages Saint Pantaleon les Vignes"
+          color: "#4E342E"
+          denomination_id: "01357"
+        CotesduRhoneVillagesSeguret:
+          name: "Côtes du Rhône Villages Seguret"
+          color: "#1565C0"
+          denomination_id: "01358"
+        CotesduRhoneVillagesSignargues:
+          name: "Côtes du Rhône Villages Signargues"
+          color: "#00838F"
+          denomination_id: "01711"
+        CotesduRhoneVillagesSuzelaRousse:
+          name: "Côtes du Rhône Villages Suze la Rousse"
+          color: "#558B2F"
+          denomination_id: "02827"
+#        CotesduRhoneVillagesVaisonlaRomaine:
+#          name: "Côtes du Rhône Villages Vaison la Romaine"
+#          color: "#9E9D24"
+#          denomination_id: 
+        CotesduRhoneVillagesValreas:
+          name: "Côtes du Rhône Villages Valreas"
+          color: "#FF8F00"
+          denomination_id: "01359"
+#        CotesduRhoneVillagesVisan:
+#          name: "Côtes du Rhône Villages Visan"
+#          color: "#EF6C00"
+#          denomination_id: 
+        CotesduVivarais:
+          name: "Cotes du Vivarais"
+          color: "#4527A0"
+          denomination_id: "01374"
+        CrozesHermitage:
+          name: "Crozes Hermitage"
+          color: "#00695C"
+          denomination_id: "01365"
+        Gigondas:
+          name: "Gigondas"
+          color: "#D84315"
+          denomination_id: "01366"
+        GrignanlesAdhemar:
+          name: "Grignan les Adhémar"
+          color: "#283593"
+          denomination_id: "02295"
+        Hermitage:
+          name: "Hermitage"
+          color: "#0277BD"
+          denomination_id: "01367"
+#        HermitagePaille:
+#          name: "Hermitage Paille"
+#          color: "#37474F"
+#          denomination_id:
+        Laudun:
+          name: "Laudun"
+          color: "#C07490"
+          denomination_id: "01349"
+        Lirac:
+          name: "Lirac"
+          color: "#EF5350"
+          denomination_id: "01368"
+        Rasteau:
+          name: "Rasteau"
+          color: "#FFEE58"
+          denomination_id: "01403"
+        SaintJoseph:
+          name: "Saint Joseph"
+          color: "#EC407A"
+          denomination_id: "01369"
+        SaintPeray:
+          name: "Saint Peray"
+          color: "#AB47BC"
+          denomination_id: "01370"
+        Tavel:
+          name: "Tavel"
+          color: "#66BB6A"
+          denomination_id: "01372"
+#        Vacqueyras:
+#          name: "Vacqueyras"
+#          color: "#8D6E63"
+#          denomination_id: 
+        VDNMuscatdeBeaumesdeVenise:
+          name: "VDN Muscat de Beaumes de Venise"
+          color: "#42A5F5"
+          denomination_id: "01398"
+        VDNRasteau:
+          name: "VDN Rasteau"
+          color: "#26C6DA"
+          denomination_id: "01403"
+        Vinsobres:
+          name: "Vinsobres"
+          color: "#9CCC65"
+          denomination_id: "02770"
+      potentiel_de_production:
+        CotesduRhone_rouge:
+          synthese_libelle: "Côtes du Rhône - Rouge"
+          filter_parcellaire_produit_hash: 'appellations/CDR'
+          categories:
+            cepages_principaux: ['GRENACHE N', 'SYRAH N', 'MOURVEDRE N']
+            cepages_accessoires: ['BOURBOULENC B', 'BRUN ARGENTÉ N', 'CAMARÈSE N', 'VACCARÈSE N', 'CALADOC N', 'CARIGNAN N', 'CINSAUT N', 'CLAIRETTE B', 'CLAIRETTE ROSE RS', 'COUNOISE N', 'COUSTON N', 'GRENACHE BLANC B', 'GRENACHE GRIS G', 'MARSANNE B', 'MARSELAN N', 'MUSCARDIN N', 'PIQUEPOUL BLANC B', 'PIQUEPOUL NOIR N', 'ROUSSANNE B', 'TERRET NOIR N', 'UGNI BLANC B', 'VIOGNIER B']
+            cepages_varietedinteret: ['CARIGNAN BLANC B', 'FLORÉAL B', 'ROLLE B', 'VIDOC N']
+            cepage_grenache: ['GRENACHE N']
+            cepages_mourvedre_syrah: ['MOURVÈDRE N', 'SYRAH N']
+            cepages_caladoc_couston_marselan: ['CALADOC N', 'COUSTON N', 'MARSELAN N']
+            cepages_blancs: ['BOURBOULENC B', 'CLAIRETTE B', 'MARSANNE B', 'ROUSSANNE B', 'VIOGNIER B', 'FLORÉAL B', 'ROLLE B', 'GRENACHE BLANC B', 'PIQUEPOUL BLANC B', 'UGNI BLANC B', 'CARIGNAN BLANC B']
+          regles:
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_couleur"
+              sens: "<="
+              limit: 1
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_principaux"
+              sens: ">="
+              limit: 0.7
+            -
+              fonction: "ProportionSomme"
+              category: "cepage_grenache"
+              sens: ">="
+              limit: 0.3
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_mourvedre_syrah"
+              sens: ">="
+              limit: 0.2
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_caladoc_couston_marselan"
+              sens: "<="
+              limit: 0.1
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_blancs"
+              sens: "<="
+              limit: 0.05
+        CotesduRhone_rose:
+          synthese_libelle: "Côtes du Rhône - Rosé"
+          filter_parcellaire_produit_hash: 'appellations/CDR'
+          categories:
+            cepages_principaux: ['GRENACHE N', 'SYRAH N', 'MOURVEDRE N']
+            cepages_accessoires: ['BOURBOULENC B', 'BRUN ARGENTÉ N', 'CAMARÈSE N', 'VACCARÈSE N', 'CALADOC N', 'CARIGNAN N', 'CINSAUT N', 'CLAIRETTE B', 'CLAIRETTE ROSE RS', 'COUNOISE N', 'COUSTON N', 'GRENACHE BLANC B', 'GRENACHE GRIS G', 'MARSANNE B', 'MARSELAN N', 'MUSCARDIN N', 'PIQUEPOUL BLANC B', 'PIQUEPOUL NOIR N', 'ROUSSANNE B', 'TERRET NOIR N', 'UGNI BLANC B', 'VIOGNIER B']
+            cepages_varietedinteret: ['CARIGNAN BLANC B', 'FLORÉAL B', 'ROLLE B', 'VIDOC N']
+            cepage_grenache: ['GRENACHE N']
+            cepages_mourvedre_syrah: ['MOURVÈDRE N', 'SYRAH N']
+            cepages_caladoc_couston_marselan: ['CALADOC N', 'COUSTON N', 'MARSELAN N']
+            cepages_blancs: ['BOURBOULENC B', 'CLAIRETTE B', 'MARSANNE B', 'ROUSSANNE B', 'VIOGNIER B', 'FLORÉAL B', 'ROLLE B', 'GRENACHE BLANC B', 'PIQUEPOUL BLANC B', 'UGNI BLANC B', 'CARIGNAN BLANC B']
+          regles:
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_couleur"
+              sens: "<="
+              limit: 1
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_principaux"
+              sens: ">="
+              limit: 0.7
+            -
+              fonction: "ProportionSomme"
+              category: "cepage_grenache"
+              sens: ">="
+              limit: 0.3
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_mourvedre_syrah"
+              sens: ">="
+              limit: 0.2
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_caladoc_couston_marselan"
+              sens: "<="
+              limit: 0.1
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_blancs"
+              sens: "<="
+              limit: 0.2
+        CotesduRhone_blanc:
+          synthese_libelle: "Côtes du Rhône - Blanc"
+          filter_parcellaire_produit_hash: 'appellations/CDR'
+          categories:
+            cepages_principaux: ['BOURBOULENC B', 'CLAIRETTE B', 'GRENACHE BLANC B', 'MARSANNE B', 'ROUSSANNE B', 'VIOGNIER B']
+            cepages_accessoires: ['CLAIRETTE ROSE RS', 'GRENACHE GRIS G', 'PIQUEPOUL BLANC B', 'UGNI BLANC B']
+            cepages_varietedinteret: ['CARIGNAN BLANC B', 'FLORÉAL B', 'ROLLE B']
+          regles:
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_couleur"
+              sens: "<="
+              limit: 1
+            -
+              fonction: "ProportionSomme"
+              category: "cepages_principaux"
+              sens: ">="
+              limit: 0.8
+      irrigable:
+        engagements: true
+        vciIrrigation: true
+        hasIrrigableMateriel: true
+        hasIrrigableRessource: false
+        transmission: true
+      drap: true

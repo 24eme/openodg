@@ -10,26 +10,38 @@ class Configuration extends BaseConfiguration {
     const DEFAULT_DENSITE = "1.3";
 
     protected $identifyLibelleProduct = array();
+    protected $identifyCodeDouaneProduct = array();
+    protected $cepage2produits = array();
     protected $effervescent_vindebase_active = false;
 
     public function constructId() {
         $this->set('_id', "CONFIGURATION");
     }
 
-    public function getProduitsCahierDesCharges() {
-      $produits = array();
-      foreach ($this->getProduits() as $produit) {
-          if($produit->getNodeCahierDesCharges()){
-            $produitAppellation = $produit->getNodeCahierDesCharges();
-            $produits[$produitAppellation->getHash()] = $produitAppellation;
-          }
-      }
-      return $produits;
-    }
-
     public function getProduits() {
 
         return $this->declaration->getProduits();
+    }
+
+    public function getProduitsByCepage($cepage) {
+        $this->setCepages2Produits();
+        if (!isset($this->cepage2produits[$cepage])) {
+            return [];
+        }
+        return $this->cepage2produits[$cepage];
+    }
+
+    public function setCepages2Produits() {
+        if (!count($this->cepage2produits)){
+            foreach($this->getProduits() as $p) {
+                foreach($p->getCepagesAutorises()->toArray(true, false) as $c) {
+                    if (!isset($this->cepage2produits[$c])) {
+                        $this->cepage2produits[$c] = [];
+                    }
+                    $this->cepage2produits[$c][] = $p;
+                }
+            }
+        }
     }
 
     public function getLieux(){
@@ -49,6 +61,7 @@ class Configuration extends BaseConfiguration {
 
     public function getCepagesAutorises($date = null, $attributes = array()) {
     	$cepages = array();
+
     	foreach($this->declaration->getProduits($date, "INTERPRO-declaration", null, $attributes) as $produit) {
     		$cepages_autorises = $produit->cepages_autorises->toArray();
     		foreach ($cepages_autorises as $ca) {
@@ -58,25 +71,83 @@ class Configuration extends BaseConfiguration {
     	return $cepages;
     }
 
-    public function identifyProductByLibelle($libelle) {
-        if(array_key_exists($libelle, $this->identifyLibelleProduct)) {
+    public static function slugifyProduitLibelle($s) {
+        $s = strtolower($s);
+        $s = str_replace([' et ', ' de ', ' sur '], ' ', $s);
+        $s = str_replace(['é','è', 'ê', 'ë', 'É', 'È', 'Ê', 'Ë'], 'e', $s);
+        $s = preg_replace('/(s$)/', '', $s);
+        $s = preg_replace("/[ ]+/", " ", $s);
+        $s = trim($s);
+        $s = KeyInflector::slugify($s);
+        return $s;
+    }
 
+    public function identifyProductByLibelle($libelle, $verbose = false) {
+        if (!$libelle) {
+            return null;
+        }
+        if(array_key_exists($libelle, $this->identifyLibelleProduct)) {
+            if ($verbose) {
+                print_r(['cached' => true, 'produit' => $this->identifyLibelleProduct[$libelle]->getHash(), 'libelle' => $libelle]);
+            }
             return $this->identifyLibelleProduct[$libelle];
         }
+        $couleurs = array('', ' blanc', ' rouge', ' rosé');
+        while (count($couleurs)) {
+            $libelle_couleur = $libelle . array_shift($couleurs);
+            $libelleSlugify = self::slugifyProduitLibelle($libelle_couleur);
 
-        $libelleSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($libelle)));
+            foreach($this->getProduits() as $produit) {
+                $libelleProduitSlugify = self::slugifyProduitLibelle($produit->getLibelleFormat());
+                if ($verbose) {
+                    echo "stricte égalité: ".$libelleSlugify."/".$libelleProduitSlugify."\n";
+                }
+                if($libelleSlugify == $libelleProduitSlugify) {
+                    $this->identifyLibelleProduct[$libelle] = $produit;
 
-        foreach($this->getProduits() as $produit) {
-            $libelleProduitSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($produit->getLibelleFormat())));
-            //echo $libelleSlugify."/".$libelleProduitSlugify."\n";
-            if($libelleSlugify == $libelleProduitSlugify) {
-                $this->identifyLibelleProduct[$libelle] = $produit;
+                    return $produit;
+                }
+            }
+            $matches = [];
+            foreach($this->getProduits() as $produit) {
+                $libelleProduitSlugify = self::slugifyProduitLibelle($produit->getLibelleFormat());
+                if ($verbose) {
+                    print_r(['strpos dans les deux sens', 'conf produit slug' => $libelleProduitSlugify, 'doc libelle slug' => $libelleSlugify, 'conf original' => $produit->getLibelleFormat(), 'libelle original' => $libelle_couleur]);
+                }
+                $pc = $this->pc_string($libelleProduitSlugify, $libelleSlugify);
+                if($pc) {
+                    $matches[round($pc*1000)] = $produit;
+                }
 
-                return $produit;
+                if ($verbose) {
+                    print_r(['strpos dans les deux sens', 'conf produit slug' => $libelleProduitSlugify, 'doc libelle slug' => $libelleSlugify, 'conf original' => $produit->getLibelleFormat(), 'libelle original' => $libelle_couleur, 'pc' => $pc]);
+                }
+            }
+            if (count($matches)) {
+                $max = max(array_keys($matches));
+                $this->identifyLibelleProduct[$libelle] = $matches[$max];
+                return $matches[$max];
+            }
+            if ($verbose) {
+                print_r(['matches' => $matches]);
             }
         }
 
         return false;
+    }
+
+    private function pc_string($a, $b) {
+        $idx_a = strpos($a, $b);
+        $idx_b = strpos($b, $a);
+        if (($idx_a === false) && ($idx_b === false)) {
+            return 0;
+        }
+        if (($idx_a !== false)) {
+            return strlen($b) / strlen($a);
+        }
+        if (($idx_b !== false)) {
+            return strlen($a) / strlen($b);
+        }
     }
 
     public function identifyProductByCodeDouane($code) {
@@ -246,8 +317,10 @@ class Configuration extends BaseConfiguration {
 
     public function getLabelsLibelles($labels) {
         $libelles = array();
-        foreach ($labels as $key) {
-            $libelles[$key] = $this->labels[$key];
+        if (is_array($labels)) {
+            foreach ($labels as $key) {
+                $libelles[$key] = $this->labels[$key];
+            }
         }
 
         return $libelles;
@@ -331,14 +404,6 @@ class Configuration extends BaseConfiguration {
             }
         }
         return false;
-    }
-
-    public function setEffervescentVindebaseActivate(){
-      $this->effervescent_vindebase_active = true;
-    }
-
-    public function isEffervescentVindebaseActivate(){
-      return $this->effervescent_vindebase_active;
     }
 
 }

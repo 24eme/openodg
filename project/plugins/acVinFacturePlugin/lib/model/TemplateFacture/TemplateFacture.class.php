@@ -7,21 +7,35 @@
 class TemplateFacture extends BaseTemplateFacture
 {
 
-	public function generateCotisations($document)
+	public function generateCotisations($document, $check_required_now_not_later = true)
 	{
 		$cotisations = array();
+        if (method_exists($document, 'getEtablissementObject') && $e = $document->getEtablissementObject()) {
+            if ($e->exist('region') && $e->region && strpos($e->region, 'HORS_') !== false) {
+                return;
+            }
+        }
 		foreach ($this->cotisations as $config) {
 			if(!$config->isForType($document->getType())) {
 				continue;
 			}
-			foreach ($config->generateCotisations($document) as $cotisation) {
+			if($config->isDisabled()) {
+				continue;
+			}
+			foreach ($config->generateCotisations($document, $check_required_now_not_later) as $cotisation) {
 				if($config->exist('fallback') && $config->fallback){
 					continue;
 				}
-				$cotisations[$cotisation->getHash()] = $cotisation;
+                $cle = $cotisation->getHash();
+                if ((strpos($cle, '%detail_identifiant%') !== false) && !$document->exist('numero_archive')) {
+                    throw new sfException('pas de %detail_identifiant% possible pour la clé '.$cle.' : '.get_class($document)." n'a pas de champs numero_archive");
+                }
+                if (strpos($cle, '%detail_identifiant%') !== false) {
+                    $cle = str_replace('%detail_identifiant%', $document->numero_archive, $cle);
+                }
+				$cotisations[$cle] = $cotisation;
 			}
 		}
-
 		return $cotisations;
 	}
 
@@ -29,7 +43,7 @@ class TemplateFacture extends BaseTemplateFacture
 		$mouvements = array();
 		foreach ($this->docs as $docModele) {
 			$documents = $this->getDocumentFacturable($docModele, $compteIdentifiant, $this->getCampagne());
-			$mouvements = array_merge($mouvements, FactureClient::getInstance()->getMouvementsFacturesByDocs($compteIdentifiant, $documents));
+			$mouvements = array_merge($mouvements, FactureClient::getInstance()->getMouvementsFacturesByDocs($compteIdentifiant, $documents,$force));
 		}
 
 		return $mouvements;

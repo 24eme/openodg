@@ -11,12 +11,21 @@ abstract class Piece extends acCouchdbDocumentTree
 		return $this->getDocument()->generateUrlPiece($this->source);
 	}
 
+    public function getUrlPublic($absolute = false)
+	{
+		return $this->getDocument()->generateUrlPublicPiece($this->source, $absolute);
+	}
+
 	public static function getUrlVisualisation($id, $isadmin = false)
 	{
+	    $docObject = acCouchdbManager::getClient()->find($id);
 		if (preg_match('/^([a-zA-Z0-9]+)-.*$/', $id, $m)) {
-			$doc = $m[1];
-			return $doc::getUrlVisualisationPiece($id, $isadmin);
-
+		    if ($docObject instanceof PriseDeMousse) {
+                $doc = $docObject->type;
+            } else {
+                $doc = $m[1];
+            }
+            return $doc::getUrlVisualisationPiece($id, $isadmin);
 		}
 		return null;
 	}
@@ -35,7 +44,17 @@ abstract class Piece extends acCouchdbDocumentTree
 		if (preg_match('/^([a-zA-Z0-9]+)-.*$/', $id, $m)) {
 			$doc = $m[1];
 			return $doc::isVisualisationMasterUrl($isadmin);
-		
+
+		}
+		return false;
+	}
+
+    public static function hasUrlPublic($id)
+	{
+		if (preg_match('/^([a-zA-Z0-9]+)-.*$/', $id, $m)) {
+			$doc = $m[1];
+
+			return method_exists($doc, 'hasUrlPublic');
 		}
 		return false;
 	}

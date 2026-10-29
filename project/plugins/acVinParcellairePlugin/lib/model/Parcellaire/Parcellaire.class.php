@@ -1,5 +1,8 @@
 <?php
 
+require_once(dirname(__FILE__).'/../../vendor/geoPHP/geoPHP.inc');
+require_once(dirname(__FILE__).'/../../vendor/Simplex-Calculator/Simplex/simplex.php');
+
 /**
  * Model for Parcellaire
  *
@@ -8,6 +11,10 @@ class Parcellaire extends BaseParcellaire {
 
     protected $declarant_document = null;
     protected $piece_document = null;
+    protected $cache_produitsbycepagefromhabilitationorconfiguration = null;
+    protected $habilitation = false;
+    protected $parcelles_idu = null;
+    private $cache_geojson = null;
 
     public function __construct() {
         parent::__construct();
@@ -33,9 +40,18 @@ class Parcellaire extends BaseParcellaire {
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
+    public function getParcellaire() {
+
+        return $this;
+    }
+
     public function initDoc($identifiant, $date, $type = ParcellaireClient::TYPE_COUCHDB) {
         $this->identifiant = $identifiant;
+        if (strpos($date, '-') === false) {
+            throw new sfException('wrong date format y-m-d: '.$date);
+        }
         $this->date = $date;
+        $this->campagne = ConfigurationClient::getInstance()->buildCampagne($date);
         $this->set('_id', ParcellaireClient::TYPE_COUCHDB."-".$identifiant."-".str_replace('-', '', $date));
         $this->storeDeclarant();
     }
@@ -45,14 +61,25 @@ class Parcellaire extends BaseParcellaire {
         return ConfigurationClient::getInstance()->getConfiguration($this->date);
     }
 
+    public function affecteParcelleToHashProduit($hash, $parcelle) {
+        $p = $this->addProduit($hash);
+        if (!$p) {
+            return null;
+        }
+        return $p->affecteParcelle($parcelle);
+    }
+
     public function addProduit($hash) {
+        if (!$hash) {
+            return;
+        }
         $hashToAdd = preg_replace("|/declaration/|", '', $hash);
         $exist = $this->exist('declaration/'.$hashToAdd);
 
         $produit = $this->add('declaration')->add($hashToAdd);
         if(!$exist) {
             $this->declaration->reorderByConf();
-            $this->add('declaration')->get($hashToAdd)->libelle = $produit->getConfig()->getLibelleComplet();
+            $this->add('declaration')->add($hashToAdd)->libelle = $produit->getConfig()->getLibelleComplet();
           }
 
         return $this->get($produit->getHash());
@@ -63,31 +90,171 @@ class Parcellaire extends BaseParcellaire {
         return $this->getConfiguration()->declaration->getProduits();
     }
 
-    public function getParcelles($onlyVtSgn = false, $active = false) {
-
-        return $this->declaration->getParcelles($onlyVtSgn, $active);
-    }
-
-    public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
-        $produit = $this->addProduit($hashProduit);
-        return $produit->addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre, $strictNumOrdre);
-    }
-
-    public function countSameParcelle($commune, $section, $numero_parcelle, $lieu, $hashProduit = null, $cepage = null, $campagne_plantation = null){
-        $sameParcelle = 0;
-
-        foreach ($this->declaration as $produitKey => $produitParcelles) {
-          foreach ($produitParcelles->detail as $pKey => $parcelleExists) {
-            if(($parcelleExists->commune == $commune) &&
-                ($parcelleExists->section == $section) &&
-                ($parcelleExists->numero_parcelle == $numero_parcelle) &&
-                ($parcelleExists->lieu == $lieu)){
-                  $sameParcelle++;
-                }
-          }
+    private $cache_declarationparcelles = null;
+    public function getDeclarationParcelles() {
+        if ($this->cache_declarationparcelles === null ) {
+            foreach($this->declaration->getParcelles() as $k => $p) {
+                $this->cache_declarationparcelles[$p->getParcelleId()] = $p;
+            }
         }
-        return $sameParcelle;
+        return $this->cache_declarationparcelles;
+    }
 
+    private $idunumbers = null;
+    public function getNbUDIAlreadySeen($idu) {
+        if (!$this->idunumbers) {
+            $this->idunumbers = [];
+        }
+        if (!isset($this->idunumbers[$idu])) {
+            $this->idunumbers[$idu] = 0;
+        }
+        return $this->idunumbers[$idu]++;
+    }
+
+    public function hasParcelles() {
+        if ($this->hasRealParcelles()) {
+            return true;
+        }
+        return $this->hasTheoriticalParcelles();
+    }
+
+    public function hasRealParcelles() {
+        return $this->exist('parcelles') && count($this->_get('parcelles'));
+    }
+
+    public function hasTheoriticalParcelles() {
+        return boolval(count($this->declaration));
+    }
+
+    public function getParcelles() {
+        if ($this->hasRealParcelles()) {
+            return $this->_get('parcelles');
+        }
+        $this->add('parcelles');
+        foreach($this->declaration->getParcelles() as $dp) {
+            $id = $dp->getParcelleId();
+            $p = $this->_get('parcelles')->add($id);
+            $dp->produit_hash = preg_replace('/\/detail\/.*/', '', $dp->getHash());
+            ParcellaireClient::CopyParcelle($p, $dp, true);
+        }
+        return $this->_get('parcelles');
+    }
+
+    public function getParcellesByCommune($only_affectee = false) {
+        if ($only_affectee) {
+            return $this->declaration->getParcellesByCommune();
+        }
+        return ParcellaireClient::organizeParcellesByCommune($this->getParcelles());
+    }
+
+    public function getNextParcelleId($idu, $cepage, $campagne_plantation, $produit = null, $formatNumeroOrdre = "%02d") {
+        if (!$idu) {
+            throw new sfException('Empty idu not allowed');
+        }
+        $pid = sprintf('%s-'.$formatNumeroOrdre, $idu, 0);
+        if (
+            !$this->exist('parcelles') ||
+            !count($this->_get('parcelles')->toArray()) ||
+            !$this->parcelles->exist($pid)
+        ) {
+            return $pid;
+        }
+        for ($i = 1 ; $i < 100 ; $i++) {
+            $pid = sprintf('%s-'.$formatNumeroOrdre, $idu, $i);
+            if (!$this->parcelles->exist($pid)) {
+                return $pid;
+            }
+        }
+        throw new sfException('pid not found for '.$idu);
+    }
+
+    public function addParcelle($idu, $source_produit_libelle, $cepage, $campagne_plantation, $commune, $lieu = null, $produit = null, $formatNumeroOrdre = "%02d") {
+        $pid = $this->getNextParcelleId($idu, $cepage, $campagne_plantation, $produit, $formatNumeroOrdre);
+        $p = $this->parcelles->add($pid);
+        $p->idu = $idu;
+        $p->add('parcelle_id', $pid);
+        $p->cepage = $cepage;
+        $p->campagne_plantation = $campagne_plantation;
+        $p->commune = $commune;
+        $p->source_produit_libelle = $source_produit_libelle;
+        if($lieu){
+            $lieu = preg_replace('/[\n]+/', ' ', $lieu);
+            $lieu = strtoupper($lieu);
+            $lieu = trim($lieu);
+            $p->lieu = $lieu;
+        }
+        $p->numero_ordre = explode('-', $pid)[1];
+        if (!$produit) {
+            $produit = $this->getConfiguration()->identifyProductByLibelle($source_produit_libelle);
+        }
+        if ($produit) {
+            $p->produit_hash = $produit->getHash();
+        }
+        ParcellaireClient::parcelleSplitIDU($p);
+
+        return $p;
+    }
+
+    public function addParcelleWithProduit($hashProduit, $source_produit_libelle, $cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null) {
+        if ($lieu && preg_match('/[0-9]/', $lieu) && !preg_match('/ /', $lieu)) {
+            throw new sfException('Strange lieu '.$lieu);
+        }
+        $produit = $this->addProduit($hashProduit);
+        if (preg_match('/^[0-9]+$/', $commune)) {
+            $code_commune = $commune;
+            $commune = CommunesConfiguration::getInstance()->getCommuneByCode($code_commune);
+        }else {
+            $code_commune = CommunesConfiguration::getInstance()->findCodeCommune($commune);
+        }
+        if (!intval($code_commune)) {
+            throw new sfException('Wrong code commune : '.$code_commune.'/'.$commune);
+        }
+        $idu = self::computeIDU($code_commune, $prefix, $section, $numero_parcelle);
+        $parcelle  = $this->addParcelle($idu, $source_produit_libelle, $cepage, $campagne_plantation, $commune, $lieu, $produit->getConfig()->getLibelle());
+        return $produit->affecteParcelle($parcelle);
+    }
+
+    public static function computeIDU($code_commune, $prefix, $section, $numero_parcelle) {
+        if (!intval($code_commune)) {
+            throw new sfException('Wrong code commune : '.$code_commune);
+        }
+        if (!intval($numero_parcelle)) {
+            throw new sfException('Wrong numero parcelle : '.$numero_parcelle);
+        }
+        return sprintf('%05s%03s%02s%04s', $code_commune, $prefix, $section, $numero_parcelle);
+    }
+
+    public function getParcelleFromParcellaireId($id) {
+        if (!$id) {
+            throw new sfException('id needed');
+        }
+        if (!count($this->parcelles)) {
+            return null;
+        }
+        if(!isset($this->parcelles[$id])) {
+            return null;
+        }
+        return $this->parcelles[$id];
+    }
+
+    public function getParcellesByIdu() {
+        if(is_array($this->parcelles_idu)) {
+
+            return $this->parcelles_idu;
+        }
+
+        $this->parcelles_idu = [];
+
+        foreach($this->getParcelles() as $parcelle) {
+            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
+        }
+
+        return $this->parcelles_idu;
+    }
+
+    public function findParcelle($parcelle, $scoreMin = 1, $with_cepage_match = false, &$allready_selected = null) {
+
+        return ParcellaireClient::findParcelle($this, $parcelle, $scoreMin, $with_cepage_match, $allready_selected);
     }
 
     public function getDateFr() {
@@ -141,6 +308,277 @@ class Parcellaire extends BaseParcellaire {
         return false;
     }
 
-    /*** FIN PIECE DOCUMENT ***/
+    public function getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) {
+        if (!$this->cache_produitsbycepagefromhabilitationorconfiguration) {
+            $this->cache_produitsbycepagefromhabilitationorconfiguration = array();
+        }
+        if(!isset($this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage])) {
+            $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage] = $this->getProduitsByCepageFromHabilitationOrConfiguration($cepage);
+        }
+        return $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage];
+    }
+
+    public function getProduitsByCepageFromHabilitationOrConfiguration($cepage) {
+        if ($this->habilitation === false) {
+            $this->habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getDate());
+        }
+        if (!$this->habilitation) {
+            return $this->getConfiguration()->getProduitsByCepage($cepage);
+        }
+        return $this->habilitation->getProduitsByCepage($cepage, $this->getDate());
+    }
+
+    public function getSyntheseCepages($filter_produit_hash = null, $filter_insee = null, $filter_destination = null) {
+        return ParcellaireClient::getInstance()->getSyntheseCepages($this, $filter_produit_hash, $filter_insee, $filter_destination);
+    }
+
+    public function getSuperficieTotale($avec_jv = true) {
+        $superficie = 0;
+        foreach ($this->getSyntheseCepages() as $nom => $cepage) {
+            // Ajoute les jeunes vignes seulement si $avec_jv
+            if ($avec_jv || ! strpos($nom, ' - jeunes vignes')) {
+                $superficie += $cepage['superficie'];
+            }
+        }
+        return $superficie;
+    }
+
+    public function getSuperficieCadastraleTotale() {
+        $superficie = 0;
+        foreach ($this->declaration as $declaration) {
+            foreach ($declaration->detail as $detail) {
+                $superficie += $detail->superficie_cadastrale;
+            }
+        }
+        return $superficie;
+    }
+
+    public function getParcellaireFileKey($type) {
+        foreach ($this->_attachments as $key => $attachement) {
+            if (strpos($attachement->content_type, $type) !== false) {
+                return $key;
+            }
+        }
+        return null;
+    }
+
+    public function getParcellaireFileUri($type) {
+        $key = $this->getParcellaireFileKey($type);
+
+        if(!$key) {
+
+            return null;
+        }
+
+        return $this->getAttachmentUri($key);
+    }
+
+    public function getParcellairePDFMd5() {
+        if (!$this->hasParcellairePDF()) {
+
+            return null;
+        }
+
+        return md5($this->getParcellairePDF());
+    }
+
+    public function hasParcellairePDF() {
+        return ($this->getParcellaireFileUri('pdf'));
+    }
+
+    public function hasParcellaireCSV() {
+        return ($this->getParcellaireFileUri('csv'));
+    }
+
+    public function getParcellairePDF() {
+        if ($this->hasParcellairePDF()) {
+            return file_get_contents($this->getParcellaireFileUri('pdf'));
+        }
+        return null;
+    }
+
+    public function getParcellaireCSV() {
+        if ($this->hasParcellaireCSV()) {
+            return file_get_contents($this->getParcellaireFileUri('csv'));
+        }
+        return null;
+    }
+
+    public function getGeoJson(){
+        if ($this->cache_geojson !== null) {
+            return $this->cache_geojson;
+        }
+
+        $file_name = "import-cadastre-".$this->declarant->cvi."-parcelles.json";
+        $uri = $this->getAttachmentUri($file_name);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $uri);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $import = curl_exec($ch);
+        curl_close($ch);
+
+        if(strpos($import, "Document is missing attachment")) {
+            sfContext::getInstance()->getLogger()->info("getGeoJson() : Document is missing attachment for ".$this->_id);
+            $this->cache_geojson = array();
+        } else {
+            $this->cache_geojson = json_decode($import);
+            $parcelles = $this->getParcellesByIdu();
+            foreach ($this->cache_geojson->features as $feature) {
+                if (isset($parcelles[$feature->properties->id]) && $parcelles[$feature->properties->id]) {
+                    $feature->properties->parcellaires = array_map(function($item) {return $item->toJson();}, $parcelles[$feature->properties->id]);
+                }
+            }
+        }
+        return $this->cache_geojson;
+
+    }
+
+    public function getGeoJsonWithAires(){
+        $geojson = $this->getGeoJson();
+
+        // Ajoute des couleurs et l'identification
+        foreach ($geojson->features as $feat) {
+            $feat->properties->stroke = '#FF0000';
+            $feat->properties->{'stroke-width'} = 4;
+            $feat->properties->{'stroke-opacity'} = 1;
+            $feat->properties->fill = '#fff';
+            $feat->properties->{'fill-opacity'} = 0;
+            $feat->properties->name = $feat->properties->section. ' ' . $feat->properties->numero;
+            foreach ($feat->properties->parcellaires as $key => $parcellaire_detail) {
+                $feat->properties->{'parcellaire'.$key} = '';
+                foreach (["Commune","Lieu dit","Produit","Cepage","Superficie","Superficie cadastrale","Campagne","Ecart pied","Ecart rang","Mode savoir faire"] as $prop) {
+                    if ($prop == "Lieu dit" && ! $parcellaire_detail->{$prop}) {
+                        continue;
+                    }
+                    $feat->properties->{'parcellaire'.$key} .= $prop . ' : ' . $parcellaire_detail->{$prop} . " / \n";
+                }
+            }
+        }
+
+        // On ajoute les aires des appelations des communes associées avec la bonne couleur
+        foreach ($this->getMergedAires() as $aire) {
+            $aireobj = json_decode($aire->getGeojson());
+            foreach ($aireobj->features as $feat) {
+                // Ajoute les couleurs et infos qui vont bien
+                $feat->properties->name = $aire->getName();
+                $feat->properties->fill = $aire->getColor();
+                $feat->properties->{'fill-opacity'} = 0.5;
+                $feat->properties->stroke = '#000';
+                $feat->properties->{'stroke-width'} = 2;
+                $feat->properties->{'stroke-opacity'} = 0.1;
+                // Ajoute l'aire au début du tableau, les parcelles doivent être au dessus pour être plus facilement clickables.
+                array_unshift($geojson->features, $feat);
+            }
+        }
+        return $geojson;
+    }
+
+    /**
+     * Reprend le geojson et le transforme en KML
+     */
+    public function getKML($with_aire = true, $with_parcelles = true) {
+        // La transfo de geojson -> kml de geophp ne se faisant que partiellement on reparcours le geojson et on reconstruit le xml
+        $kml = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document>';
+
+        // Le style pour les parcelles (les couleurs)
+        // Info : L'hexa de la couleur est inversé par rapport à la notation habituelle
+        // aabbggrr, où aa=alpha (00 à ff) ; bb=blue (00 à ff) ; gg=green(00 à ff) ; rr=red (00 à ff).
+        $kml .= '<Style id="parcelle-style">
+        <LineStyle>
+          <width>2</width>
+        </LineStyle>
+        <PolyStyle>
+          <color>7d0000ff</color>
+        </PolyStyle>
+      </Style>';
+
+        // Définit un style par couleur à utiliser dans les aires plus bas
+        $styles = [];
+        if ($with_aire) {
+            foreach ($this->getMergedAires() as $aire) {
+                $aireobj = json_decode($aire->getGeojson());
+                if (isset($aireobj->features)) foreach ($aireobj->features as $feat) {
+                    $color = '7d' . str_replace('#', '', $aire->getColor());
+                    $styles[$color] = '<Style id="aire-style-'.$color.'">
+            <LineStyle>
+            <width>1</width>
+            </LineStyle>
+            <PolyStyle>
+            <color>'.$color.'</color>
+            </PolyStyle>
+        </Style>';
+                }
+            }
+
+            // Met les styles en haut du KML
+            $kml .= implode("\n", $styles);
+
+
+            // On met en premier les aires des appelations des communes associées avec la bonne couleur
+            foreach ($this->getMergedAires() as $aire) {
+                foreach ($aire->getPseudoGeojsons() as $geojson) {
+                    $aireobj = json_decode($geojson);
+                    foreach ($aireobj->features as $feat) {
+                        $feat_str = json_encode($feat);
+                        $feat_obj = GeoPHP::load($feat_str, 'geojson');
+
+                        $kml .= '<Placemark>';
+                        $kml .= '<name>'. $aire->getName() .'</name>';
+                        $kml .= '<styleUrl>#aire-style-7d' . str_replace('#', '', $aire->getColor()) . '</styleUrl>';
+                        $kml .= $feat_obj->out('kml');
+                        $kml .= '</Placemark>'."\n";
+                    }
+                }
+            }
+        }
+
+        if ($with_parcelles) {
+
+            $geojson = $this->getGeoJson();
+
+            // Met ensuite les parcelles par dessus les éventuelles aires.
+            foreach ($geojson->features as $feat) {
+                $feat_str = json_encode($feat);
+                $feat_obj = GeoPHP::load($feat_str, 'geojson');
+
+                $kml .= '<Placemark>';
+                $kml .= '<name>'.$feat->properties->commune. ' - ' .$feat->properties->section. ' ' . $feat->properties->numero.'</name>';
+                $kml .= '<description><![CDATA[';
+                foreach ($feat->properties->parcellaires as $key => $parcellaire_detail) {
+                    foreach (["Commune","Lieu dit","Produit","Cepage","Superficie","Superficie cadastrale","Campagne","Ecart pied","Ecart rang","Mode savoir faire"] as $prop) {
+                        if ($prop == "Lieu dit" && ! $parcellaire_detail->{$prop}) {
+                            continue;
+                        }
+                        $kml .= '<p>' . $prop . ' : ' . $parcellaire_detail->{$prop} . '</p>';
+                    }
+
+                    if ($key !== array_key_last($feat->properties->parcellaires)) {
+                        $kml .= "<p>-----------------</p>";
+                    }
+                }
+                $kml .= ']]></description>';
+                $kml .= '<styleUrl>#parcelle-style</styleUrl>';
+                $kml .= $feat_obj->out('kml');
+                $kml .= '</Placemark>';
+            }
+        }
+
+        $kml .= '</Document></kml>';
+        return $kml;
+    }
+
+    public function getCommunes(){
+        $communes = [];
+        foreach ($this->getParcelles() as $p) {
+            $communes[$p->code_commune] = $p->code_commune;
+        }
+        return array_keys($communes);
+    }
+
+    public function getMergedAires() {
+
+        return AireClient::getInstance()->getMergedAiresForInseeCommunes($this->getCommunes());
+    }
 
 }

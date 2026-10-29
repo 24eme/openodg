@@ -14,7 +14,7 @@ $global_error_id = substr($global_error_with_infos, 0, strrpos($global_error_wit
 $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
 ?>
 <div class="page-header">
-    <?php if($drev->hasDR()): ?>
+    <?php if(($drev->hasDR() && !$sf_user->isAdmin()) || ($drev->hasDR() && $sf_user->isUsurpationCompte())): ?>
         <a class="btn btn-sm btn-default-step pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Recharger les données de la Déclaration de Récolte</a>
     <?php endif; ?>
     <?php if(!$drev->isNonRecoltant() && !$drev->hasDR()): ?>
@@ -39,31 +39,31 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
     <?php endif; ?>
-    <?php if ($sf_user->hasFlash('erreur')): ?>
-    <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
+    <?php if ($sf_user->hasFlash('error')): ?>
+    <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></p>
     <?php endif; ?>
     <table class="table table-striped table-condensed" id="table-revendication">
         <thead>
             <?php if ($drev->hasDR()): ?>
             <tr>
-                <th class="text-center col-xs-<?php if ($drev->hasDR()): ?>4<?php else: ?>6<?php endif; ?>"></th>
-                <th colspan="<?php if($drev->declaration->hasVciRecolteConstitue()): ?>4<?php else: ?>3<?php endif; ?>" class="text-center striped-success small">Déclaration de Récolte</th>
+                <th class="text-center col-xs-<?php if ($drev->hasDR()): ?>3<?php else: ?>5<?php endif; ?>"></th>
+                <th colspan="<?php if($drev->declaration->hasVciRecolteConstitue()): ?>4<?php else: ?>3<?php endif; ?>" class="text-center striped-success small">Déclaration de Récolte <?php echo $drev->campagne;?></th>
                 <th colspan="3" class="text-center">Revendication des volumes</th>
             </tr>
             <?php endif; ?>
             <tr>
-                <th class="col-xs-<?php if ($drev->hasDR()): ?>4<?php else: ?>6<?php endif; ?>">Appellation revendiquée</th>
+                <th class="col-xs-<?php if ($drev->hasDR()): ?>3<?php else: ?>5<?php endif; ?>">Appellation revendiquée</th>
                 <?php if ($drev->hasDR()): ?>
                 <th class="col-xs-1 text-center striped-success small">Volume sur place</th>
                 <th class="col-xs-1 text-center striped-success small">Volume total</th>
                 <th class="col-xs-1 text-center striped-success small">Usages industriels</th>
                     <?php if($drev->declaration->hasVciRecolteConstitue()): ?>
-                    <th class="col-xs-1 text-center striped-success small">VCI</th>
+                    <th class="col-xs-1 text-center striped-success small">VCI<br/>constit.</th>
                     <?php endif ?>
                 <?php endif; ?>
-                <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Issus de la récolte<br/><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels, le VCI constitué et le VCI de l'année passée (le cas échéant) appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Issus du VCI<br/><small class="text-muted">(hl)</small><a title="Volume issu du VCI de l'année précédente" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                  <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Volume Total<br/><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-2 text-center">Issus de la récolte<br/><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume vinifié sur place moins le volume à détruire et le VCI constitué" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Issus du <br/>VCI <?php echo $drev->campagne-1; ?><small class="text-muted"> (hl)</small><a title="Volume issu du VCI de l'année précédente" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                  <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Volume<br/>Total<small class="text-muted"> (hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
             </tr>
         </thead>
         <tbody>
@@ -79,7 +79,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-        	<?php if(!$drev->isNonRecoltant() && !$drev->hasDr()): ?>
+        	<?php if(!$drev->isNonRecoltant() && !$drev->hasDR()): ?>
 				<a href="<?php echo url_for("drev_dr", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
 			<?php else: ?>
         		<a href="<?php echo url_for("drev_revendication_vci", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>

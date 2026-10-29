@@ -14,16 +14,20 @@
 				<code_extravitis value="<?php echo intval(substr($drev->identifiant, 0, -2)); ?>" />
 				<numero_evv value="<?php echo $drev->declarant->cvi; ?>" />
 				<rs value="<?php echo $drev->declarant->raison_sociale; ?>" />
-				<millesime value="<?php echo $drev->campagne; ?>" />
+				<millesime value="<?php echo $drev->periode; ?>" />
 				<date_saisie value="<?php echo $drev->getDateValidation() ?>" />
 				<lignes>
-<?php foreach ($drev->declaration->getProduits($region) as $produit): ?>
-	<?php if ($codeProduit = $produit->getConfig()->getCodeProduit()): ?>
+<?php foreach ($drev->declaration->getProduits($region) as $produit):
+    $codeProduit = $produit->getConfig()->getCodeProduit();
+	if ($codeProduit && ($produit->hasVci() || $produit->superficie_revendique || $produit->volume_revendique_total)): ?>
 					<ligne>
 						<code_cvi_vin value="<?php echo $produit->getConfig()->getCodeDouane(); ?>" />
-						<libelle_produit value="<?php echo $produit->getLibelleComplet(); ?>" />
+                        <libelle_produit value="<?php echo $produit->getConfig()->getLibelleComplet(); ?>" />
+<?php if ($produit->denomination_complementaire): ?>
+                        <mention_valorisante value="<?php echo $produit->denomination_complementaire; ?>" />
+<?php endif; ?>
 						<code_syndicat_vin value="<?php echo $codeProduit; ?>" />
-						<surface value="<?php echo $produit->superficie_revendique; ?>" />
+						<surface value="<?php echo $produit->superficie_revendique * 1; ?>" />
 						<volume value="<?php echo $produit->volume_revendique_total * 100; ?>" />
             <?php if($produit->hasVci()): ?>
             <vci_complement value="<?php echo floatval($produit->vci->complement); ?>" />
@@ -33,6 +37,9 @@
             <vci_detruit value="<?php echo floatval($produit->vci->destruction); ?>" />
             <vci_stock_n value="<?php echo floatval($produit->vci->stock_final); ?>"/>
             <vci_stock_n_1 value="<?php echo floatval($produit->vci->stock_precedent); ?>"/>
+          <?php endif; ?>
+          <?php if($produit->hasReserveInterpro()): ?>
+              <vsi value="<?php echo floatval($produit->getVolumeReserveInterpro()); ?>" />
           <?php endif; ?>
   					</ligne>
 	<?php endif; ?>

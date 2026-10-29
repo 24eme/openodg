@@ -20,6 +20,7 @@ DRev:
       identifiant: { }
       validation: { }
       validation_odg: { }
+      statut_odg: { required: false }
       envoi_oi: { required: false}
       non_recoltant: { required: false, type: integer }
       non_conditionneur: { required: false, type: integer }
@@ -28,8 +29,13 @@ DRev:
       automatique: { required: false, type: integer }
       lecture_seule: { required: false }
       denomination_auto: { required: false }
+      date_depot: { required: false }
       date_degustation_voulue: { required: false }
+      date_commission: { required: false }
+      type_archive:  { required: false }
       version: {  }
+      numero_archive: {  }
+      commentaire: { }
       declarant:
         type: collection
         class: DRevDeclarant
@@ -56,7 +62,7 @@ DRev:
           fields:
             '*':
               type: collection
-              class: DRevDeclaration
+              class: DRevDeclarationCepage
               definition:
                 fields:
                   '*':
@@ -69,9 +75,13 @@ DRev:
                         superficie_revendique: { type: float }
                         volume_revendique_issu_recolte: { type: float }
                         volume_revendique_issu_vci: { type: float }
+                        volume_revendique_issu_vsi: { type: float, required: false }
                         volume_revendique_issu_mutage: { type: float }
                         volume_revendique_total: { type: float }
+                        volume_revendique_seuil: { type: float, required: false }
+                        dont_volume_revendique_reserve_interpro: { type: float, required: false }
                         validation_odg: { required: false }
+                        statut_odg: { required: false }
                         vci:
                           type: collection
                           definition:
@@ -96,6 +106,7 @@ DRev:
                               superficie_total: { type: float }
                               recolte_nette: { type: float }
                               vci_constitue: { type: float }
+                              vsi: { type: float, required: false }
       prelevements:
         required: false
         type: collection
@@ -115,14 +126,32 @@ DRev:
                 fields:
                   date: { }
                   id_document: { }
-                  numero: { }
+                  unique_id: { }
+                  origine_type: { required: false } #Obsolète gardé le temps de la conversion vers initial_type
+                  initial_type: { }
+                  id_document_provenance: { }
+                  id_document_affectation: { }
+                  date_commission: { }
+                  campagne: {}
+                  numero_dossier: {  }
+                  numero_archive: {  }
+                  numero_logement_operateur: { }
                   millesime: { }
                   volume: { type: float }
+                  declarant_identifiant: { }
+                  declarant_nom: { }
                   destination_type: { }
                   destination_date: { }
                   produit_hash: { }
                   produit_libelle: { }
-                  elevage: {}
+                  elevage: { }
+                  eleve: { }
+                  statut: { }
+                  adresse_logement: {}
+                  secteur: {}
+                  specificite: { }
+                  affectable: { }
+                  document_ordre: {}
                   cepages:
                     type: collection
                     definition:
@@ -139,6 +168,8 @@ DRev:
               definition:
                 fields:
                   statut: { }
+                  libelle: { }
+                  origine: { }
       documents_rappel: { required: false }
       documents_rappels:
         required: false
@@ -156,9 +187,11 @@ DRev:
         type: collection
         definition:
           fields:
+            nom: { }
             adresse: { }
             commune: { }
             code_postal: { }
+            telephone: { }
       mouvements:
         type: collection
         definition:
@@ -185,12 +218,13 @@ DRev:
                         unite: { required: false }
                         taux: { }
                         tva: { }
-                        facture: { type: integer }
-                        facturable: { type: integer }
                         date: {  }
                         date_version: {  }
                         version: {  }
                         categorie: {  }
+                        type: {  }
+                        campagne: {  }
+                        region: { required: false }
       mouvements_lots:
         type: collection
         definition:
@@ -205,30 +239,28 @@ DRev:
                     type: collection
                     definition:
                       fields:
-                        prelevable: { type: integer }
-                        preleve: { type: integer }
-                        produit_hash: {  }
-                        produit_libelle: {  }
-                        produit_couleur: { }
-                        volume: { type: float }
                         date: {  }
-                        millesime: {  }
-                        elevage: {  }
-                        region: {  }
-                        numero: {  }
+                        campagne: {}
+                        numero_dossier: {  }
+                        numero_archive: {  }
+                        date_commission: { }
+                        date_notification: { }
+                        libelle: {}
+                        detail: {}
+                        volume: { type: float }
                         version: {  }
-                        origine_hash: {  }
-                        origine_type: {  }
-                        origine_document_id: {  }
-                        origine_mouvement: {  }
+                        document_ordre: {  }
+                        document_type: {  }
+                        document_id: {  }
+                        origine_type: { required: false } #Obsolète gardé le temps de la conversion vers       initial_type
+                        initial_type: { }
+                        lot_unique_id: {  }
+                        lot_hash: {  }
                         declarant_identifiant: {  }
                         declarant_nom: {  }
-                        destination_type: { }
-                        destination_date: { }
-                        details: {}
-                        region: {}
-                        campagne: {}
-                        id_document: {  }
+                        statut: {}
+                        region: { required: false }
+      region: { required: false }
       pieces:
         type: array_collection
         definition:

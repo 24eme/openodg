@@ -23,9 +23,18 @@ class ExportDRevMarcPDF extends ExportPDF {
 
     protected function getHeaderSubtitle() {
         $header_subtitle = sprintf("%s\n\n", $this->drevmarc->declarant->nom);
-        if (!$this->drevmarc->isPapier() && $this->drevmarc->validation && $this->drevmarc->campagne >= "2014") {
-            $date = new DateTime($this->drevmarc->validation);
-            $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
+
+        $dateValidation = null;
+        if($this->drevmarc->validation && $this->drevmarc->campagne >= "2014") {
+            $dateValidation = new DateTime($this->drevmarc->validation);
+        }
+        $dateOdg = null;
+        if($this->drevmarc->validation_odg) {
+            $dateOdg = new DateTime($this->drevmarc->validation_odg);
+        }
+
+        if (!$this->drevmarc->isPapier() && $dateValidation) {
+            $header_subtitle .= sprintf("Signé électroniquement via la télédéclaration le %s, %s", $dateValidation->format('d/m/Y'), ($dateOdg) ? "validée par l'ODG le ".$dateOdg->format('d/m/Y') : "en attente de l'approbation par l'ODG");
         } elseif(!$this->drevmarc->isPapier()) {
             $header_subtitle .= sprintf("Exemplaire brouillon");
         }

@@ -1,0 +1,88 @@
+{
+   "_id": "TEMPLATE-FACTURE-AOC-2020",
+   "type": "TemplateFacture",
+   "campagne": 2020,
+   "template": "AOC",
+   "libelle": "2020 - AOC Provence",
+   "docs": [
+       "DRev"
+   ],
+   "cotisations": {
+       "inao": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Droit INAO",
+           "code_comptable": "706102",
+           "details": {
+               "cotisation": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.15,
+                   "tva": 0,
+                   "libelle": "hl de vin revendiqué",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeFacturable"
+               }
+           }
+       },
+       "odgprovence": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "ODG provence",
+           "code_comptable": "706100",
+           "details": {
+               "cotisation": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.93,
+                   "tva": 0,
+                   "libelle": "hl de vin revendiqué",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeFacturable"
+               }
+           }
+       },
+       "juridique": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation Juridique",
+           "code_comptable": "706103",
+           "details": {
+               "cotisation": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.08,
+                   "tva": 0,
+                   "libelle": "hl de vin revendiqué",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeFacturable"
+               }
+           }
+       },
+       "oi": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation reversée à l'OI",
+           "code_comptable": "467030",
+           "details": {
+               "cotisation": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.22,
+                   "tva": 0.2,
+                   "libelle": "hl de vin revendiqué",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeFacturable"
+               }
+           }
+       }
+   }
+}

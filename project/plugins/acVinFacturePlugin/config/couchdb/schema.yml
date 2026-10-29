@@ -5,17 +5,19 @@ Facture:
       _id: {}
       _rev: {}
       type: {}
+      type_archive: { required:false }
       identifiant: {}
       code_comptable_client: {}
       numero_facture: {}
-      numero_ava: {}
+      numero_odg: {}
+      numero_ava: { required: false }
       numero_adherent: {}
       date_emission: {}
       date_facturation: {}
       date_paiement: {}
       date_echeance: {}
       date_telechargement: { required: false }
-      reglement_paiement: {}
+      reglement_paiement: { required: false } #Déprécié
       montant_paiement: {}
       campagne: {}
       numero_archive: {  }
@@ -25,6 +27,7 @@ Facture:
       region: {}
       versement_comptable: {type: integer}
       versement_comptable_paiement: {type: integer}
+      versement_sepa: {type: integer}
       arguments:
         type: collection
         definition:
@@ -40,7 +43,7 @@ Facture:
             ville: {}
             service_facturation: {}
             telephone: {}
-            email: {required: false}
+            email: { }
       declarant:
         type: collection
         definition:
@@ -68,6 +71,7 @@ Facture:
                   produit_identifiant_analytique: {  }
                   montant_tva: {type: float}
                   montant_ht: {type: float}
+                  reference: { required: false } # À supprimer
                   origine_mouvements:
                     type: collection
                     definition:
@@ -83,6 +87,7 @@ Facture:
                       fields:
                         '*':
                           type: collection
+                          class: FactureLigneDetail
                           definition:
                             fields:
                               libelle: {}
@@ -115,7 +120,7 @@ Facture:
           fields:
             #DRM ou SRV ID => "libelle"
             '*': {}
-      modalite_paiement: { required: false}
+      modalite_paiement: { }
       paiements:
         class: FacturePaiements
         required: false
@@ -128,9 +133,11 @@ Facture:
               definition:
                 fields:
                   date : { }
-                  montant: { }
+                  montant: { type: float }
                   type_reglement: { }
                   commentaire: { }
+                  execute: {required: false}
+                  versement_comptable: { }
       pieces:
         type: array_collection
         definition:
@@ -153,6 +160,76 @@ Facture:
                       fields:
                         '*': { }
 
+MouvementsFacture:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      campagne: {  }
+      periode: {  }
+      date: {  }
+      identifiant: {  }
+      libelle: {  }
+      region: {}
+      valide:
+        type: collection
+        definition:
+          fields:
+            date_saisie: {  }
+      mouvements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: FactureMouvement
+                    inheritance: MouvementFactures
+                    type: collection
+                    definition:
+                      fields:
+                        identifiant_analytique: {  }
+                        identifiant_analytique_libelle_compta: {  }
+                        identifiant: {  }
+                        type_libelle: {  }
+                        categorie: { }
+                        detail_libelle: {  }
+                        quantite: { type: float }
+                        prix_unitaire: { type: float }
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        date : { }
+                        type : { }
+                        id: { }
+                        taux: { }
+                        tva: { }
+                        version: { }
+                        campagne: { }
+                        region: { }
+
+Comptabilite:
+  indexable: false
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      identifiants_analytiques:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  identifiant_analytique_numero_compte: {  }
+                  identifiant_analytique: {  }
+                  identifiant_analytique_libelle_compta: {  }
+                  identifiant_analytique_taux_tva: { type: float }
+
 TemplateFacture:
   definition:
     fields:
@@ -162,6 +239,7 @@ TemplateFacture:
       campagne: {  }
       template: {  }
       libelle: {  }
+      region: { required: false }
       docs:
         type: array_collection
         definition:
@@ -187,6 +265,7 @@ TemplateFacture:
                   minimum_fallback: { required: false }
                   callback: { required: false }
                   required: { required: false }
+                  disabled: { required: false }
                   libelle: {  }
                   code_comptable: {  }
                   details:
@@ -207,7 +286,7 @@ TemplateFacture:
                               reference: { required: false }
                               callback: { required: false }
                               callback_parameters:
-                                type: array_collection
+                                type: collection
                                 required: false
                                 definition:
                                   fields:
@@ -217,6 +296,7 @@ TemplateFacture:
                               complement: { required: false }
                               complement_libelle: { }
                               unite: { required: false }
+                              date: { required: false }
                               intervalles:
                                 required: false
                                 type: collection

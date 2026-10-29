@@ -1,0 +1,5 @@
+all:
+  configuration:
+    region:
+      oc: false
+      odg:

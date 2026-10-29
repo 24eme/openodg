@@ -54,16 +54,6 @@ drev_edit:
   requirements:
     sf_method: [get]
 
-drev_edit:
-  url: /drev/edition/:id
-  param: { module: drev, action: edit }
-  class: DRevRoute
-  options:
-    model:    DRev
-    type:     object
-  requirements:
-    sf_method: [get]
-
 drev_delete:
   url: /drev/suppression/:id
   param: { module: drev, action: delete }
@@ -134,9 +124,9 @@ drev_dr_import:
   requirements:
     sf_method: [get, post]
 
-drev_document_douanier_pdf:
-  url: /drev/document_douanier_pdf/:id
-  param: { module: drev, action: documentDouanierPdf }
+drev_document_douanier:
+  url: /drev/document_douanier/:id
+  param: { module: drev, action: documentDouanier }
   class: DRevRoute
   options:
     model:    DRev
@@ -167,6 +157,16 @@ drev_denomination_auto:
 drev_revendication_ajout:
   url: /drev/revendication/:id/ajout
   param: { module: drev, action: revendicationAjoutProduit }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_revendication_produit_denomination_auto:
+  url: /drev/revendication/:id/produit/:hash/denomination-auto
+  param: { module: drev, action: revendicationProduitDenominationAuto }
   class: DRevRoute
   options:
     model:    DRev
@@ -235,9 +235,9 @@ drev_lots:
   requirements:
     sf_method: [get, post]
 
-drev_lots_delete:
-  url: /drev/lots/:id/:appellation/supprimer
-  param: { module: drev, action: deleteLots, appellation: 0 }
+drev_lot_delete:
+  url: /drev/lot/:id/:unique_id/supprimer
+  param: { module: drev, action: drevDeleteLot }
   class: DRevRoute
   options:
     model:    DRev
@@ -254,6 +254,16 @@ drev_generatemouvements:
     type:     object
   requirements:
     sf_method: [get]
+
+drev_update_commentaire:
+  url: /drev/update-commentaire/:id
+  param: { module: drev, action: updateCommentaire }
+  class: DRevRoute
+  options:
+    model: DRev
+    type: object
+  requirements:
+    sf_method: [post]
 
 drev_validation:
   url: /drev/validation/:id
@@ -285,6 +295,16 @@ drev_validation_admin:
   requirements:
     sf_method: [get]
 
+drev_enattente_admin:
+  url: /drev/enattente/:id
+  param: { module: drev, action: enattenteAdmin }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
 drev_confirmation:
   url: /drev/confirmation/:id
   param: { module: drev, action: confirmation }
@@ -305,9 +325,19 @@ drev_visualisation:
   requirements:
     sf_method: [get, post]
 
+drev_vip2c:
+  url: /drev/vip2c/:id
+  param: { module: drev, action: vip2c }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 drev_export_pdf:
-  url: /drev/pdf/:id
-  param: { module: drev, action: PDF }
+  url: /drev/pdf/:id/:numero_dossier
+  param: { module: drev, action: PDF, numero_dossier: null }
   class: DRevRoute
   options:
     model:    DRev
@@ -325,12 +355,60 @@ drev_export_xml:
   requirements:
     sf_method: [get]
 
-drev_send_oi:
-  url: /drev/oi/:id
-  param: { module: drev, action: sendoi }
+drev_send_innov:
+  url: /drev/innov/:id
+  param: { module: drev, action: sendInnovagro }
   class: DRevRoute
   options:
     model:    DRev
     type:     object
   requirements:
     sf_method: [get]
+
+drev_send_certipaq:
+  url: /drev/certipaq/:id/send
+  param: { module: drev, action: sendCertipaq }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_debug_certipaq:
+  url: /drev/certipaq/:id
+  param: { module: drev, action: debugCertipaq }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_switch_eleve:
+  url: /drev/:id/:unique_id/eleve
+  param: {module: drev, action: switchEleve}
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+
+drev_update_recolte:
+  url: /drev/update/:id
+  param: { module: drev, action: updateFromDocumentDouanier }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_declarvapi:
+  url: /drev/declarvapi/:id
+  param: { module: drev, action: declarvapi }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]

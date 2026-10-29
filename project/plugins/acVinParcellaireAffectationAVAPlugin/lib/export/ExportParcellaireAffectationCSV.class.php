@@ -1,0 +1,156 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of ExportParcellairePdf
+ *
+ * @author mathurin
+ */
+class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
+
+    protected $parcellaire = null;
+    protected $header = false;
+    protected $region = null;
+
+    public static function getHeaderCsv() {
+
+        return "Campagne;Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Lieu-dit cadastral;Cépage;Superficie;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée ou dédiée;Acheteur CVI;Acheteur Nom;Autorisation de transmission;Date de validation / récéption;Type de transmission;VTSGN;parcelle id;doc id\n";
+    }
+
+    public function __construct($parcellaire, $header = true, $region = null) {
+        $this->parcellaire = $parcellaire;
+        $this->header = $header;
+        $this->region = $region;
+    }
+
+    public function getFileName($with_rev = true, $nomFilter = null) {
+
+      return self::buildFileName($this->parcellaire, $with_rev, $nomFilter);
+    }
+
+    public static function buildFileName($parcellaire, $with_rev = false, $nomFilter = null) {
+
+        $prefixName = $parcellaire->getTypeParcellaire()."_%s_%s";
+        $filename = sprintf($prefixName, $parcellaire->identifiant, $parcellaire->campagne);
+
+        $declarant_nom = strtoupper(KeyInflector::slugify($parcellaire->declarant->nom));
+        $filename .= '_' . $declarant_nom;
+
+        if($nomFilter) {
+            $filename .= '_' . strtoupper(KeyInflector::slugify($nomFilter));
+        }
+
+        if ($with_rev) {
+            $filename .= '_' . $parcellaire->_rev;
+        }
+
+        return $filename . '.csv';
+    }
+
+    public function export($cviFilter = null) {
+        $export = "";
+        if($this->header) {
+            $export = self::getHeaderCsv();
+        }
+
+        if(!$this->parcellaire->validation) {
+
+            return;
+        }
+
+        $acheteursGlobal = $this->parcellaire->getAcheteursByCVI();
+
+        foreach ($this->parcellaire->declaration->getAppellationsOrderParcellaire() as $appellation) {
+            $details = $appellation->getDetailsSortedByParcelle();
+
+            foreach ($details as $detail_parcelle) {
+                $acheteurs = $detail_parcelle->getAcheteursByCVI();
+
+                if(!count($acheteurs) && count($acheteursGlobal) == 1) {
+                    $acheteurs = $acheteursGlobal;
+                }
+
+                if (
+                    $cviFilter
+                    && $this->parcellaire->hasRepartitionParParcelle($detail_parcelle->getCepage()->getKey())
+                    && in_array($cviFilter, $this->parcellaire->hasRepartitionParParcelle($detail_parcelle->getCepage()->getKey()))
+                ) {
+                    if (
+                        ! $detail_parcelle->exist('acheteurs')
+                        || in_array($cviFilter, $detail_parcelle->acheteurs->toArray(true, false)) === false
+                    ) {
+                        continue;
+                    }
+
+                    $acheteur = null;
+                    foreach ($acheteurs as $a) {
+                        if ($a->cvi == $cviFilter) {
+                            $acheteur = $a;
+                        }
+                    }
+
+                    $export .= $this->addLigne($detail_parcelle, $acheteurs, $acheteur);
+                } else {
+                    foreach($acheteurs as $acheteur) {
+                        if($cviFilter && $cviFilter != $acheteur->cvi) {
+                            continue;
+                        }
+
+                        $export .= $this->addLigne($detail_parcelle, $acheteurs, $acheteur);
+                    }
+                }
+
+            }
+        }
+
+        return $export;
+    }
+
+    private function addLigne($parcelle, $acheteurs, $acheteur)
+    {
+        $export = $this->parcellaire->campagne . ";";
+        $export .= $parcelle->commune . ";";
+        $export .= $parcelle->section . ";";
+        $export .= $parcelle->numero_parcelle . ";";
+        $export .= $parcelle->getAppellation()->getLibelle() . ";";
+        $export .= str_replace(array('"',';'),array('',''),$parcelle->getLieuLibelle()) . ";";
+        if($parcelle->getLieuDitCadastral() && strpos($parcelle->getProduitHash(), 'LIEUDIT') ) {
+            $export .= $parcelle->getLieuDitCadastral() . ";";
+        }else {
+            $export .=";";
+        }
+
+        $export .= $parcelle->getCepageLibelle() . ";";
+        $export .= $parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE) . ";";
+        $export .= $this->parcellaire->declarant->cvi . ";";
+        $export .= $this->parcellaire->declarant->nom . ";";
+        $export .= $this->parcellaire->declarant->adresse . ";";
+        $export .= $this->parcellaire->declarant->code_postal . ";";
+        $export .= $this->parcellaire->declarant->commune . ";";
+        if($acheteur->cvi != $this->parcellaire->identifiant) {
+            $export .= (count($acheteurs) == 1) ? "DEDIÉE;" : "PARTAGÉE;";
+            $export .= $acheteur->cvi . ";";
+            $export .= $acheteur->nom . ";";
+            $export .= (!$this->parcellaire->isPapier() ? (($this->parcellaire->autorisation_acheteur) ? "AUTORISÉE" : "REFUSÉE") : "").";";
+        } else {
+            $export .=";;;;";
+        }
+        $export .= $this->parcellaire->getDateDepot().";";
+        $export .= ($this->parcellaire->isPapier()) ? "PAPIER" : "TÉLÉDECLARATION";
+        $export .= ";".(($parcelle->vtsgn) ? "VTSGN" : "");
+        $export .= ";".(($parcelle->exist('parcelle_id')) ? $parcelle->get('parcelle_id') : "");
+        $export .= ";".$this->parcellaire->_id;
+        $export .="\n";
+
+        return $export;
+    }
+
+    public function setExtraArgs($args) {
+    }
+
+}

@@ -4,6 +4,8 @@ DR:
   definition:
     fields:
       campagne: { }
+      has_metayers: { required: false }
+      commentaire: { }
       donnees:
         required: false
         type: array_collection
@@ -14,13 +16,43 @@ DR:
               type: collection
               definition:
                 fields:
+                  declarant_identifiant: { required: false }
+                  declarant_cvi: { required: false }
+                  declarant_raison_sociale: { required: false }
                   produit: { }
                   produit_libelle: { }
                   complement: { }
                   categorie: { }
+                  categorie_libelle: { }
                   valeur: { }
                   tiers: { }
+                  tiers_raison_sociale: { }
+                  tiers_cvi: { }
+                  tiers_commune: { }
                   bailleur: { }
+                  bailleur_ppm: { }
+                  bailleur_raison_sociale: { }
+                  colonneid: { }
+      declarant:
+        type: collection
+        class: DRDeclarant
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            ppm: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { required : false}
+            telephone_bureau: { }
+            telephone_mobile: { }
+            fax: { }
+            email: { }
+            famille: { }
+      region: { required: false }
       mouvements:
         type: collection
         definition:
@@ -47,9 +79,9 @@ DR:
                         unite: { required: false }
                         taux: { }
                         tva: { }
-                        facture: { type: integer }
-                        facturable: { type: integer }
                         date: {  }
                         date_version: {  }
                         version: {  }
                         categorie: {  }
+                        type: {  }
+                        campagne: {  }

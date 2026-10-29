@@ -1,0 +1,8 @@
+all:
+  configuration:
+    facture:
+      echeances: false
+      modalite_paiement: "- comptant  par virement ou chèques"
+      uniq_template_prefix: false
+      paiements: true
+      liste_dernier_exercice: true

@@ -1,0 +1,7 @@
+all:
+  configuration:
+    pmc:
+      exploitation_save: true
+      validation_odg: false
+      logement_adresse: true
+      all_produits: false

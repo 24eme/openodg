@@ -16,7 +16,7 @@ class FichierDonneeForm extends acCouchdbObjectForm
         $this->setWidgets(array(
             'produit' => new bsWidgetFormChoice(array('choices' => $this->produits)),
             'complement' => new bsWidgetFormInput(),
-            'categorie' => new bsWidgetFormChoice(array('choices' => sfConfig::get('app_dr_categories'))),
+            'categorie' => new bsWidgetFormChoice(array('choices' => DouaneCsvFile::getCategoriesLibelles())),
             'valeur' => new bsWidgetFormInput(),
             'tiers' => new WidgetEtablissement(array('interpro_id' => 'INTERPRO-declaration')),
             'bailleur' => new WidgetEtablissement(array('interpro_id' => 'INTERPRO-declaration'))
@@ -25,7 +25,7 @@ class FichierDonneeForm extends acCouchdbObjectForm
         $this->setValidators(array(
             'produit' => new sfValidatorChoice(array('choices' => array_keys($this->produits))),
             'complement' => new sfValidatorString(array('required' => false)),
-            'categorie' => new sfValidatorChoice(array('choices' => array_keys(sfConfig::get('app_dr_categories')))),
+            'categorie' => new sfValidatorChoice(array('choices' => array_keys(DouaneCsvFile::getCategoriesLibelles()))),
             'valeur' => new sfValidatorString(array('required' => false)),
             'tiers' => new ValidatorEtablissement(array('required' => false)),
             'bailleur' => new ValidatorEtablissement(array('required' => false)),

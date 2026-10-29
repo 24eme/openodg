@@ -16,14 +16,14 @@
     <meta name="content-language" content="fr-FR" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Plateforme de télédéclaration de l&#039;AVA</title>
-    
+
     <link rel="shortcut icon" type="image/x-icon" href="favico.ico" />
     <link rel="icon" type="image/x-icon" href="favico.ico" />
     <link rel="icon" type="image/png" href="favico.png" />
 
-    <link rel="stylesheet" type="text/css" media="all" href="/css/compile.css?201412041035" />
+    <link rel="stylesheet" type="text/css" media="all" href="/css/compile_ava.css?201412041035" />
     <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
-    
+
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
 
     <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
@@ -55,16 +55,16 @@
             <header id="header" class="container" role="banner">
 
                 <h1 class="sr-only">Bienvenue sur le portail de l'association des viticulteurs d'alsace</h1>
-                    
+
                 <div id="logo">
                     <a href="/" title="AVA - Association des viticulteurs d'alsace | Retour à la page d'accueil">
-                        <img src="/images/logo_site.png" alt="AVA - Association des viticulteurs d'alsace" />
+                        <img src="/images/logo_ava.png" alt="AVA - Association des viticulteurs d'alsace" />
                     </a>
                 </div>
-                                                               
+
             </header>
             <!-- end #header -->
-            
+
             <!-- #content -->
             <section id="content" class="container">
                 <div class="page-header no-border">

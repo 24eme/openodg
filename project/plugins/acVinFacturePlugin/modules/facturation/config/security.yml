@@ -1,8 +1,15 @@
 all:
-  credentials: [ADMIN]
+  credentials: [[ADMIN_ODG, ADMIN]]
+
+libre:
+  credentials: [[ADMIN_ODG, ADMIN]]
 
 latex:
   credentials: []
 
 declarant:
+  credentials: []
+
+getFactureWithAuth:
+  is_secure: false
   credentials: []

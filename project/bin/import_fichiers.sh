@@ -9,6 +9,10 @@ if ! test "$1"; then
     exit 1;
 fi
 
+if ! test "$SYMFONYTASKOPTIONS"; then
+    exit;
+fi
+
 SYMFODIR=$(pwd);
 
 LOGDATE=$SYMFODIR/$(date +%Y%m%d%H%M%S_import_data.log)

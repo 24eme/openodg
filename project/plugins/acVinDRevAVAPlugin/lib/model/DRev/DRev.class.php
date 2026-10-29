@@ -1,14 +1,13 @@
 <?php
 
-/**
- * Model for DRev
- *
- */
-class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument, InterfacePieceDocument {
+/*** AVA ***/
+
+class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument, InterfacePieceDocument {
 
     const CUVE = 'cuve_';
     const BOUTEILLE = 'bouteille_';
     const CUVE_ALSACE = 'cuve_ALSACE';
+    const CUVE_CREMANT = 'cuve_CREMANT';
     const CUVE_GRDCRU = 'cuve_GRDCRU';
     const CUVE_VTSGN = 'cuve_VTSGN';
     const BOUTEILLE_ALSACE = 'bouteille_ALSACE';
@@ -31,6 +30,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     );
     public static $prelevement_keys = array(
         self::CUVE_ALSACE,
+        self::CUVE_CREMANT,
         self::CUVE_GRDCRU,
         self::CUVE_VTSGN,
         self::BOUTEILLE_ALSACE,
@@ -90,6 +90,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function calculateVolumeRevendiqueVCI()
     {
     	$vci = array();
+    	$vciChezNegociant = array();
         foreach($this->getProduits() as $produit) {
             if(!$produit->exist('volume_revendique_vci') || $this->isNonRecoltant()) {
                 continue;
@@ -97,18 +98,29 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $produit->volume_revendique_vci = 0;
         }
     	foreach ($this->getProduitsVci() as $produit) {
-            if(!$this->isNonRecoltant() && $produit->getKey() != RegistreVCIClient::LIEU_CAVEPARTICULIERE && $produit->getKey() != $this->identifiant) {
+            if($this->isRecoltant() && !$produit->isStockageCaveParticuliere() && !$produit->isStockageNegociant()) {
                 continue;
             }
     		if (!isset($vci[$produit->getCouleur()->getHash()])) {
+
                 $vci[$produit->getCouleur()->getHash()] = 0;
+                $vciChezNegociant[$produit->getCouleur()->getHash()] = 0;
     		}
-            $vci[$produit->getCouleur()->getHash()] += $produit->complement + $produit->substitution + $produit->rafraichi;
+            $vciProduit = $produit->complement + $produit->substitution + $produit->rafraichi;
+            $vci[$produit->getCouleur()->getHash()] += $vciProduit;
+            if($produit->isStockageNegociant()) {
+                $vciChezNegociant[$produit->getCouleur()->getHash()] += $vciProduit;
+            }
     	}
     	foreach ($vci as $hash => $val) {
             $this->get($hash)->add('volume_revendique_vci');
-            $this->get($hash)->volume_revendique_vci = $val;
+            $this->get($hash)->setVolumeRevendiqueVCI($val, $vciChezNegociant[$hash]);
     	}
+    }
+
+    public function isRecoltant() {
+
+        return !$this->isNonRecoltant();
     }
 
     public function getConfigProduits() {
@@ -171,9 +183,40 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->_get('validation_odg');
     }
 
+    public function getDateDepot()
+    {
+        if($this->validation && $this->validation !== true && (!$this->exist('date_depot') || !$this->_get('date_depot'))) {
+            $date = new DateTime($this->validation);
+            $this->add('date_depot', $date->format('Y-m-d'));
+        }
+
+        if(!$this->exist('date_depot')) {
+
+            return null;
+        }
+
+        return $this->_get('date_depot');
+    }
+
     public function hasDR() {
 
         return $this->_attachments->exist('DR.csv');
+    }
+
+    public function hasSV() {
+
+        return $this->_attachments->exist('SV.csv');
+    }
+
+
+    public function hasDROrSV() {
+
+        return $this->hasDR() || $this->hasSV();
+    }
+
+
+    public function getCurrentRegistreVCI() {
+      return RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->campagne);
     }
 
     public function getLastRegistreVCI() {
@@ -234,17 +277,21 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return parent::getAttachmentUri($filename);
     }
 
-    public function getCSV() {
-        $csv = new DRCIVACsvFile($this->getAttachmentUri('DR.csv'));
-        return $csv->getCsvAcheteur($this->identifiant);
+    public function getCIVACsvFile() {
+        if ($this->_attachments->exist('SV.csv')) {
+            $csv = new SVMouvementCIVACsvFile($this->getAttachmentUri('SV.csv'));
+        }else{
+            $csv = new DRCIVACsvFile($this->getAttachmentUri('DR.csv'));
+        }
+        return $csv;
     }
 
-    public function updateFromCSV($updateProduitRevendique = false, $updatePrelevements = false,  $csv = null) {
-    	if (!$this->hasDR() && !$csv) {
+    public function updateFromCIVACsvFile($updateProduitRevendique = false, $updatePrelevements = false,  CIVACsvFile $csv = null) {
+    	if (!$this->hasDROrSV() && !$csv) {
     		return;
     	}
         if(is_null($csv)) {
-            $csv = $this->getCSV();
+            $csv = $this->getCIVACsvFile();
         }
 
         if($updatePrelevements) {
@@ -256,13 +303,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->add('declaration');
         }
 
-        $this->updateProduitDetailFromCSV($csv);
+        $this->resetProduitDetail();
+        $csv->updateDRevProduitDetail($this);
+        $this->updateProduitDetail();
 
         if($updateProduitRevendique) {
             $this->updateProduitRevendiqueFromDetail();
         }
 
-        $this->updateCepageFromCSV($csv);
+        $this->resetCepage();
+        $csv->updateDRevCepage($this);
 
         if($updatePrelevements) {
             $this->updatePrelevementsFromRevendication();
@@ -359,7 +409,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if($add_appellation) {
             $this->addAppellation($config->getAppellation()->getHash());
         }
-        $produit = $this->getOrAdd($config->getHash());
+        $produit = $this->getOrAdd($config->getHash())->getCouleur();
         $produit->getLibelle();
         $produit->add('superficie_vinifiee');
         if($produit->getConfig()->hasProduitsVtsgn()) {
@@ -535,6 +585,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function devalidate() {
+        $this->getDateDepot();
         $this->validation = null;
         $this->validation_odg = null;
         $this->remove('etape');
@@ -551,27 +602,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	}
     	if ($registreVCI = $this->getLastRegistreVCI()) {
     		foreach ($this->getProduitsVci() as $produit) {
-    			$hash = str_replace('/vci/', '/details/', $produit->getHash());
-    			if (!preg_match('/\/cepage_/', $hash)) {
-    				$hash = str_replace('/mention/lieu/couleur', '', $hash);
-    			} else {
-    				$hash = str_replace('/detail/0', '', $hash);
-    			}
-    			if (!$registreVCI->exist($hash)) {
-    				continue;
-    			}
-    			$detail = $registreVCI->get($hash);
-                if(round($produit->destruction - $detail->destruction, 2)) {
-    			    $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'destruction', round($produit->destruction - $detail->destruction, 2), $detail->stockage_identifiant);
+                $hash = str_replace('/vci/', '/details/', $produit->getHash());
+                if (!preg_match('/\/cepage_/', $hash)) {
+                    $hash = str_replace('/mention/lieu/couleur', '', $hash);
+                } else {
+                    $hash = str_replace('/detail/0', '', $hash);
                 }
-                if(round($produit->complement - $detail->complement, 2)) {
-    			    $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'complement', round($produit->complement -  $detail->complement, 2), $detail->stockage_identifiant);
-                }
-                if(round($produit->substitution - $detail->substitution, 2)) {
-		            $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'substitution', round($produit->substitution - $detail->substitution, 2), $detail->stockage_identifiant);
-                }
-                if(round($produit->rafraichi - $detail->rafraichi, 2)) {
-			        $registreVCI->addLigne($detail->getParent()->getParent()->getHash(), 'rafraichi', round($produit->rafraichi - $detail->rafraichi, 2), $detail->stockage_identifiant);
+                $hash = preg_replace('|/details/.+$|', '', $hash);
+                foreach(['destruction', 'complement', 'substitution', 'rafraichi'] as $typeMouvement) {
+                    $registreVCI->updateVCI($hash, $typeMouvement, $produit->get($typeMouvement), $produit->stockage_identifiant, DRevClient::TYPE_MODEL);
                 }
     		}
     		$registreVCI->save();
@@ -584,6 +623,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->validation_odg = $date;
+
+        $this->generateMouvementsFactures();
     }
 
     public function getEtablissementObject() {
@@ -596,73 +637,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach ($produits as $produit) {
             $this->addProduit($produit->getHash());
         }
-    }
-
-    protected function updateProduitDetailFromCSV($csv) {
-        $this->resetProduitDetail();
-        foreach ($csv as $line) {
-            $hashProduit = DRCIVACsvFile::getHashProduitByLine($line);
-
-            if (!preg_match("/^TOTAL/", $line[DRCIVACsvFile::CSV_LIEU]) && !preg_match("/^TOTAL/", $line[DRCIVACsvFile::CSV_CEPAGE])) {
-
-                continue;
-            }
-
-            $hashProduit = preg_replace("/(mentionVT|mentionSGN)/", "mention", $hashProduit);
-            $hashProduit = preg_replace('|/recolte.|', '/declaration/', $hashProduit);
-
-            if (!$this->getConfiguration()->exist($hashProduit)) {
-                continue;
-            }
-
-            $config = $this->getConfiguration()->get($hashProduit)->getNodeRelation('revendication');
-
-            if ($config instanceof ConfigurationAppellation && !$config->mention->lieu->hasManyCouleur()) {
-                $config = $config->mention->lieu->couleur;
-            }
-
-            if ($config instanceof ConfigurationMention && !$config->lieu->hasManyCouleur()) {
-                $config = $config->lieu->couleur;
-            }
-
-            if (!$config instanceof ConfigurationCouleur) {
-                continue;
-            }
-
-            $produit = $this->addProduit($config->getHash());
-            $produitDetail = $produit->detail;
-            if($line[DRCIVACsvFile::CSV_VTSGN]) {
-                $produitDetail = $produit->detail_vtsgn;
-            }
-
-            $produitDetail->volume_total += (float) $line[DRCIVACsvFile::CSV_VOLUME_TOTAL];
-            $produitDetail->usages_industriels_total += (float) $line[DRCIVACsvFile::CSV_USAGES_INDUSTRIELS_TOTAL];
-            if(preg_match("/^[0-9\.,]+$/", $line[DRCIVACsvFile::CSV_VCI_TOTAL]) && ((float) $line[DRCIVACsvFile::CSV_VCI_TOTAL]) > 0) {
-                $produitDetail->vci_total += (float) $line[DRCIVACsvFile::CSV_VCI_TOTAL];
-            }
-            $produitDetail->superficie_total += (float) $line[DRCIVACsvFile::CSV_SUPERFICIE_TOTALE];
-            $produitDetail->volume_sur_place += (float) $line[DRCIVACsvFile::CSV_VOLUME];
-
-            if (!$produitDetail->exist('superficie_vinifiee')) {
-            	$produitDetail->add('superficie_vinifiee');
-            }
-            if($line[DRCIVACsvFile::CSV_SUPERFICIE] != "") {
-                $produitDetail->superficie_vinifiee += (float) $line[DRCIVACsvFile::CSV_SUPERFICIE];
-            } else {
-                $produitDetail->superficie_vinifiee = null;
-            }
-            if ($line[DRCIVACsvFile::CSV_USAGES_INDUSTRIELS] == "") {
-                $produitDetail->usages_industriels_sur_place = -1;
-            } elseif ($produitDetail->usages_industriels_sur_place != -1) {
-                $produitDetail->usages_industriels_sur_place += (float) $line[DRCIVACsvFile::CSV_USAGES_INDUSTRIELS];
-            }
-
-            if(preg_match("/^[0-9\.,]+$/", $line[DRCIVACsvFile::CSV_VCI]) && ((float) $line[DRCIVACsvFile::CSV_VCI]) > 0) {
-                $produitDetail->vci_sur_place += (float) $line[DRCIVACsvFile::CSV_VCI];
-            }
-        }
-
-        $this->updateProduitDetail();
     }
 
     protected function resetProduitDetail() {
@@ -726,46 +700,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function updatePrelevements() {
         foreach($this->prelevements as $prelevement) {
             $prelevement->updatePrelevement();
-        }
-    }
-
-    protected function updateCepageFromCSV($csv) {
-        $this->resetCepage();
-
-        foreach ($csv as $line) {
-            if (
-                    preg_match("/^TOTAL/", $line[DRCIVACsvFile::CSV_APPELLATION]) ||
-                    preg_match("/^TOTAL/", $line[DRCIVACsvFile::CSV_LIEU]) ||
-                    preg_match("/^TOTAL/", $line[DRCIVACsvFile::CSV_CEPAGE])
-            ) {
-
-                continue;
-            }
-
-            $hashProduit = DRCIVACsvFile::getHashProduitByLine($line);
-
-            $hash = preg_replace("|/detail/.+$|", "", preg_replace('|/recolte.|', '/declaration/', preg_replace("|/detail/[0-9]+$|", "", $hashProduit)));
-            $hash = preg_replace("/(mentionVT|mentionSGN)/", "mention", $hash);
-
-            if (!$this->getConfiguration()->exist($hash)) {
-                continue;
-            }
-
-            $config = $this->getConfiguration()->get($hash);
-            $detail = $this->getOrAdd($config->getHash())->addDetailNode($line[DRCIVACsvFile::CSV_LIEU]);
-            if ($line[DRCIVACsvFile::CSV_VTSGN] == "VT") {
-                $detail->volume_revendique_vt += (float) $line[DRCIVACsvFile::CSV_VOLUME];
-                $detail->superficie_revendique_vt += (float) $line[DRCIVACsvFile::CSV_SUPERFICIE_TOTALE];
-            } elseif ($line[DRCIVACsvFile::CSV_VTSGN] == "SGN") {
-                $detail->volume_revendique_sgn += (float) $line[DRCIVACsvFile::CSV_VOLUME];
-                $detail->superficie_revendique_sgn += (float) $line[DRCIVACsvFile::CSV_SUPERFICIE_TOTALE];
-            } else {
-                $detail->volume_revendique += (float) $line[DRCIVACsvFile::CSV_VOLUME];
-                $detail->superficie_revendique += (float) $line[DRCIVACsvFile::CSV_SUPERFICIE_TOTALE];
-            }
-
-            $detail->updateTotal();
-            $detail->getLibelle();
         }
     }
 
@@ -868,6 +802,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 		$this->piece_document->generatePieces();
   }
   public function save($con = null) {
+    $this->getDateDepot();
+
     if ($this->exist('non_conditionneur') && $this->non_conditionneur) {
       if ($this->prelevements->exist('cuve_ALSACE')) {
         $this->prelevements->cuve_ALSACE->add('force', 1);
@@ -879,16 +815,39 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     /*
      * Facture
      */
-	public function getSurfaceFacturable()
-	{
-        $totalPrecedenteVersion = 0;
+     public function getSurfaceFacturable()
+     {
+        throw new sfException('getSurfaceFacturable() Déprécié. Remplacé par getSurfaceRecolteFacturable()');
+     }
 
+    public function getSurfaceRecolteFacturable()
+    {
+        if ($this->hasDR() && !$this->getVolumeRecolte()) {
+            return 0;
+        }
+        if ($this->exist('non_recoltant') && $this->non_recoltant) {
+            return 0;
+        }
+        $totalPrecedenteVersion = 0;
         if ($this->hasVersion()) {
             $totalPrecedenteVersion = $this->getMother()->declaration->getTotalTotalSuperficie();
         }
 
 		return $this->declaration->getTotalTotalSuperficie();
-	}
+    }
+
+    public function getVolumeRecolte() {
+        $volume = 0;
+        $csv = $this->getCIVACsvFile();
+        foreach ($csv->getCsv() as $line) {
+            $hash = DRCIVACsvFile::getHashProduitByLine($line);
+            if (!$hash || strpos($hash, '/appellation') === false) {
+                continue;
+            }
+            $volume += floatval($line[DRCIVACsvFile::CSV_VOLUME]);
+        }
+        return $volume;
+    }
 
 	public function getVolumeFacturable()
 	{
@@ -912,13 +871,55 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 		return $this->declaration->getTotalSuperficieVinifiee();
 	}
 
+    public function getRegistreVCISurfaceFacturable() {
+        if($this->isNonRecoltant() || $this->hasSV()) {
+
+            return 0;
+        }
+
+        $superficieFacturable = 0;
+        $lastRegistreVCI = $this->getLastRegistreVCI();
+        foreach($this->declaration->getProduits() as $produit) {
+            $hasVci = false;
+            if($produit->exist('detail') && $produit->detail->vci_total > 0) {
+                $hasVci = true;
+            }
+            if($lastRegistreVCI) {
+                foreach($lastRegistreVCI->getProduitsWithPseudoAppelations() as $registreProduit) {
+                    if(!$registreProduit || !$registreProduit->isPseudoAppellation()) {
+                        continue;
+                    }
+                    if($registreProduit->getPseudoAppellation()->getHash() != $produit->getAppellation()->getHash()) {
+                        continue;
+                    }
+                    if($registreProduit->rafraichi) {
+                        $hasVci = true;
+                    }
+                }
+            }
+            foreach($produit->getProduitsVCI() as $produitVCI) {
+                if($produitVCI->rafraichi > 0)  {
+                    $hasVci = true;
+                    break;
+                }
+            }
+            if($hasVci) {
+                $superficieFacturable += $produit->superficie_revendique;
+            }
+        }
+
+        return round($superficieFacturable / 100, 4);
+    }
+
     public function isAdherentSyndicat() {
 
         return $this->getEtablissementObject()->getCompte()->isAdherentSyndicat();
     }
 
     public function getSyndicatsViticole() {
-
+        if (!$this->getVolumeFacturable() && !$this->getSurfaceRecolteFacturable()) {
+            return null;
+        }
         return $this->getEtablissementObject()->getCompte()->getSyndicatsViticole();
     }
 
@@ -935,6 +936,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getMouvementsFacturesCalcule() {
+        if($this->getEtablissementObject()->getCompte()->statut == CompteClient::STATUT_INACTIF) {
+            return array();
+        }
+
         $templateFacture = $this->getTemplateFacture();
 
         if(!$templateFacture) {
@@ -957,15 +962,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $mouvement = DRevMouvementFactures::freeInstance($this);
             $mouvement->categorie = $cotisation->getCollectionKey();
             $mouvement->type_hash = $cotisation->getDetailKey();
-            $mouvement->type_libelle = $cotisation->getLibelle();
+            $mouvement->type_libelle = $cotisation->getConfigCollection()->getLibelle();
+            $mouvement->detail_libelle = $cotisation->getLibelle();
             $mouvement->quantite = $cotisation->getQuantite();
             $mouvement->taux = $cotisation->getPrix();
+            $mouvement->tva = $cotisation->getTva();
             $mouvement->facture = 0;
             $mouvement->facturable = 1;
             $mouvement->date = $this->getCampagne().'-12-10';
             $mouvement->date_version = $this->validation;
             $mouvement->version = $this->version;
             $mouvement->template = $templateFacture->_id;
+            $mouvement->type = DRevClient::TYPE_MODEL;
 
             if(isset($cotisationsPrec[$cotisation->getHash()])) {
                 $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();
@@ -1041,10 +1049,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
     	$complement .= ($this->isSauvegarde())? ' Non facturé' : '';
         $version = ($this->hasVersion()) ? ' Version '.(str_replace("M", "", $this->version)*1) : "";
-
+        $date = $this->getDateDepot();
+        if (!$date) {
+            $date = $this->campagne * 1 .'-12-12';
+        }
         return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
-    		'date_depot' => $this->getValidation(),
+            'date_depot' => $date,
             'libelle' => 'Revendication des appellations viticoles '.$this->campagne.$version.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
@@ -1261,6 +1272,36 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getSuivante() {
 
         throw new sfException("Not implemented");
+    }
+
+    public function getPeriode() {
+        $periode = $this->_get('campagne');
+        if (strpos($periode, '-') !== false) {
+            $periode = substr($periode, 0, 4);
+        }
+        return $periode;
+    }
+
+    public function getDate() {
+        return $this->getPeriode().'-12-15';
+    }
+
+    public function getDocumentsEnAttente() {
+        if(!$this->exist('documents')) {
+
+            return [];
+        }
+
+        $documents = [];
+        foreach($this->documents as $document) {
+            if($document->statut == DRevDocuments::STATUT_RECU) {
+                continue;
+            }
+
+            $documents[] = $document;
+        }
+
+        return $documents;
     }
 
     /**** FIN DE VERSION ****/

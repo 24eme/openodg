@@ -2,25 +2,34 @@
 
 class DRevPrelevementsView extends acCouchdbView
 {
-    const KEY_APPELLATION = 0;
-    const KEY_DATE = 1;
-    const KEY_IDENTIFIANT = 2;
-    const KEY_RAISON_SOCIALE = 3;
-    const KEY_ADRESSE = 4;
-    const KEY_CODE_POSTAL = 5;
-    const KEY_COMMUNE = 6;
-    const KEY_FORCE = 7;
+    const KEY_FORCE = 0;
+    const KEY_APPELLATION = 1;
+    const KEY_DATE = 2;
+    const KEY_IDENTIFIANT = 3;
+    const KEY_RAISON_SOCIALE = 4;
+    const KEY_ADRESSE = 5;
+    const KEY_CODE_POSTAL = 6;
+    const KEY_COMMUNE = 7;
 
     public static function getInstance() {
 
         return acCouchdbManager::getView('drev', 'prelevements', 'DRev');
     }
 
-    public function getPrelevements($produit, $date_from, $date_to, $campagne = null) {
+    public function getPrelevements($force, $produit, $date_from = null, $date_to = null, $campagne = null) {
+        $startkey = [$force, 'cuve_'.$produit];
+        $endkey = [$force, 'cuve_'.$produit];
+
+        if ($date_from) { $startkey[] = $date_from; }
+
+        if ($date_to) {
+            $endkey[] = $date_to;
+        }
+        $endkey[] = [];
 
         return $this->viewToJson($this->client
-                            ->startkey(array("cuve_".$produit, $date_from))
-                            ->endkey(array("cuve_".$produit, $date_to, array()))
+                            ->startkey($startkey)
+                            ->endkey($endkey)
                             ->reduce(false)
                             ->getView($this->design, $this->view)->rows, $campagne);
     }

@@ -28,11 +28,14 @@ class CompteLdap extends acVinLdap {
     }
 
     protected static function getIdentifiant($compte) {
-      if ($compte->isSocieteContact()) {
-	return $compte->getSociete()->identifiant;
-      }else{
-	return $compte->identifiant;
-      }
+        if ($compte->exist('login')) {
+            return $compte->login;
+        }
+        if ($compte->isSocieteContact()) {
+	        return $compte->getSociete()->identifiant;
+        }else{
+	        return $compte->identifiant;
+        }
     }
 
     /**
@@ -53,13 +56,16 @@ class CompteLdap extends acVinLdap {
       $info['uidNumber']        = (int)self::getIdentifiant($compte);
       $info['gidNumber']        = '1000';
       $info['homeDirectory']    = '/home/'.self::getIdentifiant($compte);
-      $info['o']                = $compte->getSociete()->raison_sociale;
+      $info['o']                = ($compte->getSociete()) ? $compte->getSociete()->raison_sociale : '';
       $info['description']      = ($compte->societe_informations->type)? $compte->societe_informations->type : '';
 
       if (!is_null($compte->getNom())){
 	        $info['sn']             = $compte->getNom();
       } else {
 	        $info['sn']             = $compte->nom_a_afficher;
+      }
+      if (!$info['o']) {
+          $info['o']                = $info['sn'];
       }
       if ($compte->getPrenom()){
           $info['givenName']        = $compte->getPrenom();
@@ -77,10 +83,8 @@ class CompteLdap extends acVinLdap {
           $info['postalCode']       = trim($compte->code_postal);
       if ($compte->telephone_bureau)
           $info['telephoneNumber']  = trim(str_replace("_", "", $compte->telephone_bureau));
-      if ($compte->fax)
-          $info['facsimileTelephoneNumber'] = trim(str_replace("_", "", $compte->fax));
       if ($compte->telephone_mobile)
-          $info['mobile']           = str_replace("_", "", $compte->telephone_mobile);
+          $info['mobile']           = trim(str_replace("_", "", $compte->telephone_mobile));
       if ($compte->exist('mot_de_passe')) {
 	        $info['userPassword']  = $compte->mot_de_passe;
 	        if(!$compte->isActif()) {

@@ -4,10 +4,11 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
 
     protected $facture = null;
     protected $header = false;
+    protected $region = null;
 
     protected $floatHelper = null;
 
-    public function __construct($doc_or_id, $header = true) {
+    public function __construct($doc_or_id, $header = true, $region = null) {
         if ($doc_or_id instanceof Facture) {
             $this->facture = $doc_or_id;
         } else {
@@ -21,10 +22,11 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
        $this->floatHelper = FloatHelper::getInstance();
 
         $this->header = $header;
+        $this->region = $region;
     }
 
     public static function getHeaderCsv() {
-        return "Crée le;Nom relation;Adresse;Code Postal;Ville;Téléphone fixe;Téléphone Portable;eMail;Pièce;Cotisation valorisation HT;Cotisation valorisation TVA;Cotisation valorisation TTC;Cotisation ODG TOTAL ou forfait;Droits I.N.A.O.;Cotisation ODG TOTAL ou forfait + INAO;Total Facture TTC\n";
+        return "Crée le;Nom relation;Adresse;Code Postal;Ville;Téléphone fixe;Téléphone Portable;eMail;Pièce;Cotisation valorisation HT;Cotisation valorisation TVA;Remboursement valorisation covid HT;Remboursement valorisation covid TVA;Cotisation valorisation TTC;Cotisation ODG TOTAL ou forfait;Remboursement ODG covid;Droits I.N.A.O.;Cotisation ODG TOTAL ou forfait + INAO;Total Facture TTC;id facture\n";
     }
 
     public function export() {
@@ -59,9 +61,21 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
         // valorisations
         $valorisation = $this->getCotisationNode('valorisation');
         if($valorisation){
-          $csv.= $this->floatHelper->formatFr($valorisation->montant_ht, 2, 2).";".$this->floatHelper->formatFr($valorisation->montant_tva, 2, 2).";".$this->floatHelper->formatFr(($valorisation->montant_ht+$valorisation->montant_tva), 2, 2).";";
+          $montant_covid_valorisation_ht = 0.0;
+          $montant_covid_valorisation_tva = 0.0;
+          foreach ($valorisation->details as $detailName => $detail) {
+            if($detail->libelle == "Remise exceptionnelle Covid"){ //Goretterie car pas le temps de refactoriser tout ça
+              $montant_covid_valorisation_ht += $detail->montant_ht;
+              $montant_covid_valorisation_tva += $detail->montant_tva;
+            }
+          }
+          $csv.= $this->floatHelper->formatFr($valorisation->montant_ht-$montant_covid_valorisation_ht, 2, 2).";".
+          $this->floatHelper->formatFr($valorisation->montant_tva-$montant_covid_valorisation_tva, 2, 2).";".
+          $this->floatHelper->formatFr($montant_covid_valorisation_ht, 2, 2).";".
+          $this->floatHelper->formatFr($montant_covid_valorisation_tva, 2, 2).";".
+          $this->floatHelper->formatFr($valorisation->montant_tva+$valorisation->montant_ht, 2, 2).";";
         }else{
-          $csv.= ";;;";
+          $csv.= ";;;;;";
         }
 
         // odg ou forfait
@@ -73,12 +87,18 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
         }
 
         if($odg_ou_forfait){
-          $csv .= $this->floatHelper->formatFr($odg_ou_forfait->montant_ht, 2, 2).";";
-          $odg_ou_forfait_inao_total+=$odg_ou_forfait->montant_ht;
+          $montant_covid_odg_ht = 0.0;
+          foreach ($odg_ou_forfait->details as $detailName => $detail) {
+              if($detail->libelle == "Remise exceptionnelle Covid"){ //Goretterie car pas le temps de refactoriser tout ça
+                  $montant_covid_odg_ht += $detail->montant_ht;
+              }
+          }
+          $csv .= $this->floatHelper->formatFr(($odg_ou_forfait->montant_ht), 2, 2).";";
+          $csv .= $this->floatHelper->formatFr($montant_covid_odg_ht, 2, 2).";";
+          $odg_ou_forfait_inao_total += $odg_ou_forfait->montant_ht + $montant_covid_odg_ht;
         }else{
-          $csv .= ";";
+          $csv .= ";;";
         }
-
         // inao
         $inao = $this->getCotisationNode('inao');
         if($inao){
@@ -89,10 +109,12 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
         }
 
         // odg + inao
-        $csv .= ($odg_ou_forfait_inao_total)? $this->floatHelper->formatFr($odg_ou_forfait_inao_total, 2, 2).";" : ";";
+        $csv .= $this->floatHelper->formatFr($odg_ou_forfait_inao_total, 2, 2).";" ;
 
         //total
-        $csv .= $this->floatHelper->formatFr($this->facture->total_ttc, 2, 2)."\n";
+        $csv .= $this->floatHelper->formatFr($this->facture->total_ttc, 2, 2);
+        $csv .= ";".$this->facture->_id;
+        $csv .= "\n";
 
         return $csv;
     }
@@ -104,5 +126,7 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
       return null;
     }
 
+    public function setExtraArgs($args) {
+    }
 
 }

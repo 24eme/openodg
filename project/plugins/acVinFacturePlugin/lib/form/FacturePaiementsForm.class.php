@@ -1,20 +1,17 @@
 <?php
 
-class FacturePaiementsForm extends acCouchdbObjectForm {
+class FacturePaiementsForm extends acCouchdbForm {
 
     public function configure()
     {
-      $paiements = $this->getObject()->getOrAdd('paiements');
+      $paiements = $this->getDocument()->getOrAdd('paiements');
       foreach($paiements as $paiement) {
-          $this->embedForm($paiement->getKey(), new FacturePaiementEmbedForm($paiement));
+          if (!$paiement->versement_comptable) {
+              $this->embedForm($paiement->getKey(), new FacturePaiementEmbedForm($paiement));
+          }
       }
 
         $this->widgetSchema->setNameFormat('facture_paiements[%s]');
-    }
-
-
-    protected function doUpdateObject($values) {
-        parent::doUpdateObject($values);
     }
 
 }

@@ -4,7 +4,7 @@
  *
  */
 
-class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument, InterfaceDeclaration {
+class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument {
 
 
     protected $mouvement_document = null;
@@ -26,18 +26,29 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function getDeclarant(){
         $etablissement = EtablissementClient::getInstance()->find($this->identifiant);
+
+        if(!$etablissement){
+            $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$this->identifiant);
+        }
+
         if(!$etablissement){
           return null;
         }
-        $compte = CompteClient::getInstance()->find($etablissement->getCompte());
+
+        $compte = $etablissement->getCompte();
+
+        if (is_string($compte)) {
+            $compte = CompteClient::getInstance()->find($compte);
+        }
+
         $declarant = new stdClass();
         $declarant->nom = $etablissement->nom;
         $declarant->raison_sociale = $etablissement->raison_sociale;
         $declarant->cvi = $etablissement->cvi;
-        $declarant->siret = $etablissement->getSociete()->siret;
+        $declarant->siret = ($etablissement->getSociete()) ? $etablissement->getSociete()->siret : $etablissement->siret;
 
         $declarant->adresse = $compte->adresse;
-        $declarant->adresse_complementaire = $compte->adresse_complementaire;
+        $declarant->adresse_complementaire = ($compte) ? (property_exists($compte, 'adresse_complementaire')) ? $compte->adresse_complementaire : "" : "";
         $declarant->commune = $compte->commune;
         $declarant->code_postal = $compte->code_postal;
         $declarant->telephone_bureau = $compte->telephone_bureau;
@@ -50,6 +61,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     protected function initDocuments() {
         $this->historique = array();
+        $this->mouvement_document = new MouvementFacturesDocument($this);
     }
 
     private function getTheoriticalId() {
@@ -63,20 +75,25 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $this->set('_id', $id);
     }
 
-    public function getConfiguration() {
-
-        return acCouchdbManager::getClient('Configuration')->getConfiguration($this->date);
+    private $configurations = [];
+    public function getConfiguration($date = null) {
+        if (!$date) {
+            $date = $this->date;
+        }
+        if (!isset($this->configurations[$date])) {
+            $this->configurations[$date] = acCouchdbManager::getClient('Configuration')->getConfiguration($date);
+        }
+        return $this->configurations[$date];
     }
 
-    public function getProduitsConfig() {
-
-        return $this->getConfiguration()->getProduitsCahierDesCharges();
+    public function getProduitsConfig($date = null) {
+      return HabilitationClient::getinstance()->getProduitsConfig($this->getConfiguration($date));
     }
 
-    public function getProduitsHabilites() {
+    public function getProduitsHabilites($activite = null) {
         $produits = array();
         foreach($this->getProduits() as $produit) {
-            if(!count($produit->getActivitesHabilites())) {
+            if(!$produit->isHabiliteFor($activite)) {
                 continue;
             }
 
@@ -89,12 +106,39 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     public function getProduits($onlyActive = true) {
         return $this->declaration->getProduits($onlyActive);
     }
+
+    public function getProduitsByCepage($cepage, $date = null) {
+        if (!$date) {
+            $date = $this->getDate();
+        }
+        $produits = array();
+        $produits_cepage_conf = $this->getConfiguration($date)->getProduitsByCepage($cepage);
+        foreach($this->getProduits() as $p) {
+            $h = preg_replace('/.*\/appellations\//', '/appellations/', $p->getHash());
+            foreach ($produits_cepage_conf as $c => $cp) {
+                if (strpos($cp->getHash(), $h) !== false) {
+                    $produits[] = $cp;
+                }
+            }
+        }
+        return $produits;
+    }
+
     public function isPapier() {
         return $this->exist('papier') && $this->get('papier');
     }
 
     public function isAutomatique() {
         return $this->exist('automatique') && $this->get('automatique');
+    }
+
+    public function getLectureSeule() {
+        if(!$this->exist('lecture_seule')) {
+
+            return false;
+        }
+
+        return $this->_get('lecture_seule');
     }
 
     public function isLectureSeule() {
@@ -107,7 +151,10 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
     public function getValidationOdg() {
+        if(!$this->exist('validation_odg')) {
 
+            return true;
+        }
         return $this->_get('validation_odg');
     }
 
@@ -119,23 +166,33 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
     public function addProduit($hash, $date = null) {
-        $hash = preg_replace("|/declaration/|", '', $hash);
-        $node = $this->getConfiguration()->get('/declaration/'.$hash)->getNodeCahierDesCharges();
-        $hashToAdd = preg_replace("|/declaration/|", '', $node->getHash());
-        $exist = $this->exist('declaration/'.$hashToAdd);
-        $produit = $this->add('declaration')->add($hashToAdd);
+        $hash = str_replace("/declaration/", '', $hash);
+        if(!$this->getConfiguration($date)->exist('/declaration/'.$hash)){
+          return null;
+        }
+        $prod = $this->getConfiguration($date)->get('/declaration/'.$hash);
+        $exist = $this->declaration->exist($hash);
+        $produit = $this->getProduitByProduitConf($prod);
         if(!$exist) {
-            $produit_libelle = $produit->getLibelle();
             $produit->initActivites();
             if($date == $this->date || !$date) {
-                $this->addHistoriqueNewProduit($produit_libelle);
+                $this->addHistoriqueNewProduit($produit->getLibelle());
             }
             $this->declaration->reorderByConf();
+            $produit = $this->get($produit->getHash());
         }
-        return $this->get($produit->getHash());
+        return $produit;
     }
 
 
+    public function getProduitByProduitConf($prodconf) {
+        $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prodconf);
+        if (!$node) {
+            return null;
+        }
+        $hashToAdd = preg_replace("|/declaration/|", '', $node->getHash());
+        return $this->add('declaration')->add($hashToAdd);
+    }
 
     public function storeEtape($etape) {
         $etapeOriginal = ($this->exist('etape')) ? $this->etape : null;
@@ -231,7 +288,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function isExcluExportCsv() {
         $etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->identifiant, acCouchdbClient::HYDRATE_JSON);
-        if(!$etablissement || $etablissement->statut != EtablissementClient::STATUT_ACTIF) {
+        if(!$etablissement || ( isset($etablissement->statut) && $etablissement->statut != EtablissementClient::STATUT_ACTIF) ) {
 
             return true;
         }
@@ -265,16 +322,56 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 		}
 	}
 
-  public function isHabiliteFor($hash_produit, $activite) {
-    if (!$this->addProduit($hash_produit)->exist('activites')) {
-      return false;
+    public function isHabiliteFor($hash_produit, $activite, $date = null) {
+        $hash_produit = str_replace(['/declaration/', 'declaration/'], '', $hash_produit);
+        $hash_produit = str_replace('/VDN/appellations/VDR', '/TRANQ/appellations/RTA', $hash_produit);
+        $hash_produit = str_replace(['/EFF', '/MOU', '/VMQ'], '/TRANQ', $hash_produit);
+        if (strpos($hash_produit, '/genres/VDB') !== false) {
+            $hash_produit = str_replace('/genres/VDB', '/genres/TRANQ', $hash_produit);
+            $hash_produit = str_replace('/mentions/MA', '/mentions/DEFAUT', $hash_produit);
+        }
+
+        $prodconf = $this->getConfiguration($date)->get('/declaration/'.$hash_produit);
+        $node = HabilitationConfiguration::getInstance()->getProduitAtHabilitationLevel($prodconf);
+        if (!$node) {
+            return false;
+        }
+        $hash_produit = preg_replace("|/declaration/|", '', $node->getHash());
+
+        if (!$this->addProduit($hash_produit, $date)) {
+            return false;
+        }
+
+        return $this->addProduit($hash_produit, $date)->isHabiliteFor($activite);
     }
-    return $this->addproduit($hash_produit)->activites[$activite]->isHabilite();
+
+    public function isHabiliteExterieur($hash_produit, $activite, $date = null) {
+
+        return $this->isHabiliteFor($hash_produit, $activite, $date) == HabilitationClient::STATUT_EXTERIEUR;
+    }
+
+  public function containHashProduit($hash) {
+      foreach($this->getProduits() as $produit) {
+          if(preg_match("|".$hash."|", $produit->getHash())) {
+
+              return true;
+          }
+
+          if(preg_match("|".$produit->getHash()."|", $hash)) {
+
+              return true;
+          }
+      }
+
+      return false;
   }
 
-  public function updateHabilitation($hash_produit, $activites, $statut, $commentaire = "", $date = ''){
+  public function updateHabilitation($hash_produit, $activites, $sites, $statut, $commentaire = "", $date = ''){
+        if (!$sites) {
+            $sites = array();
+        }
         foreach($activites as $activite) {
-            $this->addProduit($hash_produit, $date)->updateHabilitation($activite, $statut, $commentaire, $date);
+            $this->addProduit($hash_produit, $date)->updateHabilitation($activite, $sites, $statut, $commentaire, $date);
         }
   }
 
@@ -290,22 +387,237 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return $demandes;
     }
 
-    public function save() {
-        $this->constructId();
+    public function getActivitesHabilites() {
+        $activites = [];
+        foreach($this->getProduits() as $p) {
+            $activites = array_merge($activites, array_keys($p->getActivitesHabilites()));
+        }
+        $activites = array_unique($activites);
+        sort($activites);
 
-        $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant, acCouchdbClient::HYDRATE_JSON);
+        return $activites;
+    }
 
-        if($last && $last->_id > $this->_id) {
-            $this->add('lecture_seule', true);
+    public function getActivitesHabilitesByProduits() {
+        $activites = [];
+        foreach($this->getProduits() as $key => $p) {
+            $activites[$key] = array_merge($activites, array_keys($p->getActivitesHabilites()));
+        }
+        return $activites;
+    }
+
+    public function getActivitesWrongHabilitation() {
+        $activites = [];
+        foreach($this->getProduits() as $p) {
+            $activites = array_merge($activites, array_keys($p->getActivitesWrongHabilitation()));
+        }
+        $activites = array_unique($activites);
+        sort($activites);
+
+        return $activites;
+    }
+
+    public function getTheoriticalFamille() {
+        $activites = $this->getActivitesHabilites();
+
+        if(!count($activites)) {
+            $activites = $this->getActivitesWrongHabilitation();
         }
 
-        parent::save();
-        $precedente = $this->getPrevious();
+        if(in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $activites) && in_array(HabilitationClient::ACTIVITE_NEGOCIANT, $activites)) {
 
-        if(!$this->isLectureSeule() && $precedente && !$precedente->isLectureSeule()) {
+            return EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+        }
+
+        if(in_array(HabilitationClient::ACTIVITE_PRODUCTEUR, $activites) && in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $activites)) {
+
+            return EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+        }
+
+        if(in_array(HabilitationClient::ACTIVITE_NEGOCIANT, $activites)) {
+
+            return EtablissementFamilles::FAMILLE_NEGOCIANT;
+        }
+
+        if(in_array(HabilitationClient::ACTIVITE_PRODUCTEUR, $activites)) {
+
+            return EtablissementFamilles::FAMILLE_PRODUCTEUR;
+        }
+
+        return null;
+    }
+
+    public function save() {
+        $this->constructId();
+        $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant);
+        $this->add('lecture_seule', ($last && $last->_id > $this->_id));
+        if(!$this->isFactures()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
+        parent::save();
+
+        if($last && $last->_id != $this->_id && ($last->lecture_seule != !$this->lecture_seule)) {
+            $last->add('lecture_seule', !$this->lecture_seule);
+            $last->save();
+        }
+
+        $precedente = $this->getPrevious();
+        if($precedente && !$precedente->isLectureSeule()) {
             $precedente->add('lecture_seule', true);
             $precedente->save();
         }
     }
+
+    public function getChaisSansHabilitation() {
+        return $this->getChaisDependingHabilitation(false);
+    }
+
+    public function getChaisHabilite() {
+        return $this->getChaisDependingHabilitation(true);
+    }
+
+    public function getChaisDependingHabilitation($has_hab) {
+        $chais = array();
+        if (!$this->getEtablissementObject()->exist('chais')) {
+            return array();
+        }
+        $chais_noms_habilite = array();
+        foreach($this->getProduitsHabilites() as $p) {
+            foreach ($p->activites as $pkey => $activite) {
+                if ($activite->exist('site') && $activite->site) {
+                    $chais_noms_habilite[$activite->site] = $activite->site;
+                }
+            }
+        }
+        foreach($this->getEtablissementObject()->chais as $chais_id => $c) {
+            if ($has_hab xor !isset($chais_noms_habilite[$c->nom])) {
+                $chais[] = $c;
+            }
+        }
+        return $chais;
+    }
+
+    public function getPublicData() {
+        $data = new stdClass();
+        $data->cvi = $this->getDeclarant()->cvi;
+        $data->declaration = $this->declaration->getData();
+        foreach($data->declaration as $hash => $produits) {
+            foreach($produits->activites as $activite => $detail) {
+                if(!$detail->statut && !$detail->date) {
+                    unset($data->declaration->{ $hash }->activites->{$activite});
+                    continue;
+                }
+
+                if(!$detail->activite) {
+                    $detail->activite = $activite;
+                }
+                foreach($detail as $key => $value) {
+                    if(!in_array($key, ['date', 'statut', 'activite'])) {
+                        unset($detail->{$key});
+                    }
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    public function hasStatutDemandes(TemplateFactureCotisationCallbackParameters $filters) {
+        $parameters = $filters->getParameters();
+        if (!$parameters) return false;
+        if (!isset($parameters['statut'])) return false;
+        foreach($this->demandes as $key => $demande) {
+            if ($demande->statut === $parameters['statut']) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getRegions()
+    {
+        $regions = [];
+        foreach ($this->declaration as $key => $value) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($value->getHash());
+        }
+        return array_filter(array_unique($regions));
+    }
+
+    /**** DEBUT DES MOUVEMENTS ****/
+
+    public function getPeriode() {
+        $date = new DateTime($this->date);
+        return $date->format('Y');
+    }
+
+    public function getTemplateFacture($region = null) {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getPeriode(), $region);
+    }
+
+    public function getMouvementsFactures() {
+        return $this->_get('mouvements');
+    }
+
+    public function getMouvementsFacturesCalcule($region = null) {
+      $templateFacture = $this->getTemplateFacture($region);
+      if(!$templateFacture) {
+          return array();
+      }
+
+      $cotisations = $templateFacture->generateCotisations($this);
+      $identifiantCompte = $this->getIdentifiant();
+      $mouvements = array();
+      $rienAFacturer = true;
+      foreach($cotisations as $cotisation) {
+          $mouvement = HabilitationMouvementFactures::freeInstance($this);
+          $mouvement->detail_identifiant = str_replace('HABILITATION-', '', $this->_id);
+          $mouvement->date = $this->date;
+          $mouvement->createFromCotisationAndDoc($cotisation, $this);
+          if($mouvement->quantite) {
+              $rienAFacturer = false;
+          }
+          $mouvements[$mouvement->getMD5Key()] = $mouvement;
+      }
+      if($rienAFacturer) {
+          return array();
+      }
+      return array($identifiantCompte => $mouvements);
+    }
+
+    public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
+        return $this->mouvement_document->getMouvementsFacturesCalculeByIdentifiant($identifiant);
+    }
+
+
+    public function generateMouvementsFactures() {
+        return $this->mouvement_document->generateMouvementsFactures();
+    }
+
+    public function findMouvementFactures($cle, $id = null){
+      return $this->mouvement_document->findMouvementFactures($cle, $id);
+    }
+
+    public function facturerMouvements() {
+
+        return $this->mouvement_document->facturerMouvements();
+    }
+
+    public function isFactures() {
+
+        return $this->mouvement_document->isFactures();
+    }
+
+    public function isNonFactures() {
+
+        return $this->mouvement_document->isNonFactures();
+    }
+
+    public function clearMouvementsFactures(){
+        $this->remove('mouvements');
+        $this->add('mouvements');
+    }
+
+    /**** FIN DES MOUVEMENTS ****/
 
 }

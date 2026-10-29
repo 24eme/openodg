@@ -1,0 +1,73 @@
+<?php
+/*
+ *  $Id: Record.php 1298 2007-05-01 19:26:03Z zYne $
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software consists of voluntary contributions made by many individuals
+ * and is licensed under the LGPL. For more information, see
+ * <http://www.doctrine-project.org>.
+ */
+
+/**
+ * Doctrine_Record_Filter
+ * Filters the record getters and setters
+ *
+ * @package     Doctrine
+ * @subpackage  Record
+ * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
+ * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @link        www.doctrine-project.org
+ * @since       1.0
+ * @version     $Revision: 1298 $
+ */
+abstract class Doctrine_Record_Filter
+{
+    protected $_table;
+
+    public function setTable(Doctrine_Table $table)
+    {
+        $this->_table = $table;
+    }
+
+    public function getTable()
+    {
+        return $this->_table;
+    }
+
+    public function init()
+    {
+    }
+
+    /**
+     * Provides a way for setting property or relation value to the given record.
+     *
+     * @param string $propertyOrRelation
+     *
+     * @return Doctrine_Record the given record
+     *
+     * @thrown Doctrine_Exception when this way is not available
+     */
+    abstract public function filterSet(Doctrine_Record $record, $propertyOrRelation, $value);
+
+    /**
+     * Provides a way for getting property or relation value from the given record.
+     *
+     * @param string $propertyOrRelation
+     *
+     * @return mixed
+     *
+     * @thrown Doctrine_Exception when this way is not available
+     */
+    abstract public function filterGet(Doctrine_Record $record, $propertyOrRelation);
+}

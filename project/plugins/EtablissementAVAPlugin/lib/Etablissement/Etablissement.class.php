@@ -1,10 +1,9 @@
 <?php
 
 /**
- * Model for Etablissement
- *
+ * AVA
  */
-class Etablissement extends BaseEtablissement {
+class Etablissement/*** AVA ***/ extends BaseEtablissement {
 
     public function constructId() {
         $this->_id = sprintf("%s-%s", EtablissementClient::TYPE_COUCHDB, $this->identifiant);

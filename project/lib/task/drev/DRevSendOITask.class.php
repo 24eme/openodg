@@ -9,6 +9,8 @@ class DRevSendOITask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('drev', null, sfCommandOption::PARAMETER_OPTIONAL, 'Une drev', ''),
+            new sfCommandOption('resendonly', null, sfCommandOption::PARAMETER_OPTIONAL, 'Ne transmet que si ca a déjà été fait (envoi_oi setté)', null)
         ));
 
         $this->namespace = 'drev';
@@ -21,18 +23,29 @@ EOF;
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $contextInstance = sfContext::createInstance($this->configuration);
 
 
-        $items = DrevAttenteOiView::getInstance()->getAll();
+        if (isset($options['drev']) && $options['drev']) {
+            $items = array((object)array( 'id' => $options['drev'] ));
+        } else {
+            $items = DrevAttenteOiView::getInstance()->getAll();
+        }
         foreach ($items as $item) {
         	$drev = DRevClient::getInstance()->find($item->id);
+            if ($options['resendonly']) {
+                if (!$drev->exist('envoi_oi') || !$drev->envoi_oi) {
+                    continue;
+                }
+            }
             try {
               	 $drevOi = new DRevOI($drev, $contextInstance);
-              	 $drevOi->send();
-                 echo sprintf("SUCCESS;La DRev a bien été envoyée à l'organisme d'inspection;%s;\n", $drev->_id);
+              	 $sended = $drevOi->send();
+                 foreach($sended as $region) {
+                     echo sprintf("SUCCESS;La DRev a bien été envoyée à l'organisme d'inspection%s;%s;\n", ($region) ? " de ".$region : "", $drev->_id);
+                 }
                } catch (sfException $e) {
                  echo sprintf("ERROR;L'envoi de la DRev à l'organisme d'inspection a échoué;%s;\n", $e->getMessage());
                }

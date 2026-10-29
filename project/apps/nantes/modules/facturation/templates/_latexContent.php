@@ -34,16 +34,16 @@
 \def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>Avoir<?php else:?>Relevé de Cotisations<?php endif; ?>}
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
-\def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
-\def\EMETTEURLIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
-\def\EMETTEURADRESSE{<?php echo $facture->emetteur->adresse; ?>}
+\def\EMETTEURLIBELLE{<?php echo Organisme::getInstance($facture->region)->getNom(); ?>}
+\def\EMETTEURADRESSE{<?php echo strstr($facture->emetteur->adresse, ',', true); ?>}
+\def\EMETTEURADRESSEDEUX{<?php echo str_replace(', ', '', strstr($facture->emetteur->adresse, ', ')); ?>}
 \def\EMETTEURCP{<?php echo $facture->emetteur->code_postal; ?>}
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
-\def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
+\def\EMETTEURTEL{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
+\def\EMETTEURCONTACT{<?php echo $facture->emetteur->service_facturation; ?>}
 \def\FACTUREDATE{<?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>}
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
-\def\FACTUREDECLARANTCVI{<?php echo $facture->getCvi(); ?>}
 \def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
 \def\FACTUREDECLARANTCOMMUNE{<?php echo $facture->declarant->commune; ?>}
@@ -61,9 +61,9 @@
 }
 \cfoot{\small{
 	\EMETTEURLIBELLE \\
-	\EMETTEURADRESSE~-~\EMETTEURCP~\EMETTEURVILLE \\
-	\EMETTEURCONTACT~-~\EMETTEUREMAIL \\
-	N°TVA : FR96803741834
+    \EMETTEURADRESSE \\
+    \EMETTEURADRESSEDEUX~\EMETTEURCP~\EMETTEURVILLE~-~\EMETTEURTEL~–~\EMETTEUREMAIL \\
+	SIRET : 80374183400011 – APE : 9412Z
 }}
 
 \begin{document}
@@ -73,6 +73,9 @@
 	\hspace{-1.2cm}
 	\includegraphics[width=4cm]{\LOGO}
 	\end{center}
+    Contact : \EMETTEURCONTACT \\
+    Email : \EMETTEUREMAIL \\
+    Tel : \EMETTEURTEL \\
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \lfbox[
@@ -98,10 +101,10 @@
 
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
-\begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\raggedright}m{7.5cm}|}
-\hhline{|-|-|}
-\cellcolor{verttresclair} \textbf{CVI :} & \hspace{0.3cm} \FACTUREDECLARANTCVI \tabularnewline
-\hhline{|-|-|}
+\begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|>{\raggedleft}m{2.0cm}|>{\centering}m{1.8cm}|}
+\hhline{|-|-|-|-|}
+\cellcolor{verttresclair} \textbf{CVI :} & <?php echo $facture->getCvi(); ?> & \cellcolor{verttresclair} \textbf{Campagne :} & <?php echo $facture->campagne.'-'.($facture->campagne + 1); ?>  \tabularnewline
+\hhline{|-|-|-|-|}
 \end{tabular}
 
 \\\vspace{2mm}
@@ -172,11 +175,22 @@
 \end{tabular}
 \end{minipage}
 
-<?php if ($facture->exist('paiements') && count($facture->paiements)): ?>
+\begin{minipage}{0.5\textwidth}
+  \\
+
+  \\
+\end{minipage}
+
+\begin{minipage}{0.5\textwidth}
+    Banque : <?php echo Organisme::getInstance($facture->region)->getBanqueNom(); ?> \\
+    IBAN : <?php echo Organisme::getInstance($facture->region)->getIban(); ?> \\
+    BIC : <?php echo Organisme::getInstance($facture->region)->getBic(); ?> \\
+\end{minipage}
+
+
+
+<?php if (count($facture->paiements)): ?>
 \begin{center}
-\\\vspace{2cm}
-\flushleft \textbf{\large{Encours de règlement}}}
-\\\vspace{0.5cm}
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|m{5cm}|>{\raggedleft}m{8cm}|>{\raggedleft}m{5cm}|}
   \hline
@@ -189,9 +203,9 @@
 				\tabularnewline
         \hline
 		<?php endforeach; ?>
-    \multicolumn{2}{|c}{~} & \textbf{Déjà réglé: <?php echo formatFloat($facture->paiements->getPaimentsTotal(),',').' €' ?>}\tabularnewline
+    \multicolumn{2}{|c}{~} & \textbf{Déjà réglé: <?php echo formatFloat($facture->paiements->getPaiementsTotal(),',').' €' ?>}\tabularnewline
 		\hline
-		\multicolumn{2}{|c}{~} & \textbf{NET A PAYER : <?php echo formatFloat($facture->total_ttc - $facture->paiements->getPaimentsTotal(),',').' €' ?>}\tabularnewline
+		\multicolumn{2}{|c}{~} & \textbf{NET A PAYER : <?php echo formatFloat($facture->total_ttc - $facture->paiements->getPaiementsTotal(),',').' €' ?>}\tabularnewline
     \hline
   \end{tabular}
 	\begin{minipage}{0.5\textwidth}

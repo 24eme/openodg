@@ -24,7 +24,7 @@ class ParcellaireAffectationImportTask extends sfBaseTask
 
     protected function execute($arguments = array(), $options = array())
     {
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         
         $campagne = $arguments['campagne'];
@@ -64,8 +64,8 @@ class ParcellaireAffectationImportTask extends sfBaseTask
                 echo sprintf("ERROR;Etablissement non trouvé;%s\n", implode(';', $data));
                 continue;
             }
-            
-            if ($intentionAffectation = ParcellaireIntentionAffectationClient::getInstance()->getLast($etablissement->identifiant, $campagne)) {
+
+            if ($intentionAffectation = ParcellaireIntentionClient::getInstance()->getLast($etablissement->identifiant, $campagne)) {
                 $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $campagne, true);
                 $found = false;
                 foreach ($affectation->getParcelles() as $parcelle) {

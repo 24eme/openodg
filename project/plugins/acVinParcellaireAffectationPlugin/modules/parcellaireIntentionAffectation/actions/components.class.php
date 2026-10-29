@@ -3,8 +3,7 @@
 class parcellaireIntentionAffectationComponents extends sfComponents {
 
     public function executeMonEspace(sfWebRequest $request) {
-        $this->campagne = "".$this->campagne;
-        $this->intentionParcellaireAffectation = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
+        $this->intentionParcellaireAffectation = ParcellaireIntentionClient::getInstance()->getLast($this->etablissement->identifiant);
     }
 
 }

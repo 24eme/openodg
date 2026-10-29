@@ -1,0 +1,19 @@
+# You can find more information about this file on the symfony website:
+# http://www.symfony-project.org/reference/1_4/en/11-App
+
+# default values
+all:
+  routing_context_production_host: vaucluse.igp.vins.24eme.fr
+  organisme:
+    nom: "Syndicat des vins IGP du Vaucluse"
+  float:
+    default_decimal_format: 2
+    max_decimal_authorized: 4
+  societe:
+    format_identifiant: "VCL%06d"
+  donnees_viticoles:
+    regions:
+      IGPVAUCLUSE: "IGPVAUCLUSE"
+  etiquettes: "70x35" #Impression ajusté à la page
+  documents:
+    url_officiels: "https://igp.vins.24eme.fr/plus.php?odg=vaucluse"

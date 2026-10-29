@@ -1,0 +1,1703 @@
+{
+   "_id": "TEMPLATE-FACTURE-AOC-2020",
+   "type": "TemplateFacture",
+   "campagne": "2020",
+   "template": "AOC",
+   "libelle": "2021 - AOC Alsace",
+   "docs": [
+       "DRev",
+       "RegistreVCI"
+   ],
+   "cotisations": {
+       "odg_ava": {
+           "modele": "CotisationsCollection",
+           "required": true,
+           "callback": "",
+           "libelle": "Cotisation ODG-AVA",
+           "code_comptable": "706300",
+           "details": {
+               "raisins_fixe": {
+                   "modele": "CotisationFixe",
+                   "prix": 16,
+                   "tva": 0,
+                   "libelle": "Fixe",
+                   "complement_libelle": "",
+                   "callback": "getSurfaceFacturable",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "raisins_tranche": {
+                   "modele": "CotisationTranche",
+                   "prix": 5.26,
+                   "tva": 0,
+                   "depart": 1,
+                   "complement": 0,
+                   "libelle": "Tranche de %tranche% ares (%callback% ares) à partir du %complement_libelle%ème are",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "tranche": 50,
+                   "complement_libelle": "51",
+                   "callback": "getSurfaceFacturable"
+               },
+               "vinification": {
+                   "modele": "CotisationVariable",
+                   "prix": 40.74,
+                   "tva": 0,
+                   "libelle": "hectares vinifiés (récolte 2020)",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getSurfaceVinifieeFacturable"
+               }
+           }
+       },
+       "ava_syndicale": {
+           "modele": "CotisationsCollectionCondition",
+           "required": true,
+           "disabled": true,
+           "callback": "isAdherentSyndicat",
+           "libelle": "Cotisation AVA Syndicale",
+           "code_comptable": "751100",
+           "details": {
+               "syndicale_fixe": {
+                   "modele": "CotisationFixe",
+                   "prix": 8.12,
+                   "tva": 0,
+                   "libelle": "Fixe",
+                   "complement_libelle": "",
+                   "callback": "getSurfaceFacturable",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "syndicale_tranche": {
+                   "modele": "CotisationTranche",
+                   "prix": 2.69,
+                   "tva": 0,
+                   "depart": 1,
+                   "complement": 0,
+                   "libelle": "Tranche de %tranche% ares (%callback% ares) à partir du %complement_libelle%ème are",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "tranche": 50,
+                   "complement_libelle": "51",
+                   "callback": "getSurfaceFacturable"
+               }
+           }
+       },
+       "syndicat_viticole": {
+           "modele": "CotisationsCollectionSelection",
+           "required": true,
+           "libelle": "Cotisation syndicat viticole",
+           "code_comptable": "467700",
+           "details": {
+               "COMPTE-S006187": {
+                   "modele": "CotisationFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole AMMERSCHWIHR",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006188": {
+                   "modele": "CotisationFixe",
+                   "prix": 10,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole ANDLAU",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006189": {
+                   "modele": "CotisationFixe",
+                   "prix": 6,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole AVOLSHEIM",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006191": {
+                   "modele": "CotisationFixe",
+                   "prix": 30,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole BARR",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006193": {
+                   "modele": "CotisationFixe",
+                   "prix": 5,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole BENNWIHR",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006195": {
+                   "modele": "CotisationFixe",
+                   "prix": 16,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole BERGHOLTZ",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006196": {
+                   "modele": "CotisationFixe",
+                   "prix": 20,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole BERGHOLTZZELL",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006335": {
+                   "modele": "CotisationFixe",
+                   "prix": 10,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole CERNAY",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006203": {
+                   "modele": "CotisationFixe",
+                   "prix": 12,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole CHATENOIS",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006205": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 0.1,
+                   "tva": 0,
+                   "tranche": 1,
+                   "depart": 100,
+                   "complement": 20,
+                   "libelle": "Cotisation syndicat viticole COLMAR",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006206": {
+                   "modele": "CotisationFixe",
+                   "prix": 1.5,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole DAHLENHEIM",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006207": {
+                   "modele": "CotisationFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole DAMBACH LA VILLE",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006209": {
+                   "modele": "CotisationFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole DIEFFENTHAL",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006213": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 3,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole EPFIG",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006219": {
+                   "modele": "CotisationFixe",
+                   "prix": 20,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole GUEBERSCHWIHR",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006220": {
+                   "modele": "CotisationFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole GUEBWILLER",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006223": {
+                   "modele": "CotisationFixe",
+                   "prix": 3,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole HERRLISHEIM",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006224": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 1.5,
+                   "tva": 0,
+                   "tranche": 50,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole HUNAWIHR",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006225": {
+                   "modele": "CotisationFixe",
+                   "prix": 15,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole HUSSEREN LES CHATEAUX",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006226": {
+                   "modele": "CotisationFixe",
+                   "prix": 10,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole INGERSHEIM",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006227": {
+                   "modele": "CotisationFixe",
+                   "prix": 11.5,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole IRMSTETT",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006232": {
+                   "modele": "CotisationFixe",
+                   "prix": 10,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole KINTZHEIM",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006235": {
+                   "modele": "CotisationFixe",
+                   "prix": 20,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole MITTELWIHR",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006236": {
+                   "modele": "CotisationFixe",
+                   "prix": 15,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole MOLSHEIM",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006240": {
+                   "modele": "CotisationFixe",
+                   "prix": 10,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole OBERMORSCHWIHR",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006242": {
+                   "modele": "CotisationFixe",
+                   "prix": 10,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole ODRATZHEIM",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006244": {
+                   "modele": "CotisationFixe",
+                   "prix": 30,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole ORSCHWIHR",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006250": {
+                   "modele": "CotisationFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole RIQUEWIHR",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006253": {
+                   "modele": "CotisationFixe",
+                   "prix": 10,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole ROSENWILLER",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S014380": {
+                   "modele": "CotisationFixe",
+                   "prix": 22,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole ROSHEIM-BISCHOFFSHEIM",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006260": {
+                   "modele": "CotisationFixe",
+                   "prix": 5,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole SOULTZ HAUT RHIN",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006262": {
+                   "modele": "CotisationFixe",
+                   "prix": 20,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole SOULTZMATT",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006263": {
+                   "modele": "CotisationFixe",
+                   "prix": 3,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole STOTZHEIM",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006266": {
+                   "modele": "CotisationFixe",
+                   "prix": 5,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole TURCKHEIM",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006264": {
+                   "modele": "CotisationFixe",
+                   "prix": 25,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole THANN",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006267": {
+                   "modele": "CotisationFixe",
+                   "prix": 10,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole HATSCHBOURG",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006268": {
+                   "modele": "CotisationFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole WALBACH",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006273": {
+                   "modele": "CotisationFixe",
+                   "prix": 5,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole WETTOLSHEIM",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006271": {
+                   "modele": "CotisationFixe",
+                   "prix": 20,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole WESTHALTEN",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006274": {
+                   "modele": "CotisationFixe",
+                   "prix": 4,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole WIHR AU VAL",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006277": {
+                   "modele": "CotisationFixe",
+                   "prix": 12,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole WUENHEIM",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006198": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 5,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole SCHIEFERBERG",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006202": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 1,
+                   "tva": 0,
+                   "tranche": 50,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole BOURGHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006208": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 3,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole DANGOLSHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006214": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "tranche": 50,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole ERGERSHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006222": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 1,
+                   "tva": 0,
+                   "tranche": 50,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole HEILIGENSTEIN",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006233": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 3,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole KIRCHHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006238": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 4,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole NIEDERMORSCHWIHR",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006239": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 4,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole NORDHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006245": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole OSTHOFFEN",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006251": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 1.5,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole RODERN",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006252": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 1.5,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole RORSCHWIHR",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006256": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 0.5,
+                   "tva": 0,
+                   "tranche": 50,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole ST HIPPOLYTE",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006258": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 3,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole SCHERWILLER",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006272": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 4.5,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole WESTHOFFEN",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006278": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 3,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole ZELLENBERG",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006192": {
+                   "modele": "CotisationCotisationFixe",
+                   "prix": 0.15,
+                   "tva": 0,
+                   "minimum": 15,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole BEBLENHEIM",
+                   "callback": "cotisations/ava_syndicale",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006200": {
+                   "modele": "CotisationCotisationFixe",
+                   "prix": 0.1,
+                   "tva": 0,
+                   "minimum": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole BLIENSCHWILLER",
+                   "callback": "cotisations/ava_syndicale",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006218": {
+                   "modele": "CotisationCotisationFixe",
+                   "prix": 0.1,
+                   "tva": 0,
+                   "minimum": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole GOXWILLER",
+                   "callback": "cotisations/ava_syndicale",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006228": {
+                   "modele": "CotisationCotisationFixe",
+                   "prix": 0.1,
+                   "tva": 0,
+                   "minimum": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole ITTERSWILLER",
+                   "callback": "cotisations/ava_syndicale",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006234": {
+                   "modele": "CotisationCotisationFixe",
+                   "prix": 0.1,
+                   "tva": 0,
+                   "minimum": 0,
+                   "complement": 7.62,
+                   "libelle": "Cotisation syndicat viticole MITTELBERGHEIM",
+                   "callback": "cotisations/ava_syndicale",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006190": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 2.6,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 6,
+                   "libelle": "Cotisation syndicat viticole BALBRONN",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006194": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 1,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 1,
+                   "complement": 10,
+                   "libelle": "Cotisation syndicat viticole BERGBIETEN-FLEXBOURG",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006229": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 1.6,
+                   "tva": 0,
+                   "tranche": 30,
+                   "depart": 0,
+                   "complement": 3.1,
+                   "libelle": "Cotisation syndicat viticole KATZENTHAL",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006261": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 1.6,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 3,
+                   "libelle": "Cotisation syndicat viticole SOULTZ LES BAINS",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006265": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 1.6,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 3,
+                   "libelle": "Cotisation syndicat viticole TRAENHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006201": {
+                   "modele": "CotisationFixe",
+                   "prix": 11,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole BOERSCH",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006247": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 1.5,
+                   "tva": 0,
+                   "tranche": 50,
+                   "depart": 1,
+                   "complement": 3,
+                   "libelle": "Cotisation syndicat viticole PFAFFENHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006176": {
+                   "modele": "CotisationIntervallesFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole BERGHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "intervalles": {
+                       "269": {
+                           "prix": 10,
+                           "variable": 0
+                       },
+                       "9999999999": {
+                           "prix": 20,
+                           "variable": 0
+                       }
+                   }
+               },
+               "COMPTE-S006197": {
+                   "modele": "CotisationIntervallesFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole BERNARDSWILLER",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "intervalles": {
+                       "100": {
+                           "prix": 2,
+                           "variable": 0
+                       },
+                       "200": {
+                           "prix": 4,
+                           "variable": 0
+                       },
+                       "9999999999": {
+                           "prix": 0,
+                           "variable": 0.02
+                       }
+                   }
+               },
+               "COMPTE-S006243": {
+                   "modele": "CotisationIntervallesFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole ORSCHWILLER",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "intervalles": {
+                       "100": {
+                           "prix": 4,
+                           "variable": 0
+                       },
+                       "300": {
+                           "prix": 6,
+                           "variable": 0
+                       },
+                       "600": {
+                           "prix": 8,
+                           "variable": 0
+                       },
+                       "9999999999": {
+                           "prix": 10,
+                           "variable": 0
+                       }
+                   }
+               },
+               "COMPTE-S006255": {
+                   "modele": "CotisationIntervallesFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole ROUFFACH",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "intervalles": {
+                       "200": {
+                           "prix": 8,
+                           "variable": 0
+                       },
+                       "300": {
+                           "prix": 20,
+                           "variable": 0
+                       },
+                       "500": {
+                           "prix": 22,
+                           "variable": 0
+                       },
+                       "9999999999": {
+                           "prix": 30,
+                           "variable": 0
+                       }
+                   }
+               },
+               "COMPTE-S006257": {
+                   "modele": "CotisationIntervallesFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole SCHARRACHBERGHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "intervalles": {
+                       "200": {
+                           "prix": 15,
+                           "variable": 0
+                       },
+                       "9999999999": {
+                           "prix": 0,
+                           "variable": 0.06
+                       }
+                   }
+               },
+               "COMPTE-S006275": {
+                   "modele": "CotisationIntervallesFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole WINTZENHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "intervalles": {
+                       "199": {
+                           "prix": 4,
+                           "variable": 0
+                       },
+                       "699": {
+                           "prix": 9,
+                           "variable": 0
+                       },
+                       "999": {
+                           "prix": 13.5,
+                           "variable": 0
+                       },
+                       "9999999999": {
+                           "prix": 15,
+                           "variable": 0
+                       }
+                   }
+               },
+               "COMPTE-S006185": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 1.5,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 2,
+                   "complement": 6.5,
+                   "libelle": "Cotisation syndicat viticole NOTHALTEN",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006210": {
+                   "modele": "CotisationFixe",
+                   "prix": 3,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole DORLISHEIM",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006216": {
+                   "modele": "CotisationIntervallesFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole FURDENHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "intervalles": {
+                       "50": {
+                           "prix": 4.1,
+                           "variable": 0
+                       },
+                       "100": {
+                           "prix": 5.6,
+                           "variable": 0
+                       },
+                       "150": {
+                           "prix": 8.7,
+                           "variable": 0
+                       },
+                       "200": {
+                           "prix": 10.2,
+                           "variable": 0
+                       },
+                       "250": {
+                           "prix": 13.3,
+                           "variable": 0
+                       },
+                       "300": {
+                           "prix": 14.8,
+                           "variable": 0
+                       },
+                       "350": {
+                           "prix": 17.9,
+                           "variable": 0
+                       },
+                       "400": {
+                           "prix": 19.4,
+                           "variable": 0
+                       },
+                       "450": {
+                           "prix": 22.5,
+                           "variable": 0
+                       },
+                       "500": {
+                           "prix": 24,
+                           "variable": 0
+                       },
+                       "550": {
+                           "prix": 27.1,
+                           "variable": 0
+                       },
+                       "600": {
+                           "prix": 28.6,
+                           "variable": 0
+                       },
+                       "650": {
+                           "prix": 31.7,
+                           "variable": 0
+                       },
+                       "700": {
+                           "prix": 33.2,
+                           "variable": 0
+                       },
+                       "750": {
+                           "prix": 36.3,
+                           "variable": 0
+                       },
+                       "800": {
+                           "prix": 37.8,
+                           "variable": 0
+                       },
+                       "850": {
+                           "prix": 40.9,
+                           "variable": 0
+                       },
+                       "9999999999": {
+                           "prix": 42.4,
+                           "variable": 0
+                       }
+                   }
+               },
+               "COMPTE-S006426": {
+                   "modele": "CotisationIntervallesFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole MARLENHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "intervalles": {
+                       "50": {
+                           "prix": 5,
+                           "variable": 0
+                       },
+                       "100": {
+                           "prix": 6,
+                           "variable": 0
+                       },
+                       "150": {
+                           "prix": 8,
+                           "variable": 0
+                       },
+                       "200": {
+                           "prix": 9,
+                           "variable": 0
+                       },
+                       "250": {
+                           "prix": 11,
+                           "variable": 0
+                       },
+                       "300": {
+                           "prix": 12,
+                           "variable": 0
+                       },
+                       "350": {
+                           "prix": 14,
+                           "variable": 0
+                       },
+                       "400": {
+                           "prix": 15,
+                           "variable": 0
+                       },
+                       "450": {
+                           "prix": 17,
+                           "variable": 0
+                       },
+                       "500": {
+                           "prix": 18,
+                           "variable": 0
+                       },
+                       "550": {
+                           "prix": 20,
+                           "variable": 0
+                       },
+                       "600": {
+                           "prix": 21,
+                           "variable": 0
+                       },
+                       "650": {
+                           "prix": 23,
+                           "variable": 0
+                       },
+                       "700": {
+                           "prix": 24,
+                           "variable": 0
+                       },
+                       "750": {
+                           "prix": 26,
+                           "variable": 0
+                       },
+                       "800": {
+                           "prix": 27,
+                           "variable": 0
+                       },
+                       "850": {
+                           "prix": 29,
+                           "variable": 0
+                       },
+                       "900": {
+                           "prix": 30,
+                           "variable": 0
+                       },
+                       "950": {
+                           "prix": 32,
+                           "variable": 0
+                       },
+                       "1000": {
+                           "prix": 33,
+                           "variable": 0
+                       },
+                       "1050": {
+                           "prix": 35,
+                           "variable": 0
+                       },
+                       "1100": {
+                           "prix": 36,
+                           "variable": 0
+                       },
+                       "1150": {
+                           "prix": 38,
+                           "variable": 0
+                       },
+                       "1200": {
+                           "prix": 39,
+                           "variable": 0
+                       },
+                       "1250": {
+                           "prix": 41,
+                           "variable": 0
+                       },
+                       "1300": {
+                           "prix": 42,
+                           "variable": 0
+                       },
+                       "1350": {
+                           "prix": 44,
+                           "variable": 0
+                       },
+                       "1400": {
+                           "prix": 45,
+                           "variable": 0
+                       },
+                       "1450": {
+                           "prix": 47,
+                           "variable": 0
+                       },
+                       "1500": {
+                           "prix": 48,
+                           "variable": 0
+                       },
+                       "1550": {
+                           "prix": 50,
+                           "variable": 0
+                       },
+                       "1600": {
+                           "prix": 51,
+                           "variable": 0
+                       },
+                       "1650": {
+                           "prix": 53,
+                           "variable": 0
+                       },
+                       "1700": {
+                           "prix": 54,
+                           "variable": 0
+                       },
+                       "1750": {
+                           "prix": 56,
+                           "variable": 0
+                       },
+                       "1800": {
+                           "prix": 57,
+                           "variable": 0
+                       },
+                       "1850": {
+                           "prix": 59,
+                           "variable": 0
+                       },
+                       "1900": {
+                           "prix": 60,
+                           "variable": 0
+                       },
+                       "1950": {
+                           "prix": 62,
+                           "variable": 0
+                       },
+                       "2000": {
+                           "prix": 63,
+                           "variable": 0
+                       },
+                       "2050": {
+                           "prix": 65,
+                           "variable": 0
+                       },
+                       "2100": {
+                           "prix": 66,
+                           "variable": 0
+                       },
+                       "2150": {
+                           "prix": 68,
+                           "variable": 0
+                       },
+                       "2200": {
+                           "prix": 69,
+                           "variable": 0
+                       },
+                       "2250": {
+                           "prix": 71,
+                           "variable": 0
+                       },
+                       "2300": {
+                           "prix": 72,
+                           "variable": 0
+                       },
+                       "2350": {
+                           "prix": 74,
+                           "variable": 0
+                       },
+                       "2400": {
+                           "prix": 75,
+                           "variable": 0
+                       },
+                       "2450": {
+                           "prix": 77,
+                           "variable": 0
+                       },
+                       "2500": {
+                           "prix": 78,
+                           "variable": 0
+                       },
+                       "2550": {
+                           "prix": 80,
+                           "variable": 0
+                       },
+                       "2600": {
+                           "prix": 81,
+                           "variable": 0
+                       },
+                       "2650": {
+                           "prix": 83,
+                           "variable": 0
+                       },
+                       "2700": {
+                           "prix": 84,
+                           "variable": 0
+                       },
+                       "2750": {
+                           "prix": 86,
+                           "variable": 0
+                       },
+                       "2800": {
+                           "prix": 87,
+                           "variable": 0
+                       },
+                       "2850": {
+                           "prix": 89,
+                           "variable": 0
+                       },
+                       "2900": {
+                           "prix": 90,
+                           "variable": 0
+                       },
+                       "2950": {
+                           "prix": 92,
+                           "variable": 0
+                       },
+                       "3000": {
+                           "prix": 93,
+                           "variable": 0
+                       },
+                       "9999999999": {
+                           "prix": 95,
+                           "variable": 0
+                       }
+                   }
+               },
+               "COMPTE-S006211": {
+                   "modele": "CotisationIntervallesFixe",
+                   "prix": 0,
+                   "tva": 0,
+                   "libelle": "Cotisation syndicat viticole EGUISHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "intervalles": {
+                       "50": {
+                           "prix": 5,
+                           "variable": 0
+                       },
+                       "100": {
+                           "prix": 8,
+                           "variable": 0
+                       },
+                       "200": {
+                           "prix": 11,
+                           "variable": 0
+                       },
+                       "300": {
+                           "prix": 14,
+                           "variable": 0
+                       },
+                       "400": {
+                           "prix": 17,
+                           "variable": 0
+                       },
+                       "500": {
+                           "prix": 20,
+                           "variable": 0
+                       },
+                       "600": {
+                           "prix": 23,
+                           "variable": 0
+                       },
+                       "700": {
+                           "prix": 26,
+                           "variable": 0
+                       },
+                       "800": {
+                           "prix": 29,
+                           "variable": 0
+                       },
+                       "900": {
+                           "prix": 32,
+                           "variable": 0
+                       },
+                       "1000": {
+                           "prix": 35,
+                           "variable": 0
+                       },
+                       "1100": {
+                           "prix": 38,
+                           "variable": 0
+                       },
+                       "1200": {
+                           "prix": 41,
+                           "variable": 0
+                       },
+                       "1300": {
+                           "prix": 44,
+                           "variable": 0
+                       },
+                       "1400": {
+                           "prix": 47,
+                           "variable": 0
+                       },
+                       "1500": {
+                           "prix": 50,
+                           "variable": 0
+                       },
+                       "1600": {
+                           "prix": 53,
+                           "variable": 0
+                       },
+                       "1700": {
+                           "prix": 56,
+                           "variable": 0
+                       },
+                       "1800": {
+                           "prix": 59,
+                           "variable": 0
+                       },
+                       "1900": {
+                           "prix": 62,
+                           "variable": 0
+                       },
+                       "9999999999": {
+                           "prix": 65,
+                           "variable": 0
+                       }
+                   }
+               },
+               "COMPTE-S006276": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 2.7,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 1,
+                   "complement": 10.7,
+                   "libelle": "Cotisation syndicat viticole WOLXHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006269": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 1.6,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 16,
+                   "libelle": "Cotisation syndicat viticole WANGEN",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S006279": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 3,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 5,
+                   "libelle": "Cotisation syndicat viticole ZELLWILLER",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S014382": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 2,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 20,
+                   "libelle": "Cotisation syndicat viticole KIRCHHEIM-ODRATZHEIM",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               },
+               "COMPTE-S014383": {
+                   "modele": "CotisationTrancheFixe",
+                   "prix": 4,
+                   "tva": 0,
+                   "tranche": 100,
+                   "depart": 0,
+                   "complement": 0,
+                   "libelle": "Cotisation syndicat viticole KAYSERSBERG VIGNOBLE",
+                   "callback": "getSurfaceFacturable",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ]
+               }
+           },
+           "callback": "getSyndicatsViticole"
+       },
+       "controle_externe": {
+           "modele": "CotisationsCollection",
+           "required": true,
+           "callback": "",
+           "libelle": "Coût contrôle externe",
+           "code_comptable": "706400",
+           "details": {
+               "cotisation": {
+                   "modele": "CotisationVariable",
+                   "prix": 14.58,
+                   "tva": 0.2,
+                   "libelle": "hectares vinifiés (récolte 2020)",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getSurfaceVinifieeFacturable"
+               }
+           }
+       },
+       "inao": {
+           "modele": "CotisationsCollection",
+           "required": true,
+           "callback": "",
+           "libelle": "Droit INAO",
+           "code_comptable": "706450",
+           "details": {
+               "cotisation": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.15,
+                   "tva": 0,
+                   "libelle": "hl de vin revendiqué (récolte 2020)",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeFacturable"
+               }
+           }
+       },
+       "flavescence": {
+           "modele": "CotisationsCollection",
+           "required": true,
+           "callback": "",
+           "libelle": "Contribution Flavescence dorée",
+           "code_comptable": "706470",
+           "details": {
+               "cotisation": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.04,
+                   "tva": 0,
+                   "libelle": "surface totale déclaration de récolte 2020 (ares)",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getSurfaceFacturable"
+               }
+           }
+       },
+       "vci": {
+           "modele": "CotisationsCollection",
+           "required": true,
+           "callback": "",
+           "libelle": "VCI",
+           "code_comptable": "706700",
+           "details": {
+               "cotisation": {
+                   "modele": "CotisationVariable",
+                   "prix": 15,
+                   "tva": 0,
+                   "libelle": "hectares (récolte 2020)",
+                   "complement_libelle": "",
+                   "docs": [
+                       "RegistreVCI"
+                   ],
+                   "callback": "getSurfaceFacturable"
+               }
+           }
+       }
+   },
+   "arguments": {
+       "CARTE_MEMBRE": 1
+   }
+}

@@ -10,7 +10,7 @@
  * @property string $identifiant
  * @property string $code_comptable_client
  * @property string $numero_facture
- * @property string $numero_ava
+ * @property string $numero_odg
  * @property string $numero_adherent
  * @property string $date_emission
  * @property string $date_facturation

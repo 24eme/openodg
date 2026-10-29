@@ -1,0 +1,190 @@
+#PARCELLAIREAFFECTATION
+ParcellaireAffectation:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      campagne: { }
+      identifiant: { }
+      etape: { }
+      validation: { }
+      validation_odg: { }
+      date_depot: { required: false }
+      autorisation_acheteur: { }
+      papier: { required: false, type: integer }
+      type_proprietaire:
+        type: collection
+        required: false
+        definition:
+          fields:
+            '*': { }
+      acheteurs:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    type: collection
+                    definition:
+                      fields:
+                        cvi : { }
+                        nom : { }
+                        commune: { }
+                        email_envoye: { }
+                        email: { }
+      declarant:
+        type: collection
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { }
+            fax: { }
+            email: { }
+      declaration:
+        type: collection
+        class: ParcellaireAffectationDeclaration
+        inheritance: _ParcellaireAffectationDeclarationNoeud
+        definition:
+          fields:
+            '*':
+              #------ Certification ------
+              type: collection
+              class: ParcellaireAffectationCertification
+              inheritance: _ParcellaireAffectationDeclarationNoeud
+              definition:
+                fields:
+                  libelle: { }
+                  '*':
+                  #------ Genre ------
+                    type: collection
+                    class: ParcellaireAffectationGenre
+                    inheritance: _ParcellaireAffectationDeclarationNoeud
+                    definition:
+                      fields:
+                        libelle: { }
+                        '*':
+                          # ------ Appellation ------
+                          type: collection
+                          class: ParcellaireAffectationAppellation
+                          inheritance: _ParcellaireAffectationDeclarationNoeud
+                          definition:
+                            fields:
+                              libelle: { }
+                              # ------- MENTION ----------
+                              'mention':
+                                type : collection
+                                class: ParcellaireAffectationMention
+                                inheritance: _ParcellaireAffectationDeclarationNoeud
+                                definition:
+                                  fields:
+                                    libelle: { }
+                                    # ------- LIEU ----------
+                                    '*':
+                                      type: collection
+                                      class: ParcellaireAffectationLieu
+                                      inheritance: _ParcellaireAffectationDeclarationNoeud
+                                      definition:
+                                        fields:
+                                          libelle: { }
+                                          # ------ Couleur ------
+                                          '*':
+                                            type: collection
+                                            class: ParcellaireAffectationCouleur
+                                            inheritance: _ParcellaireAffectationDeclarationNoeud
+                                            definition:
+                                              fields:
+                                                libelle: {}
+                                                # ------ Cépage ------
+                                                '*':
+                                                  type: collection
+                                                  class: ParcellaireAffectationCepage
+                                                  inheritance: _ParcellaireAffectationDeclarationNoeud
+                                                  definition:
+                                                    fields:
+                                                      libelle: { }
+                                                      acheteurs:
+                                                        type: collection
+                                                        definition:
+                                                          fields:
+                                                            '*':
+                                                              type: collection
+                                                              definition:
+                                                                fields:
+                                                                  '*':
+                                                                    type: collection
+                                                                    definition:
+                                                                      fields:
+                                                                        '*':
+                                                                          type: collection
+                                                                          definition:
+                                                                            fields:
+                                                                              cvi : { }
+                                                                              nom : { }
+                                                                              commune: { }
+                                                      detail:
+                                                        type: collection
+                                                        definition:
+                                                          fields:
+                                                            '*':
+                                                              type: collection
+                                                              class: ParcellaireAffectationCepageDetail
+                                                              definition:
+                                                                fields:
+                                                                  origine_doc: { }
+                                                                  superficie: { type: float }
+                                                                  superficie_parcellaire: { type: float }
+                                                                  commune: { }
+                                                                  code_commune: { }
+                                                                  code_postal: { required: false }
+                                                                  section: { }
+                                                                  numero_parcelle: { }
+                                                                  idu: { }
+                                                                  origine: { required: false } # A supprimer
+                                                                  parcelle_id: { }
+                                                                  numero_ordre: { }
+                                                                  campagne_plantation: { }
+                                                                  lieu: { }
+                                                                  lieu_cadastral: { required: false }
+                                                                  produit_hash: { }
+                                                                  source_produit_libelle: { }
+                                                                  prefix: { }
+                                                                  departement: {  }
+                                                                  active: { type: integer }
+                                                                  vtsgn: { type: integer }
+                                                                  acheteurs:
+                                                                    required: false
+                                                                    type: array_collection
+                                                                    definition:
+                                                                      fields:
+                                                                        '*' : { }
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: ParcellaireAffectationPiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

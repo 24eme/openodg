@@ -51,6 +51,11 @@
         <?php echo $etablissementForm['no_accises']->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
         <div class="col-xs-8"><?php echo $etablissementForm['no_accises']->render(); ?></div>
     </div>
+    <div class="form-group<?php if($etablissementForm['num_interne']->hasError()): ?> has-error<?php endif; ?>">
+        <?php echo $etablissementForm['num_interne']->renderError(); ?>
+        <?php echo $etablissementForm['num_interne']->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
+        <div class="col-xs-8"><?php echo $etablissementForm['num_interne']->render(); ?></div>
+    </div>
     <div class="form-group<?php if($etablissementForm['commentaire']->hasError()): ?> has-error<?php endif; ?>">
         <?php echo $etablissementForm['commentaire']->renderError(); ?>
         <?php echo $etablissementForm['commentaire']->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>

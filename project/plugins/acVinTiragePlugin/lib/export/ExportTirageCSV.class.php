@@ -4,6 +4,7 @@ class ExportTirageCSV implements InterfaceDeclarationExportCsv {
 
     protected $tirage = null;
     protected $header = false;
+    protected $region = null;
 
     public static function getHeaderCsv() {
 
@@ -17,9 +18,10 @@ class ExportTirageCSV implements InterfaceDeclarationExportCsv {
         return $header;
     }
 
-    public function __construct($tirage, $header = true) {
+    public function __construct($tirage, $header = true, $region = null) {
         $this->tirage = $tirage;
         $this->header = $header;
+        $this->region = $region;
     }
 
     public function getFileName() {
@@ -86,4 +88,8 @@ class ExportTirageCSV implements InterfaceDeclarationExportCsv {
 
         return str_replace(".", ",", $value);
     }
+
+    public function setExtraArgs($args) {
+    }
+
 }

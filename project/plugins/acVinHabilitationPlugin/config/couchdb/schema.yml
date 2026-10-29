@@ -52,6 +52,8 @@ Habilitation:
                               date: {  }
                               commentaire: {  }
                               statut: {  }
+                              site: { required: false }
+                              activite: { }
       demandes:
         type: collection
         definition:
@@ -69,6 +71,13 @@ Habilitation:
                   commentaire: { }
                   produit: { }
                   produit_libelle: { }
+                  oc_demande_id: {required: false}
+                  sites:
+                    required: false
+                    type: collection
+                    definition:
+                      fields:
+                        *: { }
                   activites:
                     type: array_collection
                     definition:
@@ -89,3 +98,36 @@ Habilitation:
                   description: {  }
                   commentaire: {  }
                   statut: { }
+      mouvements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: HabilitationMouvementFactures
+                    inheritance: MouvementFactures
+                    type: collection
+                    definition:
+                      fields:
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        produit_hash: {  }
+                        produit_libelle: {  }
+                        type_hash: {  }
+                        type_libelle: {  }
+                        detail_identifiant: {  }
+                        detail_libelle: {  }
+                        quantite: { type: float }
+                        unite: { required: false }
+                        taux: { }
+                        tva: { }
+                        date: {  }
+                        date_version: {  }
+                        version: {  }
+                        categorie: {  }
+                        type: {  }
+                        campagne: {  }
+                        region: { required: false }

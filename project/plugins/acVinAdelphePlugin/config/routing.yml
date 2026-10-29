@@ -1,0 +1,85 @@
+adelphe_create:
+  url: /adelphe/creation/:identifiant
+  param: { module: adelphe, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+adelphe_edit:
+  url: /adelphe/edition/:id
+  param: { module: adelphe, action: edit }
+  class: AdelpheRoute
+  options:
+    model:    Adelphe
+    type:     object
+  requirements:
+    sf_method: [get]
+
+adelphe_volume_conditionne:
+  url: /adelphe/volume-conditionne/:id
+  param: { module: adelphe, action: volumeConditionne }
+  class: AdelpheRoute
+  options:
+    model:    Adelphe
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+adelphe_repartition_bib:
+  url: /adelphe/repartition-bib/:id
+  param: { module: adelphe, action: repartitionBib }
+  class: AdelpheRoute
+  options:
+    model:    Adelphe
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+adelphe_validation:
+  url: /adelphe/validation/:id
+  param: { module: adelphe, action: validation }
+  class: AdelpheRoute
+  options:
+    model:    Adelphe
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+adelphe_delete:
+  url: /adelphe/suppression/:id
+  param: { module: adelphe, action: delete }
+  class: AdelpheRoute
+  options:
+    model:    Adelphe
+    type:     object
+  requirements:
+    sf_method: [get]
+
+adelphe_visualisation:
+  url: /adelphe/visualisation/:id
+  param: { module: adelphe, action: visualisation }
+  class: AdelpheRoute
+  options:
+    model:    Adelphe
+    type:     object
+  requirements:
+    sf_method: [get]
+
+adelphe_export:
+  url: /adelphe/export
+  param: { module: adelphe, action: export }
+  requirements:
+    sf_method: [get]
+
+adelphe_reouvrir:
+  url: /adelphe/reouvrir/:id
+  param: { module: adelphe, action: reouvrir }
+  class: AdelpheRoute
+  options:
+    model:    Adelphe
+    type:     object
+  requirements:
+    sf_method: [get]

@@ -1,0 +1,39 @@
+courrier_lot_creation:
+  url: /courrier/:identifiant/:lot_unique_id/create
+  param: { module: courrier, action: create }
+  class: DeclarationDeclarantRoute
+  options:
+    model:    EtablissementRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+courrier_visualisation:
+  url: /courrier/:id/visualisation
+  param: { module: courrier, action: visualisation }
+
+courrier_extras:
+    url: /courrier/:identifiant/:unique_id/:id_form/create/extras
+    param: { module: courrier, action: extras }
+    class: DeclarationDeclarantRoute
+    options:
+      model:    EtablissementRoute
+      type:     object
+    requirements:
+      sf_method: [get, post]
+
+courrier_redeguster:
+  url: /courrier/:identifiant/:lot/redeguster
+  param: { module: courrier, action: redeguster }
+  class: DeclarationDeclarantRoute
+  options:
+    model:    EtablissementRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+courrier_recours_oc:
+  url: /courrier/:identifiant/:lot/recours
+  param: { module: courrier, action: recoursOc }
+  requirements:
+    sf_method: [get]

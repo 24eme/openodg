@@ -7,8 +7,8 @@
 
     $.initExploitation = function()
     {
-        $('#btn_exploitation_modifier').click(function(e) {
-            $('#btn_exploitation_modifier').addClass("hidden")
+        $('.btn_exploitation_modifier').click(function(e) {
+            $('.btn_exploitation_modifier').addClass("hidden")
             $('#btn_exploitation_annuler').removeClass("hidden")
             $('.row_form_exploitation').removeClass("hidden");
             $('.row_info_exploitation').addClass("hidden");
@@ -20,6 +20,7 @@
         }
         $('#checkbox_logement_vin').on('change', function() {
             $('#form_logement_vin').find('input').val("");
+            $('#form_logement_vin').find('select').val("");
         });
     }
 
@@ -161,10 +162,10 @@
                 var somme = 0;
                 $(this).find('.input_sum_value').each(function() {
                     if($(this).val()) {
-                        somme += parseFloat($(this).val());
+                        somme += parseFloat($(this).val().replace(/\s/, ''));
                     } else {
                     	if (parseFloat($(this).text())) {
-                        somme += parseFloat($(this).text());
+                        somme += parseFloat($(this).text().replace(/\s/, ''));
                     	}
                     }
                 })
@@ -193,8 +194,8 @@
         });
     }
 
-    $.initLots = function() {
-        if ($('#form_drev_lots').length == 0)
+    $.initLots = function(type) {
+        if ($('#form_'+type+'_lots').length == 0)
         {
             return;
         }
@@ -203,24 +204,17 @@
           e.preventDefault();
         });
 
-        var checkBlocsLot = function() {
-            $('#form_drev_lots .bloc-lot').each(function() {
-                var saisi = false;
-                $(this).find('input, select').each(function() {
-                    if(($(this).val() && $(this).attr('data-default-value') != $(this).val()) || $(this).is(":focus")) {
-                        saisi = true;
-                    }
-                });
-                if(!saisi) {
-                    $(this).addClass('transparence-sm');
-                } else {
-                    $(this).removeClass('transparence-sm');
-                }
-            });
-        }
+        //on recupere le vol-total dans la popup
+        $('input.input-float').on('change', function(){
+          if($(this).val() > 0){
+            let id_modal = $(this).attr('id').replace('volume', 'cepages');
+            $('#'+id_modal).find(".input-total").val($(this).val());
+          }
+        });
+        $('input.input-float').trigger('change');
 
         var checkBlocsLotCepages = function() {
-            $('#form_drev_lots .ligne_lot_cepage').each(function() {
+            $('#form_'+type+'_lots .ligne_lot_cepage').each(function() {
                 var saisi = true;
                 $(this).find('input, select').each(function() {
                     if(!$(this).val()) {
@@ -238,28 +232,34 @@
                     $(this).removeClass('transparence-sm');
                 }
             });
-
-            $('#form_drev_lots .modal_lot_cepages').each(function() {
+            var title = "";
+            $('#form_'+type+'_lots .modal_lot_cepages').each(function() {
 
                 var libelle = "";
                 var volume = 0.0;
                 var total = 0.0;
                 $(this).find('.ligne_lot_cepage').each(function() {
-                    total += ($(this).find('.input-float').val())? parseFloat($(this).find('.input-float').val()) : 0;
+                  if ($(this).find('select.selectCepage').val()) {
+                    total += ($(this).find('.input-hl').val())? parseFloat($(this).find('.input-hl').val()) : 0;
+                  }
                 });
                 $(this).find('.ligne_lot_cepage').each(function() {
                     var ligne = $(this);
                     var cepage = $(this).find('.select2 option:selected').text();
-                    var volume = parseFloat($(this).find('.input-float').val());
+                    var volume = parseFloat($(this).find('.input-hl').val());
+                    if(cepage) {
+                      $(this).removeClass('transparence-sm');
+                  } else {
+                      $(this).addClass('transparence-sm');
+                    }
                     if(cepage && volume > 0) {
                         if(libelle) {
                             libelle = libelle + ", ";
+                        }else{
+                            libelle = "Mention : ";
                         }
-                        var p = (total)? parseInt((volume/total) * 100) : 0;
+                        var p = (total)? Math.round((volume/total) * 100) : 0;
                         libelle = libelle + cepage + "&nbsp;("+p+"%)";
-                        $(this).removeClass('transparence-sm');
-                    } else {
-                        $(this).addClass('transparence-sm');
                     }
 
                     $(this).find('input, select').each(function() {
@@ -268,44 +268,86 @@
                         }
                     });
                 });
+                title = libelle;
+                var bloc_condition = $('.bloc_condition .radio-inline input[checked="checked"]')
+                var vol_total = $("#chgt_denom_changement_volume")
+
                 if(!libelle) {
-                    libelle = "Cépage(s) revendiqué(s)";
+                    libelle = "Sans mention de cépage";
                     $('#lien_'+$(this).attr('id')).removeAttr("checked");
+
+                    if(bloc_condition.attr('value') === "DECLASSEMENT"){
+                      vol_total.removeAttr('readOnly')
+                    }
+
                 }else{
                   $('#lien_'+$(this).attr('id')).prop("checked","checked");
+
+                  if(bloc_condition.attr('value') !== "DECLASSEMENT"){
+                    vol_total.attr('readOnly', true)
+                  }
                 }
-                $('span.checkboxtext_'+$(this).attr('id')).html(libelle);
+                $('span.checkboxtext_'+$(this).attr('id')).html(libelle + " <a>(Changer)</a>");
+
             });
-        }
 
-        var inputs_hl = document.querySelectorAll('.modal input.input-hl')
+            if($('.bloc_condition .radio-inline input')){
+              var vol_total = $("#chgt_denom_changement_volume")
+              $('.bloc_condition .radio-inline input').on("change", function(){
+                  var element_check = $(this)
 
-        inputs_hl.forEach(function (input, index) {
-            input.addEventListener('change', function (event) {
-                var total = 0.0
+                  if(element_check.attr('value') !== "DECLASSEMENT" && element_check.is(":checked") && title){
+                    vol_total.attr('readOnly', true)
+                  }
 
-                var modal = event.target.parentElement
-                while (! modal.classList.contains('modal')) {
-                    modal = modal.parentElement
+                  if(element_check.attr('value') === "DECLASSEMENT" && element_check.is(":checked")){
+                    vol_total.removeAttr('readOnly')
+                  }
+                });
+            }
+
+            document.querySelectorAll('#form_'+type+'_lots .modal_lot_cepages').forEach(function(modal) {
+              var total = 0.00
+
+              while (! modal.classList.contains('modal')) {
+                  modal = modal.parentElement
+              }
+              var input_volume_id = modal.dataset.inputvolumeid;
+
+              inputs = modal.querySelectorAll('input.input-hl')
+              var nbRempli = 0;
+              inputs.forEach(function (input) {
+                  if (! isNaN(parseFloat(input.value)) && $('#'+input.id).parents('.ligne_lot_cepage').find('select.selectCepage').val() ) {
+                      total += parseFloat(input.value)
+                      nbRempli++;
+                  }
+              })
+
+              var vol_total = document.getElementById(input_volume_id)
+              if(!nbRempli) {
+                vol_total.readOnly = false;
+                return;
+              }
+
+              vol_total.value = total;
+
+              if(parseFloat(vol_total.value) > 0){
+                $('#'+modal.id).find('.input-total').val(total.toFixed(2));
+                vol_total.readOnly = true;
+
+                var element_check = $('.bloc_condition .radio-inline input[checked="checked"]')
+
+                if(element_check.attr('value') === "DECLASSEMENT" && element_check.is(":checked")){
+                  $(vol_total).removeAttr('readOnly')
                 }
 
-                var lot = modal.dataset.lot
-
-                inputs = modal.querySelectorAll('input.input-hl')
-                inputs.forEach(function (input) {
-                    if (! isNaN(parseFloat(input.value))) {
-                        total += parseFloat(input.value)
-                    }
-                })
-
-                var vol_total = document.getElementById('drev_lots_lots_'+lot+'_volume')
-                vol_total.value = parseFloat(total)
-
-                $('#drev_lots_lots_'+lot+'_volume').blur()
-
-                vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
+                let target_link = vol_total.id.replace('volume', 'cepages')
+                $('#'+input_volume_id).attr('data-target', '#'+target_link);
+                $('#'+input_volume_id).attr('data-toggle', "modal");
+              }
+              $('#'+input_volume_id).blur()
             })
-        })
+        }
 
         function precision(f) {
             if (!isFinite(f)) { return 2 }
@@ -315,32 +357,154 @@
             return p
         }
 
-        checkBlocsLot();
         checkBlocsLotCepages();
-    //    $('#form_drev_lots .modal_lot_cepages').on('hidden.bs.modal', function () { checkBlocsLot(); checkBlocsLotCepages(); });
-        $('#form_drev_lots input').on('keyup', function() { checkBlocsLot(); checkBlocsLotCepages(); });
-        $('#form_drev_lots select').on('change', function() { checkBlocsLot(); checkBlocsLotCepages(); });
-        $('#form_drev_lots input').on('focus', function() { checkBlocsLot(); checkBlocsLotCepages(); });
-        $('#form_drev_lots select').on('focus', function() { checkBlocsLot(); checkBlocsLotCepages(); });
-        $('#form_drev_lots input').on('blur', function() { checkBlocsLot(); checkBlocsLotCepages(); });
-        $('#form_drev_lots select').on('blur', function() { checkBlocsLot(); checkBlocsLotCepages(); });
+        $('#form_'+type+'_lots .ligne_lot_cepage input').on('change', function() { checkBlocsLotCepages(); });
+        $('#form_'+type+'_lots .ligne_lot_cepage select').on('change', function() { checkBlocsLotCepages(); });
+        $('#form_'+type+'_lots .ligne_lot_cepage input').on('focus', function() { checkBlocsLotCepages(); });
+        $('#form_'+type+'_lots .ligne_lot_cepage select').on('focus', function() { checkBlocsLotCepages(); });
+        $('#form_'+type+'_lots .ligne_lot_cepage input').on('blur', function() { checkBlocsLotCepages(); });
+        $('#form_'+type+'_lots .ligne_lot_cepage select').on('blur', function() { checkBlocsLotCepages(); });
 
-        $('#form_drev_lots input.input-float').on('click', function(e) {
+
+        $('.modal_lot_specificite input').on('keypress',function(e) {
+            if(e.which == 13 || e.which == 27) {
+                $(this).parents('.modal_lot_specificite').find('a.btn-success').click()
+                return false;
+            }
+        });
+
+        $( ".modal_lot_specificite" ).on('shown.bs.modal', function(e) {
+          $(this).find('input').focus();
+        });
+
+        $('.modal_lot_specificite a.btn-success').on('click',function(e){
+            mention = $(this).parents('.modal_lot_specificite').find('input').val();
+            span_mention = '.checkboxtext_'+$(this).parents('.modal_lot_specificite').attr('id');
+            if(mention) {
+              $(span_mention).html('Mention : '+mention+' <a>(Changer)</a>');
+            }else{
+              $(span_mention).html('Sans mention valorisante <a>(Changer)</a>');
+            }
+        });
+
+        //Vérification de la cohérence des saisies dans la popup modal_lot_cepages
+        $('.modal_lot_cepages a.btn-success').on('click',function(e){
+          if(!$(this).parents('.modal_lot_cepages').find('.input-total').val()){  //recupere le volume total.
+            $(this).parents('.modal_lot_cepages').find('.input-total').parents('.form-group').addClass('has-error');
+            return false;
+          }
+          $(this).parents('.modal_lot_cepages').find('.input-total').parents('.form-group').removeClass('has-error');
+          //RaZ des lignes sans cepages
+          var nbinputavecvaleurs = 0;
+          $(this).parents('.modal-dialog').find('.input-hl').each(function(){
+            if($(this).val()){
+              nbinputavecvaleurs += 1;
+            }
+          });
+          $(this).parents('.modal-dialog').find('.input-pc').each(function(){
+            if($(this).val()){
+              nbinputavecvaleurs += 1;
+            }
+          });
+
+          $(this).parents('.modal-dialog').find('.input-hl').each(function(){
+            if (!$(this).val() && !$(this).parents('.ligne_lot_cepage').find('.input-pc').val() && nbinputavecvaleurs) {
+              $(this).parents('.ligne_lot_cepage').find('select.selectCepage').val('');
+              $(this).parents('.ligne_lot_cepage').find('select.selectCepage').trigger('change');
+            }
+          });
+
+          //si pas de hl et pas de %, on set les %
+          var nbligneaveccepage = 0;
+          var nbligneaveccepageetpcouhl = 0;
+          $(this).parents('.modal-dialog').find('select.selectCepage').each(function(){
+            if($(this).val()) {
+              nbligneaveccepage ++;
+            }
+            line = $(this).parents('.ligne_lot_cepage')
+            if (line.find('.input-pc').val() || line.find('.input-hl').val()) {
+              nbligneaveccepageetpcouhl ++;
+            }
+          });
+          var i = 0;
+          var sumpc = 0;
+          if (!nbligneaveccepageetpcouhl) {
+            $(this).parents('.modal-dialog').find('.input-pc').each(function(){
+              if (!$(this).parents('.ligne_lot_cepage').find('select.selectCepage').val()) {
+                return ;
+              }
+              i ++;
+              if (i < nbligneaveccepage) {
+                $(this).val((100 / nbligneaveccepage).toFixed(2));
+                sumpc += parseFloat($(this).val());
+                return;
+              }
+              $(this).val((100 - sumpc).toFixed(2));
+              $(this).parents('.modal_lot_cepages').find('.switch_hl_to_pc').prop("checked", true);
+              $(this).parents('.modal_lot_cepages').find('.switch_hl_to_pc').trigger("change");
+
+            });
+          }
+
+          //si % sélectionné, on rempli les hl
+          if ($('.switch_hl_to_pc').is(':checked')) {
+            var total = $(this).parents('.modal_lot_cepages').find('.input-total').val();
+            var i = 0;
+            var sumhl = 0;
+            $(this).parents('.modal-dialog').find('.input-hl').each(function(){
+
+              if (!$(this).parents('.ligne_lot_cepage').find('select.selectCepage').val()) {
+                return ;
+              }
+              i ++;
+              if (i < nbligneaveccepage) {
+                $(this).val(( $(this).parents('.ligne_lot_cepage').find('.input-pc').val() * total / 100).toFixed(2));
+                sumhl += parseFloat($(this).val());
+                return;
+              }
+              $(this).val((total-sumhl).toFixed(2));
+              $(this).trigger('change')
+            });
+          }
+          checkBlocsLotCepages();
+
+        });
+        //Au switch, on remet à Zero les inputs non visibles et on affiche la bonne colonne
+        var set_switch = function(){
+          var is_pc = $('.switch_hl_to_pc').is(':checked');
+
+          if(is_pc){
+            $(this).parents('.modal_lot_cepages').find('.input-group-pc').show();
+            $(this).parents('.modal_lot_cepages').find('.input-group-hl').hide();
+            $(this).parents('.modal_lot_cepages').find('.input-hl').each(function(){ $(this).val(''); });
+          } else {
+            $(this).parents('.modal_lot_cepages').find('.input-group-hl').show();
+            $(this).parents('.modal_lot_cepages').find('.input-group-pc').hide();
+            $(this).parents('.modal_lot_cepages').find('.input-pc').each(function(){ $(this).val(''); });
+          }
+
+        };
+
+
+        $('.switch_hl_to_pc').on('change', set_switch);
+        $('.input-total').on('change', set_switch);
+
+        $('#form_'+type+'_lots input.input-float').on('click', function(e) {
             if (! e.target.readOnly) {
                 return false
             }
 
             id = parseInt(e.target.id.replace(/[^0-9]/g, ''))
-            $('#drev_lots_lots_'+id+'_cepages').modal('toggle')
+            $('#'+type+'_lots_lots_'+id+'_cepages').modal('toggle')
         })
 
         if(window.location.hash == "#dernier") {
-            $('#form_drev_lots .bloc-lot:last input:first').focus();
+            $('#form_'+type+'_lots .bloc-lot:last input:first').focus();
         } else {
-            $('#form_drev_lots .bloc-lot:first input:first').focus();
+            $('#form_'+type+'_lots .bloc-lot:first input:first').focus();
         }
 
-        $('#form_drev_lots .lot-delete').on('click', function() {
+        $('#form_'+type+'_lots .lot-delete').on('click', function() {
             if(!confirm("Étes vous sûr de vouloir supprimer ce lot ?")) {
 
                 return;
@@ -353,6 +517,83 @@
             $(this).parents('.bloc-lot').hide();
         })
     }
+
+    $.calculTotal = function() {
+      var total = 0.0;
+      $("tr.hamzastyle-item:visible").each(function(){
+        total+=parseFloat($(this).find(".lot_volume").text().replace(/\s/g, ""));
+      });
+
+      $("tr .total_lots").html(total.toFixed(2));
+      $(document).scrollTo("#table_igp_title");
+
+    }
+
+    $.btn_bsswitch = function() {
+      var switchSelector = '#btn-degustable-all-bs';
+      $(switchSelector).bootstrapSwitch();
+
+      $(switchSelector).on('switchChange.bootstrapSwitch', function(event, state) {
+
+        $('.bsswitch:not("'+switchSelector+'")').each(function(index, element) {
+
+          if(state){
+            $(element).bootstrapSwitch('state', true)
+          }else{
+            $(element).bootstrapSwitch('state', false)
+          }
+        })
+      })
+    }
+
+    $.btn_switch = function() {
+      var origin = document.querySelector('#btn-degustable-all');
+      var switches = document.querySelectorAll('.switch:not(#btn-degustable-all)');
+
+      if (!origin) return;
+
+      origin.addEventListener("change", function () {
+        switches.forEach(function (el) {
+          el.checked = origin.checked;
+        });
+      });
+
+      switches.forEach(function (el) {
+        el.addEventListener("change", function () {
+          origin.checked = Array.from(switches).every(function (el) {
+            return el.checked;
+          });
+        });
+      });
+    };
+
+    $.lien_denom_switch = function() {
+      var origin = document.querySelector('#lien-denomination-all');
+      if (origin) {
+        origin.addEventListener("click", function (e) {
+          var event = new Event('change');
+          if (origin.dataset.status == "affecter") {
+            origin.innerHTML = "<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette " + origin.dataset.hasdgc;
+            origin.dataset.status = "retirer";
+            var target = document.querySelector(origin.dataset.target);
+            target.querySelectorAll('.switch').forEach(function (el) {
+              el.checked = true;
+              el.dispatchEvent(event);
+            });
+          } else {
+            origin.innerHTML = "<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette " + origin.dataset.hasdgc;
+            origin.dataset.status = "affecter";
+            var target = document.querySelector(origin.dataset.target);
+            target.querySelectorAll('.switch').forEach(function (el) {
+              el.checked = false;
+              el.dispatchEvent(event);
+            });
+          }
+        });
+      }
+    }
+
+
 
     /* =================================================================================== */
     /* FUNCTIONS CALL */
@@ -368,10 +609,19 @@
         $.initRevendicationFadeRow();
         $.initRevendicationEventsFadeInOut();
         $.initControleExterne();
-        $.initLots();
+
+        var doc_type = document.querySelector('form[id^="form_"]')
+        if (doc_type !== null) {
+          doc_type = doc_type.id.split('_')[1]
+          $.initLots(doc_type);
+        }
+
         $.initRecapEventsAccordion();
         $.initValidationDeclaration();
         $.initSocieteChoixEtablissement();
+        $.btn_bsswitch();
+        $.btn_switch();
+        $.lien_denom_switch();
 
     });
 

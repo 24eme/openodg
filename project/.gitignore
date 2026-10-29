@@ -1,15 +1,21 @@
 bin/config.inc
+bin/config_*.inc
 bin/config_extra.inc
+bin/config.ds.inc
 config/app.yml
 config/databases.yml
+config/databases.*.yml
 config/properties.ini
-apps/*/config/factories.yml
 web/declaration_dev.php
+web/*_*.php
+!web/*_dev.php
 cache/[^.]*
 log/[^.]*
 data/*
 .~*
+*.swp
 !data/configuration/
+!data/comptes/
 !data/elk
 test/output
 test_ava/output
@@ -17,3 +23,4 @@ web/export
 web/export_data
 web/statuts/xml
 web/statuts/index.php
+web/export*

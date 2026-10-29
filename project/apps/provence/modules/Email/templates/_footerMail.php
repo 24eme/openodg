@@ -1,2 +1,4 @@
-Le Syndicat des Vins Côtes de Provence
-contact@odg-cotesdeprovence.com
+Les Syndicats des Vins de Provence
+
+--
+mailto:<?php echo (isset($email)) ? $email : Organisme::getInstance()->getEmail(); ?>

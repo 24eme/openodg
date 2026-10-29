@@ -7,7 +7,9 @@
 <form method="post" enctype="multipart/form-data">
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
-	<p>Les données de votre <?php echo $drev->getDocumentDouanierTypeLibelle() ?> ne sont pas disponibles sur le site de Prodouane. Merci de bien vouloir nous fournir le fichier XLS de votre <?php echo $drev->getDocumentDouanierTypeLibelle() ?> afin de poursuivre la saisie de vos revendications.</p>
+	<p>Les données de votre <?php echo $drev->getDocumentDouanierTypeLibelle() ?> <?php echo $drev->campagne; ?> ne sont pas disponibles sur le site de la Douane pour le CVI <?php echo $drev->declarant->cvi ;?>.
+    <br/><BR/>
+    Merci de bien vouloir nous fournir le <strong>fichier <?php if ($drev->getDocumentDouanierTypeLibelle() != 'Déclaration de récolte'): ?>XLS<?php else: ?>JSON<?php endif; ?></strong> de votre <?php echo $drev->getDocumentDouanierTypeLibelle() ?> afin de poursuivre la saisie de vos revendications.</p>
 
     <?php echo include_partial('global/flash'); ?>
 

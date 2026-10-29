@@ -1,6 +1,6 @@
 <?php
 
-function formatFloat($number, $decimalSeparator = ".", $decimals = 3) {
+function formatFloat($number, $decimalSeparator = ".", $decimals = 4) {
     $arrondi = round($number, 2);
     if ($number == $arrondi) {
     	return number_format($number, 2, $decimalSeparator, ' ');

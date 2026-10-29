@@ -3,7 +3,10 @@
 class EtablissementSecurity implements SecurityInterface {
 
     const DECLARANT_DREV = 'DECLARANT_DREV';
+    const DECLARANT_CONDITIONNEMENT = 'DECLARANT_CONDITIONNEMENT';
+    const DECLARANT_TRANSACTION = 'DECLARANT_TRANSACTION';
     const DECLARANT_PARCELLAIRE = 'DECLARANT_PARCELLAIRE';
+    const DECLARANT_PMC = 'DECLARANT_PMC';
 
     protected $user;
     protected $etablissement;
@@ -24,12 +27,20 @@ class EtablissementSecurity implements SecurityInterface {
         }
 
         /*** DECLARANT ***/
-        if(!$this->user->isAdmin() && $this->user->getCompte()->identifiant != $this->etablissement->getSociete()->getMasterCompte()->identifiant && !$this->user->hasDrevAdmin()) {
+        if (
+            !$this->user->isAdmin()
+            && $this->user->getCompte()
+            && $this->user->getCompte()->identifiant != $this->etablissement->getSociete()->getMasterCompte()->identifiant
+            && !$this->user->hasDrevAdmin()
+            && $this->user->getEtablissement()->hasCooperateur($this->etablissement->cvi) === false
+        ) {
 
             return false;
         }
 
-        if(in_array(self::DECLARANT_DREV, $droits) && !$this->etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
+        if(in_array(self::DECLARANT_DREV, $droits) && ! in_array($this->etablissement->famille, [EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR,
+        EtablissementFamilles::FAMILLE_COOPERATIVE,
+        EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR, EtablissementFamilles::FAMILLE_PRODUCTEUR])) {
 
             return false;
         }

@@ -38,8 +38,11 @@ function comptePictoCssClass($compte) {
     return "glyphicon glyphicon-user";
 }
 
+function formatSIRET($siret, $offuscer = false) {
+    if($offuscer) {
 
-function formatSIRET($siret) {
-  //return $siret;
+        return preg_replace('/^(\d\d\d)(\d\d\d)(\d\d\d).*/', '\1 XXX \3', $siret);
+    }
+
   return preg_replace('/^(\d\d\d)(\d\d\d)(\d\d\d)/', '\1 \2 \3 ', $siret);
 }

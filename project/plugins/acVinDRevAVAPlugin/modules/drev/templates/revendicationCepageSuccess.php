@@ -16,8 +16,8 @@
     <?php if ($sf_user->hasFlash('notice')): ?>
         <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
     <?php endif; ?>
-    <?php if ($sf_user->hasFlash('erreur')): ?>
-        <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
+    <?php if ($sf_user->hasFlash('error')): ?>
+        <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></p>
     <?php endif; ?>
 
     <table class="table table-striped table-condensed" id="table-revendication">
@@ -159,7 +159,7 @@
         <div class="col-xs-6">
             <?php if ($noeud->getPreviousSister()): ?>
                 <a href="<?php echo url_for('drev_revendication_cepage', $noeud->getPreviousSister()) ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'appellation précédente</small></a>
-            <?php elseif(!$drev->isNonRecoltant() && !$drev->hasDr()): ?>
+            <?php elseif(!$drev->isNonRecoltant() && !$drev->hasDR()): ?>
 				<a href="<?php echo url_for("drev_dr", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
 			<?php else: ?>
                 <a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>

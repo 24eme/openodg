@@ -10,12 +10,11 @@ class societeComponents extends sfComponents {
     }
 
     public function executeSidebar() {
-        $this->societe->getMasterCompte()->updateCoordonneesLongLat();
         $this->etablissements = $this->societe->getEtablissementsObject();
         $this->interlocuteurs = array();
         $this->modifiable = !isset($this->modifiable) || $this->modifiable;
 
-        foreach(SocieteClient::getInstance()->getInterlocuteursWithOrdre($this->societe->identifiant, true) as $interlocuteur) {
+        foreach($this->societe->getInterlocuteurs() as $interlocuteur) {
             if(!$interlocuteur) {
                 continue;
             }
@@ -24,5 +23,10 @@ class societeComponents extends sfComponents {
             }
             $this->interlocuteurs[$interlocuteur->_id] = $interlocuteur;
         }
+
+        uasort($this->interlocuteurs, function($a, $b) {
+
+            return $a->isSuspendu();
+        });
     }
 }

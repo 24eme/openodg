@@ -1,0 +1,19 @@
+# You can find more information about this file on the symfony website:
+# http://www.symfony-project.org/reference/1_4/en/11-App
+
+# default values
+all:
+  routing_context_production_host: arles.igp.vins.24eme.fr
+  organisme:
+    nom: "Syndicat des Producteurs de Vins de Pays des Bouches-du-Rhône"
+  float:
+    default_decimal_format: 2
+    max_decimal_authorized: 4
+  societe:
+    format_identifiant: "ARL%05d"
+  donnees_viticoles:
+    regions:
+      IGPARLES: "IGPARLES"
+  etiquettes: "70x36" #Impression en taille rélle
+  documents:
+    url_officiels: "https://igp.vins.24eme.fr/plus.php?odg=13"

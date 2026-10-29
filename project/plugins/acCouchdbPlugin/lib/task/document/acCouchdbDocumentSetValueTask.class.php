@@ -14,6 +14,8 @@ class acCouchdbDocumentSetValueTask extends sfBaseTask
       new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name'),
       new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
       new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+      new sfCommandOption('unset', null, sfCommandOption::PARAMETER_REQUIRED, 'Remove the field', false),
+
       // add your own options here
     ));
 
@@ -31,13 +33,17 @@ EOF;
   protected function execute($arguments = array(), $options = array())
   {
     // initialize the database connection
-    $databaseManager = new sfDatabaseManager($this->configuration);
+    $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
     $values = array();
     $hash = null;
     $value = null;
     foreach($arguments['hash_values'] as $i => $arg) {
+        if ($options['unset']) {
+            $values[$arg] = true;
+            continue;
+        }
         if($i % 2 == 0) {
             $hash = $arg;
         } else {
@@ -62,17 +68,34 @@ EOF;
 
     $output = array();
     foreach($values as $hash => $value) {
-        if(!$doc->exist($hash)) {
-
-            return;
+        if ($options['unset']) {
+            $doc->remove($hash);
+            $output[] = $hash." REMOVING";
+            continue;
         }
+        $doc->add($hash);
+
         if($doc->get($hash) instanceof acCouchdbJson) {
 
             return;
         }
+
+        if($value === "null") {
+            $value = null;
+        }
+        if ($value === "false") {
+            $value = false;
+        }elseif ($value === "true") {
+            $value = true;
+        }
+
         if($doc->get($hash) === $value) {
 
             continue;
+        }
+
+        if(preg_match("/^\+[0-9]+$/", $value)) {
+            $value = + str_replace("+", "", $value);
         }
 
         $output[] = $hash.":\"".$value."\" (".$doc->get($hash).")";

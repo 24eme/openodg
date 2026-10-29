@@ -23,7 +23,7 @@ class ParcellaireIntentionAffectationSwitchDgcTask extends sfBaseTask
 
     protected function execute($arguments = array(), $options = array())
     {
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         if(!file_exists($arguments['csv'])) {
             echo sprintf("ERROR;Le fichier CSV n'existe pas;%s\n", $arguments['csv']);
@@ -54,7 +54,7 @@ class ParcellaireIntentionAffectationSwitchDgcTask extends sfBaseTask
                 echo sprintf("ERROR;Etablissement non trouvé;%s\n", implode(';', $data));
                 continue;
             }
-            $intentionDpap = ParcellaireIntentionAffectationClient::getInstance()->getLast($identifiant);
+            $intentionDpap = ParcellaireIntentionClient::getInstance()->getLast($identifiant);
             if (!$intentionDpap) {
                 echo sprintf("ERROR;Pas de parcellaire intention affectation;%s\n", implode(';', $data));
                 continue;

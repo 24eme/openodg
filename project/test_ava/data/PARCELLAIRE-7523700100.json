@@ -1,0 +1,161 @@
+{
+  "_id": "PARCELLAIRE-7523700100-20210621",
+  "type": "Parcellaire",
+  "date": "2021-06-21",
+  "identifiant": "7523700100",
+  "source": "PRODOUANE",
+  "campagne": "2020-2021",
+  "declarant": {
+    "nom": "SOCIETE TEST",
+    "raison_sociale": "SOCIETE TEST",
+    "cvi": "7523700100",
+    "siret": "12345678912345",
+    "adresse": "3 rue du Parvis",
+    "commune": "PARIS",
+    "code_postal": "75001",
+    "telephone_bureau": "",
+    "telephone_mobile": "",
+    "fax": "",
+    "email": "societe@exemple.fr"
+  },
+  "declaration": {
+    "certification/genre/appellation_ALSACEBLANC": {
+      "libelle": "AOC Alsace blanc",
+      "detail": {
+        "GEWURZTRAMINER-RS-1958-1959-PARIS-04-95-00-MONTMARTRE": {
+          "superficie": 0.1002,
+          "superficie_cadastrale": 0.1002,
+          "commune": "PARIS",
+          "code_commune": null,
+          "section": "04",
+          "numero_parcelle": "95",
+          "idu": "00000000040095",
+          "lieu": "MONTMARTRE",
+          "cepage": "GEWURZTRAMINER RS",
+          "campagne_plantation": "1958-1959",
+          "ecart_rang": 130,
+          "ecart_pieds": 140,
+          "numero_ordre": null,
+          "mode_savoirfaire": false
+        },
+        "RIESLING-B-1973-1974-PARIS-05-45-00-MONTPARNASSE": {
+          "superficie": 0.1744,
+          "superficie_cadastrale": 0.1744,
+          "commune": "PARIS",
+          "code_commune": null,
+          "section": "05",
+          "numero_parcelle": "45",
+          "idu": "00000000050045",
+          "lieu": "MONTPARNASSE",
+          "cepage": "RIESLING B",
+          "campagne_plantation": "1973-1974",
+          "ecart_rang": 155,
+          "ecart_pieds": 150,
+          "numero_ordre": null,
+          "mode_savoirfaire": false
+        },
+        "MUSCAT-OTTONEL-B-1975-1976-PARIS-05-64-01-MONT-LOUIS": {
+          "superficie": 0.05,
+          "superficie_cadastrale": 0.2373,
+          "commune": "PARIS",
+          "code_commune": null,
+          "section": "05",
+          "numero_parcelle": "64",
+          "idu": "00000000050064",
+          "lieu": "MONT-LOUIS",
+          "cepage": "MUSCAT OTTONEL B",
+          "campagne_plantation": "1975-1976",
+          "ecart_rang": 130,
+          "ecart_pieds": 120,
+          "numero_ordre": 1,
+          "mode_savoirfaire": false
+        },
+        "AUXERROIS-B-2000-2001-PARIS-08-43-00-MONT-VENTOU": {
+          "superficie": 0.2447,
+          "superficie_cadastrale": 0.2447,
+          "commune": "PARIS",
+          "code_commune": null,
+          "section": "08",
+          "numero_parcelle": "43",
+          "idu": "00000000080043",
+          "lieu": "MONT-VENTOU",
+          "cepage": "AUXERROIS B",
+          "campagne_plantation": "2000-2001",
+          "ecart_rang": 190,
+          "ecart_pieds": 120,
+          "numero_ordre": null,
+          "mode_savoirfaire": false
+        }
+      }
+    },
+    "certification/genre/appellation_PINOTNOIR": {
+      "libelle": "AOC Alsace Pinot Noir Rosé",
+      "detail": {
+        "PINOT-NOIR-N-1979-1980-PARIS-07-275-00-MONTMARTRE": {
+          "superficie": 0.2013,
+          "superficie_cadastrale": 0.2013,
+          "commune": "PARIS",
+          "code_commune": null,
+          "section": "07",
+          "numero_parcelle": "275",
+          "idu": "00000000070275",
+          "lieu": "MONTMARTRE",
+          "cepage": "PINOT NOIR N",
+          "campagne_plantation": "1979-1980",
+          "ecart_rang": 130,
+          "ecart_pieds": 140,
+          "numero_ordre": null,
+          "mode_savoirfaire": false
+        },
+        "PINOT-NOIR-N-1965-1966-MONTREUIL-SUPPRIMEE-04-185-00-VOGELGARTEN": {
+          "superficie": 0.0729,
+          "superficie_cadastrale": 0.0729,
+          "commune": "MONTREUIL (supprimée)",
+          "code_commune": null,
+          "section": "04",
+          "numero_parcelle": "185",
+          "idu": "00000000040185",
+          "lieu": "VOGELGARTEN",
+          "cepage": "PINOT NOIR N",
+          "campagne_plantation": "1965-1966",
+          "ecart_rang": 130,
+          "ecart_pieds": 140,
+          "numero_ordre": null,
+          "mode_savoirfaire": false
+        }
+      }
+    },
+    "certifications/DEFAUT/genres/DEFAUT/appellations/DEFAUT/mentions/DEFAUT/lieux/DEFAUT/couleurs/DEFAUT/cepages/DEFAUT": {
+      "libelle": "Appellation non reconnue",
+      "detail": {
+        "RIESLING-B-2020-2021-PARIS-15-14-00-KURZGELAEND": {
+          "superficie": 0.1082,
+          "superficie_cadastrale": 0.1082,
+          "commune": "PARIS",
+          "code_commune": null,
+          "section": "15",
+          "numero_parcelle": "14",
+          "idu": "00000000150014",
+          "lieu": "KURZGELAEND",
+          "cepage": "RIESLING B",
+          "campagne_plantation": "2020-2021",
+          "ecart_rang": 160,
+          "ecart_pieds": 100,
+          "numero_ordre": null,
+          "mode_savoirfaire": false
+        }
+      }
+    }
+  },
+  "pieces": [
+    {
+      "identifiant": "6800502680",
+      "date_depot": "2021-06-21",
+      "libelle": "Parcellaire au 21/06/2021",
+      "mime": null,
+      "visibilite": 1,
+      "source": "PRODOUANE",
+      "fichiers": []
+    }
+  ]
+}

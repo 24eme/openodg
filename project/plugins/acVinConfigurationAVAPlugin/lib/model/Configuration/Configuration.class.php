@@ -1,5 +1,7 @@
 <?php
 
+// AVA //
+
 class Configuration extends BaseConfiguration {
 
     protected $identifyLibelleProduct = array();
@@ -7,6 +9,17 @@ class Configuration extends BaseConfiguration {
     public function getProduits() {
 
         return $this->declaration->getProduits();
+    }
+
+    public function getProduitsByCepage($cepage) {
+        $produits = array();
+        foreach($this->getProduits() as $p) {
+            if (in_array($cepage, $p->getCepagesAutorises())) {
+                $produits[] = $p;
+                continue;
+            }
+        }
+        return $produits;
     }
 
     public function getTemplatesFactures()
@@ -19,7 +32,7 @@ class Configuration extends BaseConfiguration {
     	}
     	return $factures;
     }
-    
+
     public function getAppellationsLieuDit()
     {
       $result = array();
@@ -94,18 +107,29 @@ class Configuration extends BaseConfiguration {
     }
 
     public function identifyProductByLibelle($libelle) {
-        if(array_key_exists($libelle, $this->identifyLibelleProduct)) {
+        $origineLibelle = $libelle;
+        if(array_key_exists($origineLibelle, $this->identifyLibelleProduct)) {
 
-            return $this->identifyLibelleProduct[$libelle];
+            return $this->identifyLibelleProduct[$origineLibelle];
         }
-
+        $libelles = explode(' - ', $libelle);
+        $libelle = $libelles[0];
+        if (count($libelles) > 1) {
+            $inao = $libelles[1];
+        }
         $libelleSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($libelle)));
+        if (strpos($libelleSlugify, 'VCI') === false) {
+            $libelleSlugify = str_replace('AOC-', '', $libelleSlugify);
+        }
 
         foreach($this->declaration->getProduits() as $produit) {
             $libelleProduitSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($produit->getLibelleComplet())));
-            //echo $libelleSlugify."/".$libelleProduitSlugify."\n";
-            if($libelleSlugify == $libelleProduitSlugify) {
-                $this->identifyLibelleProduct[$libelle] = $produit;
+            if (strpos($libelleProduitSlugify, 'VCI') === false) {
+                $libelleProduitSlugify = str_replace('AOC-', '', $libelleProduitSlugify);
+            }
+            //echo $libelleSlugify."/".$libelleProduitSlugify."/1\n";
+            if($libelleSlugify == $libelleProduitSlugify || $libelleSlugify == preg_replace('/-(BLANC|ROUGE|ROSE)-/', '-', $libelleProduitSlugify)) {
+                $this->identifyLibelleProduct[$origineLibelle] = $produit;
 
                 return $produit;
             }
@@ -113,9 +137,12 @@ class Configuration extends BaseConfiguration {
 
         foreach($this->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION, "ConfigurationAppellation") as $produit) {
             $libelleProduitSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($produit->getLibelleComplet())));
-
+            if (strpos($libelleProduitSlugify, 'VCI') === false) {
+                $libelleProduitSlugify = str_replace('AOC-', '', $libelleProduitSlugify);
+            }
+            //echo $libelleSlugify."/".$libelleProduitSlugify."/2\n";
             if($libelleSlugify == $libelleProduitSlugify) {
-                $this->identifyLibelleProduct[$libelle] = $produit;
+                $this->identifyLibelleProduct[$origineLibelle] = $produit;
 
                 return $produit;
             }
@@ -211,17 +238,6 @@ class Configuration extends BaseConfiguration {
         }
       }
 
-      return $produits;
-    }
-
-    public function getProduitsCahierDesCharges() {
-      $produits = array();
-      foreach ($this->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE) as $produit) {
-          if($produit->getNodeCahierDesCharges()){
-            $produitAppellation = $produit->getNodeCahierDesCharges();
-            $produits[$produitAppellation->getHash()] = $produitAppellation;
-          }
-      }
       return $produits;
     }
 }

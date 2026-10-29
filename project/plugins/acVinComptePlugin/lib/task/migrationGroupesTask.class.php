@@ -40,7 +40,7 @@ class migrationGroupesTask extends sfBaseTask {
     }
 
     protected function execute($arguments = array(), $options = array()) {
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $context = sfContext::createInstance($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $groupe_origin_name = $arguments['groupe_origin_name'];

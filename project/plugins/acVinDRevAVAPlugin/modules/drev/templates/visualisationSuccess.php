@@ -3,7 +3,7 @@
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 
 <?php if (isset($form)): ?>
-  <form action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post">
+  <form id="documentForm" action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 <?php endif; ?>
@@ -15,7 +15,7 @@
         <span class="btn btn-default-step btn-xs">Facturé</span>
     <?php endif; ?></small></small>
     <?php elseif($drev->validation): ?>
-    <small class="pull-right">Télédéclaration<?php if($drev->validation && $drev->validation !== true): ?> validée le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturable</span><?php endif; ?> <?php if(!$drev->isNonFactures()): ?>
+    <small class="pull-right"><?php if ($drev->exist('automatique') && $drev->automatique): ?>Générée automatiquement<?php else: ?>Télédéclaration<?php endif; ?><?php if($drev->getDateDepot()): ?> signée le <?php echo format_date($drev->getDateDepot(), "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturable</span><?php endif; ?> <?php if(!$drev->isNonFactures()): ?>
         <span class="btn btn-default-step btn-xs">Facturé</span>
     <?php endif; ?></small>
     <?php endif; ?>
@@ -51,6 +51,30 @@
     </div>
 </div>
 
+<?php if (isset($form)): ?>
+</form>
+<?php endif; ?>
+
+<?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::VALIDATION_ADMIN) && $drev->exist('commentaire')): ?>
+    <?php if ($drev->getValidationOdg() && $drev->commentaire): ?>
+        <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
+        <pre>
+        <?php echo $drev->commentaire; ?>
+        </pre>
+    <?php elseif(!$drev->getValidationOdg()): ?>
+        <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
+      <form id="formUpdateCommentaire" action="<?php echo url_for('drev_update_commentaire', $drev) ?>" method="post">
+            <?php echo $drevCommentaireValidationForm->renderHiddenFields(); ?>
+            <?php echo $drevCommentaireValidationForm->renderGlobalErrors(); ?>
+            <?php echo $drevCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
+            <br/>
+            <div class="form-group">
+                <button type="submit" form="formUpdateCommentaire" class="btn btn-default btn-lg btn-upper">Modifier le commentaire</button>
+            </div>
+      </form>
+    <?php endif; ?>
+<?php endif; ?>
+
 <div class="row row-margin row-button">
     <div class="col-xs-5">
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", $drev->getEtablissementObject()) ?><?php endif; ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
@@ -72,7 +96,7 @@
                 <?php if($drev->hasCompleteDocuments()): ?>
                 <a href="<?php echo url_for("drev_validation_admin", array("sf_subject" => $drev, "service" => isset($service) ? $service : null)) ?>" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
                 <?php else: ?>
-                    <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
+                    <button type="submit" form="documentForm" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
                 <?php endif; ?>
         <?php endif; ?>
         <?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::MODIFICATRICE)): ?>
@@ -82,6 +106,3 @@
     </div>
 </div>
 
-<?php if (isset($form)): ?>
-</form>
-<?php endif; ?>

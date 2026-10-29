@@ -62,7 +62,8 @@ class ConstatsClient extends acCouchdbClient {
         $campagne = $this->getCampagneByDate($rendezvous->date);
         $constats = $this->findByIdentifiantAndCampagne($rendezvous->cvi, $campagne);
         $constatsResult = array();
-        foreach ($constats->getOrAdd('constats') as $uniqId => $constat) {
+        if ($constats) {
+          foreach ($constats->getOrAdd('constats') as $uniqId => $constat) {
 
             if (($constat->rendezvous_raisin == $rendezvous->_id) && $rendezvous->isRendezvousRaisin()) {
                 $constatsResult[$constats->_id . '_' . $uniqId] = $constat;
@@ -71,6 +72,7 @@ class ConstatsClient extends acCouchdbClient {
 
                 $constatsResult[$constats->_id . '_' . $uniqId] = $constat;
             }
+          }
         }
         return $constatsResult;
     }

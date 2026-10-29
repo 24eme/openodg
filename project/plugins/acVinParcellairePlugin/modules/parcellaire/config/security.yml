@@ -1,5 +1,32 @@
-index:
-  credentials: ADMIN
+all:
+  credentials: [[ADMIN, ADMIN_ODG]]
 
 declarant:
-  credentials: ADMIN
+  credentials: []
+
+visualisation:
+  credentials: []
+
+parcellairePDF:
+  credentials: []
+
+parcellaireExportCSV:
+  credentials: []
+
+parcellaireExportKML:
+  credentials: []
+
+parcellaireExportGeoJson:
+  credentials: []
+
+scrape:
+  credentials: []
+
+import:
+  credentials: []
+
+convert:
+  credentials: []
+
+calculPPForm:
+  is_secure: false

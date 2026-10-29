@@ -1,8 +1,27 @@
 all:
-  credentials: [[ADMIN, habilitation]]
+  credentials: [[ADMIN, ADMIN_ODG, habilitation, teledeclaration_drev_admin]]
+
+index:
+  credentials: [[ADMIN, ADMIN_ODG, habilitation, teledeclaration_drev_admin, stalker]]
+
+indexDemande:
+  credentials: [[ADMIN, ADMIN_ODG, habilitation, teledeclaration_drev_admin, stalker]]
+
+indexHabilitation:
+  credentials: [[ADMIN, ADMIN_ODG, habilitation, teledeclaration_drev_admin, stalker]]
+
+etablissementSelection:
+  credentials: [[ADMIN, ADMIN_ODG, habilitation, teledeclaration_drev_admin, stalker]]
+
+exportHistorique:
+  credentials: [[ADMIN, ADMIN_ODG, habilitation, teledeclaration_drev_admin, stalker]]
 
 declarant:
   credentials: []
+
+consultation:
+  credentials: []
+  is_secure: false
 
 visualisation:
   credentials: []
@@ -11,16 +30,16 @@ demandeVisualisation:
   credentials: []
 
 ajout:
-  credentials: ADMIN
+  credentials: [[ADMIN, ADMIN_ODG]]
 
 edition:
-  credentials: ADMIN
+  credentials: [[ADMIN, ADMIN_ODG]]
 
 demandeSuppressionDerniere:
-  credentials: ADMIN
+  credentials: [[ADMIN, ADMIN_ODG]]
 
 demandeModificationCommentaire:
-  credentials: ADMIN
+  credentials: [[ADMIN, ADMIN_ODG]]
 
 export:
-  credentials: ADMIN
+  credentials: [[ADMIN, ADMIN_ODG]]

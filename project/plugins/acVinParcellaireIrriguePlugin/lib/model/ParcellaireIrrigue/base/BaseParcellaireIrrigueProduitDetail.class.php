@@ -53,14 +53,14 @@
  * @method string setIrrigation()
  * @method string getDateIrrigation()
  * @method string setDateIrrigation()
- 
+
  */
 
-abstract class BaseParcellaireIrrigueProduitDetail extends acCouchdbDocumentTree {
-                
+abstract class BaseParcellaireIrrigueProduitDetail extends DeclarationParcellaireParcelle {
+
     public function configureTree() {
        $this->_root_class_name = 'ParcellaireIrrigue';
        $this->_tree_class_name = 'ParcellaireIrrigueProduitDetail';
     }
-                
+
 }

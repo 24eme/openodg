@@ -7,10 +7,15 @@ class commonActions extends sfActions {
 
             return $this->redirect('declaration');
         }
-	
-	if ($this->getUser()->hasCredential(myUser::CREDENTIAL_DREV_ADMIN)) {
+
+	    if ($this->getUser()->hasCredential(myUser::CREDENTIAL_DREV_ADMIN)) {
 
             return $this->redirect('declaration');
+        }
+
+        if ($this->getUser()->hasCredential(myUser::CREDENTIAL_STALKER)) {
+
+            return $this->redirect('compte_search');
         }
 
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_TOURNEE)) {
@@ -18,14 +23,9 @@ class commonActions extends sfActions {
             return $this->redirect('tournee_agent_accueil');
         }
 
-        if ($this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
+        if ($this->getUser()->hasContact()) {
 
-            return $this->redirect('compte_recherche');
-        }
-
-        if ($this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && HabilitationConfiguration::getInstance()->isSuiviParDemande()) {
-
-            return $this->redirect('habilitation_demande');
+            return $this->redirect('compte_search');
         }
 
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
@@ -33,7 +33,7 @@ class commonActions extends sfActions {
             return $this->redirect('habilitation');
         }
 
-        if(!$this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()) {
+        if($this->getUser()->getCompte() && (!$this->getUser()->getCompte()->getSociete() || !$this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal())) {
 
             return $this->forwardSecure();
         }
@@ -43,7 +43,11 @@ class commonActions extends sfActions {
             return $this->redirect('pieces_historique', $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal());
         }
 
-        return $this->redirect('declaration_etablissement', $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal());
+        if ($this->getUser()->getCompte()) {
+            return $this->redirect('declaration_etablissement', $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal());
+        }
+
+        return $this->redirect('/logout');
     }
 
     public function executeContact(sfWebRequest $request) {

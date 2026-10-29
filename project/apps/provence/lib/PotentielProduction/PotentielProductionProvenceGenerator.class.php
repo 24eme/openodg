@@ -4,14 +4,14 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
     protected $identificationParcellaire;
     public static $categories = ['principaux', 'secondairesNoirs', 'secondairesBlancsVermentino', 'secondairesBlancsAutres'];
     protected $isPetiteSurface;
-    
+
     public function __construct($identifiant_or_etablissement)
     {
         if ($identifiant_or_etablissement) {
             parent::__construct($identifiant_or_etablissement);
             $this->identificationParcellaire = ParcellaireAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
             if (!$this->identificationParcellaire) {
-                $this->identificationParcellaire = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
+                $this->identificationParcellaire = ParcellaireIntentionClient::getInstance()->getLast($this->etablissement->identifiant);
             }
             $cdp = $this->aggSuperficesByCepages($this->parcellaire->getParcelles(), $this->getCepages());
             if ($this->etablissement->isViticulteur() && $cdp['TOTAL'] < 1.5) {
@@ -575,7 +575,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
     protected function respecteReglesEncepagement($parcelle)
     {
         $dgc = null;
-        $currentCampagne = intval(ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 3);
+        $currentCampagne = intval(ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() - 3);
         if (intval(substr($parcelle->campagne_plantation, 0, 4)) > $currentCampagne) {
             return false;
         }

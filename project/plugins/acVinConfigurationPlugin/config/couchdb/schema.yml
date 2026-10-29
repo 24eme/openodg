@@ -249,6 +249,12 @@ Configuration:
                           definition:
                             fields:
                               '*': {  }
+                        cepages_autorises:
+                          type: array_collection
+                          required: false
+                          definition:
+                            fields:
+                              '*': {  }
                         interpro:
                           type: collection
                           definition:
@@ -553,6 +559,12 @@ Configuration:
                                                   definition:
                                                     fields:
                                                       '*': {  }
+                                                cepages_autorises:
+                                                  type: array_collection
+                                                  required: false
+                                                  definition:
+                                                    fields:
+                                                      '*': {  }
                                                 mentions:
                                                   type: collection
                                                   definition:
@@ -662,6 +674,11 @@ Configuration:
                                                                           definition:
                                                                             fields:
                                                                              '*': { }
+                                                                        cepages_autorises:
+                                                                          type: array_collection
+                                                                          definition:
+                                                                            fields:
+                                                                              '*': {  }
                                                                         interpro:
                                                                           type: collection
                                                                           definition:
@@ -749,6 +766,12 @@ Configuration:
                                                                                       definition:
                                                                                         fields:
                                                                                          '*': { }
+                                                                                    cepages_autorises:
+                                                                                      type: array_collection
+                                                                                      required: false
+                                                                                      definition:
+                                                                                        fields:
+                                                                                          '*': {  }
                                                                                     interpro:
                                                                                       type: collection
                                                                                       definition:

@@ -3,7 +3,7 @@
 include dirname(__FILE__).'/../../bootstrap/functional.php';
 
 if (getenv("NODELETE")) {
-    $b = new sfTestFunctional(new sfBrowser());
+    $b = new sfTestFunctional(new Browser());
     exit(0);
 }
 
@@ -30,4 +30,4 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test_functionnal') a
     }
 }
 
-$b = new sfTestFunctional(new sfBrowser());
+$b = new sfTestFunctional(new Browser());

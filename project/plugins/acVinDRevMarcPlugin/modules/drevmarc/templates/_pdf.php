@@ -56,7 +56,7 @@
         <td class="td" style="border-top: none; text-align: center; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getVolumeObtenu($drevmarc); ?><?php echo tdStart() ?></td>
     </tr>
     <tr>
-        <th class="th" style="border-top: none;  text-align: left; width: 357px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Titre alcoométrique volumique<?php echo tdStart() ?></th>
+        <th class="th" style="border-top: none;  text-align: left; width: 357px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Titre alcoométrique volumique des bonnes chauffes<?php echo tdStart() ?></th>
         <td class="td" style="border-top: none;  text-align: center; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getTitreAlcoolVol($drevmarc); ?><?php echo tdStart() ?></td>
     </tr>
 </table>

@@ -13,16 +13,33 @@ class GenericLatex {
     }
     fwrite($leFichier, $this->getLatexFileContents());
     fclose($leFichier);
-    $retour = chmod($fn,intval('0660',8));
+    $current_umask = umask();
+    umask(0000);
+    chmod($fn,intval('0660',8));
+    umask($current_umask);
     return $fn;
   }
 
   private function getLatexDestinationDir() {
-    return sfConfig::get('sf_root_dir')."/data/latex/";
+    $latex_dir = sfConfig::get('sf_app_cache_dir')."/latex/";
+    if (!file_exists($latex_dir)){
+        $current_umask = umask();
+        umask(0000);
+        mkdir($latex_dir, 0770, true);
+        umask($current_umask);
+    }
+    return $latex_dir;
   }
-  
+
   protected function getTEXWorkingDir() {
-    return "/tmp/";
+      $tmp_dir = sfConfig::get('sf_app_cache_dir')."/tmp/";
+      if (!file_exists($tmp_dir)){
+          $current_umask = umask();
+          umask(0000);
+          mkdir($tmp_dir, 0770, true);
+          umask($current_umask);
+      }
+    return $tmp_dir;
   }
 
   public function generatePDF() {
@@ -39,6 +56,12 @@ class GenericLatex {
     if (!file_exists($pdfpath)) {
       throw new sfException("pdf not created ($pdfpath): ".$output);
     }
+
+    $current_umask = umask();
+    umask(0000);
+    chmod($pdfpath, 0660);
+    umask($current_umask);
+
     return $pdfpath;
   }
 
@@ -53,7 +76,7 @@ class GenericLatex {
 
   public function getPDFFile() {
     $filename = $this->getLatexDestinationDir().$this->getPublicFileName();
-    if(file_exists($filename))
+    if(file_exists($filename) && is_readable($filename))
       return $filename;
     $tmpfile = $this->generatePDF();
     if (!file_exists($tmpfile)) {
@@ -63,6 +86,10 @@ class GenericLatex {
       throw new sfException("not possible to rename $tmpfile to $filename");
     }
     $this->cleanPDF();
+    $current_umask = umask();
+    umask(0000);
+    chmod($filename, 0660);
+    umask($current_umask);
     return $filename;
   }
 

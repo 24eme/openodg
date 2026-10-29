@@ -5,8 +5,6 @@ $t = new lime_test(1);
 $t->todo("les mettre à jour");
 return;
 
-sfContext::createInstance($configuration);
-
 if($application != 'provence') {
     $t = new lime_test(0);
     exit;

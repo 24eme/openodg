@@ -49,7 +49,7 @@ EOF;
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $datas = array();
         $date_dossiers = array();
@@ -58,8 +58,7 @@ EOF;
           $line = rtrim($line);
           $csv = explode(';', $line);
 
-
-          if ($csv[self::DRCIVA_APPELLATION] != 'AOC Cremant d\'Alsace') {
+          if (($csv[self::DRCIVA_APPELLATION] != 'AOC Alsace blanc') && ($csv[self::DRCIVA_APPELLATION] != 'AOC Cremant d\'Alsace')) {
             continue;
           }
           if ($csv[self::DRCIVA_VTSGN]) {
@@ -75,11 +74,11 @@ EOF;
           }
 
           $oldreporting = error_reporting(0);
-          if (($csv[self::DRCIVA_LIEU] == 'TOTAL') || ($csv[self::DRCIVA_CEPAGE] == 'TOTAL')) {
-              $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU'][''][$csv[self::DRCIVA_CVI_ACHETEUR]]['CEPAGE']['TOTAL']['DONTVCI'] = $csv[self::DRCIVA_DONT_VCI];
+	  if (($csv[self::DRCIVA_LIEU] == 'TOTAL') || (preg_match("/^TOTAL/", $csv[self::DRCIVA_CEPAGE]))) {
+              $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU'][''][$csv[self::DRCIVA_CVI_ACHETEUR]]['CEPAGE']['TOTAL']['DONTVCI'] += $csv[self::DRCIVA_DONT_VCI];
               $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] += $csv[self::DRCIVA_DONT_VCI];
           }
-          if (($csv[self::DRCIVA_LIEU] != 'TOTAL') && ($csv[self::DRCIVA_CEPAGE] != 'TOTAL')) {
+	  if (($csv[self::DRCIVA_LIEU] != 'TOTAL') && !preg_match("/^TOTAL/", $csv[self::DRCIVA_CEPAGE])) {
             $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['VOLUME_TOTAL'] += $csv[self::DRCIVA_VCI_TOTAL];
             $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU'][$csv[self::DRCIVA_LIEU]][$csv[self::DRCIVA_CVI_ACHETEUR]]['CEPAGE']['TOTAL']['VOLUME_TOTAL'] += $csv[self::DRCIVA_VCI_TOTAL];
           }
@@ -99,7 +98,7 @@ EOF;
               foreach($vcilieu['LIEU'] as $lieu => $vciacheteur) {
                 foreach($vciacheteur as $cviacheteur => $vcicepage) {
                   foreach($vcicepage['CEPAGE'] as $cepage => $unvci) {
-                      if($cepage == "TOTAL" && $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] && (!isset($unvci['DONTVCI']) || !$unvci['DONTVCI']) && isset($unvci['VOLUME_TOTAL']) && $unvci['VOLUME_TOTAL']) {
+                      if(preg_match("/^TOTAL/", $cepage ) && $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] && (!isset($unvci['DONTVCI']) || !$unvci['DONTVCI']) && isset($unvci['VOLUME_TOTAL']) && $unvci['VOLUME_TOTAL']) {
                           $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['VOLUME_TOTAL'] -= $unvci['VOLUME_TOTAL'];
                           unset($vci[$recoltant][$appellation]['LIEU'][$lieu][$cviacheteur]);
                           break;
@@ -131,16 +130,13 @@ EOF;
             if (!isset($totalappellation['VOLUME']) || !(sprintf('%0.2f', $totalappellation['VOLUME_TOTAL']) === sprintf('%0.2f', $totalappellation['VOLUME']))) {
               $nonsolvable = 1;
             }
-            if (isset($totalappellation['SUPERFICIE'])) {
-              $registre->superficies_facturables += $totalappellation['SUPERFICIE'];
-            }
             foreach($vcilieu['LIEU'] as $lieu => $vciacheteur) {
               if ($lieu == 'TOTAL') {
                 continue;
               }
               foreach($vciacheteur as $cviacheteur => $vcicepage) {
                 foreach($vcicepage['CEPAGE'] as $cepage => $unvci) {
-                  if ($cepage == 'TOTAL') {
+                  if (preg_match('/^TOTAL/', $cepage)) {
                     continue;
                   }
                   if ($nonsolvable) {
@@ -153,7 +149,7 @@ EOF;
                     echo ($unvci['ACHETEUR_CVI'] && $unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_NOM'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE;
                     echo "\n";
 
-                    $registre->addLigne(preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT'])), RegistreVCIClient::MOUVEMENT_CONSTITUE, $unvci['VOLUME'] * 1.0, ($unvci['ACHETEUR_CVI'] && $unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_CVI'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE);
+                    $registre->addLigne(preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT'])), RegistreVCIClient::MOUVEMENT_CONSTITUE, $unvci['VOLUME'] * 1.0, ($unvci['ACHETEUR_CVI'] && $unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_CVI'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE, "DR");
                   }
                 }
               }
@@ -169,13 +165,8 @@ EOF;
               continue;
           }
 
-          if($registre->getTotalMouvement(RegistreVCIClient::MOUVEMENT_CONSTITUE) < 1) {
-              $registre->superficies_facturables = 0;
-          }
-
-          echo "Superficie facturable : ".$registre->superficies_facturables."\n";
-
           $registre->save();
+          echo "Superficie facturable : ".$registre->superficies_facturables."\n";
           echo $registre->_id." savé\n";
         }
     }

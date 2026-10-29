@@ -2,6 +2,7 @@
 <?php $compte = $etablissement; ?>
 
 <h4><span class="glyphicon glyphicon-home"></span> <?php  echo $etablissement->getNom()." - ".$etablissement->getIdentifiant(); ?><?php  if($etablissement->getCvi()){ echo ' - CVI : '.$etablissement->getCvi(); } ?><?php  if($etablissement->getSiret()){ echo ' - SIRET : '.formatSIRET($etablissement->getSiret()); } ?></h4>
+<?php if(!isset($public) || !$public): ?>
 <div class="row">
     <div class="col-xs-12">
         <div class="row">
@@ -10,8 +11,8 @@
             </div>
             <div style="margin-bottom: 5px" class="col-xs-9">
                 <address style="margin-bottom: 0;">
-                <?php echo $compte->getAdresse(); ?><?php echo ($compte->exist('adresse_complementaire') && $compte->getAdresseComplementaire())? " ".$compte->getAdresseComplementaire() : ''; ?>
-                    <span><?php echo ' '.$compte->getCodePostal(); ?></span><?php echo ' '.$compte->getCommune(); ?><small class="text-muted">(<?php echo ' '.$compte->getPays(); ?>)</small>
+                    <?php echo $compte->getAdresse(); ?><?php echo ($compte->exist('adresse_complementaire') && $compte->getAdresseComplementaire())? " ".$compte->getAdresseComplementaire() : ''; ?>
+                    <span><?php echo $compte->getCodePostal(); ?></span> <?php echo $compte->getCommune(); ?> <small class="text-muted">(<?php echo $compte->getPays(); ?>)</small>
                 </address>
             </div>
         </div>
@@ -29,3 +30,4 @@
         </div>
     </div>
 </div>
+<?php endif; ?>

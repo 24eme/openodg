@@ -2,3 +2,4 @@ all:
   email_plugin:
     from_adresse: email@email.fr
     from_name: "From name"
+    all_copy: false

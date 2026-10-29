@@ -38,7 +38,7 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
             'commentaire' => new sfValidatorString(array("required" => false)),
         ));
 
-        if(sfContext::getInstance()->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(sfContext::getInstance()->getUser()->hasHabilitation()) {
             $this->setWidget('activites', new sfWidgetFormChoice(array('expanded' => true, 'multiple' => true, 'choices' => $this->getActivites())));
             $this->getWidget('activites')->setLabel('Activités');
             $this->setValidator('activites', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getActivites()))));
@@ -77,7 +77,7 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
 
         $demandeKey = $this->demande->getKey();
 
-        if($values['activites'] && count($values['activites']) && count($values['activites']) < count($this->demande->getActivitesLibelle())) {
+        if(isset($values['activites']) && $values['activites'] && count($values['activites']) && count($values['activites']) < count($this->demande->getActivitesLibelle())) {
 
             $newDemandes = HabilitationClient::getInstance()->splitDemandeAndSave($this->getDocument()->identifiant, $demandeKey, $values['activites']);
 

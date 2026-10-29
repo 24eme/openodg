@@ -1,0 +1,5 @@
+all:
+  configuration:
+    facture:
+      echeances: false
+      uniq_template_prefix: false

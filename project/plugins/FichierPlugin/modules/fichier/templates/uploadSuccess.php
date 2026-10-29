@@ -7,7 +7,7 @@
 </ol>
 
 <div class="page-header">
-    <h2><?php if($fichier->isNew()): ?>Ajout de document<?php else: ?>Modification du document<?php endif; ?></a></h2>
+    <h2><?php if($fichier->isNew()): ?>Ajout de document<?php else: ?>Modification du document<?php endif; ?></h2>
 </div>
 
 <form class="form-horizontal" role="form" action="<?php echo url_for("upload_fichier", array('fichier_id' => $fichier_id, 'sf_subject' => $etablissement)) ?>" method="post" enctype="multipart/form-data">
@@ -87,7 +87,7 @@
 				<?php echo $form['file']->render() ?>
 			</div>
 			<div class="col-xs-2">
-                <?php if($sf_user->isAdmin()): ?>
+                <?php if($sf_user->isAdminODG()): ?>
 				<button name="keep_page" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button>
                 <?php endif; ?>
 			</div>

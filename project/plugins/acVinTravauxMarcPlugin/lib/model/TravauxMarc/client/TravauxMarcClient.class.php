@@ -50,25 +50,4 @@ class TravauxMarcClient extends acCouchdbClient {
                     ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, $campagne_to))
                     ->execute($hydrate);
     }
-
-    public function getDateOuvertureDebut() {
-        $dates = sfConfig::get('app_dates_ouverture_travauxmarc');
-
-        return $dates['debut'];
-    }
-
-    public function getDateOuvertureFin() {
-        $dates = sfConfig::get('app_dates_ouverture_travauxmarc');
-
-        return $dates['fin'];
-    }
-
-    public function isOpen($date = null) {
-        if(is_null($date)) {
-
-            $date = date('Y-m-d');
-        }
-
-        return $date >= $this->getDateOuvertureDebut() && $date <= $this->getDateOuvertureFin();
-    }
 }

@@ -2,18 +2,19 @@
 
 class DegustationResultatsForm extends acCouchdbObjectForm {
 
-  private $tableLots = null;
   private $numero_table = null;
+  private $degustation = null;
 
   public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null)
   {
-    $this->tableLots = $options['tableLots'];
     $this->numero_table = $options['numero_table'];
+    $this->degustation = $object;
 
     parent::__construct($object, $options, $CSRFSecret);
   }
 
     public function configure() {
+
 
       foreach ($this->getTableLots() as $lot) {
 
@@ -34,7 +35,7 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
     }
 
     public function getTableLots(){
-      return $this->getObject()->getLotsWithoutLeurre();
+      return $this->getObject()->getLotsByTable($this->numero_table);
     }
 
     public function getWidgetNameFromLot($lot){
@@ -50,15 +51,8 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
 
         foreach ($this->getTableLots() as $lot) {
           $name = $this->getWidgetNameFromLot($lot);
-          if($values['conformite_'.$name]){
-            $lot->setConformite($values['conformite_'.$name]);
-            $lot->setMotif($values['motif_'.$name]);
-            $lot->setObservation($values['observation_'.$name]);
-            $lot->setStatut(Lot::STATUT_DEGUSTE);
-          }else {
-            $lot->setStatut(Lot::STATUT_PRELEVE);
+          $lot->setConformiteLot($values['conformite_'.$name], $values['motif_'.$name], $values['observation_'.$name]);
         }
-      }
     }
 
     protected function updateDefaultsFromObject() {
@@ -67,15 +61,30 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
             $name = $this->getWidgetNameFromLot($lot);
             $defaults['conformite_'.$name] = $lot->getConformite();
             $defaults['motif_'.$name] = $lot->getMotif();
-            $defaults['observation_'.$name] = $lot->getObservation();            
+            $defaults['observation_'.$name] = $lot->getObservation();
         }
         $this->setDefaults($defaults);
     }
 
-    protected function getConformites(){
-
-      return Lot::$libellesConformites;
+    protected function getConformites()
+    {
+        $configurationConformite = DegustationConfiguration::getInstance()->getConformites();
+        if ($this->getDegustation()->isLibelleAcceptable()) {
+            return Lot::$libellesAcceptabilites;
+        }
+        return array_filter(Lot::$libellesConformites, function ($k) use ($configurationConformite) {
+            return in_array($k, $configurationConformite);
+        }, ARRAY_FILTER_USE_KEY);
     }
 
+    protected function doSave($con = NULL) {
+        $this->updateObject();
+        $this->object->getCouchdbDocument()->save(false);
+    }
+
+    protected function getDegustation()
+    {
+        return $this->degustation;
+    }
 
 }

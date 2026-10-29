@@ -1,7 +1,7 @@
 all:
   configuration:
     drev:
-      prelevements: false
+      validation_odg: 'admin'
       mentions_complementaire: true
       denomination_auto: true
       exploitation_save: true

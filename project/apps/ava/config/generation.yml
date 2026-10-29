@@ -1,0 +1,6 @@
+all:
+  configuration:
+    generation:
+      ordre_facture: commune
+      sousgeneration:
+        FACTURE: []

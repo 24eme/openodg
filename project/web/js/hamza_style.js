@@ -20,14 +20,14 @@
 
     $(document).ready(function ()
     {
-        $(document).initAdvancedElements();
-        $.initQueryHash();
-        $.initTableSelection();
+        $(document).initAdvancedElementsHamza();
+        $.initQueryHashHamza();
+        $.initTableSelectionHamza();
 
         $(options.selectors.ajaxModal).on("show.bs.modal", function (e) {
             var link = $(e.relatedTarget);
             $(this).load(link.attr("href"), function () {
-                $(this).initAdvancedElements();
+                $(this).initAdvancedElementsHamza();
             });
         });
         $(options.selectors.ajaxModal).on("hidden.bs.modal", function (e) {
@@ -41,7 +41,7 @@
      * Sélection de lignes de tableau
      * $.initTableSelection();
      ******************************************/
-    $.initTableSelection = function()
+    $.initTableSelectionHamza = function()
     {
         var tables = $('.table_selection');
 
@@ -77,7 +77,7 @@
         });
     };
 
-    $.fn.initAdvancedElements = function () {
+    $.fn.initAdvancedElementsHamza = function () {
 
         var element = $(this);
 
@@ -214,8 +214,14 @@
 
         $(this).find('.hamzastyle').each(function () {
             var select2 = $(this);
+            var minInput = 0;
+            if (select2.attr('data-hamzastyle-mininput') !== undefined) {
+              minInput = select2.attr('data-hamzastyle-mininput')
+            }
+
             select2.select2({
                 multiple: true,
+                minimumInputLength: minInput,
                 data: function () {
                     var data = [];
                     element.find('.hamzastyle-item').each(function () {
@@ -334,7 +340,7 @@
 
             return true;
         });
-        
+
         /**
          * Sélection de lignes de tableau
          ******************************************/
@@ -421,7 +427,7 @@
     }
 
 
-    $.initQueryHash = function () {
+    $.initQueryHashHamza = function () {
         $(window).on('hashchange', function () {
             if ($(document).find('.hamzastyle').length) {
                 var params = jQuery.parseParams(location.hash.replace("#", ""));
@@ -439,19 +445,33 @@
 
                 $(document).find('.hamzastyle').select2("data", select2Data);
 
+                let isHamzaModeAnd = true;
+                if($(document).find('input.hamzastyle').attr('data-mode') == 'OR') {
+                  isHamzaModeAnd = false;
+                }
+
+                console.log(isHamzaModeAnd);
+
                 $(document).find('.hamzastyle-item').each(function () {
                     var words = $(this).attr('data-words');
-                    var find = true;
+                    var callbackfct = $(this).attr('data-callbackfct')
+                    var find = isHamzaModeAnd;
                     for (key in filtres) {
                         var word = filtres[key];
-                        if (words.indexOf(word) === -1) {
+                        if (isHamzaModeAnd && words.indexOf(word) === -1) {
                             find = false;
                         }
+                        if (!isHamzaModeAnd && words.indexOf(word) !== -1) {
+                            find = true;
+                        }
                     }
-                    if (find) {
+                    if (find || filtres.length == 0) {
                         $(this).show();
                     } else {
                         $(this).hide();
+                    }
+                    if(callbackfct){
+                      setTimeout(callbackfct, 1);
                     }
                 });
             }

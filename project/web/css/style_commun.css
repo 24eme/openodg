@@ -35,6 +35,14 @@
     opacity: 0.80;
 }
 
+tr .show-on-tr-hover {
+    visibility: hidden;
+}
+
+tr:hover .show-on-tr-hover {
+    visibility: visible;
+}
+
 .panel-body-success {
 
   border-color: rgba(130, 147, 69, 0.4);
@@ -43,3 +51,303 @@
 #menu_navigation ul.navbar-nav li.disabled {
     opacity: 0.4;
 }
+
+.pointer {
+    cursor: pointer;
+}
+
+.trunk-text{
+  white-space: nowrap;
+  text-overflow: ' ... ';
+  overflow: hidden;
+}
+
+.m-0 { margin:0!important; }
+.m-1 { margin:.25rem!important; }
+.m-2 { margin:.5rem!important; }
+.m-3 { margin:1rem!important; }
+.m-4 { margin:1.5rem!important; }
+.m-5 { margin:3rem!important; }
+
+.mt-0 { margin-top:0!important; }
+.mr-0 { margin-right:0!important; }
+.mb-0 { margin-bottom:0!important; }
+.ml-0 { margin-left:0!important; }
+
+.mt-1 { margin-top:.25rem!important; }
+.mr-1 { margin-right:.25rem!important; }
+.mb-1 { margin-bottom:.25rem!important; }
+.ml-1 { margin-left:.25rem!important; }
+
+.mt-2 { margin-top:.5rem!important; }
+.mr-2 { margin-right:.5rem!important; }
+.mb-2 { margin-bottom:.5rem!important; }
+.ml-2 { margin-left:.5rem!important; }
+
+.mt-3 { margin-top:1rem!important; }
+.mr-3 { margin-right:1rem!important; }
+.mb-3 { margin-bottom:1rem!important; }
+.ml-3 { margin-left:1rem!important; }
+
+.mt-4 { margin-top:1.5rem!important; }
+.mr-4 { margin-right:1.5rem!important; }
+.mb-4 { margin-bottom:1.5rem!important; }
+.ml-4 { margin-left:1.5rem!important; }
+
+.mt-5 { margin-top:3rem!important; }
+.mr-5 { margin-right:3rem!important; }
+.mb-5 { margin-bottom:3rem!important; }
+.ml-5 { margin-left:3rem!important; }
+
+.mt-auto { margin-top:auto!important; }
+.mr-auto { margin-right:auto!important; }
+.mb-auto { margin-bottom:auto!important; }
+.ml-auto { margin-left:auto!important; }
+
+.p-0 { padding:0!important; }
+.p-1 { padding:.25rem!important; }
+.p-2 { padding:.5rem!important; }
+.p-3 { padding:1rem!important; }
+.p-4 { padding:1.5rem!important; }
+.p-5 { padding:3rem!important; }
+
+.pt-0 { padding-top:0!important; }
+.pr-0 { padding-right:0!important; }
+.pb-0 { padding-bottom:0!important; }
+.pl-0 { padding-left:0!important; }
+
+.pt-1 { padding-top:.25rem!important; }
+.pr-1 { padding-right:.25rem!important; }
+.pb-1 { padding-bottom:.25rem!important; }
+.pl-1 { padding-left:.25rem!important; }
+
+.pt-2 { padding-top:.5rem!important; }
+.pr-2 { padding-right:.5rem!important; }
+.pb-2 { padding-bottom:.5rem!important; }
+.pl-2 { padding-left:.5rem!important; }
+
+.pt-3 { padding-top:1rem!important; }
+.pr-3 { padding-right:1rem!important; }
+.pb-3 { padding-bottom:1rem!important; }
+.pl-3 { padding-left:1rem!important; }
+
+.pt-4 { padding-top:1.5rem!important; }
+.pr-4 { padding-right:1.5rem!important; }
+.pb-4 { padding-bottom:1.5rem!important; }
+.pl-4 { padding-left:1.5rem!important; }
+
+.pt-5 { padding-top:3rem!important; }
+.pr-5 { padding-right:3rem!important; }
+.pb-5 { padding-bottom:3rem!important; }
+.pl-5 { padding-left:3rem!important; }
+
+.checkboxlots input:not(:checked) { display: none; }
+
+.block_declaration .panel-body{ height: 180px; max-height: 180px }
+.block_declaration .explications{ height: 80px; max-height: 80px }
+.block_declaration .actions{ height: 75px; max-height: 75px }
+
+.lots-by-table {
+    padding-left: 0;
+}
+
+.lots-by-table li {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.lots-by-table li:not(:last-child)::after {
+    content: ", ";
+}
+
+/* Affichage des messages d'erreur dans les formulaires */
+.error_list li {
+    color: red;
+    list-style: none;
+}
+
+/* ---------------------------------------------------
+
+Project : CSS Checkbox Switch
+Author : Partha Kar
+Version : 1.0
+Release Dtae : 15 November, 2017
+Link : https://bootsnipp.com/snippets/Wa3np
+Licence : MIT 
+
+---------------------------------------------------- */
+
+/*Switch cepage en % */
+.checkbox.checbox-switch {
+    padding-left: 0;
+}
+
+.checkbox.checbox-switch label,
+.checkbox-inline.checbox-switch {
+    display: inline-block;
+    position: relative;
+    padding-left: 0;
+}
+.checkbox.checbox-switch label input,
+.checkbox-inline.checbox-switch input {
+    display: none;
+}
+.checkbox.checbox-switch label span,
+.checkbox-inline.checbox-switch span {
+    width: 35px;
+    border-radius: 20px;
+    height: 18px;
+    border: 1px solid #dbdbdb;
+    background-color: rgb(255, 255, 255);
+    border-color: rgb(223, 223, 223);
+    box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset;
+    transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+.checkbox.checbox-switch label span:before,
+.checkbox-inline.checbox-switch span:before {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgb(255,255,255);
+    content: " ";
+    top: 0;
+    position: relative;
+    left: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+.checkbox.checbox-switch label > input:checked + span:before,
+.checkbox-inline.checbox-switch > input:checked + span:before {
+  left: 17px;
+}
+
+/* Switch Default */
+.checkbox.checbox-switch label > input:checked + span,
+.checkbox-inline.checbox-switch > input:checked + span {
+    background-color: rgb(180, 182, 183);
+    border-color: rgb(180, 182, 183);
+    box-shadow: rgb(180, 182, 183) 0px 0px 0px 8px inset;
+    transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;
+}
+.checkbox.checbox-switch label > input:checked:disabled + span,
+.checkbox-inline.checbox-switch > input:checked:disabled + span {
+    background-color: rgb(220, 220, 220);
+    border-color: rgb(220, 220, 220);
+    box-shadow: rgb(220, 220, 220) 0px 0px 0px 8px inset;
+    transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;
+}
+.checkbox.checbox-switch label > input:disabled + span,
+.checkbox-inline.checbox-switch > input:disabled + span {
+    background-color: rgb(232,235,238);
+    border-color: rgb(255,255,255);
+}
+.checkbox.checbox-switch label > input:disabled + span:before,
+.checkbox-inline.checbox-switch > input:disabled + span:before {
+    background-color: rgb(248,249,250);
+    border-color: rgb(243, 243, 243);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.alert ul.list-unstyled li {
+    margin-bottom: 8px;
+}
+
+.alert ul.list-unstyled li:last-child {
+    margin-bottom: inherit;
+}
+
+.panel-primary-bordered-right {
+    border-right: 6px solid #337ab7;
+}
+
+.panel > .list-group .list-group-item.active-bordered {
+    border-left: 6px solid #337ab7;
+}
+.strong {
+    font-weight: bold;
+}
+
+#map.fullscreen {
+    height: 100% !important;
+    width: 100% !important;
+    top: 0;
+    left: 0;
+    position: fixed !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 1000;
+}
+
+@media (min-width: 768px) {
+    .modal-dialog.modal-xxl {
+        width: 1140px;
+    }
+}
+
+tbody.collapse.in {
+    display: table-row-group;
+}
+
+code {
+    padding: 2px 4px;
+    font-size: 90% !important;
+    border-radius: 4px;
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+}
+
+.nav-step {
+    counter-reset: steps;
+    font-size: 15px;
+    border-bottom: 1px solid #dddddd;
+}
+
+.nav-step ul.navbar-nav li a::before {
+    display: inline-block;
+    border: 2px solid;
+    box-sizing: content-box;
+    border-radius: 50%;
+    counter-increment: steps;
+    content: counter(steps);
+    margin-right: 8px;
+    line-height: 20px;
+    height: 20px;
+    width: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+#etapes_degustation .nav-step ul.navbar-nav li a::before {
+    display: block;
+    margin: 0 auto 12px auto;
+}
+
+#etapes_degustation .nav-step ul.navbar-nav li a {
+    padding-right: 12px;
+    padding-left: 12px;
+}
+
+#etapes_degustation.many-step .nav-step ul.navbar-nav li a {
+    padding-right: 8px;
+    padding-left: 8px;
+}
+
+.nav-step ul.navbar-nav li {
+    border-right: 1px solid #dddddd;
+}
+
+.mdp {
+    display: inline-block;
+    padding: 9px 0;
+}
+
+.mdp i.glyphicon {
+    font-size: 15px;
+}
+
+.mdp-wrapper {
+     padding: 0 !important;
+ }

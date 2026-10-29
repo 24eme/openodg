@@ -1,0 +1,1 @@
+../../../../gaillac/modules/degustation/templates/_IGPficheIndividuellePdf.php

@@ -22,18 +22,20 @@ class DegustationTousView extends acCouchdbView
                             ->getView($this->design, $this->view)->rows, $campagne);
     }
 
-    public function getLastDegustationByStatut($appellation, $identifiant, $statut) {
-        $results = $this->viewToJson($this->client
+    public function getLastDateDegustationByStatut($appellation, $identifiant, $statut) {
+        $results = $this->client
                             ->startkey(array($appellation, $identifiant, "9999-99-99", $statut, array()))
                             ->endkey(array($appellation, $identifiant, "0000-00-00", $statut))
                             ->reduce(false)
                             ->descending(true)
-                            ->getView($this->design, $this->view)->rows);
+                            ->getView($this->design, $this->view)->rows;
 
-        if(count($results)) {
-            return $results[$identifiant];
+        foreach($results as $result) {
+            if($result->key[self::KEY_STATUT] == $statut) {
+
+                return $result->key[self::KEY_DATE_DEGUSTATION];
+            }
         }
-
 
         return null;
     }

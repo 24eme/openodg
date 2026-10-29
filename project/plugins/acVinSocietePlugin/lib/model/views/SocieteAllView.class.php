@@ -122,13 +122,10 @@ class SocieteAllView extends acCouchdbView
     }
 
     public static function makeLibelle($datas) {
-        $libelle = '';
+        $libelle = '🏢 ';
 
         if (isset($datas[self::KEY_RAISON_SOCIALE]) && $rs = $datas[self::KEY_RAISON_SOCIALE]) {
-            if ($libelle) {
-                $libelle .= ' / ';
-            }
-            $libelle .= $rs;
+			$libelle .= Anonymization::hideIfNeeded($rs);
         }
         $libelle .= ' '.$datas[self::KEY_IDENTIFIANT];
         if (isset($datas[self::KEY_SIRET]) && $siret = $datas[self::KEY_SIRET]) {

@@ -14,11 +14,11 @@
 
  */
 
-abstract class BaseDRMouvement extends MouvementFactures {
+abstract class BaseDRMouvementFactures extends MouvementFactures {
 
     public function configureTree() {
        $this->_root_class_name = 'DR';
-       $this->_tree_class_name = 'DRMouvement';
+       $this->_tree_class_name = 'DRMouvementFactures';
     }
 
 }

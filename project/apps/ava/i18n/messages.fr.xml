@@ -14,7 +14,7 @@
 
       <trans-unit>
         <source>Required.</source>
-        <target>Champ obligatoires</target>
+        <target>champ obligatoire</target>
       </trans-unit>
       
       <trans-unit>

@@ -4,22 +4,24 @@ class ParcellaireIrrigueClient extends acCouchdbClient {
 
       const TYPE_MODEL = "ParcellaireIrrigue";
       const TYPE_COUCHDB = "PARCELLAIREIRRIGUE";
+      const TYPE_LIBELLE = "Irrigué";
 
       public static function getInstance() {
           return acCouchdbManager::getClient("parcellaireIrrigue");
       }
 
-      public function createDoc($identifiant, $campagne, $papier = false, $date = null, $type = self::TYPE_COUCHDB) {
+      public function createDoc($identifiant, $periode, $papier = false, $date = null, &$errors = null, $type = self::TYPE_COUCHDB) {
       	if (!$date) {
           $date = date('Y-m-d');
         }
-        return $this->createOrGetDocFromIdentifiantAndDate($identifiant, $campagne, $papier, $date, $type);
+        return $this->createOrGetDocFromIdentifiantAndDate($identifiant, $periode, $papier, $date, $errors, $type);
       }
 
-      public function createOrGetDocFromIdentifiantAndDate($identifiant, $campagne, $papier = false, $date = null, $type = self::TYPE_COUCHDB)
+      public function createOrGetDocFromIdentifiantAndDate($identifiant, $periode, $papier = false, $date = null, &$errors = null, $type = self::TYPE_COUCHDB)
       {
           $doc_found = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
           if ($doc_found && $doc_found->date === $date) {
+              $doc_found->updateParcelles();
               if($papier) {
                   $doc_found->add('papier', 1);
               } else {
@@ -27,9 +29,9 @@ class ParcellaireIrrigueClient extends acCouchdbClient {
               }
               return $doc_found;
           }
-          if (!$doc_found || $doc_found->campagne != $campagne) {
+          if (!$doc_found || $doc_found->periode != $periode) {
 	          $parcellaireIrrigue = new parcellaireIrrigue();
-	          $parcellaireIrrigue->initDoc($identifiant, $campagne, $date, $type);
+	          $parcellaireIrrigue->initDoc($identifiant, $periode, $date, $type);
 	          if($papier) {
 	          	$parcellaireIrrigue->add('papier', 1);
 	          }
@@ -37,7 +39,7 @@ class ParcellaireIrrigueClient extends acCouchdbClient {
               $doc_found->date = $date;
               $parcellaireIrrigue = clone $doc_found;
               $parcellaireIrrigue->constructId();
-              $parcellaireIrrigue->updateParcelles();
+              $parcellaireIrrigue->updateParcelles($errors);
               if($papier) {
                   $parcellaireIrrigue->add('papier', 1);
               } else {
@@ -67,32 +69,5 @@ class ParcellaireIrrigueClient extends acCouchdbClient {
           			->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $dateDebut)))
                     ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $date)))
           			->execute($hydrate);
-      }
-
-      public function getDateOuverture($type = self::TYPE_COUCHDB) {
-          if ($type == self::TYPE_COUCHDB) {
-              $dates = sfConfig::get('app_dates_ouverture_parcellaire_irrigue');
-          }
-          if (!is_array($dates) || !isset($dates['debut']) || !isset($dates['fin'])) {
-              return array('debut'=>'1900-01-01', 'fin' => '9999-12-31');
-          }
-          return $dates;
-      }
-
-      public function getDateOuvertureDebut($type = self::TYPE_COUCHDB) {
-          $dates = $this->getDateOuverture($type);
-          return $dates['debut'];
-      }
-
-      public function getDateOuvertureFin($type = self::TYPE_COUCHDB) {
-          $dates = $this->getDateOuverture($type);
-          return $dates['fin'];
-      }
-
-      public function isOpen($type = self::TYPE_COUCHDB, $date = null) {
-          if (is_null($date)) {
-              $date = date('Y-m-d');
-          }
-          return $date >= $this->getDateOuvertureDebut($type) && $date <= $this->getDateOuvertureFin($type);
       }
 }

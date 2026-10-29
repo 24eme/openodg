@@ -1,20 +1,20 @@
 <?php
 $email_teledecl = null;
 if($compte->getSociete()->isTransaction()){
-   $email_teledecl = $compte->getSociete()->getEtablissementPrincipal()->getEmailTeledeclaration();
+   $email_teledecl = $compte->getSociete()->getEtablissementPrincipal()->getTeledeclarationEmail();
 }else{
-    $email_teledecl = $compte->getSociete()->getEmailTeledeclaration();
+    $email_teledecl = $compte->getSociete()->getTeledeclarationEmail();
 }
 
 ?>
-<div id="principal" >
+<div id="principal mt-5">
   <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-    <h4 class="titre_principal">Mon compte</h4>
-  </div>
-   <div class="panel-body">
+              <h4 class="titre_principal">Mon compte</h4>
+            </div>
+            <div class="panel-body">
     <br/>
 
         <div id="modification_compte" class="col-xs-12">
@@ -82,7 +82,6 @@ if($compte->getSociete()->isTransaction()){
 
                 <div class="col-xs-12">&nbsp;<br/><br/></div>
                 <div class="col-xs-12">
-                      <a href="<?php echo url_for('common_homepage'); ?>" class=" btn btn-default " alt="Retour" style="cursor: pointer;">Retour</a>
                       <a href="#" class=" btn btn-warning modifier" style="cursor: pointer; float: right;">Modifier les informations</a>
                 </div>
             </div>
@@ -109,8 +108,11 @@ if($compte->getSociete()->isTransaction()){
                         <div class="col-xs-6 text-right">
                             <?php echo $form['mdp1']->renderLabel() ?>
                         </div>
-                        <div class="col-xs-6 text-left">
+                        <div class="col-xs-5 text-left">
                               <?php echo $form['mdp1']->render() ?>
+                        </div>
+                        <div class="col-xs-1 mdp-wrapper">
+                            <span class="mdp mdp1-toggle-icon"><i class="glyphicon glyphicon-eye-open"></i> </span>
                         </div>
                       </div>
                       <div class="row">
@@ -118,8 +120,11 @@ if($compte->getSociete()->isTransaction()){
                         <div class="col-xs-6 text-right">
                             <?php echo $form['mdp2']->renderLabel() ?>
                         </div>
-                        <div class="col-xs-6 text-left">
+                        <div class="col-xs-5 text-left">
                               <?php echo $form['mdp2']->render() ?>
+                        </div>
+                        <div class="col-xs-1 mdp-wrapper">
+                            <span class="mdp mdp2-toggle-icon"><i class="glyphicon glyphicon-eye-open"></i> </span>
                         </div>
                       </div>
                     </div>
@@ -134,7 +139,7 @@ if($compte->getSociete()->isTransaction()){
                         <div class="col-xs-6 text-right">
                             <?php echo $form['email']->renderLabel() ?>
                         </div>
-                        <div class="col-xs-6 text-left">
+                        <div class="col-xs-5 text-left">
                               <?php echo $form['email']->render() ?>
                         </div>
                       </div>
@@ -143,7 +148,7 @@ if($compte->getSociete()->isTransaction()){
                         <div class="col-xs-6 text-right">
                             <?php echo $form['telephone_bureau']->renderLabel() ?>
                         </div>
-                        <div class="col-xs-6 text-left">
+                        <div class="col-xs-5 text-left">
                               <?php echo $form['telephone_bureau']->render() ?>
                         </div>
                       </div>
@@ -152,7 +157,7 @@ if($compte->getSociete()->isTransaction()){
                         <div class="col-xs-6 text-right">
                             <?php echo $form['telephone_mobile']->renderLabel() ?>
                         </div>
-                        <div class="col-xs-6 text-left">
+                        <div class="col-xs-5 text-left">
                               <?php echo $form['telephone_mobile']->render() ?>
                         </div>
                       </div>
@@ -173,4 +178,79 @@ if($compte->getSociete()->isTransaction()){
 </div>
 </div>
 </div>
+
+<?php if (MandatSepaConfiguration::getInstance()->isActive()): ?>
+<div class="row">
+  <div class="col-xs-12">
+      <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="titre_principal">Coordonnées bancaires</h4>
+          </div>
+          <div class="panel-body">
+
+          <div class="col-xs-12">
+            <h4>Vos coordonnées bancaires : </h4>
+          </div>
+          <?php if ($mandatSepa): ?>
+            <div class="col-xs-8">
+              <div class="row">
+                <div class="col-xs-6 text-right">
+                    <label>IBAN :</label>
+                </div>
+                <div class="col-xs-6 text-left">
+                    <?php echo $mandatSepa->debiteur->iban; ?>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-6 text-right">
+                    <label>BIC :</label>
+                </div>
+                <div class="col-xs-6 text-left">
+                    <?php echo $mandatSepa->debiteur->bic; ?>
+                </div>
+              </div>
+              <div class="row">&nbsp;</div>
+              <div class="row">
+                <div class="col-xs-6 text-right">
+                    <label>Mandat de prélèvement SEPA :</label>
+                </div>
+                <div class="col-xs-6 text-left">
+                    <a href="<?php echo url_for('mandatsepa_pdf', $mandatSepa) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;Télécharger le document</a>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-6 text-right">
+                    <label>Statut :</label>
+                </div>
+                <div class="col-xs-6 text-left<?php if(!$mandatSepa->is_signe): ?> text-danger<?php endif; ?>">
+                    <?php echo $mandatSepa->getStatut(); ?>
+                </div>
+              </div>
+            </div>
+            <?php if (!$mandatSepa->is_telecharge): ?>
+            <?php include_partial('mandatsepa/popupIncitationSignatureMandat', array('mandatSepa' => $mandatSepa)); ?>
+            <?php endif; ?>
+          <?php else: ?>
+            <div class="col-xs-8">
+              <div class="row">
+                <div class="col-xs-6 text-right"></div>
+                <div class="col-xs-6 text-left">
+                  <p>Vous n'avez pas saisi de coordonnées bancaires</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12">
+                  <a href="<?php echo url_for('compte_teledeclarant_coordonnees_bancaires') ?>" class=" btn btn-warning modifier" style="cursor: pointer; float: right;">Saisir vos coordonnées bancaires</a>
+            </div>
+          <?php endif; ?>
+          </div>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
+
+<div class="col-xs-12">
+  <a href="<?php echo url_for('common_homepage'); ?>" class=" btn btn-default " alt="Retour" style="cursor: pointer;">Retour</a>
+</div>
+
 </div>

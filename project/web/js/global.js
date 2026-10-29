@@ -308,6 +308,9 @@
                 $(this).parent().parent().parent().parent().addClass("bootstrap-switch-on");
                 $(this).parent().parent().parent().parent().addClass('success');
                 $(this).parent().parent().parent().parent().parent().parent().find("input.bsswitch-input").removeAttr("disabled");
+                $(this).parent().parent().parent().parent().parent().parent().find("input.bsswitch-input").trigger('change');
+                $(this).trigger('update');
+                $(this)[0].dispatchEvent(new Event('change-native'));
             } else {
                 $(this).parent().parent().parent().addClass("bootstrap-switch-off");
                 $(this).parent().parent().parent().removeClass("bootstrap-switch-on");
@@ -315,6 +318,8 @@
                 $(this).parent().parent().parent().parent().removeClass("bootstrap-switch-on");
                 $(this).parent().parent().parent().parent().removeClass('success');
                 $(this).parent().parent().parent().parent().parent().parent().find("input.bsswitch-input").attr("disabled", "disabled");
+                $(this).parent().parent().parent().parent().parent().parent().find("input.bsswitch-input").trigger('change');
+                $(this).trigger('update');
             }
             if ($('.bsswitch').size() == $('.bsswitch:checked').size()) {
             	$('.bootstrap-switch-activeall').hide();
@@ -334,13 +339,18 @@
         	$('.bootstrap-switch-removeall').show();
         }
 
-        $('tr td').click(function (event) {
-            if (!$(this).hasClass('edit')) {
-                var value = $(this).parent().find('.bsswitch').is(':checked');
-                $(this).parent().find('td .bsswitch').bootstrapSwitch('state', !value, false);
-            }
+        $('table:not(.tableParcellaire) tr td').click(function (event) {
+          const tr = event.target.closest('tr')
+          if (tr.classList.contains('edit') === false) {
+            const inputswitch = tr.querySelector('input.degustation.switch')
+
+            if (! inputswitch) return
+
+            inputswitch.checked = ! inputswitch.checked
+            inputswitch.dispatchEvent(new Event('click'))
+          }
         });
-        $('tr').click(function (event) {
+        $('table:not(.tableParcellaire) tr').click(function (event) {
             $.trBsSwitchHighlight($(this));
         });
 
@@ -397,7 +407,15 @@
                             fieldsToDuplicate[$(this).data("duplicate")] = $(this).select2('data');
                         }
                     });
-                    confirmtxt = confirmtxt.replace('MATERIEL','"'+fieldsToDuplicate.materiel.id+'"').replace('RESSOURCE','"'+fieldsToDuplicate.ressources.id+'"');
+                    confirmtxt = confirmtxt
+                      .replace(
+                        'MATERIEL',
+                        fieldsToDuplicate?.materiel?.id ? `"${fieldsToDuplicate.materiel.id}"` : ''
+                      )
+                      .replace(
+                        'RESSOURCE',
+                        fieldsToDuplicate?.ressources?.id ? `"${fieldsToDuplicate.ressources.id}"` : ''
+                      );
                     if (confirm(confirmtxt)) {
 
                         for (var f in fieldsToDuplicate) {
@@ -576,6 +594,7 @@
         if($('.modal').find('.has-error').length !== 0) {
         	$('.modal').modal('show');
         }
+        $('.modal.modal-auto-open').modal();
     }
 
     $.initCheckboxBtnGroup = function() {
@@ -598,24 +617,46 @@
             $("input:checkbox[name*=validation]").each(function() {
                     $(this).parent().parent().parent().removeClass("has-error");
             });
-            $("#engagements .alert-danger").addClass("hidden");
-            engagements = new Array();
-            $("input:checkbox[name*=validation]").each(function() { engagements[this.id.replace(/_OUEX_.*/, '')] = 0; })
-            $("input:checkbox[name*=validation]:checked").each(function() { engagements[this.id.replace(/_OUEX_.*/, '')]++; })
-            is_valid = true;
-            $("input:checkbox[name*=validation]").each(function() { if (engagements[this.id.replace(/_OUEX_.*/, '')] != 1) {is_valid = false ;} })
-            console.log(engagements);
-            console.log(is_valid);
-            if(! is_valid) {
-                $("#engagements .alert-danger").removeClass("hidden");
-                $("input:checkbox[name*=validation]:not(:checked)").each(function() {
-                    $(this).parent().parent().parent().addClass("has-error");
-                });
-                $("input:checkbox[name*=validation]:checked").each(function() {
-                    $(this).parent().parent().parent().removeClass("has-error");
-                });
-                return false;
+            if(!document.getElementById("notNeedToEngage")){
+              $("#engagements .alert-danger").addClass("hidden");
+              engagements = new Array();
+              $("#engagements input:checkbox[name*=validation]").each(function() { engagements[this.id.replace(/_OUEX_.*/, '')] = 0; })
+              $("#engagements input:checkbox[name*=validation]:checked").each(function() { engagements[this.id.replace(/_OUEX_.*/, '')]++; })
+              is_valid = true;
+              if (engagements.length) {
+                $("#engagements input:checkbox[name*=validation]").each(function() { if (engagements[this.id.replace(/_OUEX_.*/, '')] != 1) {is_valid = false ;} })
+              }
+              if(! is_valid) {
+                  $("#engagements .alert-danger").removeClass("hidden");
+                  $("#engagements input:checkbox[name*=validation]:not(:checked)").each(function() {
+                      $(this).parent().parent().parent().addClass("has-error");
+                  });
+                  $("#engagements input:checkbox[name*=validation]:checked").each(function() {
+                      $(this).parent().parent().parent().removeClass("has-error");
+                  });
+                  return false;
+              }
+              engagements = new Array();
+              $("#engagements input:checkbox[name*=validation]").each(function() { engagements[this.id.replace(/_OU_.*/, '')] = 0; })
+              $("#engagements input:checkbox[name*=validation]:checked").each(function() { engagements[this.id.replace(/_OU_.*/, '')]++; })
+              if (engagements.length) {
+              is_valid = true;
+                $("#engagements input:checkbox[name*=validation]").each(function() { if (engagements[this.id.replace(/_OU_.*/, '')] < 1) {is_valid = false ;} })
+              }
+              if(! is_valid) {
+                  $("#engagements .alert-danger").removeClass("hidden");
+                  $("#engagements input:checkbox[name*=validation]:not(:checked)").each(function() {
+                      $(this).parent().parent().parent().addClass("has-error");
+                  });
+                  $("#engagements input:checkbox[name*=validation]:checked").each(function() {
+                      $(this).parent().parent().parent().removeClass("has-error");
+                  });
+                  return false;
+              }
             }
+             if ($('#validation-form')[0].reportValidity()){
+               $($(this).data('target')).modal('toggle');
+             }
         });
     }
 
@@ -697,7 +738,6 @@
             var blocs = blocCondition.attr('data-condition-cible').split('|');
             var traitement = function(input, blocs) {
                    for (bloc in blocs) {
-                       console.log($(blocs[bloc]));
                        if ($(blocs[bloc]).size() > 0) {
                            var values = $(blocs[bloc]).attr('data-condition-value').split('|');
                            for(key in values) {
@@ -747,6 +787,9 @@
     }
 
     $.initTypeahead = function() {
+        const contacts_all = document.getElementById('contacts_all');
+        const search_all = document.getElementById('champ_recherche');
+
         $('.typeahead').typeahead({
             itemLink: function(item) {
 
@@ -763,8 +806,25 @@
             source: function (query, process) {
                 var params = {};
                 params[this.$element.data('queryParam')] = query;
+
+                if($('.typeahead').hasClass("typeaheadGlobal")){
+                  var urlVisu = this.$element.attr("data-visualisationLink");
+                }
+
                 return $.getJSON(this.$element.data('url'), params, function (data) {
-                    return process(data);
+                  var tmpData = data
+                  if($('.typeahead').hasClass("typeaheadGlobal")){
+                    tmpData = []
+                    $.each(data, function(id, val){
+                      let compte = new Object();
+                      compte.id = id;
+                      compte.text_html = '<span style="white-space: nowrap;text-overflow: ellipsis;display: block;overflow: hidden">'+val+'</span>';
+                      compte.visualisationLink = urlVisu.replace("identifiant", id)
+                      tmpData.push(compte)
+                    });
+                  }
+
+                  return process(tmpData);
                 });
             },
             sorter: function(items) { return items },
@@ -780,6 +840,16 @@
             fitToElement: true,
             followLinkOnSelect: true,
         });
+
+        if (contacts_all) {
+          contacts_all.addEventListener('change', function (e) {
+            url = new URL(document.location.origin + champ_recherche.dataset.url)
+            urlSearchParams = new URLSearchParams(url.searchParams);
+            urlSearchParams.set('inactif', this.checked)
+            url.search = urlSearchParams
+            champ_recherche.dataset.url = url.pathname + "?" + url.searchParams
+          });
+        }
     }
 
     $.fn.initAdvancedElements = function () {
@@ -847,10 +917,18 @@
         $(this).find('input.num_int').saisieNum(false);
 
         $(this).find(".select2SubmitOnChange").on("change", function (e) {
+          if(!$(this).val()) {
+            return;
+          }
+          $(this).parents('form').submit();
+        });
+
+        $(this).find(".select2SubmitOnBlur").on("focusout", function (e) {
             if (e.val || $(this).val()) {
                 $(this).parents('form').submit();
             }
         });
+
     }
 
     $.initTableCheckbox = function() {
@@ -880,31 +958,39 @@
 
       $('.open-button').click(function(){
         if($(this).css('opacity') == "1"){
-          $('tr:hidden').each(function(){
+          table = $(this).closest('table');
+          table.find('tr:hidden').each(function(){
             $(this).show();
           });
-          $('td:hidden').each(function(){
+          table.find('td:hidden').each(function(){
             $(this).show();
           });
-           $('#table-habilitation td').find('.invisible').removeClass('invisible').addClass('visible');
+           table.find('.invisible').removeClass('invisible').addClass('visible');
           $(this).children('span').each(function(){ $(this).removeClass('glyphicon-eye-open');/*.addClass('glyphicon-eye-close');*/ });
           $(this).css("opacity","0.6");
+          $('#editHabilitation').disabled = true;
         }else{
-          $('tr[data-hide="1"]').each(function(){
+          table.find('tr[data-hide="1"]').each(function(){
             $(this).hide();
             });
-          $('td[data-hide="1"]').each(function(){
+          table.find('td[data-hide="1"]').each(function(){
             $(this).hide();
           });
-          $('#table-habilitation td').find('.visible').removeClass('visible').addClass('invisible');
+          table.find('.visible').removeClass('visible').addClass('invisible');
           $(this).children('span').each(function(){ $(this).removeClass('glyphicon-eye-close').addClass('glyphicon-eye-open'); });
           $(this).css("opacity","1");
+          $('#editHabilitation').disabled = false;
         }
       });
 
       if($('#ouvert:target').length) {
-        $('.open-button').click();
+        $(this).closest('table').find('.open-button').click();
       }
+
+      $('#editHabilitation').on('click', function() {
+        $('#ouvert').click();
+      });
+
 
         $('#voir_toutes_les_demandes').on('click', function() {
             $('#tableaux_des_demandes tr.tohide').toggleClass('hidden');
@@ -969,3 +1055,68 @@
       };
     });
 })(jQuery);
+
+// Afficher / cacher le mot de passe
+const passwordField1 = document.getElementById("ac_vin_compte_mdp1");
+const passwordField2 = document.getElementById("ac_vin_compte_mdp2");
+
+const togglePassword1 = document.querySelector(".mdp1-toggle-icon i");
+const togglePassword2 = document.querySelector(".mdp2-toggle-icon i");
+
+function togglePasswordVisibility(toggleButton, passwordField) {
+  if (passwordField.type === "password") {
+    passwordField.type = "text";
+    toggleButton.classList.remove("glyphicon-eye-open");
+    toggleButton.classList.add("glyphicon-eye-close");
+  } else {
+    passwordField.type = "password";
+    toggleButton.classList.remove("glyphicon-eye-close");
+    toggleButton.classList.add("glyphicon-eye-open");
+  }
+}
+
+if (togglePassword1 || togglePassword2) {
+  togglePassword1.addEventListener("click", function () {
+    togglePasswordVisibility(togglePassword1, passwordField1);
+  });
+
+  togglePassword2.addEventListener("click", function () {
+    togglePasswordVisibility(togglePassword2, passwordField2);
+  });
+}
+
+function exportTableToCsv(tableId, filename) {
+  const table = document.getElementById(tableId);
+  const csvData = [];
+
+  for (const row of table.rows) {
+    if(!row.classList.contains("hidden")) {
+      const rowValues = [];
+      for (const cell of row.cells) {
+        let text = cell.innerText.trim();
+        if(!text && cell.querySelector(":not(span[title=''])")) {
+        text = cell.querySelector(":not(span[title=''])").title;
+        }
+        if(!text && cell.querySelector(":not(span[data-original-title=''])")) {
+        text = cell.querySelector(":not(span[data-original-title=''])").dataset.originalTitle;
+        }
+        if(text && text.includes(';')) {
+          text = '"' + text + '"'
+        }
+        rowValues.push(text);
+      }
+      csvData.push(rowValues.join(';'));
+    }
+  }
+
+  const csvContent = csvData.join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+
+  URL.revokeObjectURL(url);
+}

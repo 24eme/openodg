@@ -24,15 +24,25 @@ class GenerationPDF extends GenerationAbstract {
       return null;
     }
 
-    asort($pdffiles);
+    uasort($pdffiles, function($a, $b) {
+        $filtreOrdre = '(facture|avoir)_';
+        if(GenerationConfiguration::getInstance()->getOrdreFacture() == "commune"){
+            $filtreOrdre = '(facture|avoir)_[0-9]+_';
+        }
+        $aCompare = preg_replace("/$filtreOrdre/", "", $a);
+        $bCompare = preg_replace("/$filtreOrdre/", "", $b);
+
+        return $aCompare > $bCompare;
+    });
 
     $fileres = rand().".pdf";
     $this->doesPDFsExist($pdffiles);
     file_put_contents("/tmp/$fileres.sh", '/usr/bin/pdftk "'.implode('" "', $pdffiles).'" cat output "'.$fileres.'"');
     $str = system('bash /tmp/'.$fileres.'.sh 2>&1');
     if ($str) {
-        throw new sfException('pdftk returned an error: '.$str);
+        throw new sfException('concatenatePDFs(): pdftk returned an error: bash /tmp/'.$fileres.'.sh 2>&1 => '.$str);
     }
+    unlink("/tmp/$fileres.sh");
     return $fileres;
   }
 
@@ -43,11 +53,12 @@ class GenerationPDF extends GenerationAbstract {
     file_put_contents("/tmp/$fileres.sh", '/usr/bin/pdftk "'.$pdf.'" cat '.intval($pageid).' output "'.$fileres.'"');
     $str = system('bash /tmp/'.$fileres.'.sh 2>&1');
     if ($str) {
-        throw new sfException('pdftk returned an error: '.$str);
+        throw new sfException('generateAPDFForAPageId(): pdftk returned an error: bash /tmp/'.$fileres.'.sh 2>&1 => '.$str);
     }
     if (!file_exists($fileres) || !filesize($fileres)) {
       throw new sfException("wrong result file $fileres extracting page # $pageid from $pdf");
     }
+    unlink("/tmp/$fileres.sh");
     return $fileres;
   }
 
@@ -173,10 +184,10 @@ class GenerationPDF extends GenerationAbstract {
   }
 
   protected function getDocumentName() {
-    throw new sfException('should be called from the parent class');
+    throw new sfException(__FUNCTION__.' should be called from the child class');
   }
   protected function generatePDFForADocumentID($docid) {
-    throw new sfException('should be called from the parent class');
+    throw new sfException(__FUNCTION__.' should be called from the child class');
   }
 
   function preGeneratePDF() { }

@@ -1,2 +1,5 @@
 all:
+  credentials: [[ADMIN_ODG, ADMIN]]
+
+list:
   credentials: [ADMIN]

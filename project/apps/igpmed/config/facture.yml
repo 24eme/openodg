@@ -1,0 +1,9 @@
+all:
+  configuration:
+    facture:
+      echeances: false
+      modalite_paiement: "30 jours à reception, par virement \\"
+      uniq_template_prefix: "TEMPLATE-FACTURE"
+      paiements: true
+      exercice: '31/08'
+      liste_dernier_exercice: true

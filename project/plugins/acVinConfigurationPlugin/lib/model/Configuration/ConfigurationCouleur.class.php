@@ -13,25 +13,41 @@ class ConfigurationCouleur extends BaseConfigurationCouleur {
       return $this->cepages;
     }
 
-    /**
-     *
-     * @return ConfigurationLieu
-     */
+    public function getCouleur() {
+        return $this;
+    }
+
     public function getLieu() {
+
         return $this->getParentNode();
     }
 
-		public function getMention() {
+	public function getMention() {
+
         return $this->getLieu()->getMention();
     }
 
-		public function getGenre() {
+    public function getAppellation() {
 
-				return $this->getMention()->getGenre();
-		}
+        return $this->getMention()->getAppellation();
+    }
+
+	public function getGenre() {
+
+		return $this->getAppellation()->getGenre();
+	}
+
+    public function getCertification() {
+
+            return $this->getGenre()->getCertification();
+    }
 
     public function hasCepage() {
     	return (count($this->cepages) > 1 || (count($this->cepages) == 1 && $this->cepages->getFirst()->getKey() != Configuration::DEFAULT_KEY));
+    }
+
+    public function hasCouleur() {
+        return true;
     }
 
     public function setDonneesCsv($datas) {
@@ -67,4 +83,43 @@ class ConfigurationCouleur extends BaseConfigurationCouleur {
 
 		return $this->getRendementCouleur();
 	}
+
+    public function getLibelleDR() {
+        if (strpos($this->libelle, 'Blanc') !== false){
+            return "Blanc";
+        }elseif (strpos($this->libelle, 'Rosé') !== false){
+            return "Rosé";
+        }elseif (strpos($this->libelle, 'Rouge') !== false){
+            return "Rouge";
+        }
+        return $this->libelle;
+    }
+
+    public function getLibelleCompletDR() {
+        return str_replace('Vin de base ', '', trim($this->getLieu()->getLibelleComplet(). " ".$this->getLibelleDR()));
+    }
+
+    public function getCepagesAutorises() {
+        if(!$this->hasCepagesAutorises()) {
+            return $this->getLieu()->getCepagesAutorises();
+        }
+        return $this->_get('cepages_autorises');
+    }
+
+    public function hasCepagesAutorises(){
+        return $this->exist('cepages_autorises') && count($this->_get('cepages_autorises')->toArray(true, false));
+    }
+
+    public function isCepageAutorise($cepage) {
+        if ($this->hasCepagesAutorises()) {
+            return true;
+        }
+        foreach($this->getCepages() as $c) {
+            if ($c->isCepageAutorise($cepage)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

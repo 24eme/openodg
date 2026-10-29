@@ -1,0 +1,4 @@
+all:
+  configuration:
+    region:
+      odg:

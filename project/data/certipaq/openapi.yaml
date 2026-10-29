@@ -1,0 +1,2600 @@
+openapi: 3.0.0
+
+servers:
+  - url: 'https://certipaq.jeteste.dev/api'
+    description: Serveur démo
+  - url: 'https://www.certipaq.solutions/api'
+    description: Serveur production
+
+info:
+  version: '1.1.0'
+  title: API Certipaq - ODG
+  x-logo:
+    url: 'https://www.certipaq.solutions/asp/assets/images/logo.png'
+    altText: Logo Certipaq
+  description: >
+    # Présentation
+    
+    Cette API permet aux ODG de :
+    
+    - rechercher des opérateurs,
+
+    - créer les déclarations de demande d'identification.
+
+    ## Authentification
+
+    Tous les appels à l'API doivent fournir un token JWT, récupérable par [`GET /token`](#tag/Utilisateurs/paths/~1token/get).
+
+    ## Déroulants
+
+    Les déroulants sont des listes de valeurs de références utilisées par l'API. Les noms des déroulants commencent par `dr_`.
+    Chaque valeur contient au minimum un identifiant unique (`integer`) et un libellé (`string`), parfois une clé unique (`string`), éventuellement d'autres champs.
+
+
+    Les valeurs des déroulants sont récupérables via les routes [`GET /dr/xxxx`](#tag/Deroulants), la majorité des déroulants retournent les listes complètes
+    de valeurs, mais certains ne retournent que les valeurs utilisables par l'ODG (par exemple : activités opérateurs, famille de cahiers des charges, etc.).
+
+
+    Dans les routes de recherche, de récupération de ressource et de création/modification de ressource, les paramètres et les champs nommés `dr_xxx`
+    sont des identifiants ou tableaux d'identifiants de déroulants.
+
+security:
+  - Bearer: []
+
+tags:
+  - name: Utilisateurs
+  - name: Déroulants
+  - name: Opérateurs
+  - name: "Déclarations Demande d'identification"
+  - name: "Déclarations Revendication"
+
+paths:
+  /token:
+    get:
+      security: []
+      summary: "Récupération d'un token JWT"
+      tags:
+        - Utilisateurs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  description: "Identifiant de l'utilisateur Certipaq (adresse email)"
+                  type: string
+                password:
+                  description: "Mot de passe API de l'utilisateur"
+                  type: string
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/token_response"
+        '400':
+          description: "Paramètres manquants"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_response"
+        '401':
+          description: "Identifiants invalides"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_response"
+        '403':
+          description: "Accès API non autorisé (contacter Arociel pour activer l'accès)"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_response"
+  /profil:
+    get:
+      summary: "Profil utilisateur"
+      tags:
+        - Utilisateurs
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/profile_response"
+  /dr/activites_operateurs:
+    get:
+      summary: "Liste des activités opérateurs (dr_activites_operateurs)"
+      description: "Liste limitée aux valeurs de l'ODG connecté."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_activites_operateurs_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/adresse_type:
+    get:
+      summary: "Liste des types d'adresses (dr_adresse_type)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_adresse_type_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/cdc:
+    get:
+      summary: "Liste des cahiers des charges (dr_cdc)"
+      description: "Liste limitée aux valeurs de l'ODG connecté."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_cdc_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/cdc_famille:
+    get:
+      summary: "Liste des familles de cahiers des charges (dr_cdc_famille)"
+      description: "Liste limitée aux valeurs de l'ODG connecté."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_cdc_famille_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/cdc_produit:
+    get:
+      summary: "Liste des produits de cahiers des charges (dr_cdc_produit)"
+      description: "Liste limitée aux valeurs de l'ODG connecté."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_cdc_produit_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/cepage:
+    get:
+      summary: "Liste des cépages autorisés pour les produits de cahiers des charges (dr_cepage)"
+      description: "Liste limitée aux valeurs de l'ODG connecté."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_cepage_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/civilite:
+    get:
+      summary: "Liste des civilités (dr_civilite)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_civilite_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/couleur:
+    get:
+      summary: "Liste des couleurs de vin (dr_couleur)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_couleur_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/demande_identification_type:
+    get:
+      summary: "Liste des types de déclarations demande d'identification (dr_demande_identification_type)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_demande_identification_type_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/etat_demande:
+    get:
+      summary: "Liste des statuts de déclarations (dr_etat_demande)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_etat_demande_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/fonction:
+    get:
+      summary: "Liste des fonctions de contacts (dr_fonction)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_fonction_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/infos:
+    get:
+      summary: "Liste des informations supplémentaires de fréquence (dr_infos)"
+      description: "Liste limitée aux valeurs de l'ODG connecté."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_infos_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/pays:
+    get:
+      summary: "Liste des pays (dr_pays)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_pays_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/site_qualite:
+    get:
+      summary: "Liste des qualités de site (dr_site_qualite)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_site_qualite_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/site_type:
+    get:
+      summary: "Liste des types de site (dr_site_type)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_site_type_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/statut_habilitation:
+    get:
+      summary: "Liste des états d'habilitation (dr_statut_habilitation)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_statut_habilitation_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/type_cdc:
+    get:
+      summary: "Liste des types de cahiers des charges (dr_type_cdc)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_type_cdc_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/type_controle:
+    get:
+      summary: "Liste des types de contrôles (dr_type_controle)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_type_controle_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/type_documents:
+    get:
+      summary: "Liste des types de documents (dr_type_documents)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_type_documents_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/type_entreprise:
+    get:
+      summary: "Liste des types d'entreprises (dr_type_entreprise)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_type_entreprise_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /dr/type_intervention:
+    get:
+      summary: "Liste des types d'intervention (dr_type_intervention)"
+      description: "Liste complète."
+      tags:
+        - Déroulants
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/dr_type_intervention_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+  /operateur:
+    get:
+      summary: "Recherche d'opérateurs"
+      description: >
+        Recherche les opérateurs correspondant aux critères, parmi les opérateurs de l'ODG.
+
+
+        Il faut renseigner au moins : `raison_sociale` et `code_postal`, ou `siret` ou `cvi` ou `dr_cdc_famille`
+        ou `dr_cdc` ou `dr_activites_operateurs` ou `date_decision` ou `dr_statut_habilitation`.
+      tags:
+        - Opérateurs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                raison_sociale:
+                  type: string
+                  description: "Raison sociale"
+                code_postal:
+                  type: string
+                  minLength: 5
+                  maxLength: 5
+                  description: "Code postal"
+                siret:
+                  type: string
+                  minLength: 14
+                  maxLength: 14
+                  description: "SIRET"
+                cvi:
+                  type: string
+                  description: "N° CVI"
+                dr_cdc_famille:
+                  type: array
+                  items:
+                    type: integer
+                  description: "Identifiants de familles de cahiers des charges (`dr_cdc_famille`)"
+                dr_cdc:
+                  type: array
+                  items:
+                    type: integer
+                  description: "Identifiants de cahiers des charges (`dr_cdc`)"
+                dr_activites_operateurs:
+                  type: array
+                  items:
+                    type: integer
+                  description: "Identifiants d'activités opérateur (`dr_activites_operateurs`)"
+                date_decision:
+                  description: "Date de décision (une seule date ou un tableau de 2 dates)"
+                  oneOf:
+                    - type: string
+                      format: date
+                      description: "Une seule date"
+                    - type: array
+                      minItems: 2
+                      maxItems: 2
+                      items:
+                        type: string
+                        format: date
+                      description: "Un tableau de 2 dates"
+                dr_statut_habilitation:
+                  type: array
+                  items:
+                    type: string
+                  description: "**Clés uniques** de statuts d'habilitation (`dr_statut_habilitation`)"
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/operateur_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+        '400':
+          $ref: "#/components/responses/bad_request"
+  /operateur/{id_operateur}:
+    get:
+      summary: "Récupération d'un opérateur"
+      description: "Récupère un opérateur et ses éléments associés"
+      tags:
+        - Opérateurs
+      parameters:
+        - in: path
+          name: id_operateur
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/operateur_record"
+                  - type: object
+                    properties:
+                      #contacts:
+                      #  type: array
+                      #  items:
+                      #    $ref: "#/components/schemas/operateur_contact_record"
+                      #  description: "Personnel de l'opérateur (vide actuellement)"
+                      organismes_rattachement:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/operateur_organisme_rattachement_record"
+                        description: "Organismes de rattachment de l'opérateur"
+                      sites:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/operateur_site_record"
+                        description: "Sites de l'opérateur"
+                required:
+                  - contacts
+                  - organismes_rattachement
+                  - sites
+        '403':
+          $ref: "#/components/responses/forbidden"
+  /declaration/identification:
+    get:
+      summary: "Recherche de demandes d'identification"
+      description: "Recherche les déclarations de demande d'identification correspondant aux critères, parmi les déclarations de l'ODG."
+      tags:
+        - "Déclarations Demande d'identification"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  description: "Date de création (un tableau de 2 dates)"
+                  type: array
+                  minItems: 2
+                  maxItems: 2
+                  items:
+                    type: string
+                    format: date
+                dr_demande_identification_type_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: "Type de demande d'identification (`dr_demande_identification_type`)"
+                dr_etat_demande_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: "Statut de la demande (`dr_etat_demande`)"
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/declaration_identification_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+        '403':
+          $ref: "#/components/responses/forbidden"
+    post:
+      summary: "Création d'une demande d'identification"
+      description: >
+        Le contenu de la requête dépend du type de demande d'identification (paramètre `dr_demande_identification_type_id`).
+      tags:
+        - "Déclarations Demande d'identification"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/declaration_identification_nouvel_operateur_request"
+                  description: "Nouvel opérateur"
+                - $ref: "#/components/schemas/declaration_identification_reprise_operateur_request"
+                  description: "Reprise d'opérateur"
+                - $ref: "#/components/schemas/declaration_identification_extension_habilitation_request"
+                  description: "Extension d'habilitation"
+                - $ref: "#/components/schemas/declaration_identification_nouveau_site_production_request"
+                  description: "Nouveau site de production"
+                - $ref: "#/components/schemas/declaration_identification_modification_identite_request"
+                  description: "Modification d'identité"
+                - $ref: "#/components/schemas/declaration_identification_modification_outil_request"
+                  description: "Modification d'un outil"
+              discriminator:
+                propertyName: dr_demande_identification_type_id
+        required: true
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "Identifiant unique de la déclaration créée"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - id
+        '403':
+          $ref: "#/components/responses/forbidden"
+  /declaration/identification/{id_declaration}:
+    get:
+      summary: "Récupération d'une demande d'identification"
+      description: "Récupère une déclaration de demande d'identification et ses éléments associés"
+      tags:
+        - "Déclarations Demande d'identification"
+      parameters:
+        - in: path
+          name: id_declaration
+          schema:
+            type: integer
+          required: true
+          description: "Identifiant unique de la déclaration"
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/declaration_identification_record"
+        '403':
+          $ref: "#/components/responses/forbidden"
+        '404':
+          $ref: "#/components/responses/not_found"
+  /declaration/identification/{id_declaration}/req_docs:
+    get:
+      summary: "Liste des documents requis dans une demande d'identification"
+      description: "Cette route indique les types de documents obligatoires à ajouter dans une demande d'identification.
+        Les types de documents varient selon les habilitations de la demande."
+      tags:
+        - "Déclarations Demande d'identification"
+      parameters:
+        - in: path
+          name: id_declaration
+          schema:
+            type: integer
+          required: true
+          description: "Identifiant unique de la déclaration"
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/declaration_identification_required_documents_item"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+        '403':
+          $ref: "#/components/responses/forbidden"
+        '404':
+          $ref: "#/components/responses/not_found"
+  /declaration/identification/{id_declaration}/document:
+    post:
+      summary: "Ajout d'un document dans une demande d'identification"
+      description: |
+        Les types de documents autorisés/obligatoires sont donnés par la route
+        [`GET /declaration/identification/{id_declaration}/req_docs`](#tag/Declarations-Demande-d'identification/paths/~1declaration~1identification~1{id_declaration}~1req_docs/get).
+        Seul le dernier document pour un type donné est pris en compte.
+
+        Il est possible d'ajouter plusieurs documents génériques, avec le type *Autre* (0).
+        
+        Les types MIME de fichiers autorisés sont :
+        - `application/pdf`
+        - `application/vnd.ms-outlook`
+        - `text/plain`
+        - `application/msword`
+        - `application/vnd.openxmlformats-officedocument.wordprocessingml.document`
+        - `application/vnd.ms-powerpoint`
+        - `application/vnd.openxmlformats-officedocument.presentationml.presentation`
+        - `application/vnd.ms-excel`
+        - `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
+        - `image/jpeg`
+        - `image/png`
+        - `application/zip`
+      tags:
+        - "Déclarations Demande d'identification"
+      parameters:
+        - in: path
+          name: id_declaration
+          schema:
+            type: integer
+          required: true
+          description: "Identifiant unique de la déclaration"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                dr_type_documents_id:
+                  type: string
+                  format: integer
+                  description: "Type de document (`dr_type_documents`), 0 pour le type *Autre*"
+                fichier:
+                  type: string
+                  format: binary
+                  description: "Contenu du fichier"
+              required:
+                - dr_type_documents_id
+                - fichier
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                description: "Objet vide en cas de succès"
+        '400':
+          $ref: "#/components/responses/bad_request"
+        '403':
+          $ref: "#/components/responses/forbidden"
+        '404':
+          $ref: "#/components/responses/not_found"
+  /declaration/identification/{id_declaration}/submit:
+    post:
+      summary: "Finalisation d'une demande d'identification"
+      description: "Tous les documents obligatoires doivent avoir été ajoutés pour pouvoir finaliser une demande."
+      tags:
+        - "Déclarations Demande d'identification"
+      parameters:
+        - in: path
+          name: id_declaration
+          schema:
+            type: integer
+          required: true
+          description: "Identifiant unique de la déclaration"
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                description: "Objet vide en cas de succès"
+        '400':
+          $ref: "#/components/responses/bad_request"
+        '403':
+          $ref: "#/components/responses/forbidden"
+        '404':
+          $ref: "#/components/responses/not_found"
+  /declaration/revendication:
+    get:
+      summary: "Recherche de déclaration de revendication"
+      description: "Recherche les déclarations de revendication correspondant aux critères, parmi les déclarations de l'ODG."
+      tags:
+        - "Déclarations Revendication"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                operateur_id:
+                  type: integer
+                  description: "Recherche par identifiant opérateur"
+                dr_cdc_famille_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: "Identifiants de familles de cahiers des charges (`dr_cdc_famille`)"
+                dr_cdc_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: "Identifiants de cahiers des charges (`dr_cdc`)"
+                dr_cdc_produit_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: "Identifiants de produits (`dr_cdc_produit`)"
+                date:
+                  type: array
+                  minItems: 2
+                  maxItems: 2
+                  items:
+                    type: string
+                    format: date
+                  description: "Date de déclaration (un tableau de 2 dates)"
+                millesime:
+                  type: array
+                  items:
+                    type: string
+                    minLength: 4
+                    maxLength: 4
+                  description: "Millésimes, utiliser la valeur `Non millésimé` pour l'absence de millésime"
+                  example: ["2021", "Non millésimé"]
+                date_validation:
+                  type: array
+                  minItems: 2
+                  maxItems: 2
+                  items:
+                    type: string
+                    format: date
+                  description: "Date de validation de la déclaration (un tableau de 2 dates)"
+                dr_etat_demande_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: "Statuts de la demande (`dr_etat_demande`)"
+                dr_cepage_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: "Identifiants de cépages (`dr_cepage`)"
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/declaration_revendication_record"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - results
+    post:
+      summary: "Création d'une déclaration de revendication"
+      description: >
+        Revendication d'un volume pour un produit donné pour un opérateur/site.
+      tags:
+        - "Déclarations Revendication"
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: "#/components/schemas/declaration_revendication_request"
+                description: "Nouvel opérateur"
+        required: true
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "Identifiant unique de la déclaration créée"
+                  warnings:
+                    $ref: "#/components/schemas/warnings_list"
+                required:
+                  - id
+        '403':
+          $ref: "#/components/responses/forbidden"
+  /declaration/revendication/{id_declaration}:
+    get:
+      summary: "Récupération d'une déclaration de revendication"
+      description: "Récupère une déclaration de revendication et ses éléments associés"
+      tags:
+        - "Déclarations Revendication"
+      parameters:
+        - in: path
+          name: id_declaration
+          schema:
+            type: integer
+          required: true
+          description: "Identifiant unique de la déclaration"
+      responses:
+        '200':
+          description: "Succès"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/declaration_revendication_record"
+                  - type: object
+                    properties:
+                      declarations_revendications_cepage:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            declarations_revendications_id:
+                              type: integer
+                              description: "Identifiant de déclaration de revendication"
+                            dr_cepage_id:
+                              type: integer
+                              description: "Identifiant de cépage (`dr_cepage`)"
+                          required:
+                            - declarations_revendications_id
+                            - dr_cepage_id
+        '403':
+          $ref: "#/components/responses/forbidden"
+        '404':
+          $ref: "#/components/responses/not_found"
+components:
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    # 400
+    bad_request:
+      description: "Paramètres manquants ou invalides"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/error_response"
+    # 403
+    forbidden:
+      description: "Accès interdit"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/error_response"
+    # 404
+    not_found:
+      description: "Elément non trouvé"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/error_response"
+  schemas:
+    warnings_list:
+      type: array
+      description: "Liste d'avertissements"
+      items:
+        type: string
+    error_response:
+      type: object
+      description: "Réponse en cas d'erreur"
+      properties:
+        errors:
+          description: "Erreurs"
+          type: array
+          items:
+            type: string
+        warnings:
+          $ref: "#/components/schemas/warnings_list"
+    token_response:
+      type: object
+      description: "Récupération d'un token JWT"
+      properties:
+        token:
+          description: "Token JWT"
+          type: string
+        warnings:
+          $ref: "#/components/schemas/warnings_list"
+      required:
+        - token
+    profile_response:
+      type: object
+      description: "Profil utilisateur"
+      properties:
+        nom:
+          type: string
+          description: "Nom de l'utilisateur de l'API"
+        prenom:
+          type: string
+          description: "Prénom de l'utilisateur de l'API"
+        warnings:
+          $ref: "#/components/schemas/warnings_list"
+      required:
+        - nom
+        - prenom
+    dr_activites_operateurs_record:
+      type: object
+      description: "Enregistrement du déroulant Activités opérateurs"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+        dr_activites_operateurs_infos:
+          type: array
+          description: "Informations supplémentaires de fréquence autorisées pour l'activité"
+          items:
+            type: object
+            properties:
+              dr_activites_operateurs_id:
+                type: integer
+                description: "Identifiant unique de l'activité opérateur"
+              dr_infos_id:
+                type: integer
+                description: "Identifiant unique de l'information supplémentaire (`dr_infos`)"
+            required:
+              - dr_activites_operateurs_id
+              - dr_infos_id
+      required:
+        - id
+        - libelle
+        - dr_activites_operateurs_infos
+    dr_adresse_type_record:
+      type: object
+      description: "Enregistrement du déroulant Types d'adresses"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+      required:
+        - id
+        - libelle
+    dr_cdc_record:
+      type: object
+      description: "Enregistrement du déroulant Cahiers des charges"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+        dr_type_cdc_id:
+          type: integer
+          description: "Identifiant unique du type de cahier des charges (`dr_type_cdc`)"
+      required:
+        - id
+        - libelle
+        - dr_type_cdc_id
+    dr_cdc_famille_record:
+      type: object
+      description: "Enregistrement du déroulant Familles de cahiers des charges"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+      required:
+        - id
+        - libelle
+    dr_cdc_produit_record:
+      type: object
+      description: "Enregistrement du déroulant Produits de cahiers des charges"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+        dr_cdc_id:
+          type: integer
+          description: "Identifiant de cahier des charges (`dr_cdc`), parmi les cahiers des charges de l'ODG"
+        dr_couleur_id:
+          type: integer
+          description: "Identifiant de la couleur du vin (`dr_couleur`)"
+        dr_cdc_produit_cepage:
+          type: array
+          description: "Cépages autorisés pour le produit"
+          items:
+            type: object
+            properties:
+              dr_cdc_produit_id:
+                type: integer
+                description: "Identifiant unique du produit"
+              dr_cepage_id:
+                type: integer
+                description: "Identifiant unique du cépage"
+            required:
+              - dr_cdc_produit_id
+              - dr_cepage_id
+    dr_cepage_record:
+      type: object
+      description: "Enregistrement du déroulant des Cépages"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+        dr_couleur_id:
+          type: integer
+          description: "Identifiant de la couleur du vin (`dr_couleur`)"
+    dr_civilite_record:
+      type: object
+      description: "Enregistrement du déroulant Civilités"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+      required:
+        - id
+        - libelle
+    dr_couleur_record:
+      type: object
+      description: "Enregistrement du déroulant Couleurs de vin"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+        abreviation:
+          type: string
+          description: "Abréviation de la couleur (repris dans `dr_cepages`)"
+    dr_demande_identification_type_record:
+      type: object
+      description: "Enregistrement du déroulant Types de déclaration demande d'identification"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+        valeur_reduite:
+          type: string
+          description: "Libellé raccourci de l'enregistrement"
+        is_creation_operateur:
+          type: boolean
+          description: "Type de demande de création d'opérateur"
+        position:
+          type: integer
+          description: "Position d'affichage"
+      required:
+        - id
+        - libelle
+        - valeur_reduite
+        - is_creation_operateur
+        - position
+    dr_etat_demande_record:
+      type: object
+      description: "Enregistrement du déroulant Statuts de la demande"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+      required:
+        - id
+        - libelle
+    dr_fonction_record:
+      type: object
+      description: "Enregistrement du déroulant Fonctions"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+      required:
+        - id
+        - libelle
+    dr_infos_record:
+      type: object
+      description: "Enregistrement du déroulant Informations Supplémentaires de fréquence"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+      required:
+        - id
+        - libelle
+    dr_pays_record:
+      type: object
+      description: "Enregistrement du déroulant Pays"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+        iso:
+          type: string
+          description: "Code ISO 3166-1 alpha 2, à utiliser pour les champs type pays"
+      required:
+        - id
+        - libelle
+        - iso
+    dr_site_qualite_record:
+      type: object
+      description: "Enregistrement du déroulant Qualités de site"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+      required:
+        - id
+        - libelle
+    dr_site_type_record:
+      type: object
+      description: "Enregistrement du déroulant Types de site"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+        is_production:
+          type: boolean
+          description: "Site de type production"
+      required:
+        - id
+        - libelle
+        - is_production
+    dr_statut_habilitation_record:
+      type: object
+      description: "Enregistrement du déroulant Etats d'habilitation"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+        cle:
+          type: string
+          description: "Clé unique"
+      required:
+        - id
+        - libelle
+        - cle
+    dr_type_cdc_record:
+      type: object
+      description: "Enregistrement du déroulant Types de cahiers des charges"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+      required:
+        - id
+        - libelle
+    dr_type_controle_record:
+      type: object
+      description: "Enregistrement du déroulant Types de contrôles"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+        is_ceo_prelevement:
+          type: boolean
+          description: "Contrôle de type prélèvement"
+        is_ceo_degustation:
+          type: boolean
+          description: "Contrôle de type dégustation"
+        ceo_num_passage:
+          type: integer
+          description: "N° de passage pour une commission"
+      required:
+        - id
+        - libelle
+        - is_ceo_prelevement
+        - is_ceo_degustation
+        - ceo_num_passage
+    dr_type_documents_record:
+      type: object
+      description: "Enregistrement du déroulant Types de documents"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+        cle:
+          type: string
+          description: "Clé unique"
+      required:
+        - id
+        - libelle
+        - cle
+    dr_type_entreprise_record:
+      type: object
+      description: "Enregistrement du déroulant Types d'entreprises"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+      required:
+        - id
+        - libelle
+    dr_type_intervention_record:
+      type: object
+      description: "Enregistrement du déroulant Types d'interventions"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'enregistrement"
+        libelle:
+          type: string
+          description: "Libellé de l'enregistrement"
+      required:
+        - id
+        - libelle
+    operateur_record:
+      type: object
+      description: "Opérateur"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'opérateur"
+        dr_type_entreprise_id:
+          type: integer
+          description: "Type d'entreprise (`dr_type_entreprise`)"
+        raison_sociale:
+          type: string
+          description: "Raison sociale"
+        nom_entreprise:
+          type: string
+          description: "Nom"
+        siret:
+          type: string
+          description: "SIRET"
+        cvi:
+          type: string
+          description: "N° CVI"
+        adresse:
+          type: string
+          description: "Adresse"
+        complement_adresse:
+          type: string
+          description: "Complément adresse"
+        cp:
+          type: string
+          description: "Code postal"
+        ville:
+          type: string
+          description: "Ville"
+        pays:
+          type: string
+          description: "Pays"
+        canton:
+          type: string
+          description: "Canton"
+        localisation:
+          type: string
+          description: "Précision textuelle sur la localisation de l'opérateur"
+        latitude:
+          type: string
+          description: "Latitude"
+        longitude:
+          type: string
+          description: "Longitude"
+        telephone:
+          type: string
+          description: "Téléphone"
+        portable:
+          type: string
+          description: "Portable"
+        fax:
+          type: string
+          description: "Fax"
+        email:
+          type: string
+          format: email
+          description: "Email"
+        observations:
+          type: string
+          description: "Observations rédigé par l'ODG sur l'opérateur"
+      required:
+        - id
+        - dr_type_entreprise_id
+        - raison_sociale
+        - nom_entreprise
+        - siret
+        - cvi
+        - adresse
+        - complement_adresse
+        - cp
+        - ville
+        - pays
+        - canton
+        - localisation
+        - latitude
+        - longitude
+        - telephone
+        - portable
+        - fax
+        - email
+        - observations
+        - contacts
+        - organismes_rattachement
+    operateur_site_record:
+      type: object
+      description: "Site opérateur"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique du site"
+        operateur_id:
+          type: integer
+          description: "Identifiant unique de l'opérateur"
+        dr_site_qualite_id:
+          type: integer
+          description: "Qualité (`dr_site_qualite`)"
+        nom_site:
+          type: string
+          description: "Nom"
+        complement_nom_site:
+          type: string
+          description: "Complément de nom"
+        capacite_cuverie:
+          type: string
+          description: "Capacité de la cuverie, en hectolitres"
+        adresse:
+          type: string
+          description: "Adresse"
+        complement_adresse:
+          type: string
+          description: "Complément d'adresse"
+        cp:
+          type: string
+          description: "Code postal"
+        ville:
+          type: string
+          description: "Ville"
+        pays:
+          type: string
+          description: "Pays"
+        canton:
+          type: string
+          description: "Canton"
+        latitude:
+          type: string
+          description: "Latitude"
+        longitude:
+          type: string
+          description: "Longitude"
+        localisation:
+          type: string
+          description: "Précision textuelle sur la localisation du site"
+        telephone:
+          type: string
+          description: "Téléphone"
+        portable:
+          type: string
+          description: "Portable"
+        fax:
+          type: string
+          description: "Fax"
+        email:
+          type: string
+          format: email
+          description: "Email"
+        commentaire:
+          type: string
+          description: "Commentaire"
+        habilitations:
+          type: array
+          description: "Habilitations du site"
+          items:
+            $ref: "#/components/schemas/operateur_habilitation_record"
+        operateurs_sites_types:
+          type: array
+          description: "Types de site"
+          items:
+            $ref: "#/components/schemas/operateur_site_type_record"
+        outils_production:
+          type: array
+          description: "Outils de production du site"
+          items:
+            $ref: "#/components/schemas/operateur_outil_production_record"
+      required:
+        - id
+        - operateur_id
+        - dr_site_qualite_id
+        - nom_site
+        - complement_nom_site
+        - capacite_cuverie
+        - adresse
+        - complement_adresse
+        - cp
+        - ville
+        - pays
+        - canton
+        - latitude
+        - longitude
+        - localisation
+        - telephone
+        - portable
+        - fax
+        - email
+        - commentaire
+        - habilitations
+        - operateurs_sites_types
+        - outils_production
+    operateur_contact_record:
+      type: object
+      description: "Contacts de l'opérateur (à venir)"
+    operateur_organisme_rattachement_record:
+      type: object
+      description: "Organismes de rattachement de l'opérateur"
+      properties:
+        operateur_contact:
+          type: object
+          description: "Organisme rattaché (structure opérateur)"
+          $ref: "#/components/schemas/operateur_record"
+    operateur_site_type_record:
+      type: object
+      description: "Type de site"
+      properties:
+        site_id:
+          type: integer
+          description: "Identifiant unique du site"
+        dr_site_type_id:
+          type: integer
+          description: "Type de site (`dr_site_type`)"
+      required:
+        - site_id
+        - dr_site_type_id
+    operateur_habilitation_record:
+      type: object
+      description: "Habilitation opérateur"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'habilitation"
+        operateur_id:
+          type: integer
+          description: "Identifiant unique de l'opérateur"
+        dr_activites_operateurs_id:
+          type: integer
+          description: "Activité opérateur (`dr_activites_operateurs`)"
+        dr_cdc_famille_id:
+          type: integer
+          description: "Famille de cahiers des charges (`dr_cdc_famille`)"
+        dr_cdc_id:
+          type: integer
+          description: "Cahier des charges (`dr_cdc`)"
+        dr_statut_habilitation_id:
+          type: integer
+          description: "Etat d'habilitation (`dr_statut_habilitation`)"
+        site_id:
+          type: integer
+          description: "Identifiant unique du site"
+        outil_prodution_id:
+          type: integer
+          description: "Identifiant unique de l'outil de production"
+        num_habilitation:
+          type: string
+          description: "N° habilitation"
+        dr_infos_id:
+          type: integer
+          description: "Infos supplémentaires de fréquence (`dr_infos`)"
+        date_decision:
+          type: string
+          format: date
+          description: "Date de la décision"
+        date_dossier_complet_odg:
+          type: string
+          format: date
+          description: "Date d'envoi du dossier complet à l'ODG"
+        date_habilitation_maximum:
+          type: string
+          format: date
+          description: "Date limite à laquelle la demande d'habilitation doit avoir une décision d'habilitation"
+        date_reception_certipaq:
+          type: string
+          format: date
+          description: "Date à laquelle Certipaq reçoit la demande d'habilitation"
+        date_validation_dossier_complet:
+          type: string
+          format: date
+          description: "Date à laquelle la demande d'habilitation est validée"
+        date_information_odg:
+          type: string
+          format: date
+          description: "Date à laquelle l'ODG est informé de la demande d'habilitation"
+        is_demande_complements:
+          type: boolean
+          description: "Une demande de compléments a été envoyé à l'opérateur"
+        demande_complements:
+          type: string
+          description: "Nature de la demande de compléments envoyé à l'opérateur"
+      required:
+        - id
+        - operateur_id
+        - dr_activites_operateurs_id
+        - dr_cdc_famille_id
+        - dr_cdc_id
+        - dr_statut_habilitation_id
+        - site_id
+        - outil_prodution_id
+        - num_habilitation
+        - dr_infos_id
+        - date_decision
+        - date_dossier_complet_odg
+        - date_habilitation_maximum
+        - date_reception_certipaq
+        - date_validation_dossier_complet
+        - date_information_odg
+        - is_demande_complements
+        - demande_complements
+    operateur_outil_production_record:
+      type: object
+      description: "Outil de production"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de l'outil de production"
+        operateur_id:
+          type: integer
+          description: "Identifiant unique de l'opérateur"
+        site_id:
+          type: integer
+          description: "Identifiant unique du site"
+        nom_outil:
+          type: string
+          description: "Nom de l'outil"
+        portee_habilitation:
+          type: string
+          description: "Portée d'habilitation"
+      required:
+        - id
+        - operateur_id
+        - site_id
+        - nom_outil
+    declaration_identification_record:
+      type: object
+      description: "Déclaration de demande d'identification"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de la déclaration de demande d'identification"
+        operateur_id:
+          type: integer
+          description: "Identifiant unique de l'opérateur DI à créer (seulement pour une déclaration DI type nouvel opérateur)"
+        reprise_operateur_id:
+          type: integer
+          description: "Identifiant unique de l'opérateur DI à reprendre (seulement pour une déclaration DI type reprise opérateur)"
+        odg_id:
+          type: integer
+          description: "Identifiant unique de l'ODG"
+        dr_demande_identification_type_id:
+          type: integer
+          description: "Type de demande (`dr_demande_identification_type`)"
+        dr_etat_demande_id:
+          type: integer
+          description: "Statut de la demande (`dr_etat_demande`)"
+        commentaires_odg:
+          type: string
+          description: "Commentaire de l'ODG"
+        demande_complements:
+          type: string
+          description: "Demande de compléments"
+        reponse_demande_complements:
+          type: string
+          description: "Réponse à la demande de compléments"
+        demande_annulation:
+          type: string
+          description: "Demande d'annulation"
+        date_finalisation:
+          type: string
+          format: date
+          description: "Date de finalisation"
+        date_dossier_complet:
+          type: string
+          format: date
+          description: "Date du dossier complet à l'ODG"
+        date_ajout:
+          type: string
+          format: date
+          description: "Date de création"
+      required:
+        - id
+        - operateur_id
+        - reprise_operateur_id
+        - odg_id
+        - dr_demande_identification_type_id
+        - dr_etat_demande_id
+        - commentaires_odg
+        - demande_complements
+        - reponse_demande_complements
+        - demande_annulation
+        - date_finalisation
+        - date_dossier_complet
+        - date_ajout
+    declaration_identification_request:
+      description: "Données à envoyer pour créer une déclaration de demande d'identification (base commune)"
+      type: object
+      properties:
+        dr_demande_identification_type_id:
+          type: integer
+          description: "Type de demande d'identification (`dr_demande_identification_type`)"
+      required:
+        - dr_demande_identification_type_id
+      discriminator:
+        propertyName: dr_demande_identification_type_id
+    declaration_identification_nouvel_operateur_request:
+      description: "Données à envoyer pour créer une déclaration de demande d'identification type Nouvel opérateur"
+      allOf:
+        - $ref: "#/components/schemas/declaration_identification_request"
+        - type: object
+          properties:
+            operateur:
+              type: object
+              description: "Identité de l'opérateur"
+              properties:
+                raison_sociale:
+                  type: string
+                  description: "Raison sociale de l'opérateur"
+                nom_entreprise:
+                  type: string
+                  description: "Nom de l'entreprise"
+                siret:
+                  type: string
+                  minLength: 14
+                  maxLength: 14
+                  description: "SIRET"
+                cvi:
+                  type: string
+                  description: "N° CVI"
+                adresse:
+                  type: string
+                  description: "Adresse"
+                complement_adresse:
+                  type: string
+                  description: "Complément d'adresse"
+                code_postal:
+                  type: string
+                  description: "Code postal, doit être valide pour le pays dans le paramètre `pays`"
+                ville:
+                  type: string
+                  description: "Ville"
+                pays:
+                  type: string
+                  minLength: 2
+                  maxLength: 2
+                  description: "Pays (code ISO 3166-1 alpha 2, cf. `dr_pays`)"
+                  default: "FR"
+                telephone:
+                  type: string
+                  description: "Téléphone, doit être valide pour le pays dans le paramètre `pays`"
+                portable:
+                  type: string
+                  description: "Portable, doit être valide pour le pays dans le paramètre `pays`"
+                fax:
+                  type: string
+                  description: "Fax, doit être valide pour le pays dans le paramètre `pays`"
+                email:
+                  type: string
+                  format: email
+                  description: "Email"
+                observations:
+                  type: string
+                  description: "Observations"
+              required:
+                - raison_sociale
+                - adresse
+                - code_postal
+                - ville
+            adresses:
+              type: array
+              description: "Adresses de l'opérateur"
+              items:
+                type: object
+                properties:
+                  dr_adresse_type_id:
+                    type: integer
+                    description: "Type d'adresse (`dr_adresse_type`)"
+                  adresse:
+                    type: string
+                    description: "Adresse"
+                  complement_adresse:
+                    type: string
+                    description: "Complément d'adresse"
+                  code_postal:
+                    type: string
+                    description: "Code postal, doit être valide pour le pays dans le paramètre `pays`"
+                  ville:
+                    type: string
+                    description: "Ville"
+                  pays:
+                    type: string
+                    minLength: 2
+                    maxLength: 2
+                    description: "Pays (code ISO 3166-1 alpha 2, cf. `dr_pays`)"
+                    default: "FR"
+                  observations:
+                    type: string
+                    description: "Observations"
+                required:
+                - dr_adresse_type_id
+                - adresse
+                - code_postal
+                - ville
+            sites:
+              type: array
+              description: "Sites secondaires de l'opérateur (le site principal est créé automatiquement)"
+              items:
+                $ref: "#/components/schemas/declaration_identification_site_request"
+            habilitations:
+              type: array
+              description: >
+                Ensembles d'habilitations à créer par site (principal puis secondaires)
+
+
+                Il faut un ensemble d'habilitation pour chaque site, soit 1 + le nombre de sites secondaires, dans l'ordre de déclaration des sites dans le paramètre `sites`
+
+
+                Pour un site sans habilitation, il faut envoyer un objet vide
+              items:
+                oneOf:
+                  - $ref: "#/components/schemas/declaration_identification_site_sans_habilitation_request"
+                  - $ref: "#/components/schemas/declaration_identification_habilitation_site_request"
+            personnels:
+              type: array
+              description: "Contacts de l'opérateur"
+              items:
+                $ref: "#/components/schemas/declaration_identification_personnel_request"
+            informations_autres:
+              type: string
+              description: "Autres informations à indiquer à Certipaq"
+          required:
+            - operateur
+            - habilitations
+    declaration_identification_reprise_operateur_request:
+      description: "Données à envoyer pour créer une déclaration de demande d'identification type Reprise d'opérateur"
+      allOf:
+        - $ref: "#/components/schemas/declaration_identification_request"
+        - type: object
+          properties:
+            operateur:
+              type: object
+              description: "Identité de l'opérateur"
+              properties:
+                id:
+                  type: integer
+                  description: "Identifiant unique de l'opérateur"
+                raison_reprise:
+                  type: string
+                  description: "Raison de la reprise"
+                raison_sociale:
+                  type: string
+                  description: "Raison sociale"
+                nom_entreprise:
+                  type: string
+                  description: "Nom de l'entreprise"
+                siret:
+                  type: string
+                  description: "SIRET"
+                  minLength: 14
+                  maxLength: 14
+                cvi:
+                  type: string
+                  description: "N° CVI"
+              required:
+                - id
+                - raison_reprise
+                - raison_sociale
+            sites:
+              type: array
+              description: "Sites à reprendre"
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "Identifiant unique du site"
+                required:
+                  - id
+            dr_cdc_famille:
+              type: array
+              description: "Familles de cahiers des charges à reprendre"
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "Identifiant unique de la famille de cahiers des charges"
+                required:
+                  - id
+            dr_activites_operateurs:
+              type: array
+              description: "Activités opérateurs à reprendre"
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "Identifiant unique de l'activité opérateur"
+                  num_habilitation:
+                    type: string
+                    description: "Numéro d'habilitation"
+                required:
+                  - id
+            dr_cdc:
+              type: array
+              description: "Cahiers des charges à reprendre"
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "Identifiant unique du cahier des charges"
+                required:
+                  - id
+            outils_production:
+              type: array
+              description: "Outils de production à reprendre"
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "Identifiant unique de l'outil de production"
+                required:
+                  - id
+            date_dossier_complet:
+              type: string
+              format: date
+              description: "Date du dossier complet à l'ODG"
+            personnels:
+              type: array
+              description: "Contacts de l'opérateur"
+              items:
+                $ref: "#/components/schemas/declaration_identification_personnel_request"
+            informations_autres:
+              type: string
+              description: "Autres informations à indiquer à Certipaq"
+          required:
+            - operateur
+            - sites
+            - dr_cdc_famille
+            - dr_activites_operateurs
+            - dr_cdc
+            - outils_production
+            - date_dossier_complet
+    declaration_identification_extension_habilitation_request:
+      description: "Données à envoyer pour créer une déclaration de demande d'identification type Extension d'habilitation"
+      allOf:
+        - $ref: "#/components/schemas/declaration_identification_request"
+        - type: object
+          properties:
+            operateur_id:
+              type: integer
+              description: "Identifiant unique de l'opérateur"
+            habilitations:
+              type: array
+              description: "Ensembles d'habilitations à étendre par site (principal ou secondaire)"
+              items:
+                $ref: "#/components/schemas/declaration_identification_habilitation_site_existant_request"
+            informations_autres:
+              type: string
+              description: "Autres informations à indiquer à Certipaq"
+          required:
+            - operateur_id
+            - habilitations
+    declaration_identification_nouveau_site_production_request:
+      description: "Données à envoyer pour créer une déclaration de demande d'identification type Nouveau site de production"
+      allOf:
+        - $ref: "#/components/schemas/declaration_identification_request"
+        - type: object
+          properties:
+            operateur_id:
+              type: integer
+              description: "Identifiant unique de l'opérateur"
+            site:
+              $ref: "#/components/schemas/declaration_identification_site_request"
+            habilitation:
+              description: >
+                Ensemble d'habilitations à créer pour le nouveau site
+
+
+                Pour un site sans habilitation, il faut envoyer un objet vide
+              oneOf:
+                - $ref: "#/components/schemas/declaration_identification_site_sans_habilitation_request"
+                - $ref: "#/components/schemas/declaration_identification_habilitation_site_request"
+            informations_autres:
+              type: string
+              description: "Autres informations à indiquer à Certipaq"
+          required:
+            - operateur_id
+            - site
+            - habilitation
+    declaration_identification_modification_identite_request:
+      description: "Données à envoyer pour créer une déclaration de demande d'identification type Modification d'identité"
+      allOf:
+        - $ref: "#/components/schemas/declaration_identification_request"
+        - type: object
+          properties:
+            operateur:
+              type: object
+              description: "Opérateur à modifier"
+              properties:
+                id:
+                  type: integer
+                  description: "Identifiant unique de l'opérateur à modifier"
+                objet_modification:
+                  type: string
+                  description: "Objet de la modification"
+                raison_sociale:
+                  type: string
+                  description: "Raison sociale"
+                nom_entreprise:
+                  type: string
+                  description: "Nom de l'entreprise"
+                siret:
+                  type: string
+                  description: "SIRET"
+                  minLength: 14
+                  maxLength: 14
+              required:
+                - id
+                - objet_modification
+                - raison_sociale
+            informations_autres:
+              type: string
+              description: "Autres informations à indiquer à Certipaq"
+          required:
+            - operateur
+    declaration_identification_modification_outil_request:
+      description: "Données à envoyer pour créer une déclaration de demande d'identification type Modification d'outil"
+      allOf:
+        - $ref: "#/components/schemas/declaration_identification_request"
+        - type: object
+          properties:
+            id:
+              type: integer
+              description: "Identifiant unique de l'outil de production à modifier"
+            objet_modification:
+              type: string
+              description: "Objet de la modification"
+            nom_outil:
+              type: string
+              description: "Nom de l'outil"
+            portee_habilitation:
+              type: string
+              description: "Portée d'habilitation"
+            date_dossier_complet:
+              type: string
+              format: date
+              description: "Date de dossier complet à l'ODG"
+            informations_autres:
+              type: string
+              description: "Autres informations à indiquer à Certipaq"
+          required:
+            - id
+            - objet_modification
+    declaration_identification_site_request:
+      description: "Données à envoyer pour créer/mettre à jour un site dans une déclaration de demande d'identification"
+      type: object
+      properties:
+        nom_site:
+          type: string
+          description: "Nom du site"
+        nom_site_complement:
+          type: string
+          description: "Nom complémentaire"
+        adresse:
+          type: string
+          description: "Adresse"
+        complement_adresse:
+          type: string
+          description: "Complément d'adresse"
+        code_postal:
+          type: string
+          description: "Code postal, doit être valide pour le pays dans le paramètre `pays`"
+        ville:
+          type: string
+          description: "Ville"
+        pays:
+          type: string
+          minLength: 2
+          maxLength: 2
+          description: "Pays (code ISO 3166-1 alpha 2, cf. `dr_pays`)"
+          default: "FR"
+        localisation:
+          type: string
+          description: "Précision textuelle sur la localisation du site"
+        telephone:
+          type: string
+          description: "Téléphone, doit être valide pour le pays dans le paramètre `pays`"
+        portable:
+          type: string
+          description: "Portable, doit être valide pour le pays dans le paramètre `pays`"
+        fax:
+          type: string
+          description: "Fax, doit être valide pour le pays dans le paramètre `pays`"
+        observations:
+          type: string
+          description: "Observations"
+      required:
+        - nom_site
+        - adresse
+        - code_postal
+        - ville
+    declaration_identification_site_sans_habilitation_request:
+      description: "Données à envoyer pour déclarer un site sans habilitation dans une déclaration de demande d'identification"
+      type: object
+      # objet vide
+    declaration_identification_habilitation_site_request:
+      description: "Données à envoyer pour déclarer un ensemble d'habilitations pour un site dans une déclaration de demande d'identification"
+      type: object
+      properties:
+        dr_cdc_famille_id:
+          type: integer
+          description: "Identifiant de famille de cahiers des charges (`dr_cdc_famille`)"
+        dr_activites_operateurs:
+          type: array
+          description: "Activités opérateurs à habiliter"
+          items:
+            type: object
+            properties:
+              dr_activites_operateurs_id:
+                type: integer
+                description: "Identifiant d'activité opérateur (`dr_activites_operateurs`), parmi les activités autorisées de l'ODG"
+              num_habilitation:
+                type: string
+                description: "N° d'habilitation"
+              dr_infos_id:
+                type: integer
+                description: "Infos supplémentaires de fréquence (`dr_infos`), parmi les infos possibles de l'activité opérateur choisie"
+            required:
+              - dr_activites_operateurs_id
+        outils_production:
+          type: array
+          description: "Outils de production du site, utilisables dans `dr_cdc`"
+          items:
+            type: object
+            properties:
+              nom_outil:
+                type: string
+                description: "Nom de l'outil"
+              portee_habilitation:
+                type: string
+                description: "Portée d'habilitation"
+              commentaire:
+                type: string
+                description: "Commentaires"
+            required:
+              - nom_outil
+        dr_cdc:
+          type: array
+          description: "Cahiers des charges à habiliter"
+          items:
+            type: object
+            properties:
+              dr_cdc_id:
+                type: integer
+                description: "Identifiant de cahier des charges (`dr_cdc`), parmi les cahiers des charges de l'ODG"
+              outils_production:
+                type: array
+                description: "Outils de production utilisés pour le cahier des charges (position de l'outil dans le paramètre `outils_production` ci-dessus)"
+                items:
+                  type: integer
+            required:
+              - dr_cdc_id
+        date_dossier_complet:
+          type: string
+          format: date
+          description: "Date du dossier complet à l'ODG"
+      required:
+        - dr_cdc_famille_id
+        - dr_activites_operateurs
+        - dr_cdc
+        - date_dossier_complet
+    declaration_identification_habilitation_site_existant_request:
+      description: "Données à envoyer pour créer/mettre à jour un ensemble d'habilitations pour un site existant dans une déclaration de demande d'identification"
+      type: object
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: integer
+              description: "Identifiant du site"
+          required:
+            - id
+        - $ref: "#/components/schemas/declaration_identification_habilitation_site_request"
+    declaration_identification_personnel_request:
+      description: "Personnel de l'opérateur"
+      type: object
+      properties:
+        dr_civilite_id:
+          type: integer
+          description: "Civilité (`dr_civilite`)"
+        nom:
+          type: string
+          description: "Nom"
+        prenom:
+          type: string
+          description: "Prénom"
+        initiales:
+          type: string
+          description: "Initiales"
+        num_ppm:
+          type: string
+          description: "N° PPM (ce champ est nécessaire pour les filières viticoles)"
+        adresse:
+          type: string
+          description: "Adresse"
+        complement_adresse:
+          type: string
+          description: "Complément d'adresse"
+        code_postal:
+          type: string
+          description: "Code postal"
+        ville:
+          type: string
+          description: "Ville"
+        pays:
+          type: string
+          minLength: 2
+          maxLength: 2
+          description: "Pays (code ISO 3166-1 alpha 2, cf. `dr_pays`)"
+          default: "FR"
+        telephone:
+          type: string
+          description: "Téléphone, doit être valide pour le pays dans le paramètre `pays"
+        portable:
+          type: string
+          description: "Portable, doit être valide pour le pays dans le paramètre `pays"
+        fax:
+          type: string
+          description: "Fax, doit être valide pour le pays dans le paramètre `pays"
+        email:
+          type: string
+          format: email
+          description: "Email"
+        dr_fonction_id:
+          type: integer
+          description: "Fonction (`dr_fonction`)"
+      required:
+        - nom
+    declaration_identification_required_documents_item:
+      type: array
+      description: "Types de documents autorisés/obligatoires pour une déclaration de demande d'identification"
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+            description: "Type de document (`dr_type_documents`)"
+          libelle:
+            type: string
+            description: "Nom du document"
+          required:
+            type: boolean
+            description: "Etat obligatoire du document"
+        required:
+          - id
+          - libelle
+          - required
+    declaration_revendication_record:
+      type: object
+      description: "Déclaration de demande de revendication"
+      properties:
+        id:
+          type: integer
+          description: "Identifiant unique de la déclaration de revendication"
+        operateur_id:
+          type: integer
+          description: "Identifiant unique de l'opérateur de la déclaration de revendication"
+        operateurs_sites_id:
+          type: integer
+          description: "Identifiant unique du site de l'opérateur de la déclaration de revendication"
+        dr_cdc_famille_id:
+          type: integer
+          description: "Identifiant de famille de cahiers des charges (`dr_cdc_famille`), parmi les familles de cahiers des charges de l'ODG"
+        dr_cdc_id:
+          type: integer
+          description: "Identifiant de cahier des charges (`dr_cdc`), parmi les cahiers des charges de l'ODG"
+        dr_cdc_produit_id:
+          type: integer
+          description: "Identifiant de cahier des charges (`dr_cdc_produit`), parmi les produits de l'ODG"
+        date_demande:
+          type: string
+          format: date
+          description: "Date de la demande de déclaration de revendication"
+        millesime:
+          type: string
+          description: "Année du millésime du vin, ou `Non millésimé` en cas d'absence de millésime"
+        date_validation:
+          type: string
+          format: date
+          description: "Date de validation par l'ODG de la déclaration de revendication"
+        responsable_validation_id:
+          type: integer
+          description: "Identifiant de la personne responsable de la validation de la déclaration de revendication"
+        observations:
+          type: string
+          description: "Autres informations à indiquer à Certipaq"
+        dr_etat_demande_id:
+          type: integer 
+          description: "Statut de la demande (`dr_etat_demande`)"
+        volume_hl:
+          type: number
+          format: double
+          description: "Volume revendiqué, en hectolitres"
+        logement:
+          type: string
+          description: "Logement où est situé le vin au sein du site de stockage"
+        surface_ha:
+          type: number
+          format: double
+          description: "Surface représentant le volume revendiqué, en hectares"
+        entrepot_operateurs_sites_id:
+          type: integer
+          description: "Identifiant unique du site de stockage pour le vin"
+        autre_site_stockage:
+          type: string
+          description: "Coordonnées du site de stockage pour le vin"
+      required:
+        - id
+        - operateur_id
+        - operateurs_sites_id
+        - dr_cdc_famille_id
+        - dr_cdc_id
+        - dr_cdc_produit_id
+        - date_demande
+        - millesime
+        - date_validation
+        - responsable_validation_id
+        - observations
+        - dr_etat_demande_id
+        - volume_hl
+        - logement
+        - surface_ha
+        - entrepot_operateurs_sites_id
+        - autre_site_stockage
+    declaration_revendication_request:
+      type: object
+      description: "Données à envoyer pour créer une déclaration de revendication"
+      properties:
+        operateur_id:
+          type: integer
+          description: "Identifiant unique de l'opérateur de la déclaration de revendication"
+        operateurs_sites_id:
+          type: integer
+          description: "Identifiant unique du site de l'opérateur de la déclaration de revendication"
+        dr_cdc_famille_id:
+          type: integer
+          description: "Identifiant de famille de cahiers des charges (`dr_cdc_famille`), parmi les familles de cahiers des charges de l'ODG"
+        dr_cdc_id:
+          type: integer
+          description: "Identifiant de cahier des charges (`dr_cdc`), parmi les cahiers des charges de l'ODG"
+        dr_cdc_produit_id:
+          type: integer
+          description: "Identifiant de cahier des charges (`dr_cdc_produit`), parmi les produits de l'ODG"
+        millesime:
+          type: string
+          description: "Année du millésime du vin à revendiquer, ou `Non millésimé` en cas d'absence de millésime"
+        observations:
+          type: string
+          description: "Autres informations à indiquer à Certipaq"
+        volume_hl:
+          type: number
+          format: double
+          description: "Volume à revendiquer, en hectolitres"
+        logement:
+          type: string
+          description: "Logement où est situé le vin au sein du site de stockage"
+        surface_ha:
+          type: number
+          format: double
+          description: "Surface représentant le volume à revendiquer, en hectares"
+        entrepot_operateurs_sites_id:
+          type: integer
+          description: "Identifiant unique du site de stockage pour le vin à revendiquer, obligatoire si `autre_site_stockage` non renseigné"
+        autre_site_stockage:
+          type: string
+          description: "Coordonnées du site de stockage pour le vin à revendiquer, obligatoire si `entrepot_operateurs_sites_id` non renseigné"
+        cepages:
+          type: array
+          items:
+            type: object
+            properties:
+              dr_cepage_id:
+                type: integer
+                description: "Identifiant unique de cépage (`dr_cepage`)"
+            required:
+              - dr_cepage_id
+      required:
+        - operateur_id
+        - operateurs_sites_id
+        - dr_cdc_famille_id
+        - dr_cdc_id
+        - dr_cdc_produit_id
+        - millesime
+        - volume_hl
+        - surface_ha

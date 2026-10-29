@@ -26,7 +26,7 @@
                     <small class="text-muted"><?php echo $note->operateur->cvi ?></small><br />
                     <small class="text-muted"><?php echo $note->operateur->commune ?></small>
                     </td>
-                    <td><?php echo $note->prelevement->libelle; ?><?php if($note->prelevement->libelle_produit): ?><small class="text-muted"><br /><?php echo $note->prelevement->libelle_produit ?></small><?php endif; ?></td>
+                    <td><?php echo $note->prelevement->libelle; ?><?php if($note->prelevement->exist('fermentation_lactique')): ?><small><br />FML</small><?php endif; ?><?php if($note->prelevement->composition): ?><small><br /><?php echo $note->prelevement->composition; ?></small><?php endif; ?><?php if($note->prelevement->libelle_produit): ?><small class="text-muted"><br /><?php echo $note->prelevement->libelle_produit ?></small><?php endif; ?></td>
                     <td>
                         <ul style="margin: 0; padding: 0" >
                             <?php

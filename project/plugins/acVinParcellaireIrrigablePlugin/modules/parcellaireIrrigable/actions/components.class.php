@@ -3,8 +3,8 @@
 class parcellaireIrrigableComponents extends sfComponents {
 
     public function executeMonEspace(sfWebRequest $request) {
-        $this->campagne = "".($this->campagne+1);
-        $this->parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->find('PARCELLAIREIRRIGABLE-' . $this->etablissement->identifiant . '-' . $this->campagne);
+        $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->etablissement->identifiant, acCouchdbClient::HYDRATE_JSON);
+        $this->parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->find('PARCELLAIREIRRIGABLE-' . $this->etablissement->identifiant . '-' . $this->periode);
     }
 
 }

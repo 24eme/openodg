@@ -8,6 +8,16 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
             $form_alsace = new DRevPrelevementForm($this->getObject()->getDocument()->prelevements->get(Drev::CUVE_ALSACE));
             $this->embedForm(Drev::CUVE_ALSACE, $form_alsace);
         }
+        
+        if($this->getObject()->getDocument()->prelevements->exist(Drev::CUVE_CREMANT)) {
+            $form_cremant = new DRevPrelevementForm($this->getObject()->getDocument()->prelevements->get(Drev::CUVE_CREMANT));
+            $this->embedForm(Drev::CUVE_CREMANT, $form_cremant);
+        }
+
+        if($this->getObject()->getDocument()->prelevements->exist(Drev::CUVE_GRDCRU)) {
+            $form_grdcru = new DRevPrelevementForm($this->getObject()->getDocument()->prelevements->get(Drev::CUVE_GRDCRU));
+            $this->embedForm(Drev::CUVE_GRDCRU, $form_grdcru);
+        }
 
         $vtsgn = false;
 

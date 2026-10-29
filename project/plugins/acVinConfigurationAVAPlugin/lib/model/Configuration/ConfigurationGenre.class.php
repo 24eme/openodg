@@ -7,6 +7,10 @@ class ConfigurationGenre extends BaseConfigurationGenre {
         return $this->filter('^appellation');
     }
 
+    public function getGenre() {
+        return $this;
+    }
+
     public function getMentions() {
 
         return $this->getChildrenNodeDeep();

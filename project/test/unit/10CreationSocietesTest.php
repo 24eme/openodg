@@ -5,6 +5,9 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) {
     if (preg_match('/SOCIETE-([^ ]*)/', implode(' ', array_values($v->value)), $m)) {
       $soc = SocieteClient::getInstance()->findByIdentifiantSociete($m[1]);
+      if (!$soc) {
+          continue;
+      }
       foreach($soc->getEtablissementsObj() as $k => $etabl) {
         //   foreach (VracClient::getInstance()->retrieveBySoussigne($etabl->etablissement->identifiant)->rows as $k => $vrac) {
         //     $vrac_obj = VracClient::getInstance()->find($vrac->id);
@@ -14,6 +17,9 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
         //     $drm = DRMClient::getInstance()->find($id);
         //     $drm->delete(false);
         //   }
+        if (!$etabl->etablissement) {
+            continue;
+        }
         $etabl->etablissement->delete();
       }
       $soc->delete();
@@ -21,7 +27,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(30);
+$t = new lime_test(39);
 $t->comment('création des différentes sociétés');
 
 $codePostalRegion = "92100";
@@ -177,8 +183,6 @@ try {
   $t->fail("Changement de statut de la societe viti");
 }
 
-$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société pour un degustateur");
-
 $societedegust = SocieteClient::getInstance()->createSociete("SARL JEAN DEGUSTE", SocieteClient::TYPE_AUTRE);
 $societedegust->email = "email@societe.com";
 $societedegust->site_internet = "www.societe.fr";
@@ -192,9 +196,31 @@ $societedegust->code_postal = $codePostalRegion;
 $societedegust->commune = "Neuilly sur seine";
 $societedegust->pays = "FR";
 $societedegust->insee = "94512";
+$societedegust->add('region', "TESTREGION");
 $societedegust->save();
 $id = $societedegust->getidentifiant();
 $t->comment("compte 7 : ".$id);
 
+$t->is($societedegust->getMasterCompte()->region, $societedegust->region, "La region a été copié dans le compte");
+$t->is($societedegust->getMasterCompte()->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création d'une société autre créé un compte du même type");
+
 $compteDegustateur = $contact = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societedegust);
-$t->isnt($compteDegustateur->identifiant, $societedegust->identifiant, "La societe a un compte séparé");
+$t->isnt($compteDegustateur->identifiant, $societedegust->identifiant, "La societe a un interlocuteur séparé");
+
+$t->comment('On archive la société');
+$etablissementviti = $societeviti->createEtablissement(EtablissementFamilles::FAMILLE_PRODUCTEUR);
+$etablissementviti->save();
+$t->is($societeviti->statut , SocieteClient::STATUT_ACTIF, "La societé est active");
+$t->is($societeviti->getMasterCompte()->statut , SocieteClient::STATUT_ACTIF, "Le compte de la societé est actif");
+$t->is($etablissementviti->statut , SocieteClient::STATUT_ACTIF, "L'établissement est actif");
+$t->is($etablissementviti->getMasterCompte()->statut , SocieteClient::STATUT_ACTIF, "Le compte de l'établissement est actif");
+$societeviti->switchStatusAndSave();
+$societeviti->save();
+$etablissementviti = EtablissementClient::getInstance()->find($etablissementviti->_id);
+$t->is($societeviti->statut , SocieteClient::STATUT_SUSPENDU, "La societé est suspendue");
+$t->is($societeviti->getMasterCompte()->statut , SocieteClient::STATUT_SUSPENDU, "Le compte de la societé est suspendu");
+$t->is($etablissementviti->statut , SocieteClient::STATUT_SUSPENDU, "L'établissement est suspendu");
+$t->is($etablissementviti->getMasterCompte()->statut , SocieteClient::STATUT_SUSPENDU, "Le compte de l'établissement est suspendu");
+
+$societeviti->switchStatusAndSave();
+$societeviti->save();

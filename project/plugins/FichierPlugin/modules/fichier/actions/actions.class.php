@@ -33,6 +33,7 @@ class fichierActions extends sfActions
 	public function executeGet(sfWebRequest $request) {
     	$fichier = $this->getRoute()->getFichier();
     	$fileParam = $request->getParameter('file', null);
+
 		$this->secureEtablissement($fichier->getEtablissementObject());
 		if(!$fichier->visibilite && !$this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) && !$this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
 
@@ -48,11 +49,20 @@ class fichierActions extends sfActions
     		return $this->forward404("Aucun fichier pour ".$fichier->_id);
     	}
     	$filename = null;
-    	foreach ($fichier->_attachments as $key => $attachment) {
-    		if (!$fileParam || $fileParam == $key) {
-    			$filename = $key;
-    		}
+		foreach ( array_filter([$fileParam, 'pdf', 'xls', 'csv'], 'is_string') as $fileParam_test) {
+    		foreach ($fichier->_attachments as $key => $attachment) {
+            	if (!$fileParam_test || strpos($key, $fileParam_test) !== false ) {
+    				$filename = $key;
+					break 2;
+    			}
+			}
     	}
+		if (!$filename) {
+			$filename = $key;
+		}
+        if (!$fileParam) {
+            $fileParam = $filename;
+        }
     	$file = file_get_contents($fichier->getAttachmentUri($filename));
         if(!$file) {
             return $this->forward404($filename." n'existe pas pour ".$fichier->_id);
@@ -98,21 +108,26 @@ class fichierActions extends sfActions
     }
 
     public function executeUpload(sfWebRequest $request) {
-    	$this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(['allow_habilitation' => true]);
 
-		if($request->getParameter('fichier_id') && !$this->getUser()->isAdmin()) {
+        if($request->getParameter('fichier_id') && !$this->getUser()->isAdminODG()) {
 
 			throw new sfError403Exception();
 		}
 
     	$this->fichier_id = $request->getParameter('fichier_id');
 
-    	$this->fichier = ($this->fichier_id) ? FichierClient::getInstance()->find($this->fichier_id) : FichierClient::getInstance()->createDoc($this->etablissement->identifiant, true);
+    	$this->fichier = ($this->fichier_id) ? FichierClient::getInstance()->find($this->fichier_id) : null;
+        if (!$this->fichier) {
+            $this->fichier = FichierClient::getInstance()->createDoc($this->etablissement->identifiant, true);
+        }
 
 		$categories = null;
 
-		if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
-			$categories = array('Identification' => "Identification");
+        if(!$this->getUser()->isAdminODG() && $this->getUser()->hasCredential(myUser::CREDENTIAL_OI)) {
+			$categories = array(FichierClient::CATEGORIE_OI => FichierClient::CATEGORIE_OI);
+        }else if(!$this->getUser()->isAdminODG() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
+			$categories = array(FichierClient::CATEGORIE_IDENTIFICATION => FichierClient::CATEGORIE_IDENTIFICATION);
 		}
 
     	$this->form = new FichierForm($this->fichier, null, array('categories' => $categories));
@@ -128,23 +143,28 @@ class fichierActions extends sfActions
     	}
 
     	$this->form->save();
-    	return ($request->hasParameter('keep_page'))? $this->redirect('upload_fichier', array('fichier_id' => $this->fichier->_id, 'sf_subject' => $this->etablissement)) : $this->redirect('pieces_historique', $this->etablissement);
+        if ($request->hasParameter('keep_page')) {
+            return $this->redirect('upload_fichier', array('fichier_id' => $this->fichier->_id, 'identifiant' => $this->etablissement->identifiant));
+        }
+        return $this->redirect('pieces_historique', array('identifiant' => $this->etablissement->identifiant));
     }
 
 	protected function getCategoriesLimitation() {
-		if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
-			return array('Identification', 'dr', 'drev');
-		}
 
 		return null;
 	}
 
 	public function executePiecesHistorique(sfWebRequest $request) {
-		$this->etablissement = $this->getRoute()->getEtablissement();
+		$this->etablissement = $this->getRoute()->getEtablissement(['allow_stalker' => true, 'allow_habilitation' => true]);
 		$this->societe = $this->etablissement->getSociete();
 		$this->secureEtablissement($this->etablissement);
 
-		$this->year = $request->getParameter('annee', 0);
+		$this->campagne = $request->getParameter('campagne', 0);
+        if ($this->campagne) {
+            $startdate = substr($this->campagne, 0, 4);
+            $enddate = substr($this->campagne, -4, 4);
+        }
+
 		$this->category = $request->getParameter('categorie');
 
 		$this->categoriesLimitation = $this->getCategoriesLimitation();
@@ -162,27 +182,50 @@ class fichierActions extends sfActions
 										$piecesSocietes
 									);
 
-		$this->history = ($this->year)? PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $visibilite, $this->year.'-01-01', $this->year.'-12-31', $this->categoriesLimitation) : $allHistory;
+		$this->history = ($this->campagne)? PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $visibilite, $startdate.'-08-01', $enddate.'-07-31', $this->categoriesLimitation) : $allHistory;
 
-		$this->years = array();
+		$this->campagnes = array();
 		$this->categories = array();
 		$this->decreases = 0;
 		foreach ($allHistory as $doc) {
-			if (preg_match('/^([0-9]{4})-[0-9]{2}-[0-9]{2}$/', $doc->key[PieceAllView::KEYS_DATE_DEPOT], $m)) {
-				$this->years[$m[1]] = $m[1];
-			}
-			if ($this->year && (!isset($m[1]) || $m[1] != $this->year)) { continue; }
+
+            if(is_bool($doc->key[PieceAllView::KEYS_DATE_DEPOT])) {
+                $doc->key[PieceAllView::KEYS_DATE_DEPOT] = null;
+                $date = null;
+            }
+
+            if($doc->key[PieceAllView::KEYS_DATE_DEPOT]) {
+                $date = DateTime::createFromFormat('Y-m-d', preg_replace('/ .*/', '', $doc->key[PieceAllView::KEYS_DATE_DEPOT]));
+            }
+
+            if ($date && $date < DateTime::createFromFormat('Y-m-d', $date->format('Y').'-08-01')) {
+                $end_campagne = $date->format('Y');
+                $start_campagne = $date->modify('-1 year')->format('Y');
+                $this->campagnes[$start_campagne.'-'.$end_campagne] = $start_campagne.'-'.$end_campagne;
+            } elseif($date) {
+                $start_campagne = $date->format('Y');
+                $end_campagne = $date->modify('+1 year')->format('Y');
+                $this->campagnes[$start_campagne.'-'.$end_campagne] = $start_campagne.'-'.$end_campagne;
+            }
+
 			$categorie = strtolower($doc->key[PieceAllView::KEYS_CATEGORIE]);
 			if (!isset($this->categories[$categorie])) {
 				$this->categories[$categorie] = 0;
 			}
 			$this->categories[$categorie]++;
 		}
+        uasort($this->history, function($a, $b) { return $a->key[PieceAllView::KEYS_DATE_DEPOT] < $b->key[PieceAllView::KEYS_DATE_DEPOT]; });
+
 		ksort($this->categories);
 	}
 
 	public function executeEdit(sfWebRequest $request) {
     	$this->fichier = $this->getRoute()->getFichier();
+
+        if ($this->fichier->isFactures()) {
+            throw new Exception($this->fichier->getType().' déjà facturée');
+        }
+
         $this->etablissement = $this->fichier->getEtablissementObject();
 
         $this->fichier->generateDonnees();
@@ -208,11 +251,11 @@ class fichierActions extends sfActions
 
 	public function executeNew(sfWebRequest $request) {
     	$this->etablissement = $this->getRoute()->getEtablissement();
-    	$this->campagne = $request->getParameter('campagne');
+    	$this->periode = $request->getParameter('periode');
     	$this->type = $request->getParameter('type');
 
-    	if (!$this->campagne) {
-    		return $this->forward404("La création d'un fichier nécessite la campagne");
+    	if (!$this->periode) {
+    		return $this->forward404("La création d'un fichier nécessite la periode");
     	}
 
     	if (!$this->type) {
@@ -220,12 +263,12 @@ class fichierActions extends sfActions
     	}
 
     	$client = $this->type.'Client';
-    	if ($doc = $client::getInstance()->findByArgs($this->etablissement->identifiant, $this->campagne)) {
+    	if ($doc = $client::getInstance()->findByArgs($this->etablissement->identifiant, $this->periode)) {
     		return $this->redirect($this->generateUrl('edit_fichier', $doc));
     	}
 
-        $doc = $client::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne, true);
-        if ($doc->exist('libelle')) $doc->libelle = $this->type.' '.$this->campagne.' saisie interne';
+        $doc = $client::getInstance()->createDoc($this->etablissement->identifiant, $this->periode, true);
+        if ($doc->exist('libelle')) $doc->libelle = $this->type.' '.$this->periode.' saisie interne';
         if ($doc->exist('visibilite')) $doc->visibilite = 0;
         if ($doc->exist('date_depot')) $doc->date_depot = date('Y-m-d');
         if ($doc->exist('date_import')) $doc->date_import = date('Y-m-d');
@@ -236,16 +279,38 @@ class fichierActions extends sfActions
 
 	public function executeScrape(sfWebRequest $request) {
 		$this->etablissement = $this->getRoute()->getEtablissement();
-		$this->campagne = $request->getParameter('campagne');
+		$this->periode = $request->getParameter('periode');
 		$this->type = $request->getParameter('type');
 
-		FichierClient::getInstance()->scrapeAndSaveFiles($this->etablissement, $this->type, $this->campagne);
+		if ($request->isMethod(sfWebRequest::POST)) {
+			try {
+				$fichiers = FichierClient::getInstance()->scrapeAndSaveFiles($this->etablissement, $this->type, $this->periode);
+			    $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->etablissement->identifiant, $this->periode);
+				if ($fichiers && $drev) {
+					$drev->resetAndImportFromDocumentDouanier();
+                	$drev->save();
+				}
+			}catch(sfException $e ) {
+                if(sfConfig::get('sf_web_debug')) {
+                    throw $e;
+                }
+				$this->getUser()->setFlash('error', $e->getMessage());
+				return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant, "campagne" => sprintf('%d-%d', $this->periode, ($this->periode + 1)) ));
+			}
+			return $this->redirect('dr_redirect', array('identifiant' => $this->etablissement->identifiant, 'campagne' => sprintf('%d-%d', $this->periode, ($this->periode + 1)) ));
+		}
 
-		return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant));
 	}
 
+    public function executeCvi(sfWebRequest $request) {
+        $this->cvi = $request->getParameter('cvi');
+        $this->etablissement = EtablissementClient::getInstance()->findByCvi($this->cvi, true);
+        $this->cvi_details = ProdouaneScrappyClient::checkCVI($this->cvi);
+        return sfView::SUCCESS;
+    }
+
 	protected function secureEtablissement($etablissement) {
-        if (class_exists("AppUser") && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION) && !EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
+        if (class_exists("AppUser") && !$this->getUser()->hasHabilitation() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_STALKER) && !EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
 
             return $this->forwardSecure();
         }

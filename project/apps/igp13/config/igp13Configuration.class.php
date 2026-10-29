@@ -1,18 +1,8 @@
 <?php
 
-class igp13Configuration extends sfApplicationConfiguration
+require_once dirname(__FILE__).'/../../igp/config/igpConfiguration.class.php';
+
+class igp13Configuration extends igpConfiguration
 {
 
-    public function configure()
-    {
-        $configCache = $this->getConfigCache();
-        $configCache->registerConfigHandler('config/points_aides.yml', 'sfDefineEnvironmentConfigHandler');
-        $configCache->checkConfig('config/points_aides.yml');
-
-    }
-
-    public function initialize()
-    {
-        include($this->getConfigCache()->checkConfig('config/points_aides.yml'));
-    }
 }

@@ -14,8 +14,14 @@ class ImportDocumentsDouaniersTask extends sfBaseTask
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
 
-        	new sfCommandOption('type', null, sfCommandOption::PARAMETER_OPTIONAL, "Type de document", null),
+        	  new sfCommandOption('type', null, sfCommandOption::PARAMETER_OPTIONAL, "Type de document", null),
+            new sfCommandOption('limitidentifiant', null, sfCommandOption::PARAMETER_OPTIONAL, "Limit à l'identifiant indiqué", null),
             new sfCommandOption('forceimport', null, sfCommandOption::PARAMETER_OPTIONAL, "Force import document (exept if manualy edited)", false),
+            new sfCommandOption('scrapefiles', null, sfCommandOption::PARAMETER_OPTIONAL, "Scrape import document", false),
+            new sfCommandOption('dateimport', null, sfCommandOption::PARAMETER_OPTIONAL, "Date d'import", null),
+            new sfCommandOption('diff', null, sfCommandOption::PARAMETER_OPTIONAL, "Diff", false),
+            new sfCommandOption('debug', null, sfCommandOption::PARAMETER_OPTIONAL, "Debug", false),
+            new sfCommandOption('dateapprouvee', null, sfCommandOption::PARAMETER_OPTIONAL, "Date d'approbation", false)
         ));
 
         $this->namespace = 'import';
@@ -27,8 +33,11 @@ EOF;
 
     protected function execute($arguments = array(), $options = array())
     {
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $contextInstance = sfContext::createInstance($this->configuration);
+
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
+        $context = sfContext::createInstance($this->configuration);
 
         $annee = $arguments['annee'];
         $type = ($options['type'])? strtoupper($options['type']) : null;
@@ -48,18 +57,38 @@ EOF;
 		    $nb = count($items);
         foreach ($items as $item) {
 
+            if ($options['limitidentifiant'] && ( strpos($item->id, $options['limitidentifiant']) === false && $item->key[7] != $options['limitidentifiant'] ) )
+            {
+                continue;
+            }
 
         	$i++;
-        	echo "PROCESSUS;".$i.'/'.$nb.' => '.floor($i / $nb * 100)."\n";
 
-        	if ($etablissement = EtablissementClient::getInstance()->find($item->id)) {
-        		$ddType = $this->getDocumentDouanierType($etablissement);
+            $etablissement = EtablissementClient::getInstance()->find($item->id);
+            if (!$etablissement) {
+                echo sprintf("ERROR;Etablissement non trouvé %s\n", $item->id);
+                continue;
+            }
+
+            if ($options['debug'] && $options['limitidentifiant']) {
+                    echo "WARNING: etablissement trouvé pour ".$options["limitidentifiant"]." ".$etablissement->_id."\n";
+            }
+
+                $ddType = DouaneCsvFile::getDocumentDouanierType($etablissement);
 
         		if ($type && $ddType != $type) {
+
         			continue;
         		}
 
-        		if (!$etablissement->cvi || !preg_match('/^[0-9]{10}$/', $etablissement->cvi)) {
+                if ($etablissement->statut != CompteClient::STATUT_ACTIF) {
+                    if ($options['limitidentifiant']) {
+                        echo sprintf("WARNING;etablissement %s %s non actif\n", $etablissement->cvi, $etablissement->_id);
+                    }
+                    continue;
+                }
+
+        		if (!$etablissement->cvi || !preg_match('/^[0-9]{9}[0-9A-Z]$/', $etablissement->cvi)) {
         			echo sprintf("ERROR;CVI non valide %s pour %s\n", $etablissement->cvi, $etablissement->_id);
         			continue;
         		}
@@ -71,56 +100,70 @@ EOF;
 
         		$c = FichierClient::getInstance()->getClientFromType($ddType);
 
-                if ($f = $c->findByArgs($etablissement->identifiant, $annee) && (!($options['forceimport']) || ($f && $f->exist('donnees')))) {
+                if (($f = $c->findByArgs($etablissement->identifiant, $annee)) && (!($options['forceimport']) || ($f && $f->exist('donnees')))) {
                     if (!$options['forceimport']) {
+                        if ($options['diff']) {
+                            $old = [];
+                            $new = [];
+                            $diff = DouaneCsvFile::getDiffWithScrapyFile($f, $old, $new);
+                            if ($options['debug']) {
+                                print_r(['old' => $old, 'new' => $new, 'diff' => $diff]);
+                            }
+                            if ($nb = count($diff)) {
+                                echo sprintf("WARNING;Document douanier déjà existant %s et le fichier en base ne semble pas à jour : %d diff\n", $f->_id, $nb);
+                            }else{
+                                echo sprintf("WARNING;Document douanier déjà existant %s (no diff)\n", $f->_id);
+                            }
+                            continue;
+                        }
                         echo sprintf("WARNING;Document douanier déjà existant %s\n", $f->_id);
                     }else{
                         echo sprintf("WARNING;Document douanier en saisie interne %s\n", $f->_id);
                     }
-        			continue;
-        		}
+                    continue;
+                }
 
-        		try {
-        			$result = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee);
-        		} catch (Exception $e) {
-        			echo sprintf("ERROR;%s\n", $e->getMessage());
-        			continue;
-        		}
+                try {
+                    if (strtoupper($options['scrapefiles']) == "FALSE") {
+                        $options['scrapefiles'] = false;
+                    }
+                    $fichiers = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, ($options['scrapefiles']), $contextInstance, false);
+                } catch (Exception $e) {
+                    if ($options['debug']) {
+                        throw $e;
+                    }
+                    echo sprintf("ERROR;%s\n", $e->getMessage());
+                    continue;
+                }
 
-        		if (!$result) {
+        		if (!$fichiers) {
         			echo sprintf("WARNING;Aucun document douanier pour %s (%s)\n", $etablissement->_id, $etablissement->cvi);
-        		} else {
-        			echo sprintf("SUCCESS;Document douanier importé;%s\n", $result->_id);
-        		}
-
-        	} else {
-        		echo sprintf("ERROR;Etablissement non trouvé %s\n", $item->id);
-        	}
+                    continue;
+                }
+                foreach($fichiers as $fichier) {
+                    if(isset($options['dateimport']) && $options['dateimport']) {
+                        $fichier->date_import = $options['dateimport'];
+                        $fichier->date_depot = $options['dateimport'];
+                        if (!$options['dateapprouvee'] && $options['dateimport']) {
+                            $options['dateapprouvee'] = $options['dateimport'];
+                        }
+                        if (DRConfiguration::getInstance()->hasValidationDR() && $options['dateapprouvee']) {
+                            $fichier->add('validation_odg', $options['dateapprouvee']);
+                        }
+                        $fichier->save();
+                    }
+                    echo sprintf("SUCCESS;Document douanier importé;%s %s (%s)\n", $fichier->type, $fichier->_id, $etablissement->cvi);
+                }
         }
-    }
-
-    protected function getDocumentDouanierType($etablissement)
-    {
-        if($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR || $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
-            return DRCsvFile::CSV_TYPE_DR;
-        }
-
-        if($etablissement->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) {
-            return SV11CsvFile::CSV_TYPE_SV11;
-        }
-
-        if($etablissement->famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR || $etablissement->famille == EtablissementFamilles::FAMILLE_NEGOCIANT) {
-            return SV12CsvFile::CSV_TYPE_SV12;
-        }
-        return null;
     }
 
     protected function getDocumentDouanierTypes()
     {
-    	return array(
-    			DRCsvFile::CSV_TYPE_DR,
-    			SV11CsvFile::CSV_TYPE_SV11,
-    			SV12CsvFile::CSV_TYPE_SV12
-    	);
+        return array(
+            DRCsvFile::CSV_TYPE_DR,
+            SV11CsvFile::CSV_TYPE_SV11,
+            SV12CsvFile::CSV_TYPE_SV12
+        );
     }
+
 }

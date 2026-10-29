@@ -3,12 +3,12 @@
 
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
-  <li><a href="<?php echo url_for('facturation_declarant', $facture->getCompte()); ?>"><?php echo $facture->getCompte()->getNomAAfficher() ?> (<?php echo $facture->getCompte()->getIdentifiantAAfficher() ?>)</a></li>
-  <li class="active"><a href="">Paiement de la facture n°<?php echo $facture->numero_ava ?></a></li>
+  <li><a href="<?php echo url_for('facturation_declarant', ['identifiant' => $facture->identifiant]); ?>"><?php echo $facture->getCompte()->getNomAAfficher() ?> (<?php echo $facture->getCompte()->getIdentifiantAAfficher() ?>)</a></li>
+  <li class="active"><a href="">Paiement de la facture n°<?php echo $facture->numero_odg ?></a></li>
 </ol>
 
 <div class="page-header">
-    <h2>Paiement de la facture n°<?php echo $facture->numero_ava ?> <small> du <?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></small></h2>
+    <h2>Paiement de la facture n°<?php echo $facture->numero_odg ?> <small> du <?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></small></h2>
 </div>
 
 <form action="" method="post" class="form-horizontal">
@@ -58,7 +58,7 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php echo url_for('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant)) ?>" class="btn btn-danger btn-lg btn-upper">Annuler</a>
+            <a href="<?php echo url_for('facturation_declarant', array("identifiant" => $facture->identifiant)) ?>" class="btn btn-danger btn-lg btn-upper">Annuler</a>
         </div>
         <div class="col-xs-6 text-right">
             <button type="submit" class="btn btn-default btn-lg btn-upper">Valider</a>

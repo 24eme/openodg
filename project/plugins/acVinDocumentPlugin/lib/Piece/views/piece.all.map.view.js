@@ -3,10 +3,12 @@ function(doc) {
         return;
     }
 
-    for(key in doc.pieces) {
+    for (var key in doc.pieces) {
     	var piece = doc.pieces[key];
         var categorie = piece.categorie;
-        if(!categorie) {
+        if(!categorie && doc.type == 'PriseDeMousse') {
+          categorie = doc.type.toLowerCase();
+        } else {
             categorie = doc._id.replace(/-.+/, '').toLowerCase();
         }
         emit([piece.visibilite, piece.identifiant, piece.date_depot, categorie, piece.libelle, piece.mime, piece.source], [key, piece.fichiers]);

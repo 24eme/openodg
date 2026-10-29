@@ -8,10 +8,17 @@ class AppUser extends sfBasicSecurityUser {
     const NAMESPACE_COMPTE = "COMPTE";
     const NAMESPACE_COMPTE_ORIGIN = "COMPTE_ORIGIN";
     const CREDENTIAL_ADMIN = "ADMIN";
+    const CREDENTIAL_ADMIN_ODG = "ADMIN_ODG";
     const CREDENTIAL_DREV_ADMIN = 'teledeclaration_drev_admin';
+    const CREDENTIAL_CONDITIONNEMENT_ADMIN = 'teledeclaration_conditionnement_admin';
+    const CREDENTIAL_PMC_ADMIN = 'teledeclaration_pmc_admin';
+    const CREDENTIAL_CHGTDENOM_ADMIN = 'teledeclaration_chgtDenom_admin';
+    const CREDENTIAL_TRANSACTION_ADMIN = 'teledeclaration_transaction_admin';
+    const CREDENTIAL_STALKER = 'stalker';
     const CREDENTIAL_TOURNEE = "tournee";
     const CREDENTIAL_CONTACT = "contacts";
-    const CREDENTIAL_HABILITATION = "habilitation";
+    const CREDENTIAL_HABILITATION = 'habilitation';
+    const CREDENTIAL_OI = 'OI';
     const CREDENTIAL_DREV_REGION = "COMPTE_REGION";
 
     public function signInOrigin($login_or_compte) {
@@ -45,14 +52,22 @@ class AppUser extends sfBasicSecurityUser {
 
         if(!$compte) {
           $societe = SocieteClient::getInstance()->findByIdentifiantSociete($login_or_compte);
-          if(!$societe){
-             throw new sfException("Le compte est nul : ".$login_or_compte);
+          if(!$societe || $societe->isSuspendu()){
+              $this->signOut();
+              return false;
+              //throw new sfException("Le compte est nul : ".$login_or_compte);
           }
           $compte = $societe->getMasterCompte();
           $login = $compte->identifiant;
           if(!$compte){
-             throw new sfException("Le compte est nul : ".$login_or_compte);
+              $this->signOut();
+              return false;
           }
+        }
+
+        if ($compte->statut === EtablissementClient::STATUT_SUSPENDU) {
+            $this->signOut();
+            return false;
         }
 
         $this->setAttribute(self::SESSION_COMPTE_LOGIN, $login, $namespace);
@@ -78,9 +93,27 @@ class AppUser extends sfBasicSecurityUser {
         $this->getAttributeHolder()->removeNamespace(self::NAMESPACE_COMPTE_ORIGIN);
     }
 
+    private $cache_compte = null;
     public function getCompte() {
+        if (is_null($this->cache_compte)) {
+            $this->cache_compte = $this->getCompteByNamespace(self::NAMESPACE_COMPTE);
+        }
+        return $this->cache_compte;
+    }
 
-        return $this->getCompteByNamespace(self::NAMESPACE_COMPTE);
+    public function getEtablissement() {
+        $etablissement = null;
+
+        $compte = $this->getCompte();
+        $societe = $compte->getSociete() ;
+        if ($societe) {
+            $etablissement = $societe->getEtablissementPrincipal();
+        }
+        if (!$etablissement) {
+            $etablissement = $compte->getEtablissement();
+        }
+
+        return $etablissement;
     }
 
     public function getCompteOrigin() {
@@ -145,22 +178,95 @@ class AppUser extends sfBasicSecurityUser {
        return $this->hasCredential(self::CREDENTIAL_ADMIN);
     }
 
+    public function isAdminODG()
+    {
+       return $this->hasCredential(self::CREDENTIAL_ADMIN) || $this->hasCredential(self::CREDENTIAL_ADMIN_ODG);
+    }
+
+    public function hasContact() {
+        return $this->hasCredential(self::CREDENTIAL_CONTACT) || $this->isAdminODG();
+    }
+
+    public function hasHabilitation() {
+        return $this->hasCredential(AppUser::CREDENTIAL_HABILITATION)  || $this->isAdminODG();
+    }
+
+    public function hasFactureAdmin()
+    {
+       return $this->hasCredential(self::CREDENTIAL_ADMIN) || $this->hasCredential(self::CREDENTIAL_ADMIN_ODG);
+    }
+
     public function hasTeledeclaration() {
-        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION) && !$this->hasDrevAdmin();
+        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION) && !$this->hasDrevAdmin() && !$this->isStalker();
     }
 
     public function hasDrevAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN) || $this->isAdmin();
+        return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN) || $this->isAdminODG();
     }
 
-    public function getTeledeclarationDrevRegion() {
-      $drevConf = DrevConfiguration::getInstance();
-      if($this->hasDrevAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $drevConf->getOdgRegions()){
-        if(in_array($region, $drevConf->getOdgRegions())){
+    public function hasChgtDenomAdmin() {
+        return $this->hasCredential(self::CREDENTIAL_CHGTDENOM_ADMIN) || $this->isAdminODG();
+    }
+
+    public function hasConditionnementAdmin() {
+        return $this->hasCredential(self::CREDENTIAL_CONDITIONNEMENT_ADMIN) || $this->isAdminODG();
+    }
+
+    public function hasPMCAdmin() {
+        return $this->hasCredential(self::CREDENTIAL_PMC_ADMIN) || $this->isAdminODG();
+    }
+
+    public function hasTransactionAdmin() {
+        return $this->hasCredential(self::CREDENTIAL_TRANSACTION_ADMIN) || $this->isAdminODG();
+    }
+
+    public function isStalker() {
+        return $this->hasCredential(self::CREDENTIAL_STALKER) || $this->isAdmin() || $this->isAdminODG();
+    }
+
+
+    public function getRegion() {
+      if(RegionConfiguration::getInstance()->getOdgRegions() && ($this->hasDrevAdmin() || $this->isStalker()) && $this->getCompte() && ($region = $this->getCompte()->getRegion())){
+        if(in_array($region, RegionConfiguration::getInstance()->getOdgRegions())){
+                    return $region;
+        }
+      }
+
+      return sfConfig::get('app_region', null);
+    }
+
+    public function getTeledeclarationConditionnementRegion() {
+      $condConf = ConditionnementConfiguration::getInstance();
+      if($this->hasConditionnementAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $condConf->getOdgRegions()){
+        if(in_array($region, $condConf->getOdgRegions())){
                     return $region;
         }
       }
       return null;
+    }
+
+    public function getTeledeclarationPMCRegion() {
+      $condConf = PMCConfiguration::getInstance();
+      if($this->hasPMCAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $condConf->getOdgRegions()){
+        if(in_array($region, $condConf->getOdgRegions())){
+                    return $region;
+        }
+      }
+      return null;
+    }
+
+    public function getTeledeclarationTransactionRegion() {
+      $transConf = TransactionConfiguration::getInstance();
+      if($this->hasTransactionAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $transConf->getOdgRegions()){
+        if(in_array($region, $transConf->getOdgRegions())){
+                    return $region;
+        }
+      }
+      return null;
+    }
+
+    public function getUsedLogin() {
+       return $this->getAttribute(self::SESSION_COMPTE_LOGIN, null, self::NAMESPACE_COMPTE);
     }
 
 }

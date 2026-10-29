@@ -9,6 +9,8 @@ class HabilitationDemandeGlobaleForm extends HabilitationDemandeCreationForm
         unset($this->validatorSchema['produit']);
         unset($this->widgetSchema['activites']);
         unset($this->validatorSchema['activites']);
+        unset($this->widgetSchema['site']);
+        unset($this->validatorSchema['site']);
 
         $this->widgetSchema->setNameFormat('habilitation_demande_globale[%s]');
     }
@@ -26,6 +28,7 @@ class HabilitationDemandeGlobaleForm extends HabilitationDemandeCreationForm
                 $values['demande'],
                 $produit->getHash(),
                 array_keys($produit->getActivitesHabilites()),
+                null,
                 $values['statut'],
                 $values['date'],
                 $values['commentaire'],

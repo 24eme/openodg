@@ -1,12 +1,9 @@
 #!/bin/bash
+#
+# Migration des auteurs :
+#     ls web/statuts/xml/* | grep -v '\-' | while read file ; do LASTCOMMIT=$(echo $file | awk -F '_' '{print $3}') ; AUTHOR=$(git show $LASTCOMMIT | head -n 5 | grep "^Author:" | sed 's/.*: //' | sed 's/ <.*//' | sed 's/[^a-z]//ig') ; if test "$AUTHOR" ; then mv $file $(echo $file | awk -F '_' '{print $1"_"$2"_"$3"-'$AUTHOR'_"$4}' ); fi ; done
 
 . $(echo $0 | sed 's/[^\/]*$//')config.inc
-
-if [ "$(echo $COUCHTEST | grep -E _test$)" == "" ]
-then
-    echo "La base COUCHTEST ($COUCHTEST) ne semble pas être une base de test ( doit se terminer par \"_test\", par exemple http://localhost:5984/giilda_app_test )"
-    exit;
-fi
 
 APPLICATION=$1
 FORCE=$2
@@ -34,13 +31,11 @@ fi
 
 mkdir -p $XMLTESTDIR 2> /dev/null
 
-#git fetch > /dev/null 2>&1
-#git reset --hard origin/master
-
-BRANCH=$(cat ../.git/HEAD | sed -r 's|^ref: refs/heads/||')
-LASTCOMMIT=$(cat $WORKINGDIR"/../.git/refs/heads/"$BRANCH)
+BRANCH=$(git branch  | grep '^*' | cut -d " " -f 2)
+LASTCOMMIT=$(git show $BRANCH | head -n 1 | cut -d " " -f 2)
 DATE=$(date +%Y%m%d%H%M%S)
 BRANCH=$(echo $BRANCH | tr '/' '-')
+AUTHOR=$(git show $LASTCOMMIT | head -n 5 | grep "^Author:" | sed 's/.*: //' | sed 's/ <.*//' | sed 's/[^a-z]//ig')
 
 if [ "$( ls $XMLTESTDIR | grep $LASTCOMMIT | grep $APPLICATION"" )" != "" ] && [ "$FORCE" = "" ]
 then
@@ -49,24 +44,12 @@ then
     exit;
 fi
 
-curl -s -X DELETE $COUCHTEST
-curl -s -X PUT $COUCHTEST  || ( echo "connexion à $COUCHTEST impossible"  ;  exit 2 )
+XMLFILE=$XMLTESTDIR/"$DATE"_"$APPLICATION"_"$LASTCOMMIT"-"$AUTHOR"_"$BRANCH".xml
 
-cd ..
-make clean
-make
-cd -
+bash $(dirname $0)/run_test.sh -x $XMLFILE $APPLICATION 2> >(grep -iv GEOSGeometry >&2)
 
-ls $WORKINGDIR"/data/configuration/"$APPLICATION | while read jsonFile
-do
-    curl -s -X POST -d @data/configuration/$APPLICATION/$jsonFile -H "content-type: application/json" $COUCHTEST
-done
-
-php symfony cc
-
-XMLFILE=$XMLTESTDIR/"$DATE"_"$APPLICATION"_"$LASTCOMMIT"_"$BRANCH".xml
-
-APPLICATION=$APPLICATION NODELETE=1 php symfony test:all --xml=$XMLFILE
 sed -i "s|$WORKINGDIR/||" $XMLFILE
+
+echo "Output XML file : $XMLFILE"
 
 rm $PID_PATH

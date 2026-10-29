@@ -1,0 +1,292 @@
+{
+  "_id": "TEMPLATE-FACTURE-IGPTARN-2020",
+  "type": "TemplateFacture",
+  "region": "IGPTARN",
+  "campagne": 2020,
+  "libelle": "2020 - IGP Tarn",
+  "docs": [
+    "DRev"
+  ],
+  "cotisations": {
+    "00_%detail_identifiant%_00_CDT_syndicaleCDT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation syndicale",
+      "code_comptable": "70810000",
+      "details": {
+        "00_fixe": {
+          "modele": "CotisationFixe",
+          "prix": 10,
+          "tva": 0,
+          "unite": "",
+          "libelle": "IGP Côtes du Tarn - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "hasVolumeRevendiqueLots",
+          "callback_parameters": {
+            "appellations": "/appellations/CDT",
+            "famille": "NOT NEGOCIANT,COOPERATIVE"
+          }
+        }
+      }
+    },
+    "00_%detail_identifiant%_00_CDT_syndicaleCMT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation syndicale",
+      "code_comptable": "70810000",
+      "details": {
+        "00_fixe": {
+          "modele": "CotisationFixe",
+          "prix": 10,
+          "tva": 0,
+          "unite": "",
+          "libelle": "IGP Comté Tolosan - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "hasVolumeRevendiqueLots",
+          "callback_parameters": {
+            "appellations": "/appellations/CMT",
+            "famille": "NOT NEGOCIANT,COOPERATIVE"
+          }
+        }
+      }
+    },
+    "11_%detail_identifiant%_00_CDT_cotisationSyndicaleApporteursCDT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation",
+      "code_comptable": "70810000",
+      "details": {
+        "forfait": {
+          "modele": "CotisationVariable",
+          "prix": 10,
+          "tva": 0,
+          "unite": null,
+          "libelle": "syndicale annuelle IGP Côtes du Tarn - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getNbApporteursPlusOneFromDouane",
+          "callback_parameters": {
+            "appellations": "/appellations/CDT",
+            "famille": "NEGOCIANT,COOPERATIVE"
+          }
+        }
+      }
+    },
+    "11_%detail_identifiant%_00_CMT_cotisationSyndicaleApporteursCMT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation",
+      "code_comptable": "70810000",
+      "details": {
+        "forfait": {
+          "modele": "CotisationVariable",
+          "prix": 10,
+          "tva": 0,
+          "unite": null,
+          "libelle": "syndicale annuelle IGP Comté Tolosan - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getNbApporteursPlusOneFromDouane",
+          "callback_parameters": {
+            "appellations": "/appellations/CMT",
+            "famille": "NEGOCIANT,COOPERATIVE"
+          }
+        }
+      }
+    },
+    "22_%detail_identifiant%_00_CDT_surfaceCDT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation technique",
+      "code_comptable": "70810000",
+      "details": {
+        "00_surface": {
+          "modele": "CotisationVariable",
+          "prix": 10,
+          "tva": 0,
+          "unite": "ha",
+          "libelle": "surface IGP Côtes du Tarn - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getQuantiteSuperficeRecolte",
+          "callback_parameters": {
+            "appellations": "/appellations/CDT"
+          }
+        }
+      }
+    },
+    "22_%detail_identifiant%_00_CMT_surfaceCMT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation technique",
+      "code_comptable": "70810000",
+      "details": {
+        "00_surface": {
+          "modele": "CotisationVariable",
+          "prix": 10,
+          "tva": 0,
+          "unite": "ha",
+          "libelle": "surface IGP Comté Tolosan - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getQuantiteSuperficeRecolte",
+          "callback_parameters": {
+            "appellations": "/appellations/CMT"
+          }
+        }
+      }
+    },
+    "33_%detail_identifiant%_00_CDT_revendicationLotCDT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Volumes",
+      "code_comptable": "70810000",
+      "details": {
+        "revendication": {
+          "modele": "CotisationVariable",
+          "prix": 1.05,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "IGP Côtes du Tarn - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": {
+            "appellations": "/appellations/CDT"
+          }
+        }
+      }
+    },
+    "33_%detail_identifiant%_00_CMT_revendicationLotCMT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Volumes",
+      "code_comptable": "70810000",
+      "details": {
+        "revendication": {
+          "modele": "CotisationVariable",
+          "prix": 0.65,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "IGP Comté Tolosan - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": {
+            "appellations": "/appellations/CMT"
+          }
+        }
+      }
+    },
+    "35_%detail_identifiant%_00_CDT_analyseCDT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Analyse",
+      "code_comptable": "70610000",
+      "details": {
+        "revendication": {
+          "modele": "CotisationVariable",
+          "prix": 52,
+          "tva": 0,
+          "unite": null,
+          "libelle": "IGP Côtes du Tarn - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DEGUSTATION"
+          ],
+          "callback": "buildMouvementsNbLotsDegustes",
+          "callback_parameters": {
+            "appellations": "/appellations/CDT"
+          }
+        }
+      }
+    },
+    "35_%detail_identifiant%_00_CMT_analyseCMT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Analyse",
+      "code_comptable": "70610000",
+      "details": {
+        "revendication": {
+          "modele": "CotisationVariable",
+          "prix": 52,
+          "tva": 0,
+          "unite": null,
+          "libelle": "IGP Comté Tolosan - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DEGUSTATION"
+          ],
+          "callback": "buildMouvementsNbLotsDegustes",
+          "callback_parameters": {
+            "appellations": "/appellations/CMT"
+          }
+        }
+      }
+    },
+    "44_%detail_identifiant%_55_inaoCDT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Droits INAO",
+      "code_comptable": "70810000",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.03,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "IGP Côtes du Tarn - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": {
+            "appellations": "/appellations/CDT"
+          }
+        }
+      }
+    },
+    "44_%detail_identifiant%_55_inaoCMT": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Droits INAO",
+      "code_comptable": "70810000",
+      "details": {
+        "cotisation": {
+          "modele": "CotisationVariable",
+          "prix": 0.03,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "IGP Comté Tolosan - %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier",
+          "callback_parameters": {
+            "appellations": "/appellations/CMT"
+          }
+        }
+      }
+    }
+  }
+}

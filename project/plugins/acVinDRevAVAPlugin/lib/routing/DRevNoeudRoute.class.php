@@ -3,9 +3,9 @@ class DRevNoeudRoute extends DRevRoute {
 
     protected $noeud = null;
 
-    protected function getObjectForParameters($parameters) {
+    protected function getObjectForParameters($parameters = null) {
         parent::getObjectForParameters($parameters);
-        
+
         $this->noeud = $this->drev->get("/declaration/certification/genre/" . $parameters["hash"]);
         if (!$this->noeud) {
 

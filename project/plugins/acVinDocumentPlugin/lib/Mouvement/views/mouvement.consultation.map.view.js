@@ -4,13 +4,13 @@ function(doc) {
         return;
     }
 
-    if (!doc.valide.date_saisie) {
+    if (doc.valide && !doc.valide.date_saisie) {
 
         return;
     }
 
-    for(identifiant in doc.mouvements) {
-        for (key in doc.mouvements[identifiant]) {
+    for (var identifiant in doc.mouvements) {
+        for (var key in doc.mouvements[identifiant]) {
             var mouv = doc.mouvements[identifiant][key];
             pays = "";
 	    if (mouv.type_hash == "export_details") {

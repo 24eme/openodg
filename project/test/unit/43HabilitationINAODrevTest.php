@@ -2,8 +2,6 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-sfContext::createInstance($configuration);
-
 $t = new lime_test(4);
 
 $inao = new INAOHabilitationCsvFile(dirname(__FILE__).'/../data/INAO_Habilitation.csv');

@@ -1,6 +1,11 @@
 <?php use_helper('Date') ?>
+<?php use_helper('Float') ?>
 
-<?php include_partial('parcellaireIrrigue/breadcrumb', array('parcellaireIrrigue' => $parcellaireIrrigue)); ?>
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigue]); ?>
+<?php else: ?>
+    <?php include_partial('parcellaireIrrigue/breadcrumb', array('parcellaireIrrigue' => $parcellaireIrrigue)); ?>
+<?php endif; ?>
 
 <div class="page-header no-border">
     <h2>Identification des parcelles irriguées
@@ -10,11 +15,9 @@
     </h2>
 </div>
 
-<?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-<?php endif; ?>
+<?php include_partial('global/flash'); ?>
 
-<form id="validation-form" action="<?php echo url_for("parcellaireirrigue_edit", array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => $papier)) ?>" method="post" class="form-horizontal">
+<form id="validation-form" action="<?php echo url_for("parcellaireirrigue_edit", array('sf_subject' => $etablissement, 'periode' => $periode, 'papier' => $papier)) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
@@ -44,8 +47,8 @@
             <h3><?php echo $commune; ?></h3>
         </div>
         <div class="col-xs-6">
-           <p class="text-right" style="margin-top: 20px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irriguées</a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune</a></p>
-       </div>
+            <p class="text-right" style="margin-top: 20px;"><a id="btn-switchactive-all" href="javascript:void(0)" data-status="affecter" data-terme="sont irriguées" data-target="#parcelles_<?php echo $commune; ?>" data-check="<span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irriguées" data-remove="<span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irriguées</a></p>
+        </div>
     </div>
     <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
 		<thead>
@@ -54,9 +57,15 @@
                 <th class="col-xs-1">Section /<br />N° parcelle</th>
                 <th class="col-xs-2">Cépage</th>
                 <th class="col-xs-1">Année plantat°</th>
-                <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(ha)</span></th>
-                <th class="col-xs-1">Type de matériel</th>
-                <th class="col-xs-1">Type de ressource</th>
+                <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(<?php echo ParcellaireConfiguration::getInstance()->isAres() ? 'ares' : 'ha' ?>)</span></th>
+                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() && ParcellaireConfiguration::getInstance()->hasIrrigableRessource()): ?>
+                    <th class="col-xs-1">Type de matériel</th>
+                    <th class="col-xs-1">Type de ressource</th>
+                <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == true && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == false): ?>
+                    <th class="col-xs-1">Type de matériel</th>
+                <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == false && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == true): ?>
+                    <th class="col-xs-1">Type de ressource</th>
+                <?php endif; ?>
                 <th class="col-xs-1">Irrigation?</th>
                 <th class="col-xs-2">Date de déclaration d'irrigation</th>
 
@@ -66,29 +75,46 @@
 		<?php
 			foreach ($parcelles as $parcelle):
                 $produitKey = str_replace('/declaration/', '', $parcelle->getProduit()->getHash());
-			if (isset($form[$produitKey][$parcelle->getKey()])):
+			if (isset($form[$parcelle->getParcelleId()])):
 		?>
-			<tr class="vertical-center" id="tr_<?php echo str_replace("/","-",$produitKey)."-".$parcelle->getKey();?>">
+			<tr style="cursor: pointer;" class="vertical-center" id="tr_<?php $parcelle->getParcelleId();?>">
                 <td><?php echo $parcelle->lieu; ?></td>
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
-                <td><?php echo $parcelle->cepage; ?></td>
+                <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
-                <td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
-            	<td><?php echo $parcelle->materiel; ?></td>
-            	<td><?php echo $parcelle->ressource; ?></td>
+                <?php if (ParcellaireConfiguration::getInstance()->isAres()): ?>
+                    <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE)); ?></td>
+                <?php else: ?>
+                    <td class="text-right"><?php echoFloatFr($parcelle->getSuperficie()); ?></td>
+                <?php endif ?>
+                <?php if (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() && ParcellaireConfiguration::getInstance()->hasIrrigableRessource()): ?>
+                    <td><?php echo $parcelle->materiel; ?></td>
+                    <td><?php echo $parcelle->ressource; ?></td>
+                <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == true && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == false): ?>
+                    <td><?php echo $parcelle->materiel; ?></td>
+                <?php elseif (ParcellaireConfiguration::getInstance()->hasIrrigableMateriel() == false && ParcellaireConfiguration::getInstance()->hasIrrigableRessource() == true): ?>
+                    <td><?php echo $parcelle->ressource; ?></td>
+                <?php endif; ?>
             	<?php if($parcelle->irrigation && (!$parcellaireIrrigue->exist('papier') || !$parcellaireIrrigue->papier)): ?>
             	<td class="text-center text-success"><span class="glyphicon glyphicon-ok-sign"></span></td>
             	<td class="text-center"><?php echo format_date($parcelle->date_irrigation, "dd/MM/yyyy", "fr_FR"); ?></td>
             	<?php else: ?>
             	<td class="text-center">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['irrigation']->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $form[$produitKey][$parcelle->getKey()]['irrigation']->renderError() ?>
+                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$parcelle->getParcelleId()]['irrigation']->hasError()): ?>has-error<?php endif; ?>">
+                    	<?php echo $form[$parcelle->getParcelleId()]['irrigation']->renderError() ?>
                         <div class="col-xs-12">
-			            	<?php echo $form[$produitKey][$parcelle->getKey()]['irrigation']->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                            <label class="switch-xl">
+                                <?php echo $form[$parcelle->getParcelleId()]['irrigation']->render(array('class' => "switch")); ?>
+                                <span class="slider-xl round"></span>
+                            </label>
                         </div>
                     </div>
             	</td>
-            	<td></td>
+                <?php if ($papier): ?>
+                <td class="text-center"><?php echo format_date($parcelle->date_irrigation, "dd/MM/yyyy", "fr_FR"); ?></td>
+                <?php else: ?>
+                <td></td>
+                <?php endif; ?>
             	<?php endif; ?>
             </tr>
         <?php  endif; endforeach; ?>
@@ -96,22 +122,39 @@
 	</table>
     <?php  endforeach; ?>
 	<div class="row row-margin row-button">
-        <div class="col-xs-4"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireIrrigue->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireIrrigue->identifiant, 'campagne' => $parcellaireIrrigue->campagne)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
             <?php if($parcellaireIrrigue->isValidee()): ?>
-                <a href="<?php echo url_for('parcellaireirrigue_export_pdf', $parcellaireIrrigue) ?>" class="btn btn-success">
+                <a href="<?php echo url_for('parcellaireirrigue_export_pdf_last',array('identifiant' => $parcellaireIrrigue->identifiant, 'periode' => $parcellaireIrrigue->periode)) ?>" class="btn btn-success">
                     <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
                 </a>
             <?php endif; ?>
         </div>
-        <div class="col-xs-4 text-right"><button type="button" class="btn btn-primary btn-upper"  id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigue-confirmation-validation">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+        <div class="col-xs-4 text-right">
+            <?php if (!$papier && $sf_user->isAdminODG()): ?>
+            <a href="?papier=1">Accès Admin</a>
+            <?php endif; ?>
+            <button type="button" class="btn btn-primary btn-upper transparence-lg"  id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigue-confirmation-validation">Valider</button>
+        </div>
     </div>
-    <?php include_partial('parcellaireIrrigue/popupConfirmationValidation', array('form' => $form)); ?>
 </form>
-</div>
 
-<?php if($form["signataire"]->hasError()): ?>
-<script type="text/javascript">
-$('#parcellaireirrigable-confirmation-validation').modal('show')
-</script>
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigue]); ?>
 <?php endif; ?>
+
+<script>
+    const btnValidationDocument = document.querySelector('#btn-validation-document')
+    function removeValideTransparency() {
+        btnValidationDocument.classList.remove('transparence-lg');
+    }
+
+    (document.querySelectorAll('[id^=btn-switchactive-all]') || []).forEach(function (btn) {
+        btn.addEventListener('click', removeValideTransparency);
+    });
+    document.querySelectorAll('form .switch').forEach(function(item) {
+        item.addEventListener('change-native', removeValideTransparency)
+    });
+</script>
+
+<?php include_partial('parcellaireIrrigue/popupConfirmationValidation', array('form' => $form)); ?>

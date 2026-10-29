@@ -3,7 +3,6 @@
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 $routing = clone ProjectConfiguration::getAppRouting();
-$context = sfContext::createInstance($configuration);
 $context->set('routing', $routing);
 sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
 

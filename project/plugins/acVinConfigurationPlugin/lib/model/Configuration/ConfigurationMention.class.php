@@ -18,28 +18,24 @@ class ConfigurationMention extends BaseConfigurationMention {
       return $this->lieux;
     }
 
-	/**
-     *
-     * @return ConfigurationAppellation
-     */
+    public function getMention() {
+
+        return $this;
+    }
+
     public function getAppellation() {
 
         return $this->getParentNode();
     }
 
-		public function getNodeCahierDesCharges() {
+    public function getGenre() {
 
-        return $this->getAppellation();
+        return $this->getAppellation()->getGenre();
     }
 
     public function getCertification() {
 
-        return $this->getAppellation()->getCertification();
-    }
-
-		public function getGenre() {
-
-        return $this->getAppellation()->getGenre();
+        return $this->getGenre()->getCertification();
     }
 
     public function getLabels($interpro) {

@@ -1,0 +1,100 @@
+{
+   "_id": "TEMPLATE-FACTURE-SANCERRE-2011",
+   "type": "TemplateFacture",
+   "campagne": 2011,
+   "libelle": "2011 - Sancerre",
+   "docs": [
+       "DRev"
+   ],
+   "cotisations": {
+       "00_uvs": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "UVS",
+           "code_comptable": "70610000",
+           "details": {
+               "00_recolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 3.01,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "Cotisation sur récolte",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRecolte",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "01_inao": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "INAO",
+           "code_comptable": "70610000",
+           "details": {
+               "00_recolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.15,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "Volume revendiqué",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRecolte",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "02_oivc": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "OIVC",
+           "code_comptable": "70610000",
+           "details": {
+               "00_recolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.42,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "Cotisation sur récolte",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRecolte",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "03_fuvc": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "FUVC",
+           "code_comptable": "70610000",
+           "details": {
+               "00_recolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.12,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "Cotisation sur récolte",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRecolte",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       }
+   },
+   "region": "SANCERRE"
+}

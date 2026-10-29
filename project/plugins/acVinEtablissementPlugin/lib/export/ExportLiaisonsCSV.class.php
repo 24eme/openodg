@@ -6,7 +6,7 @@ class ExportLiaisonsCSV {
     protected $header = false;
 
     public static function getHeaderCsv() {
-        return "identifiant etablissement source;nom etablissement source;cvi etablissement source;ppm etablissement source;liaison type;identifiant etablissement lié;nom etablissement lié;cvi etablissement lié;ppm etablissement lié;hash chais lié; attribus chais liés;aliases;liaison doc id;doc id;id/hash liaisons\n";
+        return "identifiant etablissement source;nom etablissement source;cvi etablissement source;ppm etablissement source;liaison type;identifiant etablissement lié;nom etablissement lié;cvi etablissement lié;ppm etablissement lié;hash chais lié; attribus chais liés;aliases;liaison doc id;etablissement source statut;doc id;id/hash liaisons\n";
     }
 
     public function __construct($header = true) {
@@ -48,6 +48,7 @@ class ExportLiaisonsCSV {
                 $csv .= ";"; // attributs chais
                 $csv .= ";"; // aliaises
                 $csv .= $liaison->id_etablissement.";";
+                $csv .= $etablissement->statut.";";
                 $csv .= $etablissement->_id.";";
                 $csv .= $etablissement->_id.'/'.$k;
                 $csv .= "\n";

@@ -74,7 +74,7 @@ EOF;
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $this->file_path = $arguments['file_path'];
         $this->negoce_file_path = $arguments['negoce_file_path'];
@@ -218,8 +218,8 @@ EOF;
             $etablissement->ppm = $ppm;
           }
 
-          if(count(EtablissementClient::getRegions()) == 1){
-            $regions = array_keys(EtablissementClient::getRegions());
+          if(count(EtablissementClient::getSecteurs()) == 1){
+            $regions = array_keys(EtablissementClient::getSecteurs());
             $etablissement->region = $regions[0];
           }
 
@@ -276,8 +276,8 @@ EOF;
               $etablissement->statut = SocieteClient::STATUT_SUSPENDU;
               $etablissement->nom = $rs;
 
-              if(count(EtablissementClient::getRegions()) == 1){
-                $regions = array_keys(EtablissementClient::getRegions());
+              if(count(EtablissementClient::getSecteurs()) == 1){
+                $regions = array_keys(EtablissementClient::getSecteurs());
                 $etablissement->region = $regions[0];
               }
               $etablissement->save();

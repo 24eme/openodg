@@ -42,6 +42,7 @@ class acVinCompteRouting {
         $r->prependRoute('compte_teledeclarant_cgu', new sfRoute('/teledeclarant/cgu', array('module' => 'compte_teledeclarant', 'action' => 'cgu')));
         $r->prependRoute('compte_teledeclarant_creation', new sfRoute('/teledeclarant/creation', array('module' => 'compte_teledeclarant', 'action' => 'creation')));
         $r->prependRoute('compte_teledeclarant_modification', new sfRoute('/teledeclarant/mon_compte', array('module' => 'compte_teledeclarant', 'action' => 'modification')));
+        $r->prependRoute('compte_teledeclarant_coordonnees_bancaires', new sfRoute('/teledeclarant/mon_compte/coordonnees_bancaires', array('module' => 'compte_teledeclarant', 'action' => 'coordonneesBancaires')));
         $r->prependRoute('compte_teledeclarant_mot_de_passe_oublie_login', new sfRoute('/mot_de_passe_oublie/login/:login/:mdp', array('module' => 'compte_teledeclarant', 'action' => 'motDePasseOublieLogin')));
         $r->prependRoute('compte_teledeclarant_mot_de_passe_oublie', new sfRoute('/mot_de_passe_oublie', array('module' => 'compte_teledeclarant', 'action' => 'motDePasseOublie')));
         $r->prependRoute('compte_teledeclarant_mot_de_passe_oublie_confirm', new sfRoute('/mot_de_passe_oublie/confirm', array('module' => 'compte_teledeclarant', 'action' => 'motDePasseOublieConfirm')));
@@ -57,7 +58,6 @@ class acVinCompteRouting {
 
         $r->prependRoute('compte_search', new SearchRoute('/compte/search', array('module' => 'compte', 'action' => 'search')));
         $r->prependRoute('compte_recherche_avancee', new SearchRoute('/compte/search/advanced', array('module' => 'compte', 'action' => 'searchadvanced')));
-        $r->prependRoute('compte_search_csv', new SearchRoute('/compte/search/csv', array('module' => 'compte', 'action' => 'searchcsv')));
         $r->prependRoute('compte_addtag', new SearchRoute('/compte/search/addtag', array('module' => 'compte', 'action' => 'addtag')));
         $r->prependRoute('compte_addingroupe', new SearchRoute('/compte/addingroupe/:identifiant', array('module' => 'compte', 'action' => 'addingroupe')));
         $r->prependRoute('compte_removetag', new SearchRoute('/compte/search/removetag', array('module' => 'compte', 'action' => 'removetag')));
@@ -110,6 +110,14 @@ class acVinCompteRouting {
             array('model' => 'Compte',
             'type' => 'object')));
 
+        $r->prependRoute('compte_viticonnect_api',
+            new sfRoute('/viticonnect/api/:login/:epoch/:md5',
+                array('module' => 'compte_teledeclarant', 'action' => 'viticonnectApi')
+        ));
+        $r->prependRoute('compte_viticonnect_check',
+            new sfRoute('/viticonnect/check/:login/:epoch/:md5',
+                array('module' => 'compte_teledeclarant', 'action' => 'viticonnectCheck')
+        ));
 
     }
 

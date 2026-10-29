@@ -56,7 +56,7 @@
         <div class="col-sm-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title"><label>Rendements</label></h3>
+                        <h3 class="panel-title"><label>Rendements <?php echo preg_replace("/CONFIGURATION-([0-9]{4}).+/", '\1', $form->getObject()->getDocument()->_id) ?></label></h3>
                     </div>
                     <div class="panel-body">
                     	<div class="col-sm-4">
@@ -66,6 +66,20 @@
 				                <div class="col-xs-6"><?php echo $form['attributs']['rendement']->render(array('class' => 'form-control text-right')); ?></div>
 				            </div>
 			            </div>
+                        <div class="col-sm-4">
+                            <div class="form-group <?php if ($form['attributs']['rendement_dr_l5']->hasError()): ?>has-error<?php endif; ?>" >
+                                <?php echo $form['attributs']['rendement_dr_l5']->renderError() ?>
+                                <?php echo $form['attributs']['rendement_dr_l5']->renderLabel(null, array('class' => 'col-xs-6')); ?>
+                                <div class="col-xs-6"><?php echo $form['attributs']['rendement_dr_l5']->render(array('class' => 'form-control text-right')); ?></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group <?php if ($form['attributs']['rendement_dr_l15']->hasError()): ?>has-error<?php endif; ?>" >
+                                <?php echo $form['attributs']['rendement_dr_l15']->renderError() ?>
+                                <?php echo $form['attributs']['rendement_dr_l15']->renderLabel(null, array('class' => 'col-xs-6')); ?>
+                                <div class="col-xs-6"><?php echo $form['attributs']['rendement_dr_l15']->render(array('class' => 'form-control text-right')); ?></div>
+                            </div>
+                        </div>
                         <div class="col-sm-4">
 							<div class="form-group <?php if ($form['attributs']['rendement_conseille']->hasError()): ?>has-error<?php endif; ?>" >
 								<?php echo $form['attributs']['rendement_conseille']->renderError() ?>
@@ -197,7 +211,7 @@
                 </div>
             </div>
         <?php endif; ?>
-        <?php if($form->getObject()->exist('cepages_autorises') && count($form->getObject()->cepages_autorises)): ?>
+        <?php if($form->getObject()->exist('cepages_autorises') && isset($form['cepages_autorises'])): ?>
             <div class="col-sm-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">

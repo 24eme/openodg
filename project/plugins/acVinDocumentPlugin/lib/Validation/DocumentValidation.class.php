@@ -2,10 +2,16 @@
 
 abstract class DocumentValidation
 {
+    const TYPE_ERROR = 'erreur';
+    const TYPE_FATAL = 'erreur_fatale';
+    const TYPE_WARNING = 'vigilance';
+    const TYPE_ENGAGEMENT = 'engagement';
+
     protected $types = array(
-        'engagement',
-        'vigilance',
-        'erreur',
+        self::TYPE_ENGAGEMENT,
+        self::TYPE_WARNING,
+        self::TYPE_ERROR,
+        self::TYPE_FATAL,
     );
 
     protected $document;
@@ -52,7 +58,7 @@ abstract class DocumentValidation
         return $this->controles[sprintf("%s-%s", $type, $code)];
     }
 
-    public function addPoint($type, $code, $info, $lien = null) {
+    public function addPoint($type, $code, $info, $lien = null, $additionalInfo = null) {
         $controle = $this->findControle($type, $code);
 
         if(!$controle) {
@@ -62,8 +68,9 @@ abstract class DocumentValidation
         $point_controle = clone $controle;
         $point_controle->setInfo($info);
         $point_controle->setLien($lien);
+        $point_controle->setAdditionalInfo($additionalInfo);
 
-        $this->points[$type][] = $point_controle;
+        $this->points[$type][$code.$info.$lien] = $point_controle;
 
         return $point_controle;
     }
@@ -82,21 +89,31 @@ abstract class DocumentValidation
         return $points;
     }
 
+    public function getPointsByCode($type, $code){
+      $typesPoints = $this->getPointsByCodes($type);
+      return isset($typesPoints[$code])? $typesPoints[$code] : array();
+    }
+
     public function getEngagements()
     {
-        return $this->getPoints('engagement');
+        return $this->getPoints(self::TYPE_ENGAGEMENT);
     }
 
     public function getVigilances()
     {
 
-        return $this->getPoints('vigilance');
+        return $this->getPoints(self::TYPE_WARNING);
     }
 
     public function getErreurs()
     {
 
-        return $this->getPoints('erreur');
+        return array_merge($this->getPoints(self::TYPE_ERROR), $this->getPoints(self::TYPE_FATAL));
+    }
+
+    public function getFatales()
+    {
+        return $this->getPoints(self::TYPE_FATAL);
     }
 
     public function hasEngagements()
@@ -114,9 +131,14 @@ abstract class DocumentValidation
         return count($this->getErreurs()) > 0;
     }
 
+    public function hasFatales()
+    {
+        return count($this->getFatales()) > 0;
+    }
+
     public function hasPoints()
     {
-        return $this->hasEngagements() || $this->hasVigilances() || $this->hasErreurs();
+        return $this->hasVigilances() || $this->hasErreurs();
     }
 
     public function isValide() {
@@ -126,6 +148,10 @@ abstract class DocumentValidation
 
     protected function generateUrl($route, $params = array(), $absolute = false)
     {
+        if(is_object($params)) {
+            $params = ['sf_subject' => $params];
+        }
+
         return sfContext::getInstance()->getRouting()->generate($route, $params, $absolute);
     }
 

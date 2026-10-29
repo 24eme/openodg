@@ -9,6 +9,7 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
     {
         $this->produits = array();
         $this->table = (isset($options['table'])) ? $options['table'] : null;
+
         parent::__construct($object, $options, $CSRFSecret);
     }
 
@@ -22,23 +23,34 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
         $this->setDefault('table', $this->table);
 
         $this->setWidgets(array(
-            'hashref' => new sfWidgetFormChoice(array('choices' => $produits))
+            'hashref' => new sfWidgetFormChoice(array('choices' => $produits)),
+            'cepages' => new sfWidgetFormTextarea(),
+            'millesime' => new sfWidgetFormInput(),
+            'commentaire' => new sfWidgetFormTextarea([], [
+                'rows' => 1,
+                'class' => 'form-control',
+                'placeholder' => 'Informations complémentaires'
+            ])
         ));
 
         $this->widgetSchema->setLabels(array(
-            'hashref' => 'Appellation: '
+            'hashref' => 'Appellation : ',
+            'cepages' => 'Cépages : ',
+            'millesime' => 'Millésime : ',
+            'commentaire' => 'Commentaire : '
         ));
 
         $this->setValidators(array(
-            'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucune appellation saisie."))
+            'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucune appellation saisie.")),
+            'cepages' => new sfValidatorString(array('required' => false)),
+            'millesime' => new sfValidatorInteger(['min' => 0, 'required' => true]),
+            'commentaire' => new sfValidatorString(['required' => false])
         ));
 
-        $this->widgetSchema['numero_lot'] = new sfWidgetFormInput();
-        $this->widgetSchema['numero_lot']->setLabel("");
-        $this->validatorSchema['numero_lot'] = new sfValidatorString(array('required' => false));
+        $this->setDefault('millesime', ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent());
 
         $this->widgetSchema['table'] = new sfWidgetFormInputHidden();
-        $this->validatorSchema['table'] = new sfValidatorInteger(['required' => true, 'min' => 0]);
+        $this->validatorSchema['table'] = new sfValidatorInteger(['required' => ! DegustationConfiguration::getInstance()->isAnonymisationManuelle(), 'min' => 1]);
 
         $this->widgetSchema->setNameFormat('degustation_ajout_leurre[%s]');
     }
@@ -67,10 +79,19 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
     {
         $degust = $this->getObject();
         $hash = ($values['hashref']) ?: null;
+        $cepages = ($values['cepages']) ?: null;
+        $millesime = $values['millesime'];
+        $commentaire = ($values['commentaire']) ?: null;
 
         if (isset($hash) && !empty($hash) && array_key_exists($hash, $this->getProduits())) {
-            $degust->addLeurre($hash, $values['numero_lot'], $values['table']);
+            $leurre = $degust->addLeurre($hash, $cepages, $millesime, $values['table']);
+            $leurre->numero_logement_operateur = ($commentaire) ?: null;
         }
+    }
+
+    protected function doSave($con = null) {
+        $this->updateObject();
+        $this->object->getCouchdbDocument()->save(false);
     }
 
 }

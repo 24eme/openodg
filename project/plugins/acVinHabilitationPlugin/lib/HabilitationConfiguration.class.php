@@ -20,6 +20,10 @@ class HabilitationConfiguration {
         $this->configuration = sfConfig::get('habilitation_configuration_habilitation', array());
     }
 
+    public function isModuleEnabled() {
+        return in_array('habilitation', sfConfig::get('sf_enabled_modules'));
+    }
+
     public function getActivites() {
         if(!isset($this->configuration['activites'])) {
 
@@ -32,6 +36,15 @@ class HabilitationConfiguration {
     public function isSuiviParDemande() {
 
         return count($this->getDemandeStatuts()) > 0;
+    }
+
+    public function isListingParDemande() {
+        if(!isset($this->configuration['demande']['listing'])) {
+
+            return $this->isSuiviParDemande();
+        }
+
+        return $this->configuration['demande']['listing'];
     }
 
     public function getDemandeStatuts() {
@@ -64,6 +77,40 @@ class HabilitationConfiguration {
     public function getDemandeStatutsFerme() {
 
         return array('VALIDE', 'REFUSE', 'ANNULE');
+    }
+
+    public function getProduitAtHabilitationLevel($produit){
+
+      if (!$produit) {
+          return null;
+      }
+      $produithab = $produit->getAppellation();
+      $hash = $produithab->getHash();
+      $h = str_replace(['/MOU/','/EFF/', '/VDB/'], '/TRANQ/', $hash);
+      if ($hash != $h) {
+          try {
+              $produithab = $produithab->getDocument()->get($h);
+          }catch(Exception $e) {
+              return null;
+          }
+      }
+
+      if(!isset($this->configuration['produits'])){
+        return $produithab;
+      }
+      if(!isset($this->configuration['produits']['convert'])){
+        return $produithab;
+      }
+
+      $key = $produithab->getKey();
+
+      if(isset($this->configuration['produits']['convert'][$key])) {
+        $converted_key = $this->configuration['produits']['convert'][$key];
+        return $produithab->getParent()->get($converted_key);
+      }
+
+      return $produithab;
+
     }
 
 }

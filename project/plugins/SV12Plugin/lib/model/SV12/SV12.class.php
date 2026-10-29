@@ -10,8 +10,4 @@ class SV12 extends BaseSV12 {
 		$this->set('_id', 'SV12-' . $this->identifiant . '-' . $this->campagne);
 	}
 
-	public function getConfiguration() {
-
-		return ConfigurationClient::getConfiguration($this->campagne.'-12-10');
-	}
 }

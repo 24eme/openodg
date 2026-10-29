@@ -17,7 +17,7 @@ class Cotisation
 		return $this->config;
 	}
 
-	protected function getConfigCollection() {
+	public function getConfigCollection() {
 
 		return $this->getConfig()->getParent()->getParent();
 	}
@@ -37,7 +37,7 @@ class Cotisation
 		return $this->getConfig()->tva;
 	}
 
-	protected function getConfigLibelle() {
+	public function getConfigLibelle() {
 
 		return $this->getConfig()->libelle;
 	}
@@ -47,16 +47,30 @@ class Cotisation
 		return $this->getConfig()->complement_libelle;
 	}
 
-	protected function getConfigCallback() {
+	public function getConfigCallback() {
 
 		return $this->getConfig()->callback;
 	}
 
-	protected function getConfigCallbackParameters() {
-		if(!$this->getConfig()->exist('callback_parameters')) {
-			return array();
+    public function getConfigCallbackParameters() {
+        $params = [];
+
+        if($this->getConfig()->exist('callback_parameters')) {
+            $params = $this->getConfig()->callback_parameters->toArray(true, false);
+        }
+
+        return new TemplateFactureCotisationCallbackParameters($this->getConfigDocument(), $params);
+    }
+
+    public function isConfigRequired() {
+        return $this->getConfig()->getParent()->getParent()->isRequired();
+    }
+
+    public function getConfigDate() {
+		if(!$this->getConfig()->exist('date')) {
+			return null;
 		}
-		return $this->getConfig()->callback_parameters->toArray(true, false);
+		return $this->getConfig()->date;
 	}
 
 
@@ -117,4 +131,9 @@ class Cotisation
 
 		return $this->getConfig()->unite;
 	}
+
+    public function __debugInfo() {
+
+        return array("config" => $this->config->__debugInfo(), "doc" => $this->getDoc()->__toString(), "getHash" => $this->getHash(), "getQuantite" => $this->getQuantite(), "getPrix" => $this->getPrix(), 'getTva' => $this->getTva(), 'getTotal' => $this->getTotal(), 'getLibelle' => $this->getLibelle(), 'getUnite' => $this->getUnite());
+    }
 }

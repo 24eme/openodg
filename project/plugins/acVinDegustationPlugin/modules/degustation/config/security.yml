@@ -1,0 +1,30 @@
+all:
+  credentials: [[ADMIN, ADMIN_ODG]]
+
+lotsListe:
+  is_secure: true
+  credentials: []
+
+lotHistorique:
+  is_secure: true
+  credentials: []
+
+getCourrierWithAuth:
+  is_secure: false
+  credentials: []
+
+convocationReponse:
+  is_secure: false
+  credentials: []
+
+convocationWithAuth:
+  is_secure: false
+  credentials: []
+
+degustationConformitePDF:
+  is_secure: true
+  credentials: []
+
+degustationNonConformitePDF:
+  is_secure: true
+  credentials: []

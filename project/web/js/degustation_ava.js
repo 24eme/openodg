@@ -172,7 +172,7 @@
             var lignes_a_prelever = new Array();
             var nb_a_prelever = $('#nb_a_prelever').val();
 
-            $("#listes_operateurs .list-group-item-item[data-state!=active]").each(function() {
+            $("#listes_operateurs .pre-selected[data-state!=active]").each(function() {
                 lignes_a_prelever.push($(this));
             });
 
@@ -421,6 +421,7 @@
              }*/
             ligne.addClass('list-group-item-success');
             ligne.removeClass('clickable');
+            ligne.find('.item-container').removeClass('hidden');
             ligne.find('input, select, .select label, .select').removeAttr('disabled');
             if (ligne.find('.select[data-selection-mode=auto]').length > 0) {
                 if (ligne.find('.select input[checked=checked]').length == 0) {
@@ -449,7 +450,7 @@
                 ligne.removeClass('clickable');
                 ligne.find('button.btn-success').addClass('hidden');
             }
-
+            ligne.find('.item-container').addClass('hidden');
             ligne.find('.select input').removeProp('checked');
             ligne.find('.select input').parent('label').removeClass('active');
             ligne.find('.select input').change();
@@ -494,7 +495,7 @@
             if ($(value).parent('label').find('.badge').length) {
                 nb_lot = parseInt($(value).parent('label').find('.badge').html());
             }
-            var item = $('#recap_cepages .btn-default[data-cepage="' + $(value).val() + '"] .badge');
+            var item = $('#recap_cepages .btn-default[data-cepage="' + $(value).val().replace(/.*_cepage/, 'cepage') + '"] .badge');
 
             item.html(parseInt(item.html()) + nb_lot);
             nb_lot_total = nb_lot_total + nb_lot;

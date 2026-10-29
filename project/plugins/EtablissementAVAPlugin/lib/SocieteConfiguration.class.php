@@ -1,0 +1,1 @@
+../../acVinSocietePlugin/lib/SocieteConfiguration.class.php

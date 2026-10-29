@@ -1,9 +1,12 @@
 <?php
 
+// AVA //
+
 class ConfigurationClient extends acCouchdbClient {
 
     private static $configuration = array();
     private static $current = null;
+    protected $campagne_parcellaire_manager = null;
 
     public static function getInstance() {
 
@@ -13,7 +16,7 @@ class ConfigurationClient extends acCouchdbClient {
     public static function getConfiguration($campagne = '') {
 
         if(preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/', $campagne)) {
-            $campagne = self::getCampagneManager()->getCampagneByDate($campagne);
+            $campagne = self::getInstance()->getCampagneManager()->getCampagneByDate($campagne);
         }
 
         if (!$campagne) {
@@ -26,9 +29,15 @@ class ConfigurationClient extends acCouchdbClient {
                 $campagne = self::getInstance()->getCampagneManager()->getCurrent();
             }
         }
-
-        if (!isset(self::$configuration[$campagne])) {
-            self::$configuration[$campagne] = CacheFunction::cache('model', array(acCouchdbManager::getClient(), 'find'), array('CONFIGURATION-' . $campagne));
+        if ($campagne < 2013) {
+            $campagne = '2013';
+        }
+        $campagne++;
+        while (!isset(self::$configuration[$campagne]) || ! self::$configuration[$campagne]) {
+            $campagne--;
+            if(!isset(self::$configuration[$campagne])) {
+                self::$configuration[$campagne] = CacheFunction::cache('model', array(acCouchdbManager::getClient(), 'find'), array('CONFIGURATION-' . $campagne));
+            }
         }
 
         if (self::$configuration[$campagne]->exist('virtual') && self::$configuration[$campagne]->virtual != $campagne) {
@@ -40,7 +49,7 @@ class ConfigurationClient extends acCouchdbClient {
 
     public function retrieveConfiguration($campagne = '') {
 
-        return self::getConfiguration($campagne);
+        return $this->getConfiguration($campagne);
     }
 
     public function getCampagneVinicole() {
@@ -48,9 +57,35 @@ class ConfigurationClient extends acCouchdbClient {
         return new CampagneManager('08-01');
     }
 
+    public function getCampagneParcellaire() {
+        if(is_null($this->campagne_parcellaire_manager)) {
+            $this->campagne_parcellaire_manager = new CampagneManager('03-01');
+        }
+        return $this->campagne_parcellaire_manager;
+    }
+
     public function getCampagneManager() {
 
-        return new CampagneManager('10-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
+        return new CampagneManager('11-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
+    }
+
+    public function buildCampagne($date) {
+
+        return $this->getCampagneVinicole()->getCampagneByDate($date);
+    }
+
+	/**
+	*
+	* @return Current
+	*/
+	public static function getCurrent() {
+
+		return self::getInstance()->getConfiguration();
+	}
+
+    public function getCurrentAnneeRecolte() {
+
+        return $this->getCampagneVinicole()->getCurrentAnneeRecolte();
     }
 
 }

@@ -18,7 +18,7 @@ class TirageVinForm extends acCouchdbObjectForm {
 
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         $this->tirage = $object;
-        $this->annee = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
+        $this->annee = ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent();
         parent::__construct($object, $options, $CSRFSecret);
     }
 
@@ -62,7 +62,7 @@ class TirageVinForm extends acCouchdbObjectForm {
 
     public function getMillesimes() {
 
-        return array(($this->annee - 1)."" => ($this->annee - 1)."", $this->annee => $this->annee, TirageClient::MILLESIME_ASSEMBLE => "Assemblage");
+        return array(($this->annee - 3)."" => ($this->annee - 3)."",($this->annee - 2)."" => ($this->annee - 2)."",($this->annee - 1)."" => ($this->annee - 1)."", $this->annee => $this->annee, TirageClient::MILLESIME_ASSEMBLE => "Assemblage");
     }
 
     public function doUpdateObject($values) {

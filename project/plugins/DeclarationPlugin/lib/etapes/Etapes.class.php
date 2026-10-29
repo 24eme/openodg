@@ -2,7 +2,7 @@
 abstract class Etapes
 {
     const ETAPE_VALIDATION = 'VALIDATION';
-    
+
     abstract public function getEtapesHash() ;
     abstract public function getRouteLinksHash() ;
     abstract public function getLibellesHash() ;
@@ -24,6 +24,14 @@ abstract class Etapes
 
     public function getRouteLink($step) {
         return $this->getRouteLinksHash()[$step];
+    }
+
+    public function getPreviousLink($step) {
+        return $this->getRouteLink($this->getPrevious($step));
+    }
+
+    public function getNextLink($step) {
+        return $this->getRouteLink($this->getNext($step));
     }
 
     public function getLibelle($step, $doc = null) {
@@ -51,28 +59,30 @@ abstract class Etapes
 		return $first;
 	}
 
-	public function getNext($etape)
+    public function getPrevious($etape)
 	{
-		if (!$etape) {
+        $etapes = $this->getEtapes();
+
+        if (false !== $index_etape = array_search($etape, $etapes)) {
+            return ($index_etape - 1 >= 0) ? $etapes[$index_etape-1] : $this->getFirst();
+        }
+
+        throw new sfException('Etape inconnue');
+    }
+
+    public function getNext($etape)
+	{
+        if (!$etape) {
 			return $this->getFirst();
 		}
 		$etapes = $this->getEtapes();
-		if (!in_array($etape, $etapes)) {
-			throw new sfException('Etape inconnu');
-		}
-		$find = false;
-		$next = self::ETAPE_VALIDATION;
-		foreach ($etapes as $e) {
-			if ($find) {
-				$next = $e;
-				break;
-			}
-			if ($etape == $e) {
-				$find = true;
-			}
-		}
-		return $next;
-	}
+
+        if (false !== $index_etape = array_search($etape, $etapes)) {
+            return ($index_etape + 1 <= count($etapes)) ? $etapes[$index_etape+1] : $this->getLast();
+        }
+
+        throw new sfException('Etape inconnue');
+    }
 
 	public function isGt($etapeToTest, $etape)
 	{
@@ -83,11 +93,11 @@ abstract class Etapes
 		}
 
 		if (!in_array($etapeToTest, $etapes)) {
-			throw new sfException('"'.$etapeToTest.'" : étape inconnu (arg1)');
+			throw new sfException('"'.$etapeToTest.'" : étapeToTest inconnue ('.get_class($this).') '.implode(',', $etapes));
 		}
 
 		if (!in_array($etape, $etapes)) {
-			throw new sfException('"'.$etape.'" : étape inconnu (arg2)');
+			throw new sfException('"'.$etape.'" : étape inconnue ('.get_class($this).') '.implode(',', $etapes));
 		}
 		$key = array_search($etape, $etapes);
 		$keyToTest = array_search($etapeToTest, $etapes);
@@ -103,4 +113,10 @@ abstract class Etapes
 
         return false;
     }
+
+
+    public function getDefaultStep(){
+      return self::ETAPE_VALIDATION;
+    }
+
 }

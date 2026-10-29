@@ -57,31 +57,19 @@
 		<p>Tout site public ou privé est autorisé à établir, sans  autorisation préalable, un lien vers les informations diffusées sur ava-aoc.fr.</p>
 	</div>
 	<div class="col-xs-12">
-		<h3>Conception</h3>
+		<h3>Conception / hébergement</h3>
+		<p><a href="https://github.com/24eme/openodg/">OpenODG</a> est un logiciel libre <a href="https://github.com/24eme/openodg/">disponible publiquement</a> sous <a href="https://www.gnu.org/licenses/agpl-3.0.fr.html">licence AGPL</a>. Il est développé par la société <a href="http://24eme.fr/">24ème</a>.</p>
 		<p>
-			<strong>Actualys</strong><br />
-			1 rue Garnier<br />
-			92200 Neuilly-sur-Seine<br />
+			<strong><a href="http://24eme.fr/">24ème</a></strong><br />
+			2 place Sainte opportune<br />
+			75001 Paris<br />
 			France
 		</p>
 		<p>
-			<strong>Tél.</strong> : (33) 01 71 11 31 90<br />
-			<strong>Fax</strong> : (33) 01 41 43 48 03
+			<strong>Tél.</strong> : +33184259401<br />
 		</p>
 		<p>
-			<strong>Site Internet</strong> : <a href="http://www.actualys.com">http://www.actualys.com</a>
-		</p>
-	</div>
-	<div class="col-xs-12">
-		<h3>Hébergement</h3>
-		<p>
-			<strong>Typhon/Claranet</strong><br />
-			18 rue du Faubourg du Temple<br />
-			75011 Paris<br />
-			France
-		</p>
-		<p>
-			<strong>Site Internet</strong> : <a href="http://www.typhon.com/fr/">http://www.typhon.com/fr/</a>
+			<strong>Site Internet</strong> : <a href="http://24eme.fr/">http://24eme.fr/</a>
 		</p>
 	</div>
 </div>

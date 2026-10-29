@@ -33,13 +33,21 @@ class Abonnement extends BaseAbonnement {
         return $this->_get('mouvements');
     }
 
+    public function getTemplateFactureName() {
+
+        return "TEMPLATE-FACTURE-AOC-".(explode("-", $this->date_debut)[0] - 1);
+    }
+
     public function getTemplateFacture() {
 
-        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-ABONNEMENT-".str_replace("-", "", $this->getDateDebut())."-".str_replace("-", "", $this->getDateFin()));
+        return TemplateFactureClient::getInstance()->find($this->getTemplateFactureName());
     }
 
     public function getMouvementsFacturesCalcule() {
         $templateFacture = $this->getTemplateFacture();
+        if (!$templateFacture) {
+            throw new sfException($this->getTemplateFactureName()." not found");
+        }
         $cotisations = $templateFacture->generateCotisations($this);
 
         $identifiantCompte = $this->getIdentifiant();
@@ -52,15 +60,18 @@ class Abonnement extends BaseAbonnement {
             $mouvement = AbonnementMouvementFactures::freeInstance($this);
             $mouvement->categorie = $cotisation->getCollectionKey();
             $mouvement->type_hash = $cotisation->getDetailKey();
-            $mouvement->type_libelle = $cotisation->getLibelle();
+            $mouvement->type_libelle = $cotisation->getConfigCollection()->getLibelle();
+            $mouvement->detail_libelle = $cotisation->getLibelle();
             $mouvement->quantite = $cotisation->getQuantite();
             $mouvement->taux = $cotisation->getPrix();
+            $mouvement->tva = $cotisation->getTva();
             $mouvement->facture = 0;
             $mouvement->facturable = 1;
             $mouvement->date = $this->date_debut;
             $mouvement->date_version = $this->date_debut;
             $mouvement->version = null;
             $mouvement->template = $templateFacture->_id;
+            $mouvement->type = AbonnementClient::TYPE_MODEL;
 
             if($mouvement->quantite) {
                 $rienAFacturer = false;
@@ -112,4 +123,11 @@ class Abonnement extends BaseAbonnement {
     }
 
     /**** FIN DES MOUVEMENTS ****/
+
+    public function save() {
+        if(!$this->exist('mouvements') || !count($this->mouvements)) {
+            $this->generateMouvementsFactures();
+        }
+        return parent::save();
+    }
 }

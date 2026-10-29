@@ -1,0 +1,107 @@
+{
+  "_id": "TEMPLATE-FACTURE-2021",
+  "type": "TemplateFacture",
+  "campagne": 2021,
+  "template": "IGP",
+  "libelle": "2021 - IGP Val de loire",
+  "docs": [
+    "DR",
+    "DRev",
+    "Degustation"
+  ],
+  "cotisations": {
+    "superficie": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "IGP Val de loire",
+      "code_comptable": "706100",
+      "details": {
+        "superficie": {
+          "modele": "CotisationVariable",
+          "prix": 25,
+          "tva": 0.2,
+          "unite": "ha",
+          "libelle": "Superficie",
+          "complement_libelle": "",
+          "docs": [
+            "DR"
+          ],
+          "callback": "calcul",
+          "callback_parameters": [
+            "L4"
+          ]
+        }
+      }
+    },
+    "cotisationOdg": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation ODG",
+      "code_comptable": "706100",
+      "details": {
+        "volumeRevendique": {
+          "modele": "CotisationVariable",
+          "prix": 0.43,
+          "tva": 0.2,
+          "libelle": "Volume revendiqué",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables"
+        },
+        "inao": {
+          "modele": "CotisationVariable",
+          "prix": 0.03,
+          "tva": 0,
+          "libelle": "Cotisation reversée à l'INAO",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeLotsFacturables"
+        }
+      }
+    },
+    "forfait": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation ODG",
+      "code_comptable": "",
+      "details": {
+        "forfait": {
+          "modele": "CotisationFixe",
+          "prix": 52,
+          "tva": 0.2,
+          "libelle": "Forfait sur DRev",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": ""
+        }
+      }
+    },
+    "redegustation": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Forfait sur nouveau passage pour la dégustation du %date%",
+      "code_comptable": "706102",
+      "details": {
+        "forfait": {
+          "modele": "Cotisation",
+          "prix": 50,
+          "tva": 0.2,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getRedegustationForfait",
+          "callback_parameters": []
+        }
+      }
+    }
+  }
+}

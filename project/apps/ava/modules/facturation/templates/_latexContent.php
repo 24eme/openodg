@@ -27,12 +27,11 @@
 \definecolor{vertfonce}{rgb}{0.17,0.29,0.28}
 \definecolor{vertmedium}{rgb}{0.63,0.73,0.22}
 
-\def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_site.png}
+\def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_ava.png}
 \def\LOGOCARTEMEMBRE{<?php echo sfConfig::get('sf_web_dir'); ?>/images/pdf/logo_carte_membre.jpg}
 \def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>AVOIR<?php else:?>FACTURE<?php endif; ?>}
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
-\def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
 \def\EMETTEURLIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
 \def\EMETTEURADRESSE{<?php echo $facture->emetteur->adresse; ?>}
 \def\EMETTEURCP{<?php echo $facture->emetteur->code_postal; ?>}
@@ -144,45 +143,16 @@ N° adhérent : \textbf{\NUMADHERENT}
 SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 }
 \end{center}
-	\vspace{1mm}
-    <?php if($facture->arguments->exist('CARTE_MEMBRE') && $facture->arguments->get('CARTE_MEMBRE')): ?>
-    \begin{imgminipage}{0.5\textwidth}
-    \begin{beamerframe}
-		\begin{center}
-			\vspace{3mm}
-			\textbf{\underline{\large{\textsc{association des viticulteurs d'alsace}}}} \\
-			Maison des Vins d'Alsace - Colmar \\
-			\vspace{7mm}
-			\textbf{\large{CARTE DE MEMBRE}} \\
-			\vspace{1mm}
-			\textbf{\large{Année \CAMPAGNE}} \\
-		\end{center}
-		\vspace{5.9mm}
-		\begin{center}
-			\FACTUREMEMBRERS \\
-			\FACTUREMEMBREADRESSE \\
-			\FACTUREMEMBRECOMMUNE \\
-			N° adhérent : \NUMADHERENT \\
-		\end{center}
-		\vspace{1.6mm}
-    \end{beamerframe}
-    \end{imgminipage}
-    <?php else: ?>
+    \vspace{5mm}
+    <?php if(!$facture->isAvoir()): ?>
     \begin{minipage}{0.5\textwidth}
         \begin{center}
-        \vspace{3mm}
+            \textsc{Crédit Agricole Haut-Rhin Entreprises} \\
+            IBAN : FR76 1720 6007 7049 1243 9001 072 \\
+            BIC : AGRIFRPP872
         \end{center}
     \end{minipage}
-    <?php endif; ?>
-    <?php if(!$facture->isAvoir()): ?>
 	\begin{minipage}{0.5\textwidth}
-		\vspace{1.2cm}
-		\begin{center}
-			\textsc{Crédit Agricole Colmar Entreprises} \\
-			IBAN : FR76 1720 6007 7049 1243 9001 072 \\
-			BIC : AGRIFRPP872
-		\end{center}
-		\vspace{1cm}
 		\begin{beamerframetotal}
 		    \vspace{1mm}
 			\begin{tabularx}{\linewidth}{X c c}

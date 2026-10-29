@@ -2,18 +2,18 @@
 
 class TirageClient extends acCouchdbClient {
 
-    const TYPE_MODEL = "Tirage"; 
+    const TYPE_MODEL = "Tirage";
     const TYPE_COUCHDB = "TIRAGE";
-    
+
     const MILLESIME_ASSEMBLE = "ASSEMBLE";
     const COULEUR_ROSE = 'ROSE';
     const COULEUR_BLANC = 'BLANC';
-    
+
     public static $couleurs = array(self::COULEUR_BLANC => 'Blanc', self::COULEUR_ROSE => 'Rosé');
 
     public static function getInstance()
     {
-        
+
         return acCouchdbManager::getClient("Tirage");
     }
 
@@ -56,37 +56,17 @@ class TirageClient extends acCouchdbClient {
 
             return (int) $data->rows[0]->doc->numero;
         }
-        
+
         return 0;
     }
 
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
-        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()."";
+        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent()."";
 
         return $this->startkey(sprintf("TIRAGE-%s-%s%s", $identifiant, $campagne_from, "00"))
                     ->endkey(sprintf("TIRAGE-%s-%s%s", $identifiant, $campagne_to, "99"))
                     ->execute($hydrate);
     }
 
-    public function getDateOuvertureDebut() {
-        $dates = sfConfig::get('app_dates_ouverture_tirage');
-
-        return $dates['debut'];
-    }
-
-    public function getDateOuvertureFin() {
-        $dates = sfConfig::get('app_dates_ouverture_tirage');
-
-        return $dates['fin'];
-    }
-
-    public function isOpen($date = null) {
-        if(is_null($date)) {
-
-            $date = date('Y-m-d');
-        }
-
-        return $date >= $this->getDateOuvertureDebut() && $date <= $this->getDateOuvertureFin(); 
-    }
 }

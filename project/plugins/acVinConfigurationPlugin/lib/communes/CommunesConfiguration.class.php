@@ -5,6 +5,7 @@ class CommunesConfiguration {
     private static $_instance = null;
     protected $communes;
     protected $communes_reverse;
+    protected $secteurs;
 
     public static function getInstance() {
         if (is_null(self::$_instance)) {
@@ -13,9 +14,47 @@ class CommunesConfiguration {
         return self::$_instance;
     }
 
+    public static function retrieveCommunesFromOpenDataWine($denomination) {
+        if (strlen($denomination) < 5)  {
+            $denomination = sprintf('%05d', $denomination);
+        }
+        $url_communes = "https://raw.githubusercontent.com/24eme/opendatawine/master/denominations/".$denomination.".json";
+        $contents = @file_get_contents($url_communes);
+        return (array)json_decode($contents);
+    }
+
+    public static function retrieveCommunesFromCachedOpenDataWine() {
+        $communes = array();
+        foreach (ParcellaireConfiguration::getInstance()->getAiresInfos() as $k => $a) {
+            $communes = $communes + CacheFunction::cache('model', "CommunesConfiguration::retrieveCommunesFromOpenDataWine", array($a['denomination_id']));
+        }
+        return $communes;
+    }
+
     public function __construct() {
-        $this->communes = sfConfig::get('configuration_communes', array());
+        $this->config = sfConfig::get('configuration_communes', array());
+        $this->communes = [];
+        if (isset($this->config['insee2commune'])) {
+            $this->communes = $this->config['insee2commune'];
+        }
+        if (!count($this->communes)) {
+            $this->communes = self::retrieveCommunesFromCachedOpenDataWine();
+        }
         $this->communes_reverse = array_flip($this->communes);
+        $this->secteurs = [];
+        if (isset($this->config['insee2secteur'])) {
+            $this->secteurs = $this->config['insee2secteur'];
+        }
+        $this->dep2secteur = [];
+        foreach($this->secteurs as $insee => $secteur) {
+            $dep = substr($insee, 0, 2);
+            if (!isset($this->dep2secteur[$dep])) {
+                $this->dep2secteur[$dep] = [];
+            }
+            if (!in_array($secteur, $this->dep2secteur[$dep])) {
+                $this->dep2secteur[$dep][] = $secteur;
+            }
+        }
     }
 
     public function getByCodeCommune() {
@@ -23,13 +62,65 @@ class CommunesConfiguration {
         return $this->communes;
     }
 
+    public function getCommuneByCode($c) {
+
+        return $this->communes[$c];
+    }
+
     public function findCodeCommune($commune) {
         if(!isset($this->communes_reverse[$commune])) {
-
+            $commune_simplified = $commune;
+            $commune_simplified = strtoupper($commune_simplified);
+            $commune_simplified = preg_replace('/^ST(E?) /', 'SAINT\1 ', $commune_simplified);
+            $commune_simplified = preg_replace('/[^A-Z]/', '', $commune_simplified);
+            $selected = [];
+            foreach($this->communes_reverse as $c => $v) {
+                $c = preg_replace('/[^A-Z]/', '', strtoupper($c));
+                if ($c == $commune_simplified) {
+                    $this->communes_reverse[$commune] = $v;
+                    return $v;
+                }
+                if ( (strpos($c, $commune_simplified) !== false) || (strpos($commune_simplified, $c) !== false) ) {
+                    $selected[] = $v;
+                }
+            }
+            if (count($selected)) {
+                $this->communes_reverse[$commune] = $selected[0];
+                return $selected[0];
+            }
             return null;
         }
 
         return $this->communes_reverse[$commune];
     }
 
+    public function hasSecteurs() {
+        return (count($this->secteurs));
+    }
+
+    public function getSecteurFromInsee($i, $code_postal = null) {
+        if (!isset($this->secteurs[$i])) {
+            $dep = substr($i, 0, 2);
+            if (!$dep) {
+                $dep = substr($code_postal, 0, 2);
+            }
+            if (isset($this->dep2secteur[$dep]) && count($this->dep2secteur[$dep]) === 1) {
+                return $this->dep2secteur[$dep][0];
+            }
+            return null;
+        }
+        return $this->secteurs[$i];
+    }
+
+    public function hasSecteurAuto() {
+        if (isset($this->config['secteur_auto'])) {
+            return $this->config['secteur_auto'];
+        }
+        return false;
+    }
+
+    public function hasCommunes()
+    {
+        return count($this->config);
+    }
 }

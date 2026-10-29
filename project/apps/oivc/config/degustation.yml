@@ -1,0 +1,14 @@
+all:
+  configuration:
+    degustation:
+      nb_etiquettes: 4
+      anonymisation_manuelle: false
+      anonymisation_format: O%s% 2d
+      conformite:
+        - CONFORME
+        - NONCONFORME_ANALYTIQUE
+        - NONCONFORME_ORGANOLEPTIQUE
+      typicite_cepage: false
+      tournee_autonome: true
+      has_notification: true
+      static_region: OIVC

@@ -5,11 +5,6 @@ class ConfigurationClient extends acCouchdbClient {
 	protected $configurations = array();
 
     protected $countries = null;
-    protected $campagne_vinicole_manager = null;
-    protected $campagne_facturation_manager = null;
-
-    const CAMPAGNE_DATE_DEBUT = '%s-08-01';
-    const CAMPAGNE_DATE_FIN = '%s-07-31';
 
     const VALUE_LIBELLE_CERTIFICATION = 0;
     const VALUE_LIBELLE_GENRE = 1;
@@ -63,6 +58,9 @@ class ConfigurationClient extends acCouchdbClient {
         }
 
         $current = CurrentClient::getCurrent();
+        if (! $current) {
+            throw new sfException("Pas de CurrentClient");
+        }
         $id = $current->getConfigurationId($date);
 
         if(array_key_exists($id, $this->configurations)) {
@@ -91,27 +89,23 @@ class ConfigurationClient extends acCouchdbClient {
         CacheFunction::remove('model');
     }
 
-	public function getCampagneManager() {
+	public function getCampagneManager($format = CampagneManager::FORMAT_PREMIERE_ANNEE) {
 
-		return new CampagneManager('10-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
+        return $this->getCampagneVinicole($format);
 	}
 
-    public function getCampagneVinicole() {
-        if(is_null($this->campagne_vinicole_manager)) {
-
-            $this->campagne_vinicole_manager = new CampagneManager('08-01');
+    public function getCampagneParcellaire($format = CampagneManager::FORMAT_COMPLET) {
+        if(class_exists('ParcellaireAffectationConfiguration') && ParcellaireAffectationConfiguration::getInstance()->isModuleEnabled()) {
+            return new CampagneManager('03-01', $format);
         }
-
-        return $this->campagne_vinicole_manager;
+        if(class_exists('ParcellaireIrrigableConfiguration') && ParcellaireIrrigableConfiguration::getInstance()->isModuleEnabled()) {
+            return new CampagneManager('03-01', $format);
+        }
+        return $this->getCampagneVinicole($format);
     }
 
-    public function getCampagneFacturation() {
-        if(is_null($this->campagne_facturation_manager)) {
-
-            $this->campagne_facturation_manager = new CampagneManager('01-01');
-        }
-
-        return $this->campagne_facturation_manager;
+    public function getCampagneVinicole($format = CampagneManager::FORMAT_COMPLET) {
+        return new CampagneManager('09-01', $format);
     }
 
     public function buildCampagne($date) {
@@ -132,6 +126,11 @@ class ConfigurationClient extends acCouchdbClient {
     public function getCurrentCampagne() {
 
         return $this->getCampagneVinicole()->getCurrent();
+    }
+
+    public function getCurrentAnneeRecolte() {
+
+        return $this->getCampagneVinicole()->getCurrentAnneeRecolte();
     }
 
     public function getPreviousCampagne($campagne) {
@@ -199,10 +198,14 @@ class ConfigurationClient extends acCouchdbClient {
         return date('Ym', strtotime(ConfigurationClient::getInstance()->getDateFinCampagne($campagne)));
     }
 
-    public function buildCampagneByPeriode($periode) {
-
+    public function buildCampagneFromPeriode($periode) {
         return $this->buildCampagne($this->buildDate($periode));
     }
+
+	public function buildCampagneFromYearOrCampagne($year) {
+		$year = preg_replace('/-\d+/', '', $year);
+		return $this->buildCampagne($year."-10-01");
+	}
 
     public function getPeriodeSuivante($periode) {
         $nextMonth = $this->getMois($periode) + 1;
@@ -240,6 +243,7 @@ class ConfigurationClient extends acCouchdbClient {
             $this->countries['inconnu'] = 'Inconnu';
             $this->countries['UE'] = 'Union Européenne';
             $this->countries['HORS_UE'] = 'Hors Union Européenne';
+            $this->countries['CW'] = 'Curaçao';
         }
 
         return $this->countries;
@@ -354,6 +358,14 @@ class ConfigurationClient extends acCouchdbClient {
 
 			return $oldHashProduit;
 		}
+
+    public function isOpenODG() {
+        return ! $this->isGiilda();
+    }
+
+    public function isGiilda() {
+        return class_exists("DRMConfiguration");
+    }
 
 }
 

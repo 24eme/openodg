@@ -2406,7 +2406,7 @@ class TCPDF_STATIC {
 	 * @since 6.0.023
 	 * @public static
 	 */
-	public static function pregSplit($pattern, $modifiers, $subject, $limit=NULL, $flags=NULL) {
+	public static function pregSplit($pattern, $modifiers, $subject, $limit=-1, $flags=0) {
 		// the bug only happens on PHP 5.2 when using the u modifier
 		if ((strpos($modifiers, 'u') === FALSE) OR (count(preg_split('//u', "\n\t", -1, PREG_SPLIT_NO_EMPTY)) == 2)) {
 			return preg_split($pattern.$modifiers, $subject, $limit, $flags);

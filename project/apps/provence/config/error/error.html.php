@@ -9,9 +9,9 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-Ua-Compatible" content="IE=edge" />
-        <meta name="title" content="Plateforme de télédéclaration du syndicat Côtes-de-Provence" />
+        <meta name="title" content="Plateforme de télédéclaration du syndicats des Vins de Provence" />
 <meta name="charset" content="utf-8" />
-<meta name="description" content="Plateforme de télédéclaration du syndicat Côtes de Provence" />
+<meta name="description" content="Plateforme de télédéclaration du syndicats des Vins de Provence" />
 <meta name="robots" content="index,follow" />
 <meta name="content-language" content="fr-FR" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -56,7 +56,7 @@
           </a>
       </div>
       <div id="titre"><h1>
-        <img height="35" width="207" src="/images/provence_espace_personnel.png" alt="Espace personnel"/><img height="35" width="23" src="/images/provence_tiret.png" alt=" - "/><img height="35" width="435" src="/images/provence_syndicat_des_cotes_de_provence.png" alt="Syndicat des Côtes de Provence"/>
+        <img height="35" width="207" src="/images/provence_espace_personnel.png" alt="Espace personnel"/>
       </h1></div>
 </header>
 
@@ -110,7 +110,7 @@
 <script type="text/javascript" src="/js/lib/leaflet/leaflet.js"></script>
 <script type="text/javascript" src="/js/global.js?201802221732"></script>
 <script type="text/javascript" src="/js/compte.js"></script>
-<script type="text/javascript" src="/js/drev.js?201709251013"></script>
+<script type="text/javascript" src="/js/drev.js?202105041230"></script>
 <script type="text/javascript" src="/js/drevmarc.js"></script>
 <script type="text/javascript" src="/js/form.js?201801171851"></script>
 <script type="text/javascript" src="/js/parcellaire.js"></script>

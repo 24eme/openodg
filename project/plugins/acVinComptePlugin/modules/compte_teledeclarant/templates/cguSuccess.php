@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row mt-5">
     <div class="col-xs-8 col-xs-offset-2">
         <div class="panel panel-default">
             <div class="panel-heading"><h2 class="panel-title">Activation de votre espace de télédeclaration (Convention d'adhésion)</h2></div>

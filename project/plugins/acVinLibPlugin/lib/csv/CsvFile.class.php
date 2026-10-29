@@ -9,6 +9,7 @@ class CsvFile
   protected $csvdata = null;
   private $ignore = null;
   protected $isFileTmp = false;
+  protected $options = null;
 
   public function getFileName() {
     return $this->file;
@@ -70,7 +71,7 @@ class CsvFile
       throw new sfException('Cannot open csv file anymore');
     }
     $this->csvdata = array();
-    while (($data = fgetcsv($handler, 0, $this->separator)) !== FALSE) {
+    while (($data = fgetcsv($handler, 0, $this->separator, "\"", "\\")) !== FALSE) {
       if (!preg_match('/^#/', $data[0])) {
 		$this->csvdata[] = $data;
       }
@@ -81,6 +82,11 @@ class CsvFile
         unlink($this->file);
     }
     return $this->csvdata;
+  }
+
+
+  public function getPremierChamp(){
+    return ($this->getCsv()[3][0]);
   }
 
   private function getCharset($file) {

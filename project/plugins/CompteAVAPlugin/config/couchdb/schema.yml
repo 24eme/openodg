@@ -4,6 +4,7 @@ Compte:
     fields:
       _id: {  }
       _rev: {  }
+      login: { required: false }
       type: {  }
       identifiant: {  }
       identifiant_interne: {  }

@@ -197,8 +197,8 @@
                    "libelle": "AOC Alsace blanc",
                    "rendement": null,
                    "rendement_appellation": 80,
-                   "rendement_vci": 0,
-                   "rendement_vci_total": 0,
+                   "rendement_vci": 5,
+                   "rendement_vci_total": 15,
                    "mout": null,
                    "douane": {
                        "qualite": "S "

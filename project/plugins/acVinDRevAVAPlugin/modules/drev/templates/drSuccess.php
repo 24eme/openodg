@@ -2,10 +2,10 @@
 
 <?php include_partial('drev/step', array('step' => 'revendication', 'drev' => $drev)) ?>
 <div class="page-header">
-    <h2>Récupération des données de la Déclaration de Récolte <small>sur la plateforme du CIVA</small></h2>
+    <h2>Récupération des données de la Déclaration de <?php if ($drev->isNonRecoltant()): ?>Production<?php else: ?>Récolte<?php endif; ?><small>sur la plateforme du CIVA</small></h2>
 </div>
 
-<p>Vous allez être redirigé sur la plateforme du CIVA afin de récupérer les données de votre Déclaration de Récolte.</p>
+<p>Vous allez être redirigé sur la plateforme du CIVA afin de récupérer les données de votre Déclaration de <?php if ($drev->isNonRecoltant()): ?>Production<?php else: ?>Récolte<?php endif; ?>.</p>
 <div class="row row-margin row-button">
     <div class="col-xs-6"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a></div>
     <div class="col-xs-6 text-right">

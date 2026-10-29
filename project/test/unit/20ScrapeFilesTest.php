@@ -2,9 +2,11 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-sfContext::createInstance($configuration);
-
 $t = new lime_test(0);
+
+if (!sfConfig::get('app_scrapy_documents') || !file_exists(sfConfig::get('app_scrapy_documents'))) {
+	return ;
+}
 
 $dr = current(DRClient::getInstance()->findAll(1));
 if ($dr) {
@@ -21,7 +23,7 @@ if ($dr) {
 	$t->comment('Création société '.$societeviti->_id);
 
 	$etablissementviti = $societeviti->createEtablissement(EtablissementFamilles::FAMILLE_PRODUCTEUR);
-	$etablissementviti->region = EtablissementClient::REGION_CVO;
+	$etablissementviti->region = EtablissementClient::REGION_IS_REGION;
 	$etablissementviti->nom = "Etablissement viti test";
 	$etablissementviti->cvi = $etab->cvi;
 	$etablissementviti->siege->commune = "NEUILLY";

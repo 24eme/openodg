@@ -12,48 +12,27 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
   	}
 
     public function getParcellesByCommune() {
-        $parcelles = array();
-
-        foreach($this as $produit) {
-            foreach ($produit->detail as $parcelle) {
-                if(!isset($parcelles[$parcelle->commune])) {
-                    $parcelles[$parcelle->commune] = array();
-                }
-                $parcelles[$parcelle->commune][$parcelle->getHash()] = $parcelle;
-            }
-        }
-        foreach ($parcelles as $key => $parcelleByCommune) {
-            uasort($parcelleByCommune, "ParcellaireClient::sortParcellesForCommune");
-            $parcelles[$key] = $parcelleByCommune;
-        }
-
-        ksort($parcelles);
-
-        return $parcelles;
+        return ParcellaireClient::organizeParcellesByCommune($this->getParcelles());
     }
 
-    public function getParcelles($onlyVtSgn = false, $active = false) {
+    public function getParcelles() {
 
-        return $this->getProduitsDetails($onlyVtSgn, $active);
+        return $this->getProduitsDetails();
     }
 
     public function getProduits($onlyActive = false) {
         $produits = array();
         foreach ($this as $key => $produit) {
-            if ($onlyActive && !$produit->isAffectee()) {
-
-                return array();
-            }
             $produits[$produit->getHash()] = $produit;
         }
 
         return $produits;
     }
 
-    public function getProduitsDetails($onlyVtSgn = false, $active = false) {
+    public function getProduitsDetails() {
         $details = array();
         foreach ($this->getProduits() as $item) {
-            $details = array_merge($details, $item->getProduitsDetails($onlyVtSgn, $active));
+            $details = array_merge($details, $item->getProduitsDetails());
         }
 
         return $details;
@@ -155,7 +134,7 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
         return false;
     }
 
-    public function reorderByConf() {
+    public function reorderByConf($only_config = true) {
   		$children = array();
 
   		foreach($this as $hash => $child) {
@@ -166,7 +145,15 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
   			$this->remove($hash);
   		}
 
-  		foreach($this->getConfig()->getProduits() as $hash => $child) {
+        $produits = $this->getConfig()->getProduits();
+        if (defined('_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION')) {
+            $produits = array_merge($this->getConfig()->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION, "ConfigurationAppellation"), $produits);
+        }
+
+        if (!$only_config) {
+            $produits[ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH] = null;
+        }
+  		foreach($produits as $hash => $child) {
   			$hashProduit = str_replace("/declaration/", "", $hash);
   			if(!array_key_exists($hashProduit, $children)) {
   				continue;

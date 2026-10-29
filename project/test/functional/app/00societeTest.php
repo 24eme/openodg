@@ -9,12 +9,12 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test_functionnal') a
     }
 }
 
-$b = new sfTestFunctional(new sfBrowser());
+$b = new sfTestFunctional(new Browser());
 $t = $b->test();
 
 $b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => null));
 
-$t->comment("Création d'une société");
+$t->comment("Création de 2 sociétés opérateurs");
 
 $b->post('/societe-creation', array('societe-creation' => array("raison_sociale" => 'Societe TESTFUNCTIONNAL '.uniqid())))->followRedirect()->followRedirect()->followRedirect();
 $t->is($b->getResponse()->getStatuscode(), '200', 'Société créé');
@@ -47,6 +47,8 @@ $compteSociete2->addTag('test', 'test_functionnal');
 $compteSociete2->addTag('test', 'test_functionnal_societe_2');
 $compteSociete2->save();
 
+$t->comment("Création d'une société autre");
+
 $b->post('/societe-creation', array('societe-creation' => array("raison_sociale" => 'Societe TESTFUNCTIONNAL '.uniqid())))->followRedirect()->followRedirect()->followRedirect()->click('button#btn_valider')->followRedirect();
 preg_match("|/societe/([^/]+)/visualisation|", $b->getRequest()->getUri(), $matches);
 
@@ -55,6 +57,44 @@ $compteSocieteAutre = $societeAutre->getMasterCompte();
 $compteSocieteAutre->addTag('test', 'test_functionnal');
 $compteSocieteAutre->addTag('test', 'test_functionnal_societe_autre');
 $compteSocieteAutre->save();
+
+$t->comment("Création d'une société cave coop");
+
+$b->post('/societe-creation', array('societe-creation' => array("raison_sociale" => 'Societe TESTFUNCTIONNAL Coop'.uniqid())))->followRedirect()->followRedirect()->followRedirect()->click('button#btn_valider')->followRedirect();
+preg_match("|/societe/([^/]+)/visualisation|", $b->getRequest()->getUri(), $matches);
+
+$societeAnnexe = SocieteClient::getInstance()->find($matches[1]);
+
+$compteSocieteCoop = $societeAnnexe->getMasterCompte();
+$compteSocieteCoop->addTag('test', 'test_functionnal');
+$compteSocieteCoop->addTag('test', 'test_functionnal_societe_coop');
+$compteSocieteCoop->save();
+
+$t->comment('En mode stalker');
+
+$b->get('/logout');
+
+
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array(myUser::CREDENTIAL_STALKER)));
+$b->restart();
+
+$b->get('/');
+if ($b->getResponse()->getStatuscode() == 302) {
+    $b->followRedirect();
+    $b->isForwardedTo('compte', 'search');
+}else{
+    $t->is($b->getResponse()->getStatuscode(), 403, "Page d'accueil non accessible pour stalker");
+}
+
+$b->get('/societe/'.$societeIdentifiant.'/visualisation');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation d'une société de type \"OPERATEUR\" accessible");
+$b->isForwardedTo('societe', 'visualisation');
+
+$b->isForwardedTo('societe', 'visualisation');
+testVisualisationLimite($b, $societeIdentifiant);
+
+$b->get('/societe/'.$societeAutre->getIdentifiant().'/visualisation');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation d'une société de type \"AUTRE\" accessible");
 
 $t->comment('En mode habilitation');
 
@@ -68,15 +108,17 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     $b->get('/societe/'.$societeIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation d'une société de type \"OPERATEUR\" accessible");
     $b->isForwardedTo('societe', 'visualisation');
-    testVisualisationLimite($b, $societeIdentifian);
+    testVisualisationLimite($b, $societeIdentifiant);
 
     $b->get('/societe/'.$societeAutre->getIdentifiant().'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'une société de type \"AUTRE\" protégée");
+    $b->resetCurrentException();
 } else {
     $b->get('/societe/'.$societeIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'une société protégée");
+    $b->resetCurrentException();
 }
-
+$b->resetCurrentException();
 $t->comment('En mode télédéclarant');
 
 $b->get('/logout');
@@ -93,9 +135,11 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     testVisualisationLimite($b, $societeIdentifiant);
     $b->get('/societe/'.$societeAnnexe->getIdentifiant().'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'une autre société protégée");
+    $b->resetCurrentException();
 } else {
     $b->get('/societe/'.$societeIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation de la société protégée");
+    $b->resetCurrentException();
 }
 
 function testVisualisationLimite($b, $societeIdentifiant) {
@@ -106,16 +150,18 @@ function testVisualisationLimite($b, $societeIdentifiant) {
     $t->is($c->matchSingle('a[href*="/modification"]')->getNode(), null, "Bouton \"Editer\" absent");
     $t->is($c->matchSingle('a[href*="/switchStatus"]')->getNode(), null, "Bouton \"Archiver\" absent");
     $t->is($c->matchSingle('a[href*="/switchEnAlerte"]')->getNode(), null, "Bouton \"Mettre en alerte\" absent");
-    $t->is($c->matchSingle('a[href*="/compte/search"]')->getNode(), null, "Liens vers la recherche absent");
     $t->is($c->matchSingle('a[href*="/compte/groupe"]')->getNode(), null, "Liens vers les groupe absent");
     $t->is($c->matchSingle('a[href*="/nouveau"]')->getNode(), null, "Liens vers les boutons d'ajout absent");
 
     $b->get('/societe-creation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de création protégé");
+    $b->resetCurrentException();
 
     $b->get('/societe/'.$societeIdentifiant.'/modification');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page modification protégé");
+    $b->resetCurrentException();
 
     $b->get('/societe/'.$societeIdentifiant.'/switchStatus');
     $t->is($b->getResponse()->getStatuscode(), 403, "Action d'archivage protégé");
+    $b->resetCurrentException();
 }

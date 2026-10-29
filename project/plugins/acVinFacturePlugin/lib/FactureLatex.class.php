@@ -35,7 +35,7 @@ class FactureLatex extends GenericLatex {
       if($this->facture->isAvoir()){
         $termFacture = 'avoir_';
       }
-      return  $termFacture.str_replace('/', '-', $this->facture->numero_odg).'_'.$commune.'_'.$nom.'_'.$this->facture->identifiant.'_'.$this->facture->numero_facture.'_'.$this->facture->_rev;
+      return  str_replace('/', '', str_replace(' ', '_', $termFacture.str_replace('/', '-', $this->facture->numero_odg).'_'.$commune.'_'.$nom.'_'.$this->facture->identifiant.'_'.$this->facture->numero_facture.'_'.$this->facture->_rev));
   }
 
   public function getLatexFileNameWithoutExtention() {

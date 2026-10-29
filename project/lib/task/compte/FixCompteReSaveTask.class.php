@@ -25,7 +25,7 @@ EOF;
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         $compte = CompteClient::getInstance()->find($arguments['doc_id']);
@@ -35,7 +35,7 @@ EOF;
             return;
         }
 
-
+        $compte->updateCoordonneesLongLat();
         $compte->save();
 
         echo sprintf("UPDATE;%s;%s;%s\n", $compte->_id, $compte->region, $compte->societe_informations->siret);

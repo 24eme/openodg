@@ -15,7 +15,7 @@
 						</div>
 						<div class="col-xs-6">
 							<span class="error"><?php echo $form['hashref']->renderError() ?></span>
-							<?php echo $form['hashref']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+							<?php echo $form['hashref']->render(array("data-placeholder" => "Sélectionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
 						</div>
 					</div>
 					<div class="row form-group">
@@ -32,7 +32,6 @@
 										</label>
 								  	</div>
 								<?php endforeach; ?>
-							</ul>
 						</div>
 					</div>
 					<div class="row form-group">
@@ -42,7 +41,7 @@
 						<div class="col-xs-6">
 							<span class="error"><?php echo $form['date']->renderError() ?></span>
 							<div class="input-group date-picker">
-								<?php echo $form['date']->render(array('placeholder' => "Date", "required" => false ,"class" => "form-control")) ?>
+								<?php echo $form['date']->render(array('placeholder' => "Date", "required" => false ,"class" => "form-control", "autocomplete" => "off")) ?>
 								<div class="input-group-addon">
 										<span class="glyphicon-calendar glyphicon"></span>
 								</div>
@@ -55,7 +54,7 @@
 						</div>
 						<div class="col-xs-6">
 							<span class="error"><?php echo $form['statut']->renderError() ?></span>
-							<?php echo $form['statut']->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+							<?php echo $form['statut']->render(array("data-placeholder" => "Sélectionnez un statut", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
 						</div>
 					</div>
 				</div>

@@ -17,10 +17,10 @@
                     <td class="text-right"><?php echo getVolumeObtenu($drevmarc); ?></td>
                 </tr>
                 <tr>
-                    <td>Titre alcoométrique volumique</td>
+                    <td>Titre alcoométrique volumique des bonnes chauffes</td>
                     <td class="text-right"><?php echo getTitreAlcoolVol($drevmarc); ?></td>
                 </tr>
-                
+
             </tbody>
         </table>
     </div>

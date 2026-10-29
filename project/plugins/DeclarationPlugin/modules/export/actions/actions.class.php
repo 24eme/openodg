@@ -19,15 +19,8 @@ class exportActions extends sfActions {
             $generation->type_document = GenerationClient::TYPE_DOCUMENT_EXPORT_CSV;
             $generation->libelle = sprintf("Export CSV %s %s", $typeCampagne->type, $typeCampagne->campagne);
             $generation->arguments = array("campagne" => $typeCampagne->campagne, "type_document" => $typeCampagne->type);
-            $generations[$typeCampagne->campagne."_".$generation->type."_".implode($generation->arguments->toArray(true, false), "_")] = $generation;
+            $generations[$typeCampagne->campagne."_".$generation->type."_".implode('_', $generation->arguments->toArray(true, false))] = $generation;
         }
-
-        $generation = new Generation();
-        $generation->type_document = GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE;
-        $generation->libelle = sprintf("Export SAGE");
-        $generation->arguments = array();
-
-        $generations[GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE] = $generation;
 
         $generation = new Generation();
         $generation->type_document = GenerationClient::TYPE_DOCUMENT_EXPORT_PARCELLAIRE;
@@ -55,7 +48,7 @@ class exportActions extends sfActions {
         $generation = $this->form->getGeneration();
         $generation->save();
 
-        return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission));
+        return $this->redirect('generation_view', ['id' => $generation->_id]);
     }
 
 }

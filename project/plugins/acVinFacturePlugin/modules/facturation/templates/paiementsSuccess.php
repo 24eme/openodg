@@ -3,12 +3,12 @@
 
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
-  <li><a href="<?php echo url_for('facturation_declarant', $facture->getCompte()); ?>"><?php echo $facture->getCompte()->getNomAAfficher() ?> (<?php echo $facture->getCompte()->getIdentifiantAAfficher() ?>)</a></li>
-  <li class="active"><a href="">Paiement de la facture n°<?php echo $facture->numero_ava ?></a></li>
+  <li><a href="<?php echo url_for('facturation_declarant', ['identifiant' => $facture->identifiant]); ?>"><?php echo $facture->getCompte()->getNomAAfficher() ?> (<?php echo $facture->getCompte()->getIdentifiantAAfficher() ?>)</a></li>
+  <li class="active"><a href="">Paiement de la facture n°<?php echo $facture->numero_odg ?></a></li>
 </ol>
 
 <div class="page-header">
-    <h2>Paiement de la facture n°<?php echo $facture->numero_ava ?> <small> du <?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></small></h2>
+    <h2>Paiement de la facture n°<?php echo $facture->numero_odg ?> <small> du <?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></small></h2>
 </div>
 
 <form action="" method="post" class="form-horizontal">
@@ -17,11 +17,55 @@
     <div class="row">
       <div class="form-group">
           <label class="col-xs-4 control-label">Montant à payer</label>
-          <div class="col-xs-5">
+          <div class="col-xs-8">
               <div class="form-control-static"><?php echo echoFloat($facture->total_ttc); ?> € TTC</div>
+          </div>
+          <label class="col-xs-4 control-label">Restant à payer</label>
+          <div class="col-xs-8">
+              <div class="form-control-static"><?php echo echoFloat($facture->total_ttc - $facture->montant_paiement); ?> €</div>
           </div>
       </div>
     </div>
+    <?php foreach($facture->paiements as $p): if ($p->versement_comptable || ( $p->type_reglement == FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO && $p->exist('execute') && $p->execute )):?>
+        <hr/>
+        <div class="row">
+          <div class="form-group col-xs-12">
+            <div class="col-xs-3 form-control-static">
+              <strong><?php echo "Reglement numéro ".($p->getKey()+1) ?></strong>
+            </div>
+            <div class="col-xs-9">
+              <div class="form-group">
+                  <label class="col-xs-4 control-label">Montant</label>
+                  <div class="col-xs-8 form-control-static">
+                      <p><?php echo $p->montant; ?> €</p>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-xs-4 control-label">Date</label>
+                  <div class="col-xs-8 form-control-static">
+                      <?php echo $p->date; ?>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-xs-4 control-label">Type de règlement</label>
+                  <div class="col-xs-8 form-control-static">
+                      <?php echo $p->type_reglement; ?>
+                  </div>
+             </div>
+              <div class="form-group">
+              <label class="col-xs-4 control-label">Commentaire</label>
+              <div class="col-xs-8 form-control-static">
+                  <?php echo $p->commentaire; ?>
+              </div>
+            </div>
+            <div class="form-group">
+            <label class="col-xs-4 control-label">Versé comptablement</label>
+            <div class="col-xs-8 form-control-static">Oui</div>
+          </div>
+            </div>
+          </div>
+        </div>
+    <?php endif; endforeach; ?>
     <?php foreach($form['paiements'] as $key_paiement => $paiementForm): ?>
       <hr/>
           <div class="row">
@@ -75,10 +119,14 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php echo url_for('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant)) ?>" class="btn btn-danger btn-lg btn-upper">Annuler</a>
+            <?php if(FactureConfiguration::getInstance()->isListeDernierExercice()): ?>
+            <a tabindex="-1" href="<?php echo url_for('facturation_declarant', array("identifiant" => $facture->identifiant, "campagne" => $facture->campagne)) ?>" class="btn btn-default">Annuler</a>
+            <?php else: ?>
+            <a tabindex="-1" href="<?php echo url_for('facturation_declarant', array("identifiant" => $facture->identifiant)) ?>" class="btn btn-default">Annuler</a>
+            <?php endif; ?>
         </div>
         <div class="col-xs-6 text-right">
-            <button type="submit" class="btn btn-default btn-lg btn-upper">Valider</a>
+            <button type="submit" class="btn btn-primary">Valider</a>
         </div>
     </div>
 </form>

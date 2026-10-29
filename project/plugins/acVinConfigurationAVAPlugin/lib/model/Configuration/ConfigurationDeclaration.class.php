@@ -18,17 +18,17 @@ class ConfigurationDeclaration extends BaseConfigurationDeclaration {
     }
 
     public function getHashRelation($key) {
-        
+
         return "/".$this->getKeyRelation($key);
     }
 
     public function hasNoUsagesIndustriels() {
-        
+
         return ($this->exist('no_usages_industriels') && $this->get('no_usages_industriels'));
     }
 
     public function hasNoRecapitulatifCouleur() {
-        
+
         return ($this->exist('no_recapitulatif_couleur') && $this->get('no_recapitulatif_couleur'));
     }
 
@@ -71,19 +71,15 @@ class ConfigurationDeclaration extends BaseConfigurationDeclaration {
 
         return true;
     }
-    
+
     public function isAutoDs() {
-        
+
         return false;
     }
 
     public function isAutoDRev() {
-        
+
         return false;
     }
 
-    public function getNodeCahierDesCharges() {
-
-    return $this->getLieu();
-}
 }

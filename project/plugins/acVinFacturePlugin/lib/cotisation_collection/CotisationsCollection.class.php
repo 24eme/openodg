@@ -15,7 +15,7 @@ class CotisationsCollection
 		return $this->config->isRequired();
 	}
 
-	public function getCotisations() {
+	public function getCotisations($check_required_now_not_later = true) {
 		$cotisations = array();
 		$total = 0;
 		foreach($this->getDetails() as $detail) {
@@ -28,14 +28,18 @@ class CotisationsCollection
 			$total += $cotisation->getTotal();
 			$cotisations[] = $cotisation;
 		}
-		if($this->config->exist('minimum') && ($minimum = $this->config->minimum)
-      && $this->config->exist('minimum_fallback') && ($minimum_fallback_name = $this->config->minimum_fallback)
-			&& $this->config->getDocument()->cotisations->exist($minimum_fallback_name) && ($minimum_fallback = $this->config->getDocument()->cotisations->$minimum_fallback_name)
-			&& ($total <= $minimum) && ($total > 0) && $minimum_fallback->isForType($this->getDoc()->getType())){
-				return $minimum_fallback->generateCotisations($this->getDoc());
-		}
-
-		if(!$total && !$this->isConfigRequired()) {
+        if($this->config->exist('minimum') && $this->config->exist('minimum_fallback')) {
+            $minimum = $this->config->minimum;
+            $minimum_fallback_name = $this->config->minimum_fallback;
+            if (!$this->config->getDocument()->cotisations->exist($minimum_fallback_name)) {
+                throw new sfException("minimum_fallback /cotisations/$minimum_fallback_name not found in ".$this->config->getDocument()->_id);
+            }
+            $minimum_fallback = $this->config->getDocument()->cotisations->$minimum_fallback_name;
+            if ($total <= $minimum && $total > 0 && $minimum_fallback->isForType($this->getDoc()->getType())) {
+                return $minimum_fallback->generateCotisations($this->getDoc());
+            }
+        }
+		if($check_required_now_not_later && !$total && !$this->isConfigRequired()) {
 			return array();
 		}
 

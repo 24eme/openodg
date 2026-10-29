@@ -4,7 +4,7 @@
  * Model for Societe
  *
  */
-class Societe extends BaseSociete implements InterfaceCompteGenerique {
+class Societe extends BaseSociete implements InterfaceCompteGenerique, InterfaceMandatSepaPartie {
 
     private $comptes = null;
 
@@ -26,21 +26,12 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         $this->enseignes->add(count($this->enseignes), "");
     }
 
-    public function getInterlocuteursWithOrdre() {
-        foreach ($this->contacts as $key => $interlocuteur) {
-            if (is_null($interlocuteur->ordre))
-                $interlocuteur->ordre = 2;
+    public function getInterlocuteurs() {
+        $interlocuteurs = [];
+        foreach ($this->contacts as $id => $infos) {
+            $interlocuteurs[$id] = CompteClient::getInstance()->find($id);
         }
-        return $this->contacts;
-    }
-
-    public function getMaxOrdreContacts() {
-        $max = 0;
-        foreach ($this->contacts as $contact) {
-            if ($max < $contact->ordre)
-                $max = $contact->ordre;
-        }
-        return $max;
+        return $interlocuteurs;
     }
 
     public function hasChais() {
@@ -143,7 +134,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
     }
 
     public function getEtablissementPrincipal() {
-        $etablissements = $this->getEtablissementsObj();
+        $etablissements = $this->getEtablissementsObj(false);
         if (!count($etablissements)) {
             return null;
         }
@@ -442,6 +433,10 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
       $needSave = true;
     }
 
+    if ($compteOrEtablissement->exist('siret') && $compteOrEtablissement->siret != $this->siret) {
+      $needSave = true;
+    }
+
     if (CompteGenerique::isSameAdresseComptes($compteOrEtablissement, $compteMasterOrigin)) {
         $ret = $this->pushAdresseTo($compteOrEtablissement);
         $needSave = $needSave || $ret;
@@ -472,9 +467,13 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         return explode(';',$this->email);
     }
 
-    public function getEmailTeledeclaration() {
-        if ($this->exist('teledeclaration_email') && $this->teledeclaration_email) {
-            return Anonymization::hideIfNeeded($this->teledeclaration_email);
+    public function getEmailCompta() {
+        return $this->getEmail();
+    }
+
+    public function getTeledeclarationEmail() {
+        if ($this->exist('teledeclaration_email') && $this->_get('teledeclaration_email')) {
+            return Anonymization::hideIfNeeded($this->_get('teledeclaration_email'));
         }
         if ($compteSociete = $this->getMasterCompte()) {
 	        if ($compteSociete->exist('societe_information') && $compteSociete->societe_information->exist('email') && $compteSociete->societe_information->email) {
@@ -488,22 +487,28 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         return null;
     }
 
-    public function setEmailTeledeclaration($email) {
-        $this->add('teledeclaration_email', $email);
+    public function setEmailTeledeclaration($email_teledeclaration) {
+        $this->add('teledeclaration_email', $email_teledeclaration);
     }
 
     public function getCommentaire() {
         $c = $this->_get('commentaire');
-        $c1 = $this->getMasterCompte()->get('commentaire');
+        $c1 = null;
+        if ($this->getMasterCompte()) {
+            $c1 = $this->getMasterCompte()->get('commentaire');
+        }
         if ($c && $c1) {
             return $c . "\n" . $c1;
-        }
-        if ($c) {
-            return $c;
         }
         if ($c1) {
             return $c1;
         }
+        return $c;
+    }
+
+    public function getCommentaires() {
+        $lines = explode("\n", str_replace(' - ', "\n", $this->getCommentaire()));
+        return array_filter($lines, fn($value) => (rtrim($value)));
     }
 
     public function addCommentaire($s) {
@@ -512,6 +517,12 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
             return $this->_set('commentaire', $c . "\n" . $s);
         }
         return $this->_set('commentaire', $s);
+    }
+
+    public function activateLinks($str) {
+        $find = array('`((?:https?|ftp)://\S+[[:alnum:]]/?)`si', '`((?<!//)(www\.\S+[[:alnum:]]/?))`si');
+        $replace = array('<a href="$1" target="_blank">$1</a>', '<a href="http://$1" target="_blank">$1</a>');
+        return preg_replace($find,$replace,$str);
     }
 
     public function hasLegalSignature() {
@@ -532,9 +543,13 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
     public function createEtablissement($famille) {
       $etablissement = new Etablissement();
       $etablissement->id_societe = $this->_id;
-      $societeSingleton = SocieteClient::getInstance()->findSingleton($this->_id);
-      if(!$societeSingleton) {
-          throw new sfException("La société doit être créé avant de créer l'établissement");
+      if (isset($_ENV['DRY_RUN'])) {
+          $societeSingleton = $this;
+      }else {
+          $societeSingleton = SocieteClient::getInstance()->findSingleton($this->_id);
+          if(!$societeSingleton) {
+              throw new sfException("La société doit être créé avant de créer l'établissement");
+          }
       }
       $etablissement->setSociete($societeSingleton);
       $etablissement->identifiant = EtablissementClient::getInstance()->getNextIdentifiantForSociete($societeSingleton);
@@ -542,6 +557,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
           $etablissement->famille = $famille;
       }
       $etablissement->constructId();
+      $etablissement->nom = $this->getRaisonSociale();
       return $etablissement;
     }
 
@@ -556,7 +572,9 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
 
     public function switchStatusAndSave() {
       $newStatus = "";
-      $this->save();
+      if (!isset($_ENV['DRY_RUN'])) {
+          $this->save();
+      }
 
       if($this->isActif() || !$this->statut){
          $newStatus = SocieteClient::STATUT_SUSPENDU;
@@ -572,32 +590,82 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
               continue;
           }
           $contact->setStatut($newStatus);
-          $contact->save();
+          if (!isset($_ENV['DRY_RUN'])) {
+            $contact->save();
+          }
       }
       foreach($toberemoved as $keyCompte) {
           $this->removeContact($keyCompte);
       }
+      $compte = $this->getMasterCompte();
+      if ($compte) {
+          $compte->setStatut($newStatus);
+      }
+      $etablissementtobesaved = array();
       foreach ($this->etablissements as $keyEtablissement => $etablissement) {
           $etablissement = EtablissementClient::getInstance()->find($keyEtablissement);
           $etablissement->setStatut($newStatus);
           $this->addCompte($etablissement->getMasterCompte());
+          $etablissementtobesaved[] = $etablissement;
       }
       $this->setStatut($newStatus);
-      $this->save();
+      if (!isset($_ENV['DRY_RUN'])) {
+          $this->save();
+          foreach($etablissementtobesaved as $etablissement) {
+              $etablissement->save();
+          }
+      }
     }
 
+    /***
+      Fonctions InterfaceMandatSepaPartie
+    */
 
+    public function getMandatSepaIdentifiant() {
+      return $this->getIdentifiant();
+    }
+    public function getMandatSepaNom() {
+      return $this->raison_sociale;
+    }
+    public function getMandatSepaAdresse() {
+      return $this->siege->adresse;
+    }
+    public function getMandatSepaCodePostal() {
+      return $this->siege->code_postal;
+    }
+    public function getMandatSepaCommune() {
+      return $this->siege->commune;
+    }
+    // fin
 
+    public function hasMandatSepa() {
+      return (MandatSepaClient::getInstance()->findLastBySociete($this->getIdentifiant()) != null);
+    }
+
+    public function hasMandatSepaActif() {
+      if (!MandatSepaConfiguration::getInstance()->isActive()) {
+          return false;
+      }
+      $mandat = MandatSepaClient::getInstance()->findLastBySociete($this->getIdentifiant());
+      if (!$mandat) {
+          return false;
+      }
+      return boolval($mandat->is_signe) && boolval($mandat->is_actif);
+    }
 
     /*** TODO : Fonctions à retirer après le merge ****/
 
-
+    private $cache_master_compte = null;
     public function getMasterCompte() {
+        if ($this->cache_master_compte) {
+            return $this->cache_master_compte;
+        }
         if (!$this->compte_societe) {
 
             return null;
         }
-        return $this->getCompte($this->compte_societe);
+        $this->cache_master_compte = $this->getCompte($this->compte_societe);
+        return $this->cache_master_compte;
     }
 
     public function getSiret() {

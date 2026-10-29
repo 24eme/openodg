@@ -41,14 +41,17 @@ class acCouchdbJson extends acCouchdbJsonFields implements IteratorAggregate, Ar
 
             return $this->get($objHash[acCouchdbHash::FIRST_KEY_OF_HASH])->get($objHash[acCouchdbHash::HASH_WITHOUT_FIRST_KEY]);
         } elseif(!$this->isArray()) {
-            foreach($this as $key => $item) {
+            $keys = array_keys($this->getFields());
+            usort($keys, function($a, $b){ return substr_count($b, "/") - substr_count($a, "/"); });
+            foreach($keys as $key) {
+                $key = $this->getFieldName($key);
                 if($this->containsSubHash($key_or_hash, $key)) {
                     return $this->get($key)->get(str_replace($key, "", $key_or_hash));
                 }
             }
         }
 
-        throw new acCouchdbException(sprintf('field inexistant : %s:%s', $this->getDocument()->_id, $key_or_hash))  ;
+        throw new acCouchdbException(sprintf('field inexistant "%s" on %s:%s', $key_or_hash, $this->getDocument()->_id, $this->getHash()))  ;
     }
 
     /**
@@ -206,7 +209,7 @@ class acCouchdbJson extends acCouchdbJsonFields implements IteratorAggregate, Ar
                         array($this, $verb), array_merge(array($name), $arguments)
                 );
             } else {
-                throw new acCouchdbException(sprintf('Method undefined : %s', $method));
+                throw new acCouchdbException(sprintf('Method undefined : %s%s->%s', $this->getDocument()->_id, $this->getHash(), $method));
             }
         } else {
             throw new acCouchdbException(sprintf('Method undefined : %s', $method));
@@ -249,7 +252,7 @@ class acCouchdbJson extends acCouchdbJsonFields implements IteratorAggregate, Ar
     public function toArray($deep_array = true, $fetch_object = true) {
         $array_fields = array();
         foreach ($this as $key => $field) {
-            if ($deep_array && $this->fieldIsCollection($key) && !$fetch_object) {
+            if ($deep_array && $this->fieldIsCollection($key) && !$fetch_object && $field) {
                 $array_fields[$key] = $field->toArray($deep_array, $fetch_object);
             } elseif ($deep_array && $this->fieldIsCollection($key) && $fetch_object) {
                 $array_fields[$key] = $this->get($key);
@@ -261,7 +264,10 @@ class acCouchdbJson extends acCouchdbJsonFields implements IteratorAggregate, Ar
         return $array_fields;
     }
 
-    
+    public function __debugInfo() {
+
+        return $this->toArray(true, false);
+    }
 
     public function getParentHash() {
         return preg_replace('/\/[^\/]+$/', '', $this->getHash());

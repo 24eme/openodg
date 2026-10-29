@@ -32,11 +32,7 @@
         <?php include_partial('drevmarc/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
 
-    <div class="row row-margin">
-        <div class="col-xs-12">
-            <?php include_partial('drevmarc/recap', array('drevmarc' => $drevmarc)); ?>
-        </div>
-    </div>
+    <?php include_partial('drevmarc/recap', array('drevmarc' => $drevmarc)); ?>
 
     <div class="row row-margin row-button">
         <div class="col-xs-4">

@@ -23,6 +23,11 @@ class DRevMarcClient extends acCouchdbClient implements FacturableClient {
 
     public function findFacturable($identifiant, $campagne) {
         $drev = $this->find('DREVMARC-'.str_replace("E", "", $identifiant).'-'.$campagne);
+        
+        if(!$drev) {
+            
+            return array();
+        }
 
         if(!$drev->validation_odg) {
 
@@ -46,31 +51,11 @@ class DRevMarcClient extends acCouchdbClient implements FacturableClient {
 
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
-        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()."";
+        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent()."";
 
         return $this->startkey(sprintf("DREVMARC-%s-%s", $identifiant, $campagne_from))
                     ->endkey(sprintf("DREVMARC-%s-%s", $identifiant, $campagne_to))
                     ->execute($hydrate);
     }
 
-    public function getDateOuvertureDebut() {
-        $dates = sfConfig::get('app_dates_ouverture_drevmarc');
-
-        return $dates['debut'];
-    }
-
-    public function getDateOuvertureFin() {
-        $dates = sfConfig::get('app_dates_ouverture_drevmarc');
-
-        return $dates['fin'];
-    }
-
-    public function isOpen($date = null) {
-        if(is_null($date)) {
-
-            $date = date('Y-m-d');
-        }
-
-        return $date >= $this->getDateOuvertureDebut() && $date <= $this->getDateOuvertureFin();
-    }
 }

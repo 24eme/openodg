@@ -83,15 +83,32 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           }
       }
 
-      public function addLigne($produit, $mouvement_type, $volume, $lieu) {
-          if (is_string($produit)) {
-            $hproduit = preg_replace('/\/*declaration\//', '', $produit);
-            $produit = $this->getConfiguration()->declaration->get($hproduit);
-          }else{
-            $hproduit = preg_replace('/\/*declaration\//', '', $produit->getHash());
+      protected function normalizeHashProduit($produit) {
+          $hash = $produit;
+          if (!is_string($produit)) {
+              $hash = $produit->getHash();
           }
-          $hproduit = preg_replace('|appellation_CREMANT/mention/lieu/couleur/.*|', 'appellation_CREMANT', $hproduit);
-          $nDetail = $this->add('declaration')->add($hproduit)->addLigne($mouvement_type, $volume, $lieu);
+
+          $hash = preg_replace('/\/*declaration\//', '', $hash);
+          $hash = preg_replace('|appellation_CREMANT/mention/lieu/couleur/.*|', 'appellation_CREMANT', $hash);
+
+          return $hash;
+      }
+
+      public function updateVCI($produit, $mouvement_type, $volume, $lieuId, $origine) {
+        $hash = $this->normalizeHashProduit($produit);
+        if($this->exist('/declaration/'.$hash.'/details/'.$lieuId)) {
+            $volume = round($volume - $this->get('/declaration/'.$hash.'/details/'.$lieuId)->get($mouvement_type), 2);
+        }
+        if(!$volume) {
+            return;
+        }
+        return $this->addLigne($hash, $mouvement_type, $volume, $lieuId, $origine);
+      }
+
+      public function addLigne($produit, $mouvement_type, $volume, $lieu_id, $origine) {
+          $hproduit = $this->normalizeHashProduit($produit);
+          $nDetail = $this->add('declaration')->add($hproduit)->addLigne($mouvement_type, $volume, $lieu_id);
           $mvt = $this->add('lignes')->add();
           $mvt->produit_hash = $hproduit;
           $mvt->produit_libelle = $nDetail->getLibelleProduit();
@@ -105,19 +122,63 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           }else{
             $mvt->date = ($this->campagne + 1).'-12-31';
           }
+          $mvt->origine = $origine;
+      	  $this->reorderProduits();
+          return $mvt;
       }
+
+            protected function reorderProduits() {
+		              $produits = $this->getProduits();
+
+			                $this->remove('declaration');
+			                $this->add('declaration');
+
+					          foreach($this->getConfigProduits() as $config) {
+							              foreach($produits as $hash => $produit) {
+									                      if(!preg_match("|".$produit->getHash()."|", $config->getHash())) {
+												                          continue;
+															                  }
+		$this->declaration->add(str_replace("/declaration/", "", $produit->getHash()), $produit);
+											                      unset($produits[$hash]);
+													                  }
+								                }
+
+					          foreach($produits as $produit) {
+							                $this->declaration->add(str_replace("/declaration/", "", $produit->getHash()), $produit->getData());
+									          }
+
+					          return $this->declaration;
+					      }
 
       public function clear() {
         $this->remove('declaration');
         $this->remove('lignes');
         $this->remove('mouvements');
-        $this->superficies_facturables = 0;
+        $this->superficies_facturables = null;
+      }
+
+      public function save() {
+          $regions = $this->getRegions();
+          if (count($regions)) {
+              $this->add('region', implode('|', $regions));
+          }
+          $this->superficies_facturables = $this->calculSurfaceFacturable();
+          return parent::save();
       }
 
       protected function doSave() {
         $this->piece_document->generatePieces();
       }
 
+      public function getRegions() {
+          $regions = array();
+          if (class_exists('RegionConfiguration')) {
+              foreach ($this->getProduits() as $produit) {
+                  $regions[] = RegionConfiguration::getInstance()->getOdgRegion($produit->getHash());
+              }
+          }
+          return array_filter(array_unique($regions));
+      }
 
       public function isStockUtiliseEntierement() {
           foreach($this->getProduitsWithPseudoAppelations() as $produit) {
@@ -234,7 +295,26 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
         return $produits;
       }
 
+      public function calculSurfaceFacturable() {
+          $surfaceFacturable = 0;
+
+          foreach($this->getProduitsWithPseudoAppelations() as $p) {
+              if(!$p || !$p->isPseudoAppellation()) {
+                  continue;
+              }
+              if(!$p->stock_precedent && !$p->constitue)  {
+                  continue;
+              }
+              $surfaceFacturable += (float)$p->getSuperficieFromDrev();
+          }
+
+          return $surfaceFacturable;
+      }
+
       public function getSurfaceFacturable() {
+          if(is_null($this->superficies_facturables)) {
+              $this->superficies_facturables = $this->calculSurfaceFacturable();
+          }
 
           return ($this->superficies_facturables > 0)? round($this->superficies_facturables / 100, 4) : 0;
       }
@@ -246,9 +326,9 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
 
       /**** MOUVEMENTS ****/
 
-      public function getTemplateFacture() {
+      public function getTemplateFacture($region = null) {
 
-          return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
+          return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne(), $region);
       }
 
       public function getMouvementsFactures() {

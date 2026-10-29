@@ -1,0 +1,6 @@
+all:
+  configuration:
+    facture:
+      echeances: false
+      uniq_template_prefix: false
+      export_sage_width_txt: false

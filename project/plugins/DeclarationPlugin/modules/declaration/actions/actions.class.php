@@ -9,21 +9,14 @@ class declarationActions extends sfActions {
           $this->getUser()->usurpationOn($login, $request->getReferer());
       }
       $this->regionParam = $request->getParameter('region',null);
-      if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getTeledeclarationDrevRegion())){
-        $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
+      if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getRegion())){
+        $regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($region);
         if($regionRadixProduits){
             $params = $request->getGetParameters();
             $params['region'] = $region;
            return $this->redirect('declaration', $params);
         }
       }
-      if($this->regionParam){  //&& $this->getUser()->getTeledeclarationDrevRegion()){
-        $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($this->regionParam);
-        if($regionRadixProduits){
-          $request->setParameter('produits-filtre',$regionRadixProduits);
-        }
-      }
-
 
         $this->buildSearch($request);
         $nbResultatsParPage = 15;
@@ -56,16 +49,25 @@ class declarationActions extends sfActions {
     public function executeDoc(sfWebRequest $request) {
         $doc_id = $request->getParameter("id");
         $this->regionParam = $request->getParameter('region',null);
-        if(!preg_match("/^([A-Z]+)-([A-Z0-9]+)-[0-9]+[0-9\-M]*$/", $doc_id, $matches)) {
+
+        if(!preg_match("/^([A-Z]+[1-2]{0,2})-([^-]+)/", $doc_id, $matches)) {
 
             return $this->forward404();
         }
 
         $doc_type = $matches[1];
+
+        if($doc_type == "MOUVEMENTSFACTURE") {
+            return $this->redirect("facturation_libre_edition", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "DEGUSTATION") {
+            return $this->redirect('degustation_visualisation', ['id' => $doc_id]);
+        }
+
         $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$matches[2]);
 
         if(!$etablissement) {
-
            return $this->forward404();
         }
 
@@ -82,12 +84,12 @@ class declarationActions extends sfActions {
             return $this->redirect("drevmarc_visualisation", array("id" => $doc_id));
         }
 
-        if(in_array($doc_type, array("PARCELLAIRE", "PARCELLAIRECREMANT", "INTENTIONCREMANT"))) {
+        if(in_array($doc_type, array("PARCELLAIRE"))) {
 
             return $this->redirect("parcellaire_visualisation", array("id" => $doc_id));
         }
 
-        if(in_array($doc_type, array("PARCELLAIREAFFECTATION"))) {
+        if(in_array($doc_type, array("PARCELLAIREAFFECTATION", "PARCELLAIREAFFECTATIONCREMANT", "INTENTIONCREMANT"))) {
 
             return $this->redirect("parcellaireaffectation_visualisation", array("id" => $doc_id));
         }
@@ -107,21 +109,78 @@ class declarationActions extends sfActions {
             return $this->redirect("parcellaireirrigable_visualisation", array("id" => $doc_id));
         }
 
+        if($doc_type == "CHGTDENOM" && DeclarationClient::getInstance()->find($doc_id)->type == "PriseDeMousse") {
+
+            return $this->redirect("prisedemousse_visualisation", array("id" => $doc_id));
+        }
+
+        if($doc_type == "CHGTDENOM") {
+
+            return $this->redirect("chgtdenom_visualisation", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "CONDITIONNEMENT" ) {
+            return $this->redirect("conditionnement_visualisation", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "TRANSACTION" ) {
+            return $this->redirect("transaction_visualisation", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "PARCELLAIREMANQUANT") {
+            return $this->redirect("parcellairemanquant_visualisation", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "PMC" || $doc_type == "PMCNC") {
+            return $this->redirect("pmc_visualisation", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "SV12") {
+            return $this->redirect('get_fichier', ['id' => $doc_id]);
+        }
+
+        if ($doc_type == "DR") {
+            return $this->redirect('dr_visualisation', ['id' => $doc_id]);
+        }
+
+        if($doc_type == "PARCELLAIREMANQUANT") {
+            return $this->redirect('parcellairemanquant_visualisation', array('id' => $doc_id));
+        }
+
+        // Doc sans page de visu
+        if($doc_type == "PARCELLAIREIRRIGUE") {
+
+            return $this->redirect("parcellaireirrigue_visualisation", array("id" => $doc_id));
+        }
+
+        // Doc sans page de visu et ne remontant pas dans les documents
+        if(in_array($doc_type, array("PARCELLAIREINTENTIONAFFECTATION"))) {
+
+            return $this->redirect('declaration_etablissement', $etablissement);
+        }
+
+        if($doc_type == "ADELPHE") {
+            return $this->redirect('adelphe_visualisation', array('id' => $doc_id));
+        }
+
+        if($doc_type == "DRAP") {
+            return $this->redirect('drap_visualisation', array('id' => $doc_id));
+        }
+
         return $this->forward404();
     }
 
     public function executeExport(sfWebRequest $request) {
 
-        $this->regionParam = null;
-        if($this->getUser() && $this->getUser()->getTeledeclarationDrevRegion()){
-          $this->regionParam = $this->getUser()->getTeledeclarationDrevRegion();
-        }
-
-        if($this->regionParam){
-          $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($this->regionParam);
-          if($regionRadixProduits){
-            $request->setParameter('produits-filtre',$regionRadixProduits);
-          }
+        $this->regionParam = $request->getParameter('region',null);
+        if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getRegion())){
+            $regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($region);
+            if($regionRadixProduits){
+                $params = $request->getGetParameters();
+                $params['region'] = $region;
+                unset($params['query']['region']);
+                return $this->redirect('declaration_export', $params);
+            }
         }
 
         $this->buildSearch($request);
@@ -138,11 +197,16 @@ class declarationActions extends sfActions {
 
             return $this->redirect('declaration');
         }
-
-        return $this->redirect('declaration_etablissement', $form->getEtablissement());
+        $redirect_url = $request->getParameter('redirect_url', 'declaration_etablissement');
+        return $this->redirect($redirect_url, $form->getEtablissement());
     }
 
     public function executeEtablissement(sfWebRequest $request) {
+        if($request->getParameter('coop')) {
+
+            return $this->redirect('parcellaireaffectationcoop_liste', ['id' => $request->getParameter('coop')]);
+        }
+
         $usurpation = $request->getParameter('usurpation',null);
         $login = $request->getParameter('login',null);
         if($usurpation && $login){
@@ -159,16 +223,19 @@ class declarationActions extends sfActions {
             $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
         }
 
-        $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        if(!$this->getUser()->isAdmin() && $this->campagne != ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()) {
+        if($request->getParameter('campagne')) {
+            $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent());
+            $this->periode = preg_replace('/-.*/', '', $this->campagne);
+            if(!$this->getUser()->hasDrevAdmin() && intval($this->campagne) < intval(ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent()) - 1) {
 
-            return $this->forwardSecure();
+                return $this->forwardSecure();
+            }
         }
+
     }
 
     protected function buildSearch(sfWebRequest $request) {
 
-        $hasProduitsFilter = (class_exists("DrevConfiguration") && DrevConfiguration::getInstance()->hasOdgProduits());
         $this->query = $request->getParameter('query', array());
         if (!$this->query){
             $this->query = array();
@@ -181,12 +248,22 @@ class declarationActions extends sfActions {
         );
         $campagne_view = acCouchdbManager::getClient()
                  ->group(true)
-                 ->group_level(2);
+                 ->group_level(DeclarationTousView::GROUP_LEVEL_CAMPAGNE);
+
+        $region = DeclarationTousView::FILTER_KEY_DEFAULT_REGION;
+        if ( class_exists("RegionConfiguration") && RegionConfiguration::getInstance()->hasOdgProduits() && $this->regionParam) {
+            $region = $this->regionParam;
+        }
+
          if (isset($this->query['Type'])) {
-             $campagne_view = $campagne_view->startkey(array($this->query['Type'], ''))->endkey(array($this->query['Type'], 'zzzzzz'));
+             $campagne_view = $campagne_view->startkey(array($region, $this->query['Type'], ''))
+                                            ->endkey(array($region, $this->query['Type'], 'zzzzzz'));
          }
         $rows_campagne = $campagne_view->getView('declaration', 'tous')->rows;
         foreach($rows_campagne as $row) {
+            if(class_exists('DRConfiguration') && !DRConfiguration::getInstance()->hasValidationDR() && $row->key[DeclarationTousView::KEY_TYPE] == DRClient::TYPE_MODEL) {
+                continue;
+            }
             if (!isset($this->facets["Campagne"][$row->key[DeclarationTousView::KEY_CAMPAGNE]])) {
                 $this->facets["Campagne"][$row->key[DeclarationTousView::KEY_CAMPAGNE]] = 0;
             }
@@ -197,8 +274,13 @@ class declarationActions extends sfActions {
             $this->facets["Type"][$row->key[DeclarationTousView::KEY_TYPE]] += $row->value;
         }
         if (!isset($this->query['Campagne'])){
+            ksort($this->facets["Campagne"]);
             $campagnes = array_keys($this->facets["Campagne"]);
-            $this->query['Campagne'] = "".array_pop($campagnes);
+            $this->query['Campagne_max'] = "".array_pop($campagnes);
+            $this->query['Campagne_min'] = "".array_pop($campagnes);
+        }else{
+            $this->query['Campagne_min'] = $this->query['Campagne'];
+            $this->query['Campagne_max'] = $this->query['Campagne'];
         }
 
         if (isset($this->query['Type'])) {
@@ -211,11 +293,18 @@ class declarationActions extends sfActions {
         foreach($types as $type) {
             $view = acCouchdbManager::getClient()
                     ->reduce(false);
-            $view = $view->startkey(array($type, $this->query['Campagne'], ''))->endkey(array($type, $this->query['Campagne'], 'zzzzzzz'));
+            if ($this->query['Campagne_min'] == $this->query['Campagne_max']){
+                $view = $view->startkey(array($region, $type, $this->query['Campagne_min']));
+                $view = $view->endkey(array($region, $type, $this->query['Campagne_max'], 'zzzzzzz'));
+            }else{
+                $view = $view->startkey(array($region, $type, $this->query['Campagne_min']));
+                $view = $view->endkey(array($region, $type, $this->query['Campagne_max']."XXX"));
+            }
+
             $rows = array_merge($rows, $view->getView('declaration', 'tous')->rows);
         }
         foreach($this->facets['Campagne'] as $annee => $nb) {
-            if ($annee == $this->query['Campagne']) {
+            if (isset($this->query['Campagne']) && $annee == $this->query['Campagne']) {
                 $this->facets['Campagne'][$annee] = 0;
             }else{
                 $this->facets['Campagne'][$annee] = '?';
@@ -224,12 +313,15 @@ class declarationActions extends sfActions {
         $this->facets['Type'] = array();
         $facetToRowKey = array("Type" => DeclarationTousView::KEY_TYPE, "Campagne" => DeclarationTousView::KEY_CAMPAGNE, "Mode" => DeclarationTousView::KEY_MODE, "Statut" => DeclarationTousView::KEY_STATUT);
 
+        $this->produitsFiltre = $request->getParameter('produits-filtre', null);
+        $hasProduitsFilter = false;
+        if ($this->produitsFiltre) {
+            $hasProduitsFilter = true;
+        }
         if($hasProduitsFilter){
           $this->facets = array_merge($this->facets, array("Produit" => array()));
           $facetToRowKey = array_merge($facetToRowKey,array("Produit" => DeclarationTousView::KEY_PRODUIT));
         }
-
-        $this->produitsFiltre = $request->getParameter('produits-filtre', null);
 
         $this->docs = array();
         $nbDocs = 0;
@@ -252,7 +344,7 @@ class declarationActions extends sfActions {
               if($not_in_result){
                 continue;
               }
-              $campagne = $row->key[DeclarationTousView::KEY_CAMPAGNE].'-'.($row->key[DeclarationTousView::KEY_CAMPAGNE]+1);
+              $campagne = $row->key[DeclarationTousView::KEY_CAMPAGNE];
               if(!array_key_exists($campagne,$configurations)){
                  $configurations[$campagne] = ConfigurationClient::getConfigurationByCampagne($campagne);
               }
@@ -266,7 +358,16 @@ class declarationActions extends sfActions {
                 $find = true;
                 if($this->query) {
                     foreach($this->query as $queryKey => $queryValue) {
+                        if (strpos($queryKey, 'Campagne_m') !== false) {
+                            continue;
+                        }
                         if($queryValue != $row->key[$facetToRowKey[$queryKey]]) {
+                            $find = false;
+                            break;
+                        }
+                    }
+                    if (!isset($this->query['Campagne']) && isset($this->query['Campagne_max'])) {
+                        if ($row->key[DeclarationTousView::KEY_STATUT] != DeclarationTousView::STATUT_A_APPROUVER && $row->key[DeclarationTousView::KEY_STATUT] != DeclarationTousView::STATUT_BROUILLON && $row->key[DeclarationTousView::KEY_CAMPAGNE] != $this->query['Campagne_max']) {
                             $find = false;
                             break;
                         }
@@ -283,7 +384,9 @@ class declarationActions extends sfActions {
                     $this->facets[$facetNom][$row->key[$facetKey]] = 0;
                 }
                 if(isset($row->key[$facetKey]) && !isset($documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])])){
-                  $this->facets[$facetNom][$row->key[$facetKey]] += 1;
+                  if(is_int($this->facets[$facetNom][$row->key[$facetKey]])) {
+                      $this->facets[$facetNom][$row->key[$facetKey]] += 1;
+                  }
                   $documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])] = 1;
                 }
                 $this->docs[$row->id] = $row;
@@ -313,6 +416,9 @@ class declarationActions extends sfActions {
           }
           $this->docs = $tmp_docs;
         }
+
+        unset($this->query['Campagne_min']);
+        unset($this->query['Campagne_max']);
 
         krsort($this->facets["Campagne"]);
         ksort($this->facets["Statut"]);

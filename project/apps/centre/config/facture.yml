@@ -1,0 +1,8 @@
+all:
+  configuration:
+    facture:
+      ligne_unique: true
+      uniq_template_prefix: "TEMPLATE-FACTURE-%region%"
+      export_type: "isa"
+      facturation_region: true
+      paiements: true

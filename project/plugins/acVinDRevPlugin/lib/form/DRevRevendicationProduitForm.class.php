@@ -17,7 +17,7 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
             'volume_revendique_issu_recolte' => new sfValidatorNumber(array('required' => false)),
         ));
 
-        $this->embedForm('recolte', new DRevProduitRecolteForm($this->getObject()->recolte, array_merge($this->getOptions(), array("fields" => array('volume_total', 'recolte_nette', 'volume_sur_place', 'vci_constitue')))));
+        $this->embedForm('recolte', new DRevProduitRecolteForm($this->getObject()->recolte, array_merge($this->getOptions(), array("fields" => array('volume_total', 'recolte_nette', 'volume_sur_place', 'vci_constitue', 'vsi')))));
 
         $this->getWidget('volume_revendique_issu_recolte')->setAttribute('class', $this->getWidget('volume_revendique_issu_recolte')->getAttribute('class').' input_sum_value');
 
@@ -42,6 +42,7 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
       if (isset($values['recolte']) && isset($values['recolte']['vci_constitue']) && $values['recolte']['vci_constitue']) {
         $this->getObject()->vci->constitue = $values['recolte']['vci_constitue'];
       }
+
       parent::doUpdateObject($values);
     }
 

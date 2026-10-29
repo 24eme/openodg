@@ -6,9 +6,9 @@
 
 class HabilitationProduit extends BaseHabilitationProduit {
 
-    public function getConfig()
+    public function getConfig($date = null)
     {
-        return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
+        return $this->getCouchdbDocument()->getConfiguration($date)->get($this->getHash());
     }
 
     public function getChildrenNode()
@@ -36,7 +36,7 @@ class HabilitationProduit extends BaseHabilitationProduit {
 
     public function getLibelle() {
       if(!$this->_get('libelle')) {
-          $this->libelle = $this->getConfig()->getLibelleComplet();
+          $this->libelle = preg_replace('/ Tranquilles?$/', '', $this->getConfig()->getLibelleComplet());
       }
 
       return $this->_get('libelle');
@@ -65,7 +65,20 @@ class HabilitationProduit extends BaseHabilitationProduit {
     public function getActivitesHabilites() {
         $activites = array();
         foreach ($this->activites as $key => $activite) {
-            if($activite->statut != HabilitationClient::STATUT_HABILITE){
+            if(!$activite->isHabilite()){
+                continue;
+            }
+
+            $activites[$key] = $activite;
+        }
+
+        return $activites;
+    }
+
+    public function getActivitesWrongHabilitation() {
+        $activites = array();
+        foreach ($this->activites as $key => $activite) {
+            if(!$activite->isWrongHabilitation()){
                 continue;
             }
 
@@ -93,14 +106,47 @@ class HabilitationProduit extends BaseHabilitationProduit {
       return false;
     }
 
-    public function updateHabilitation($activite, $statut, $commentaire = "", $date = ''){
+    public function updateHabilitation($activite, $sites, $statut, $commentaire = "", $date = ''){
         if (!$this->exist('activites')) {
           $this->initActivites();
         }
         if (!$this->activites->exist($activite)) {
-          throw new sfException('activite '.$activite.' non supportée');
+            $this->initActivites();
+            if (!$this->activites->exist($activite)) {
+                throw new sfException('activite '.$activite.' non supportée');
+            }
         }
-        return $this->activites[$activite]->updateHabilitation($statut, $commentaire, $date);
+        if (!$sites || !count($sites)) {
+            $a = $this->add('activites')->add($activite);
+            $this->activites->get($activite)->updateHabilitation($statut, null, $commentaire, $date);
+        }else {
+            foreach($sites as $k => $site) {
+                $kactivite = $activite.'-'.$k;
+                $a = $this->add('activites')->add($kactivite);
+                $this->activites->get($kactivite)->updateHabilitation($statut, $site, $commentaire, $date);
+            }
+        }
+    }
+
+    public function isHabiliteFor($activite) {
+        if(!$this->exist('activites')) {
+            return false;
+        }
+        foreach($this->activites as $a) {
+            if ($activite === null && $a->isHabilite()) {
+                return $a->statut;
+            }
+
+            if(strpos($a->activite, $activite) !==  0) {
+                continue;
+            }
+
+            if($a->isHabilite()) {
+                return $a->statut;
+            }
+        }
+
+        return false;
     }
 
 

@@ -11,4 +11,8 @@ class ParcellaireIrrigableProduit extends BaseParcellaireIrrigableProduit {
         return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
     }
 
+    public function getLibelle() {
+        return $this->getConfig()->getLibelleComplet();
+    }
+
 }

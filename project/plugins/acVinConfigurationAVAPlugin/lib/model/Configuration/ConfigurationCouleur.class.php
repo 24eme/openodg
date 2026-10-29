@@ -6,15 +6,20 @@ class ConfigurationCouleur extends BaseConfigurationCouleur {
 
         return $this->getParentNode();
     }
-    
+
 	public function getMention() {
 
         return $this->getLieu()->getMention();
     }
-    
+
 	public function getAppellation() {
 
         return $this->getMention()->getAppellation();
+    }
+
+    public function getGenre() {
+
+        return $this->getAppellation()->getGenre();
     }
 
     public function getCepages() {

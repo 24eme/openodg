@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -20,6 +20,25 @@
     _doc.ready(function()
     {
         $.initTabHistoryDocuments();
+        /*
+        * Volume des recoltes des appellation revendiquées
+        */
+        var inputs_volumes_recolte = $('table#table-revendication input.input-recolte-hl');
+        inputs_volumes_recolte.each(function (index, input) {
+            $(this).change(function () {
+                var vci_recolte = $(this).parents("td").next();
+                var total_recolte = $(this).parents("td").next().next();
+                var vci = 0;
+                var total;
+                if(vci_recolte.text()){
+                  vci = parseFloat(vci_recolte.text());
+                }
+                total = (parseFloat(input.value.replace(',', '.')) + vci);
+                if(isNaN(total)){
+                  total = 0;
+                }
+                total_recolte.html(total.toFixed(2))
+            })
+        })
     });
-
 })(jQuery);

@@ -1,0 +1,202 @@
+{
+  "_id": "TEMPLATE-FACTURE-AOC-2020",
+  "type": "TemplateFacture",
+  "campagne": "2020",
+  "template": "AOC",
+  "libelle": "2020 - AOC Vins de Nantes",
+  "docs": [
+    "DR",
+    "DRev"
+  ],
+  "cotisations": {
+    "odg_forfait": {
+      "fallback": true,
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation ODG Forfait",
+      "code_comptable": "706102",
+      "details": {
+        "forfait": {
+          "modele": "CotisationFixe",
+          "callback": null,
+          "prix": 170,
+          "tva": 0,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "DR"
+          ]
+        }
+      }
+    },
+    "odg": {
+      "minimum": 170,
+      "minimum_fallback": "odg_forfait",
+      "modele": "CotisationsCollection",
+      "libelle": "Cotisation ODG",
+      "code_comptable": "706102",
+      "details": {
+        "superficie": {
+          "modele": "CotisationVariable",
+          "prix": 20,
+          "tva": 0,
+          "libelle": "Superficie",
+          "complement_libelle": "",
+          "unite": "ha",
+          "docs": [
+            "DR"
+          ],
+          "callback": "calcul",
+          "callback_parameters": [
+            "L4"
+          ]
+        },
+        "volume": {
+          "modele": "CotisationVariable",
+          "prix": 1.4,
+          "tva": 0,
+          "libelle": "Volume",
+          "complement_libelle": "",
+          "unite": "hl",
+          "docs": [
+            "DR"
+          ],
+          "callback": "calcul",
+          "callback_parameters": [
+            "L5 - (L12 + L14 + L16)"
+          ]
+        },
+        "vci": {
+          "modele": "CotisationVariable",
+          "prix": 1.4,
+          "tva": 0,
+          "libelle": "VCI",
+          "complement_libelle": "",
+          "unite": "hl",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getTotalVolumeRevendiqueVCI"
+        },
+        "covid": {
+          "modele": "CotisationVariable",
+          "prix": -10,
+          "tva": 0,
+          "libelle": "Remise exceptionnelle Covid",
+          "complement_libelle": "",
+          "unite": "ha",
+          "docs": [
+            "DR"
+          ],
+          "callback": "calcul",
+          "callback_parameters": [
+            "L4"
+          ]
+        }
+      }
+    },
+    "valorisation": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation valorisation",
+      "code_comptable": "706102",
+      "details": {
+        "superficie": {
+          "modele": "CotisationVariable",
+          "prix": 20,
+          "tva": 0.2,
+          "libelle": "Superficie",
+          "complement_libelle": "",
+          "unite": "ha",
+          "docs": [
+            "DR"
+          ],
+          "callback": "calcul",
+          "callback_parameters": [
+            "L4"
+          ]
+        },
+        "volume": {
+          "modele": "CotisationVariable",
+          "prix": 1.4,
+          "tva": 0.2,
+          "libelle": "Volume",
+          "complement_libelle": "",
+          "unite": "hl",
+          "docs": [
+            "DR"
+          ],
+          "callback": "calcul",
+          "callback_parameters": [
+            "L5 - (L12 + L14 + L16)",
+            "lieux/DEFAUT"
+          ]
+        },
+        "volume_crus": {
+          "modele": "CotisationVariable",
+          "prix": 5,
+          "tva": 0.2,
+          "libelle": "Volume Crus",
+          "complement_libelle": "",
+          "unite": "hl",
+          "docs": [
+            "DR"
+          ],
+          "callback": "calcul",
+          "callback_parameters": [
+            "L5 - (L12 + L14 + L16)",
+            "NOT lieux/DEFAUT"
+          ]
+        },
+        "vci": {
+          "modele": "CotisationVariable",
+          "prix": 1.4,
+          "tva": 0.2,
+          "libelle": "VCI",
+          "complement_libelle": "",
+          "unite": "hl",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getTotalVolumeRevendiqueVCI"
+        },
+        "covid": {
+          "modele": "CotisationVariable",
+          "prix": -10,
+          "tva": 0.2,
+          "libelle": "Remise exceptionnelle Covid",
+          "complement_libelle": "",
+          "unite": "ha",
+          "docs": [
+            "DR"
+          ],
+          "callback": "calcul",
+          "callback_parameters": [
+            "L4"
+          ]
+        }
+      }
+    },
+    "inao": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Droits I.N.A.O. (Art. 34, Loi 88/11/93 du 29/12/1988)",
+      "code_comptable": "706102",
+      "details": {
+        "volume": {
+          "modele": "CotisationVariable",
+          "prix": 0.15,
+          "tva": 0,
+          "libelle": "",
+          "complement_libelle": "",
+          "unite": "hl",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getTotalVolumeRevendique"
+        }
+      }
+    }
+  }
+}

@@ -10,7 +10,7 @@ class DRevUploadDrForm extends FichierForm
 		$required = !($this->options['papier'] || !DrevConfiguration::getInstance()->isDrDouaneRequired());
 
 		$this->setWidget('libelle', new sfWidgetFormInputHidden());
-		$this->setValidator('file', new sfValidatorFile(array('required' => $required, 'mime_types' => array('application/vnd.ms-office', 'application/vnd.ms-excel', 'text/csv', 'text/plain'), 'path' => sfConfig::get('sf_cache_dir')), array('mime_types' => 'Fichier de type xls ou csv attendu')));
+        $this->setValidator('file', new sfValidatorFile(array('required' => $required, 'mime_types' => array('application/vnd.ms-office', 'application/vnd.ms-excel', 'text/csv', 'text/plain', 'text/json', 'application/json'), 'path' => sfConfig::get('sf_cache_dir')), array('mime_types' => 'Fichier de type xls ou csv attendu')));
 	}
 
 	public function save() {

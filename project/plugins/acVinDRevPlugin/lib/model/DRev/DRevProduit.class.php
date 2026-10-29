@@ -24,6 +24,17 @@ class DRevProduit extends BaseDRevProduit
 		return $this->getLibelle();
 	}
 
+    public function getLibelleCompletHTML()
+	{
+        $libelle = $this->getConfig()->getLibelleComplet();
+
+        if($this->denomination_complementaire) {
+            $libelle .= ' <span class="text-muted">'.$this->denomination_complementaire.'</span>';
+        }
+
+        return $libelle;
+    }
+
 	public function getChildrenNode()
     {
         return $this->getCepages();
@@ -49,6 +60,31 @@ class DRevProduit extends BaseDRevProduit
 
 		return $this->vci->complement + $this->vci->substitution + $this->vci->rafraichi + $this->vci->destruction;
 	}
+
+    public function getVolumeRevendiqueIssuVsi() {
+		if(!$this->exist('volume_revendique_issu_vsi')) {
+			return 0;
+		}
+
+		return $this->_get('volume_revendique_issu_vsi');
+    }
+
+	public function getVolumeRevendiqueIssuVciVsi() {
+		$volume = $this->volume_revendique_issu_vci;
+		if($this->exist('volume_revendique_issu_vsi')) {
+			$volume += $this->volume_revendique_issu_vsi;
+		}
+
+		return $volume;
+	}
+
+	public function getVolumeRevendiqueRendement() {
+		if($this->exist('volume_revendique_issu_mutage') && $this->volume_revendique_issu_mutage) {
+			return ($this->volume_revendique_total - $this->volume_revendique_issu_mutage);
+		}
+        return floatval($this->volume_revendique_total);
+	}
+
 
 	public function getPlafondStockVci() {
 
@@ -83,6 +119,11 @@ class DRevProduit extends BaseDRevProduit
 
             return true;
         }
+
+        if ($this->exist('volume_revendique_seuil') && $this->volume_revendique_seuil > 0) {
+            return false;
+        }
+
 		if ($this->recolte->superficie_total === null && $this->recolte->volume_total === null && !$this->superficie_revendique && !$this->volume_revendique_total && !$this->vci->stock_precedent && !$this->vci->stock_final ) {
 
 			return true;
@@ -91,14 +132,34 @@ class DRevProduit extends BaseDRevProduit
         return false;
     }
 
+    public function setVolumeRevendiqueIssuRecolte($volume) {
+        $beforeVolume = $this->_get('volume_revendique_issu_recolte');
+        $ret = $this->_set('volume_revendique_issu_recolte', $volume);
+        if($beforeVolume != $volume) {
+            $this->update();
+        }
+        return $ret;
+    }
+
 	public function update($params = array()) {
 		$this->vci->stock_final = null;
 		$this->volume_revendique_issu_vci = null;
 		if($this->hasVci()) {
 			$this->volume_revendique_issu_vci = ((float) $this->vci->complement) + ((float) $this->vci->substitution) + ((float) $this->vci->rafraichi);
-			$this->vci->stock_final = ((float) $this->vci->rafraichi) + ((float) $this->vci->constitue) + ((float) $this->vci->ajustement);
+			$this->vci->stock_final = ((float) $this->vci->rafraichi) + ((float) $this->vci->constitue) + ((float) $this->vci->ajustement) + ((float) $this->vci->substitution);
 		}
-		$this->volume_revendique_total = ((float) $this->volume_revendique_issu_recolte) + ((float) $this->volume_revendique_issu_vci + (float) $this->volume_revendique_issu_mutage);
+        if($this->recolte->exist('vsi') && $this->recolte->vsi) {
+            $this->add('volume_revendique_issu_vsi', $this->recolte->vsi);
+        }
+		$this->volume_revendique_total = ((float) $this->volume_revendique_issu_recolte) + ((float) $this->volume_revendique_issu_vci_vsi + (float) $this->volume_revendique_issu_mutage);
+
+		if ($this->hasReserveInterpro()) {
+			$this->add('dont_volume_revendique_reserve_interpro', $this->getVolumeReserveInterpro());
+		}
+        if ($this->exist('validation_odg') && $this->validation_odg) {
+            $this->setStatutOdg(DRevClient::STATUT_VALIDATION_ODG);
+        }
+
 	}
 
 	public function isHabilite() {
@@ -127,15 +188,59 @@ class DRevProduit extends BaseDRevProduit
 		return null;
 	}
 
-	public function canCalculTheoriticalVolumeRevendiqueIssuRecolte() {
+    public function getCepage() {
+        return $this->getParent();
+    }
 
-		if($this->recolte->volume_total == $this->recolte->volume_sur_place) {
+    public function getAppellation() {
+        return $this->getCepage()->getAppellation();
+    }
+
+	public function canCalculTheoriticalVolumeRevendiqueIssuRecolte() {
+        if(!DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && !$this->getCepage()->hasProduitsSansDonneesRecolte()) {
+            if(!$this->superficie_revendique || $this->getSommeProduitsCepage('superficie_revendique') != $this->superficie_revendique) {
+
+    			return false;
+    		}
+
+            if($this->getSommeProduitsCepage('recolte/volume_total') == $this->getSommeProduitsCepage('recolte/volume_sur_place')) {
+
+                return true;
+            }
+
+            if(round($this->getSommeProduitsCepage('recolte/volume_sur_place'), 2) == round($this->getSommeProduitsCepage('recolte/recolte_nette') + $this->getSommeProduitsCepage('recolte/usages_industriels_total'), 2)) {
+
+                return true;
+            }
+
+            if(round($this->getSommeProduitsCepage('recolte/volume_sur_place'), 2) == round($this->getSommeProduitsCepage('recolte/recolte_nette') + $this->getSommeProduitsCepage('recolte/usages_industriels_sur_place'), 2)) {
+
+                return true;
+            }
+
+            return false;
+        }
+
+        if(!$this->hasDonneesRecolte()) {
+
+            return false;
+        }
+
+        if(round($this->recolte->volume_total, 2) == round($this->recolte->volume_sur_place, 2)) {
+			return true;
+		}
+
+		if(round($this->recolte->volume_sur_place, 2) == round($this->recolte->recolte_nette + $this->recolte->usages_industriels_total, 2)) {
 
 			return true;
 		}
 
-		if($this->recolte->volume_sur_place == ($this->recolte->recolte_nette + $this->recolte->usages_industriels_total)) {
+        if(round($this->recolte->volume_sur_place, 2) == round($this->recolte->recolte_nette + $this->recolte->usages_industriels_sur_place, 2)) {
 
+			return true;
+		}
+
+        if(round($this->recolte->volume_sur_place, 2) == round($this->recolte->recolte_nette, 2)) {
 			return true;
 		}
 
@@ -143,10 +248,33 @@ class DRevProduit extends BaseDRevProduit
 	}
 
 	public function getTheoriticalVolumeRevendiqueIssuRecole() {
-		if($this->recolte->recolte_nette)
-			return $this->recolte->recolte_nette - $this->vci->rafraichi - $this->vci->substitution;
+        if(!DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && !$this->getCepage()->hasProduitsSansDonneesRecolte()) {
+    		if($this->getSommeProduitsCepage('vci/rafraichi') + $this->getSommeProduitsCepage('vci/substitution')) {
+				return $this->getSommeProduitsCepage('recolte/recolte_nette') - $this->getSommeProduitsCepage('vci/rafraichi') - $this->getSommeProduitsCepage('vci/substitution');
+			} else {
+				return $this->getSommeProduitsCepage('recolte/recolte_nette');
+			}
+		}
+
+        $toSubstract = 0;
+        foreach (ChgtDenomClient::getInstance()->getChgtDenomProduction(
+            $this->getDocument()->identifiant, $this->getDocument()->getPeriode()
+        ) as $chgt) {
+            if ($chgt->origine_produit_hash !== $this->getParent()->getHash()) {
+                continue;
+            }
+
+            if (trim(str_replace("déclassé", "", $chgt->origine_specificite)) !== trim($this->denomination_complementaire)) {
+                continue;
+            }
+
+            $toSubstract += $chgt->origine_volume;
+        }
+
+        if($this->vci->rafraichi + $this->vci->substitution)
+            return $this->recolte->recolte_nette - $toSubstract - $this->vci->rafraichi - $this->vci->substitution;
 		else
-			return $this->recolte->recolte_nette;
+            return $this->recolte->recolte_nette - $toSubstract;
 	}
 
 	public function getRendementVci(){
@@ -181,7 +309,12 @@ class DRevProduit extends BaseDRevProduit
 			return null;
 		}
 
-		return $this->volume_revendique_total / $this->superficie_revendique;
+		return $this->getVolumeRevendiqueRendement() / $this->superficie_revendique;
+	}
+
+	public function isDepassementRendementEffectif(){
+		$rendementLocal = $this->getRendementEffectif();
+		return ($this->getConfig()->getRendement() !== null && (round(($rendementLocal), 2) > round($this->getConfig()->getRendement(), 2)));
 	}
 
 	public function getRendementEffectifHorsVCI(){
@@ -194,7 +327,7 @@ class DRevProduit extends BaseDRevProduit
 	}
 
 
-	public function getRendementDR(){
+	public function getRendementDrL5(){
 		if(!$this->exist('recolte') || !$this->recolte->exist('volume_total') || !$this->recolte->exist('superficie_total')) {
 
 			return null;
@@ -204,15 +337,41 @@ class DRevProduit extends BaseDRevProduit
 		}
 		return 0;
 	}
-	
+
+	public function isDepassementRendementDrL5(){
+		$rendementLocal = $this->getRendementDrL5();
+		return ($this->getConfig()->getRendementDrL5() !== null && (round(($rendementLocal), 2) > round($this->getConfig()->getRendementDrL5(), 2)));
+	}
+
+	public function getRendementDrL15(){
+		if(!$this->exist('recolte') || !$this->recolte->exist('volume_sur_place_revendique') || !$this->recolte->exist('superficie_total')) {
+
+			return null;
+		}
+		if ($this->recolte->superficie_total) {
+			return $this->recolte->volume_sur_place_revendique / $this->recolte->superficie_total;
+		}
+		return 0;
+	}
+
+	public function isDepassementRendementDrL15(){
+		$rendementLocal = $this->getRendementDrL15();
+		return ($this->getConfig()->getRendementDrL15() !== null && (round(($rendementLocal), 2) > round($this->getConfig()->getRendementDrL15(), 2)));
+	}
+
 	public function hasDonneesRecolte() {
-	    if ($this->exist('recolte')) {
-	        foreach ($this->recolte as $k => $v) {
-	            if ($v && $v > 0) {
-	                return true;
-	            }
-	        }
-	    }
+       if ($this->exist('recolte')) {
+           foreach ($this->recolte as $k => $v) {
+               //Pour les apporteurs en cave coop => a des volumes mais pas de récolte pour la cave particulière
+               if (in_array($k, ['usages_industriels_total', 'volume_total', 'superficie_total', 'recolte_nette', 'vci_constitue'])) {
+                   continue;
+               }
+               if ($v && $v > 0) {
+                   return true;
+               }
+           }
+        }
+
 	    return false;
 	}
 
@@ -223,8 +382,133 @@ class DRevProduit extends BaseDRevProduit
 		$this->add('validation_odg',$date);
 	}
 
+
+	public function setStatutOdg($statut) {
+		if (!$this->exist('statut_odg')) {
+			$this->add('statut_odg');
+		}
+		return $this->_set('statut_odg', $statut);
+	}
+
+	public function getStatutOdg() {
+		if (!$this->exist('statut_odg')) {
+			return null;
+		}
+		return $this->_get('statut_odg');
+	}
+
 	public function isValidateOdg(){
 		return ($this->exist('validation_odg') && $this->validation_odg);
 	}
 
+    public function hasReserveInterpro() {
+        return ($this->getVolumeReserveInterpro()||$this->getVCR());
+    }
+
+    protected function getVolumeReserveInterproByConfig($includeReserveNegative = false) {
+        if (!VCR::hasCsv() && !$this->getConfig()->hasRendementReserveInterpro()) {
+            return 0;
+        }
+        if (VCR::hasCsv() && !$this->getConfig()->hasRendementReserveInterpro()) {
+            return (!$includeReserveNegative && $this->getVolumeReserveInterproVCR() < 0)? 0 : $this->getVolumeReserveInterproVCR();
+        } elseif (!VCR::hasCsv() && $this->getConfig()->hasRendementReserveInterpro()) {
+            return $this->getVolumeReserveInterproAndButoir();
+        }
+        throw new sfException("Erreur : plusieurs modes de calcul de la reserve interpro implémentés");
+    }
+
+    private function getVCRWithRules($vcr, $volume_revendique_total)
+    {
+        if ($vcr < round(0.8*$volume_revendique_total)) {
+            $vcr = round(0.8*$volume_revendique_total);
+        }
+        return $vcr;
+    }
+
+    public function getVCR($rulesIncluded = true)
+    {
+        if ($vcr = VCR::getFromCSV($this->getDocument()->getDefaultMillesime(), $this->getDocument()->declarant->cvi, $this->getProduitHash())) {
+            return ($rulesIncluded)? $this->getVCRWithRules($vcr, $this->volume_revendique_total) : $vcr;
+        }
+        return 0;
+    }
+
+    public function hasRulesOnVCR()
+    {
+        $vcrBrut = $this->getVCR(false);
+        $vcr = $this->getVCR();
+        if ($vcr > $this->volume_revendique_total && $this->getVolumeRevendiqueTotalWithLieux() > $this->volume_revendique_total) {
+            $vcr = $this->getVCRWithRules($vcr, $this->getVolumeRevendiqueTotalWithLieux());
+        }
+        return $vcr != $vcrBrut;
+    }
+
+    public function getVolumeRevendiqueTotalWithLieux()
+    {
+        return $this->getDocument()->getSumFieldByHashRegex('volume_revendique_total', str_replace('/lieux/DEFAUT/', '/lieux/[^/]*/', $this->getProduitHash()));
+    }
+
+    protected function getVolumeReserveInterproVCR()
+    {
+        if ($vcr = $this->getVCR()) {
+            $volumeEnReserve = $this->volume_revendique_total - $vcr;
+            if ($volumeEnReserve < 0) {
+                $volumeRevendiqueTotalWithLieux = $this->getVolumeRevendiqueTotalWithLieux();
+                if ($volumeRevendiqueTotalWithLieux > $this->volume_revendique_total) {
+                    $vcr = $this->getVCRWithRules($vcr, $volumeRevendiqueTotalWithLieux);
+                    return ($volumeRevendiqueTotalWithLieux > $vcr)? round($this->volume_revendique_total - $vcr, 5) : 0;
+                }
+            }
+            return ($volumeEnReserve >= 0)? round($volumeEnReserve, 5) : 0;
+        }
+        return 0;
+    }
+
+	protected function getVolumeReserveInterproAndButoir() {
+		if (!$this->getConfig()->hasRendementReserveInterpro()) {
+			return 0;
+		}
+		$diff = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendementReserveInterpro());
+		if ($diff <= $this->getConfig()->getRendementReserveInterproMin()) {
+			return 0;
+		}
+		return $diff;
+	}
+
+    public function getVolumeReserveInterpro($includeReserveNegative = false) {
+        $diff = $this->getVolumeReserveInterproByConfig($includeReserveNegative);
+		$diff_butoir = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendement());
+		if ($diff > 0 && $diff_butoir > 0) {
+			return $diff - $diff_butoir;
+		}
+		return $diff;
+    }
+
+	public function getVolumeRevendiqueCommecialisable($includeReserveNegative = false) {
+        $reserve = $this->getVolumeReserveInterproByConfig($includeReserveNegative);
+        if (!$includeReserveNegative && $reserve < 0) {
+            $reserve = 0;
+        }
+		return $this->volume_revendique_total - $reserve;
+	}
+
+	public function getSommeProduitsCepage($hash) {
+		return $this->getCepage()->getSommeProduits($hash);
+	}
+
+    public function hasVolumeOrSuperficieRevendicables() {
+        if (strpos($this->getHash(), 'genres/MOU/') || strpos($this->getHash(), 'genres/EFF/')) {
+            $hashVDB = str_replace(['genres/MOU/', 'genres/EFF/'], 'genres/VDB/', $this->getCepage()->getHash());
+            if ($this->getDocument()->exist($hashVDB)) {
+                $vdn = $this->getDocument()->get($hashVDB)->getFirst();
+                return $vdn->hasVolumeOrSuperficieRevendicables();
+            }
+        }
+        return $this->recolte->volume_sur_place || $this->volume_revendique_total || $this->superficie_revendique;
+    }
+
+    public function getRegion() {
+
+        return RegionConfiguration::getInstance()->getOdgRegion($this->getHash());
+    }
 }

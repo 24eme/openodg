@@ -16,6 +16,6 @@ fi
 #echo  "#FLG 001" | sed 's/$/\r/' >> $TMP/$VINSIEXPORT
 echo "#VER 14" | sed 's/$/\r/'
 echo "#DEV EUR" | sed 's/$/\r/'
-cat $CLIENTS_CSV_FILE | sort | uniq | perl bin/facture/convertExportSociete2SAGE.pl | iconv -f UTF8 -t IBM437//TRANSLIT | sed 's/$/\r/'
-cat $FACTURE_CSV_FILE | perl bin/facture/convertExportFacture2SAGE.pl | iconv -f UTF8 -t IBM437//TRANSLIT | sed 's/$/\r/'
+cat $CLIENTS_CSV_FILE | iconv -f ISO88591 -t UTF8 | sort | uniq | perl bin/facture/convertExportSociete2SAGE.pl | iconv -f UTF8 -t IBM437//TRANSLIT | sed 's/$/\r/'
+cat $FACTURE_CSV_FILE | iconv -f ISO88591 -t UTF8 | perl bin/facture/convertExportFacture2SAGE.pl | iconv -f UTF8 -t IBM437//TRANSLIT | sed 's/$/\r/'
 echo "#FIN" | sed 's/$/\r/'

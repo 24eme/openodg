@@ -28,6 +28,27 @@ class DRevDeclaration extends BaseDRevDeclaration
 	}
 
 	public function cleanNode() {
+        foreach ($this as $hash) {
+            $saveStock = 0;
+            if (count($hash) == 2) {
+                foreach ($hash as $element) {
+                    if (  $element->vci->stock_precedent &&
+                          !$element->recolte->superficie_total && !$element->vci->destruction && !$element->vci->complement &&
+                          !$element->vci->substitution && !$element->vci->rafraichi && !$element->vci->constitue && !$element->vci->ajustement
+                    ) {
+                        $saveStock = $element->vci->stock_precedent;
+                    }
+                }
+                if ($saveStock) {
+                    foreach ($hash as $element) {
+                        //On ne réécrit pas le stock précédent de vci si l'utilisateur l'a édité (en étape 4)
+                        if (!$element->vci->stock_precedent && $element->recolte->superficie_total) {
+                            $element->vci->stock_precedent = $saveStock;
+                        }
+                    }
+                }
+            }
+        }
 		$hash_to_delete = array();
 		foreach($this->getProduits() as $produit) {
 			if($produit->isCleanable()) {
@@ -55,7 +76,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 
 	protected function getProduitsByRegion($region) {
 		$produits = array();
-		$regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
+		$regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($region);
 		foreach ($this->getProduits() as $hash => $produit) {
 		  	foreach ($regionRadixProduits as $filtre) {
 				if(!preg_match("|".$filtre."|", $hash)){
@@ -71,7 +92,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 
 	public function getSyndicats() {
 		$syndicats = array();
-		foreach (DRevConfiguration::getInstance()->getOdgRegions() as $region) {
+		foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
 			if(!count($this->getProduitsByRegion($region))) {
 					continue;
 			}
@@ -80,7 +101,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 		return $syndicats;
 	}
 
-	public function getProduits($region = null)
+	public function getProduits($region = null, $with_details = true)
     {
 		if($region) {
 
@@ -89,18 +110,33 @@ class DRevDeclaration extends BaseDRevDeclaration
 
         $produits = array();
         foreach($this as $items) {
-			foreach($items as $item) {
-	            $produits[$item->getHash()] = $item;
-			}
+            if ($items->getConfig()->getRendement() <= 0) {
+                continue;
+            }
+            if ($with_details) {
+			    foreach($items as $item) {
+	                $produits[$item->getHash()] = $item;
+			    }
+            }else{
+                $produits[$items->getHash()] = $items;
+            }
         }
-
+        uksort($produits, "DRevDeclaration::sortProduitHash");
         return $produits;
     }
 
-	public function getProduitsWithoutLots($region = null){
+    public static function sortProduitHash($ka, $kb) {
+        $ka = str_replace('/MOU/', '/VMOU/', $ka);
+        $ka = str_replace('/MEFF/', '/VEFF/', $ka);
+        $kb = str_replace('/MOU/', '/VMOU/', $kb);
+        $kb = str_replace('/MEFF/', '/VEFF/', $kb);
+        return strcmp($ka, $kb);
+    }
+
+	public function getProduitsWithoutLots($region = null, $with_empty = false){
 		if($region){
 
-			return $this->getProduitsWithoutLotsByRegion($region);
+			return $this->getProduitsWithoutLotsByRegion($region, $with_empty);
 		}
 
 		$produits = array();
@@ -109,30 +145,38 @@ class DRevDeclaration extends BaseDRevDeclaration
 			if($produit->getConfig()->isRevendicationParLots()){
 				continue;
 			}
-			$produits[$produit->getHash()] = $produit;
+            if (! $with_empty && !$produit->hasVolumeOrSuperficieRevendicables()) {
+                continue;
+            }
+            $produits[$produit->getHash()] = $produit;
 		}
 
-		foreach (DRevConfiguration::getInstance()->getOdgRegions() as $region) {
-			$produitsByRegion = $this->getProduitsWithoutLotsByRegion($region);
+        //Tri des produits par région pour le récap plus lisible
+		foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
+			$produitsByRegion = $this->getProduitsWithoutLotsByRegion($region, $with_empty);
 			foreach($produitsByRegion as $hash => $produit) {
 				unset($produits[$hash]);
 			}
 			uasort($produitsByRegion, "DrevDeclaration::sortByLibelle");
 			$produits = array_merge($produits,$produitsByRegion);
 		}
-
+        uksort($produits, "DRevDeclaration::sortProduitHash");
 		return $produits;
 	}
 
-	public function getProduitsWithoutLotsByRegion($region = null){
+	protected function getProduitsWithoutLotsByRegion($region, $with_empty = false) {
 		$produits = array();
 		foreach ($this->getProduits($region) as $produit) {
 			if($produit->getConfig()->isRevendicationParLots()){
 
 				continue;
 			}
+            if (! $with_empty && !$produit->hasVolumeOrSuperficieRevendicables()) {
+                continue;
+            }
 			$produits[$produit->getHash()] = $produit;
 		}
+        uksort($produits, "DRevDeclaration::sortProduitHash");
 		return $produits;
 	}
 
@@ -228,12 +272,31 @@ class DRevDeclaration extends BaseDRevDeclaration
         return $total;
     }
 
-	public function getTotalVolumeRevendique()
+    public function getProduitsFilteredBy(TemplateFactureCotisationCallbackParameters $parameters)
+    {
+        $produits = [];
+
+        foreach ($this->getProduits() as $hash => $p) {
+            if (RegionConfiguration::getInstance()->isHashProduitInRegion($parameters->getParameters('region'), $hash)) {
+                $produits[] = $p;
+            }
+        }
+
+        return $produits;
+    }
+
+	public function getTotalVolumeRevendique(TemplateFactureCotisationCallbackParameters $produitFilter = null)
     {
     	$total = 0;
+
         foreach($this->getProduits() as $key => $item) {
+            if (DRevClient::getInstance()->matchFilterLot($item, $produitFilter) === false) {
+                continue;
+            }
+
             $total += $item->getTotalVolumeRevendique();
         }
+
         return $total;
     }
 
@@ -267,5 +330,13 @@ class DRevDeclaration extends BaseDRevDeclaration
 		return strcmp($p1->getLibelle(), $p2->getLibelle());
 	}
 
+
+    public function getSommeProduit($subhash) {
+        $somme = 0;
+        foreach($this->getProduits() as $p) {
+            $somme += $p->get($subhash);
+        }
+        return $somme;
+    }
 
 }

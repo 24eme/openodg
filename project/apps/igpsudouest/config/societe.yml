@@ -1,0 +1,12 @@
+all:
+  configuration:
+    societe:
+      droits:
+        "degustateur:technicien": "Dégustateur : Technicien"
+        "degustateur:usager_du_produit": "Dégustateur : Usager du produit"
+        "degustateur:operateur": "Dégustateur : Opérateur"
+        "degustateur:operateur:AVEYRON": "Dégustateur Aveyron : Opérateur"
+        "degustateur:operateur:ARIEGE": "Dégustateur Ariège : Opérateur"
+        "degustateur:operateur:COMTE_TOLOSAN": "Dégustateur Comté Tolosan : Opérateur"
+        "degustateur:operateur:LAVILLEDIEU": "Dégustateur Lavilledieu : Opérateur"
+        "degustateur:operateur:THEZACPERRICARD": "Dégustateur Thézac-Perricard : Opérateur"

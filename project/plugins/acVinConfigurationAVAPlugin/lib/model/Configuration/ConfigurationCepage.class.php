@@ -1,6 +1,12 @@
 <?php
 
+// AVA //
+
 class ConfigurationCepage extends BaseConfigurationCepage {
+
+    public function getCertification() {
+        return $this->getAppellation()->getCertification();
+    }
 
     public function getAppellation() {
 
@@ -22,6 +28,26 @@ class ConfigurationCepage extends BaseConfigurationCepage {
         return $this->getParentNode();
     }
 
+    public function getCepage() {
+        return $this;
+    }
+
+    public function getGenre() {
+        return $this->getAppellation()->getGenre();
+    }
+
+    public function hasLieu() {
+        return true;
+    }
+    public function hasMention() {
+        return true;
+    }
+    public function hasCouleur() {
+        return true;
+    }
+    public function hasCepage() {
+        return true;
+    }
     public function getLibelleFormat($labels = array(), $format = "%g% %a% %m% %l% %co% %ce%", $label_separator = ", ") {
 
         return $this->getLibelle();
@@ -148,18 +174,32 @@ class ConfigurationCepage extends BaseConfigurationCepage {
 
   public function existRendement() {
     if($this->getKey() == 'cepage_RB') {
-      
+
       return false;
     }
 
     return parent::existRendement();
   }
-  
 
-    
+
+
     public function getDrevLotProduits()
     {
     	return array($this->getHash());
     }
-  
+
+    public function isAssemblage() {
+
+        return ($this->getKey() == "cepage_ED");
+    }
+
+    public function isCepageAutorise($cepage) {
+        if($this->isAssemblage()) {
+
+            return $this->getParentNode()->getCepagesAutorises();
+        }
+
+        return parent::isCepageAutorise($cepage);
+    }
+
 }

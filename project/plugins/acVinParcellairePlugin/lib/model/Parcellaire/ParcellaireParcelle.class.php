@@ -1,18 +1,29 @@
 <?php
 
-/**
- * Model for ParcellaireCepageDetail
- *
- */
+require_once(dirname(__FILE__).'/../../vendor/geoPHP/geoPHP.inc');
+
 class ParcellaireParcelle extends BaseParcellaireParcelle {
+    private static $_AIRES = [];
+    private $geoparcelle = null;
 
     public function getProduit() {
+        if ($this->getParcelleAffectee()) {
 
-        return $this->getParent()->getParent();
+            return $this->getDocument()->get(preg_replace('#/detail$#', '', $this->getParcelleAffectee()->getParentHash()));
+        }
+        return null;
     }
 
     public function getConfig() {
-      return $this->getProduit()->getConfig();
+        try {
+            if (strpos($this->produit_hash, 'declaration/') !== false) {
+                return $this->getDocument()->getConfiguration()->get(preg_replace('/\/detail\/.*/', '', $this->produit_hash));
+            }else {
+                return $this->getDocument()->getConfiguration()->declaration->get(preg_replace('/\/detail\/.*/', '', $this->produit_hash));
+            }
+        }catch(sfException $e) {
+            return null;
+        }
     }
 
     public function addAcheteur($acheteur) {
@@ -36,10 +47,8 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $acheteursCvi;
     }
 
-    public function getProduitsDetails($onlyVtSgn = false, $active = false) {
-		if ($active && !$this->getActive()) {
-			return array();
-		}
+    public function getProduitsDetails() {
+
         return array($this->getHash() => $this);
     }
 
@@ -49,31 +58,8 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function updateIDU() {
-        $this->idu = sprintf('%05s%03s%02s%04s', $this->code_commune, "", $this->section, $this->numero_parcelle);
-    }
-
-    public function setCodeCommune($code_commune) {
-        $this->_set('code_commune', $code_commune);
-
-        $this->updateIDU();
-
-        return $this;
-    }
-
-    public function setSection($section) {
-        $this->_set('section', $section);
-
-        $this->updateIDU();
-
-        return $this;
-    }
-
-    public function setNumeroParcelle($numero_parcelle) {
-        $this->_set('numero_parcelle', $numero_parcelle);
-
-        $this->updateIDU();
-
-        return $this;
+        throw new sfException('updateIUD');
+        $this->idu = Parcellaire::computeIDU($this->code_commune, $this->prefix, $this->section, $this->numero_parcelle);
     }
 
     public function getLieuLibelle() {
@@ -98,27 +84,20 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function getAppellation() {
+        if (!$this->getProduit()->getConfig()) {
+            return null;
+        }
         return $this->getProduit()->getConfig()->getAppellation();
     }
 
-    public function isCleanable() {
-    	if (!$this->getActive()) {
-    		return true;
-    	}
-        return ($this->isFromAppellation('ALSACEBLANC') && !$this->getVtsgn());
-    }
-
-    public function isAffectee($lieu = null) {
-        if ($lieu && $this->lieu && KeyInflector::slugify(trim($lieu)) != KeyInflector::slugify(trim($this->lieu))) {
-
-    		return false;
-    	}
-
-        return !$this->isCleanable();
-    }
-
     public function getProduitLibelle() {
-
+        if (!$this->isRealProduit()) {
+            $lib = 'PRODUIT NON GÉRÉ';
+            if ($this->source_produit_libelle) {
+                $lib .= ' ('.$this->source_produit_libelle.')';
+            }
+            return $lib;
+        }
         return $this->getProduit()->getLibelle();
     }
 
@@ -137,32 +116,23 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $this->getProduit()->getConfig()->getLieu();
     }
 
-    public function getIdentificationParcelleLibelle() {
-    	return $this->section.'-'.$this->numero_parcelle.'<br />'.$this->commune.' '.$this->getLieuLibelle().' '.sprintf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $this->superficie);
-    }
-
-    public function getIdentificationCepageLibelle() {
-    	return $this->getProduitLibelle().'<br />'.$this->getCepageLibelle().' '.$this->campagne_plantation;
-    }
-
     public function cleanNode() {
 
         return false;
     }
 
-    public function getActive() {
-        $v = $this->_get('active');
-        if (!$this->superficie) {
-            return false;
-        }
-        if ($v === null) {
-            return true;
-        }
-        return ($v) ? true : false;
+    public function getSuperficieParcellaire() {
+        return $this->superficie;
     }
-    public function setActive($value) {
-        return $this->_set('active', $value * 1);
+
+    public function getSuperficie($unite = ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_HECTARE) {
+        if($unite == ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE) {
+            return round($this->_get('superficie') * 100, 2);
+        }
+
+        return $this->_get('superficie');
     }
+
     public function getVtsgn() {
         $v = $this->_get('vtsgn');
         if ($v === null || !$this->superficie) {
@@ -172,6 +142,12 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
     public function setVtsgn($value) {
         return $this->_set('vtsgn', $value * 1);
+    }
+
+    public function setCampagnePlantation($value)
+    {
+        $campagne = ($value === '9999-9999') ? "" : $value;
+        return $this->_set('campagne_plantation', $campagne);
     }
 
     public function isFromAppellation($appellation){
@@ -192,13 +168,202 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function hasProblemEcartPieds() {
-      if ($this->exist('ecart_rang') && $this->exist('ecart_pieds') && $this->ecart_rang && $this->ecart_pieds) {
-        return (($this->ecart_rang * $this->ecart_pieds) > 25000);
+      $ecart_rangs_max = ParcellaireConfiguration::getInstance()->getEcartRangsMax();
+      $ecart_pieds_min = ParcellaireConfiguration::getInstance()->getEcartPiedsMin();
+      $ecart_pieds_max = ParcellaireConfiguration::getInstance()->getEcartPiedsMax();
+      if ($ecart_rangs_max && $this->exist('ecart_rang')) {
+          if ($ecart_rangs_max < $this->ecart_rang) {
+              return true;
+          }
+      }
+      if ($this->exist('ecart_pieds')) {
+          if ($ecart_pieds_max && $ecart_pieds_max < $this->ecart_pieds) {
+              return true;
+          }
+          if ($ecart_pieds_min && $ecart_pieds_min > $this->ecart_pieds) {
+              return true;
+          }
       }
       return false;
     }
 
+    public function getParcelleParcellaire() {
+        if ( ! $this->getDocument()->getParcellaire() ) {
+            return null;
+        }
+        $p = $this->getDocument()->getParcellaire()->getDeclarationParcelles();
+        if (!isset($p[$this->getParcelleId()])) {
+            return null;
+        }
+        return $p[$this->getParcelleId()];
+    }
+
+    public function existsInParcellaire() {
+        return ($this->getParcelleParcellaire() != null);
+    }
+
+    private $cache_isrealproduit = null;
+    public function isRealProduit() {
+        if ($this->cache_isrealproduit === null ) {
+            $this->cache_isrealproduit = true;
+            if ($this->getDocument()->_exist('parcelles')) {
+                $p = $this->getParcelleParcellaire();
+                if (!$p) {
+                    $this->cache_isrealproduit = false;
+                } elseif (!$p->produit_hash) {
+                    $this->cache_isrealproduit = false;
+                }elseif (!$p->getConfig()) {
+                    $this->cache_isrealproduit = false;
+                }
+            }
+        }
+        return $this->cache_isrealproduit;
+    }
+
+    public function hasProblemParcellaire() {
+        if ($this->existsInParcellaire()){
+            return false;
+        }
+        return true;
+    }
+
+    public function hasProblemProduitCVI() {
+        if (ParcellaireConfiguration::getInstance()->affectationNeedsIntention()) {
+            return false;
+        }
+        $a = $this->getIsInAires();
+        if (! count($a)) {
+            return true;
+        }
+        if (isset($a[AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE]) && $a[AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE]) {
+            return true;
+        }
+        return false;
+    }
+
     public function hasProblemCepageAutorise() {
-      return !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
+      if (!$this->getConfig()) {
+          return false;
+      }
+      return (count($this->getConfig()->getCepagesAutorises())) && !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
+    }
+
+    public function isJeunesVignes() {
+        $campagne_troisieme_feuille = ParcellaireConfiguration::getInstance()->getCampagneJeunesVignes();
+        return ($this->campagne_plantation >= $campagne_troisieme_feuille);
+    }
+
+    public function getGeoJson() {
+        $data = $this->getDocument()->getGeoJson();
+        if ($data) {
+            foreach($data->features as $f) {
+                if ($f->id == $this->idu) {
+                    return json_encode($f);
+                }
+            }
+        }
+        return '{"type":"Feature","id":"","geometry":{"type":"Polygon","coordinates":[]},"properties":{"error":"parcelle '.$this->idu.' not found in geojeson"}}';
+        throw new sfException('parcelle not found in geojeson');
+    }
+
+    public function getGeoParcelle(): Geometry {
+        if (!$this->geoparcelle) {
+            if (!geophp::geosInstalled()) {
+                throw new sfException("php-geos needed");
+            }
+            $this->geoparcelle = geoPHP::load($this->getGeoJson());
+        }
+        return $this->geoparcelle;
+    }
+
+    public function getCodeCommune() {
+        $c = null;
+        if (isset($this->code_commune)) {
+            $c = $this->code_commune;
+        }
+        if (!$c) {
+            $c = substr($this->idu, 0, 5);
+        }
+        return $c;
+    }
+
+    public function getPcAire($nom_aire) {
+        return AireClient::getInstance()->getPcFromCommuneGeoParcelleAndAire($this->code_commune, $this, $nom_aire);
+    }
+
+    public function getIsInAires() {
+        return AireClient::getInstance()->getIsInAiresFromCommuneAndGeoParcelle($this->code_commune, $this);
+    }
+
+    public function isInDenominationLibelle($l) {
+        $iia = $this->getIsInAires();
+        if (!isset($iia[$l])) {
+            return null;
+        }
+        return $iia[$l];
+    }
+
+    public function getParcelleAffectee() {
+        if (strpos($this->getHash(), 'declaration') !== false) {
+            return $this;
+        }
+        foreach($this->getDocument()->declaration->getParcelles() as $p) {
+            if ($p->getParcelleId() == $this->getParcelleId()) {
+                return $p;
+            }
+        }
+        throw new sfException('parcelle not found');
+    }
+
+    public function getParcelleId() {
+        if (!$this->_get('parcelle_id')) {
+            if (strlen($this->getKey()) == 17){
+                $this->_set('parcelle_id', $this->getKey());
+            }else{
+                $parcelle_id = sprintf('%s-%02d', $this->idu, $this->getDocument()->getNbUDIAlreadySeen($this->idu));
+                $this->_set('parcelle_id', $parcelle_id);
+            }
+        }
+        return $this->_get('parcelle_id');
+    }
+
+    public function getTheoriticalDgs() {
+        $communesDenominations = sfConfig::get('app_communes_denominations');
+        $dgcs = [];
+        foreach ($communesDenominations as $dgc_h => $communes) {
+            $dgc_l = $this->getDocument()->getConfiguration()->get($dgc_h)->getLibelle();
+            foreach($communes as $commune) {
+                if ($this->code_commune == $commune) {
+                    $dgcs[$dgc_h] = $dgc_l;
+                }
+            }
+        }
+        return $dgcs;
+    }
+
+    public function getDensite() {
+        if ($this->ecart_pieds && $this->ecart_rang) {
+            return round(10000 / (($this->ecart_pieds / 100) * ($this->ecart_rang / 100)), 0);
+        }
+        return 0;
+    }
+
+    public function getProduitHash() {
+        if ($h = $this->_get('produit_hash')) {
+            return $h;
+        }
+        $h = preg_replace('/\/detail\/.*/', '', $this->getHash());
+        if (strpos($h, 'declaration') === false) {
+            return null;
+        }
+        if (strpos($h, 'parcelles') !== false) {
+            return null;
+        }
+        $this->_set('produit_hash', $h);
+        return $h;
+    }
+
+    public function isRealParcelleIdFromParcellaire() {
+        return $this->_get('parcelle_id') && strpos($this->_get('parcelle_id'), '-X') === false;
     }
 }

@@ -4,3 +4,5 @@
 # default values
 all:
   elasticversion: '1.6.2'
+  organisme:
+    nom: "Association des viticulteurs d'Alsace"

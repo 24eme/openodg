@@ -1,5 +1,8 @@
 <?php use_helper('Float') ?>
-<td class="<?php echo (isset($tdClass)) ? $tdClass : "" ?>">
+<td style="position: relative;" class="<?php echo (isset($tdClass)) ? $tdClass : "" ?>">
+    <?php if(isset($prefixe)): ?>
+    <small style="position:absolute; top: 14px; left: 14px;" class="text-muted"><?php echo $prefixe ?></small>
+    <?php endif; ?>
     <?php if (isset($form[$name.(($vtsgn) ? "_vtsgn" : null)])): ?>
     <?php
     $global_error_class = ((($global_error_class == 'error_field_to_focused')) ||

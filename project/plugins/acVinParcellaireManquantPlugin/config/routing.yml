@@ -1,0 +1,149 @@
+parcellairemanquant_create:
+  url: /parcellaire-manquant/creation/:identifiant
+  param: { module: parcellaireManquant, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellairemanquant_create_papier:
+  url: /parcellaire-manquant/creation-papier/:identifiant
+  param: { module: parcellaireManquant, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellairemanquant_edit:
+  url: /parcellaire-manquant/edition/:id
+  param: { module: parcellaireManquant, action: edit }
+  class: ParcellaireManquantRoute
+  options:
+    model:    ParcellaireManquant
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellairemanquant_delete:
+  url: /parcellaire-manquant/suppression/:id
+  param: { module: parcellaireManquant, action: delete }
+  class: ParcellaireManquantRoute
+  options:
+    model:    ParcellaireManquant
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellairemanquant_devalidation:
+  url: /parcellaire-manquant/devalidation/:id
+  param: { module: parcellaireManquant, action: devalidation }
+  class: ParcellaireManquantRoute
+  options:
+    model:    ParcellaireManquant
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellairemanquant_exploitation:
+  url: /parcellaire-manquant/exploitation/:id
+  param: { module: parcellaireManquant, action: exploitation }
+  class: ParcellaireManquantRoute
+  options:
+    model:    ParcellaireManquant
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellairemanquant_parcelles:
+  url: /parcellaire-manquant/parcelles/:id
+  param: { module: parcellaireManquant, action: parcelles }
+  class: ParcellaireManquantRoute
+  options:
+    model:    ParcellaireManquant
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellairemanquant_manquants:
+  url: /parcellaire-manquant/manquants/:id
+  param: { module: parcellaireManquant, action: manquants }
+  class: ParcellaireManquantRoute
+  options:
+    model:    ParcellaireManquant
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellairemanquant_validation:
+  url: /parcellaire-manquant/validation/:id
+  param: { module: parcellaireManquant, action: validation }
+  class: ParcellaireManquantRoute
+  options:
+    model:    ParcellaireManquant
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellairemanquant_visualisation:
+  url: /parcellaire-manquant/visualisation/:id
+  param: { module: parcellaireManquant, action: visualisation }
+  class: ParcellaireManquantRoute
+  options:
+    model:    ParcellaireManquant
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellairemanquant_export_pdf:
+  url: /parcellaire-manquant/pdf/:id
+  param: { module: parcellaireManquant, action: PDF }
+  class: ParcellaireManquantRoute
+  options:
+    model:    ParcellaireManquant
+    type:     object
+  requirements:
+    sf_method: [get]
+#
+# parcellaire_intention_modification:
+#   url: /parcellaire/modification-parcelle/:id/:appellation/:parcelle
+#   param: { module: parcellaire, action: modificationParcelle }
+#   class: ParcellaireRoute
+#   options:
+#     model:    Parcellaire
+#     type:     object
+#   requirements:
+#     sf_method: [get, post]
+#
+# parcellaire_validation:
+#   url: /parcellaire/validation/:id
+#   param: { module: parcellaire, action: validation }
+#   class: ParcellaireRoute
+#   options:
+#     model:    Parcellaire
+#     type:     object
+#   requirements:
+#     sf_method: [get,post]
+#
+# parcellaire_export_pdf:
+#   url: /parcellaire/pdf/:id
+#   param: { module: parcellaire, action: PDF }
+#   class: ParcellaireRoute
+#   options:
+#     model:    Parcellaire
+#     type:     object
+#   requirements:
+#     sf_method: [get]
+#
+# parcellaire_visualisation:
+#   url: /parcellaire/visualisation/:id
+#   param: { module: parcellaire, action: visualisation }
+#   class: ParcellaireRoute
+#   options:
+#     model:    Parcellaire
+#     type:     object
+#   requirements:
+#     sf_method: [get]

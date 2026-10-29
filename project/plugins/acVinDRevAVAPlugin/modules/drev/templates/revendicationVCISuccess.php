@@ -15,7 +15,7 @@ if (isset($form) && $form):
 endif;
 ?>
 <div class="page-header">
-    <?php if($drev->hasDR()): ?>
+    <?php if(($drev->hasDR() && !$sf_user->isAdmin()) || ($drev->hasDR() && $sf_user->isUsurpationCompte())): ?>
         <a class="btn btn-sm btn-default-step pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Recharger les données de la Déclaration de Récolte</a>
     <?php endif; ?>
     <?php if(!$drev->isNonRecoltant() && !$drev->hasDR()): ?>
@@ -37,14 +37,13 @@ endif;
     <?php if ($hasError): ?>
     <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
-    <p>Ces informations ont été initialisées depuis votre registre VCI.
-    <br /><br />Veuillez indiquer l'utilisation de votre VCI <?php echo ($drev->campagne - 1) ?>.</p>
     <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
     <?php endif; ?>
-    <?php if ($sf_user->hasFlash('erreur')): ?>
-    <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
+    <?php if ($sf_user->hasFlash('error')): ?>
+    <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></p>
     <?php endif; ?>
+    <p>Veuillez indiquer l'utilisation de votre VCI stocké en <?php echo($drev->campagne - 1) ?>. Les informations proviennent de votre registre VCI.</p>
     <table class="table table-striped table-condensed" id="table-revendication">
         <thead>
         	<tr>
@@ -67,14 +66,14 @@ endif;
             <?php endforeach; ?>
         </tbody>
     </table>
-
+    <p>Pour le VCI constitué cette année, il sera automatiquement repris dans votre registre <?php echo($drev->campagne) ?>.</p>
 <?php else: //pas de registrevci ?>
-<p>Vous ne disposez pas de registre VCI, vous ne pouvez donc pas revendiquer de volume issu du VCI.</p><p>Si il s'agit d'une erreur, contactez l'AVA.</p>
+<p>Vous ne disposez pas de registre VCI, vous ne pouvez donc pas revendiquer de volume issu du VCI.</p><p>S'il s'agit d'une erreur, contactez l'AVA.</p>
 <?php endif; ?>
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-        	<?php if(!$drev->isNonRecoltant() && !$drev->hasDr()): ?>
+        	<?php if(!$drev->isNonRecoltant() && !$drev->hasDR()): ?>
 				<a href="<?php echo url_for("drev_dr", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
 			<?php else: ?>
         		<a href="<?php echo url_for("drev_revendication_superficies", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>

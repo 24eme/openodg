@@ -1,7 +1,9 @@
 <?php
 
-abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
+/* AVA */
 
+abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
+    protected $libelleCompletCache = null;
     protected $produits = array();
     protected $drev_produits = null;
     protected $drev_lot_produits = null;
@@ -379,32 +381,51 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function getLibelleComplet($libelle_long = false)
     {
+        if($libelle_long) {
+
+            return trim(trim($this->getParent()->getLibelleComplet(true)).' '.$this->getLibelleLong());
+        }
+
+        if(!is_null($this->libelleCompletCache)) {
+
+            return $this->libelleCompletCache;
+        }
+
     	$libelle = $this->getParent()->getLibelleComplet();
 
-      if($libelle_long) {
+        $this->libelleCompletCache = trim(trim($libelle).' '.$this->libelle);
 
-          return trim(trim($libelle).' '.$this->getLibelleLong());
-      }
-
-    	return trim(trim($libelle).' '.$this->libelle);
+        return $this->libelleCompletCache;
     }
-    
+
     public function existRendementVci() {
-    
+
     	return $this->existRendementByKey('rendement_vci');
     }
-    
+
+    public function hasRendementVsi() {
+
+    	return 0;
+    }
+
     public function hasRendementVci() {
-    
+
     	return $this->hasRendementByKey('rendement_vci');
     }
-    
+
     public function hasRendementVciTotal() {
-    
+
     	return $this->hasRendementByKey('rendement_vci_total');
     }
 
+    public function getRendementVsi() {
+    	return 0;
+    }
+
     public function getRendementVci() {
+        if (!$this->hasRendementVciTotal()) {
+            return null;
+        }
     	return $this->getRendementByKey('rendement_vci');
     }
 
@@ -412,9 +433,33 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getRendementByKey('rendement_vci_total');
     }
 
-    public function getNodeCahierDesCharges() {
+    public function getCepagesAutorises()
+    {
+        $cepages = array();
+        foreach($this->getProduits() as $p) {
+            if(!$p->getLibelle()) {
+                continue;
+            }
+            $cepages[] = $p->getLibelle();
+        }
 
-        return $this->getLieu();
+        return $cepages;
+    }
+
+    public function isCepageAutorise($cepage) {
+        foreach($this->getCepagesAutorises() as $c) {
+            if(strpos(KeyInflector::slugify($cepage), KeyInflector::slugify($c)) === false) {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getCodeDouane() {
+        return '';
     }
 
 }

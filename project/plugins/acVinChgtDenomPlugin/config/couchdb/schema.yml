@@ -1,0 +1,211 @@
+#ChgtDenom
+ChgtDenom:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      date: {  }
+      type_archive:  { required: false }
+      numero_archive: {  }
+      campagne: { }
+      etape: {  }
+      validation: {  }
+      validation_odg: {  }
+      identifiant: {  }
+      papier: { required: false, type: integer }
+      changement_origine_id_document: {}
+      changement_origine_lot_unique_id: {}
+      changement_type: {}
+      changement_produit_hash: {}
+      changement_produit_libelle: { }
+      changement_millesime: { }
+      changement_specificite: { }
+      changement_numero_logement_operateur: {}
+      changement_cepages:
+        type: collection
+        definition:
+          fields:
+            '*': { type: float }
+      changement_volume: { type: float }
+      changement_affectable: {}
+      changement_date_commission: {}
+      origine_statut: { }
+      origine_produit_hash: {}
+      origine_produit_libelle: { }
+      origine_millesime: { }
+      origine_specificite: { }
+      origine_numero_logement_operateur: {}
+      origine_cepages:
+        type: collection
+        definition:
+          fields:
+            '*': { type: float }
+      origine_volume: { type: float }
+      origine_affectable: {}
+      declarant:
+        type: collection
+        class: ChgtDenomDeclarant
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            ppm: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { required : false}
+            telephone_bureau: { }
+            telephone_mobile: { }
+            fax: { }
+            email: { }
+            famille: { }
+      lots:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: ChgtDenomLot
+              inheritance: Lot
+              definition:
+                fields:
+                  date: { }
+                  id_document: { }
+                  unique_id: { }
+                  origine_type: { required: false } #Obsolète gardé le temps de la conversion vers initial_type
+                  initial_type: { }
+                  id_document_provenance: { }
+                  id_document_affectation: { }
+                  date_commission: { }
+                  campagne: {}
+                  numero_dossier: {  }
+                  numero_archive: {  }
+                  document_ordre: {  }
+                  numero_logement_operateur: { }
+                  millesime: { }
+                  elevage: { }
+                  eleve: { }
+                  volume: { type: float }
+                  destination_type: { }
+                  destination_date: { }
+                  produit_hash: { }
+                  produit_libelle: { }
+                  declarant_identifiant: { }
+                  declarant_nom: { }
+                  origine_mouvement: { required: false }
+                  details: {}
+                  statut: {}
+                  adresse_logement: {}
+                  specificite: {}
+                  affectable: { }
+                  conforme_appel: {}
+                  document_fils: { required: false }
+                  cepages:
+                    type: collection
+                    definition:
+                      fields:
+                        '*': { type: float }
+      mouvements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: ChgtDenomMouvementFactures
+                    inheritance: MouvementFactures
+                    type: collection
+                    definition:
+                      fields:
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        produit_hash: {  }
+                        produit_libelle: {  }
+                        type_hash: {  }
+                        type_libelle: {  }
+                        detail_identifiant: {  }
+                        detail_libelle: {  }
+                        quantite: { type: float }
+                        unite: { required: false }
+                        taux: { }
+                        tva: { }
+                        date: {  }
+                        date_version: {  }
+                        version: {  }
+                        categorie: {  }
+                        type: {  }
+                        campagne: {  }
+      mouvements_lots:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: ChgtDenomMouvementLots
+                    inheritance: MouvementLots
+                    type: collection
+                    definition:
+                      fields:
+                        date: {  }
+                        campagne: {}
+                        numero_dossier: {  }
+                        numero_archive: {  }
+                        date_commission: { }
+                        date_notification: { }
+                        libelle: {}
+                        detail: {}
+                        volume: { type: float }
+                        version: {  }
+                        document_ordre: {  }
+                        document_type: {  }
+                        document_id: {  }
+                        origine_type: { required: false } #Obsolète gardé le temps de la conversion vers initial_type
+                        initial_type: { }
+                        lot_unique_id: {  }
+                        lot_hash: {  }
+                        declarant_identifiant: {  }
+                        declarant_nom: {  }
+                        statut: {}
+                        region: { required: false }
+      region: { required: false }
+      documents:
+        required: false
+        class: DRevDocuments
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  statut: { }
+                  libelle: { }
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: ChgtDenomPiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

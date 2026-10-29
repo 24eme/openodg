@@ -57,3 +57,11 @@ function getExplicationsPDF($prelevement) {
             break;
     }
 }
+
+function send_to_partial($arr_lots, $certif)
+{
+    while (count($arr_lots[$certif]) < 4) {
+        $arr_lots[$certif][] = null;
+    }
+    echo include_partial($certif, array('lots' => $arr_lots[$certif]));
+}

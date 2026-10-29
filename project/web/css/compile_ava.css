@@ -6,7 +6,7 @@
   font-weight: normal;
   font-style: normal;
 }
-/* =================================================================================== 
+/* ===================================================================================
  * File : site_vars.less
  * Description : LESS vars
  * Authors : Hamza Iqbal - hiqbal[at]actualys.com
@@ -3395,7 +3395,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav > li > a {
   position: relative;
   display: block;
-  padding: 10px 15px;
+  padding: 10px 12px;
 }
 .nav > li > a:hover,
 .nav > li > a:focus {
@@ -5263,7 +5263,7 @@ td.visible-print {
     display: none !important;
   }
 }
-/* =================================================================================== 
+/* ===================================================================================
  * File : toolbox.less
  * Description : LESS functions / helpers
  * Authors : Hamza Iqbal - hiqbal[at]actualys.com
@@ -5282,13 +5282,13 @@ td.visible-print {
 /*.opacity(@opacite: 0.5)
 {
 	@opaciteIE: @opacite * 100;
-	
+
 	-webkit-opacity: @opacite;
 	 -khtml-opacity: @opacite;
 	   -moz-opacity: @opacite;
 	        opacity: @opacite;
-	
-	.ie8 & { -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=@{opaciteIE})"; }		
+
+	.ie8 & { -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=@{opaciteIE})"; }
 	.ielt8 & { filter: ~"alpha(opacity=@{opaciteIE})"; }
 }*/
 /* ============================================================= */
@@ -7841,7 +7841,6 @@ h4,
 .table thead > tr > th,
 .table tbody > tr > td {
   background-clip: padding-box;
-  border: 0;
   position: relative;
   vertical-align: middle;
 }
@@ -7893,7 +7892,9 @@ input[type="radio"] {
   display: inline;
 }
 .block_declaration {
-  height: 255px;
+  height: 273px;
+  display:flex;
+  flex-direction: column;
 }
 .block_declaration .panel-body {
   height: 88px;
@@ -8011,6 +8012,7 @@ input[type="radio"] {
   color: #ffffff;
   float: left;
   height: 82px;
+  max-width: 300px;
   line-height: 82px;
   position: relative;
   text-transform: uppercase;
@@ -8601,11 +8603,8 @@ ul.organisation-list-wait {
   opacity: 0.7;
 }
 tr.bootstrap-switch-off {
-  opacity: 0.4;
+  opacity: 0.7;
   cursor: pointer;
-}
-tr.bootstrap-switch-off td {
-  text-decoration: line-through;
 }
 tr.bootstrap-switch-on {
   cursor: pointer;
@@ -8709,4 +8708,151 @@ tr.bootstrap-switch-on {
 }
 .typeahead .dropdown-item {
   overflow: hidden;
+}
+
+
+
+.block_declaration.panel-default,
+.block_declaration.panel-default > .panel-body,
+.block_declaration.panel-primary.panel-irrigue,
+.block_declaration.panel-primary.panel-irrigue > .panel-body,
+.block_declaration.panel-primary.panel-irrigable,
+.block_declaration.panel-primary.panel-irrigable > .panel-body {
+    display:flex;
+    flex-direction: column;
+}
+
+.block_declaration.panel-default > .panel-body,
+.block_declaration.panel-primary.panel-irrigue > .panel-body {
+    justify-content: flex-start;
+    height: 65%;
+}
+
+.block_declaration.panel-default,
+.block_declaration.panel-primary.panel-irrigue,
+.block_declaration.panel-primary.panel-irrigable {
+    justify-content: space-between;
+}
+
+.block_declaration.panel-primary.panel-irrigue > .panel-heading > .panel-title,
+.block_declaration.panel-default > .panel-heading > .panel-title {
+    font-size: 17px;
+}
+
+.block_declaration.panel-default > .panel-heading,
+.block_declaration.panel-primary.panel-irrigue > .panel-heading,
+.block_declaration.panel-primary.panel-irrigable > .panel-heading {
+    margin: 0 20px;
+    padding: 20px 0 10px 0;
+    height: 68px;
+}
+
+.block_declaration.panel-default > .panel-heading,
+.block_declaration.panel-primary.panel-irrigue > .panel-heading {
+    border-color:#6e6e6e;
+}
+
+.block_declaration.panel-primary.panel-irrigue > .panel-heading {
+    border-color:#2c4a48;
+}
+
+.block_declaration.panel-default,
+.block_declaration.panel-default > .panel-heading {
+    background-color: #fffbde;
+}
+
+.block_declaration.panel-default > .panel-body > .actions {
+    margin: 0.8em 0;
+}
+
+.block_declaration.panel-primary.panel-irrigue > .panel-body > .actions {
+    margin: 1.1em 0;
+}
+
+.block_declaration.panel-default > .panel-body > .actions > .btn,
+.block_declaration.panel-primary.panel-irrigue > .panel-body > .actions > .btn-default {
+    padding: 10px 0;
+    font-size: 13.5px;
+    border-radius: 6px;
+}
+
+.block_declaration.panel-primary.panel-irrigable > .panel-body > .actions {
+    display: flex;
+	flex-direction: column;
+	align-items: end;
+	margin-top: 4px;
+	height: inherit;
+	justify-content: space-evenly;
+}
+
+
+.block_declaration.panel-primary.panel-irrigable > .panel-body > .actions > .btn-primary {
+	color: #2c4a48;
+	background-color: #a1bb39;
+	border-color: #74757a;
+	padding: 9px 5px;
+}
+
+.block_declaration.panel-primary.panel-irrigable > .panel-body > .actions > .btn-xs {
+	color: #ffffff;
+	background-color: #cb5748;
+	border-color: #c24737;
+	float: right !important;
+	width: 158px;
+	padding: 1px 5px;
+}
+
+
+
+.block_declaration.panel-primary.panel-irrigue,
+.block_declaration.panel-primary.panel-irrigue > .panel-heading {
+    background-color: #b9cf62;
+}
+
+.block_declaration.panel-primary.panel-irrigue > .panel-heading,
+.block_declaration.panel-primary.panel-irrigue > .panel-body {
+    color: #2c4a48;
+}
+
+.block_declaration.panel-primary.panel-irrigue > .panel-body,
+.block_declaration.panel-primary.panel-irrigable > .panel-body {
+    height: 68%;
+}
+
+.block_declaration.panel-primary.panel-irrigue > .panel-body > .actions > .btn {
+    color: #ffffff;
+    background-color: #2c4a48;
+    border-color: #0c1413;
+}
+
+.block_declaration.panel-primary.panel-irrigue > .panel-body > .actions > .btn:hover {
+    color: #ffffff;
+    background-color: #1d302f;
+    border-color: #0c1413;
+}
+
+.panel-bottom-documents {
+    background-color: #f5f5f5;
+    margin-top: 29px;
+    border-top: 1px solid #dddddd;
+}
+
+.panel-bottom-documents-demarrage {
+    margin-top: -5px;
+}
+
+.panel-bottom-documents-etape {
+    margin-top: 9px;
+}
+
+
+code {
+    color: #2c4a48;
+    background-color: #e0f0d9;
+}
+
+.modal-demande {
+    hr {
+      margin: 20px auto 15px;
+    }
 }

@@ -1,13 +1,22 @@
 all:
   configuration:
     drev:
-      prelevements: true
       mentions_complementaire: false
       import_with_mentions_complementaire: false
       denomination_auto: false
       exploitation_save: true
       validation_odg: false
+      notif_pour_approbation: false
       cgu: false
       etape_superficie: true
+      saisie_superficie_revendique: true
       dr_douane_required: true
       degustation: false
+      engagement_pdf: false
+      engagement_bulletin_analyse: false
+      logement_adresse: true
+      logement_chais: false
+      send_email_operateur: true
+      send_to_innovagro: false
+      specificites:
+      destination_bib: false

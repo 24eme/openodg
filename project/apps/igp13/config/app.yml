@@ -3,9 +3,17 @@
 
 # default values
 all:
+  routing_context_production_host: 13.igp.vins.24eme.fr
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4
+  organisme:
+    nom: "Syndicat des vins IGP des Bouches-du-Rhône"
+  societe:
+    format_identifiant: "BDR%06d"
   donnees_viticoles:
     regions:
-      NANTES: "IGP13"
+      IGP13: "IGP13"
+  etiquettes: "70x36" #Impression en taille rélle
+  documents:
+    url_officiels: "https://igp.vins.24eme.fr/plus.php?odg=atlantique"

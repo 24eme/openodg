@@ -1,6 +1,15 @@
 all:
   is_secure: true
-  credentials: contacts
+  credentials: [[ADMIN, ADMIN_ODG, contacts]]
+
+search:
+  credentials: [[ADMIN, ADMIN_ODG, contacts, stalker]]
+
+compte_search_csv:
+  credentials: [[ADMIN, ADMIN_ODG, contacts, stalker]]
+
+compte_recherche_avancee:
+  credentials: [[ADMIN, ADMIN_ODG, contacts, stalker]]
 
 visualisation:
   credentials: []

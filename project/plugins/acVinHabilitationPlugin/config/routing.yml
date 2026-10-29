@@ -1,10 +1,15 @@
-habilitation_demande:
-  url: /habilitation_demande
+habilitation:
+  url: /habilitation
+  param: { module: habilitation, action: index }
+  class: HabilitationGeneralRoute
+
+habilitation_demande_liste:
+  url: /habilitation_demande_liste
   param: { module: habilitation, action: indexDemande }
   class: HabilitationGeneralRoute
 
-habilitation:
-  url: /habilitation
+habilitation_liste:
+  url: /habilitation_liste
   param: { module: habilitation, action: indexHabilitation }
   class: HabilitationGeneralRoute
 
@@ -25,6 +30,11 @@ habilitation_declarant:
     type:     object
   requirements:
     sf_method: [get, post]
+
+habilitation_consultation:
+  url: /habilitation/consultation
+  param: { module: habilitation, action: consultation }
+  class: HabilitationGeneralRoute
 
 habilitation_visualisation:
   url: /habilitation/visualisation/:id
@@ -120,3 +130,48 @@ habilitation_demande_commentaire_modification:
     type:     object
   requirements:
     sf_method: [get, post]
+
+certipaq_diff:
+  url: /habilitation/certipaq/:identifiant/diff
+  param: { module: habilitation, action certipaqDiff }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+certipaq_demande_type:
+  url: /habilitation/declarant/:identifiant/certipaq/:demande/type
+  param: { module: habilitation, action certipaqType }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+
+certipaq_demande_request_preview:
+  url: /habilitation/declarant/:identifiant/certipaq/:demande/request/:type
+  param: { module: habilitation, action certipaqDemandeRequest }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+
+certipaq_list_demandes:
+  url: /habilitation/certipaq/demandes
+  param: { module: habilitation, action certipaqDemandes }
+
+certipaq_demande_identification_view:
+  url: /habilitation/certipaq/demande/:request_id/preview
+  param: { module: habilitation, action certipaqDemandeView }
+
+certipaq_demande_identification_documents:
+  url: /habilitation/declarant/:identifiant/certipaq/:demande/documents/:request_id
+  param: { module: habilitation, action certipaqDemandeDocuments }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+

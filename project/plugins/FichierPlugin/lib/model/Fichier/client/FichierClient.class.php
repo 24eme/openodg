@@ -1,9 +1,24 @@
 <?php
 
 class FichierClient extends acCouchdbClient {
+
+    const CATEGORIE_DR = "Dr";
+    const CATEGORIE_SV11 = "Sv11";
+    const CATEGORIE_SV12 = "Sv12";
+    const CATEGORIE_DREV = "Drev";
+    const CATEGORIE_IDENTIFICATION = "Identification";
+    const CATEGORIE_DEGUSTATION = "Degustation";
+    const CATEGORIE_FACTURE = "Facture";
+    const CATEGORIE_CHGTDENOM = "ChgtDenom";
+    const CATEGORIE_OI = "OI";
+    const CATEGORIE_DI = "DI";
+    const CATEGORIE_PLAN_DE_CAVE = "Plan de cave";
+    const CATEGORIE_BULLETIN_DANALYSE = "Bulletin d'Analyse";
+    const CATEGORIE_FICHIER = 'Autre fichier';
+
     public static function getInstance()
     {
-      return acCouchdbManager::getClient("Fichier");
+        return acCouchdbManager::getClient("Fichier");
     }
 
     public function createDoc($identifiant, $papier = false)
@@ -21,22 +36,27 @@ class FichierClient extends acCouchdbClient {
     }
 
     /**
-     * Scrape le site des douanes pour récupérer des documents administratifs
-     * et les converti en document CouchDB
-     *
-     * @param Etablissement $etablissement Un objet CouchDB Etablissement
-     * @param string $type Le type de document à scraper
-     * @param string $annee L'année de création du document
-     *
-     * @return false|Un document
-     */
-    public function scrapeAndSaveFiles($etablissement, $type, $annee)
+    * Scrape le site des douanes pour récupérer des documents administratifs
+    * et les converti en document CouchDB
+    *
+    * @param Etablissement $etablissement Un objet CouchDB Etablissement
+    * @param string $type Le type de document à scraper
+    * @param string $annee L'année de création du document
+    *
+    * @return false|Un document
+    */
+    public function scrapeAndSaveFiles($etablissement, $type, $annee, $scrap = true, $context = null, $withmetayer = true)
     {
-        $etablissements = $etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
+        $etablissements = [$etablissement];
+        if ($withmetayer) {
+            $etablissements = $etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
+        }
         $fichiers = array();
         foreach($etablissements as $etblmt) {
-            $this->scrapeFiles($etblmt, $type, $annee);
-            if (!$files = $this->getScrapyFiles($etblmt, strtolower($type), $annee)) {
+            if($scrap) {
+                $this->scrapeFiles($etblmt, $type, $annee);
+            }
+            if (!$files = $this->getScrapyFiles($etblmt, strtolower($type), $annee, false, $context)) {
                 continue;
             }
             $client = $this->getClientFromType($type);
@@ -50,9 +70,10 @@ class FichierClient extends acCouchdbClient {
             try {
                 foreach ($files as $file) {
                     $fichier->storeFichier($file);
+                    unlink($file);
                 }
                 $fichier->save();
-            //On convertit l'exception en quelque chose de traitable par sf
+                //On convertit l'exception en quelque chose de traitable par sf
             } catch (Exception $e) {
                 throw new sfException($e->getMessage());
                 return;
@@ -70,75 +91,68 @@ class FichierClient extends acCouchdbClient {
             SV12CsvFile::CSV_TYPE_SV12,
         );
 
-    	if (!in_array($type, $types)) {
-    		throw new sfException("$type is not allowed for scrapy file");
-    	}
-
-        $scrapybin = sfConfig::get("app_scrapy_bin");
-        $scrapydocs = sfConfig::get("app_scrapy_documents");
-
-        if (!preg_match('/^[0-9]{4}$/', $annee)) {
-            throw new sfException("$annee is not a valid year for scrapy file");
+        if (!in_array($type, $types)) {
+            throw new sfException("$type is not allowed for scrapy file");
         }
 
-        if (!$etablissement->cvi || !preg_match('/^[0-9A]{5}[0-9A-Z]{5}$/i', $etablissement->cvi)) {
-            throw new sfException("CVI : ".$etablissement->cvi." is not a valid cvi for scrapy file");
-        }
+        $retour = [];
 
-        $t = strtolower($type);
-        $cvi = $etablissement->cvi;
-        exec("bash $scrapybin/download_douane.sh $t $annee $cvi 1>&2");
+        return ProdouaneScrappyClient::scrape($type, $annee, $etablissement->cvi, $retour);
     }
 
-    private function getScrapyFiles($etablissement, $type, $annee)
+    public function getScrapyFiles($etablissement, $type, $annee, $listonly = false, $context = null)
     {
-    	$files = array();
-    	$directory = new DirectoryIterator(sfConfig::get('app_scrapy_documents'));
-    	$iterator = new IteratorIterator($directory);
-    	$regex = new RegexIterator($directory, '/^'.$type.'-'.$annee.'-'.$etablissement->cvi.'\..+$/i', RegexIterator::MATCH);
-    	foreach($regex as $file) {
-    		$files[] = $file->getPathname();
-    	}
-    	return $files;
+        $retour = [];
+
+        if ($listonly) {
+            return ProdouaneScrappyClient::list($type, $annee, $etablissement->cvi, $retour);
+        }
+        return ProdouaneScrappyClient::listAndSaveInTmp($type, $annee, $etablissement->cvi, $retour);
     }
 
     public function findByArgs($type, $identifiant, $annee)
     {
 
-    	return $this->getClientFromType($type)->findByArgs($identifiant, $annee);
+        return $this->getClientFromType($type)->findByArgs($identifiant, $annee);
     }
 
     /**
-     * Retourne une instance d'un client en fonction du type
-     *
-     * @param string $type Le type de document
-     *
-     * @return Un client
-     */
+    * Retourne une instance d'un client en fonction du type
+    *
+    * @param string $type Le type de document
+    *
+    * @return Un client
+    */
     public function getClientFromType($type)
     {
-    	switch ($type) {
-    		case 'DR':
-    			$client = DRClient::getInstance();
-    			break;
-    		case 'SV11':
-    			$client = SV11Client::getInstance();
-    			break;
-    		case 'SV12':
-    			$client = SV12Client::getInstance();
-    			break;
-    		default:
-    			$client = null;
-    	}
-    	return $client;
+        switch ($type) {
+            case 'DR':
+            $client = DRClient::getInstance();
+            break;
+            case 'SV11':
+            $client = SV11Client::getInstance();
+            break;
+            case 'SV12':
+            $client = SV12Client::getInstance();
+            break;
+            default:
+            $client = null;
+        }
+        return $client;
     }
 
     public function getCategories() {
 
         return array(
-            "Dr" => "Dr",
-            "Drev" => "Drev",
-            "Identification" => "Identification"
+            self::CATEGORIE_IDENTIFICATION => "Habilitation / Identification",
+            self::CATEGORIE_OI => "OI",
+            self::CATEGORIE_BULLETIN_DANALYSE => "Bulletin d'Analyse",
+            self::CATEGORIE_DI => "DI",
+            self::CATEGORIE_PLAN_DE_CAVE => "Plan de cave",
         );
+    }
+
+    public function getAppConfigUrlDocumentsOfficiels() {
+        return sfConfig::get('app_documents_url_officiels', null);
     }
 }

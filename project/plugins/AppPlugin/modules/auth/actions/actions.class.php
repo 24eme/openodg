@@ -43,11 +43,17 @@ class authActions extends sfActions {
     }
 
     public function executeUsurpation(sfWebRequest $request) {
-        $compte = CompteClient::getInstance()->find("COMPTE-".$request->getParameter('identifiant'));
-        $societe = $compte->getSociete();
-        $this->getUser()->usurpationOn($societe->identifiant, $request->getReferer());
+        if(!$this->getUser()->isAdminODG()) {
+            throw new sfError403Exception();
+        }
 
-        $etablissement = $societe->getEtablissementPrincipal();
+        $compte = CompteClient::getInstance()->find("COMPTE-".$request->getParameter('identifiant'));
+        $identifiant = $compte->getSociete()->identifiant;
+        if($compte->compte_type == CompteClient::TYPE_COMPTE_INTERLOCUTEUR) {
+            $identifiant = $compte->identifiant;
+        }
+
+        $this->getUser()->usurpationOn($identifiant, $request->getReferer());
 
         return $this->redirect('common_accueil');
     }

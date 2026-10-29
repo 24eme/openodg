@@ -1,0 +1,52 @@
+all:
+  configuration:
+    conditionnement:
+      exploitation_save: true
+      validation_odg: false
+      logement_adresse: true
+      contenances:
+        bouteille:
+          "Contenant inconnu": ""
+          "Bouteille 10 cl":  0.001
+          "Bouteille 12,5 cl": 0.00125
+          "Bouteille 18,7 cl": 0.00187
+          "Bouteille 20 cl": 0.002
+          "Bouteille 25 cl": 0.0025
+          "Bouteille 35 cl": 0.0035
+          "Bouteille 37,5 cl": 0.00375
+          "Bouteille 50 cl": 0.005
+          "Bouteille 62 cl": 0.0062
+          "Bouteille 70 cl": 0.007
+          "Bouteille 75 cl": 0.0075
+          "Bouteille 99 cl": 0.0099
+          "Bouteille 100 cl": 0.01
+          "Bouteille 150 cl": 0.015
+          "Bouteille 175 cl": 0.0175
+          "Bouteille 200 cl": 0.02
+          "Bouteille 225 cl": 0.0225
+          "Bouteille 300 cl": 0.03
+          "Bouteille 500 cl": 0.05
+          "Bouteille 550 cl": 0.055
+          "Bouteille 600 cl": 0.06
+          "Bouteille 800 cl": 0.08
+          "Bouteille 1000 cl": 0.1
+        bib:
+          "BIB 1,5l": 0.015
+          "BIB 2l": 0.02
+          "BIB 2,25l": 0.0225
+          "BIB 3l": 0.03
+          "BIB 4l": 0.04
+          "BIB 5l": 0.05
+          "BIB 5,5l": 0.055
+          "BIB 6l": 0.06
+          "BIB 8l": 0.08
+          "BIB 10l": 0.1
+          "BIB 15l": 0.15
+          "BIB 20l": 0.2
+          "BIB 21l": 0.21
+          "BIB 22l": 0.22
+          "BIB 25l": 0.25
+          "BIB 30l": 0.3
+          "BIB 32L": 0.32
+          "BIB 33L": 0.33
+      all_produits: true

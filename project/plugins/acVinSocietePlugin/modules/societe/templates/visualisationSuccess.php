@@ -1,6 +1,6 @@
 <?php use_helper('Compte') ?>
 <ol class="breadcrumb">
-    <?php if(!$sf_user->hasCredential('contacts')): ?>
+    <?php if(!$sf_user->hasContact()): ?>
         <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>">Contacts</a></li>
     <?php else: ?>
         <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
@@ -9,14 +9,14 @@
 </ol>
 
 <div class="row">
-    <div class="col-xs-8">
+    <div class="col-xs-12 col-sm-8">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="row">
-                    <div class="col-xs-9">
+                    <div class="col-xs-8 col-sm-9">
                         <h4><span class="<?php echo comptePictoCssClass($societe->getRawValue()) ?>"></span> Societe n° <?php echo $societe->identifiant; ?></h4>
                     </div>
-                    <div class="col-xs-3 text-muted text-right">
+                    <div class="col-xs-4 col-sm-3 text-muted text-right">
                         <?php if($modifiable): ?>
                         <div class="btn-group">
                             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Modifier <span class="caret"></span></a>
@@ -53,7 +53,7 @@
                             <?php endif; ?>
                             <?php if ($societe->siret): ?>
                                 <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">SIRET&nbsp;:</div>
-                                <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo formatSIRET($societe->siret); ?></div>
+                                <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo formatSIRET($societe->siret); ?>&nbsp;&nbsp;<a href="https://annuaire-entreprises.data.gouv.fr/entreprise/<?php echo substr($societe->siret, 0, 9) ?>" class="text-muted" style="text-decoration: none;" target="_blank" title="Voir sur l'annuaire des entreprise (annuaire-entreprises.data.gouv.fr)"><small class="glyphicon glyphicon-eye-open"></small></a></div>
                             <?php endif; ?>
                             <?php if ($societe->code_naf): ?>
                                 <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Code naf&nbsp;:</div>
@@ -73,17 +73,49 @@
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Télédéclaration</strong></h5>
                 <?php include_partial('compte/visualisationLogin', array('compte' => $societe->getMasterCompte())); ?>
                 <hr />
+                <?php if ($societe->commentaire && $modifiable) : ?>
+                <h5 style="margin-bottom: 15px; margin-top: 0px;"><strong>🗣 Commentaire️</strong></h5>
+                <?php foreach ($societe->getCommentaires()->getRawValue() as $commentaire): ?>
+                    <p><?php echo '🗨️ ' . htmlspecialchars_decode($societe->activateLinks($commentaire)) ?></p>
+                <?php endforeach; ?>
+                <hr />
+                <?php endif; ?>
+                <?php if (MandatSepaConfiguration::getInstance()->isActive()): ?>
+                <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Coordonnées bancaires</strong></h5>
+                <?php if ($mandatSepa): ?>
+                  <div class="row">
+                    <div style="margin-bottom: 5px;" class="col-xs-1  text-muted">RUM&nbsp;</div>
+                    <div style="margin-bottom: 5px;" class="col-xs-5"><?php echo $mandatSepa->debiteur->identifiant_rum; ?></div>
+                    <div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Mandat généré&nbsp;</div>
+                    <div style="margin-bottom: 5px;" class="col-xs-3">
+                      <a href="<?php echo url_for('mandatsepa_pdf', $mandatSepa) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;PDF</a>
+                    </div>
+                  </div>
+                  <div class="row" style="margin-top: 5px;">
+                    <div style="margin-bottom: 5px;" class="col-xs-1  text-muted">IBAN&nbsp;</div>
+                    <div style="margin-bottom: 5px;" class="col-xs-5"><?php echo $mandatSepa->debiteur->iban; ?></div>
+                    <div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Mandat signé&nbsp;</div>
+                    <div style="margin-bottom: 5px;" class="col-xs-3"><input type="checkbox" data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" class="bsswitch ajax" data-size="mini"<?php if ($mandatSepa->is_signe): ?> checked="checked" disabled<?php endif; ?> onchange="document.location='<?php echo url_for('societe_mandat_sepa_switch_signe', array('identifiant' => $societe->identifiant)); ?>'" /></div>
+                  </div>
+                  <div class="row" style="margin-top: 5px;">
+                    <div style="margin-bottom: 5px;" class="col-xs-1 text-muted">BIC&nbsp;</div>
+                    <div style="margin-bottom: 5px;" class="col-xs-5"><?php echo $mandatSepa->debiteur->bic; ?></div>
+                    <?php if ($mandatSepa->is_signe): ?>
+                    <div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Prélèvement actif&nbsp;</div>
+                    <div style="margin-bottom: 5px;" class="col-xs-3"><input type="checkbox" data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" class="bsswitch ajax" data-size="mini"<?php if($mandatSepa->is_actif): ?> checked="checked"<?php endif; ?> onchange="document.location='<?php echo url_for('societe_mandat_sepa_switch_actif', array('identifiant' => $societe->identifiant)); ?>'" /></div>
+                    <?php endif; ?>
+                  </div>
+                <?php else: ?>
+                  <p class="text-muted">Aucun mandat de prélèvement SEPA n'a été saisi</p>
+                <?php endif; ?>
+                <hr />
+                <?php endif; ?>
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
                 <?php include_partial('compte/visualisationTags', array('compte' => $societe->getMasterCompte(), 'modifiable' => $modifiable)); ?>
-                <?php if ($societe->commentaire && $modifiable) : ?>
-                <hr />
-                <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
-                <pre><?php echo html_entity_decode($societe->commentaire); ?></pre>
-                <?php endif; ?>
             </div>
         </div>
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-12 col-sm-4">
         <?php include_component('societe', 'sidebar', array('societe' => $societe, 'activeObject' => $societe, 'modifiable' => $modifiable)); ?>
     </div>
 </div>

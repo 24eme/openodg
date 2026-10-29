@@ -39,13 +39,15 @@ class updateTagsFromHabilitationsTask extends sfBaseTask {
     }
 
     protected function execute($arguments = array(), $options = array()) {
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $context = sfContext::createInstance($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
+
+        $updated = array();
         $etbsWithHabilitations = HabilitationClient::getInstance()->getAllEtablissementsWithHabilitations();
-        foreach ($etbsWithHabilitations as $key => $etbWithHabilitation) {
-          $h = HabilitationClient::getInstance()->getLastHabilitation($etbWithHabilitation);
-          $etb = EtablissementCLient::getInstance()->find($h->getIdentifiant());
+        foreach ($etbsWithHabilitations as $etbWithHabilitation => $habilitation_id) {
+          $h = HabilitationClient::getInstance()->find($habilitation_id);
+          $etb = $h->getEtablissementObject();
           $compte = CompteClient::getInstance()->find($etb->getCompte());
           $compte->tags->remove('produit');
           $compte->tags->add('produit');
@@ -53,6 +55,10 @@ class updateTagsFromHabilitationsTask extends sfBaseTask {
           $compte->tags->add('activite');
           $compte->tags->remove('statuts');
           $compte->tags->add('statuts');
+          $comptesociete = $etb->getSociete()->getMasterCompte();
+          $comptesociete->tags->remove('produit');
+          $comptesociete->tags->remove('activite');
+          $comptesociete->tags->remove('statuts');
           $activiteTags = array();
           $statutsTags = array();
           foreach ($h->getProduits(false) as $prod) {
@@ -81,7 +87,36 @@ class updateTagsFromHabilitationsTask extends sfBaseTask {
             $compte->addTag("statuts", KeyInflector::unaccent(str_replace("'","",$statutTags)));
             echo "affecte au compte ".$compte->_id." le statut ".$statutTags."\n";
           }
+          $updated[$compte->_id] = 1;
+          $updated[$comptesociete->_id] = 1;
           $compte->save();
+          $comptesociete->save();
+          if (++$temporise % 100 === 0) {
+              sleep(10);
+          }
         }
+
+        //On repère les comptes qui ont des tags activités
+        //si ils n'ont pas été mis à jour, on supprime ces tags
+        $qs = new acElasticaQueryQueryString("doc.tags.activite:*");
+        $q = new acElasticaQuery();
+        $q->setQuery($qs);
+        $q->setLimit(100000);
+        $index = acElasticaManager::getType('COMPTE');
+        $resset = $index->search($q);
+        $results = $resset->getResults();
+        foreach($results as $r) {
+            $id = $r->doc['_id'];
+            if($updated[$id]) {
+                continue;
+            }
+            $compte = CompteClient::getInstance()->find($id);
+            $compte->tags->remove('produit');
+            $compte->tags->remove('activite');
+            $compte->tags->remove('statuts');
+            $compte->save();
+            echo "tags supprimés pour le compte $id\n";
+        }
+
       }
 }

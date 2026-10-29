@@ -12,7 +12,7 @@ Rappel des documents restant à envoyer :
 
 Le ou les document(s) annexes peuvent nous être envoyés par mail (<contact@odg-cotesdeprovence.com>) ou par voie postale :
 
-Syndicat des Vins Côtes de Provence
+Syndicats des Vins de Provence
 DN7
 83460 Les Arcs
 CS 60093

@@ -29,6 +29,7 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
         }
         $this->setWidget('nature_inao', new bsWidgetFormChoice(array('choices' => self::getNaturesInao())));
         $this->setWidget('no_accises', new bsWidgetFormInput());
+        $this->setWidget('num_interne', new bsWidgetFormInput());
         $this->setWidget('commentaire', new bsWidgetFormTextarea(array(), array('style' => 'width: 100%;resize:none;')));
         $this->setWidget('site_fiche', new bsWidgetFormInput());
 
@@ -39,6 +40,7 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
           $this->widgetSchema->setLabel('region', 'Région viticole');
         }
         $this->widgetSchema->setLabel('no_accises', "N° d'Accise");
+        $this->widgetSchema->setLabel('num_interne', "N° interne");
         $this->widgetSchema->setLabel('commentaire', 'Commentaire');
         $this->widgetSchema->setLabel('site_fiche', 'Site Fiche Publique');
 
@@ -50,6 +52,7 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
         }
         $this->setValidator('site_fiche', new sfValidatorString(array('required' => false)));
         $this->setValidator('no_accises', new sfValidatorString(array('required' => false)));
+        $this->setValidator('num_interne', new sfValidatorString(array('required' => false)));
         $this->setValidator('commentaire', new sfValidatorString(array('required' => false)));
 
         if (!$this->etablissement->isCourtier()) {
@@ -86,6 +89,9 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
         if (!$this->getObject()->nom) {
         	$this->setDefault('nom', $this->getObject()->getSociete()->getRaisonSociale());
         }
+        if ($this->getObject()->nature_inao) {
+            $this->setDefault('nature_inao', array_search($this->getObject()->nature_inao, EtablissementClient::$natures_inao_libelles));
+        }
     }
 
     public function getFamilles()
@@ -94,11 +100,11 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
     }
 
     public static function getRegions() {
-        if(count(EtablissementClient::getRegions()) <= 1){
-          return EtablissementClient::getRegions();
+        if(count(EtablissementClient::getSecteurs()) <= 1){
+          return EtablissementClient::getSecteurs();
         }
 
-        return array_merge(array("" => ""),EtablissementClient::getRegions());
+        return array_merge(array("" => ""),EtablissementClient::getSecteurs());
     }
 
     public static function getNaturesInao() {
@@ -110,6 +116,9 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
     }
 
     public function doUpdateObject($values) {
+        if (isset($values['nature_inao']) && $values['nature_inao']) {
+            $values['nature_inao'] = EtablissementClient::$natures_inao_libelles[$values['nature_inao']];
+        }
         parent::doUpdateObject($values);
 
         if (!$this->etablissement->isCourtier()) {

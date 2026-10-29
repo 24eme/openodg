@@ -144,6 +144,28 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         }
     }
 
+    public function getProduitsInterGenre($date = null, $interpro = "INTERPRO-declaration", $departement = null, $attributes = array()) {
+        $prods = $this->getProduits($date, $interpro, $departement, $attributes);
+        foreach(['TRANQ', 'MOU', 'EFF'] as $s) {
+            if (strpos($this->getHash(), $s) === false) {
+                continue;
+            }
+            foreach(['TRANQ', 'MOU', 'EFF'] as $d) {
+                $d_hash = str_replace('/'.$s.'/', '/'.$d.'/', $this->getHash());
+                if ($this->getHash() != $d_hash) {
+                    if ($s == $d) {
+                        continue;
+                    }
+                    if ($this->getDocument()->exist($d_hash)) {
+                        $prods2add = $this->getDocument()->get($d_hash)->getProduits($date, $interpro, $departement, $attributes);
+                        $prods = array_merge($prods, $prods2add);
+                    }
+                }
+            }
+        }
+        return $prods;
+    }
+
     public function getProduits($date = null, $interpro = "INTERPRO-declaration", $departement = null, $attributes = array()) {
         if (!$date) {
             $date = date('Y-m-d');
@@ -287,21 +309,15 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function getLibelleFormat($labels = array(), $format = "%format_libelle%", $label_separator = ", ") {
 
-        $key = ($this->getDocument()->isEffervescentVindebaseActivate() && $this->isEffervescentNode())? $format.'_vindebase' : $format;
-
-        if (!array_key_exists($key, $this->libelle_format)) {
+        if (!array_key_exists($format, $this->libelle_format)) {
             $format_libelle = $this->getFormatLibelleCalcule();
             $formatResolu = str_replace("%format_libelle%", $format_libelle, $format);
             $libelle = $this->formatProduitLibelle($formatResolu);
-          //  var_dump($this->getDocument()->isEffervescentVindebaseActivate()); exit;
-            if($this->getDocument()->isEffervescentVindebaseActivate() && $this->isEffervescentNode()){
-                  $libelle= "Vin de base ".$libelle;
-            }
             $libelle = $this->getDocument()->formatLabelsLibelle($labels, $libelle, $label_separator);
-            $this->libelle_format[$key] = trim($libelle);
+            $this->libelle_format[$format] = trim($libelle);
         }
 
-        return $this->libelle_format[$key];
+        return $this->libelle_format[$format];
     }
 
     public function formatProduitLibelle($format = "%g% %a% %m% %l% %co% %ce%") {
@@ -725,7 +741,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     public function getAttribut($name, $default = null) {
         if (!$this->exist('attributs') || !$this->attributs->exist($name)) {
 
-            return $default;
+            return $this->getParentNode()->getAttribut($name, $default);
         }
 
 
@@ -742,8 +758,21 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getRendementByKey('rendement_conseille');
     }
 
+    public function getRendementDrL5() {
+
+        return $this->getRendementByKey('rendement_dr_l5');
+    }
+
     public function getRendementDR() {
-        return $this->getRendementByKey('rendement_dr');
+        if($this->exist('attributs') && $this->attributs->exist('rendement_dr')){
+          return $this->getRendementByKey('rendement_dr');
+        }
+        return null;
+    }
+
+    public function getRendementDrL15() {
+
+        return $this->getRendementByKey('rendement_dr_l15');
     }
 
     public function getRendementNoeud() {
@@ -802,16 +831,45 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     public function existRendementVci() {
-
+        if (!$this->hasRendementVciTotal()) {
+            return false;
+        }
         return $this->existRendementByKey('rendement_vci');
     }
 
+    public function getRendementVsi() {
+        if ($this->hasRendementVciTotal()) {
+            return null;
+        }
+    	return $this->getRendementByKey('rendement_vci');
+    }
+
     public function getRendementVci() {
-        return $this->getRendementByKey('rendement_vci');
+        if (!$this->hasRendementVciTotal()) {
+            return null;
+        }
+    	return $this->getRendementByKey('rendement_vci');
     }
 
     public function getRendementVciTotal() {
         return $this->getRendementByKey('rendement_vci_total');
+    }
+
+    public function hasRendementReserveInterpro() {
+        return $this->hasRendementByKey('rendement_reserve_interpro');
+    }
+
+    public function getRendementReserveInterpro() {
+        return $this->getRendementByKey('rendement_reserve_interpro');
+    }
+
+    public function hasRendementReserveInterproMin() {
+        return $this->hasRendementByKey('rendement_reserve_interpro_min');
+    }
+
+
+    public function getRendementReserveInterproMin() {
+        return $this->getRendementByKey('rendement_reserve_interpro_min') * 1;
     }
 
     public function isActif()
@@ -819,9 +877,16 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     	return ($this->getRendement() <= 0 || $this->getRendementVci() == -1 || $this->getRendementVciTotal() == -1)? false : true;
     }
 
+    public function hasRendementVsi() {
+        if ($this->hasRendementVciTotal()) {
+            return false;
+        }
+    	return $this->hasRendementByKey('rendement_vci');
+    }
+
     public function hasRendementVci() {
 
-        return $this->hasRendementByKey('rendement_vci');
+        return $this->hasRendementVciTotal() && $this->hasRendementByKey('rendement_vci');
     }
 
     public function hasRendementVciTotal() {
@@ -1000,14 +1065,17 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $couleurs;
     }
 
+    public function hasLieu() {
+        return false;
+    }
+
+    public function hasCouleur() {
+        return false;
+    }
+
     public function hasLieuEditable() {
 
         return $this->getAppellation()->hasLieuEditable();
-    }
-
-    public function getCahierDesCharges() {
-
-        return $this->getAppellation()->getCahierDesCharges();
     }
 
     public function hasManyLieu() {
@@ -1037,7 +1105,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function canHaveVci() {
 
-        return true;
+        return $this->hasRendementVci();
     }
 
     public function isEffervescentNode(){
@@ -1074,6 +1142,37 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         }
 
         return false;
+    }
+
+    public function getCepagesAutorises() {
+        if($this->hasCepagesAutorises()) {
+            return $this->_get('cepages_autorises');
+        }
+        $produits = array();
+        foreach($this->getProduits() as $p) {
+            $produits = array_merge($produits, $p->getCepage()->getCepagesAutorises()->toArray());
+        }
+        $produits = array_unique($produits);
+        return $produits;
+    }
+
+    public function setCepagesAutorises($cepages_autorises_str){
+        if($this->hasCepagesAutorises()){
+            $this->remove('cepages_autorises');
+            $this->add('cepages_autorises');
+            $cepages_autorises = explode(',',$cepages_autorises_str);
+            $c_a_new = array();
+            foreach ($cepages_autorises as $cepage_autorise) {
+                $c_a = strtoupper(trim($cepage_autorise));
+                if($c_a){
+                    if(!preg_match('/^[A-Z\.\ Ç0-9\-ÉéèÈêÊëËàÀÔôÜüûÛùÙÏïŒœ\=\(\)\'’]+$/',$c_a)){
+                        throw new sfException("Le cépage autorisé $c_a n'a pas un bon format. ");
+                    }
+                    $c_a_new[] = $c_a;
+                }
+            }
+            $this->_set('cepages_autorises',$c_a_new);
+        }
     }
 
 }

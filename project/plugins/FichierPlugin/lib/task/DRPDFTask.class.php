@@ -26,11 +26,11 @@ EOF;
     protected function execute($arguments = array(), $options = array())
     {
         // initialize the database connection
-        $databaseManager = new sfDatabaseManager($this->configuration);
+        $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $dr = FichierClient::getInstance()->find($arguments['dr_id']);
         $file_path = $arguments['file_path'];
-
+        umask(0);
         mkdir(dirname($file_path), 0755, true);
 
         if(!$dr) {

@@ -27,14 +27,17 @@ EOF;
   protected function execute($arguments = array(), $options = array())
   {
     // initialize the database connection
-    $databaseManager = new sfDatabaseManager($this->configuration);
+    $databaseManager = new sfDatabaseManager($this->configuration);$this->configuration->loadMultiDatabases(null, $databaseManager);
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
+    $context = sfContext::createInstance($this->configuration);
 
     if(!$options['factureid']) {
 	throw new sfException('factureid neeeded');
     }
 
     $facture = FactureClient::getInstance()->find($options['factureid']);
+    echo $facture->_id." : ";
     $avoir = FactureClient::getInstance()->defactureCreateAvoirAndSaveThem($facture);
+    echo "avoir ".$avoir->_id." created\n";
   }
 }

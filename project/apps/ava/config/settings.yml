@@ -21,10 +21,11 @@ test:
     web_debug:              false
     no_script_name:         false
     etag:                   false
+    logging_enabled:        false
 
 all:
   .settings:
-    enabled_modules:        [default, global, Email, piece, drev, compte, compte_teledeclarant, etablissement, declaration, drevmarc, travauxmarc, parcellaire, parcellaireCremant, intentionCremant, tirage, fichier, degustation, constats, facturation, export, generation, registrevci, abonnement]
+    enabled_modules:        [default, global, Email, piece, drev, compte, compte_teledeclarant, etablissement, declaration, drevmarc, travauxmarc, parcellaireAffectation, parcellaireAffectationCremant, intentionCremant, tirage, fichier, degustation, constats, facturation, export, generation, registrevci, abonnement, habilitation, parcellaire, produit, parcellaireIrrigable, parcellaireIrrigue]
     # Form security secret (CSRF protection)
     csrf_secret:            false
 

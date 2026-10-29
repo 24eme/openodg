@@ -3,16 +3,16 @@
 class parcellaireIntentionAffectationActions extends sfActions {
 
 
-    
+
     public function executeEdit(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $this->etablissement);
-    
-        $this->papier = 1;
-        $this->campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() + 1);
-    
-        $this->parcellaireIntentionAffectation = ParcellaireIntentionAffectationClient::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne, $this->papier);
 
+        $this->papier = 1;
+        $this->periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() * 1);
+
+        $this->parcellaireIntentionAffectation = ParcellaireIntentionAffectationClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode, $this->papier);
+        $this->parcellaireIntentionAffectation->updateParcelles();
         $this->form = new ParcellaireIntentionAffectationProduitsForm($this->parcellaireIntentionAffectation);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -28,12 +28,12 @@ class parcellaireIntentionAffectationActions extends sfActions {
         }
 
         $this->form->save();
-        
+
         $this->getUser()->setFlash("notice", "L'identification parcellaire a bien été enregistrée");
-    
-        return $this->redirect('parcellaireintentionaffectation_edit', ['sf_subject' => $this->etablissement, 'campagne' => $this->campagne]);
+
+        return $this->redirect('parcellaireintentionaffectation_edit', ['sf_subject' => $this->etablissement, 'periode' => $this->periode]);
     }
-    
+
     protected function secure($droits, $doc) {
     	if (!ParcellaireSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
 

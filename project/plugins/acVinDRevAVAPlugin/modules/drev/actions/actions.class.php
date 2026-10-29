@@ -1,6 +1,6 @@
 <?php
 
-class drevActions extends sfActions {
+class drevActions/***AVA***/ extends sfActions {
 
     public function executePushDR(sfWebRequest $request) {
         $this->url = $request->getParameter('url');
@@ -78,43 +78,60 @@ class drevActions extends sfActions {
 
     public function executeDr(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+
+        if ($this->drev->hasDROrSV()) {
+
+            return $this->redirect($this->generateUrl('drev_revendication', $this->drev));
+        }
+
         $this->secure(DRevSecurity::EDITION, $this->drev);
     }
 
     public function executeDrRecuperation(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $drev);
-
+        $typedoc = ($drev->isNonRecoltant()) ? 'SV' : 'DR';
         return $this->redirect(sfConfig::get('app_url_dr_recuperation') .
-                        "?" .
-                        http_build_query(array(
-                            'id' => sprintf('DR-%s-%s', $drev->identifiant, $drev->campagne),
-                            'url' => $this->generateUrl('drev_dr_import', $drev, true),
-                        )));
+                    "?" .
+                    http_build_query(array(
+                        'id' => sprintf($typedoc.'-%s-%s', $drev->identifiant, $drev->campagne),
+                        'url' => $this->generateUrl('drev_dr_import', $drev, true),
+                    )));
     }
 
     public function executeDrImport(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        umask(0002);
+        umask(0);
         $cache_dir = sfConfig::get('sf_cache_dir') . '/dr';
         if (!file_exists($cache_dir)) {
-            mkdir($cache_dir);
+            mkdir($cache_dir, 02775);
+            chmod($cache_dir, 02775);
         }
+        chmod($cache_dir, 02775);
 
         if (!$request->getParameter('csv') || !$request->getParameter('pdf')) {
 
             return sfView::SUCCESS;
         }
 
-        file_put_contents($cache_dir . "/DR.csv", base64_decode($request->getParameter('csv')));
-        $this->drev->storeAttachment($cache_dir . "/DR.csv", "text/csv");
+        $typedoc = ($this->drev->isNonRecoltant()) ? 'SV' : 'DR';
 
-        file_put_contents($cache_dir . "/DR.pdf", base64_decode($request->getParameter('pdf')));
-        $this->drev->storeAttachment($cache_dir . "/DR.pdf", "application/pdf");
 
-        $this->drev->updateFromCSV(true, true);
+        if ($request->getParameter('csv')) {
+
+            file_put_contents($cache_dir . "/$typedoc.csv", base64_decode($request->getParameter('csv')));
+            $this->drev->storeAttachment($cache_dir . "/$typedoc.csv", "text/csv");
+        }
+
+        if ($request->getParameter('pdf')) {
+
+            file_put_contents($cache_dir . "/$typedoc.pdf", base64_decode($request->getParameter('pdf')));
+            $this->drev->storeAttachment($cache_dir . "/$typedoc.pdf", "application/pdf");
+        }
+
+        $this->drev->updateFromCIVACsvFile(true, true);
         $this->drev->save();
 
         return $this->redirect($this->generateUrl('drev_revendication', $this->drev));
@@ -140,7 +157,6 @@ class drevActions extends sfActions {
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
-
             return sfView::SUCCESS;
         }
 
@@ -162,12 +178,12 @@ class drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
 
-        if (!$this->drev->isNonRecoltant() && !$this->drev->hasDr() && !$this->drev->isPapier()) {
-
-            return $this->redirect('drev_dr', $this->drev);
+        if($this->drev->isPapier()) {
+            return $this->redirect('drev_revendication', $this->drev);
         }
 
-        return $this->redirect('drev_revendication', $this->drev);
+        return $this->redirect('drev_dr', $this->drev);
+
     }
 
     public function executeRevendicationRecapitulatif(sfWebRequest $request) {
@@ -318,7 +334,7 @@ class drevActions extends sfActions {
     			if ($request->isXmlHttpRequest()) {
     				return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
     			}
-    	
+
     			if ($request->getParameter('redirect', null)) {
     				return $this->redirect('drev_validation', $this->drev);
     			}
@@ -335,7 +351,7 @@ class drevActions extends sfActions {
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
 
         if (!$this->ajoutForm->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            $this->getUser()->setFlash("error", 'Une erreur est survenue.');
 
             return $this->redirect('drev_revendication', $this->drev);
         }
@@ -355,7 +371,7 @@ class drevActions extends sfActions {
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
 
         if (!$this->ajoutForm->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            $this->getUser()->setFlash("error", 'Une erreur est survenue.');
 
             return $this->redirect('drev_revendication', $this->drev);
         }
@@ -422,7 +438,7 @@ class drevActions extends sfActions {
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
 
         if (!$this->ajoutForm->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            $this->getUser()->setFlash("error", 'Une erreur est survenue.');
 
             return $this->redirect('drev_revendication_cepage', $this->noeud);
         }
@@ -437,6 +453,8 @@ class drevActions extends sfActions {
     public function executeDegustationConseil(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
+
+        $this->focus = $request->getParameter("focus");
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_DEGUSTATION))) {
             $this->drev->save();
@@ -510,7 +528,7 @@ class drevActions extends sfActions {
             $error_produit = str_replace($type_error, '', $request->getParameter('error_produit'));
             $this->error_produit = str_replace('-', '_', $error_produit);
             if ($type_error == 'erreur') {
-                $this->getUser()->setFlash("erreur", "Pour supprimer un lot, il suffit de vider la case.");
+                $this->getUser()->setFlash("error", "Pour supprimer un lot, il suffit de vider la case.");
             }
             if ($type_error == 'vigilancewithFlash') {
                 $this->getUser()->setFlash("warning", "Pour supprimer un lot, il suffit de vider la case.");
@@ -565,7 +583,7 @@ class drevActions extends sfActions {
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
 
         if (!$this->ajoutForm->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            $this->getUser()->setFlash("error", 'Une erreur est survenue.');
 
             return $this->redirect('drev_lots', $this->prelevement);
         }
@@ -648,7 +666,6 @@ class drevActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION))) {
@@ -658,14 +675,13 @@ class drevActions extends sfActions {
         $this->drev->cleanDoc();
         $this->validation = new DRevValidation($this->drev);
 
-        $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
-
+        $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getEngagements()));
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
         }
 
-        if (!$this->validation->isValide()) {
+        if (!$this->validation->isValide() && ! $this->getUser()->isAdmin()) {
 
             return sfView::SUCCESS;
         }
@@ -677,11 +693,17 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+
         $documents = $this->drev->getOrAdd('documents');
 
-        foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
+        foreach ($this->validation->getEngagements() as $engagement) {
             $document = $documents->add($engagement->getCode());
-            $document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+            $document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDR()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+            $document->statut = (($engagement->getCode() == DRevDocuments::DOC_SV && $this->drev->hasSV()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+        }
+
+        if($this->form->getValue("commentaire")) {
+            $this->drev->commentaire = $this->form->getValue("commentaire");
         }
 
         if($this->drev->isPapier()) {
@@ -712,6 +734,26 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
     }
 
+    public function executeUpdateCommentaire(sfWebRequest $request)
+    {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->drev);
+
+        $this->drevCommentaireValidationForm = new DRevCommentaireValidationForm($this->drev);
+        $this->drevCommentaireValidationForm->bind($request->getParameter($this->drevCommentaireValidationForm->getName()));
+
+        if (! $this->drevCommentaireValidationForm->isValid()) {
+            return $this->redirect('drev_visualisation', $this->drev);
+        }
+
+        if($this->drevCommentaireValidationForm->getValue("commentaire")) {
+            $this->drev->commentaire = $this->drevCommentaireValidationForm->getValue("commentaire");
+        }
+
+        $this->drev->save();
+        return $this->redirect('drev_visualisation', $this->drev);
+    }
+
     public function executeVisualisation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
@@ -722,6 +764,7 @@ class drevActions extends sfActions {
 
         if($this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) {
             $this->validation = new DRevValidation($this->drev);
+            $this->drevCommentaireValidationForm = new DRevCommentaireValidationForm($this->drev);
         }
 
         $this->form = ($this->getUser()->isAdmin()) ? new DRevDocumentsForm($documents) : null;
@@ -830,7 +873,15 @@ class drevActions extends sfActions {
         $drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $drev);
 
-        $file = file_get_contents($drev->getAttachmentUri('DR.pdf'));
+        $type = null;
+
+        if($drev->hasDR()) {
+            $type = "DR";
+        } elseif($drev->hasSV()) {
+            $type = "SV";
+        }
+
+        $file = file_get_contents($drev->getAttachmentUri($type.".pdf"));
 
         if(!$file) {
 
@@ -860,11 +911,17 @@ class drevActions extends sfActions {
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->removeCache();
         $pdf->generate();
-        Email::getInstance()->sendDRevValidation($drev);
+        $messages = Email::getInstance()->getMessageDRevValidationDeclarant($drev);
+        foreach($messages as $message) {
+            $this->getMailer()->send($message);
+        }
     }
 
     protected function sendDrevConfirmee($drev) {
-        Email::getInstance()->sendDrevConfirmee($drev);
+        $messages = Email::getInstance()->getMessageDRevConfirmee($drev);
+        foreach($messages as $message) {
+            $this->getMailer()->send($message);
+        }
     }
 
 

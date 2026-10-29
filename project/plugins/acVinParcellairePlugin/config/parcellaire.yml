@@ -1,0 +1,18 @@
+all:
+  configuration:
+    parcellaire:
+      allow_stalker: false
+      show_filter_produits_configuration: true
+      troisieme_feuille: true
+      unit: "hectares"
+      aires:
+      manquant:
+        all_pourcentage_allowed: false
+        pc_min: 20
+      irrigable:
+        engagements: false
+        nePasIrriguer: false
+        vciIrrigation: false
+        hasIrrigableMateriel: true
+        hasIrrigableRessource: true
+        transmission: false

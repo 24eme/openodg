@@ -29,7 +29,7 @@ unlink($csvTmpFile);
 
 $lines = explode("\n", $csvConvert);
 
-$t = new lime_test(74);
+$t = new lime_test(78);
 $nb = 0;
 foreach($lines as $line) {
     if(!preg_match('/[0-9]/', $line)) {
@@ -37,15 +37,20 @@ foreach($lines as $line) {
     }
     $nb++;
 }
-$t->is($nb, 88, "Le CSV a 88 lignes");
+$t->is($nb, 89, "Le CSV a 89 lignes");
 $line = explode(";", $lines[count($lines) - 2]);
 $t->is($line[DRCsvFile::CSV_COLONNE_ID], '8', 'On a bien repéré 8 colonnes');
 
 $line = explode(";", $lines[0]);
 
 $t->is($line[DRCsvFile::CSV_TYPE], "DR", "Le type de la ligne est DR");
-$t->is($line[DRCsvFile::CSV_CAMPAGNE], date('Y'), "La campagne est ".date('Y'));
-$t->is($line[DRCsvFile::CSV_RECOLTANT_CVI], "7523700100", "Le CVI est 7523700100");
+$year = date('Y');
+if (date('m') < 8) {
+    $year = $year - 1;
+}
+$campagne = sprintf("%04d-%04d", $year , $year + 1 );
+$t->is($line[SV11CsvFile::CSV_CAMPAGNE], $campagne, "La campagne est ".$campagne);
+$t->is($line[DRCsvFile::CSV_RECOLTANT_CVI], '"7523700100"', "Le CVI est 7523700100 en chaine de caractère");
 $t->is($line[DRCsvFile::CSV_PRODUIT_CERTIFICATION], $produit1->getCertification()->getKey(), "Certification OK");
 $t->is($line[DRCsvFile::CSV_PRODUIT_GENRE], $produit1->getGenre()->getKey(), "Genre OK");
 $t->is($line[DRCsvFile::CSV_PRODUIT_APPELLATION], $produit1->getAppellation()->getKey(), "Appellation OK");
@@ -55,6 +60,11 @@ $t->is($line[DRCsvFile::CSV_PRODUIT_COULEUR], $produit1->getCouleur()->getKey(),
 $t->is($line[DRCsvFile::CSV_PRODUIT_CEPAGE], $produit1->getCepage()->getKey(), "Cepage OK");
 $t->is($line[DRCsvFile::CSV_PRODUIT_INAO], $produit1->getCodeDouane(), "Le code inao est OK");
 $t->is($line[DRCsvFile::CSV_PRODUIT_LIBELLE], $produit1->getLibelleComplet(), "Libelle complet OK");
+
+$t->is($line[SV12CsvFile::CSV_COLONNE_ID], '1', "Colonne colonne id OK");
+$t->is($line[SV12CsvFile::CSV_ORGANISME], strtoupper($application), "Colonne organisme id OK");
+$t->is($line[SV12CsvFile::CSV_MILLESIME], $year, "Colonne Millesime $year OK");
+$t->is($line[SV12CsvFile::CSV_FAMILLE_LIGNE_CALCULEE], "CAVE_PARTICULIERE_TOTAL", "Colonne famille calculée OK");
 
 $line = explode(";", $lines[63]);
 $t->is($line[DRCsvFile::CSV_COLONNE_ID], '7', "le numéro de colonne est ok pour la ligne superficie producteur (colonne 7)");
@@ -104,7 +114,7 @@ $t->is($line[DRCsvFile::CSV_LIGNE_CODE], '4', "le code de la ligne superficie pr
 $t->is($line[DRCsvFile::CSV_LIGNE_LIBELLE], 'Superficie de récolte', "le libellé de la ligne superficie producteur est OK (dernière colonne)");
 $t->is($line[DRCsvFile::CSV_BAILLEUR_NOM], '', "la ligne superficie producteur n'a pas de nom de bailleur (dernière colonne)");
 $t->is($line[DRCsvFile::CSV_BAILLEUR_PPM], '', "la ligne superficie producteur n'a pas de ppm de bailleur (dernière colonne)");
-$t->is($line[DRCsvFile::CSV_VALEUR], '0,0000', "la superficie est bonne pour le producteur (dernière colonne)");
+$t->is($line[DRCsvFile::CSV_VALEUR], '0,0003', "la superficie est bonne pour le producteur (dernière colonne)");
 $superficie_producteur = floatval(preg_replace('/,/', '.', $line[DRCsvFile::CSV_VALEUR]));
 $line = explode(";", $lines[77]);
 $t->is($line[DRCsvFile::CSV_COLONNE_ID], '8', "le numéro de colonne est ok pour la ligne superficie bailleur (dernière colonne)");
@@ -112,7 +122,7 @@ $t->is($line[DRCsvFile::CSV_LIGNE_CODE], '4', "le code de la ligne superficie ba
 $t->is($line[DRCsvFile::CSV_LIGNE_LIBELLE], 'Superficie de récolte', "le libellé de la ligne superficie bailleur est OK (dernière colonne)");
 $t->is($line[DRCsvFile::CSV_BAILLEUR_NOM], 'XXXXXX Simon', "la ligne superficie bailleur a un nom de bailleur (dernière colonne)");
 $t->is($line[DRCsvFile::CSV_BAILLEUR_PPM], 'Z00000999', "la ligne superficie bailleur a un ppm de bailleur (dernière colonne)");
-$t->is($line[DRCsvFile::CSV_VALEUR], '0,0749', "la superficie est bonne pour le bailleur (dernière colonne)");
+$t->is($line[DRCsvFile::CSV_VALEUR], '0,0746', "la superficie est bonne pour le bailleur (dernière colonne)");
 $superficie_bailleur = floatval(preg_replace('/,/', '.', $line[DRCsvFile::CSV_VALEUR]));
 $line = explode(";", $lines[78]);
 $t->is($line[DRCsvFile::CSV_COLONNE_ID], '8', "le numéro de colonne est ok pour la ligne superficie originale (dernière colonne)");

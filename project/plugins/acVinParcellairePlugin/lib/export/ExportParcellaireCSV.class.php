@@ -15,15 +15,17 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
 
     protected $doc = null;
     protected $header = false;
+    protected $region = null;
 
     public static function getHeaderCsv() {
 
-        return "Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Ecart pieds;Ecart rang;Type de declaration\n";
+        return "Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Ecart pieds;Ecart rang;Aires;Date modification;parcelle id;doc id\n";
     }
 
-    public function __construct($doc, $header = true) {
+    public function __construct($doc, $header = true, $region = null) {
         $this->doc = $doc;
         $this->header = $header;
+        $this->region = $region;
     }
 
     public function getFileName() {
@@ -32,7 +34,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
     }
 
     public function protectStr($str) {
-    	return str_replace('"', '', $str);
+        return str_replace(';', '', str_replace('"', '', $str));
     }
 
     public function export() {
@@ -41,39 +43,44 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
             $csv .= self::getHeaderCsv();
         }
 
-        $mode = 'TELEDECLARATION';
-		$emails = explode(';', $this->doc->declarant->email);
-		$email = isset($emails[0])? trim($emails[0]) : null;
-        $ligne_base = sprintf("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", $this->doc->getEtablissementObject()->getSociete()->identifiant, $this->doc->identifiant, $this->doc->declarant->cvi, $this->formatSiret($this->doc->declarant->siret), $this->protectStr($this->doc->declarant->raison_sociale), $this->protectStr($this->doc->declarant->adresse), $this->doc->declarant->code_postal, $this->protectStr($this->doc->declarant->commune), $email);
+        $emails = explode(';', $this->doc->declarant->email);
+        $email = isset($emails[0])? trim($emails[0]) : null;
+        $ligne_base = sprintf("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"",
+                                ($this->doc->getEtablissementObject()->getSociete()) ? $this->doc->getEtablissementObject()->getSociete()->identifiant : $this->doc->getEtablissementObject()->identifiant,
+                                $this->doc->identifiant, $this->doc->declarant->cvi,
+                                $this->formatSiret($this->doc->declarant->siret),
+                                $this->protectStr($this->doc->declarant->raison_sociale),
+                                $this->protectStr($this->doc->declarant->adresse), $this->doc->declarant->code_postal,
+                                $this->protectStr($this->doc->declarant->commune), $email);
         foreach ($this->doc->declaration->getParcellesByCommune() as $commune => $parcelles) {
-        	foreach ($parcelles as $parcelle) {
-            	$configProduit = $parcelle->getProduit()->getConfig();
+            foreach ($parcelles as $parcelle) {
+                $configProduit = $parcelle->getProduit()->getConfig();
 
-            	$certification = $configProduit->getCertification()->getKey();
-            	$genre = $configProduit->getGenre()->getKey();
-            	$appellation = $configProduit->getAppellation()->getKey();
-            	$mention = $configProduit->getMention()->getKey();
-            	$lieu = $configProduit->getLieu()->getKey();
-            	$couleur = $configProduit->getCouleur()->getKey();
-            	$cepage = $configProduit->getCepage()->getKey();
-            	$inao = $configProduit->getCodeDouane();
+                $inao = ($configProduit) ? $configProduit->getCodeDouane() : null;
 
-            	$libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
-            	$csv .= sprintf("%s;Parcellaire;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
-            	$certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao,$libelle_complet,
-            	$this->protectStr($parcelle->idu),
-            	$parcelle->code_commune,
-            	$this->protectStr($parcelle->commune),
-            	$this->protectStr($parcelle->lieu),
-            	$parcelle->section,
-            	$parcelle->numero_parcelle,
-            	$this->protectStr($parcelle->cepage),
-            	$this->protectStr($parcelle->campagne_plantation),
-            	$this->formatFloat($parcelle->superficie),
-            	$this->protectStr($parcelle->ecart_pieds),
-            	$this->protectStr($parcelle->ecart_rang),
-            	$mode);
-        	}
+                $libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
+                $csv .= sprintf("%s;Parcellaire;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                    $ligne_base,
+                    DeclarationExportCsv::getProduitKeysCsv($configProduit),
+                    $inao,
+                    $libelle_complet,
+                    $this->protectStr($parcelle->idu),
+                    $parcelle->code_commune,
+                    $this->protectStr($parcelle->commune),
+                    $this->protectStr($parcelle->lieu),
+                    $parcelle->section,
+                    $parcelle->numero_parcelle,
+                    $this->protectStr($parcelle->cepage),
+                    $this->protectStr($parcelle->campagne_plantation),
+                    $this->formatFloat($parcelle->superficie),
+                    $this->protectStr($parcelle->ecart_pieds),
+                    $this->protectStr($parcelle->ecart_rang),
+                    $this->protectStr(implode('|', array_keys($parcelle->getIsInAires()))),
+                    $this->protectStr($this->doc->date),
+                    (($parcelle->exist('parcelle_id')) ? $parcelle->get('parcelle_id') : ""),
+                    $this->doc->_id
+                );
+            }
         }
 
         return $csv;
@@ -89,5 +96,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
       return preg_replace('/^(\d\d\d)(\d\d\d)(\d\d\d)/', '\1 \2 \3 ', $siret);
     }
 
+    public function setExtraArgs($args) {
+    }
 
 }

@@ -2,9 +2,12 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-sfContext::createInstance($configuration);
-
-$t = new lime_test(32);
+if (!HabilitationConfiguration::getInstance()->isModuleEnabled()) {
+    $t = new lime_test(1);
+    $t->pass("pas d'habilitation pour ".$application);
+    return;
+}
+$t = new lime_test(37);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -15,7 +18,7 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k 
 }
 
 $t->comment("Création d'un doc dans le passé");
-$date = '2007-10-01';
+$date = (date('Y')-2).'-10-01';
 $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($viti->identifiant, $date);
 $habilitation->save();
 
@@ -26,7 +29,7 @@ $t->is($habilitation->isLectureSeule(), false, "l'habilitation n'est pas en lect
 
 
 $produitConfig = null;
-foreach($habilitation->getConfiguration()->getProduitsCahierDesCharges() as $p) {
+foreach($habilitation->getProduitsConfig($configuration) as $p) {
     $produitConfig = $p;
     break;
 }
@@ -55,14 +58,14 @@ $t->is(count($habilitation->historique), 2, "la modification de l'activité a é
 
 $t->comment("Changement d'activité");
 
-$habProduit->updateHabilitation($activiteKey, HabilitationClient::STATUT_HABILITE , "INAO OK");
+$habProduit->updateHabilitation($activiteKey, null, HabilitationClient::STATUT_HABILITE , "INAO OK");
 $habilitation->save();
 $t->is($habProduit->activites[$activiteKey]->statut, HabilitationClient::STATUT_HABILITE, "le statut de l'activité a été changée");
 $t->is(count($habilitation->historique), 3, "la modification de l'activité a été enregistrée dans l'historique");
 $t->is($habilitation->historique[2]->statut, HabilitationClient::STATUT_HABILITE, "Le statut est écrit dans l'historique");
 
 $t->comment('Habilitation à une autre date');
-$date = '2010-10-01';
+$date = (date('Y')-1).'-11-01';
 $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($viti->identifiant, $date);
 $habilitation->save();
 $t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-", "", $date), "L'id est bien construit ".$habilitation->_id );
@@ -84,8 +87,8 @@ $full = $habilitation->getFullHistoriqueReverse();
 $t->is($full[0]->date, $habilitation->historique[0]->date, "l'historique complet invsersé est dans le bon ordre");
 
 $t->comment("Habilitation d'une autre activité à une nouvelle date supérieur à la dernière");
-$date = '2012-10-01';
-HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array(HabilitationClient::ACTIVITE_VINIFICATEUR), HabilitationClient::STATUT_DEMANDE_HABILITATION);
+$date = (date('Y')-1).'-12-30';
+HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array(HabilitationClient::ACTIVITE_VINIFICATEUR), null, HabilitationClient::STATUT_DEMANDE_HABILITATION);
 
 $id = "HABILITATION-".$viti->identifiant."-".str_replace("-", "", $date);
 $habilitation = HabilitationClient::getInstance()->find($id);
@@ -98,8 +101,8 @@ $t->comment("Insertion d'une habilitation entre deux autres");
 
 $habilitationLastBefore = HabilitationClient::getInstance()->find($idLast);
 
-$date = '2011-10-01';
-HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array($activiteKey), HabilitationClient::STATUT_HABILITE);
+$date = (date('Y')-1).'-12-01';
+HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array($activiteKey), null, HabilitationClient::STATUT_HABILITE);
 
 $id = "HABILITATION-".$viti->identifiant."-".str_replace("-", "", $date);
 $habilitation = HabilitationClient::getInstance()->find($id);
@@ -114,11 +117,35 @@ $t->is($habilitationLast->get($produitConfig->getHash())->activites->get($activi
 $t->is(count($habilitationLast->historique), count($habilitationLastBefore->historique), "La ligne d'historique n'a pas été créé dans la dernière habilitation");
 
 $t->comment("Insertion d'une habilitation au début avec perte de logique");
-$date = '2009-10-01';
+$date = (date('Y')-1).'-01-01';
 
 try {
-HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array($activiteKey), HabilitationClient::STATUT_RETRAIT);
+HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array($activiteKey), null, HabilitationClient::STATUT_RETRAIT);
     $t->fail("L'habitation n'a pas pu être créer car il y a une perte de logique");
 } catch (Exception $e) {
     $t->pass("L'habitation n'a pas pu être créer car il y a une perte de logique");
 }
+
+$t->comment("Contrôle d'habilitation");
+
+$habilitation = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
+
+$produitConfigComplet = null;
+foreach($habilitation->getConfiguration()->getProduits() as $p) {
+    $produitConfigComplet = $p;
+    break;
+}
+
+$t->ok($habilitation->containHashProduit($produitConfig->getHash()), "La hash produit de l'habilitation strict est reconnu");
+$t->ok($habilitation->containHashProduit($produitConfigComplet->getHash()), "La hash de produit complète est reconnu");
+$t->ok($habilitation->containHashProduit("/appellations/".$produitConfigComplet->getAppellation()->getKey()), "Une partie de la hash produit est reconnu");
+$t->ok(!$habilitation->containHashProduit("/hashquinexistepas/".$produitConfigComplet->getAppellation()->getKey()), "La hash n'est pas reconnu");
+
+$drevConfig = sfConfig::get('region_configuration_region');
+$drevConfigOrigin = $drevConfig;
+$drevConfig['odg']['TEST'] = array('produits' => array("/appellations/".$produitConfigComplet->getAppellation()->getKey()));
+$drevConfig = sfConfig::set('region_configuration_region', $drevConfig);
+
+$t->ok(HabilitationClient::getInstance()->isRegionInHabilitation($viti->identifiant, "TEST"), "L'habilitation fait partie de la région");
+
+sfConfig::set('region_configuration_region', $drevConfigOrigin);

@@ -12,6 +12,14 @@ class ConfigurationLieu extends BaseConfigurationLieu {
         return $this->getMention()->getParentNode();
     }
 
+    public function getGenre() {
+        return $this->getAppellation()->getGenre();
+    }
+
+    public function getCertification() {
+        return $this->getAppellation()->getCertification();
+    }
+
     public function getCouleurs() {
         return $this->filter('^couleur');
     }
@@ -71,7 +79,11 @@ class ConfigurationLieu extends BaseConfigurationLieu {
     public function hasManyCouleur() {
         return (!$this->exist('couleur') || $this->filter('^couleur.+')->count() > 0);
     }
-    
+
+    public function hasLieu() {
+        return true;
+    }
+
     public function hasLieuEditable(){
 
         return $this->getAppellation()->hasLieuEditable();
@@ -80,10 +92,6 @@ class ConfigurationLieu extends BaseConfigurationLieu {
     public function getRendementNoeud() {
 
         return $this->getRendementAppellation();
-    }
-
-    public function getNodeCahierDesCharges() {
-        return $this;
     }
 
 }

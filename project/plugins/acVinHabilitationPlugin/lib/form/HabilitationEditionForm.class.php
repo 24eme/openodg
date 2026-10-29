@@ -57,14 +57,19 @@ class HabilitationEditionForm extends acCouchdbForm
                 if (!isset($values['statut_'.$idWidgets]) || empty($values['statut_'.$idWidgets]) || !isset($values['date_'.$idWidgets]) || empty($values['date_'.$idWidgets])) {
                   continue;
                 }
+                if (!sfContext::getInstance()->getUser()->isAdmin() && Organisme::getCurrentRegion() && !RegionConfiguration::getInstance()->isHashProduitInRegion(Organisme::getCurrentRegion() ,$activite->getProduitHash())) {
+                    throw new sfError403Exception("L'édition de ce produit n'est pas autorisé pour ".$region);
+                }
 
                 $hash = str_replace('-','/',$idWidgets);
+                $hash = str_replace('/SITE_', '-SITE_', $hash);
                 $values = $this->getValues();
                 $activite = $this->getDocument()->get($hash);
                 HabilitationClient::getInstance()->updateAndSaveHabilitation($this->getDocument()->identifiant,
                                                                     $activite->getProduitHash(),
                                                                     $values['date_'.$idWidgets],
                                                                     array($activite->getKey()),
+                                                                    null,
                                                                     $values['statut_'.$idWidgets],
                                                                     $values['commentaire_'.$idWidgets]);
             }

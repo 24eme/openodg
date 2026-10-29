@@ -3,7 +3,7 @@ class RegistreVCIRoute extends EtablissementRoute implements InterfaceDeclaratio
 
     protected $drev = null;
 
-    protected function getObjectForParameters($parameters) {
+    protected function getObjectForParameters($parameters = null) {
 
         $this->registre = RegistreVCIClient::getInstance()->find($parameters['id']);
         if (!$this->registre) {
@@ -25,7 +25,7 @@ class RegistreVCIRoute extends EtablissementRoute implements InterfaceDeclaratio
         return $this->registre;
     }
 
-    public function getEtablissement() {
+    public function getEtablissement($parameters = null) {
 
         return $this->getRegistreVCI()->getEtablissementObject();
     }

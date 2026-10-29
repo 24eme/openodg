@@ -1,6 +1,26 @@
 parcellaireirrigue_edit:
-  url: /parcellaire-irrigue/edition/:identifiant
+  url: /parcellaire-irrigue/edition/:identifiant/:periode
   param: { module: parcellaireIrrigue, action: irrigation }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaireirrigue_visualisation:
+  url: /parcellaire-irrigue/visualisation/:id
+  param: { module: parcellaireIrrigue, action: visualisation }
+  class: ParcellaireIrrigueRoute
+  options:
+    model:    ParcellaireIrrigue
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaireirrigue_export_pdf_last:
+  url: /parcellaire-irrigue/pdf/:identifiant/:periode
+  param: { module: parcellaireIrrigue, action: PDFLast }
   class: EtablissementRoute
   options:
     model:    Etablissement

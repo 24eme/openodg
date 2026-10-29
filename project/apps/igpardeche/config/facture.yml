@@ -1,0 +1,8 @@
+all:
+  configuration:
+    facture:
+      echeances: false
+      modalite_paiement: "Payable par virement, IBAN : %iban%\\En votre aimable règlement à réception."
+      uniq_template_prefix: "TEMPLATE-FACTURE"
+      paiements: true
+      liste_dernier_exercice: true

@@ -4,6 +4,10 @@ get_piece:
   url: /piece/get/:doc_id/:piece_id
   param: { module: piece, action: get }
 
+piece_public_view:
+  url: /document/:doc_id/:auth/:source
+  param: { module: piece, action: publicView, source: null }
+
 # FICHIER
 
 documents:
@@ -98,3 +102,7 @@ scrape_fichier:
     type:     object
   requirements:
     sf_method: [get, post]
+
+cvi_check:
+  url: /cvi/:cvi
+  param: { module: fichier, action: cvi }

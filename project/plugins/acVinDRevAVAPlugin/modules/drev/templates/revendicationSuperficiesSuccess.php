@@ -14,7 +14,7 @@ $global_error_id = substr($global_error_with_infos, 0, strrpos($global_error_wit
 $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
 ?>
 <div class="page-header">
-    <?php if($drev->hasDR()): ?>
+    <?php if(($drev->hasDR() && !$sf_user->isAdmin()) || ($drev->hasDR() && $sf_user->isUsurpationCompte())): ?>
         <a class="btn btn-sm btn-default-step pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Recharger les données de la Déclaration de Récolte</a>
     <?php endif; ?>
     <?php if(!$drev->isNonRecoltant() && !$drev->hasDR()): ?>
@@ -39,8 +39,8 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
     <?php endif; ?>
-    <?php if ($sf_user->hasFlash('erreur')): ?>
-    <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
+    <?php if ($sf_user->hasFlash('error')): ?>
+    <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></p>
     <?php endif; ?>
     <table class="table table-striped table-condensed" id="table-revendication">
         <thead>
@@ -82,7 +82,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-        	<?php if(!$drev->isNonRecoltant() && !$drev->hasDr()): ?>
+        	<?php if(!$drev->isNonRecoltant() && !$drev->hasDR()): ?>
 				<a href="<?php echo url_for("drev_dr", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
 			<?php else: ?>
         		<a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>

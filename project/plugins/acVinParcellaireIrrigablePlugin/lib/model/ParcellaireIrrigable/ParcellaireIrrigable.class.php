@@ -7,6 +7,8 @@
 class ParcellaireIrrigable extends BaseParcellaireIrrigable implements InterfaceDeclaration {
   protected $declarant_document = null;
   protected $piece_document = null;
+  protected $parcelles_idu = null;
+  protected $previous_document = null;
 
   public function __construct() {
       parent::__construct();
@@ -44,11 +46,15 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
     	}
     	throw new sfException("Impossible de determiner le type de parcellaire");
     }
-  public function initDoc($identifiant, $campagne) {
+  public function initDoc($identifiant, $periode) {
       $this->identifiant = $identifiant;
-      $this->campagne = $campagne;
-      $this->set('_id', ParcellaireIrrigableClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->campagne);
+      $this->campagne = $periode.'-'.($periode + 1);
+      $this->set('_id', ParcellaireIrrigableClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->periode);
       $this->storeDeclarant();
+  }
+
+  public function getPeriode() {
+      return preg_replace('/-.*/', '', $this->campagne);
   }
 
   public function getAcheteursByCVI() {
@@ -76,7 +82,7 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 
   public function getConfiguration() {
 
-      return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-03-01');
+      return ConfigurationClient::getInstance()->getConfiguration($this->periode.'-03-01');
   }
 
   public function storeEtape($etape) {
@@ -90,82 +96,23 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       return true;
   }
 
+    public function setParcellesFromParcellaire(array $hashes, $reset = true) {
+        parent::setParcellesFromParcellaire($hashes, $reset);
 
-  public function initProduitFromLastParcellaire() {
-      if (count($this->declaration) == 0) {
-          $this->importProduitsFromLastParcellaire();
-      }
-  }
+        $last = ParcellaireIrrigableClient::getInstance()->getLast($this->identifiant);
 
-  public function getParcellaireCurrent() {
-
-      return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
-  }
-
-    public function getParcelles() {
-
-        return $this->declaration->getParcelles();
-    }
-
-    public function getParcellesFromLastParcellaire() {
-        $parcellaireCurrent = $this->getParcellaireCurrent();
-        if (!$parcellaireCurrent) {
-          return;
+        if (! $last) {
+            return;
         }
 
-        return $parcellaireCurrent->declaration;
+        $lastParcelles = $last->getParcelles();
+        foreach ($this->getDeclarationParcelles() as $pid => $p) {
+            if (isset($lastParcelles[$pid]) && ($parcelle = $lastParcelles[$pid]) ) {
+                $p->materiel = $parcelle->materiel;
+                $p->ressource = $parcelle->ressource;
+            }
+        }
     }
-
-    public function addParcellesFromParcellaire(array $hashes) {
-      	$parcellaire = $this->getParcellesFromLastParcellaire();
-      	$remove = array();
-      	foreach ($this->declaration as $key => $value) {
-      		foreach ($value->detail as $subkey => $subvalue) {
-      			if (!in_array($subvalue->getHash(), $hashes)) {
-      				$remove[] = $subvalue->getHash();
-      			}
-      		}
-      	}
-      	foreach ($remove as $r) {
-      		$this->declaration->remove(str_replace('/declaration/', '', $r));
-      	}
-      	foreach ($hashes as $hash) {
-      		$hash = str_replace('/declaration/', '', $hash);
-    	  	if ($parcellaire->exist($hash) && !$this->declaration->exist($hash)) {
-    	  		$detail = $parcellaire->get($hash);
-    	  		$produit = $detail->getProduit();
-    	  		$item = $this->declaration->add(str_replace('/declaration/', null, $produit->getHash()));
-    	  		$item->libelle = $produit->libelle;
-    	  		$subitem = $item->detail->add($detail->getKey());
-
-    	  		$subitem->superficie = $detail->superficie;
-    	  		$subitem->commune = $detail->commune;
-                $subitem->code_commune = $detail->code_commune;
-    	  		$subitem->section = $detail->section;
-    	  		$subitem->numero_parcelle = $detail->numero_parcelle;
-                $subitem->idu = $detail->idu;
-    	  		$subitem->lieu = $detail->lieu;
-    	  		$subitem->cepage = $detail->cepage;
-    	  		$subitem->active = 1;
-
-                $subitem->remove('vtsgn');
-                if($detail->exist('vtsgn')) {
-                    $subitem->add('vtsgn', (int)$detail->vtsgn);
-                }
-    	  		$subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
-    	  	}
-      	}
-      	$remove = array();
-      	foreach ($this->declaration as $key => $value) {
-      		if (!count($value->detail)) {
-      			$remove[] = $key;
-      		}
-      	}
-      	foreach ($remove as $r) {
-      		$this->declaration->remove($r);
-      	}
-    }
-
 
     public function getDeclarantSiret(){
         $siret = "";
@@ -202,12 +149,34 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
         $this->piece_document->generatePieces();
     }
 
+    public function save() {
+        $regions = $this->getRegions();
+        if (count($regions)) {
+            $this->add('region', implode('|', $regions));
+        }
+        return parent::save();
+    }
+
+    public function getRegions() {
+        $regions = array();
+        foreach ($this->declaration as $key => $value) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($value->getHash());
+        }
+        return array_filter(array_unique($regions));
+    }
+
   /*** DECLARATION DOCUMENT ***/
 
   public function isPapier() {
 
-      return $this->exist('papier') && $this->get('papier');
+      return $this->exist('papier') && $this->get('papier') === "1";
   }
+
+  public function isAuto() {
+
+      return $this->exist('papier') && ($this->get('papier') === "1" || $this->get('papier') === "AUTO");
+  }
+
 
   public function isLectureSeule() {
 
@@ -228,6 +197,10 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 
       return $this->_get('validation_odg');
   }
+
+  public function isValidee(){
+      return $this->validation;
+  }
     /*** FIN DECLARATION DOCUMENT ***/
 
     /*** PIECE DOCUMENT ***/
@@ -237,7 +210,7 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
         return (!$this->getValidation())? array() : array(array(
             'identifiant' => $this->getIdentifiant(),
             'date_depot' => $this->getValidation(),
-            'libelle' => 'Identification des parcelles irrigables '.$complement,
+            'libelle' => 'Identification des parcelles irrigables '.$this->getPeriode().' '.$complement,
             'mime' => Piece::MIME_PDF,
             'visibilite' => 1,
             'source' => null
@@ -266,6 +239,42 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 
     public static function isPieceEditable($admin = false) {
         return false;
+    }
+
+    public function getInfoFromParcelleId($idParcelle)
+    {
+        if ($parcelle = $this->findParcelleByIdParcelle($idParcelle)) {
+            return ['materiel' => $parcelle->materiel, 'ressource' => $parcelle->ressource];
+        }
+        return ['materiel' => '', 'ressource' => ''];
+    }
+
+    public function getPreviousDocument() {
+        if($this->previous_document) {
+           return $this->previous_document;
+        }
+
+        $this->previous_document = ParcellaireIrrigableClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
+
+        return $this->previous_document;
+    }
+
+    public function isAllPreviousParcellesExists() {
+        if(!$this->getPreviousDocument()) {
+
+            return true;
+        }
+        $parcellaire2reference = $this->getParcellaire2Reference();
+        foreach($this->getPreviousDocument()->getParcelles() as $previousParcelle) {
+            if(!$previousParcelle->active) {
+                continue;
+            }
+            if(!$parcellaire2reference->findParcelle($previousParcelle)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /*** FIN PIECE DOCUMENT ***/
