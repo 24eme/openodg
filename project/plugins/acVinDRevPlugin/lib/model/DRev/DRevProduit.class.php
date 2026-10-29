@@ -437,7 +437,7 @@ class DRevProduit extends BaseDRevProduit
     {
         $vcrBrut = $this->getVCR(false);
         $vcr = $this->getVCR();
-        if ($this->getVolumeRevendiqueTotalWithLieux() > $this->volume_revendique_total) {
+        if ($vcr > $this->volume_revendique_total && $this->getVolumeRevendiqueTotalWithLieux() > $this->volume_revendique_total) {
             $vcr = $this->getVCRWithRules($vcr, $this->getVolumeRevendiqueTotalWithLieux());
         }
         return $vcr != $vcrBrut;
