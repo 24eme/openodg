@@ -43,6 +43,8 @@ ChgtDenom:
             '*': { type: float }
       origine_volume: { type: float }
       origine_affectable: {}
+      origine_elevage: {}
+      origine_eleve: {}
       declarant:
         type: collection
         class: ChgtDenomDeclarant
