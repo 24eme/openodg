@@ -934,7 +934,9 @@ class drevActions extends sfActions {
             $this->forward404Unless($lot);
 
             $lot->switchEleve();
-
+            if ($doc->type == "ChgtDenom") {
+                $doc->switchEleve($lot_unique_id);
+            }
             $doc->generateMouvementsLots();
             $doc->save();
 
