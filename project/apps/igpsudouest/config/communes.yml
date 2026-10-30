@@ -1,6 +1,7 @@
 all:
   configuration:
     communes:
+      controle_communes: true
       insee2commune:
         12002: AGUESSAC
         12037: BROQUIES
