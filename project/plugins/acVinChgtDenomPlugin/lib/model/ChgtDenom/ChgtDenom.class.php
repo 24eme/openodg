@@ -609,16 +609,15 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                 $lot->cepages = $this->changement_cepages->toArray();
             }
             $lot->affectable = $this->changement_affectable;
-            $lot->elevage = $this->origine_elevage;
-            $lot->eleve = $this->origine_eleve;
-            $lot->statut = null;
-            if($lot->affectable === false && $lot->elevage === true) {
-                $lot->statut = $this->origine_statut;
-            } elseif ($lot->affectable === false) {
-                $lot->statut = Lot::STATUT_NONAFFECTABLE;
-            } elseif ($lot->affectable == true) {
-                $lot->elevage = false;
+            $lot->elevage = false;
+            if ($this->origine_elevage === true) {
+                $lot->eleve = date('Y-m-d');
+            } else {
                 $lot->eleve = null;
+            }
+            $lot->statut = null;
+            if ($lot->affectable === false) {
+                $lot->statut = Lot::STATUT_NONAFFECTABLE;
             }
             if ($this->exist('changement_numero_logement_operateur') && $this->changement_numero_logement_operateur) {
                 $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
@@ -778,6 +777,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             if ($lot->isChange()) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
                 continue;
+            }
+            if (!$lot->isLotOrigine() && $this->origine_elevage == true) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVAGE_EN_ATTENTE));
             }
             //Si le lot changé n'a pas été lui même de nouveau changé, on peut le changer et le déguster ou non
             if ($lot->volume && !$lot->isAffecte()) {
@@ -1189,5 +1191,20 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function isSansOrigine() {
         return ! ($this->lots[0]->id_document_provenance);
+    }
+
+    public function switchEleve($lot_unique_id)
+    {
+        if ($lot_unique_id == $this->changement_origine_lot_unique_id) {
+            if ($this->origine_elevage) {
+                $this->origine_elevage = false;
+                $this->origine_eleve = $date;
+                $this->origine_affectable = true;
+            }else{
+                $this->origine_elevage = true;
+                $this->origine_eleve = null;
+                $this->origine_affectable = false;
+            }
+        }
     }
 }
