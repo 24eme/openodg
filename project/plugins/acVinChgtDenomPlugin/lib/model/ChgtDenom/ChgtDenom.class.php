@@ -214,8 +214,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->origine_produit_libelle = $lot->produit_libelle;
         $this->origine_numero_logement_operateur = $lot->numero_logement_operateur;
         $this->origine_affectable = $lot->affectable;
-        $this->origine_elevage = $lot->elevage;
-        $this->origine_eleve = $lot->eleve;
+        if ($lot->exist('elevage')) {
+            $this->origine_elevage = $lot->elevage;
+            $this->origine_eleve = $lot->eleve;
+        } else {
+            $this->origine_elevage = false;
+            $this->origine_eleve = null;
+        }
         $this->origine_statut = $lot->statut;
     }
 
