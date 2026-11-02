@@ -6,12 +6,14 @@ abstract class DocumentValidation
     const TYPE_FATAL = 'erreur_fatale';
     const TYPE_WARNING = 'vigilance';
     const TYPE_ENGAGEMENT = 'engagement';
+    const TYPE_IMPORTANT = 'important';
 
     protected $types = array(
         self::TYPE_ENGAGEMENT,
         self::TYPE_WARNING,
         self::TYPE_ERROR,
         self::TYPE_FATAL,
+        self::TYPE_IMPORTANT,
     );
 
     protected $document;
@@ -111,6 +113,11 @@ abstract class DocumentValidation
         return array_merge($this->getPoints(self::TYPE_ERROR), $this->getPoints(self::TYPE_FATAL));
     }
 
+    public function getImportants()
+    {
+        return $this->getPoints(self::TYPE_IMPORTANT);
+    }
+
     public function getFatales()
     {
         return $this->getPoints(self::TYPE_FATAL);
@@ -131,6 +138,11 @@ abstract class DocumentValidation
         return count($this->getErreurs()) > 0;
     }
 
+    public function hasImportants()
+    {
+        return count($this->getImportants()) > 0;
+    }
+
     public function hasFatales()
     {
         return count($this->getFatales()) > 0;
@@ -138,7 +150,7 @@ abstract class DocumentValidation
 
     public function hasPoints()
     {
-        return $this->hasVigilances() || $this->hasErreurs();
+        return $this->hasVigilances() || $this->hasErreurs() || $this->hasImportants();
     }
 
     public function isValide() {

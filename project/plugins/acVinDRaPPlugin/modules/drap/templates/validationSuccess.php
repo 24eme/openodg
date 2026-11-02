@@ -38,27 +38,7 @@
 
     <?php include_partial('drap/recap', array('drap' => $drap)); ?>
 
-    <?php if (ParcellaireConfiguration::getInstance()->hasEngagements() && count($validation->getEngagements()) > 0) : ?>
-    <br/>
-        <h3>Engagements</h3>
-        <div class="alert" role="alert" id="engagements"  style="padding-top:0;">
-            <div class="form-group">
-                <?php foreach ($validation->getEngagements() as $engagement): ?>
-                    <div class="checkbox-container <?php if ($form['engagement_' . $engagement->getCode()]->hasError()): ?> has-error <?php endif; ?>">
-                        <?php if ($form['engagement_' . $engagement->getCode()]->getError()): ?>
-                            <div class="alert alert-danger" role="alert"> <?php echo $form['engagement_' . $engagement->getCode()]->renderError(); ?></div>
-                        <?php endif; ?>
-                        <div class="checkbox">
-                            <label>
-                                <?php echo $form['engagement_' . $engagement->getCode()]->render(); ?>
-                                <?php echo $engagement->getMessage(); ?>
-                            </label>
-                        </div>
-                    </div>
-                <?php endforeach ?>
-            </div>
-        </div>
-    <?php endif ?>
+    <?php include_partial('parcellaireManquant/engagements', array('drap' => $drap, 'validation' => $validation, 'form' => $form)); ?>
 
     <div class="panel panel-default">
         <div class="panel-body">
