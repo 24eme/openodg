@@ -2254,6 +2254,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
 
+            if($lot->isChange()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
+            } elseif(!$lot->isAffecte()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
+            }
             if ($lot->elevage === true) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVAGE_EN_ATTENTE));
                 continue;
@@ -2262,11 +2267,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVE, '', $lot->eleve));
             }
 
-            if($lot->isChange()) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
-            } elseif(!$lot->isAffecte()) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
-            }
 
             if($lot->isAffecte()) {
                 $commission_date[$lot->date_commission] = $lot->date_commission;

@@ -88,7 +88,7 @@ class ExportReserveInterproCSV {
                 $libelle_complet = $produit->getLibelleComplet(),
                 $this->formatFloat($produit->superficie_revendique),
                 $this->formatFloat($produit->getVolumeReserveInterpro(true)),
-                $this->formatFloat($produit->getVolumeRevendiqueCommecialisable()),
+                $this->formatFloat($produit->getVolumeRevendiqueCommecialisable(true)),
                 );
         }
         return $csv;
