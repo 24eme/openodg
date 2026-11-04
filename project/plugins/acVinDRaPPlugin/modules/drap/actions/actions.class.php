@@ -207,7 +207,7 @@ class drapActions extends sfActions {
 
         $this->form->save();
 
-        $this->getUser()->setFlash("notice", "Vos parcelles irrigables ont bien été enregistrées");
+        $this->getUser()->setFlash("notice", "Votre déclaration de renonciation à produire a bien été enregistrée.");
             return $this->redirect('drap_visualisation', $this->drap);
     }
 
