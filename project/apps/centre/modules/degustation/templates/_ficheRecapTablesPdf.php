@@ -33,6 +33,15 @@ th {
         </tr>
       </table>
       <div></div>
+
+      <div style="border-top: solid 1px #000;"></div>
+
+      <span>Nous soussignés, déclarons avoir dégusté ce jour <span style="text-decoration: underline;font-style: italic;" ><?php echo $date->format("d/m/Y") ?> à <?php echo $date->format("H:i"); ?> h</span></span>
+      <p><span style="text-decoration: underline;font-style: italic;">A la salle <?php echo $degustation->getLieuNom(); ?></span> des échantillons au nombre de <span style="text-decoration: underline;font-style: italic;"><?php echo count($lots) ?></span> présentés en Appelation d'Origine Contrôlée <?php echo implode(', ', $degustation->getAppellationsLots()->getRawValue()) ?>. Ces échantillons étaient revêtus d'un simple numéro d'ordre.</p>
+      <p>Les conclusions de notre dégustation effectuée en toute impartialité sont mentionnées ci-après.</p>
+
+      <div style="border-top: solid 1px #000;"></div>
+
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
         <thead>
           <tr>
@@ -95,3 +104,5 @@ th {
          <?php $ligne++; ?>
        <?php endforeach; ?>
       </table>
+      <br>
+      <p>L'agent habilité, et les membres de la commission signataires certifient l'exactitude du présent procès-verbal</p>

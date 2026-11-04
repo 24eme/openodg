@@ -139,8 +139,8 @@ EOF;
             $societe->siege->adresse = $data[self::CSV_ADRESSE] ?? null;
             $societe->siege->code_postal = $data[self::CSV_CP] ?? null;
             $societe->siege->commune = $data[self::CSV_COMMUNE] ?? null;
-            $societe->telephone_mobile = Phone::format($data[self::CSV_TEL] ?? null);
-            $societe->telephone_bureau = Phone::format($data[self::CSV_MOBILE] ?? null);
+            $societe->telephone_mobile = Phone::format($data[self::CSV_MOBILE] ?? null);
+            $societe->telephone_bureau = Phone::format($data[self::CSV_TEL] ?? null);
             $societe->siret = str_replace(" ", "", $data[self::CSV_SIRET] ?? null);
 
             $cvi = EtablissementClient::repairCVI($data[self::CSV_NOCVI]);
@@ -159,14 +159,20 @@ EOF;
             return false;
         }
 
-        $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $this->familles[$data[self::CSV_EXTRA_TYPE_OPERATEUR]]);
-        $etablissement->nom = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
-        $etablissement->region = 'IGPATLANTIQUE';
-
         $cvi = null;
         if (isset($data[self::CSV_NOCVI])){
             $cvi = EtablissementClient::repairCVI($data[self::CSV_NOCVI]);
         }
+
+        $famille = $this->familles[$data[self::CSV_EXTRA_TYPE_OPERATEUR]];
+
+        if ($data[self::CSV_EXTRA_TYPE_OPERATEUR] == 'C' && !$cvi) {
+            $famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
+        }
+
+        $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
+        $etablissement->nom = trim(implode(' ', array_map('trim', [$data[self::CSV_NOM_OPERATEUR]])));
+        $etablissement->region = 'IGPATLANTIQUE';
 
         $etablissement->cvi = $cvi;
         $etablissement->num_interne = trim($data[self::CSV_NUM_OPERATEUR]) ?? null;
@@ -174,7 +180,11 @@ EOF;
 
         if ($data[self::CSV_EXTRA_TYPE_OPERATEUR] === 'P' && ($cavecoop = trim($data[self::CSV_AUTRE]))) {
             if ($relation = EtablissementClient::getInstance()->findByRaisonSociale($cavecoop)) {
-                $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $relation, true);
+                if ($relation->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) {
+                    $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $relation, true);
+                } else {
+                    $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT, $relation, true);
+                }
             } else {
                 echo "ERROR: relation non affectée, la raison sociale est inconnue : ".$data[self::CSV_AUTRE]."\n";
             }
@@ -206,9 +216,7 @@ EOF;
 
         $activites = self::$activites[$data[self::CSV_EXTRA_TYPE_OPERATEUR]] ?? [];
 
-        $habilitation = KeyInflector::unaccent($data[self::CSV_HABILITATION]);
-        $hasRetrait = stripos($habilitation, 'retrait') !== false || stripos($habilitation, 'arret') !== false;
-        if($suspendu||$hasRetrait) {
+        if($suspendu) {
             HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, date('Y-m-d'), $activites, [], HabilitationClient::STATUT_RETRAIT);
         } else {
             HabilitationClient::getInstance()->updateAndSaveHabilitation($etablissement->identifiant, self::hash_produit, $date->format('Y-m-d'), $activites, [], HabilitationClient::STATUT_HABILITE);

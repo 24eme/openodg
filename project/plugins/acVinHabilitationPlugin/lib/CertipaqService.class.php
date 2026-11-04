@@ -4,6 +4,7 @@ class CertipaqService
 {
     private static $_instances = [];
     private $_tmpfiles = [];
+    private $cache = [];
     protected $configuration;
     const TOKEN_CACHE_FILENAME = 'certipaq_access_token';
     const TOKEN_TIME_VALIDITY = 2700;
@@ -232,5 +233,9 @@ class CertipaqService
 
     public function hasConfiguration() {
         return ($this->configuration) && (count($this->configuration));
+    }
+
+    public function getConfigurationValue($key) {
+        return $this->configuration[$key];
     }
 }

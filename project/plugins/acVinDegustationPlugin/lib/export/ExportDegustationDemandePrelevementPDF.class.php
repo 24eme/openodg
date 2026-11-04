@@ -3,12 +3,9 @@
 class ExportDegustationDemandePrelevementPDF extends ExportDeclarationLotsPDF {
 
     protected $degustation = null;
-    protected $etablissement = null;
 
-    public function __construct($degustation,$etablissement, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
+    public function __construct($degustation,$type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
-        $this->etablissement = $etablissement;
-
         parent::__construct($degustation,$type, $use_cache, $file_dir, $filename);
     }
 
@@ -28,7 +25,7 @@ class ExportDegustationDemandePrelevementPDF extends ExportDeclarationLotsPDF {
         }
 
         $footer = sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
-        $this->printable_document->addPage($this->getPartial('degustation/demandePrelevementPDF', array("footer" => $footer, 'degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lots' => $lots)));
+        $this->printable_document->addPage($this->getPartial('degustation/demandePrelevementPDF', array("footer" => $footer, 'degustation' => $this->degustation, 'lots' => $lots)));
     }
 
     protected function getHeaderTitle() {

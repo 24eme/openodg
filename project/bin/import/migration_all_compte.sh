@@ -2,6 +2,8 @@
 
 . bin/config.inc
 
+mkdir -p $TMPDIR
+
 #Obtient la liste des societes
 curl -s http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/societe/_view/all | sed 's/{"id":"//' | cut -d '"' -f 1 | grep SOCIETE > $TMPDIR/societeToMigrate.csv
 

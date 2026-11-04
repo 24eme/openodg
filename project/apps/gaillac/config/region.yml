@@ -22,4 +22,5 @@ all:
             - "TRANQ/appellations/CDT"
             - "TRANQ/appellations/COT"
             - "MOU/appellations/COT"
+            - "VMQ/appellations/COT"
           habilitation_produits: "/Côtes du Tarn/"

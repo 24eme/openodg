@@ -6,7 +6,16 @@
 </ol>
 <div class="row">
     <div class="col-sm-9 col-xs-12">
-    <h2 style="margin-top: 0; margin-bottom: 20px;">Historique des documents</h2>
+    <div class="row">
+        <div class="col-sm-8">
+            <h2 style="margin-top: 0; margin-bottom: 20px;">Historique des documents</h2>
+        </div>
+        <div class="col-sm-4 mt-3 text-right">
+<?php if ($url = FichierClient::getInstance()->getAppConfigUrlDocumentsOfficiels()): ?>
+            <a href="<?php echo $url; ?>"><b>Accès aux documents officiels</b> <span class="glyphicon glyphicon-new-window">&nbsp;</span></a>
+<?php endif; ?>
+        </div>
+    </div>
     <?php //ATTENTION DUPLIQUÉ pour la version desktop plus bas ?>
     <div class="visible-xs col-xs-6">
     <?php if ($sf_user->isAdminODG() || $sf_user->hasHabilitation()): ?>
@@ -122,6 +131,9 @@
     </div>
     <h4 style="margin-top: 20px;">Types de document</h4>
     <div class="list-group">
+<?php if ($url = FichierClient::getInstance()->getAppConfigUrlDocumentsOfficiels()): ?>
+    <a class="list-group-item " href="<?php echo $url; ?>">Documents officiels<span class="badge" style="position: absolute; right: 10px;">↗</span></a>
+<?php endif; ?>
 	<a class="list-group-item <?php if (!$category):?>active<?php endif; ?>" href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'campagne' => $campagne))?>">Tous<span class="badge" style="position: absolute; right: 10px;"><?php echo count($history) - $decreases ?></span></a>
 	<?php foreach ($categories as $categorie => $nbDoc): ?>
     <a class="list-group-item <?php if ($category && $category == $categorie):?>active<?php endif; ?>" href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'campagne' => $campagne, 'categorie' => $categorie))?>"><?php echo ($categorie == 'FICHIER')? 'Document' : str_replace('cremant', ' Crémant', clarifieTypeDocumentLibelle(ucfirst(strtoupper($categorie)))); ?><span class="badge" style="position: absolute; right: 10px;"><?php echo $nbDoc ?></span></a>

@@ -8,7 +8,7 @@
   <h2>Confirmation de la venue des dégustateurs</h2>
 	<h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?> <small><?php echo $degustation->getLieuNom(); ?></small></h3>
 </div>
-<p>Sélectionner les degustateurs qui ont confirmer leur présence à la dégustation</p>
+<p>Sélectionner les dégustateurs qui ont confirmé leur présence à la dégustation</p>
 <form action="<?php echo url_for("degustation_degustateurs_confirmation", $degustation) ?>" method="post" class="form-horizontal degustateurs-confirmation">
 	<?php echo $form->renderHiddenFields(); ?>
 

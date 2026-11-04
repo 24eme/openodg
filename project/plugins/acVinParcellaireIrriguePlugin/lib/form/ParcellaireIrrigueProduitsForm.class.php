@@ -10,13 +10,6 @@ class ParcellaireIrrigueProduitsForm extends acCouchdbObjectForm {
     		$this->getValidator('date_papier')->setMessage("required", "La date de réception du document est requise");
     	}
 
-    	if (sfConfig::get('app_document_validation_signataire')) {
-    		$this->setWidget('signataire', new sfWidgetFormInput());
-    		$this->setValidator('signataire', new sfValidatorString(array('required' => true)));
-    		$this->getWidget('signataire')->setLabel("Nom et prénom :");
-    		$this->getValidator('signataire')->setMessage("required", "Le nom et prénom du signataire est requise");
-    	}
-
 		foreach ($this->getObject()->getDeclarationParcelles() as $pid => $parcelles) {
 			$this->embedForm($pid, new ParcellaireIrrigueProduitIrrigationForm($parcelles));
 		}
@@ -29,7 +22,7 @@ class ParcellaireIrrigueProduitsForm extends acCouchdbObjectForm {
         $defaults = $this->getDefaults();
         $defaults["date_papier"] = date('d/m/Y');
         $this->setDefaults($defaults);
-        
+
     }
 
     protected function doUpdateObject($values) {
@@ -57,6 +50,9 @@ class ParcellaireIrrigueProduitsForm extends acCouchdbObjectForm {
             if ($items['irrigation'] && !$node->date_irrigation) {
                 $node->add('irrigation', $items['irrigation']);
                 $node->date_irrigation = date('Y-m-d');
+            }elseif(!$items['irrigation'] && $node->date_irrigation){
+                $node->add('irrigation', $items['irrigation']);
+                $node->date_irrigation = null;
             }
         }
     }

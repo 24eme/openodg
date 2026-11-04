@@ -366,8 +366,18 @@ drev_send_innov:
     sf_method: [get]
 
 drev_send_certipaq:
-  url: /drev/certipaq/:id
+  url: /drev/certipaq/:id/send
   param: { module: drev, action: sendCertipaq }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_debug_certipaq:
+  url: /drev/certipaq/:id
+  param: { module: drev, action: debugCertipaq }
   class: DRevRoute
   options:
     model:    DRev

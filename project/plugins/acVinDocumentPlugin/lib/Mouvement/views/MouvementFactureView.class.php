@@ -25,7 +25,7 @@ class MouvementFactureView extends acCouchdbView
         }
 
 	return $this->client
-	  ->startkey(array($facturee,$facturable,$societe->identifiant.'00'))
+	  ->startkey(array($facturee,$facturable,$societe->identifiant))
 	  ->endkey(array($facturee,$facturable,$societe->identifiant.'99', array()))
 	  ->reduce(false)
 	  ->getView($this->design, $this->view)->rows;

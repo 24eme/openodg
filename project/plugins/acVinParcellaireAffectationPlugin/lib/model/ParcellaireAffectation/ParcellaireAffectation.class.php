@@ -63,6 +63,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       $this->storeDeclarant();
       $this->updateParcellesAffectation();
       $this->recoverPreviousParcelles();
+      $this->cleanNonAffectee();
   }
 
   public function getPeriode() {
@@ -72,9 +73,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   private $cache_parcellaire2ref = null;
   public function getParcellaire2Reference() {
       if (!$this->cache_parcellaire2ref) {
-          $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
+          $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode, false, $this->getDateMax());
           if (!$intention) {
-              $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1);
+              $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode + 1, false, $this->getDateMax());
               if (!count($intention->declaration)) {
                   $intention = null;
               }
@@ -637,7 +638,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             foreach ($parcelle as $parcelleDetail) {
                 $total_superficie_affecte += $parcelleDetail->superficie;
                 if (round($total_superficie_affecte, 4) > round($parcelleDetail->getSuperficieParcellaire(), 4)) {
-                    $ret[$parcelleDetail->idu] = ['section' => $parcelleDetail->section, 'numero_parcelle' => $parcelleDetail->numero_parcelle, 'total_superficie_affecte' => $total_superficie_affecte, 'superficie_parcellaire' => $parcelleDetail->getSuperficieParcellaire()];
+                    $ret[$parcelleDetail->idu] = ['section' => $parcelleDetail->section, 'numero_parcelle' => $parcelleDetail->numero_parcelle, 'cepage' => $parcelleDetail->cepage, 'campagne_plantation' => $parcelleDetail->campagne_plantation,'parcelle_id' => $parcelleDetail->parcelle_id, 'total_superficie_affecte' => $total_superficie_affecte, 'superficie_parcellaire' => $parcelleDetail->getSuperficieParcellaire()];
                     break;
                 }
             }

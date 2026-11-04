@@ -53,13 +53,13 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
             }
         }else {
             //Gestion de la transition
-            if ($this->exist('superficie_affectation') && $this->_get('superficie_affectation')) {
+            if ($this->exist('superficie_affectation') && $this->_get('superficie_affectation') && !($this->exist('destinations'))) {
                 $superficie = $this->_get('superficie_affectation');
                 $this->set('superficie', $superficie);
             }
         }
         //On préserve les usages antérieurs où la superficie concernées et superficie_affectation
-        if ($this->exist('superficie_affectation')) {
+        if ($this->exist('superficie_affectation') && !($this->exist('destinations'))) {
             return $this->get('superficie_affectation');
         }
         if (! $this->getParcelleFromParcellaire()) {
@@ -106,11 +106,11 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
         if(!$this->exist('destinations')) {
             return;
         }
-
-        $this->superficie = 0;
+        $superficie = 0;
         foreach($this->destinations as $destination) {
-            $this->superficie = $this->_get('superficie') + $destination->superficie;
+            $superficie += $destination->superficie;
         }
+        $this->superficie = $superficie;
 
         $this->affectee = intval(boolval($this->superficie));
     }

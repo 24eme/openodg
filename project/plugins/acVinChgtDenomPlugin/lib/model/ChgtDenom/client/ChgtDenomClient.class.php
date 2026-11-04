@@ -6,6 +6,8 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
     const TYPE_COUCHDB = "CHGTDENOM";
     const CHANGEMENT_TYPE_CHANGEMENT = "CHANGEMENT";
     const CHANGEMENT_TYPE_DECLASSEMENT = "DECLASSEMENT";
+    const CHANGEMENT_TYPE_DR_DECLASSEMENT = "DECLASSEMENT DR";
+    const CHANGEMENT_TYPE_DR_CHGT_SEGMENT = "CHANGEMENT DE SEGMENT DR";
     const CHANGEMENT_TYPE_PRISEDEMOUSSE = "PRISEDEMOUSSE";
 
     public static function getInstance() {
@@ -92,8 +94,11 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         return $chgtdenom;
     }
 
-    public function createDocFromProduction($doc, $hash, $complement = null)
+    public function createDocFromProduction($doc, $type, $hash, $complement = null)
     {
+        if (!in_array($type, [ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT, ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT])) {
+            throw new sfException("La création d'un chgt douanier ne peut être que CHANGEMENT_TYPE_DR_DECLASSEMENT ou CHANGEMENT_TYPE_DR_CHGT_SEGMENT");
+        }
         $chgtdenom = new ChgtDenom();
         $chgtdenom->identifiant = $doc->identifiant;
         $chgtdenom->campagne = $doc->getCampagneReelle();
@@ -101,15 +106,26 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         $chgtdenom->date = (new DateTime())->format('Y-m-d H:i:s');
         $chgtdenom->add('papier', 1);
 
-        $chgtdenom->changement_type = self::CHANGEMENT_TYPE_DECLASSEMENT;
-        $chgtdenom->changement_numero_logement_operateur = "Déclassé depuis le document douanier";
-        $chgtdenom->origine_numero_logement_operateur = "Déclassé depuis le document douanier";
+        $chgtdenom->changement_type = $type;
+        if ($type == ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT) {
+            $chgtdenom->changement_numero_logement_operateur = "Déclassé depuis le document douanier";
+            $chgtdenom->origine_numero_logement_operateur = "Déclassé depuis le document douanier";
+            $chgtdenom->origine_produit_hash = "/declaration/".$hash;
+            $chgtdenom->origine_produit_libelle = $chgtdenom->getDocument()->getConfigProduits()[
+                $chgtdenom->origine_produit_hash
+            ]->getLibelleComplet();
+            $chgtdenom->origine_specificite = $complement === null ? "déclassé" : $complement . " déclassé";
+        } else {
+            $chgtdenom->changement_numero_logement_operateur = "Changement de segment DR";
+            $chgtdenom->origine_numero_logement_operateur = "Changement de segment DR";
+            $chgtdenom->origine_produit_libelle = "Produit AOP";
+            $chgtdenom->changement_produit_hash = "/declaration/".$hash;
+            $chgtdenom->changement_produit_libelle = $chgtdenom->getDocument()->getConfigProduits()[
+                $chgtdenom->changement_produit_hash
+            ]->getLibelleComplet();
+            $chgtdenom->changement_specificite = $complement === null ? "chgt de seg." : $complement . " chgt de seg.";
+        }
         $chgtdenom->origine_millesime = $doc->campagne;
-        $chgtdenom->origine_produit_hash = "/declaration/".$hash;
-        $chgtdenom->origine_produit_libelle = $chgtdenom->getDocument()->getConfigProduits()[
-            $chgtdenom->origine_produit_hash
-        ]->getLibelleComplet();
-        $chgtdenom->origine_specificite = $complement === null ? "déclassé" : $complement . " déclassé";
 
         $chgtdenom->storeDeclarant();
         $chgtdenom->constructId();
@@ -119,7 +135,7 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
 
     public function getChgtDenomProduction($identifiant, $campagne)
     {
-        $chgts = [];
+        $chgts = [ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT => [], ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT => []];
 
         foreach ($this->getHistory($identifiant) as $chgt) {
             if (in_array(strtok($chgt->changement_origine_id_document, '-'), ['DR', 'SV11', 'SV12']) === false) {
@@ -134,7 +150,7 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
                 continue;
             }
 
-            $chgts[] = $chgt;
+            $chgts[$chgt->changement_type][] = $chgt;
         }
 
         return $chgts;

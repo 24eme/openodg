@@ -53,6 +53,10 @@
                                 <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Fonction&nbsp;:</div>
                                 <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $compte->fonction; ?></div>
                             <?php endif; ?>
+                            <?php if ($compte->num_interne): ?>
+                                <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">N° interne:</div>
+                                <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $compte->num_interne; ?></div>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="col-xs-7" style="border-left: 1px solid #eee">

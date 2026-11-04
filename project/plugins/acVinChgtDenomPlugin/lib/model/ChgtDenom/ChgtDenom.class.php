@@ -37,6 +37,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->archivage_document = new ArchivageDocument($this);
     }
 
+    public function getType() {
+        $t = $this->_get('type');
+        if ($t == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) {
+            if ($this->isFromProduction()) {
+                return ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT;
+            }
+        }
+        return $t;
+    }
+
     public function getDocumentType() {
         return ChgtDenomClient::TYPE_MODEL;
     }
@@ -204,6 +214,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->origine_produit_libelle = $lot->produit_libelle;
         $this->origine_numero_logement_operateur = $lot->numero_logement_operateur;
         $this->origine_affectable = $lot->affectable;
+        if ($lot->exist('elevage')) {
+            $this->origine_elevage = $lot->elevage;
+            $this->origine_eleve = $lot->eleve;
+        } else {
+            $this->origine_elevage = false;
+            $this->origine_eleve = null;
+        }
         $this->origine_statut = $lot->statut;
     }
 
@@ -337,6 +354,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
            $lot->produit_libelle = $this->origine_produit_libelle;
            $lot->numero_logement_operateur = $this->origine_numero_logement_operateur;
            $lot->affectable = $this->origine_affectable;
+           $lot->elevage = $this->origine_elevage;
+           $lot->eleve = $this->origine_eleve;
            $lot->statut = $this->origine_statut;
            return $lot ;
         }
@@ -457,14 +476,20 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function isDeclassement() {
-      return ($this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
+      return ($this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) || ($this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT);
+    }
+    public function isChgtSegment() {
+      return ($this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT);
     }
     public function isChgtDenomination() {
         return !$this->isDeclassement();
     }
     public function isRepli()
     {
-        if ($this->isDeclassement()) {
+        if ($this->isDeclassement() || $this->isChgtSegment()) {
+            return false;
+        }
+        if (!$this->origine_produit_hash) {
             return false;
         }
         $produitOrigineAplHash = $this->getConfigProduitOrigine()->getAppellation()->getHash();
@@ -528,6 +553,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lot->declarant_nom = $this->declarant->raison_sociale;
         $lot->declarant_identifiant = $this->identifiant;
         $lot->statut = $this->origine_statut;
+        $lot->elevage = $this->origine_elevage;
+        $lot->eleve = $this->origine_eleve;
         if($lot->statut) {
             $lot->affectable = false;
         }
@@ -587,11 +614,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                 $lot->cepages = $this->changement_cepages->toArray();
             }
             $lot->affectable = $this->changement_affectable;
+            $lot->elevage = false;
+            if ($this->origine_elevage === true) {
+                $lot->eleve = date('Y-m-d');
+            } else {
+                $lot->eleve = null;
+            }
             $lot->statut = null;
-            if($lot->affectable === false) {
+            if ($lot->affectable === false) {
                 $lot->statut = Lot::STATUT_NONAFFECTABLE;
             }
-
             if ($this->exist('changement_numero_logement_operateur') && $this->changement_numero_logement_operateur) {
                 $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
             }
@@ -751,6 +783,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
                 continue;
             }
+            if (!$lot->isLotOrigine() && $this->origine_elevage == true) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVAGE_EN_ATTENTE));
+            }
             //Si le lot changé n'a pas été lui même de nouveau changé, on peut le changer et le déguster ou non
             if ($lot->volume && !$lot->isAffecte()) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
@@ -777,7 +812,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     /**** PIECES ****/
     public function getAllPieces() {
       $lot = $this->getLotOrigine();
-      if ($this->isDeclassement()) {
+      if ($this->isFromProduction()) {
+          if ($this->isDeclassement()) {
+              $libelle = 'Déclassement DR';
+          } else {
+              $libelle = 'Changement de segment';
+          }
+      } elseif ($this->isDeclassement()) {
           $libelle = 'Déclassement';
       } elseif ($this->isRepli()) {
           $libelle = 'Repli';
@@ -1127,7 +1168,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return null;
         }
 
-        $hash = str_replace('/declaration/', '', $this->origine_produit_hash);
+        if ($this->isDeclassement()) {
+            $hash = str_replace('/declaration/', '', $this->origine_produit_hash);
+        } else {
+            $hash = str_replace('/declaration/', '', $this->changement_produit_hash);
+        }
         if ($doc->getConfiguration()->declaration->exist($hash) === false) {
             return null;
         }
@@ -1136,14 +1181,35 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $item = $doc->get('donnees')->add();
 
         $item->produit = $hash;
-        $item->produit_libelle = $this->origine_produit_libelle;
-        $item->complement = $this->origine_specificite;
         $item->categorie = "15";
         $item->categorie_libelle = "Vol. de vin avec AO/IGP avec/sans cépage dans la limite du rdt autorisé";
-        $item->valeur = - $this->origine_volume;
+        if ($this->isDeclassement()) {
+            $item->produit_libelle = $this->origine_produit_libelle;
+            $item->complement = $this->origine_specificite;
+            $item->valeur = - $this->origine_volume;
+        } else {
+            $item->produit_libelle = $this->changement_produit_libelle;
+            $item->complement = $this->changement_specificite;//"chgt de seg.";
+            $item->valeur = $this->changement_volume;
+        }
     }
 
     public function isSansOrigine() {
         return ! ($this->lots[0]->id_document_provenance);
+    }
+
+    public function switchEleve($lot_unique_id)
+    {
+        if ($lot_unique_id == $this->changement_origine_lot_unique_id) {
+            if ($this->origine_elevage) {
+                $this->origine_elevage = false;
+                $this->origine_eleve = $date;
+                $this->origine_affectable = true;
+            }else{
+                $this->origine_elevage = true;
+                $this->origine_eleve = null;
+                $this->origine_affectable = false;
+            }
+        }
     }
 }

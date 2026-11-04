@@ -55,6 +55,10 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                 <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Famille :</div>
                                 <div style="margin-bottom: 5px;" class="col-xs-8"><?php if(isset(EtablissementFamilles::$familles[$etablissement->famille])):?><?php echo EtablissementFamilles::$familles[$etablissement->famille]; ?><?php else: ?><?php echo $etablissement->famille ?><?php endif; ?></div>
                             <?php endif; ?>
+                            <?php if ($etablissement->nature_inao) : ?>
+                                <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Nature :</div>
+                                <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->nature_inao ?></div>
+                            <?php endif; ?>
                             <?php if ($etablissement->recette_locale && $etablissement->recette_locale->nom) : ?>
                                 <div style="font-weight: bold; margin-bottom: 5px;" class="col-xs-4 text-muted">Recette locale :</div>
                                 <div style="margin-bottom: 5px;" class="col-xs-8"><a href="<?php echo url_for('societe_visualisation', SocieteClient::getInstance()->find($etablissement->recette_locale->id_douane)); ?>">
@@ -66,7 +70,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                 <?php endif; ?>
                                 <?php if ($etablissement->cvi): ?>
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">CVI :</div>
-                                    <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->cvi; ?></div>
+                                    <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->cvi; ?>&nbsp;&nbsp;<a href="<?php echo url_for("cvi_check", array('cvi' => $etablissement->cvi)); ?>" class="text-muted" style="text-decoration: none;" target="_blank" title="Voir l'extrait du CVI"><small class="glyphicon glyphicon-eye-open"></small></a></div>
                                 <?php endif; ?>
                                 <?php if ($etablissement->num_interne): ?>
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">N° interne:</div>
@@ -82,7 +86,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                 <?php endif; ?>
                                 <?php if ($etablissement->siret): ?>
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">SIRET :</div>
-                                    <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo formatSIRET($etablissement->siret); ?></div>
+                                    <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo formatSIRET($etablissement->siret); ?>&nbsp;&nbsp;<a href="https://annuaire-entreprises.data.gouv.fr/entreprise/<?php echo substr($etablissement->siret, 0, 9) ?>" class="text-muted" style="text-decoration: none;" target="_blank" title="Voir sur l'annuaire des entreprise (annuaire-entreprises.data.gouv.fr)"><small class="glyphicon glyphicon-eye-open"></small></a></div>
                                 <?php endif; ?>
                                 <?php if ($etablissement->carte_pro && $etablissement->isCourtier()) : ?>
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Carte professionnelle : </div>

@@ -7,10 +7,16 @@
   </a></span>
 <?php endif; ?>
   <h4>
-      Dossier <?php echo $lot->campagne; ?> n°&nbsp;<strong><?php echo $lot->numero_dossier; ?></strong> –
+      Dossier <?php echo $lot->campagne; ?>
+      <?php if ($lot->numero_dossier): ?>
+      n°&nbsp;<strong><?php echo $lot->numero_dossier; ?></strong>
+      <?php endif; ?>
+      <?php if ($lot->numero_archive): ?>
+      –
       <a href="<?php echo url_for('degustation_lot_historique',array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id)); ?>">
       Lot n°&nbsp;<strong><?php echo $lot->numero_archive; ?></strong>
       </a>
+      <?php endif; ?>
   </h4>
 
   <table class="table table-condensed" style="margin: 0;">
@@ -21,9 +27,11 @@
       <tr>
         <td style="border: none;">Produit : <strong><?php echo showProduitCepagesLot($lot) ?></strong></td>
       </tr>
+      <?php if ($lot->volume): ?>
       <tr>
         <td style="border: none;">Volume : <strong><?php echo echoFloat($lot->volume); ?></strong>&nbsp;<small class="text-muted">hl</small></td>
       </tr>
+      <?php endif; ?>
     <?php if ($lot->adresse_logement): ?>
       <tr>
         <td style="border: none;">Adresse de prélèvement : <strong><?php echo $lot->adresse_logement; ?></strong></td>

@@ -32,7 +32,7 @@
 
     <?php include_partial('conditionnement/recap', array('conditionnement' => $conditionnement, 'form' => $form)); ?>
 
-	<?php  if (!$conditionnement->isPapier() && count($validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)) > 0): ?>
+	<?php  if (count($validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)) > 0): ?>
     	<?php include_partial('conditionnement/engagements', array('conditionnement' => $conditionnement, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
     <hr />

@@ -548,14 +548,24 @@
 
     $.btn_switch = function() {
       var origin = document.querySelector('#btn-degustable-all');
-      if (origin) {
-        origin.addEventListener("change", function (e) {
-          document.querySelectorAll('.switch:not(#btn-degustable-all)').forEach( function (el) {
-            el.checked = origin.checked;
+      var switches = document.querySelectorAll('.switch:not(#btn-degustable-all)');
+
+      if (!origin) return;
+
+      origin.addEventListener("change", function () {
+        switches.forEach(function (el) {
+          el.checked = origin.checked;
+        });
+      });
+
+      switches.forEach(function (el) {
+        el.addEventListener("change", function () {
+          origin.checked = Array.from(switches).every(function (el) {
+            return el.checked;
           });
         });
-      }
-    }
+      });
+    };
 
     $.lien_denom_switch = function() {
       var origin = document.querySelector('#lien-denomination-all');

@@ -1367,6 +1367,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return false;
     }
 
+    public function getVCIConstitue()
+    {
+        $volume = 0;
+        foreach ($this->declaration->getProduits() as $produit) {
+            if($produit->recolte->vci_constitue > 0) {
+                $volume += $produit->recolte->vci_constitue;
+            }
+        }
+        return $volume;
+    }
+
     public function hasVCIConstitue()
     {
         foreach ($this->declaration->getProduits() as $produit) {
@@ -1480,6 +1491,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function save($saveDependants = true) {
         $this->archiver();
+
+        $this->update();
 
         $this->piece_document->generatePieces();
 
@@ -2241,6 +2254,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
 
+            if($lot->isChange()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
+            } elseif(!$lot->isAffecte()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
+            }
             if ($lot->elevage === true) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVAGE_EN_ATTENTE));
                 continue;
@@ -2249,11 +2267,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVE, '', $lot->eleve));
             }
 
-            if($lot->isChange()) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
-            } elseif(!$lot->isAffecte()) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
-            }
 
             if($lot->isAffecte()) {
                 $commission_date[$lot->date_commission] = $lot->date_commission;
@@ -2716,7 +2729,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getProduitsWithReserveInterpro($region = null) {
         $produits = array();
         foreach($this->getProduits($region) as $p) {
-            if (!$p->getConfig()->getRendementReserveInterpro()) {
+            if (!$p->hasReserveInterpro()) {
                 continue;
             }
             $produit_libelle = $p->getCepage()->getLibelleComplet();
@@ -2811,5 +2824,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getDefaultMillesime() {
         return substr($this->campagne, 0, 4);
+    }
+
+    public function getSumFieldByHashRegex($field, $hashRegex)
+    {
+        $sum = 0;
+        foreach($this->getProduits() as $hash => $p) {
+            if (preg_match("~^$hashRegex~", $hash, $m)) {
+                $sum += ($p->exist($field))? $p->get($field) : 0;
+            }
+        }
+        return $sum;
     }
 }

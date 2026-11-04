@@ -241,8 +241,10 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
         $this->generateDonnees();
 
-        foreach (ChgtDenomClient::getInstance()->getChgtDenomProduction($this->identifiant, $this->campagne) as $chgt) {
-            $chgt->addDonneesForProduction($this);
+        foreach([ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT, ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT] as $t) {
+            foreach (ChgtDenomClient::getInstance()->getChgtDenomProduction($this->identifiant, $this->campagne)[$t] as $chgt) {
+                $chgt->addDonneesForProduction($this);
+            }
         }
 
         $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->date_depot);
@@ -905,7 +907,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         if ($this->getDocumentDefinitionModel() != 'DR') {
             return false;
         }
-        return count($this->getTiers($include_non_reconnu));
+        return count($this->getTiers($include_non_reconnu)) > 0;
     }
 
     public function getApporteurs($include_non_reconnu = false, $hydrate = acCouchdbClient::HYDRATE_JSON): array {
@@ -938,13 +940,16 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             }
             $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
             if(!$etablissement) {
-                $cvis[$cvi] = $data->tiers_raison_sociale;
+                if ($data->tiers_raison_sociale) {
+                    $cvis[$cvi] = $data->tiers_raison_sociale;
+                } else {
+                    $cvis[$cvi] = $cvi;
+                }
                 continue;
             }
 
             $cvis[$cvi] = $etablissement;
         }
-
         $etablissements = array();
         foreach($cvis as $cvi => $etablissement) {
             if(is_string($etablissement)) {

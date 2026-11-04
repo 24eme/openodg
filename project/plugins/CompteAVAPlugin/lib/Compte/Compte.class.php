@@ -512,4 +512,14 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
     }
     /*** FIN ARCHIVAGE ***/
 
+
+    public function getLogin() {
+
+        if($this->exist('login')) {
+            return $this->_get('login');
+        }
+
+        return preg_replace("/^(.*)([0-9][0-9])$/", '\1', $this->identifiant);
+    }
+
 }

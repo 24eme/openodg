@@ -91,7 +91,7 @@ class ParcellaireAffectationValidation extends DocumentValidation {
         }
 
         foreach ($this->document->getProblemMultiAffectee() as $parcelle) {
-            $this->addPoint(self::TYPE_ERROR, 'parcelle_multi_affectee', "Pour la parcelle " . $parcelle['section'] .' / ' . $parcelle['numero_parcelle'] . ", le total de superficie affectée (" . $parcelle['total_superficie_affecte'] . " ha) est supérieur à la superficie du parcellaire (" . $parcelle['superficie_parcellaire'] . " ha).");
+            $this->addPoint(self::TYPE_ERROR, 'parcelle_multi_affectee', "Pour la parcelle " . $parcelle['section'] .' / ' . $parcelle['numero_parcelle'] . " " . $parcelle['cepage'] . " " . $parcelle['campagne_plantation'] . " (" . $parcelle['parcelle_id'] .") le total de superficie affectée (" . $parcelle['total_superficie_affecte'] . " ha) est supérieur à la superficie du parcellaire (" . $parcelle['superficie_parcellaire'] . " ha).");
         }
     }
 }

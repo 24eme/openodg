@@ -12,9 +12,11 @@ class parcellaireIrrigueActions extends sfActions {
             throw new sfError403Exception("La téléclaration n'est pas encore ouverte");
         }
 
-
-		$this->papier = $request->getParameter('papier', false);
-		$this->periode = $request->getParameter('periode');
+        $this->papier = false;
+        if ($this->getUser()->isAdminODG()) {
+            $this->papier = $request->getParameter('papier', false);
+        }
+        $this->periode = $request->getParameter('periode');
 
         $errors = array();
         $this->parcellaireIrrigue = ParcellaireIrrigueClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode, $this->papier, null, $errors);

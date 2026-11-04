@@ -15,7 +15,7 @@ if (isset($form) && $form):
 endif;
 ?>
 <div class="page-header">
-    <?php if($drev->hasDR()): ?>
+    <?php if(($drev->hasDR() && !$sf_user->isAdmin()) || ($drev->hasDR() && $sf_user->isUsurpationCompte())): ?>
         <a class="btn btn-sm btn-default-step pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Recharger les données de la Déclaration de Récolte</a>
     <?php endif; ?>
     <?php if(!$drev->isNonRecoltant() && !$drev->hasDR()): ?>

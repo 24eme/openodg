@@ -1,5 +1,7 @@
 . bin/config.inc
 
+mkdir -p $TMPDIR
+
 echo "{
 \"type\" : \"couchdb\",
 \"couchdb\" : {

@@ -121,6 +121,10 @@ class parcellaireAffectationActions extends sfActions {
     }
 
     public function executeAffectations(sfWebRequest $request) {
+        $this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        if ($this->parcellaireAffectation->isValidee()) {
+            return $this->redirect('parcellaireaffectation_visualisation', $this->parcellaireAffectation);
+        }
         $this->executeEtape($request, ParcellaireAffectationEtapes::ETAPE_AFFECTATIONS, "ParcellaireAffectationProduitsForm");
     }
 
@@ -234,6 +238,9 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
     	$this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        if ($this->parcellaireAffectation->isValidee()) {
+            return $this->redirect('parcellaireaffectation_visualisation', $this->parcellaireAffectation);
+        }
         ParcellaireAffectationEtapes::getInstance()->setDeclaration($this->parcellaireAffectation);
         $this->coop = $request->getParameter('coop');
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);

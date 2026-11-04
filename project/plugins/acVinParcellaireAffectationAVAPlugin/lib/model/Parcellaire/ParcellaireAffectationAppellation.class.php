@@ -53,8 +53,9 @@ class ParcellaireAffectationAppellation extends BaseParcellaireAffectationAppell
     }
 
     static function sortParcellesByCommune($detail0, $detail1) {
-        return strcmp($detail0->getParcelleIdentifiant().' '.$detail0->getLibelleComplet(),
-        $detail1->getParcelleIdentifiant().' '.$detail1->getLibelleComplet());
+        $aK = $detail0->section.sprintf("%04d",$detail0->numero_parcelle);
+        $bK = $detail1->section.sprintf("%04d",$detail1->numero_parcelle);
+        return strcmp($aK,$bK);
     }
 
     public function getPreviousAppellationKey() {

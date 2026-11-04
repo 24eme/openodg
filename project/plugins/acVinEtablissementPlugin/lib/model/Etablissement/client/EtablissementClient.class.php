@@ -52,6 +52,9 @@ class EtablissementClient extends acCouchdbClient {
     const NATURE_INAO_SICA = 'SICA';
     const NATURE_INAO_SOCIETE_COMMERCIALE = 'Société commerciale (négociant)';
     const NATURE_INAO_AUTRE = 'Autre';
+    //Hack pour IGP Atlantique
+    const NATURE_INAO_CONDITIONNEUR_CONTINU = 'Conditionneur continu';
+    const NATURE_INAO_CONDITIONNEUR_OCCASIONNEL = 'Conditionneur occasionnel';
 
     const CHAI_ATTRIBUT_VINIFICATION = "VINIFICATION";
     const CHAI_ATTRIBUT_CONDITIONNEMENT = "CONDITIONNEMENT";
@@ -81,6 +84,8 @@ class EtablissementClient extends acCouchdbClient {
         self::REGIME_CRD_COLLECTIF_SUSPENDU => 'DS');
     public static $natures_inao_libelles = array(
         "01" => self::NATURE_INAO_PRODUCTEUR_INDIVIDUEL,
+        "02" => self::NATURE_INAO_CONDITIONNEUR_OCCASIONNEL,
+        "03" => self::NATURE_INAO_CONDITIONNEUR_CONTINU,
         "04" => self::NATURE_INAO_COOPERATIVE,
         "05" => self::NATURE_INAO_UNION_DE_COOPERATIVES,
         "06" => self::NATURE_SOCIETE_CIVILE,
