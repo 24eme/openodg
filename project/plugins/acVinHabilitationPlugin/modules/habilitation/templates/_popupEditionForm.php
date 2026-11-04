@@ -32,7 +32,7 @@
 							Statut :
 						</div>
 						<div class="col-xs-6">
-							<?php echo $editForm['statut_'.$idKey]->render(array("data-placeholder" => "Séléctionnez un statut", "style" => "width: 100%;", "class" => "select2 select2-offscreen select2autocomplete", "required" => true)); ?>
+							<?php echo $editForm['statut_'.$idKey]->render(array("data-placeholder" => "Sélectionnez un statut", "style" => "width: 100%;", "class" => "select2 select2-offscreen select2autocomplete", "required" => true)); ?>
 						</div>
 					</div>
 					<div class="row form-group" >

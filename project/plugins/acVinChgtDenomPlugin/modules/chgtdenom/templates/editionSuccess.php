@@ -130,7 +130,7 @@
                         <?php for($i=0; $i < DRevLotForm::NBCEPAGES; $i++): ?>
                             <div class="form-group ligne_lot_cepage">
                                 <div class="col-sm-8">
-                                    <?php echo $form['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control selectCepage select2 select2-offscreen select2autocomplete")); ?>
+                                    <?php echo $form['cepage_'.$i]->render(array("data-placeholder" => "Sélectionnez un cépage", "class" => "form-control selectCepage select2 select2-offscreen select2autocomplete")); ?>
                                 </div>
                                 <div class="col-sm-4">
                                   <div class="input-group input-group-pc" style='display:none;'>
