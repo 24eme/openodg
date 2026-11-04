@@ -30,7 +30,7 @@ $list_idu = [];
     <?php else: ?>
     <h2 class="col-xs-8">Parcellaire</h2>
     <?php endif;?>
-    <p class="col-xs-4 text-muted p-4 mt-4 text-right"><?= $parcellaire->_id ?></p>
+    <p class="col-xs-4 text-muted p-4 mt-4 text-right"><?= $parcellaire->_id ?> <a href="<?php echo url_for("parcellaire_convert_csv",  ['parcellaire_id' => $parcellaire->_id]); ?>"><small class="glyphicon glyphicon-refresh text-muted"></small></a></p>
 </div>
 
 <div class="clearfix">

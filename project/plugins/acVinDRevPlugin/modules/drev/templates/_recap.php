@@ -79,8 +79,11 @@
                             <?php foreach($drev->getProduitsWithReserveInterpro() as $p): ?>
                               <tr>
                                 <td><?php echo $p->getLibelle(); ?><small class="text-muted pull-right"><?php echo ($p->hasRulesOnVCR())? 'règle des 80%' : $p->getVCR().' hl' ?></small></td>
-                                <td class="text-right"><?php if($p->getVolumeReserveInterpro(true) < 0): ?><span style="cursor: pointer" title="Repli possible jusqu'à <?php echoFloat(-1 * $p->getVolumeReserveInterpro(true)) ?> hl">*</span> <?php endif; ?><?php echoFloat($p->getVolumeReserveInterpro()); ?> <small class="text-muted">hl</small></td>
-                                <td class="text-right"><?php echoFloat($p->getVolumeRevendiqueCommecialisable()); ?> <small class="text-muted">hl</small></td>
+                                <td class="text-right"><?php echoFloat($p->getVolumeReserveInterpro()); ?> <small class="text-muted">hl</small></td>
+                                <td class="text-right">
+                                    <?php if($p->getVolumeReserveInterpro(true) < 0): ?><span style="cursor: pointer" title="Repli commercialisable possible jusqu'à <?php echoFloat(-1 * $p->getVolumeReserveInterpro(true)) ?> hl">*</span> <?php endif; ?>
+                                    <?php echoFloat($p->getVolumeRevendiqueCommecialisable()); ?> <small class="text-muted">hl</small>
+                                </td>
                               </tr>
                             <?php endforeach; ?>
                           </tbody>
