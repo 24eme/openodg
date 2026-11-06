@@ -18,7 +18,10 @@ class PointsAidesConfiguration {
         $this->pointsAides = sfConfig::get('configuration_points_aides', array());
     }
 
-    public function getPointAide($categorie,$ptAideId) {
+    public function getPointAide($categorie,$ptAideId, $default_msg = '') {
+        if ( !isset($this->pointsAides[$categorie]) || !isset($this->pointsAides[$categorie][$ptAideId]) ) {
+            return $default_msg;
+        }
         return $this->pointsAides[$categorie][$ptAideId];
     }
 
