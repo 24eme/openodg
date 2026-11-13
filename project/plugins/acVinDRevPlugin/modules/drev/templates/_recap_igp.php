@@ -12,7 +12,7 @@
                 </thead>
                 <thead>
                   <tr>
-                    <th class="text-center col-xs">Produit (millesime) <small class="pull-right text-muted">Rdmt L5</small></th>
+                    <th class="text-center col-xs">Produit (millesime) <small class="pull-right text-muted">rdmt vendanges ligne E</small></th>
                     <th class="text-center col-xs-1">Superficie</th>
                     <th class="text-center col-xs-1">Volume</th>
                     <th class="text-center col-xs-1">Nb lots</th>
