@@ -25,3 +25,6 @@ Le tableau suivant récapitule le volume total revendiqué et le volume seuil qu
 <?php endforeach; ?>
 </tbody>
 </table>
+<?php if (!count($validation->getEngagements()) && ($produit['volume'] > $produit['volume_max'])): ?>
+<p class="<?php echo $td_extra_class; ?>">Le VIP2C ne semble pas libérable pour cette destination (voir message plus haut).</p>
+<?php endif; ?>

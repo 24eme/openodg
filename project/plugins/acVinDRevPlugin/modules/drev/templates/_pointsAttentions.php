@@ -1,8 +1,8 @@
-<?php if ($validation->hasErreurs()): ?>
-    <h3>Points bloquants</h3>
+<?php if ($validation->hasImportants()): ?>
+    <h3>Points importants</h3>
     <div class="alert alert-danger" role="alert">
         <ul class="list-unstyled">
-            <?php foreach ($validation->getErreurs() as $controle): ?>
+            <?php foreach ($validation->getImportants() as $controle): ?>
                 <li>
                     <?php if ($controle->getRawValue()->getLien() && $controle->getRawValue()->getInfo()) : ?>
                         <span class="glyphicon glyphicon-warning-sign"></span>
@@ -20,11 +20,11 @@
         </ul>
     </div>
 <?php endif; ?>
-<?php if ($validation->hasImportants()): ?>
-    <h3>Points importants</h3>
+<?php if ($validation->hasErreurs()): ?>
+    <h3>Points bloquants</h3>
     <div class="alert alert-danger" role="alert">
         <ul class="list-unstyled">
-            <?php foreach ($validation->getImportants() as $controle): ?>
+            <?php foreach ($validation->getErreurs() as $controle): ?>
                 <li>
                     <?php if ($controle->getRawValue()->getLien() && $controle->getRawValue()->getInfo()) : ?>
                         <span class="glyphicon glyphicon-warning-sign"></span>
