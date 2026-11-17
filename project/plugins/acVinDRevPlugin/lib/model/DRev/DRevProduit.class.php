@@ -411,7 +411,7 @@ class DRevProduit extends BaseDRevProduit
         }
         if (VCR::hasCsv() && !$this->getConfig()->hasRendementReserveInterpro()) {
             return (!$includeReserveNegative && $this->getVolumeReserveInterproVCR() < 0)? 0 : $this->getVolumeReserveInterproVCR();
-        } elseif (!VCR::hasCsv() && $this->getConfig()->hasRendementReserveInterpro()) {
+        } elseif (!VCR::getFromCSV($this->getDocument()->getDefaultMillesime(), $this->getDocument()->declarant->cvi) && $this->getConfig()->hasRendementReserveInterpro()) {
             return $this->getVolumeReserveInterproAndButoir();
         }
         throw new sfException("Erreur : plusieurs modes de calcul de la reserve interpro implémentés");
