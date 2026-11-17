@@ -23,14 +23,11 @@ Au vu des documents fournis, et des résultats des contrôles analytique et orga
 - <?= trim(preg_replace("/[ ]+/", " ", (str_replace("&nbsp;", " ", strip_tags(showProduitCepagesLot($lotNonConforme)))))) . ", NON ". ($lotNonConforme->isLibelleAcceptable() ? 'ACCEPTABILITÉ' : 'CONFORMITÉ') ." de type " . $lotNonConforme->getShortLibelleConformite() ?> :
 <a href="<?php echo url_for('degustation_get_courrier_auth_nonconforme_raccourci', array(
     'id' => str_replace("DEGUSTATION-", "", $degustation->_id),
-    'auth' => UrlSecurity::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
-    'lot_dossier' => $lotNonConforme->numero_dossier,
-    'lot_archive' => $lotNonConforme->numero_archive
-), true); ?>"><?php echo url_for('degustation_get_courrier_auth_nonconforme_raccourci', array(
+    'auth' => UrlSecurity::generateAuthKey($degustation->_id, $lotNonConforme->unique_id),
+    'lot_unique_id' => $lotNonConforme->unique_id), true); ?>"><?php echo url_for('degustation_get_courrier_auth_nonconforme_raccourci', array(
     'id' => str_replace("DEGUSTATION-", "", $degustation->_id),
-    'auth' => UrlSecurity::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
-    'lot_dossier' => $lotNonConforme->numero_dossier,
-    'lot_archive' => $lotNonConforme->numero_archive
+    'auth' => UrlSecurity::generateAuthKey($degustation->_id, $lotNonConforme->unique_id),
+    'lot_unique_id' => $lotNonConforme->unique_id
 ), true); ?></a>
 <?php endforeach; ?>
 
