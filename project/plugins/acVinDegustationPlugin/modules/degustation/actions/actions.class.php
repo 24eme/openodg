@@ -1390,7 +1390,14 @@ class degustationActions extends sfActions {
       $this->redirectIfIsNotAnonymized();
       $lot_dossier = $request->getParameter('lot_dossier');
       $lot_archive = $request->getParameter('lot_archive');
-      $lot = $this->degustation->getLotByNumDossierNumArchive($lot_dossier, $lot_archive);
+      $lot_unique_id = $request->getParameter('lot_unique_id');
+      if ($lot_unique_id) {
+          $lot = $this->degustation->getLotByUniqueId($lot_unique_id);
+      } elseif ($lot_dossier && $lot_archive) {
+          $lot = $this->degustation->getLotByNumDossierNumArchive($lot_dossier, $lot_archive);
+      } else {
+          throw new sfException('lot non identifiable');
+      }
       $this->forward404Unless(
           $this->getUser()->isAdmin() ||
           $this->getUser()->isStalker() ||
@@ -1406,8 +1413,13 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $lot_dossier = $request->getParameter('lot_dossier');
         $lot_archive = $request->getParameter('lot_archive');
+        $lot_unique_id = $request->getParameter('lot_unique_id');
 
-        $lot = $this->degustation->getLotByNumDossierNumArchive($lot_dossier, $lot_archive);
+        if ($lot_unique_id) {
+            $lot = $this->degustation->getLotByUniqueId($lot_unique_id);
+        } elseif ($lot_dossier && $lot_archive) {
+            $lot = $this->degustation->getLotByNumDossierNumArchive($lot_dossier, $lot_archive);
+        }
 
         $this->forward404Unless(
             $this->getUser()->isAdmin() ||
@@ -1431,8 +1443,8 @@ class degustationActions extends sfActions {
     public function executeRetraitNonConformitePDF(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();
       $etablissement = EtablissementClient::getInstance()->findByIdentifiant($request->getParameter('identifiant'));
-      $lot_dossier = $request->getParameter('lot_dossier');
-      $this->document = new ExportRetraitNonConformitePDF($degustation,$etablissement,$lot_dossier,$request->getParameter('output','pdf'),false);
+      $lot_unique_id = $request->getParameter('lot_unique_id');
+      $this->document = new ExportRetraitNonConformitePDF($degustation,$etablissement,$lot_unique_id,$request->getParameter('output','pdf'),false);
       return $this->mutualExcecutePDF($request);
     }
 
@@ -1558,17 +1570,22 @@ class degustationActions extends sfActions {
         $identifiant = str_replace(array('>', '%3E', '%3e'), '', $identifiant);
         $lot_dossier = $request->getParameter('lot_dossier', null);
         $lot_archive = $request->getParameter('lot_archive', null);
+        $lot_unique_id = $request->getParameter('lot_unique_id', null);
         $type = $request->getParameter('type', null);
 
         if (! $type) {
             throw new sfException('Parametre type n\'est pas défini');
         }
 
-        $descriminant = '';
+        $discriminant = '';
         switch ($type) {
             case 'NonConformite':
-                if (! $lot_archive || ! $lot_dossier) { throw new sfException("Identifiant de lot manquant"); }
-                $discriminant = $lot_dossier.$lot_archive;
+                if ($lot_unique_id) {
+                    $discriminant = $lot_unique_id;
+                }elseif ($lot_archive && $lot_dossier) {
+                    $discriminant = $lot_dossier.$lot_archive;
+                }
+                if(!$discriminant) { throw new sfException("Identifiant de lot manquant"); }
                 break;
 
             case 'Conformite':
