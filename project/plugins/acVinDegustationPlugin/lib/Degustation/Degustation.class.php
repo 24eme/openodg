@@ -1522,13 +1522,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function getLotsByNumDossierNumArchive(){
             $lots = array();
             foreach ($this->getLots() as $lot) {
-              $lots[$lot->numero_dossier][$lot->numero_archive] = $lot;
+              $lots[$lot->numero_dossier][$lot->numero_archive][$lot->unique_id] = $lot;
             }
 
             return $lots;
         }
 
-        public function getLotByNumDossierNumArchive($numero_dossier, $numero_archive){
+        public function getLotByUniqueId($unique_id) {
+            $ids = explode('-', $unique_id);
+            print_r([$ids[2], $ids[3], $unique_id]);
+            return $this->getLotByNumDossierNumArchive($ids[2], $ids[3], $unique_id);
+        }
+
+        public function getLotByNumDossierNumArchive($numero_dossier, $numero_archive, $unique_id = null){
             $allLots = $this->getLotsByNumDossierNumArchive();
             if(!isset($allLots[$numero_dossier])){
                 return null;
@@ -1536,7 +1542,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             if(!isset($allLots[$numero_dossier][$numero_archive])){
                 return null;
             }
-            return $allLots[$numero_dossier][$numero_archive];
+            if (!$unique_id) {
+                if (count($allLots[$numero_dossier][$numero_archive]) > 1) {
+                    throw new sfException('il existe plusieurs lots '.$numero_dossier.'/'.$numero_archive);
+                }
+                return current($allLots[$numero_dossier][$numero_archive]);
+            }
+            return $allLots[$numero_dossier][$numero_archive][$unique_id];
         }
 
 		public function getOdg(){

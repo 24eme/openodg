@@ -48,7 +48,7 @@ class ChgtDenomValidation extends DocumentValidation
             $this->addControle(self::TYPE_ERROR, 'production_volume_max', "Le volume changé dépasse le volume restant du document de production");
             $this->addControle(self::TYPE_ERROR, 'production_volume_mismatch', "Les volumes ne correspondent pas");
             $this->addControle(self::TYPE_ERROR, 'not_in_production', "Produit non présent dans le document de production");
-            $this->addControle(self::TYPE_ERROR, 'production_no_L15', "Produit sans L15");
+            $this->addControle(self::TYPE_ERROR, 'production_no_L15', "Produit sans Ligne E");
             $this->addControle(self::TYPE_ERROR, 'not_in_drev', "Produit non présent dans la revendication");
         }
     }

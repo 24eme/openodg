@@ -130,7 +130,7 @@
                             </span> hl/ha
                             |
                         <?php endif ?>
-                        <span title="Rendement L15" style="cursor: help">
+                        <span title="Rendement L15 (Ligne P)" style="cursor: help">
                             <?php if ($produit['lignes']['15']['val'] > 0 && $produit['lignes']['04']['val'] > 0): ?>
                                 <?php echoFloatFr( round(intval($produit['lignes']['15']['val']) / $produit['lignes']['04']['val'], 2) ) ;?>
                             <?php else: echoFloatFr(0); ?>
@@ -229,7 +229,7 @@
             <ul>
                 <?php foreach ($chgtsProd[ChgtDenomClient::CHANGEMENT_TYPE_DR_DECLASSEMENT] as $c): ?>
                 <li><a href="<?php echo url_for('chgtdenom_visualisation', ['id' => $c->_id]) ?>"><?php echo $c->origine_produit_libelle ?><?php echo $c->origine_specificite ? " ".str_replace('déclassé', '', $c->origine_specificite) : null ?></a>
-                    (<span style="text-decoration: underline dotted;cursor: help;" title="Volume imputé sur la L15">- <?php echo $c->origine_volume ?> hl</span>)
+                    (<span style="text-decoration: underline dotted;cursor: help;" title="Volume imputé sur la L15 (Ligne P)">- <?php echo $c->origine_volume ?> hl</span>)
                 </li>
                 <?php endforeach ?>
             </ul>
@@ -242,7 +242,7 @@
             <ul>
                 <?php foreach ($chgtsProd[ChgtDenomClient::CHANGEMENT_TYPE_DR_CHGT_SEGMENT] as $c): ?>
                 <li><a href="<?php echo url_for('chgtdenom_visualisation', ['id' => $c->_id]) ?>"><?php echo $c->changement_produit_libelle ?><?php echo $c->changement_specificite ? " ".str_replace('déclassé', '', $c->origine_specificite) : null ?></a>
-                    (<span style="text-decoration: underline dotted;cursor: help;" title="Volume imputé sur la L15">+ <?php echo $c->changement_volume ?> hl</span>)
+                    (<span style="text-decoration: underline dotted;cursor: help;" title="Volume imputé sur la L15 (Ligne P)">+ <?php echo $c->changement_volume ?> hl</span>)
                 </li>
                 <?php endforeach ?>
             </ul>
