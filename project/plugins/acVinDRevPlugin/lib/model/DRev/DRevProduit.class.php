@@ -490,7 +490,7 @@ class DRevProduit extends BaseDRevProduit
     }
 
 	public function getVolumeRevendiqueCommecialisable($includeReserveNegative = false) {
-        $reserve = $this->getVolumeReserveInterproByConfig($includeReserveNegative);
+        $reserve = $this->getVolumeReserveInterpro($includeReserveNegative);
         if (!$includeReserveNegative && $reserve < 0) {
             $reserve = 0;
         }
