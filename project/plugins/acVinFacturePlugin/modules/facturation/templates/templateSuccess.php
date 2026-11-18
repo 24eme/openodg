@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
-  <li class="active"><a href="">Template de facturation</a></li>
+  <li class="active"><a href="<?php echo url_for('facturation_template_last') ?>">Template de facturation</a></li>
   <li class="active"><a href=""><?php echo $template->libelle ?></a></li>
 </ol>
 
