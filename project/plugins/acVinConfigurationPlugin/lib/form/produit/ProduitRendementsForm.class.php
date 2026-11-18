@@ -13,8 +13,8 @@ class ProduitRendementsForm extends acCouchdbObjectForm {
             $this->getWidget('rendement')->setLabel("Rendemt DREV Max. :");
             $this->getWidget('rendement_conseille')->setLabel("Rendemt DREV Conseillé :");
             $this->getWidget('rendement_dr')->setLabel("Rendemt DR (ne plus utiliser) :");
-            $this->getWidget('rendement_dr_l5')->setLabel("Rendemt DR L5 :");
-            $this->getWidget('rendement_dr_l15')->setLabel("Rendemt DR L15 :");
+            $this->getWidget('rendement_dr_l5')->setLabel("Rendemt Vendanges Ligne E :");
+            $this->getWidget('rendement_dr_l15')->setLabel("Rendemt Vendanges Ligne P :");
             $this->getWidget('rendement_vci')->setLabel("Rendemt DREV VCI :");
             $this->getWidget('rendement_vci_total')->setLabel("Rendemt VCI Total :");
 

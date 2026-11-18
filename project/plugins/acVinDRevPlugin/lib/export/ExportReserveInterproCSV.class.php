@@ -30,16 +30,15 @@ class ExportReserveInterproCSV {
         foreach ([DRevClient::TYPE_MODEL] as $type) {
                 foreach(DeclarationExportView::getInstance()->getDeclarations($type)->rows as $json_doc){
                     $drev = DeclarationClient::getInstance()->find($json_doc->id);
-                    if($drev instanceof DRev && !$drev->isMaster()){
+                    if($drev instanceof DRev && (!$drev->isMaster()||!$drev->isValideeOdg())){
                         continue;
                     }
                     $csv .= $this->getCsvLinesByDRev($drev);
-
                 }
           return $csv;
         }
     }
-    
+
     public function exportForOneDRev($drev) {
         $csv = "";
         if($this->header) {
@@ -82,13 +81,13 @@ class ExportReserveInterproCSV {
             $denominationComplementaire = $produit->denomination_complementaire;
 
             $csv .= $ligneBase;
-            
+
             $csv .= sprintf(";%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                 $certification,$certificationLibelle,$genre,$genreLibelle,$appellation,$appellationLibelle,$lieu,$lieuLibelle,$couleur,$couleurLibelle,$cepage,$cepageLibelle,$inao,$denominationComplementaire,
                 $libelle_complet = $produit->getLibelleComplet(),
                 $this->formatFloat($produit->superficie_revendique),
-                $this->formatFloat($produit->getVolumeReserveInterpro()),
-                $this->formatFloat($produit->getVolumeRevendiqueCommecialisable()),
+                $this->formatFloat($produit->getVolumeReserveInterpro(true)),
+                $this->formatFloat($produit->getVolumeRevendiqueCommecialisable(true)),
                 );
         }
         return $csv;

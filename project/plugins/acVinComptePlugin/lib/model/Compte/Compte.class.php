@@ -297,6 +297,8 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
         $this->updateTags();
 
+        $societe = $this->getSociete();
+
         $this->compte_type = CompteClient::getInstance()->createTypeFromOrigines($this->origines);
 
         if($this->compte_type == CompteClient::TYPE_COMPTE_INTERLOCUTEUR && $this->isSameAdresseThanSociete()) {
@@ -312,7 +314,6 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
         $this->updateNomAAfficher();
 
-        $societe = $this->getSociete();
         $this->societe_informations->type = $societe->type_societe;
         $this->societe_informations->raison_sociale = $societe->raison_sociale;
         $this->societe_informations->adresse = $societe->siege->adresse;

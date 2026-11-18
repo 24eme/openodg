@@ -276,7 +276,7 @@ le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?>
 \end{itemize}
 <?php if (isset($mention_inao) && $mention_inao): ?>
 \\ \\
-\textbf{Les droits INAO sont dus au titre de l’article L642-13 du code rural et de la pêché maritime.}
+\textbf{Les droits INAO sont dus au titre de l’article L642-13 du code rural et de la pêche maritime.}
 <?php endif ?>
 <?php if (isset($exoneration) && $exoneration === true): ?>
 \\ \\

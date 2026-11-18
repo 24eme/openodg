@@ -28,6 +28,7 @@ class HabilitationClient extends acCouchdbClient {
     const STATUT_ATTENTE_HABILITATION = "ATTENTE_HABILITATION";
     const STATUT_DEMANDE_RETRAIT = "DEMANDE_RETRAIT";
     const STATUT_DEMANDE_RESILIATION = "DEMANDE_RESILIATION";
+    const STATUT_DEMANDE_SUSPENSION = "DEMANDE_SUSPENSION";
     const STATUT_HABILITE = "HABILITE";
     const STATUT_SUSPENDU = "SUSPENDU";
     const STATUT_REFUS = "REFUS";
@@ -40,11 +41,13 @@ class HabilitationClient extends acCouchdbClient {
     const DEMANDE_HABILITATION = "HABILITATION";
     const DEMANDE_RETRAIT = "RETRAIT";
     const DEMANDE_RESILIATION = "RESILIATION";
+    const DEMANDE_SUSPENSION = "SUSPENSION";
 
     public static $demande_libelles = array(
         self::DEMANDE_HABILITATION => "Habilitation",
         self::DEMANDE_RETRAIT => "Retrait",
         self::DEMANDE_RESILIATION => "Résiliation",
+        self::DEMANDE_SUSPENSION => "Suspension",
     );
 
     public static $demande_droits = array(
@@ -55,6 +58,7 @@ class HabilitationClient extends acCouchdbClient {
                                              self::STATUT_ATTENTE_HABILITATION => "En attente d'habilitation",
                                              self::STATUT_DEMANDE_RETRAIT => "Demande de retrait",
                                              self::STATUT_DEMANDE_RESILIATION => "Demande de résiliation",
+                                             self::STATUT_DEMANDE_SUSPENSION => "Demande de suspension",
                                              self::STATUT_HABILITE => "Habilité",
                                              self::STATUT_SUSPENDU => "Suspendu",
                                              self::STATUT_REFUS => "Refus",

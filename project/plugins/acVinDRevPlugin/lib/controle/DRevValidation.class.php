@@ -19,7 +19,7 @@ class DRevValidation extends DeclarationLotsValidation
          * Warning
          */
         $this->addControle(self::TYPE_ERROR, 'declaration_multi_cvi', "est lié à plusieurs opérateurs");
-        $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15', 'Vous ne revendiquez pas le même volume que celui qui figure sur votre déclaration douanière en L15 (peut-être dû au complèment de VCI ou un achat)');
+        $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15', 'Vous ne revendiquez pas le même volume que celui qui figure sur votre déclaration douanière en Ligne P (peut-être dû au complèment de VCI ou un achat)');
         $this->addControle(self::TYPE_WARNING, 'declaration_neant', "Vous n'avez déclaré aucun produit");
         $this->addControle(self::TYPE_WARNING, 'declaration_produits_incoherence', "Vous ne déclarez pas tous les produits de votre déclaration douanière");
         $this->addControle(self::TYPE_WARNING, 'declaration_surface_bailleur', "Vous n'avez pas reparti votre part de surface avec le bailleur");
@@ -41,10 +41,10 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ERROR, 'vci_rendement', "Le volume revendiqué en VCI dépasse le rendement autorisé");
         $this->addControle(self::TYPE_WARNING, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé : vous devrez impérativement détruire Stock final - Plafond VCI Hls");
         $this->addControle(self::TYPE_ERROR, 'vsi_rendement', "Le volume revendiqué en VSI dépasse le rendement autorisé");
-        $this->addControle(self::TYPE_ERROR, 'declaration_volume_l15_complement', 'Vous revendiquez un volume supérieur à celui qui figure sur votre déclaration douanière en L15');
+        $this->addControle(self::TYPE_ERROR, 'declaration_volume_l15_complement', 'Vous revendiquez un volume supérieur à celui qui figure sur votre déclaration douanière en Ligne P');
         $this->addControle(self::TYPE_ERROR, 'declaration_volume_l15_dr', 'Certaines informations provenant de votre déclaration douanière sont manquantes');
 
-        $this->addControle(self::TYPE_ERROR, 'vci_substitue_rafraichi', 'Vous ne pouvez ni subsituer ni rafraichir un volume de VCI supérieur à celui qui figure sur votre déclaration douanière en L15');
+        $this->addControle(self::TYPE_ERROR, 'vci_substitue_rafraichi', 'Vous ne pouvez ni subsituer ni rafraichir un volume de VCI supérieur à celui qui figure sur votre déclaration douanière en Ligne P');
 
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie_dr', 'Les données de superficie provenant de votre déclaration douanière sont manquantes');
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie', 'Vous revendiquez une superficie supérieure à celle qui figure sur votre déclaration douanière en L4');
@@ -52,7 +52,7 @@ class DRevValidation extends DeclarationLotsValidation
 
         $this->addControle(self::TYPE_WARNING, 'parcellaire_affectation_superficie_sup', 'La superficie revendiquée est supérieure à celle qui figure sur votre affectation parcellaire');
 
-        $this->addControle(self::TYPE_WARNING, 'dr_recolte_rendement', "Vous dépassez le rendement dans votre DR (L15)");
+        $this->addControle(self::TYPE_WARNING, 'dr_recolte_rendement', "Vous dépassez le rendement dans votre DR (Ligne P)");
         $this->addControle(self::TYPE_WARNING, 'sv12_recolte_rendement', "Vous dépassez le rendement dans votre SV12");
         $this->addControle(self::TYPE_WARNING, 'sv11_recolte_rendement', "Vous dépassez le rendement dans votre SV11");
 
@@ -112,7 +112,8 @@ class DRevValidation extends DeclarationLotsValidation
 
         if(array_key_exists('produits', $this->vip2c)){
             foreach($this->vip2c['produits'] as $produit) {
-                $this->addControle(self::TYPE_ERROR, 'vip2c_pas_de_contrats_'.$produit['hash_regex'],"Depuis le millésime ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$produit['volume_max']." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation or Declarvins nous informe que vous n'avez pas de contrat de vrac non soldé. Veuillez prendre contact avec Intervins Sud Est - 04 90 42 90 04.");
+                $this->addControle(self::TYPE_IMPORTANT, 'vip2c_enabled_'.$produit['hash_regex'],"Depuis le millésime ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$produit['volume_max']." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation.");
+                $this->addControle(self::TYPE_ERROR, 'vip2c_pas_de_contrats_'.$produit['hash_regex'], "Vous revendiquez des lots de vrac et votre volume VIP2C est dépassé. Or, Declarvins nous informe que vous n'avez pas de contrat de vrac non soldé. Veuillez prendre contact avec Intervins Sud Est - 04 90 42 90 04.");
                 $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable_'.$produit['hash_regex'],"À partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous êtes sur le point de dépasser les ".$produit['volume_max']." hl qui vous ont été attribués. Au delà, vous devrez avoir une preuve de commercialisation pour pouvoir revendiquer vos volumes.");
                 $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$produit['hash_regex'],"À partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$produit['volume_max']." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation.");
 
@@ -517,8 +518,8 @@ class DRevValidation extends DeclarationLotsValidation
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$produit['hash_regex'], '', null, $produit['hash_regex']);
             }
             if (VIP2C::hasVolumeSeuil() && $this->document->hasDestinationVrac($produit['hashes'])) {
+                $this->addPoint(self::TYPE_IMPORTANT, 'vip2c_enabled_'.$produit['hash_regex'], $libelle, $this->generateUrl('drev_lots', array("id" => $this->document->_id)) );
                 $contrats = (array_key_exists('contrats', $produit))? $produit['contrats'] : [];
-
                 if (count($contrats) === 0) {
                     $this->addPoint(self::TYPE_ERROR,'vip2c_pas_de_contrats_'.$produit['hash_regex'], $libelle, $this->generateUrl('drev_lots', array("id" => $this->document->_id)) );
                 } else {

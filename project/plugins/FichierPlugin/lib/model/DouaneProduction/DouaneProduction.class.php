@@ -110,7 +110,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
       // TODO : pour l'instant cela est géré avec le critère isRevendication par lot
       if($this->getTotalValeur("15") && !$drev && !DRevConfiguration::getInstance()->isRevendicationParLots()){
-          throw new FacturationPassException("L15 et pas de Drev : ".$this->_id." on skip la facture");
+          throw new FacturationPassException("Vendange Ligne P et pas de Drev : ".$this->_id." on skip la facture");
       }
 
       $cotisations = $templateFacture->generateCotisations($this);

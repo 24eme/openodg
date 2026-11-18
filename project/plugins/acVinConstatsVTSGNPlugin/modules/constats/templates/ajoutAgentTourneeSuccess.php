@@ -29,7 +29,7 @@
             <div class="form-group <?php if ($form["agent"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["agent"]->renderError(); ?>
 
-                    <?php echo $form["agent"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Séléctionnez un agent")); ?>
+                    <?php echo $form["agent"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Sélectionnez un agent")); ?>
             </div>
         </div>
     </div>

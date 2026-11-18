@@ -119,6 +119,14 @@ class CommunesConfiguration {
         return false;
     }
 
+    public function hasControleLocalisation() {
+        $this->config = sfConfig::get('configuration_communes', array());
+        if (!isset($this->config['controle_communes'])) {
+            return false;
+        }
+        return $this->config['controle_communes'];
+    }
+
     public function hasCommunes()
     {
         return count($this->config);

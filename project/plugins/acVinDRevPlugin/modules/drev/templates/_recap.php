@@ -15,7 +15,7 @@
 <?php endif; ?>
 <?php endif; ?>
 <?php if($drev->exist('lots')): ?>
-<?php    include_partial('drev/recap_igp', array('drev'=>$drev, 'form' =>$form, 'vip2c' => $vip2c)); ?>
+<?php    include_partial('drev/recap_igp', array('drev'=>$drev, 'form' =>$form, 'vip2c' => $vip2c, 'validation' => $validation)); ?>
 <?php endif; ?>
           <?php if(count($drev->declaration->getProduitsVci())): ?>
             <h3>Gestion du VCI</h3>
@@ -71,16 +71,19 @@
                 <table class="table table-bordered table-striped">
                   <thead>
                     <tr>
-                      <th class="col-xs-6">Produit</th>
+                      <th class="col-xs-6">Produit <small class="text-muted pull-right">VCR</small></th>
                         <th class="col-xs-3 text-center">Volume mis en réserve</th>
                           <th class="col-xs-3 text-center">Volume revendiqué commercialisable</th>
                           </thead>
                           <tbody>
                             <?php foreach($drev->getProduitsWithReserveInterpro() as $p): ?>
                               <tr>
-                                <td><?php echo $p->getLibelle(); ?></td>
+                                <td><?php echo $p->getLibelle(); ?><small class="text-muted pull-right"><?php echo ($p->hasRulesOnVCR())? 'règle des 80%' : $p->getVCR().' hl' ?></small></td>
                                 <td class="text-right"><?php echoFloat($p->getVolumeReserveInterpro()); ?> <small class="text-muted">hl</small></td>
-                                <td class="text-right"><?php echoFloat($p->getVolumeRevendiqueCommecialisable()); ?> <small class="text-muted">hl</small></td>
+                                <td class="text-right">
+                                    <?php if($p->getVolumeReserveInterpro(true) < 0): ?><span style="cursor: pointer" title="Repli commercialisable possible jusqu'à <?php echoFloat(-1 * $p->getVolumeReserveInterpro(true)) ?> hl">*</span> <?php endif; ?>
+                                    <?php echoFloat($p->getVolumeRevendiqueCommecialisable()); ?> <small class="text-muted">hl</small>
+                                </td>
                               </tr>
                             <?php endforeach; ?>
                           </tbody>
