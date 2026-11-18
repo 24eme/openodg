@@ -30,16 +30,15 @@ class ExportReserveInterproCSV {
         foreach ([DRevClient::TYPE_MODEL] as $type) {
                 foreach(DeclarationExportView::getInstance()->getDeclarations($type)->rows as $json_doc){
                     $drev = DeclarationClient::getInstance()->find($json_doc->id);
-                    if($drev instanceof DRev && !$drev->isMaster()){
+                    if($drev instanceof DRev && (!$drev->isMaster()||!$drev->isValideeOdg())){
                         continue;
                     }
                     $csv .= $this->getCsvLinesByDRev($drev);
-
                 }
           return $csv;
         }
     }
-    
+
     public function exportForOneDRev($drev) {
         $csv = "";
         if($this->header) {
