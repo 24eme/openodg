@@ -1,3 +1,5 @@
+state:
+  is_secure: false
 logout:
   is_secure: false
 forbidden:

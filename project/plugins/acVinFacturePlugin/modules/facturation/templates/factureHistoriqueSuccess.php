@@ -29,7 +29,7 @@
 <div class="input-group" style="margin-bottom: 0; position: relative;">
     <span class="input-group-addon">Filtrer le tableau</span>
     <input id="table_filtre" type="text" class="form-control" placeholder="par date, numéro de facture, type de document, opérateur ou montants" autofocus="autofocus" autocomplete="off" />
-    <span class="input-group-btn" style="position: absolute; right: 120px; top: 4px;"><button class="btn btn-link btn-sm" type="button" onclick='exportTableToCsv("table_factures", "factures.csv")'>Exporter en csv</button></span>
+    <span class="input-group-btn" style="position: absolute; right: 120px; top: 4px; z-index: 3;"><button class="btn btn-link btn-sm" type="button" onclick='exportTableToCsv("table_factures", "factures.csv")'>Exporter en csv</button></span>
     <a href="" id="btn_annuler_filtre" tabindex="-1" class="small hidden" style="z-index: 3; right: 10px; top: 10px; position: absolute; color: grey;"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></a>
 </div>
 <table class="table table-bordered table-striped table_filterable" style="border-width: 0;" id ="table_factures">
@@ -64,7 +64,7 @@
                 <?php if($hasPaiements):?>
                 <td class="text-right"><?php (!isset($facture->doc->montant_paiement) || $facture->doc->montant_paiement == 0) ? $amount = "" : $amount = echoFloat((float)$facture->doc->montant_paiement) . "€"; ?>&nbsp;<?php echo $amount ?><span hidden><?php echo $facture->doc->montant_paiement ?></span></td>
                 <td><?php if(isset($facture->doc->date_telechargement) && $facture->doc->date_telechargement): ?><span style="opacity: 0.8;" data-toggle="tooltip" title="La facture a été téléchargée par l'opérateur" class="glyphicon glyphicon-eye-open text-primary"></span><?php else: ?><span style="opacity: 0.2;" data-toggle="tooltip" title="La facture n'a pas encore été téléchargée par l'opérateur" class="glyphicon glyphicon-eye-close text-primary"></span><?php endif; ?></td>
-                <td class="text-center"><?php if ($facture->doc->montant_paiement < $facture->doc->total_ttc) : ?><span class="label label-danger">Non payée</span><?php else: ?> <span class="label label-success">Soldée</span><?php endif; ?></td>
+                <td class="text-center"><?php if ($facture->doc->statut != FactureClient::STATUT_REDRESSEE && $facture->doc->montant_paiement < $facture->doc->total_ttc) : ?><span class="label label-danger">Non payée</span><?php else: ?> <span class="label label-success">Soldée</span><?php endif; ?></td>
                 <?php endif;?>
             </tr>
         <?php endforeach; ?>
