@@ -1463,6 +1463,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach ($this->declaration->getProduits() as $key => $produit) {
             $produit->update();
         }
+        if ($this->isValidee()) {
+            $this->date = $this->validation;
+        } else {
+            $this->date = date('c')
+        }
 	}
 
     public function saveDocumentsDependants() {
@@ -2627,6 +2632,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getDate() {
       return $this->periode.'-12-10';
+    }
+
+    public function getModifiedDate() {
+      return $this->_get('date');
     }
 
     public function hasDenominationAuto($const, $total = false) {
