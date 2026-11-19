@@ -34,7 +34,7 @@
                     <?php endif ?>
                     <?php foreach ($lotsNonConformes as $lotNonConforme): ?>
                     <li>
-                        <a id="pdf_lots_non_conforme" href="<?php echo url_for('degustation_non_conformite_pdf', array('id' => $degustation->_id, 'lot_dossier' => $lotNonConforme->numero_dossier, 'lot_archive' => $lotNonConforme->numero_archive), true); ?>">
+                        <a id="pdf_lots_non_conforme" href="<?php echo url_for('degustation_non_conformite_pdf', array('id' => $degustation->_id, 'lot_dossier' => $lotNonConforme->numero_dossier, 'lot_archive' => $lotNonConforme->numero_archive, 'lot_unique_id' => $lotNonConforme->unique_id), true); ?>">
                             PDF des lots non <?php echo $lotNonConforme->isLibelleAcceptable() ? 'acceptables' : 'conformes'; ?>
                         </a>
                     </li>
