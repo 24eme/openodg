@@ -411,7 +411,7 @@ class DRevProduit extends BaseDRevProduit
         }
         if (VCR::hasCsv() && !$this->getConfig()->hasRendementReserveInterpro()) {
             return (!$includeReserveNegative && $this->getVolumeReserveInterproVCR() < 0)? 0 : $this->getVolumeReserveInterproVCR();
-        } elseif (!VCR::hasCsv() && $this->getConfig()->hasRendementReserveInterpro()) {
+        } elseif (!VCR::getFromCSV($this->getDocument()->getDefaultMillesime(), $this->getDocument()->declarant->cvi) && $this->getConfig()->hasRendementReserveInterpro()) {
             return $this->getVolumeReserveInterproAndButoir();
         }
         throw new sfException("Erreur : plusieurs modes de calcul de la reserve interpro implémentés");
@@ -476,6 +476,9 @@ class DRevProduit extends BaseDRevProduit
 	}
 
     public function getVolumeReserveInterpro($includeReserveNegative = false) {
+        if ($this->getDocument()->isValidee() && $this->exist('dont_volume_revendique_reserve_interpro') && $this->dont_volume_revendique_reserve_interpro > 0) {
+            return $this->dont_volume_revendique_reserve_interpro;
+        }
         $diff = $this->getVolumeReserveInterproByConfig($includeReserveNegative);
 		if (!VCR::hasCsv() && $this->getConfig()->hasRendementReserveInterpro()) {
 			$diff_butoir = $this->volume_revendique_total - ($this->superficie_revendique * $this->getConfig()->getRendement());
@@ -487,7 +490,7 @@ class DRevProduit extends BaseDRevProduit
     }
 
 	public function getVolumeRevendiqueCommecialisable($includeReserveNegative = false) {
-        $reserve = $this->getVolumeReserveInterproByConfig($includeReserveNegative);
+        $reserve = $this->getVolumeReserveInterpro($includeReserveNegative);
         if (!$includeReserveNegative && $reserve < 0) {
             $reserve = 0;
         }
