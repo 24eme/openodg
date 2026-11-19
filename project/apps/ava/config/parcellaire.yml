@@ -267,6 +267,658 @@ all:
           name: "Alsace Grand Cru Kaefferkopf"
           color: "#d10500"
           denomination_id: "01765"
+        LieuDitElargi09001:
+          name: "Alsace Lieu-dit élargi Ableh"
+          color: "#2878a6"
+          denomination_id: "09001"
+        LieuDitElargi09002:
+          name: "Alsace Lieu-dit élargi Affenberg"
+          color: "#2878a6"
+          denomination_id: "09002"
+        LieuDitElargi09003:
+          name: "Alsace Lieu-dit élargi Altenbourg"
+          color: "#2878a6"
+          denomination_id: "09003"
+        LieuDitElargi09004:
+          name: "Alsace Lieu-dit élargi Altengarten Eguisheim"
+          color: "#2878a6"
+          denomination_id: "09004"
+        LieuDitElargi09005:
+          name: "Alsace Lieu-dit élargi Beihertlen"
+          color: "#2878a6"
+          denomination_id: "09005"
+        LieuDitElargi09006:
+          name: "Alsace Lieu-dit élargi Belzbrunnen"
+          color: "#2878a6"
+          denomination_id: "09006"
+        LieuDitElargi09007:
+          name: "Alsace Lieu-dit élargi Berg"
+          color: "#2878a6"
+          denomination_id: "09007"
+        LieuDitElargi09008:
+          name: "Alsace Lieu-dit élargi Bergweingarten"
+          color: "#2878a6"
+          denomination_id: "09008"
+        LieuDitElargi09009:
+          name: "Alsace Lieu-dit élargi Bildstoecklé"
+          color: "#2878a6"
+          denomination_id: "09009"
+        LieuDitElargi09010:
+          name: "Alsace Lieu-dit élargi Blettig"
+          color: "#2878a6"
+          denomination_id: "09010"
+        LieuDitElargi09011:
+          name: "Alsace Lieu-dit élargi Bolland"
+          color: "#2878a6"
+          denomination_id: "09011"
+        LieuDitElargi09012:
+          name: "Alsace Lieu-dit élargi Bollenberg"
+          color: "#2878a6"
+          denomination_id: "09012"
+        LieuDitElargi09013:
+          name: "Alsace Lieu-dit élargi Brandhof"
+          color: "#2878a6"
+          denomination_id: "09013"
+        LieuDitElargi09014:
+          name: "Alsace Lieu-dit élargi Brandhurst"
+          color: "#2878a6"
+          denomination_id: "09014"
+        LieuDitElargi09015:
+          name: "Alsace Lieu-dit élargi Brandluft"
+          color: "#2878a6"
+          denomination_id: "09015"
+        LieuDitElargi09016:
+          name: "Alsace Lieu-dit élargi Breitenberg"
+          color: "#2878a6"
+          denomination_id: "09016"
+        LieuDitElargi09017:
+          name: "Alsace Lieu-dit élargi Breitling"
+          color: "#2878a6"
+          denomination_id: "09017"
+        LieuDitElargi09018:
+          name: "Alsace Lieu-dit élargi Bruchwegreben"
+          color: "#2878a6"
+          denomination_id: "09018"
+        LieuDitElargi09019:
+          name: "Alsace Lieu-dit élargi Bruderbach"
+          color: "#2878a6"
+          denomination_id: "09019"
+        LieuDitElargi09020:
+          name: "Alsace Lieu-dit élargi Burg"
+          color: "#2878a6"
+          denomination_id: "09020"
+        LieuDitElargi09021:
+          name: "Alsace Lieu-dit élargi Bux"
+          color: "#2878a6"
+          denomination_id: "09021"
+        LieuDitElargi09022:
+          name: "Alsace Lieu-dit élargi Clos Liebenberg"
+          color: "#2878a6"
+          denomination_id: "09022"
+        LieuDitElargi09023:
+          name: "Alsace Lieu-dit élargi Clos Zwingel"
+          color: "#2878a6"
+          denomination_id: "09023"
+        LieuDitElargi09024:
+          name: "Alsace Lieu-dit élargi Dorenberg"
+          color: "#2878a6"
+          denomination_id: "09024"
+        LieuDitElargi09025:
+          name: "Alsace Lieu-dit élargi Dorfburg"
+          color: "#2878a6"
+          denomination_id: "09025"
+        LieuDitElargi09026:
+          name: "Alsace Lieu-dit élargi Dorfschatz"
+          color: "#2878a6"
+          denomination_id: "09026"
+        LieuDitElargi09027:
+          name: "Alsace Lieu-dit élargi Duttenberg"
+          color: "#2878a6"
+          denomination_id: "09027"
+        LieuDitElargi09028:
+          name: "Alsace Lieu-dit élargi Effenberg"
+          color: "#2878a6"
+          denomination_id: "09028"
+        LieuDitElargi09029:
+          name: "Alsace Lieu-dit élargi Eichelberg"
+          color: "#2878a6"
+          denomination_id: "09029"
+        LieuDitElargi09030:
+          name: "Alsace Lieu-dit élargi Eichelbergreben"
+          color: "#2878a6"
+          denomination_id: "09030"
+        LieuDitElargi09031:
+          name: "Alsace Lieu-dit élargi Ellenwihr"
+          color: "#2878a6"
+          denomination_id: "09031"
+        LieuDitElargi09032:
+          name: "Alsace Lieu-dit élargi Elmen"
+          color: "#2878a6"
+          denomination_id: "09032"
+        LieuDitElargi09033:
+          name: "Alsace Lieu-dit élargi Elsbourg"
+          color: "#2878a6"
+          denomination_id: "09033"
+        LieuDitElargi09034:
+          name: "Alsace Lieu-dit élargi Enchenberg"
+          color: "#2878a6"
+          denomination_id: "09034"
+        LieuDitElargi09035:
+          name: "Alsace Lieu-dit élargi Engelgarten"
+          color: "#2878a6"
+          denomination_id: "09035"
+        LieuDitElargi09036:
+          name: "Alsace Lieu-dit élargi Engelsreben"
+          color: "#2878a6"
+          denomination_id: "09036"
+        LieuDitElargi09037:
+          name: "Alsace Lieu-dit élargi Finkenberg"
+          color: "#2878a6"
+          denomination_id: "09037"
+        LieuDitElargi09038:
+          name: "Alsace Lieu-dit élargi Flieg"
+          color: "#2878a6"
+          denomination_id: "09038"
+        LieuDitElargi09039:
+          name: "Alsace Lieu-dit élargi Freiberg"
+          color: "#2878a6"
+          denomination_id: "09039"
+        LieuDitElargi09040:
+          name: "Alsace Lieu-dit élargi Fronenberg"
+          color: "#2878a6"
+          denomination_id: "09040"
+        LieuDitElargi09041:
+          name: "Alsace Lieu-dit élargi Fronholz"
+          color: "#2878a6"
+          denomination_id: "09041"
+        LieuDitElargi09042:
+          name: "Alsace Lieu-dit élargi Fruehmess"
+          color: "#2878a6"
+          denomination_id: "09042"
+        LieuDitElargi09043:
+          name: "Alsace Lieu-dit élargi Gaentzbrunnen"
+          color: "#2878a6"
+          denomination_id: "09043"
+        LieuDitElargi09044:
+          name: "Alsace Lieu-dit élargi Geierstein"
+          color: "#2878a6"
+          denomination_id: "09044"
+        LieuDitElargi09045:
+          name: "Alsace Lieu-dit élargi Gesetz"
+          color: "#2878a6"
+          denomination_id: "09045"
+        LieuDitElargi09046:
+          name: "Alsace Lieu-dit élargi Glintzberg"
+          color: "#2878a6"
+          denomination_id: "09046"
+        LieuDitElargi09047:
+          name: "Alsace Lieu-dit élargi Goldesch"
+          color: "#2878a6"
+          denomination_id: "09047"
+        LieuDitElargi09048:
+          name: "Alsace Lieu-dit élargi Grafenreben"
+          color: "#2878a6"
+          denomination_id: "09048"
+        LieuDitElargi09049:
+          name: "Alsace Lieu-dit élargi Grasberg"
+          color: "#2878a6"
+          denomination_id: "09049"
+        LieuDitElargi09050:
+          name: "Alsace Lieu-dit élargi Grasburg"
+          color: "#2878a6"
+          denomination_id: "09050"
+        LieuDitElargi09051:
+          name: "Alsace Lieu-dit élargi Grossberg"
+          color: "#2878a6"
+          denomination_id: "09051"
+        LieuDitElargi09052:
+          name: "Alsace Lieu-dit élargi Grott"
+          color: "#2878a6"
+          denomination_id: "09052"
+        LieuDitElargi09053:
+          name: "Alsace Lieu-dit élargi Gruenspiel"
+          color: "#2878a6"
+          denomination_id: "09053"
+        LieuDitElargi09054:
+          name: "Alsace Lieu-dit élargi Hagel"
+          color: "#2878a6"
+          denomination_id: "09054"
+        LieuDitElargi09055:
+          name: "Alsace Lieu-dit élargi Hahnenberg"
+          color: "#2878a6"
+          denomination_id: "09055"
+        LieuDitElargi09056:
+          name: "Alsace Lieu-dit élargi Hannesacker"
+          color: "#2878a6"
+          denomination_id: "09056"
+        LieuDitElargi09057:
+          name: "Alsace Lieu-dit élargi Harth"
+          color: "#2878a6"
+          denomination_id: "09057"
+        LieuDitElargi09058:
+          name: "Alsace Lieu-dit élargi Haut Fronholz"
+          color: "#2878a6"
+          denomination_id: "09058"
+        LieuDitElargi09059:
+          name: "Alsace Lieu-dit élargi Haydi"
+          color: "#2878a6"
+          denomination_id: "09059"
+        LieuDitElargi09060:
+          name: "Alsace Lieu-dit élargi Heimbourg"
+          color: "#2878a6"
+          denomination_id: "09060"
+        LieuDitElargi09061:
+          name: "Alsace Lieu-dit élargi Heissenberg"
+          color: "#2878a6"
+          denomination_id: "09061"
+        LieuDitElargi09062:
+          name: "Alsace Lieu-dit élargi Herrenweg"
+          color: "#2878a6"
+          denomination_id: "09062"
+        LieuDitElargi09063:
+          name: "Alsace Lieu-dit élargi Himmrich"
+          color: "#2878a6"
+          denomination_id: "09063"
+        LieuDitElargi09064:
+          name: "Alsace Lieu-dit élargi Hinterburg"
+          color: "#2878a6"
+          denomination_id: "09064"
+        LieuDitElargi09065:
+          name: "Alsace Lieu-dit élargi Hoell"
+          color: "#2878a6"
+          denomination_id: "09065"
+        LieuDitElargi09066:
+          name: "Alsace Lieu-dit élargi Hohrain"
+          color: "#2878a6"
+          denomination_id: "09066"
+        LieuDitElargi09067:
+          name: "Alsace Lieu-dit élargi Horn"
+          color: "#2878a6"
+          denomination_id: "09067"
+        LieuDitElargi09068:
+          name: "Alsace Lieu-dit élargi Hornstein"
+          color: "#2878a6"
+          denomination_id: "09068"
+        LieuDitElargi09069:
+          name: "Alsace Lieu-dit élargi Hubuehl"
+          color: "#2878a6"
+          denomination_id: "09069"
+        LieuDitElargi09070:
+          name: "Alsace Lieu-dit élargi Hueben"
+          color: "#2878a6"
+          denomination_id: "09070"
+        LieuDitElargi09071:
+          name: "Alsace Lieu-dit élargi Husaren"
+          color: "#2878a6"
+          denomination_id: "09071"
+        LieuDitElargi09072:
+          name: "Alsace Lieu-dit élargi Im Schloss"
+          color: "#2878a6"
+          denomination_id: "09072"
+        LieuDitElargi09073:
+          name: "Alsace Lieu-dit élargi Jebsal"
+          color: "#2878a6"
+          denomination_id: "09073"
+        LieuDitElargi09074:
+          name: "Alsace Lieu-dit élargi Kalkgrube"
+          color: "#2878a6"
+          denomination_id: "09074"
+        LieuDitElargi09075:
+          name: "Alsace Lieu-dit élargi Kapellreben"
+          color: "#2878a6"
+          denomination_id: "09075"
+        LieuDitElargi09076:
+          name: "Alsace Lieu-dit élargi Kappelreben de Rorschwihr"
+          color: "#2878a6"
+          denomination_id: "09076"
+        LieuDitElargi09077:
+          name: "Alsace Lieu-dit élargi Kastelweg"
+          color: "#2878a6"
+          denomination_id: "09077"
+        LieuDitElargi09078:
+          name: "Alsace Lieu-dit élargi Kefferberg"
+          color: "#2878a6"
+          denomination_id: "09078"
+        LieuDitElargi09079:
+          name: "Alsace Lieu-dit élargi KLEY"
+          color: "#2878a6"
+          denomination_id: "09079"
+        LieuDitElargi09080:
+          name: "Alsace Lieu-dit élargi Kritt"
+          color: "#2878a6"
+          denomination_id: "09080"
+        LieuDitElargi09081:
+          name: "Alsace Lieu-dit élargi Kronenburg"
+          color: "#2878a6"
+          denomination_id: "09081"
+        LieuDitElargi09082:
+          name: "Alsace Lieu-dit élargi Lachreben de Rorschwihr"
+          color: "#2878a6"
+          denomination_id: "09082"
+        LieuDitElargi09083:
+          name: "Alsace Lieu-dit élargi Langenberg"
+          color: "#2878a6"
+          denomination_id: "09083"
+        LieuDitElargi09084:
+          name: "Alsace Lieu-dit élargi Lanzenberg"
+          color: "#2878a6"
+          denomination_id: "09084"
+        LieuDitElargi09085:
+          name: "Alsace Lieu-dit élargi Lerchenberg"
+          color: "#2878a6"
+          denomination_id: "09085"
+        LieuDitElargi09086:
+          name: "Alsace Lieu-dit élargi Lerchensand"
+          color: "#2878a6"
+          denomination_id: "09086"
+        LieuDitElargi09087:
+          name: "Alsace Lieu-dit élargi Letzenberg"
+          color: "#2878a6"
+          denomination_id: "09087"
+        LieuDitElargi09088:
+          name: "Alsace Lieu-dit élargi Lippelsberg"
+          color: "#2878a6"
+          denomination_id: "09088"
+        LieuDitElargi09089:
+          name: "Alsace Lieu-dit élargi Logelberg"
+          color: "#2878a6"
+          denomination_id: "09089"
+        LieuDitElargi09090:
+          name: "Alsace Lieu-dit élargi Luft"
+          color: "#2878a6"
+          denomination_id: "09090"
+        LieuDitElargi09091:
+          name: "Alsace Lieu-dit élargi Luss"
+          color: "#2878a6"
+          denomination_id: "09091"
+        LieuDitElargi09092:
+          name: "Alsace Lieu-dit élargi Lutzeltal"
+          color: "#2878a6"
+          denomination_id: "09092"
+        LieuDitElargi09093:
+          name: "Alsace Lieu-dit élargi Mittel Aue"
+          color: "#2878a6"
+          denomination_id: "09093"
+        LieuDitElargi09094:
+          name: "Alsace Lieu-dit élargi Mittelbourg"
+          color: "#2878a6"
+          denomination_id: "09094"
+        LieuDitElargi09095:
+          name: "Alsace Lieu-dit élargi Mittelweg"
+          color: "#2878a6"
+          denomination_id: "09095"
+        LieuDitElargi09096:
+          name: "Alsace Lieu-dit élargi Moenchreben de Rorschwihr"
+          color: "#2878a6"
+          denomination_id: "09096"
+        LieuDitElargi09097:
+          name: "Alsace Lieu-dit élargi Muehlforst Muhlforst"
+          color: "#2878a6"
+          denomination_id: "09097"
+        LieuDitElargi09098:
+          name: "Alsace Lieu-dit élargi Neuberg"
+          color: "#2878a6"
+          denomination_id: "09098"
+        LieuDitElargi09099:
+          name: "Alsace Lieu-dit élargi Neuweg"
+          color: "#2878a6"
+          denomination_id: "09099"
+        LieuDitElargi09100:
+          name: "Alsace Lieu-dit élargi Oberberg"
+          color: "#2878a6"
+          denomination_id: "09100"
+        LieuDitElargi09101:
+          name: "Alsace Lieu-dit élargi Obere Hund"
+          color: "#2878a6"
+          denomination_id: "09101"
+        LieuDitElargi09102:
+          name: "Alsace Lieu-dit élargi Oberer Weingarten de Rorschwihr"
+          color: "#2878a6"
+          denomination_id: "09102"
+        LieuDitElargi09103:
+          name: "Alsace Lieu-dit élargi Obertal"
+          color: "#2878a6"
+          denomination_id: "09103"
+        LieuDitElargi09104:
+          name: "Alsace Lieu-dit élargi Orschwillerbourg"
+          color: "#2878a6"
+          denomination_id: "09104"
+        LieuDitElargi09105:
+          name: "Alsace Lieu-dit élargi Ortel"
+          color: "#2878a6"
+          denomination_id: "09105"
+        LieuDitElargi09106:
+          name: "Alsace Lieu-dit élargi Ostenberg"
+          color: "#2878a6"
+          denomination_id: "09106"
+        LieuDitElargi09107:
+          name: "Alsace Lieu-dit élargi Patergarten"
+          color: "#2878a6"
+          denomination_id: "09107"
+        LieuDitElargi09108:
+          name: "Alsace Lieu-dit élargi Pflaenzer"
+          color: "#2878a6"
+          denomination_id: "09108"
+        LieuDitElargi09109:
+          name: "Alsace Lieu-dit élargi Pflaenzer de Rorschwihr"
+          color: "#2878a6"
+          denomination_id: "09109"
+        LieuDitElargi09110:
+          name: "Alsace Lieu-dit élargi Pflintz"
+          color: "#2878a6"
+          denomination_id: "09110"
+        LieuDitElargi09111:
+          name: "Alsace Lieu-dit élargi Pfoeller"
+          color: "#2878a6"
+          denomination_id: "09111"
+        LieuDitElargi09112:
+          name: "Alsace Lieu-dit élargi Rebberg"
+          color: "#2878a6"
+          denomination_id: "09112"
+        LieuDitElargi09113:
+          name: "Alsace Lieu-dit élargi Rebbuehl"
+          color: "#2878a6"
+          denomination_id: "09113"
+        LieuDitElargi09114:
+          name: "Alsace Lieu-dit élargi Rebgarten"
+          color: "#2878a6"
+          denomination_id: "09114"
+        LieuDitElargi09115:
+          name: "Alsace Lieu-dit élargi Rittersberg"
+          color: "#2878a6"
+          denomination_id: "09115"
+        LieuDitElargi09116:
+          name: "Alsace Lieu-dit élargi Roemerberg"
+          color: "#2878a6"
+          denomination_id: "09116"
+        LieuDitElargi09117:
+          name: "Alsace Lieu-dit élargi Rosenberg"
+          color: "#2878a6"
+          denomination_id: "09117"
+        LieuDitElargi09118:
+          name: "Alsace Lieu-dit élargi Rotenberg"
+          color: "#2878a6"
+          denomination_id: "09118"
+        LieuDitElargi09119:
+          name: "Alsace Lieu-dit élargi Rotleibel de Rorschwihr"
+          color: "#2878a6"
+          denomination_id: "09119"
+        LieuDitElargi09120:
+          name: "Alsace Lieu-dit élargi Saint André"
+          color: "#2878a6"
+          denomination_id: "09120"
+        LieuDitElargi09121:
+          name: "Alsace Lieu-dit élargi Saint Jacques"
+          color: "#2878a6"
+          denomination_id: "09121"
+        LieuDitElargi09122:
+          name: "Alsace Lieu-dit élargi Sand"
+          color: "#2878a6"
+          denomination_id: "09122"
+        LieuDitElargi09123:
+          name: "Alsace Lieu-dit élargi Schaefferstein"
+          color: "#2878a6"
+          denomination_id: "09123"
+        LieuDitElargi09124:
+          name: "Alsace Lieu-dit élargi Schenkenberg"
+          color: "#2878a6"
+          denomination_id: "09124"
+        LieuDitElargi09125:
+          name: "Alsace Lieu-dit élargi Schieferberg"
+          color: "#2878a6"
+          denomination_id: "09125"
+        LieuDitElargi09126:
+          name: "Alsace Lieu-dit élargi Schimberg"
+          color: "#2878a6"
+          denomination_id: "09126"
+        LieuDitElargi09127:
+          name: "Alsace Lieu-dit élargi Schlittweg"
+          color: "#2878a6"
+          denomination_id: "09127"
+        LieuDitElargi09128:
+          name: "Alsace Lieu-dit élargi Schloesselreben"
+          color: "#2878a6"
+          denomination_id: "09128"
+        LieuDitElargi09129:
+          name: "Alsace Lieu-dit élargi Schlossreben"
+          color: "#2878a6"
+          denomination_id: "09129"
+        LieuDitElargi09130:
+          name: "Alsace Lieu-dit élargi Schneckenberg"
+          color: "#2878a6"
+          denomination_id: "09130"
+        LieuDitElargi09131:
+          name: "Alsace Lieu-dit élargi Schoflit"
+          color: "#2878a6"
+          denomination_id: "09131"
+        LieuDitElargi09132:
+          name: "Alsace Lieu-dit élargi Schofweg"
+          color: "#2878a6"
+          denomination_id: "09132"
+        LieuDitElargi09133:
+          name: "Alsace Lieu-dit élargi Schwarzberg"
+          color: "#2878a6"
+          denomination_id: "09133"
+        LieuDitElargi09134:
+          name: "Alsace Lieu-dit élargi Schwendehiesel"
+          color: "#2878a6"
+          denomination_id: "09134"
+        LieuDitElargi09135:
+          name: "Alsace Lieu-dit élargi Silberberg"
+          color: "#2878a6"
+          denomination_id: "09135"
+        LieuDitElargi09136:
+          name: "Alsace Lieu-dit élargi Silbergrub"
+          color: "#2878a6"
+          denomination_id: "09136"
+        LieuDitElargi09137:
+          name: "Alsace Lieu-dit élargi Sohlenberg"
+          color: "#2878a6"
+          denomination_id: "09137"
+        LieuDitElargi09138:
+          name: "Alsace Lieu-dit élargi Sonnenbach"
+          color: "#2878a6"
+          denomination_id: "09138"
+        LieuDitElargi09139:
+          name: "Alsace Lieu-dit élargi Sonnenberg"
+          color: "#2878a6"
+          denomination_id: "09139"
+        LieuDitElargi09140:
+          name: "Alsace Lieu-dit élargi Steig"
+          color: "#2878a6"
+          denomination_id: "09140"
+        LieuDitElargi09141:
+          name: "Alsace Lieu-dit élargi Stein"
+          color: "#2878a6"
+          denomination_id: "09141"
+        LieuDitElargi09142:
+          name: "Alsace Lieu-dit élargi Steinacker"
+          color: "#2878a6"
+          denomination_id: "09142"
+        LieuDitElargi09143:
+          name: "Alsace Lieu-dit élargi Steinstuck"
+          color: "#2878a6"
+          denomination_id: "09143"
+        LieuDitElargi09144:
+          name: "Alsace Lieu-dit élargi Steinweg"
+          color: "#2878a6"
+          denomination_id: "09144"
+        LieuDitElargi09145:
+          name: "Alsace Lieu-dit élargi Stich"
+          color: "#2878a6"
+          denomination_id: "09145"
+        LieuDitElargi09146:
+          name: "Alsace Lieu-dit élargi Stierkopf"
+          color: "#2878a6"
+          denomination_id: "09146"
+        LieuDitElargi09147:
+          name: "Alsace Lieu-dit élargi Strangenberg"
+          color: "#2878a6"
+          denomination_id: "09147"
+        LieuDitElargi09148:
+          name: "Alsace Lieu-dit élargi Streng"
+          color: "#2878a6"
+          denomination_id: "09148"
+        LieuDitElargi09149:
+          name: "Alsace Lieu-dit élargi Stumpfgasse"
+          color: "#2878a6"
+          denomination_id: "09149"
+        LieuDitElargi09150:
+          name: "Alsace Lieu-dit élargi Sundgass"
+          color: "#2878a6"
+          denomination_id: "09150"
+        LieuDitElargi09151:
+          name: "Alsace Lieu-dit élargi Trottacker"
+          color: "#2878a6"
+          denomination_id: "09151"
+        LieuDitElargi09152:
+          name: "Alsace Lieu-dit élargi Victoriasberg"
+          color: "#2878a6"
+          denomination_id: "09152"
+        LieuDitElargi09153:
+          name: "Alsace Lieu-dit élargi Village"
+          color: "#2878a6"
+          denomination_id: "09153"
+        LieuDitElargi09154:
+          name: "Alsace Lieu-dit élargi Vogelgarten"
+          color: "#2878a6"
+          denomination_id: "09154"
+        LieuDitElargi09155:
+          name: "Alsace Lieu-dit élargi Wasserfall"
+          color: "#2878a6"
+          denomination_id: "09155"
+        LieuDitElargi09156:
+          name: "Alsace Lieu-dit élargi Weinberg"
+          color: "#2878a6"
+          denomination_id: "09156"
+        LieuDitElargi09157:
+          name: "Alsace Lieu-dit élargi Weingarten"
+          color: "#2878a6"
+          denomination_id: "09157"
+        LieuDitElargi09158:
+          name: "Alsace Lieu-dit élargi Weingarten de Rorschwihr"
+          color: "#2878a6"
+          denomination_id: "09158"
+        LieuDitElargi09159:
+          name: "Alsace Lieu-dit élargi Weissengrund"
+          color: "#2878a6"
+          denomination_id: "09159"
+        LieuDitElargi09160:
+          name: "Alsace Lieu-dit élargi Westerberg"
+          color: "#2878a6"
+          denomination_id: "09160"
+        LieuDitElargi09161:
+          name: "Alsace Lieu-dit élargi Westerweingarten"
+          color: "#2878a6"
+          denomination_id: "09161"
+        LieuDitElargi09162:
+          name: "Alsace Lieu-dit élargi Wolfsgrube"
+          color: "#2878a6"
+          denomination_id: "09162"
+        LieuDitElargi09163:
+          name: "Alsace Lieu-dit élargi Zellberg"
+          color: "#2878a6"
+          denomination_id: "09163"
       jeunesVignes:
         vtsgn: 9
         grdcru_communale_lieudit: 3
