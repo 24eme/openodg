@@ -60,10 +60,6 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
         if (!$this->produits) {
             $produits = $this->getObject()->getConfigProduits();
             foreach ($produits as $produit) {
-                if (!$produit->isActif()) {
-                    continue;
-                }
-
                 $this->produits[$produit->getHash()] = $produit->getLibelleComplet();
             }
         }
