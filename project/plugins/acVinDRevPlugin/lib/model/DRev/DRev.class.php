@@ -1466,7 +1466,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if ($this->isValidee()) {
             $this->date = $this->validation;
         } else {
-            $this->date = date('c')
+            $this->date = date('c');
         }
 	}
 
