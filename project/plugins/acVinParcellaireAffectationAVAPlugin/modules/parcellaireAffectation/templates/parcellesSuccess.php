@@ -162,7 +162,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
         </div>
     </div>
     <div class="row row-margin row-button">
-        <div class="col-xs-6">
+        <div class="col-xs-4">
             <?php if ($isVtSgn) : ?>
                 <a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => "GRDCRU")); ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
             <?php elseif ($appellationNode->getPreviousAppellationKey()) : ?>
@@ -171,7 +171,10 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                 <a href="<?php echo url_for("parcellaire_exploitation", $parcellaire) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
             <?php endif; ?>
         </div>
-        <div class="col-xs-6 text-right">
+        <div class="col-xs-4 text-center">
+            <a target="_blank" href="<?php echo url_for('parcellaire_visualisation', array('id' => $parcellaire->getParcellaire()->_id)); ?>" class="btn btn-warning btn-md  btn-lg">Voir la carte</a>
+        </div>
+        <div class="col-xs-4 text-right">
             <?php if ($parcellaire->exist('etape') && $parcellaire->etape == ParcellaireAffectationEtapes::ETAPE_VALIDATION): ?>
                 <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Retourner <small>à la validation</small></button>
             <?php elseif (!$isVtSgn && $appellationNode->getNextAppellationKey()): ?>
