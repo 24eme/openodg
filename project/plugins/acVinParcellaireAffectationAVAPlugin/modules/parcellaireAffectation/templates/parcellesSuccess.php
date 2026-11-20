@@ -77,7 +77,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                         <thead>
                             <tr>
                                 <th class="col-xs-1 text-center">Affectée</th>
-                                <th class="col-xs-3 text-center">Appellation</th>
+                                <th class="col-xs-3 text-center">Appellation<?php if(strpos($appellationNode->getHash(), 'LIEUDIT') !== null): ?><p class="small text-muted" style="margin:0;">Aires</p><?php endif;?></th>
                                 <th class="col-xs-2 text-center">Commune</th>
                                 <th class="col-xs-1 text-center">Section / Numéro</th>
                                 <?php if(!is_object($appellationNode) || $appellationNode->getConfig()->hasLieuEditable()):  ?>
@@ -115,11 +115,11 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                         </label>
                                     </td>
 									<td><?php echo $parcelle->getAppellationLibelle((isset($form['produits'][$parcelle->getHashForKey()]['vtsgn']))); ?>
-                                    <?php if(strpos($parcelle->getProduitHash(), 'LIEUDIT')) : ?>
+                                    <?php if(strpos($appellationNode->getHash(), 'LIEUDIT') !== null): ?>
                                     <?php $aires = array_keys($parcelle->getParcelleParcellaire()->getIsInAires()->getRawValue()) ?>
                                     <?php $aires = array_filter($aires, function($value) { return strpos($value, 'Alsace Lieu-dit élargi') === 0; }); ?>
                                     <?php array_walk($aires, function(&$item) { $item = str_replace('Alsace Lieu-dit élargi ', '', $item); }); ?>
-                                    <?php if(count($aires)): ?><p class="small text-muted" style="margin:0;">Aire Lieu-dit élargi : <?php echo implode(", ", $aires) ?></p><?php endif; ?><?php endif; ?></td>
+                                    <?php if(count($aires)): ?><p style="cursor: help; margin: 0; text-decoration: underline dotted;" title="Cette parcelle est sur les aires : <?php echo implode(", ", $aires) ?>" class="small text-muted"><?php echo implode(", ", $aires) ?></p><?php endif; ?><?php endif; ?></td>
                                     <td><?php echo $parcelle->getCommune(); ?></td>
                                     <td class="text-right"><?php echo $parcelle->getSection(); ?> <?php echo $parcelle->getNumeroParcelle(); ?></td>
                                     <?php if(!is_object($appellationNode) || $appellationNode->getConfig()->hasLieuEditable()):  ?>
