@@ -114,7 +114,12 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                             <span class="slider-xl round"></span>
                                         </label>
                                     </td>
-									<td><?php echo $parcelle->getAppellationLibelle((isset($form['produits'][$parcelle->getHashForKey()]['vtsgn']))); ?></td>
+									<td><?php echo $parcelle->getAppellationLibelle((isset($form['produits'][$parcelle->getHashForKey()]['vtsgn']))); ?>
+                                    <?php if(strpos($parcelle->getProduitHash(), 'LIEUDIT')) : ?>
+                                    <?php $aires = array_keys($parcelle->getParcelleParcellaire()->getIsInAires()->getRawValue()) ?>
+                                    <?php $aires = array_filter($aires, function($value) { return strpos($value, 'Alsace Lieu-dit élargi') === 0; }); ?>
+                                    <?php array_walk($aires, function(&$item) { $item = str_replace('Alsace Lieu-dit élargi ', '', $item); }); ?>
+                                    <?php if(count($aires)): ?><p class="small text-muted" style="margin:0;">Aire Lieu-dit élargi : <?php echo implode(", ", $aires) ?></p><?php endif; ?><?php endif; ?></td>
                                     <td><?php echo $parcelle->getCommune(); ?></td>
                                     <td class="text-right"><?php echo $parcelle->getSection(); ?> <?php echo $parcelle->getNumeroParcelle(); ?></td>
                                     <?php if(!is_object($appellationNode) || $appellationNode->getConfig()->hasLieuEditable()):  ?>
