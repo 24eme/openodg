@@ -1,0 +1,317 @@
+all:
+  configuration:
+    controle:
+      produit_filter: "/CDR/"
+      points_de_controle:
+        pratiques_culturales_desherbage:
+          libelle: Pratiques culturales - Le désherbage
+          constats:
+            RTMS003:
+              libelle: Non respect des conditions de désherbage chimique
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Avertissement \n\n Retrait du bénéfice de l'appellation pour les parcelles concernées \n\n Suspension d'habilitation activité production de raisins"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Le désherbage chimique de plus de 50% de la surface des parcelles de vigne, hors tournières, est interdit."
+              delais: NA
+              terrain: true
+              documentaire: false
+        pratiques_culturales_modification_parcelles:
+          libelle: Pratiques culturales - modification des parcelles
+          constats:
+            RTMS0041:
+              libelle: Absence de déclaration de remaniement des parcelles
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Cf. Op2 Viti des DCC filière AO viticoles"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Toute modification substantielle de la morphologie du relief et de la séquence pédologique naturelle des parcelles destinées à la production de l'AOC est interdite"
+              delais: NA
+              terrain: true
+              documentaire: false
+            RTMS0042:
+              libelle: "Non respect de la morphologie du relief et de la séquence pédologique naturelle des parcelles destinées à la production de l'appellation d'origine"
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Retrait du bénéfice de l’appellation pour les parcelles concernées \n\n Suspension d’habilitation activité production de raisins \n\n Retrait d'habilitation activité production de raisins"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Toute modification substantielle de la morphologie du relief et de la séquence pédologique naturelle des parcelles destinées à la production de l'AOC est interdite"
+              delais: NA
+              terrain: true
+              documentaire: false
+        installation_agrivoltaique:
+          libelle: Installation agrivoltaïque
+          constats:
+            RTMS0043:
+              libelle: Non respect de l'interdiction de l'installation agrivoltaïque
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Retrait du bénéfice de l'appellation pour la ou les parcelle(s) concernée(s) \n\n Suspension d'habilitation activité production de raisin  \n\n retrait d'habilitation activité production de raisins"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Toute installation agrivoltaïque est interdite dans les vignes revendiquant l’AOC « Côtes du Rhône / Côtes du Rhône Villages »"
+              delais: NA
+              terrain: true
+              documentaire: false
+        dispositions_particulieres_de_recolte:
+          libelle: Dispositions particulières de récolte
+          constats:
+            RTMS005:
+              libelle: Non respect des dispositions particulières de récolte
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Retrait du bénéfice de l'appellation pour les parcelles concernées\n\nRetrait du bénéfice de l'appellation pour les parcelles concernées + Suspension d'habilitation activité production de raisins\n\nRetrait d'habilitation activité production de raisins"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Les raisins sont cueillis et transportés jusqu'au lieu de vinification dans un bon état sanitaire"
+              delais: NA
+              terrain: true
+              documentaire: false
+        pratiques_oenologiques_enrichissement:
+          libelle: Pratiques œnologiques - Enrichissement
+          constats:
+            RTMS007:
+              libelle: Non respect des pratiques relative à l'enrichissement
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Retrait du bénéfice de l’appellation pour la part de production concernée + contrôle supplémentaire\n\nRetrait du bénéfice de l’appellation pour la part de production concernée\n\nSuspension d’habilitation activité vinification"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Les techniques soustractives d'enrichissement (TSE) sont autorisées pour les vins rouges, dans la limite d'un taux de concentration de 10%"
+              delais: NA
+              terrain: true
+              documentaire: false
+        pratiques_oenologiques_charbons:
+          libelle: Pratiques œnologiques - Charbons
+          constats:
+            RTMS008:
+              libelle: Non respect des pratiques relative à l'enrichissement
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Contrôle supplémentaire \n\n Retrait du bénéfice de l'appellation pour les lots concernés \n\n Retrait du bénéfice de l'appellation pour les lots concernés + suspension d'habilitation activité vinification"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Pour l'élaboration des vins rosés, l'utilisation de charbons à usage œnologique est autorisée chez le vinificateur, exclusivement sur les moûts issus de presse et dans une proportion qui ne peut être supérieur à 20% du volume total vinifié chez l'opérateur concerné, pour la récolte considérée;"
+              delais: NA
+              terrain: true
+              documentaire: false
+        periode_vins_circuleatio_entre_entrepositaires_agrees:
+          libelle: Période au cours de laquelle les vins ne peuvent circuler entre entrepositaires agréés
+          constats:
+            RTMS009:
+              libelle: Non respect des règles de circulation entre entrepositaires agrées
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Avertissement\n\nRetrait du bénéfice du signe sur un volume équivalent de vins encore en stock de la récolte considérée\n\nRetrait d'habilitation activité vinification"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: Les vins susceptibles de bénéficier de la mention "primeur" ou "nouveau" ne peuvent circuler entre entrepositaires agréés qu'à partir du 38ème jour précédant le 3ème jeudi de novembre de l'année de la récolte.
+              delais: NA
+              terrain: true
+              documentaire: false
+        obligation_declarative_drev:
+          libelle: "Obligation déclarative : Déclaration de revendication"
+          constats:
+            RTMS010:
+              libelle: Cf. Op2 Viti /Op5 Viti DCC filière AO viticoles
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Cf. Op2 Viti /Op5 Viti DCC filière AO viticoles"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Adressée à l'organisme de défense et de gestion au moins quinze jours avant la première transaction en vrac ou mise en vente en vrac au consommateur ou avant le premier conditionnement et au plus tard cinq jours après la date limite de dépôt de la déclaration de récolte.\nLa déclaration de revendication est établie selon le modèle défini par l'organisme de défense et de gestion.\nElle indique notamment :\n- l'appellation revendiquée ;\n- le volume du vin ;\n- le numéro EVV ou SIRET ;\n- le nom et l'adresse du demandeur ;\n- le lieu d'entrepôt du vin."
+              delais: NA
+              terrain: false
+              documentaire: true
+        obligation_declarative_drap:
+          libelle: "Obligation déclarative : Déclaration de renonciation à produire"
+          constats:
+            RTMS011:
+              libelle: Cf.Op2 des DCC tous SIQO
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Cf.Op2 des DCC tous SIQO"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Une déclaration de transaction en vrac, ou une déclaration de mise en vente en vrac au consommateur, est adressée à l'organisme de contrôle agréé selon les modalités définies dans le plan de contrôle/inspection\nCette déclaration précise, le cas échéant, si le vin non conditionné est destiné à être expédié hors du territoire national.\n\nCette déclaration est établie selon le modèle défini par l’organisme de contrôle agréé."
+              delais: NA
+              terrain: false
+              documentaire: true
+        obligation_declarative_transaction:
+          libelle: "Obligation déclarative : Déclaration de transaction en vrac ou de mise en vente en vrac au consommateur et Déclaration relative à l'expédition hors du territoire national d'un vin non conditionné"
+          constats:
+            RTMS013:
+              libelle: Cf.Op2 des DCC tous SIQO
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Cf.Op2 des DCC tous SIQO"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Une déclaration de transaction en vrac, ou une déclaration de mise en vente en vrac au consommateur, est adressée à l'organisme de contrôle agréé selon les modalités définies dans le plan de contrôle/inspection\nCette déclaration précise, le cas échéant, si le vin non conditionné est destiné à être expédié hors du territoire national.\n\nCette déclaration est établie selon le modèle défini par l’organisme de contrôle agréé."
+              delais: NA
+              terrain: false
+              documentaire: true
+        obligation_declarative_conditionnement:
+          libelle: "Obligation déclarative : Déclaration de conditionnement"
+          constats:
+            RTMS014:
+              libelle: Cf.Op2 des DCC tous SIQO
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Cf.Op2 des DCC tous SIQO"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Tout opérateur ayant effectué un conditionnement d'un vin bénéficiant de l’appellation d’origine contrôlée doit effectuer auprès de l’organisme de contrôle agréé une déclaration de conditionnement selon les modalités définies dans le plan de contrôle/inspection.\nCette déclaration est établie selon le modèle défini par l’organisme de défense et de gestion l’organisme de contrôle agréé."
+              delais: NA
+              terrain: false
+              documentaire: true
+        obligation_declarative_repli:
+          libelle: "Obligation déclarative : Déclaration de repli"
+          constats:
+            RTMS015:
+              libelle: Cf. Op2 Viti DCC filière AO viticoles
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Cf. Op2 Viti DCC filière AO viticoles"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Tout opérateur effectuant un repli de vins bénéficiant de l’appellation d’origine contrôlée en fait la déclaration auprès de l’organisme de défense et de gestion et auprès de l’organisme de contrôle agréé selon les modalités définies dans le plan de contrôle/inspection.Cette déclaration est établie selon le modèle défini par l’organisme de défense et de gestion."
+              delais: NA
+              terrain: false
+              documentaire: true
+        obligation_declarative_declassement:
+          libelle: "Obligation déclarative : Déclaration de déclassement"
+          constats:
+            RTMS016:
+              libelle: Cf. Op2 Viti DCC filière AO viticoles
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Cf. Op2 Viti DCC filière AO viticoles"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Tout opérateur effectuant un déclassement de vins bénéficiant de l'appellation d'origine contrôlée en fait la déclaration auprès de l'organisme de défense et de gestion et auprès de l'organisme de contrôle agréé selon les modalités définies dans le plan de contrôle/inspection"
+              delais: NA
+              terrain: false
+              documentaire: true
+        obligation_declarative_remaniement_parcelles:
+          libelle: "Obligation déclarative : Remaniement des parcelles"
+          constats:
+            RTMS017:
+              libelle: Cf. Op2 Viti DCC filière AO viticoles
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Cf. Op2 Viti DCC filière AO viticoles"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Avant tout apport de terre, tout aménagement ou tous travaux susceptibles de modifier le profil des sols ou la morphologie des reliefs (notamment si ces travaux excèdent 1 mètre en décaissement ou remblaiement) et à l'exclusion des travaux de défonçage classique, une déclaration est adressée par l'opérateur à l'organisme de défense et de gestion selon les modalités définies dans le plan de contrôle/inspection\n\nL’organisme de défense et de gestion transmet, sans délai, une copie de cette déclaration aux services de l’Institut national de l’origine et de la qualité.\nCette déclaration est établie selon le modèle défini par l’organisme de défense et de gestion."
+              delais: NA
+              terrain: false
+              documentaire: true
+        conformite_analytique_du_produit:
+          libelle: "Obligation déclarative : Déclaration de déclassement"
+          constats:
+            RTMSEA11:
+              libelle: Analyse non conforme pour un élément pouvant évoluer favorablement (sucres, FML...) sur du vrac
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Avertissement + obligation de conservation du lot\n\nAvertissement + obligation de conservation du lot en vue d’un contrôle supplémentaire et contrôle supplémentaire sur d’autres lots\n\nSuspension ou Retrait d’habilitation pour l’activité concernée + retrait du bénéfice de l’appellation"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Analyse conforme par rapport aux critères analytiques du cahier des charges"
+              delais: NA
+              terrain: false
+              documentaire: true
+            RTMSEA12:
+              libelle: Analyse non conforme pour un élément pouvant évoluer favorablement (sucres, FML...) sur du conditionné
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Avertissement avec blocage du lot jusqu’au résultat d’un nouvel examen analytique\n\nAvertissement + obligation de conservation du lot en vue d’un contrôle supplémentaire et contrôle supplémentaire sur d’autres lots\n\nSuspension ou Retrait d’habilitation pour l’activité concernée + retrait du bénéfice de l’appellation"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Analyse conforme par rapport aux critères analytiques du cahier des charges"
+              delais: NA
+              terrain: false
+              documentaire: true
+            RTMSEA13:
+              libelle: Analyse non conforme pour un élément ne pouvant pas évoluer favorablement (acidité volatile...)
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Retrait du bénéfice de l’appellation du lot concerné + contrôle supplémentaire\n\nRetrait du bénéfice de l’appellation du lot concerné et des contrôles supplémentaires sur les produits de la campagne suivante\n\nSuspension ou Retrait d’habilitation activité de conditionnement"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Analyse conforme par rapport aux critères analytiques du cahier des charges"
+              delais: NA
+              terrain: false
+              documentaire: true
+        conformite_organoleptique_produit:
+          libelle: Conformité organoleptique du produit
+          constats:
+            RTMSEA21:
+              libelle: "Conditionné Examen organoleptique non-conforme : manquement de niveau mineur"
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Avertissement \n\n Contrôle supplémentaire sur un autre lot  \n\n Contrôle supplémentaire sur d'autres lots (doublement de la pression de contrôle)"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Note CEO ≥ 3A"
+              delais: NA
+              terrain: false
+              documentaire: true
+            RTMSEA22:
+              libelle: "Conditionné Examen organoleptique non-conforme : manquement de niveau majeur"
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Contrôle supplémentaire sur un autre lot \n\n Contrôle supplémentaire sur d'autres lots (doublement de la pression de contrôle)  \n\n Retrait du bénéfice de l'appellation"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Note CEO ≥ 3A"
+              delais: NA
+              terrain: false
+              documentaire: true
+            RTMSEA23:
+              libelle: "Conditionné Examen organoleptique non-conforme : manquement de niveau grave"
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Retrait du bénéfice de l'appellation\n"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Note CEO ≥ 3A"
+              delais: NA
+              terrain: false
+              documentaire: true
+            RTMSEA24:
+              libelle: "Vrac Examen organoleptique non-conforme : manquement de niveau mineur"
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Avertissement \n\n Avertissement \n\n Contrôle supplémentaire sur un autre lot"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Note CEO ≥ 3A"
+              delais: NA
+              terrain: false
+              documentaire: true
+            RTMSEA25:
+              libelle: "Vrac Examen organoleptique non-conforme : manquement de niveau majeur"
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Contrôle supplémentaire sur un lot\n\nContrôle supplémentaire sur d'autres lots (doublement de la pression de contrôle)\n\nRetrait du bénéfice de l'appellation"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Note CEO ≥ 3A"
+              delais: NA
+              terrain: false
+              documentaire: true
+            RTMSEA26:
+              libelle: "Vrac Examen organoleptique non-conforme : manquement de niveau grave"
+              types:
+                - Suivi
+              plan: false
+              mesure_odg: "Retrait du bénéfice de l'appellation"
+              modalite_verif_retour_conformite:
+              mesure_odg_ou_avpi: "Note CEO ≥ 3A"
+              delais: NA
+              terrain: false
+              documentaire: true

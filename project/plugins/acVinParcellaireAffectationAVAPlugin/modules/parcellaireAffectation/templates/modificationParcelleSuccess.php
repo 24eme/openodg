@@ -17,6 +17,7 @@
                     <?php include_partial('parcellaireAffectation/parcelleForm', array('form' => $form,'appellation' => $appellation, 'parcelle' => $parcelle)); ?>
                 </div>
                 <div class="modal-footer">
+                    <a target="_blank" href="<?php echo url_for('parcellaire_visualisation', array('id' => $parcellaire->getParcellaire()->_id)); ?>#filtre=[<?php echo $parcelle->section.$parcelle->numero_parcelle ?>]" class="btn btn-default-step">Voir la carte</a>
                     <a href="<?php echo url_for("parcellaire_parcelles", array('id' => $parcellaire->_id, 'appellation' => $appellation)) ?>" class="btn btn-danger btn pull-left">Annuler</a>
                     <button type="submit" class="btn btn-default btn pull-right">Valider la modification</button>
                 </div>
