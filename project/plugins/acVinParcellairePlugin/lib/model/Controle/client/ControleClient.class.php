@@ -70,8 +70,8 @@ class ControleClient extends acCouchdbClient
 
     public function findAll($limit = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $view = $this
-            ->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", "AAA0000000", "00000000"))
-            ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", "ZZZ9999999", "99999999"));
+            ->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", "0000000000", "00000000"))
+            ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", "ZZZZZZZZZZ", "99999999"));
         if ($limit) {
             $view->limit($limit);
         }
