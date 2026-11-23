@@ -66,8 +66,8 @@
         <div class="col-xs-4 text-center">
             <div class="btn-group">
                 <?php if ($sf_user->hasDrevAdmin() && $drev->getDocumentDouanier()): ?>
-                <a href="<?php echo url_for('drev_document_douanier', $drev); ?>" class="btn btn-default" >
-                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
+                <a href="<?php echo url_for('dr_visualisation', $drev->getDocumentDouanier()); ?>" class="btn btn-default" >
+                    <span class="glyphicon glyphicon-file"></span>&nbsp;Visu <?php echo $drev->getDocumentDouanierType() ?>
                 </a>
                 <?php endif; ?>
                 <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-primary">

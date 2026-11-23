@@ -1530,7 +1530,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function getLotByUniqueId($unique_id) {
             $ids = explode('-', $unique_id);
-            print_r([$ids[2], $ids[3], $unique_id]);
             return $this->getLotByNumDossierNumArchive($ids[2], $ids[3], $unique_id);
         }
 
