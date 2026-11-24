@@ -24,7 +24,7 @@ $list_idu = [];
     <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('parcellaire_etablissement_selection'), 'noautofocus' => true)); ?>
 <?php endif; ?>
 
-<div class="page-header no-border row">
+<div class="page-header no-border row <?php if (ParcellaireConfiguration::getInstance()->hasJeunesVignes()) { echo "show-hide-synthese-table"; } ?>">
     <?php if($parcellaire): ?>
     <h2 class="col-xs-8">Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?> <small class="text-muted"><?= $parcellaire->source ?></small></h2>
     <?php else: ?>
@@ -159,6 +159,38 @@ if ($has_affectation) :
     </div>
 </div>
 <?php endif;?>
+
 <script type="text/javascript">
     var all_idu = JSON.parse('<?php echo json_encode(($list_idu)); ?>');
+
+
+    if (document.getElementsByClassName("page-header")[0].classList.contains("show-hide-synthese-table")) {
+        window.addEventListener("DOMContentLoaded", (e) => {
+            const filterSelect = document.getElementsByClassName("select2-choices");
+            const syntheseCepageBlock = Array(document.getElementById("synthese_cepage"), document.getElementById("synthese_cepage").nextElementSibling);
+
+            if (filterSelect[0].children.length > 1) {
+                syntheseCepageBlock.forEach((e) =>  e.style.display = "none");
+            }
+            if (filterSelect[0].children.length == 1) {
+                syntheseCepageBlock.forEach((e) =>  e.style.display = "table");
+            }
+
+            const config = { childList: true }
+
+            const callback = function (mutationList) {
+                for (const mutation of mutationList) {
+                    if(mutation.addedNodes[0] && mutation.addedNodes[0].className == "select2-search-choice") {
+                        syntheseCepageBlock.forEach((e) =>  e.style.display = "none");
+                    } else {
+                        syntheseCepageBlock.forEach((e) =>  e.style.display = "table");
+                    }
+                }
+            };
+
+            const observer = new MutationObserver(callback);
+            observer.observe(filterSelect[0], config);
+        })
+    }
+
 </script>
