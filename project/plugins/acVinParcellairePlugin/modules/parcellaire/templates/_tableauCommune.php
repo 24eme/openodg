@@ -6,7 +6,7 @@
     <div>
             <h3>Filtrer</h3>
             <div class="form-group">
-                <input id="hamzastyle" onchange="filterMap()" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" data-mode="OR" class="hamzastyle form-control" />
+                <input id="hamzastyle" onchange="filterMap()" type="hidden" data-placeholder="Filtrer par cépage, numéro parcelle, année de plantation, aire, lieu-dit, ecart de pied/rang :" data-hamzastyle-container=".tableParcellaire" data-mode="OR" class="hamzastyle form-control" />
             </div>
             <?php if (ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration()): ?>
                 <div class="form-group">
@@ -65,7 +65,7 @@
                             ?>
                             <?php
                             $lieu = $detail->lieu;
-                            $compagne = $detail->campagne_plantation;
+                            $campagne_plantation = $detail->campagne_plantation;
                             $section = $detail->section;
                             $num_parcelle = $detail->numero_parcelle;
                             $ecart_pieds = ($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds'):'&nbsp;';
@@ -75,8 +75,10 @@
                             if ($is_jeunes_vignes) {
                                 $cepage .= ' - jeunes vignes';
                             }
+                            $aires_search = array_keys($detail->getIsInAires()->getRawValue());
+                            array_walk($aires_search, function(&$item, $key) { $item = 'Aire '.$item;});
                             ?>
-                            <tr data-words='<?php echo json_encode(array_merge(array(strtolower($lieu), strtolower($section.$num_parcelle),strtolower($compagne), strtolower($cepage), $ecart_pieds.'x'.$ecart_rang)), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>' class="<?php echo $classline ?> hamzastyle-item">
+                            <tr data-words='<?php echo json_encode(array_merge(array('Lieut-dit '.strtoupper($lieu), "N° ".strtoupper($section.$num_parcelle),"Année ".$campagne_plantation, "Cépage ". strtoupper($cepage), 'Écart '.$ecart_pieds.'x'.$ecart_rang), $aires_search), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>' class="<?php echo $classline ?> hamzastyle-item">
                                 <?php $list_idu[]=$detail->idu; $list_communes[$detail["code_commune"]] = $detail["code_commune"]; ?>
                                 <td><?php echo $lieu; ?></td>
                                 <td class="" style="text-align: center;">
