@@ -440,7 +440,7 @@ class DRevProduit extends BaseDRevProduit
         if ($vcr > $this->volume_revendique_total && $this->getVolumeRevendiqueTotalWithLieux() > $this->volume_revendique_total) {
             $vcr = $this->getVCRWithRules($vcr, $this->getVolumeRevendiqueTotalWithLieux());
         }
-        return $vcr != $vcrBrut;
+        return ($vcr < $vcrBrut);
     }
 
     public function getVolumeRevendiqueTotalWithLieux()
